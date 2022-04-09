@@ -436,7 +436,7 @@ void wex::stc::bind_all()
 void wex::stc::blame_revision()
 {
   const auto& revision(margin_get_revision_id());
-  auto renamed(margin_get_revision_renamed());
+  auto        renamed(margin_get_revision_renamed());
   wex::vcs    vcs({m_data.head_path().empty() ? path() : m_data.head_path()});
   const auto  extra(!is_visual() ? "-L %LINES " : std::string());
 
@@ -449,9 +449,10 @@ void wex::stc::blame_revision()
       if (revision != find_before(renamed, " "))
       {
         if (
-          vcs.entry().system(process_data()
-                               .args("blame " + extra + revision + " -- " + renamed)
-                               .start_dir(vcs.toplevel().string())) != 0)
+          vcs.entry().system(
+            process_data()
+              .args("blame " + extra + revision + " -- " + renamed)
+              .start_dir(vcs.toplevel().string())) != 0)
         {
           log::status("blame") << "error";
           return;
@@ -465,9 +466,10 @@ void wex::stc::blame_revision()
       }
     }
     else if (
-      vcs.entry().system(process_data()
-                           .args("blame " + extra + path().string() + " " + revision)
-                           .start_dir(path().parent_path())) != 0)
+      vcs.entry().system(
+        process_data()
+          .args("blame " + extra + path().string() + " " + revision)
+          .start_dir(path().parent_path())) != 0)
     {
       log::status("blame") << "error";
       return;
@@ -476,9 +478,10 @@ void wex::stc::blame_revision()
   else if (vcs.entry().name() == "svn")
   {
     if (
-      vcs.entry().system(process_data()
-                           .args("blame " + path().string() + " -v -r " + revision)
-                           .start_dir(path().parent_path())) != 0)
+      vcs.entry().system(
+        process_data()
+          .args("blame " + path().string() + " -v -r " + revision)
+          .start_dir(path().parent_path())) != 0)
     {
       log::status("blame") << "error";
       return;
@@ -490,7 +493,8 @@ void wex::stc::blame_revision()
     renamed = revision + " " + path().string();
   }
 
-  vcs.entry().get_blame().caption("blame " + revision + " " + path().filename());
+  vcs.entry().get_blame().caption(
+    "blame " + revision + " " + path().filename());
 
   data::stc data(m_data);
   data.control().line(m_margin_text_click);
