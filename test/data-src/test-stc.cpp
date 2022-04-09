@@ -2,7 +2,7 @@
 // Name:      data/test-stc.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/stc.h>
@@ -14,6 +14,8 @@ TEST_CASE("wex::data::stc")
   SUBCASE("constructor")
   {
     REQUIRE(wex::data::stc().control().line() == 0);
+    REQUIRE(wex::data::stc().head_path().empty());
+    REQUIRE(wex::data::stc().recent());
     REQUIRE(!wex::data::stc().event(true).event().is_pos_at_end());
     REQUIRE(!wex::data::stc().event(true).event().is_synced());
     REQUIRE(!wex::data::stc().event(true).event().is_synced_log());
@@ -61,5 +63,16 @@ TEST_CASE("wex::data::stc")
     REQUIRE(wex::data::stc(stc, wex::data::control().line(1).col(5)).inject());
     REQUIRE(
       !wex::data::stc().control(wex::data::control().line(1).col(5)).inject());
+  }
+
+  SUBCASE("set")
+  {
+    wex::data::stc data;
+
+    data.head_path(wex::path("head"));
+    REQUIRE(data.head_path().string() == "head");
+
+    data.recent(false);
+    REQUIRE(!data.recent());
   }
 }

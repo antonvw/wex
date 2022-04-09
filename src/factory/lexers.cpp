@@ -136,6 +136,12 @@ const std::string wex::lexers::apply_macro(
 void wex::lexers::apply_margin_text_style(factory::stc* stc, const blame* blame)
   const
 {
+  if (blame->line_no() < 0)
+  {
+    log("apply_margin_text_style") << "invalid line:" << blame->line_no();
+    return;
+  }
+
   switch (blame->style())
   {
     case margin_style_t::DAY:
@@ -164,16 +170,7 @@ void wex::lexers::apply_margin_text_style(factory::stc* stc, const blame* blame)
 
   if (!blame->info().empty() && !blame->skip_info())
   {
-    if (blame->is_path())
-    {
-      stc->MarginSetText(
-        blame->line_no(),
-        blame->info() + " :RENAMED: " + blame->path());
-    }
-    else
-    {
-      stc->MarginSetText(blame->line_no(), blame->info());
-    }
+    stc->MarginSetText(blame->line_no(), blame->info());
   }
 }
 

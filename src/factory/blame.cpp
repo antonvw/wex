@@ -8,9 +8,12 @@
 #include <boost/algorithm/string.hpp>
 #include <wex/core/chrono.h>
 #include <wex/core/config.h>
+#include <wex/core/core.h>
 #include <wex/core/log.h>
+#include <wex/core/path.h>
 #include <wex/core/regex.h>
 #include <wex/factory/blame.h>
+#include <wex/factory/stc.h>
 
 namespace wex
 {
@@ -31,6 +34,8 @@ build(const std::string& key, const std::string& field, bool first = false)
 
   return add;
 }
+
+const std::string renamed(":::");
 } // namespace wex
 
 wex::blame::blame(const pugi::xml_node& node)
@@ -87,8 +92,29 @@ wex::lexers::margin_style_t wex::blame::get_style(const std::string& text) const
   return style;
 }
 
-bool wex::blame::parse(const std::string& text)
+const std::string wex::blame::info() const
 {
+  return m_info + (is_renamed_path() ? renamed + m_path : std::string());
+}
+
+bool wex::blame::is_renamed_path() const
+{
+  return m_path != m_path_original.string() && !m_path.empty();
+}
+
+std::string wex::blame::margin_renamed(const factory::stc* stc)
+{
+  std::string revision(stc->MarginGetText(stc->get_margin_text_click()));
+
+  return revision.find(renamed) == std::string::npos ?
+           std::string() :
+           find_after(revision, renamed);
+}
+
+bool wex::blame::parse(const path& p, const std::string& text)
+{
+  m_path_original = p;
+
   try
   {
     if (regex r(m_blame_format); r.search(text) >= 4)

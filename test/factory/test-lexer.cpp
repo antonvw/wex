@@ -2,7 +2,7 @@
 // Name:      test-lexer.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
@@ -50,8 +50,56 @@ TEST_CASE("wex::lexer")
   SUBCASE("align_text")
   {
     REQUIRE(
+      lexer.align_text("    code improvements", "", true, true)
+        .find("    code") == std::string::npos);
+
+    REQUIRE(
       wex::lexer("cpp").align_text("test", "header", true, true).size() ==
       std::string("// headertest").size());
+  }
+
+  SUBCASE("clear")
+  {
+    lexer.set("markdown");
+    REQUIRE(!lexer.attribs().empty());
+    REQUIRE(lexer.attrib(_("Edge line")) == wxSTC_EDGE_NONE);
+    lexer.clear();
+    REQUIRE(lexer.display_lexer().empty());
+    REQUIRE(lexer.scintilla_lexer().empty());
+    REQUIRE(lexer.attribs().empty());
+    REQUIRE(lexer.attrib(_("Edge line")) == -1);
+  }
+
+  SUBCASE("comment_complete")
+  {
+    REQUIRE(lexer.set("pascal"));
+    REQUIRE(lexer.display_lexer() == "pascal");
+    REQUIRE(lexer.scintilla_lexer() == "pascal");
+    REQUIRE(std::regex_match(
+      lexer.comment_complete("(*test"),
+      std::regex(" +\\*\\)")));
+  }
+
+  SUBCASE("make_comment")
+  {
+    REQUIRE(
+      lexer.make_comment("commit xyz\n    code improvements")
+        .find("code code improvements") == std::string::npos);
+
+    REQUIRE(!lexer.make_comment("test", true).empty());
+    REQUIRE(!lexer.make_comment("prefix", "test").empty());
+    REQUIRE(!lexer.make_comment("test\ntest2", true).empty());
+    REQUIRE(!lexer.make_comment("prefix", "test\ntest2").empty());
+    REQUIRE(!lexer.make_single_line_comment("test").empty());
+  }
+
+  SUBCASE("property")
+  {
+    lexer.set_property("test", "value");
+    lexer.set_property("other", "one");
+
+    REQUIRE(lexer.properties().front().value() == "value");
+    REQUIRE(lexer.properties().back().value() == "one");
   }
 
   SUBCASE("set")
@@ -80,18 +128,6 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.scintilla_lexer() == "cpp");
   }
 
-  SUBCASE("clear")
-  {
-    lexer.set("markdown");
-    REQUIRE(!lexer.attribs().empty());
-    REQUIRE(lexer.attrib(_("Edge line")) == wxSTC_EDGE_NONE);
-    lexer.clear();
-    REQUIRE(lexer.display_lexer().empty());
-    REQUIRE(lexer.scintilla_lexer().empty());
-    REQUIRE(lexer.attribs().empty());
-    REQUIRE(lexer.attrib(_("Edge line")) == -1);
-  }
-
   SUBCASE("several methods")
   {
     REQUIRE(lexer.set("cpp"));
@@ -117,11 +153,6 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.is_keyword("const"));
     REQUIRE(lexer.keyword_starts_with("cla"));
     REQUIRE(!lexer.keyword_starts_with("xxx"));
-    REQUIRE(!lexer.make_comment("test", true).empty());
-    REQUIRE(!lexer.make_comment("prefix", "test").empty());
-    REQUIRE(!lexer.make_comment("test\ntest2", true).empty());
-    REQUIRE(!lexer.make_comment("prefix", "test\ntest2").empty());
-    REQUIRE(!lexer.make_single_line_comment("test").empty());
     REQUIRE(lexer.keywords_string(6).empty());
     REQUIRE(lexer.add_keywords("hello:1"));
     REQUIRE(lexer.add_keywords("more:1"));
@@ -145,24 +176,5 @@ TEST_CASE("wex::lexer")
     REQUIRE(!lexer.keyword_starts_with("xx"));
     REQUIRE(!lexer.keywords().empty());
     REQUIRE(!lexer.apply());
-  }
-
-  SUBCASE("property")
-  {
-    lexer.set_property("test", "value");
-    lexer.set_property("other", "one");
-
-    REQUIRE(lexer.properties().front().value() == "value");
-    REQUIRE(lexer.properties().back().value() == "one");
-  }
-
-  SUBCASE("comment_complete")
-  {
-    REQUIRE(lexer.set("pascal"));
-    REQUIRE(lexer.display_lexer() == "pascal");
-    REQUIRE(lexer.scintilla_lexer() == "pascal");
-    REQUIRE(std::regex_match(
-      lexer.comment_complete("(*test"),
-      std::regex(" +\\*\\)")));
   }
 }

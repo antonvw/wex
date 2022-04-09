@@ -2,11 +2,12 @@
 // Name:      data/stc.h
 // Purpose:   Declaration of wex::data::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2021 Anton van Wezenbeek
+// Copyright: (c) 2017-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <wex/core/path.h>
 #include <wex/data/control.h>
 
 #include <bitset>
@@ -80,10 +81,10 @@ public:
   stc(factory::stc* stc = nullptr);
 
   /// Constructor from control data.
-  stc(data::control& data, factory::stc* stc = nullptr);
+  stc(const data::control& data, factory::stc* stc = nullptr);
 
   /// Constructor from window data.
-  stc(data::window& data, factory::stc* stc = nullptr);
+  stc(const data::window& data, factory::stc* stc = nullptr);
 
   /// Copy constructor.
   stc(factory::stc* stc, const data::stc& r);
@@ -120,6 +121,16 @@ public:
   /// Set window flags.
   stc&
   flags(window_t flags, data::control::action_t action = data::control::SET);
+
+  /// Returns head path.
+  const auto& head_path() const { return m_head_path; }
+
+  /// Sets head path.
+  stc& head_path(const path& r)
+  {
+    m_head_path = r;
+    return *this;
+  }
 
   /// Returns indicator type.
   const auto indicator_no() const { return m_indicator_no; }
@@ -163,6 +174,8 @@ private:
   bool inject_line() const;
 
   factory::stc* m_stc{nullptr};
+
+  path m_head_path;
 
   data::control m_data;
   indicator_t   m_indicator_no{IND_LINE};

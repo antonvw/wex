@@ -34,11 +34,11 @@ void wex::expand_macro(wex::process_data& data, stc* stc)
     data.exe(get_range(
       data.exe(),
       std::max(
-        (size_t)1,
-        (size_t)stc->get_current_line() -
+        1,
+        stc->get_current_line() -
           std::min(
-            (size_t)stc->GetLineCount(),
-            stc->get_file().ex_stream()->get_context_lines())),
+            (int)stc->GetLineCount(),
+            (int)stc->get_file().ex_stream()->get_context_lines())),
       stc->get_current_line()));
   }
   else if (const std::string sel(stc->GetSelectedText()); !sel.empty())

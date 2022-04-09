@@ -435,22 +435,22 @@ void wex::stc::bind_all()
 
 void wex::stc::blame_revision()
 {
-  std::string revision(MarginGetText(m_margin_text_click));
-  const auto  rev(get_word(revision));
-  auto        renamed(find_after(revision, "RENAMED: "));
-  wex::vcs    vcs({path()});
+  const auto& revision(margin_get_revision_id());
+  auto renamed(margin_get_revision_renamed());
+  wex::vcs    vcs({m_data.head_path().empty() ? path() : m_data.head_path()});
+  const auto  extra(!is_visual() ? "-L %LINES " : std::string());
 
   log::trace("blame revision") << vcs.entry().name();
 
   if (vcs.entry().name() == "git")
   {
-    if (!renamed.empty() && renamed != revision)
+    if (!renamed.empty())
     {
-      if (rev != find_before(renamed, " "))
+      if (revision != find_before(renamed, " "))
       {
         if (
           vcs.entry().system(process_data()
-                               .args("blame " + rev + " -- " + renamed)
+                               .args("blame " + extra + revision + " -- " + renamed)
                                .start_dir(vcs.toplevel().string())) != 0)
         {
           log::status("blame") << "error";
@@ -459,14 +459,14 @@ void wex::stc::blame_revision()
       }
       else
       {
-        log::status("blame") << "at oldest: " << rev;
-        log::trace("blame equal") << rev << renamed;
+        log::status("blame") << "at oldest: " << revision;
+        log::trace("blame equal") << revision << renamed;
         return;
       }
     }
     else if (
       vcs.entry().system(process_data()
-                           .args("blame " + path().string() + " " + rev)
+                           .args("blame " + extra + path().string() + " " + revision)
                            .start_dir(path().parent_path())) != 0)
     {
       log::status("blame") << "error";
@@ -477,23 +477,31 @@ void wex::stc::blame_revision()
   {
     if (
       vcs.entry().system(process_data()
-                           .args("blame " + path().string() + " -v -r " + rev)
+                           .args("blame " + path().string() + " -v -r " + revision)
                            .start_dir(path().parent_path())) != 0)
     {
       log::status("blame") << "error";
       return;
     }
-
-    renamed = rev + " " + path().string();
   }
 
-  vcs.entry().get_blame().caption("blame " + rev + " " + path().filename());
+  if (renamed.empty())
+  {
+    renamed = revision + " " + path().string();
+  }
+
+  vcs.entry().get_blame().caption("blame " + revision + " " + path().filename());
+
+  data::stc data(m_data);
+  data.control().line(m_margin_text_click);
+
+  if (data.head_path().empty())
+  {
+    data.head_path(path());
+  }
 
   ((wex::factory::frame*)m_frame)
-    ->open_file(
-      !renamed.empty() ? wex::path(renamed) : path(),
-      vcs.entry(),
-      m_data.control().line(m_margin_text_click));
+    ->open_file(wex::path(renamed), vcs.entry(), data);
 }
 
 void wex::stc::build_popup_menu(menu& menu)

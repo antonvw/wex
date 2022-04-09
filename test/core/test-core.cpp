@@ -108,8 +108,17 @@ TEST_CASE("wex::core")
   {
     std::string word("this is a test");
     REQUIRE(wex::get_word(word) == "this");
+    REQUIRE(word == "is a test");
     REQUIRE(wex::get_word(word) == "is");
     REQUIRE(wex::get_word(word) == "a");
+
+    std::string other("    code improvements");
+    REQUIRE(wex::get_word(other) == "code");
+    REQUIRE(other == "improvements");
+
+    std::string spaces("    ");
+    REQUIRE(wex::get_word(spaces).empty());
+    REQUIRE(spaces.empty());
   }
 
   SUBCASE("is_brace")
