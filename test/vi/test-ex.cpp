@@ -11,7 +11,7 @@
 
 #include "test.h"
 
-// See stc/test-vi.cpp for testing goto
+// See stc/test-vi.cpp for testing goto and :set
 
 TEST_CASE("wex::ex")
 {
@@ -29,6 +29,8 @@ TEST_CASE("wex::ex")
     REQUIRE(it1 != ex->get_macros().get_abbreviations().end());
     REQUIRE(it1->second == "TTTT");
     REQUIRE(ex->command(":una t"));
+    REQUIRE(!ex->command(":unabbrv t"));
+    REQUIRE(ex->command(":unabbrev t"));
     REQUIRE(
       ex->get_macros().get_abbreviations().find("t") ==
       ex->get_macros().get_abbreviations().end());
@@ -58,6 +60,29 @@ TEST_CASE("wex::ex")
       REQUIRE(val == calc.second.first);
     }
   }
+
+#ifdef __UNIX__
+  SUBCASE("cd")
+  {
+    wex::path keep;
+
+    for (const auto& command : std::vector<std::pair<std::string, std::string>>{
+           {":chd /usr", "/usr"},
+           {":chd .", "/usr"},
+           {":chd ..", "/"},
+           {":chdir /usr", "/usr"},
+           {":chdir .", "/usr"},
+           {":chdir ..", "/"},
+           {":cd /usr", "/usr"},
+           {":cd .", "/usr"},
+           {":cd ..", "/"}})
+    {
+      CAPTURE(command.first);
+      REQUIRE(ex->command(command.first));
+      REQUIRE(wex::path::current().string() == command.second);
+    }
+  }
+#endif
 
   SUBCASE("commands")
   {
@@ -399,5 +424,18 @@ TEST_CASE("wex::ex")
     stc->set_text("xyz\n");
     REQUIRE(ex->command(":c|new\n"));
     REQUIRE(stc->get_text() == "new\n");
+  }
+
+  SUBCASE("yank")
+  {
+    stc->set_text("xyz\n");
+    REQUIRE(ex->command(":1,5ya"));
+    REQUIRE(ex->command(":1,5yank"));
+    REQUIRE(ex->command(":1,5yank c"));
+    REQUIRE(
+      wex::ex::get_macros().get_register('c').find("xyz") != std::string::npos);
+
+    REQUIRE(!ex->command(":1,5yb"));
+    REQUIRE(!ex->command(":1,5yankc"));
   }
 }

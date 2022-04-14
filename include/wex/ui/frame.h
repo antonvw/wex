@@ -125,7 +125,7 @@ public:
   /// allowing you to override any command.
   virtual bool exec_ex_command(ex_command& command) { return false; }
 
-  /// Allows you to override is_address, it is overriden in
+  /// Allows you to override is_address, it is overridden in
   /// del frame, returning true if text specifies
   /// a one or two address based ex address (including command).
   /// e.g. 1,5y, %y, etc.

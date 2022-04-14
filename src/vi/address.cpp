@@ -395,14 +395,14 @@ const std::string wex::address::regex_commands() const
 {
   // Command Descriptions in ex.
   // 1addr commands
-  return std::string("(append\\b|a\\b|"
-                     "insert\\b|i\\b|"
-                     "mark\\b|ma\\b|k|"
-                     "pu\\b|"
-                     "read\\b|r\\b|"
-                     "visual\\b|vi\\b|"
-                     "z\\b|"
-                     "=)([\\s\\S]*)");
+  return "(append\\b|a\\b|"
+         "insert\\b|i\\b|"
+         "mark\\b|ma\\b|k|"
+         "pu\\b|"
+         "read\\b|r\\b|"
+         "visual\\b|vi\\b|"
+         "z\\b|"
+         "=)([\\s\\S]*)";
 }
 
 void wex::address::set_line(int line)

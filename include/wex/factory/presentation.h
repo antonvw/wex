@@ -2,7 +2,7 @@
 // Name:      presentation.h
 // Purpose:   Declaration of class wex::presentation
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2019-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -19,17 +19,18 @@ namespace wex
 class presentation
 {
 public:
+  /// The presentation types.
   enum presentation_t
   {
-    INDICATOR,
-    MARKER,
+    INDICATOR, ///< presents an indicator
+    MARKER,    ///< presents a marker
   };
 
   /// Constructor from xml node.
   presentation(presentation_t t, const pugi::xml_node& node = pugi::xml_node());
 
   /// Constructor.
-  /// Sets no and style as specfied.
+  /// Sets no and style as specified.
   presentation(presentation_t t, int no, int style = -1);
 
   /// Spaceship operator.

@@ -1,8 +1,8 @@
 project(wex-lib VERSION ${WEX_VERSION})
 
 if (CMAKE_BUILD_TYPE MATCHES "Coverage")
-  set(wexBUILD_SAMPLES ON)
-  set(wexBUILD_TESTS ON)
+  set(wexBUILD_SAMPLES ON CACHE FORCE)
+  set(wexBUILD_TESTS ON CACHE FORCE)
   
   add_custom_target(lcov-prep
     # prepare initial tracefile
@@ -33,7 +33,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
     # remove output that we are not interested in
     COMMAND lcov 
       --gcov-tool gcov 
-      --remove app.run "*/usr/*" "*sample*" "*external/*" "*/test/*" "*factory/grid*"
+      --remove app.run "*/usr/*" "*sample*" "*external/*" "*/test/*" "*factory/grid*" "include/wex/factory/text-window.h"
       --output-file app.run
 
     # generate local files

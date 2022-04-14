@@ -156,7 +156,7 @@ TEST_CASE("wex::addressrange")
     REQUIRE(!wex::addressrange(ex).parse(wex::command_parser(ex, "1,3"), im));
     REQUIRE(im == wex::info_message_t::NONE);
 
-    wex::command_parser cp(ex, "1,3yk");
+    wex::command_parser cp(ex, "1,3ya k");
 
     REQUIRE(wex::addressrange(ex).parse(cp, im));
     REQUIRE(im == wex::info_message_t::YANK);

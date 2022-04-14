@@ -2,7 +2,7 @@
 // Name:      auto_complete.h
 // Purpose:   Declaration of class wex::auto_complete
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -37,7 +37,7 @@ public:
   /// (e.g. a variable or a class name)
   const auto& insert() const { return m_insert; }
 
-  /// Returns all inserts (independant of scope)
+  /// Returns all inserts (independent of scope)
   const auto& inserts() const { return m_inserts; }
 
   /// Builds and shows auto complete lists on the

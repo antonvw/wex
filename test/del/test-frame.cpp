@@ -119,6 +119,7 @@ TEST_CASE("wex::del::frame")
     del_frame()->pane_add(list);
     list->Show();
     del_frame()->use_file_history_list(list);
+    REQUIRE(del_frame()->activate(wex::data::listview::HISTORY) != nullptr);
   }
 
   SUBCASE("virtual")

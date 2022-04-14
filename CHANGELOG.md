@@ -2,6 +2,8 @@
 
 **v22.10**
 - added blame revision
+- ex commands more closely follow
+    The Open Group Base Specifications Issue 7, 2018 edition
 
 **v22.04** *March 6, 2022*
 - Microsoft Visual Studio 2022

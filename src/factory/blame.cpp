@@ -35,7 +35,7 @@ build(const std::string& key, const std::string& field, bool first = false)
   return add;
 }
 
-const std::string renamed(":::");
+constexpr char renamed[] = ":::";
 } // namespace wex
 
 wex::blame::blame(const pugi::xml_node& node)
