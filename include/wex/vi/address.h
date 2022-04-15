@@ -21,7 +21,7 @@ class address
   friend addressrange;
 
 public:
-  /// The kind of addres this one is.
+  /// The kind of address this one is.
   enum address_t
   {
     IS_BEGIN,  ///< part of range, the begin
@@ -92,7 +92,7 @@ public:
   /// Supported 1addr commands.
   const std::string regex_commands() const;
 
-  /// Return type of adress.
+  /// Return type of address.
   address_t type() const { return m_type; }
 
   /// Shows this address in the ex bar.

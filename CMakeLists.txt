@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.21)
 
 project(wex)
 
@@ -81,6 +81,7 @@ if (wexENABLE_ASAN)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
 endif ()
 
+add_subdirectory(ci)
 add_subdirectory(src)
 
 if (wexBUILD_SAMPLES)

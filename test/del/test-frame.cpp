@@ -119,6 +119,7 @@ TEST_CASE("wex::del::frame")
     del_frame()->pane_add(list);
     list->Show();
     del_frame()->use_file_history_list(list);
+    REQUIRE(del_frame()->activate(wex::data::listview::HISTORY) != nullptr);
   }
 
   SUBCASE("virtual")
@@ -146,8 +147,8 @@ TEST_CASE("wex::del::frame")
     REQUIRE(!del_frame()->debug_toggle_breakpoint(100, get_stc()));
 
     REQUIRE(!del_frame()->is_address(get_stc(), "xx"));
-    REQUIRE(del_frame()->is_address(get_stc(), "1,5y"));
-    REQUIRE(del_frame()->is_address(get_stc(), "%y"));
+    REQUIRE(del_frame()->is_address(get_stc(), "1,5ya"));
+    REQUIRE(del_frame()->is_address(get_stc(), "%ya"));
 
     del_frame()->on_command_item_dialog(
       wxID_ADD,

@@ -583,19 +583,19 @@ bool wex::addressrange::print(const std::string& flags) const
 const std::string wex::addressrange::regex_commands() const
 {
   // 2addr commands
-  return std::string("(change|c\\b|"
-                     "copy|co\\b|t\\b|"
-                     "delete|d\\b|"
-                     "global|g\\b|"
-                     "join|j\\b|"
-                     "list|l\\b|"
-                     "move|m\\b|"
-                     "number|nu\\b|"
-                     "print|p\\b|"
-                     "substitute|s\\b|"
-                     "write|w\\b|"
-                     "yank|ya\\b|"
-                     "[Svy<>\\!&~@#])([\\s\\S]*)");
+  return "(change\\b|c\\b|"
+         "copy\\b|co\\b|t\\b|"
+         "delete\\b|d\\b|"
+         "global\\b|g\\b|"
+         "join\\b|j\\b|"
+         "list\\b|l\\b|"
+         "move\\b|m\\b|"
+         "number\\b|nu\\b|"
+         "print\\b|p\\b|"
+         "substitute\\b|s\\b|"
+         "write\\b|w\\b|"
+         "yank\\b|ya\\b|"
+         "[Sv<>\\!&~@#])([\\s\\S]*)";
 }
 
 void wex::addressrange::set(int begin, int end)
@@ -879,7 +879,7 @@ bool wex::addressrange::write(const std::string& text) const
 
 bool wex::addressrange::yank(const command_parser& cp)
 {
-  return yank(cp.text().empty() ? '0' : static_cast<char>(cp.text()[0]));
+  return yank(cp.text().empty() ? '0' : static_cast<char>(cp.text().back()));
 }
 
 bool wex::addressrange::yank(char name) const

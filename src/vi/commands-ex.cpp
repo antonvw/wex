@@ -139,8 +139,10 @@ bool source(ex* ex, const std::string& cmd)
 
 wex::ex::commands_t wex::ex::commands_ex()
 {
+  // These are the commands without address specifier,
+  // for these see address.cpp and addressrange.cpp.
   return {
-    {":ab",
+    {":ab(breviate)?\\b",
      [&](const std::string& command)
      {
        return handle_container<std::string, macros::strings_map_t>(
@@ -153,7 +155,7 @@ wex::ex::commands_t wex::ex::commands_ex()
            return true;
          });
      }},
-    {":ar",
+    {":ar(gs)?\\b",
      [&](const std::string& command)
      {
        std::stringstream text;
@@ -165,7 +167,7 @@ wex::ex::commands_t wex::ex::commands_ex()
          show_dialog("ar", text.str());
        return true;
      }},
-    {":chd",
+    {":chd(ir)?\\b|:cd\\b",
      [&](const std::string& command)
      {
        if (command.find(" ") == std::string::npos)
@@ -173,23 +175,23 @@ wex::ex::commands_t wex::ex::commands_ex()
        wex::path::current(path(wex::find_first_of(command, " ")));
        return true;
      }},
-    {":close",
+    {":close\\b",
      [&](const std::string& command)
      {
        POST_COMMAND(wxID_CLOSE) return true;
      }},
-    {":de",
+    {":de\\b",
      [&](const std::string& command)
      {
        m_frame->debug_exe(wex::find_first_of(command, " "), get_stc());
        return true;
      }},
-    {":e",
+    {":e(dit)?\\b",
      [&](const std::string& command)
      {
        POST_COMMAND(wxID_OPEN) return true;
      }},
-    {":f",
+    {":f\\b",
      [&](const std::string& command)
      {
        std::stringstream text;
@@ -203,22 +205,22 @@ wex::ex::commands_t wex::ex::commands_ex()
        m_frame->show_ex_message(text.str());
        return true;
      }},
-    {":grep",
+    {":grep\\b",
      [&](const std::string& command)
      {
        POST_COMMAND(ID_TOOL_REPORT_FIND) return true;
      }},
-    {":gt",
+    {":gt\\b",
      [&](const std::string& command)
      {
        return get_stc()->link_open();
      }},
-    {":help",
+    {":help\\b",
      [&](const std::string& command)
      {
        POST_COMMAND(wxID_HELP) return true;
      }},
-    {":map",
+    {":map\\b",
      [&](const std::string& command)
      {
        switch (get_command_arg(command))
@@ -265,34 +267,30 @@ wex::ex::commands_t wex::ex::commands_ex()
        }
        return false;
      }},
-    {":new",
+    {":new\\b",
      [&](const std::string& command)
      {
        POST_COMMAND(wxID_NEW) return true;
      }},
-    {":print",
+    {":print\\b",
      [&](const std::string& command)
      {
        get_stc()->print(command.find(" ") == std::string::npos);
        return true;
      }},
-    {":pwd",
+    {":pwd\\b",
      [&](const std::string& command)
      {
        wex::log::status(wex::path::current().string());
        return true;
      }},
-    {":q!",
+    {":q(uit)?!?\\b",
      [&](const std::string& command)
      {
-       POST_CLOSE(wxEVT_CLOSE_WINDOW, false) return true;
+       POST_CLOSE(wxEVT_CLOSE_WINDOW, command.find("!") == std::string::npos)
+       return true;
      }},
-    {":q",
-     [&](const std::string& command)
-     {
-       POST_CLOSE(wxEVT_CLOSE_WINDOW, true) return true;
-     }},
-    {":reg",
+    {":reg\\b",
      [&](const std::string& command)
      {
        const lexer_props l;
@@ -306,22 +304,22 @@ wex::ex::commands_t wex::ex::commands_ex()
        show_dialog("Registers", output, l.scintilla_lexer());
        return true;
      }},
-    {":sed",
+    {":sed\\b",
      [&](const std::string& command)
      {
        POST_COMMAND(ID_TOOL_REPLACE) return true;
      }},
-    {":set",
+    {":set?\\b",
      [&](const std::string& command)
      {
        return command_set(command);
      }},
-    {":so",
+    {":so(urce)?\\b",
      [&](const std::string& cmd)
      {
        return source(this, cmd);
      }},
-    {":syntax",
+    {":syntax\\b",
      [&](const std::string& command)
      {
        if (command.ends_with("on"))
@@ -343,13 +341,13 @@ wex::ex::commands_t wex::ex::commands_ex()
        m_frame->statustext(wex::lexers::get()->theme(), "PaneTheme");
        return true;
      }},
-    {":ta",
+    {":tag?\\b",
      [&](const std::string& command)
      {
        ctags::find(wex::find_first_of(command, " "));
        return true;
      }},
-    {":una",
+    {":una(bbrev)?\\b",
      [&](const std::string& command)
      {
        if (command.find(" ") != std::string::npos)
@@ -358,7 +356,7 @@ wex::ex::commands_t wex::ex::commands_ex()
        }
        return true;
      }},
-    {":unm",
+    {":unm(ap)?\\b",
      [&](const std::string& command)
      {
        if (command.find(" ") != std::string::npos)
@@ -377,17 +375,15 @@ wex::ex::commands_t wex::ex::commands_ex()
        }
        return true;
      }},
-    {":ve",
+    {":ve(rsion)?\\b",
      [&](const std::string& command)
      {
        show_dialog("Version", wex::get_version_info().get());
        return true;
      }},
-    {":x",
+    {":x(it)?\\b",
      [&](const std::string& command)
      {
-       if (command != ":x")
-         return false;
        POST_COMMAND(wxID_SAVE)
        POST_CLOSE(wxEVT_CLOSE_WINDOW, true)
        return true;
@@ -401,7 +397,7 @@ bool wex::ex::command_handle(const std::string& command) const
     m_commands.end(),
     [command](auto const& e)
     {
-      return e.first == command.substr(0, e.first.size());
+      return std::regex_search(command, std::regex(e.first));
     });
 
   return it != m_commands.end() && it->second(command);

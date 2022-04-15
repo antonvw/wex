@@ -17,7 +17,7 @@ addressing
 	...	:a|line has a tiger
 	...	:a|line has simon and simon and garfunkel
 	...	:a|line has no match
-	...	:/text/,/u/y
+	...	:/text/,/u/ya
 	Appl
 	Output Contains	8
 

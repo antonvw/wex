@@ -341,7 +341,7 @@ bool wex::cmdline::parse_set(data::cmdline& data) const
         }
       }},
      // [option[=[value]] ...]
-     {"([a-z0-9]+)(=[a-z0-9]+)?(.*)",
+     {"([a-z0-9]+)(=[a-z0-9/.]+)?(.*)",
       [&, this](const regex::match_t& m)
       {
         if (set_option(m, data.save()))

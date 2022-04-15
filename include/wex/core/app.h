@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Include file for wex::app class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2021 Anton van Wezenbeek
+// Copyright: (c) 2019-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -13,7 +13,7 @@
 namespace wex
 {
 /// Offers the application, with lib specific init and exit,
-/// and provies access to the locale and the catalog dir.
+/// and provides access to the locale and the catalog dir.
 /// Your application should be derived from this class.
 class app : public wxApp
 {

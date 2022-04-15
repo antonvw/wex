@@ -2,9 +2,11 @@
 // Name:      test-vi.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/config.h>
+#include <wex/core/log.h>
 #include <wex/ui/frd.h>
 #include <wex/vi/addressrange.h>
 #include <wex/vi/ex-stream.h>
@@ -116,6 +118,26 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command(ctrl_r + "0"));
     change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
     REQUIRE(stc->get_text() == "test.h");
+  }
+
+  SUBCASE("set")
+  {
+    stc->set_text("xx\nxx\nyy\nzz\n");
+
+    REQUIRE(vi->command(":set noaw"));
+    REQUIRE(vi->command(":set noic"));
+    REQUIRE(vi->command(":set noreadonly"));
+    REQUIRE(vi->command(":set nosws"));
+    REQUIRE(vi->command(":set dir=./"));
+
+    REQUIRE(vi->command(":set report=10"));
+    REQUIRE(wex::config("stc.Reported lines").get(5) == 10);
+
+    REQUIRE(vi->command(":set ve=5"));
+    REQUIRE(wex::log::get_level() == 5);
+
+    REQUIRE(vi->command(":set ve=4"));
+    REQUIRE(wex::log::get_level() == 4);
   }
 
 #ifdef __UNIX__

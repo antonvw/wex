@@ -2,7 +2,7 @@
 // Name:      stream-statistics.h
 // Purpose:   Declaration of wex::stream_statistics class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2021 Anton van Wezenbeek
+// Copyright: (c) 2019-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -49,7 +49,7 @@ public:
   /// Increments actions.
   int inc_actions();
 
-  /// Increments actions comleted.
+  /// Increments actions completed.
   int inc_actions_completed(int inc_value = 1);
 
 private:
