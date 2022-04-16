@@ -2,7 +2,7 @@
 // Name:      test-ex-stream.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/file.h>
@@ -152,8 +152,8 @@ TEST_CASE("wex::ex_stream")
   SUBCASE("join")
   {
     const wex::addressrange ar(&ex, "2,3");
-    REQUIRE(ar.get_begin().get_line() == 2);
-    REQUIRE(ar.get_end().get_line() == 3);
+    REQUIRE(ar.begin().get_line() == 2);
+    REQUIRE(ar.end().get_line() == 3);
 
     wex::file ifs(open_file());
     REQUIRE(ifs.open());

@@ -8,7 +8,6 @@
 #include <wex/factory/path-lexer.h>
 #include <wex/factory/process.h>
 #include <wex/stc/beautify.h>
-#include <wex/vi/addressrange.h>
 
 bool wex::beautify::file(const path& p) const
 {
@@ -58,5 +57,5 @@ bool wex::beautify::stc(wex::stc& s) const
         std::to_string(s.LineFromPosition(s.GetSelectionStart()) + 1) + ":" +
         std::to_string(s.LineFromPosition(s.GetSelectionEnd()) + 1));
 
-  return addressrange(&s.get_vi(), "%").escape(name() + lines);
+  return s.get_vi().command(":%!" + name() + lines);
 }

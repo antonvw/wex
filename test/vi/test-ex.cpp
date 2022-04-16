@@ -326,8 +326,8 @@ TEST_CASE("wex::ex")
     REQUIRE(!ex->command(":" + wex::ex_command::selection_range() + "x"));
 
     stc->set_text("blame\n\ncopy chances");
-    REQUIRE(ex->command(":/blame/,/copy/y"));
-    REQUIRE(ex->command(":/blame/,/y/y"));
+    REQUIRE(ex->command(":/blame/,/copy/ya"));
+    REQUIRE(ex->command(":/blame/,/y/ya"));
   }
 
   SUBCASE("read")

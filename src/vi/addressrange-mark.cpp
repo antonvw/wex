@@ -79,7 +79,7 @@ bool wex::addressrange_mark::search(const data::substitute& data)
 
 bool wex::addressrange_mark::set()
 {
-  auto end_line = m_ar.get_end().get_line() - 1;
+  auto end_line = m_ar.end().get_line() - 1;
 
   if (
     !m_stc->GetSelectedText().empty() &&
@@ -90,7 +90,7 @@ bool wex::addressrange_mark::set()
   }
 
   if (
-    !m_ex->marker_add('#', m_ar.get_begin().get_line() - 1) ||
+    !m_ex->marker_add('#', m_ar.begin().get_line() - 1) ||
     !m_ex->marker_add('$', end_line))
   {
     return false;

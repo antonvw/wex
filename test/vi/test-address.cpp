@@ -12,8 +12,6 @@
 
 #include "test.h"
 
-TEST_SUITE_BEGIN("wex::ex");
-
 TEST_CASE("wex::address")
 {
   auto* stc = get_stc();
@@ -47,29 +45,26 @@ TEST_CASE("wex::address")
 
   SUBCASE("adjust_window")
   {
-    wex::address address(ex, "5");
-    REQUIRE(address.adjust_window(""));
-    REQUIRE(address.adjust_window("-"));
-    REQUIRE(address.adjust_window("+"));
-    REQUIRE(address.adjust_window("^"));
-    REQUIRE(address.adjust_window("="));
-    REQUIRE(address.adjust_window("."));
-    REQUIRE(!address.adjust_window("xxx"));
+    REQUIRE(ex->command(":5z"));
+    REQUIRE(ex->command(":5z-"));
+    REQUIRE(ex->command(":5z+"));
+    REQUIRE(ex->command(":5z^"));
+    REQUIRE(ex->command(":5z="));
+    REQUIRE(ex->command(":5z."));
+    REQUIRE(!ex->command(":5zxxx"));
   }
 
   SUBCASE("append")
   {
-    wex::address address(ex, "5");
-    REQUIRE(address.append("appended text"));
+    REQUIRE(ex->command(":5a|appended text"));
     REQUIRE(stc->get_text().find("appended text") != std::string::npos);
   }
 
-  SUBCASE("flags")
+  SUBCASE("flags_supported")
   {
-    wex::address address(ex, "5");
-    REQUIRE(address.flags_supported(""));
-    REQUIRE(address.flags_supported("#"));
-    REQUIRE(!address.flags_supported("x"));
+    REQUIRE(wex::address::flags_supported(""));
+    REQUIRE(wex::address::flags_supported("#"));
+    REQUIRE(!wex::address::flags_supported("x"));
   }
 
   SUBCASE("get_line")
@@ -103,7 +98,7 @@ TEST_CASE("wex::address")
 
   SUBCASE("insert")
   {
-    REQUIRE(address.insert("inserted text"));
+    REQUIRE(ex->command(":5i|inserted text"));
     REQUIRE(stc->get_text().find("inserted text") != std::string::npos);
   }
 
@@ -118,9 +113,6 @@ TEST_CASE("wex::address")
 
   SUBCASE("parse")
   {
-    wex::command_parser cp(ex, "3z");
-    wex::command_parser cp2(ex, "3z");
-
     REQUIRE(!wex::address(ex).parse(wex::command_parser(ex, "3")));
     REQUIRE(!wex::address(ex).parse(wex::command_parser(ex, "3zP")));
   }
@@ -128,20 +120,18 @@ TEST_CASE("wex::address")
   SUBCASE("put")
   {
     ex->get_macros().set_register('z', "zzzzz");
-    REQUIRE(address.put('z'));
+    REQUIRE(ex->command(":5pu z"));
     REQUIRE(stc->get_text().find("zzzz") != std::string::npos);
   }
 
   SUBCASE("read")
   {
-    REQUIRE(!address.read("XXXXX"));
-    REQUIRE(address.read(wex::test::get_path("test.bin").string()));
+    REQUIRE(!ex->command(":5r XXXXX"));
+    REQUIRE(ex->command(":5r " + wex::test::get_path("test.bin").string()));
 #ifdef __UNIX__
-    REQUIRE(address.read("!ls"));
+    REQUIRE(ex->command(":5r!ls"));
 #endif
   }
 
-  SUBCASE("write_line_number") { REQUIRE(address.write_line_number()); }
+  SUBCASE("write_line_number") { REQUIRE(ex->command(":5=")); }
 }
-
-TEST_SUITE_END();

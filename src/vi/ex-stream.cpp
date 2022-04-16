@@ -2,7 +2,7 @@
 // Name:      stc/ex-stream.cpp
 // Purpose:   Implementation of class wex::ex_stream
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -459,7 +459,7 @@ bool wex::ex_stream::join(const addressrange& range)
 
   m_ex->frame()->show_ex_message(std::to_string(sl.actions()) + " fewer lines");
 
-  goto_line(range.get_begin().get_line() - 1);
+  goto_line(range.begin().get_line() - 1);
 
   return true;
 }

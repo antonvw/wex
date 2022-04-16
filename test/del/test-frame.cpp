@@ -11,7 +11,6 @@
 #include <wex/stc/process.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/menu.h>
-#include <wex/vi/addressrange.h>
 
 #include "test.h"
 
@@ -77,7 +76,7 @@ TEST_CASE("wex::del::frame")
   SUBCASE("prepare_output")
   {
     wex::process::prepare_output(del_frame());
-    REQUIRE(wex::addressrange(&get_stc()->get_vi(), "").escape("ls"));
+    REQUIRE(get_stc()->get_vi().command("!ls"));
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
 

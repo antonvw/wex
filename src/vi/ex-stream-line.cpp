@@ -2,14 +2,13 @@
 // Name:      stc/ex-stream-line.cpp
 // Purpose:   Implementation of class wex::ex_stream_line
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-20222 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cassert>
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
 #include <wex/ui/frd.h>
-#include <wex/vi/addressrange.h>
 #include <wex/vi/ex.h>
 #include <wex/vi/macros.h>
 
@@ -47,10 +46,10 @@ wex::ex_stream_line::ex_stream_line(
   const addressrange& range)
   : m_action(type)
   , m_file(work)
-  , m_begin(range.get_begin().get_line() - 1)
+  , m_begin(range.begin().get_line() - 1)
   , m_end(
-      type != ACTION_JOIN ? range.get_end().get_line() - 1 :
-                            range.get_end().get_line() - 2)
+      type != ACTION_JOIN ? range.end().get_line() - 1 :
+                            range.end().get_line() - 2)
 {
 }
 
@@ -61,8 +60,8 @@ wex::ex_stream_line::ex_stream_line(
   : m_action(ACTION_INSERT)
   , m_file(work)
   , m_text(text)
-  , m_begin(range.get_begin().get_line() - 1)
-  , m_end(range.get_end().get_line() - 1)
+  , m_begin(range.begin().get_line() - 1)
+  , m_end(range.end().get_line() - 1)
 {
 }
 
@@ -73,8 +72,8 @@ wex::ex_stream_line::ex_stream_line(
   : m_action(ACTION_SUBSTITUTE)
   , m_file(work)
   , m_data(data)
-  , m_begin(range.get_begin().get_line() - 1)
-  , m_end(range.get_end().get_line() - 1)
+  , m_begin(range.begin().get_line() - 1)
+  , m_end(range.end().get_line() - 1)
 {
 }
 
@@ -84,8 +83,8 @@ wex::ex_stream_line::ex_stream_line(
   char                name)
   : m_action(ACTION_YANK)
   , m_file(work)
-  , m_begin(range.get_begin().get_line() - 1)
-  , m_end(range.get_end().get_line() - 1)
+  , m_begin(range.begin().get_line() - 1)
+  , m_end(range.end().get_line() - 1)
   , m_register(name)
 {
   ex::get_macros().set_register(m_register, std::string());

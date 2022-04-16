@@ -50,10 +50,10 @@ TEST_CASE("wex::command_parser")
 
   SUBCASE("two-addr")
   {
-    wex::command_parser cp(ex, "1,3y");
+    wex::command_parser cp(ex, "1,3ya");
 
     REQUIRE(cp.is_ok());
-    REQUIRE(cp.command() == "y");
+    REQUIRE(cp.command() == "ya");
     REQUIRE(cp.range() == "1,3");
     REQUIRE(cp.text().empty());
     REQUIRE(cp.type() == wex::command_parser::address_t::TWO_ADDR);

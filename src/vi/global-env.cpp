@@ -42,7 +42,7 @@ wex::global_env::global_env(const addressrange* ar)
 
 bool wex::global_env::for_each(const block_lines& match) const
 {
-  return !has_commands() ? m_stc->set_indicator(m_ar->get_find_indicator()) :
+  return !has_commands() ? m_stc->set_indicator(m_ar->find_indicator()) :
                            std::all_of(
                              m_commands.begin(),
                              m_commands.end(),

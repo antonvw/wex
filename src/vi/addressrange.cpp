@@ -252,6 +252,16 @@ bool wex::addressrange::erase() const
 
 bool wex::addressrange::escape(const std::string& command)
 {
+  /// Filters range with command.
+  /// The address range is used as input for the command,
+  /// and the output of the command replaces the address range.
+  /// For example: addressrange(96, 99).escape("sort")
+  /// or (ex command::96,99!sort)
+  /// will pass lines 96 through 99 through the sort filter and
+  /// replace those lines with the output of sort.
+  /// If you did not specify an address range,
+  /// the command is run as an asynchronous process.
+
   if (m_begin.m_address.empty() && m_end.m_address.empty())
   {
     if (auto expanded(command);
@@ -360,6 +370,10 @@ bool wex::addressrange::global(const command_parser& cp) const
     return true;
   }
 
+  /// Performs the global command (g) on this range.
+  /// normally performs command on each match, if inverse
+  /// performs (v) command if line does not match
+
   global_env g(this);
 
   if (!g.global(m_substitute))
@@ -453,7 +467,21 @@ const wex::addressrange::commands_t wex::addressrange::init_commands()
     {"w",
      [&](const command_parser& cp, info_message_t& msg)
      {
-       return write(cp);
+       const bool result = write(cp);
+       if (cp.command() == "wq")
+       {
+         POST_CLOSE(
+           wxEVT_CLOSE_WINDOW,
+           cp.text().find("!") == std::string::npos)
+       }
+       return result;
+     }},
+    {"x",
+     [&](const command_parser& cp, info_message_t& msg)
+     {
+       write(cp);
+       POST_CLOSE(wxEVT_CLOSE_WINDOW, cp.text().find("!") == std::string::npos)
+       return true;
      }},
     {"y",
      [&](const command_parser& cp, info_message_t& msg)
@@ -491,7 +519,8 @@ bool wex::addressrange::is_ok() const
 
 bool wex::addressrange::is_selection() const
 {
-  return m_begin.m_address == "'<" && m_end.m_address == "'>";
+  return (m_begin.m_address + "," + m_end.m_address) ==
+         ex_command::selection_range();
 }
 
 bool wex::addressrange::join() const
@@ -569,7 +598,7 @@ bool wex::addressrange::print(const command_parser& cp)
 
 bool wex::addressrange::print(const std::string& flags) const
 {
-  if (!is_ok() || !m_begin.flags_supported(flags))
+  if (!is_ok() || !address::flags_supported(flags))
   {
     return false;
   }
@@ -593,7 +622,8 @@ const std::string wex::addressrange::regex_commands() const
          "number\\b|nu\\b|"
          "print\\b|p\\b|"
          "substitute\\b|s\\b|"
-         "write\\b|w\\b|"
+         "write\\b|wq|w\\b|"
+         "xit\\b|x\\b|"
          "yank\\b|ya\\b|"
          "[Sv<>\\!&~@#])([\\s\\S]*)";
 }
@@ -692,6 +722,11 @@ bool wex::addressrange::sort(const std::string& parameters) const
     return false;
   }
 
+  /// Sorts range, with optional parameters:
+  /// -u to sort unique lines
+  /// -r to sort reversed (descending)
+  ///  - x,y sorts rectangle within range: x start col, y end col (exclusive).
+
   factory::sort::sort_t sort_t = 0;
 
   size_t pos = 0, len = std::string::npos;
@@ -744,6 +779,27 @@ bool wex::addressrange::substitute(const command_parser& cp)
 {
   data::substitute data(m_substitute);
   auto             searchFlags = m_ex->search_flags();
+
+  /// Substitutes range.
+  /// text format: /pattern/replacement/options
+  /// Pattern might contain:
+  /// - $ to match a line end
+  /// Replacement might contain:
+  /// - & or \\0 to represent the target in the replacement
+  /// - \\U to convert target to uppercase
+  /// - \\L to convert target to lowercase
+  /// Options can be:
+  /// - c : Ask for confirm
+  /// - i : Case insensitive
+  /// - g : Do global on line, without this flag replace first match only
+  /// e.g. /$/EOL appends the string EOL at the end of each line.
+  /// Merging is not yet possible using a \n target,
+  /// you can create a macro for that.
+  /// cmd is one of s, & or ~
+  /// - s : default, normal substitute
+  /// - & : repeat last substitute (text contains options)
+  /// - ~ : repeat last substitute with pattern from find replace data
+  ///      (text contains options)
 
   if (!is_ok() || !prep(data, searchFlags, cp))
   {

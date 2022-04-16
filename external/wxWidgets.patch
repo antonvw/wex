@@ -1,19 +1,29 @@
+diff --git a/build/cmake/lib/qa/CMakeLists.txt b/build/cmake/lib/qa/CMakeLists.txt
+index 1efa85e255..20ba26ac42 100644
+--- a/build/cmake/lib/qa/CMakeLists.txt
++++ b/build/cmake/lib/qa/CMakeLists.txt
+@@ -10,4 +10,4 @@
+ wx_append_sources(QA_FILES QA)
+ 
+ wx_add_library(wxqa ${QA_FILES})
+-wx_lib_link_libraries(wxqa PUBLIC wxxml)
++wx_lib_link_libraries(wxqa PUBLIC)
 diff --git a/build/cmake/lib/stc/CMakeLists.txt b/build/cmake/lib/stc/CMakeLists.txt
-index bd6acd858c..3f021ed587 100644
+index 1116186833..c3aa6272c5 100644
 --- a/build/cmake/lib/stc/CMakeLists.txt
 +++ b/build/cmake/lib/stc/CMakeLists.txt
-@@ -165,7 +165,6 @@ target_include_directories(wxscintilla PRIVATE
+@@ -163,7 +163,6 @@ target_include_directories(wxscintilla PRIVATE
      ${wxSOURCE_DIR}/src/stc/scintilla/src
      )
- target_compile_definitions(wxscintilla PUBLIC
+ target_compile_definitions(wxscintilla PRIVATE
 -    NO_CXX11_REGEX
      __WX__
      SCI_LEXER
      LINK_LEXERS
-@@ -189,7 +188,6 @@ wx_lib_include_directories(wxstc PRIVATE
+@@ -177,7 +176,6 @@ wx_lib_include_directories(wxstc
      ${wxSOURCE_DIR}/src/stc/scintilla/src
      )
- wx_lib_compile_definitions(wxstc PRIVATE
+ wx_lib_compile_definitions(wxstc
 -    NO_CXX11_REGEX
      __WX__
      SCI_LEXER
@@ -47,18 +57,6 @@ index af8507d7de..4a804678bd 100644
  #ifdef SCI_NAMESPACE
  using namespace Scintilla;
  #endif
-diff --git a/build/cmake/lib/qa/CMakeLists.txt b/build/cmake/lib/qa/CMakeLists.txt
-index 050287205e..bdacfb2a85 100644
---- a/build/cmake/lib/qa/CMakeLists.txt
-+++ b/build/cmake/lib/qa/CMakeLists.txt
-@@ -12,6 +12,6 @@ include(../../source_groups.cmake)
- wx_append_sources(QA_FILES QA)
- 
- wx_add_library(wxqa ${QA_FILES})
--wx_lib_link_libraries(wxqa PUBLIC wxxml)
-+wx_lib_link_libraries(wxqa PUBLIC)
- 
- wx_finalize_lib(wxqa)
 diff --git a/src/gtk/app.cpp b/src/gtk/app.cpp
 index afae00e006..daa1d658c8 100644
 --- a/src/gtk/app.cpp
