@@ -2,7 +2,7 @@
 // Name:      command-parser.h
 // Purpose:   Declaration of class wex::command_parser
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -30,13 +30,19 @@ public:
     CHECK, ///< check only
   };
 
-  /// Default constructor, provide the complete ex command (after colon),
-  /// e.g. "5p".
-  /// It invokes the parser, and sets members.
+  /// Constructor.
   command_parser(
-    ex*                ex,
+    /// the ex component
+    ex* ex,
+    /// provide the complete ex command (after colon),
+    /// e.g. "5p".
+    /// - if text not empty parses the text, and sets members
+    /// - and if type is PARSE also invokes the address or addressrange
+    ///   parser
     const std::string& text = std::string(),
-    parse_t            type = parse_t::PARSE);
+    /// specify whether to parse text only (CHECK)
+    /// or continue parsing address or addressrange (PARSE)
+    parse_t type = parse_t::PARSE);
 
   /// The command.
   /// mostly a one letter string like "z" for adjust_window
@@ -56,13 +62,14 @@ public:
   auto type() const { return m_type; }
 
 private:
-  /// Parse the text into the components, and calls
-  /// the address or addressrange parsing.
-  /// Returns true if parsing was ok.
-  bool parse(ex* ex, parse_t);
+  bool parse(parse_t);
+  bool parse_other();
+  bool parse_selection();
 
   bool        m_is_ok{false};
   std::string m_cmd, m_range, m_text;
   address_t   m_type{address_t::NO_ADDR};
+
+  ex* m_ex;
 };
 }; // namespace wex

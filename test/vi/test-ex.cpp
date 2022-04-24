@@ -30,6 +30,7 @@ TEST_CASE("wex::ex")
     REQUIRE(it1->second == "TTTT");
     REQUIRE(ex->command(":una t"));
     REQUIRE(!ex->command(":unabbrv t"));
+    REQUIRE(!ex->command(":unabbrevv t"));
     REQUIRE(ex->command(":unabbrev t"));
     REQUIRE(
       ex->get_macros().get_abbreviations().find("t") ==
@@ -134,7 +135,7 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->command(":g//p"));
   }
 
-  SUBCASE("input mode")
+  SUBCASE("input-mode")
   {
     REQUIRE(ex->command(":a|added"));
     REQUIRE(stc->get_text().find("added") != std::string::npos);
@@ -160,7 +161,7 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->command(":1,2#"));
   }
 
-  SUBCASE("invalid commands")
+  SUBCASE("invalid-commands")
   {
     ex->get_stc()->add_text("XXX");
 
@@ -182,7 +183,7 @@ TEST_CASE("wex::ex")
            ":1,$k",
            ":.S0",
            ":.Sx",
-           ":/XXX/x",
+           ":/XXX/y",
            ":r test-xx.txt"})
     {
       CAPTURE(command);
@@ -299,35 +300,40 @@ TEST_CASE("wex::ex")
 
   SUBCASE("range")
   {
-    REQUIRE(ex->command(":1,2>"));
-
-    stc->SelectNone();
-    REQUIRE(!ex->command(":" + wex::ex_command::selection_range() + ">>"));
-
-    stc->GotoLine(2);
-    stc->LineDownExtend();
-    REQUIRE(ex->command(":" + wex::ex_command::selection_range() + "m1"));
-
-    stc->GotoLine(2);
-    stc->LineDownExtend();
-    stc->LineDownExtend();
-    stc->LineDownExtend();
-    REQUIRE(
-      ex->command(":" + wex::ex_command::selection_range() + "w test-ex.txt"));
-    REQUIRE(ex->command(":" + wex::ex_command::selection_range() + "<"));
-    REQUIRE(ex->command(":" + wex::ex_command::selection_range() + ">"));
-
+    for (const auto& cmd : std::vector<std::string>{
+           "<",
+           ">",
+           "co1",
+           "copy1",
+           "t1",
+           "move1",
+           "m1",
+           "ya",
+           "yank",
 #ifndef __WXMSW__
-    ex->command(":" + wex::ex_command::selection_range() + "!sort");
+           "!sort",
 #endif
+           "w text-ex.txt",
+           "write text-ex.txt"})
+    {
+      stc->GotoLine(2);
+      stc->LineDownExtend();
+      CAPTURE(cmd);
+      REQUIRE(ex->command(":" + wex::ex_command::selection_range() + cmd));
+    }
 
     stc->GotoLine(2);
     stc->LineDownExtend();
-    REQUIRE(!ex->command(":" + wex::ex_command::selection_range() + "x"));
+    REQUIRE(!ex->command(":" + wex::ex_command::selection_range() + "y"));
 
     stc->set_text("blame\n\ncopy chances");
     REQUIRE(ex->command(":/blame/,/copy/ya"));
     REQUIRE(ex->command(":/blame/,/y/ya"));
+
+    REQUIRE(ex->command(":1,2>"));
+
+    stc->SelectNone();
+    REQUIRE(!ex->command(":" + wex::ex_command::selection_range() + ">>"));
   }
 
   SUBCASE("read")
@@ -414,7 +420,7 @@ TEST_CASE("wex::ex")
     }
   }
 
-  SUBCASE("text input")
+  SUBCASE("text-input")
   {
     stc->set_text("xyz\n");
     REQUIRE(ex->command(":append|extra"));

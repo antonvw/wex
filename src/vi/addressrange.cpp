@@ -613,12 +613,12 @@ const std::string wex::addressrange::regex_commands() const
 {
   // 2addr commands
   return "(change\\b|c\\b|"
-         "copy\\b|co\\b|t\\b|"
+         "copy|co|t|"
          "delete\\b|d\\b|"
          "global\\b|g\\b|"
          "join\\b|j\\b|"
          "list\\b|l\\b|"
-         "move\\b|m\\b|"
+         "move|m|"
          "number\\b|nu\\b|"
          "print\\b|p\\b|"
          "substitute\\b|s\\b|"
