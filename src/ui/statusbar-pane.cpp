@@ -5,7 +5,7 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/core/statusbar-pane.h>
+#include <wex/ui/statusbar-pane.h>
 
 namespace wex
 {

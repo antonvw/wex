@@ -12,7 +12,6 @@
 #include <wx/event.h>
 
 #include <functional>
-#include <string>
 #include <vector>
 
 namespace wex

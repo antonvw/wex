@@ -2,7 +2,7 @@
 // Name:      ctags.h
 // Purpose:   Declaration of class wex::ctags
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,7 +10,6 @@
 #include <wex/vi/ctags-entry.h>
 
 #include <map>
-#include <string>
 
 typedef struct sTagFile tagFile;
 

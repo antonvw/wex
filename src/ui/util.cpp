@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      item.cpp
+// Name:      util.cpp
 // Purpose:   Implementation of wex::ui utils
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2022 Anton van Wezenbeek
@@ -16,14 +16,9 @@ const std::any get_value_prim(const wex::item* item)
   switch (item->type())
   {
     case item::CHECKBOX:
-      if (item->data().initial().has_value())
-      {
-        return std::any_cast<bool>(item->data().initial());
-      }
-      else
-      {
-        return false;
-      }
+      return item->data().initial().has_value() ?
+               std::any_cast<bool>(item->data().initial()) :
+               false;
 
     case item::CHECKLISTBOX_BIT:
     case item::RADIOBOX:

@@ -1176,7 +1176,9 @@ void wex::listview::process_mouse(wxMouseEvent& event)
     style.set(menu::IS_SELECTED);
   if (GetItemCount() == 0)
     style.set(menu::IS_EMPTY);
-  if (m_data.type() != data::listview::FIND)
+  if (
+    m_data.type() != data::listview::FIND &&
+    m_data.type() != data::listview::FILE)
     style.set(menu::CAN_PASTE);
 
   if (GetSelectedItemCount() == 0 && GetItemCount() > 0)

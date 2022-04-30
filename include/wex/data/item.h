@@ -12,6 +12,7 @@
 
 #include <any>
 #include <functional>
+#include <string>
 
 namespace wex::data
 {

@@ -9,7 +9,6 @@
 #include <wex/vi/macros.h>
 #include <wex/vi/vi.h>
 
-#include "motion.h"
 #include "vim.h"
 
 bool wex::vi::parse_command(std::string& command)

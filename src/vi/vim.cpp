@@ -12,9 +12,7 @@
 #include <wex/vi/ctags.h>
 
 #include <algorithm>
-#include <string>
 
-#include "motion.h"
 #include "vim.h"
 
 namespace wex

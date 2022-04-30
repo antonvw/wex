@@ -2,7 +2,7 @@
 // Name:      textctrl-input.h
 // Purpose:   Declaration of wex::textctrl_input class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,7 +10,6 @@
 #include <wex/factory/ex-command.h>
 
 #include <list>
-#include <string>
 
 namespace wex
 {

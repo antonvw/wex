@@ -2,7 +2,7 @@
 // Name:      ex-stream.h
 // Purpose:   Declaration of class wex::ex_stream
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -11,7 +11,6 @@
 
 #include <fstream>
 #include <map>
-#include <string>
 
 namespace wex
 {

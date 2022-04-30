@@ -8,6 +8,7 @@
 #include <algorithm>
 
 #include <wex/core/config.h>
+#include <wex/core/core.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/frame.h>
 #include <wex/ui/item-build.h>
@@ -75,6 +76,39 @@ public:
 private:
   const std::map<int, std::string> m_styles;
 };
+
+std::vector<item> pane_dialog_items(const std::vector<statusbar_pane>& panes)
+{
+  std::vector<item> v_i(add_header({"pane", "width", "style"}));
+
+  std::for_each(
+    panes.begin(),
+    panes.end(),
+    [&v_i](const auto& it)
+    {
+      if (it.is_shown())
+      {
+        v_i.push_back(
+          {find_after(it.name(), "Pane"), std::string(), item::STATICTEXT});
+
+        v_i.push_back(
+          {"statusbar.widths." + it.name(),
+           item::TEXTCTRL_INT,
+           std::to_string(it.GetWidth()),
+           data::item(data::control()).label_type(data::item::LABEL_NONE)});
+
+        v_i.push_back(
+          {"statusbar.styles." + it.name(),
+           item::COMBOBOX,
+           pane_styles().find(it.GetStyle()),
+           data::item(
+             data::control().window(data::window().style(wxCB_READONLY)))
+             .label_type(data::item::LABEL_NONE)});
+      }
+    });
+
+  return v_i;
+}
 } // namespace wex
 
 std::vector<wex::statusbar_pane> wex::statusbar::m_panes = {{}};
@@ -163,36 +197,15 @@ void wex::statusbar::on_mouse(wxMouseEvent& event)
 
 void wex::statusbar::pane_dialog()
 {
-  std::vector<item> v_i(add_header({"width", "style"}));
-
-  std::for_each(
-    m_panes.begin(),
-    m_panes.end(),
-    [&v_i](const auto& it)
-    {
-      if (it.is_shown())
-      {
-        v_i.push_back(
-          {"statusbar.widths." + it.name(),
-           item::TEXTCTRL_INT,
-           std::to_string(it.GetWidth())});
-
-        v_i.push_back(
-          {"statusbar.styles." + it.name(),
-           item::COMBOBOX,
-           pane_styles().find(it.GetStyle()),
-           data::item(
-             data::control().window(data::window().style(wxCB_READONLY)))
-             .label_type(data::item::LABEL_NONE)});
-      }
-    });
-
   if (
-    item_dialog(v_i, data::window().title("Statusbar Panes"), 0, 2)
+    item_dialog(
+      pane_dialog_items(m_panes),
+      data::window().title("Statusbar Panes"),
+      0,
+      3) // we have 3 columns, see pane_dialog_items
       .ShowModal() == wxID_OK)
   {
     std::vector<statusbar_pane> v_p;
-
     std::transform(
       m_panes.begin(),
       m_panes.end(),
