@@ -1,5 +1,5 @@
-:%yz
-:%yankz
+:%ya z
+:%yank z
 :ab
 :chd ./
 :grep test
@@ -26,16 +26,16 @@
 :syntax off
 :syntax on
 :ve
-:1,5y
+:1,5ya
 :10
 :10d
 :pu z
-:y
+:ya
 :.=
 :/yy/=
 :/yy/ka
 :'a=
-:/xx/,/yy/y
+:/xx/,/yy/ya
 :/xx/,/yy/j
 :/[[:alpha:]]/=
 :.kz

@@ -174,8 +174,8 @@ TEST_CASE("wex::vi")
 
     wex::addressrange ar(vi, "%");
     REQUIRE(exs->get_line_count_request() == 5);
-    REQUIRE(ar.get_begin().get_line() == 1);
-    REQUIRE(ar.get_end().get_line() == 5);
+    REQUIRE(ar.begin().get_line() == 1);
+    REQUIRE(ar.end().get_line() == 5);
 
     REQUIRE(exs->join(ar));
     REQUIRE(exs->is_modified());

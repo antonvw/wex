@@ -169,7 +169,7 @@ bool wex::address::append(const std::string& text) const
   }
 }
 
-bool wex::address::flags_supported(const std::string& flags) const
+bool wex::address::flags_supported(const std::string& flags)
 {
   if (flags.empty())
   {

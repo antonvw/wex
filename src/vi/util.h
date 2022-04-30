@@ -7,6 +7,13 @@
 
 #pragma once
 
+#define POST_CLOSE(ID, VETO)                      \
+  {                                               \
+    wxCloseEvent event(ID);                       \
+    event.SetCanVeto(VETO);                       \
+    wxPostEvent(wxTheApp->GetTopWindow(), event); \
+  };
+
 #define REPEAT(TEXT)                   \
   {                                    \
     for (auto i = 0; i < m_count; i++) \

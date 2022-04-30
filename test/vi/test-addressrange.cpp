@@ -14,7 +14,7 @@
 
 TEST_CASE("wex::addressrange")
 {
-  const std::string contents("a\ntiger\ntiger\ntiger\ntiger\nf\ng\n");
+  const std::string contents("a\nTIGER\ntiger\ntiger\ntiger\nf\ng\n");
 
   auto* stc = get_stc();
 
@@ -26,10 +26,40 @@ TEST_CASE("wex::addressrange")
   ex->get_macros().set_register('*', "ls");
   stc->GotoLine(2);
 
+  SUBCASE("constructor")
+  {
+    SUBCASE("default")
+    {
+      wex::addressrange ar(ex);
+
+      REQUIRE(ar.begin().get_line() == 3);
+      REQUIRE(ar.end().get_line() == 3);
+      REQUIRE(!ar.find_indicator().is_ok());
+    }
+
+    SUBCASE("range-int")
+    {
+      wex::addressrange ar(ex, 6);
+
+      REQUIRE(ar.begin().get_line() == 3);
+      REQUIRE(ar.end().get_line() == 8);
+      REQUIRE(!ar.find_indicator().is_ok());
+    }
+
+    SUBCASE("range-string")
+    {
+      wex::addressrange ar(ex, "");
+
+      REQUIRE(ar.begin().get_line() == 0);
+      REQUIRE(ar.end().get_line() == 0);
+      REQUIRE(!ar.find_indicator().is_ok());
+    }
+  }
+
   SUBCASE("change")
   {
     stc->set_text("a\nb\nc\nd\ne\nf\ng\n");
-    REQUIRE(wex::addressrange(ex, 4).change("changed"));
+    REQUIRE(ex->command(":1,4c|changed"));
     REQUIRE(stc->get_text().find("changed") != std::string::npos);
   }
 
@@ -65,39 +95,33 @@ TEST_CASE("wex::addressrange")
 #ifdef __UNIX__
     stc->set_text(contents);
     REQUIRE(stc->get_line_count() == 8);
-    REQUIRE(wex::addressrange(ex, "%").escape("uniq"));
-    REQUIRE(stc->get_line_count() == 5);
-    REQUIRE(wex::addressrange(ex, "%").escape("ls -l"));
+    REQUIRE(ex->command(":%!uniq"));
+    REQUIRE(stc->get_line_count() == 6);
+    REQUIRE(ex->command(":%!ls -l"));
 #endif
   }
 
   SUBCASE("execute")
   {
     stc->set_text(contents);
-    REQUIRE(!wex::addressrange(ex).execute("Z"));
+    REQUIRE(!ex->command("1,5@Z"));
   }
 
 #ifdef __UNIX__
   SUBCASE("global")
   {
     stc->set_text(contents);
-    REQUIRE(
-      !wex::addressrange(ex, 5).global(wex::command_parser(ex, std::string())));
-    REQUIRE(!wex::addressrange(ex, 5).global(wex::command_parser(ex, "gXXX")));
-    REQUIRE(!wex::addressrange(ex, 5).global(wex::command_parser(ex, "g/")));
-    REQUIRE(wex::addressrange(ex, 5).global(wex::command_parser(ex, "g/xx/p")));
-    REQUIRE(wex::addressrange(ex, 5).global(wex::command_parser(ex, "v/xx/p")));
-    REQUIRE(
-      wex::addressrange(ex, 5).global(wex::command_parser(ex, "g/xx/p#")));
-    REQUIRE(
-      wex::addressrange(ex, 5).global(wex::command_parser(ex, "global/xx/p#")));
-    REQUIRE(
-      wex::addressrange(ex, 5).global(wex::command_parser(ex, "v/xx/p#")));
-    REQUIRE(wex::addressrange(ex, 5).global(wex::command_parser(ex, "g/xx/g")));
-    REQUIRE(
-      wex::addressrange(ex, 5).global(wex::command_parser(ex, "g/a/s/a/XX")));
-    REQUIRE(wex::addressrange(ex, 5).global(
-      wex::command_parser(ex, "g/b/s/b/XX|s/c/yy")));
+    REQUIRE(!ex->command(":1,5g"));
+    REQUIRE(!ex->command(":1,5gXXX"));
+    REQUIRE(!ex->command(":1,5g/"));
+    REQUIRE(ex->command(":1,5g/xx/p"));
+    REQUIRE(ex->command(":1,5v/xx/p"));
+    REQUIRE(ex->command(":1,5g/xx/p#"));
+    REQUIRE(ex->command(":1,5global/xx/p#"));
+    REQUIRE(ex->command(":1,5v/xx/p#"));
+    REQUIRE(ex->command(":1,5g/xx/g"));
+    REQUIRE(ex->command(":1,5g/a/s/a/XX"));
+    REQUIRE(ex->command(":1,5g/b/s/b/XX|s/c/yy"));
   }
 #endif
 
@@ -108,14 +132,12 @@ TEST_CASE("wex::addressrange")
     REQUIRE(!wex::addressrange(ex, "x").is_ok());
     REQUIRE(!wex::addressrange(ex, "x,3").is_ok());
     REQUIRE(!wex::addressrange(ex, "x,3").erase());
-    REQUIRE(!wex::addressrange(ex, "3,x").escape("ls"));
     REQUIRE(!wex::addressrange(ex, "3,x").shift_right());
     REQUIRE(!wex::addressrange(ex, "3,!").is_ok());
-    REQUIRE(!wex::addressrange(ex, "3,@").move(wex::address(ex, "2")));
-    REQUIRE(!wex::addressrange(ex, "1,2").move(wex::address(ex, "x")));
-    REQUIRE(!wex::addressrange(ex, "1,3").move(wex::address(ex, "2")));
     REQUIRE(!wex::addressrange(ex, "3,@").copy(wex::address(ex, "2")));
-    REQUIRE(!wex::addressrange(ex, "3,x").write("flut"));
+    REQUIRE(!wex::addressrange(ex, "1,2").copy(wex::address(ex, "x")));
+    REQUIRE(!wex::addressrange(ex, "1,3").copy(wex::address(ex, "2")));
+    REQUIRE(!wex::addressrange(ex, "3,@").copy(wex::address(ex, "2")));
     REQUIRE(!wex::addressrange(ex, " ,").yank());
     REQUIRE(!wex::addressrange(ex, wex::ex_command::selection_range()).is_ok());
     REQUIRE(!wex::addressrange(ex, "/xx/,/2/").is_ok());
@@ -145,7 +167,7 @@ TEST_CASE("wex::addressrange")
   {
     stc->set_text(contents);
     REQUIRE(stc->get_line_count() == 8);
-    REQUIRE(wex::addressrange(ex, "1,2").move(wex::address(ex, "$")));
+    REQUIRE(ex->command(":1,2m$"));
     REQUIRE(stc->get_line_count() == 8);
   }
 
@@ -165,7 +187,7 @@ TEST_CASE("wex::addressrange")
   SUBCASE("print")
   {
     stc->set_text(contents);
-    REQUIRE(wex::addressrange(ex, 5).print());
+    REQUIRE(ex->command(":1,5print"));
   }
 
   SUBCASE("range")
@@ -184,19 +206,23 @@ TEST_CASE("wex::addressrange")
     REQUIRE(wex::addressrange(ex, "/blame/,/this/").is_ok());
     REQUIRE(wex::addressrange(ex, "/blame/,/yank/").is_ok());
     REQUIRE(wex::addressrange(ex, "?1?,?2?").is_ok());
+    REQUIRE(!wex::addressrange(ex, wex::ex_command::selection_range()).is_ok());
 
     wex::addressrange ar(ex, "/blame/,/yank/");
     REQUIRE(ar.is_ok());
-    REQUIRE(ar.get_begin().type() == wex::address::IS_BEGIN);
-    REQUIRE(ar.get_end().type() == wex::address::IS_END);
+    REQUIRE(ar.begin().type() == wex::address::IS_BEGIN);
+    REQUIRE(ar.end().type() == wex::address::IS_END);
   }
 
   SUBCASE("range-selection")
   {
     stc->SelectAll();
 
+    wex::addressrange range(ex, wex::ex_command::selection_range());
+    REQUIRE(range.is_ok());
+    REQUIRE(range.is_selection());
     REQUIRE(wex::addressrange(ex, 5).is_ok());
-    REQUIRE(wex::addressrange(ex, wex::ex_command::selection_range()).is_ok());
+
     stc->SelectNone();
   }
 
@@ -209,31 +235,27 @@ TEST_CASE("wex::addressrange")
 
   SUBCASE("sort")
   {
-    REQUIRE(wex::addressrange(ex, "1").sort());
-    REQUIRE(!wex::addressrange(ex, "1").sort("x"));
-    REQUIRE(wex::addressrange(ex, "1").sort("u"));
-    REQUIRE(wex::addressrange(ex, "1").sort("r"));
-    REQUIRE(wex::addressrange(ex, "1").sort("ur"));
+    REQUIRE(ex->command(":1,2S"));
+    REQUIRE(!ex->command(":1,2Sx"));
+    REQUIRE(ex->command(":1,2Su"));
+    REQUIRE(ex->command(":1,2Sr"));
+    REQUIRE(ex->command(":1,2Sur"));
   }
 
   SUBCASE("substitute")
   {
     stc->set_text(contents);
-    stc->GotoLine(1);
-    REQUIRE(wex::addressrange(ex, "%").substitute(
-      wex::command_parser(ex, "s/tiger//")));
+    REQUIRE(ex->command(":%s/tiger//"));
     REQUIRE(stc->get_text().find("tiger") == std::string::npos);
 
     stc->set_text(contents);
-    REQUIRE(wex::addressrange(ex, "%").substitute(
-      wex::command_parser(ex, "s/tiger/\\U&/")));
+    REQUIRE(ex->command(":%s/tiger/\\U&/g"));
     REQUIRE(stc->get_text().find("TIGER") != std::string::npos);
     REQUIRE(stc->get_text().find("tiger") == std::string::npos);
     REQUIRE(stc->get_text().find("\\U") == std::string::npos);
 
     stc->set_text(contents);
-    REQUIRE(wex::addressrange(ex, "%").substitute(
-      wex::command_parser(ex, "s/tiger/\\U&&\\L& \\0 \\0 & & \\U&/")));
+    REQUIRE(ex->command(":%s/tiger/\\U&&\\L& \\0 \\0 & & \\U&/"));
     REQUIRE(stc->get_text().find("TIGER") != std::string::npos);
     REQUIRE(stc->get_text().find("tiger") != std::string::npos);
     REQUIRE(stc->get_text().find("\\U") == std::string::npos);
@@ -241,65 +263,48 @@ TEST_CASE("wex::addressrange")
     REQUIRE(stc->get_text().find("\\0") == std::string::npos);
 
     stc->set_text(contents);
-    REQUIRE(wex::addressrange(ex, "%").substitute(
-      wex::command_parser(ex, "s/tiger/lion/")));
+    REQUIRE(ex->command(":%s/tiger/lion/"));
     REQUIRE(stc->get_text().find("lion") != std::string::npos);
 
     stc->set_text(contents);
-    REQUIRE(
-      wex::addressrange(ex, "%").substitute(wex::command_parser(ex, "&")));
+    REQUIRE(ex->command(":%&"));
     REQUIRE(stc->get_text().find("lion") != std::string::npos);
 
     stc->set_text(contents + " MORE");
-    REQUIRE(
-      wex::addressrange(ex, "%").substitute(wex::command_parser(ex, "~")));
+    REQUIRE(ex->command(":%~"));
     REQUIRE(stc->get_text().find("lion") != std::string::npos);
     REQUIRE(stc->get_text().find("tiger") == std::string::npos);
 
     stc->set_text("special char \\ present");
-    REQUIRE(wex::addressrange(ex, "%").substitute(
-      wex::command_parser(ex, "s/\\\\//")));
+    REQUIRE(ex->command(":%s/\\\\//"));
     REQUIRE(stc->get_text().find("char  present") != std::string::npos);
 
     stc->set_text("special char / present");
-    REQUIRE(wex::addressrange(ex, "%").substitute(
-      wex::command_parser(ex, "s/\\///")));
+    REQUIRE(ex->command(":%s/\\///"));
     REQUIRE(stc->get_text().find("char  present") != std::string::npos);
 
     stc->set_text("special char ' present");
-    REQUIRE(
-      wex::addressrange(ex, "%").substitute(wex::command_parser(ex, "s/'//")));
+    REQUIRE(ex->command(":%s/'//"));
     REQUIRE(stc->get_text().find("char  present") != std::string::npos);
   }
 
-  SUBCASE("substitute and flags")
+  SUBCASE("substitute-flags")
   {
-    REQUIRE(
-      wex::addressrange(ex, "1").substitute(wex::command_parser(ex, "s//y")));
-    REQUIRE(
-      !wex::addressrange(ex, "0").substitute(wex::command_parser(ex, "s/x/y")));
-    REQUIRE(wex::addressrange(ex, "2").substitute(
-      wex::command_parser(ex, "s/x/y/f")));
-    REQUIRE(wex::addressrange(ex, "1,2").substitute(
-      wex::command_parser(ex, "s/x/y")));
-    REQUIRE(wex::addressrange(ex, "1,2").substitute(
-      wex::command_parser(ex, "s/x/y/i")));
-    REQUIRE(wex::addressrange(ex, "1,2").substitute(
-      wex::command_parser(ex, "s/x/y/f")));
-    REQUIRE(wex::addressrange(ex, "1,2").substitute(
-      wex::command_parser(ex, "s/x/y/g")));
-    REQUIRE(
-      wex::addressrange(ex, "1,2").substitute(wex::command_parser(ex, "&g")));
-    REQUIRE(
-      wex::addressrange(ex, "1,2").substitute(wex::command_parser(ex, "~g")));
-    REQUIRE(
-      !wex::addressrange(ex, "1,2").substitute(wex::command_parser(ex, "xg")));
+    REQUIRE(ex->command(":.,.+1s//y"));
+    REQUIRE(ex->command(":.,.+2s/x/y/f"));
+    REQUIRE(ex->command(":1,2s/x/y"));
+    REQUIRE(ex->command(":1,2s/x/y/i"));
+    REQUIRE(ex->command(":1,2s/x/y/f"));
+    REQUIRE(ex->command(":1,2s/x/y/g"));
+    REQUIRE(ex->command(":1,2&g"));
+    REQUIRE(ex->command(":1,2~g"));
+    REQUIRE(!ex->command(":1,2sxg"));
   }
 
   SUBCASE("write")
   {
     stc->set_text(contents);
-    REQUIRE(wex::addressrange(ex, 5).write("sample.txt"));
+    REQUIRE(ex->command(":1,5w sample.txt"));
     REQUIRE(remove("sample.txt") == 0);
   }
 

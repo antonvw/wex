@@ -22,13 +22,6 @@
 
 #include "util.h"
 
-#define POST_CLOSE(ID, VETO)                      \
-  {                                               \
-    wxCloseEvent event(ID);                       \
-    event.SetCanVeto(VETO);                       \
-    wxPostEvent(wxTheApp->GetTopWindow(), event); \
-  };
-
 #define POST_COMMAND(ID)                                      \
   {                                                           \
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID);    \
@@ -379,13 +372,6 @@ wex::ex::commands_t wex::ex::commands_ex()
      [&](const std::string& command)
      {
        show_dialog("Version", wex::get_version_info().get());
-       return true;
-     }},
-    {":x(it)?\\b",
-     [&](const std::string& command)
-     {
-       POST_COMMAND(wxID_SAVE)
-       POST_CLOSE(wxEVT_CLOSE_WINDOW, true)
        return true;
      }}};
 }

@@ -119,6 +119,7 @@ size_t shift(vi* vi, int count, const std::string& command)
       command == ">" ? addressrange(vi, count).shift_right() :
                        addressrange(vi, count).shift_left();
       break;
+
     case vi_mode::state_t::VISUAL:
     case vi_mode::state_t::VISUAL_LINE:
     case vi_mode::state_t::VISUAL_BLOCK:
@@ -126,8 +127,9 @@ size_t shift(vi* vi, int count, const std::string& command)
         addressrange(vi, ex_command::selection_range()).shift_right() :
         addressrange(vi, ex_command::selection_range()).shift_left();
       break;
+
     default:
-      break;
+      assert(0);
   }
 
   return 1;
@@ -140,7 +142,7 @@ size_t word_action(vi* vi, const std::string& command)
   const auto end =
     vi->get_stc()->WordEndPosition(vi->get_stc()->GetCurrentPos(), true);
 
-  if (const std::string word(
+  if (const auto word(
         vi->get_stc()->GetSelectedText().empty() ?
           vi->get_stc()->GetTextRange(start, end).ToStdString() :
           vi->get_stc()->GetSelectedText().ToStdString());
