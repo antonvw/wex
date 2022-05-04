@@ -4022,7 +4022,7 @@ Copyright: (c) 2009-2021, Anton van Wezenbeek
       [Arguments] Documentation [Documentation] Return [Tags]
       Default Force Library Metadata Postcondition Precondition Resource 
       Template Timeout 
-      IF ELSE END 
+      BREAK CONTINUE ELSE END EXCEPT IF TRY WHILE
     </keywords>
   </lexer>
   <lexer name="rfw" 

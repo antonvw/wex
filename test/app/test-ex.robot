@@ -62,8 +62,8 @@ saveas
 	Appl	2000
 	Sleep	1
 	File Should Exist	copy.txt
-	${size-copy}=	Get File Size	copy.txt
-	Should Be Equal	${size}	${size-copy}
+	${size_copy}=	Get File Size	copy.txt
+	Should Be Equal	${size}	${size_copy}
 	Remove File	copy.txt
 
 set

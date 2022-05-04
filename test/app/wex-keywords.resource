@@ -14,7 +14,7 @@ ${quit}	1
 # (only shown in the log file).
 ${level}	4
 
-${APPL}
+${APPL}	${EMPTY}
 
 ${file-contents}	contents.txt
 ${file-input}	input.txt
@@ -78,9 +78,7 @@ Input
 
 	Append To File	${file-input}	:w ${file-contents}\n
 
-	IF	${quit} == 1
-		Append To File	${file-input}	:q!
-	END
+	IF	${quit} == 1	Append To File	${file-input}	:q!
 
 Input Many
 	[Arguments]	${line}	${count}
@@ -100,9 +98,7 @@ Input No Write
 		Append To File	${file-input}	\n
 	END
 
-	IF	${quit} == 1
-		Append To File	${file-input}	:q!
-	END
+	IF	${quit} == 1	Append To File	${file-input}	:q!
 
 Output Contains
 	[Arguments]	${text}
@@ -114,6 +110,10 @@ Output Does Not Contain
 	${result}=	Get File	${file-output}
 	Should Not Contain	${result}	${text}
 
+Std Output Contains
+	[Arguments]	${text}
+	${result}=	Get File	${file-stdout}
+	Should Contain	${result}	${text}
 
 
 *** Comments ***

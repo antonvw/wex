@@ -76,7 +76,6 @@ int wex::test::app::OnRun()
 
         if (m_context->shouldExit())
         {
-          remove("test-ex.txt");
           Exit();
         }
       },

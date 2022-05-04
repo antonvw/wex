@@ -1163,7 +1163,6 @@ void wex::listview::process_match(wxCommandEvent& event)
   item.set_item(_("Line No"), std::to_string(m->line_no() + 1));
   item.set_item(_("Line"), context(m->line(), m->pos()));
   item.set_item(_("Match"), find_replace_data::get()->get_find_string());
-  item.set_item(_("Type"), event.GetString());
 
   delete m;
 }
