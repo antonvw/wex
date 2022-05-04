@@ -2,7 +2,7 @@
 // Name:      data/control.h
 // Purpose:   Declaration of wex::data::control
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -13,7 +13,6 @@
 
 #include <bitset>
 #include <functional>
-#include <string>
 
 namespace wex::data
 {

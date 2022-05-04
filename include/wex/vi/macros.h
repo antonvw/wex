@@ -13,7 +13,6 @@
 #include <wex/vi/variable.h>
 
 #include <map>
-#include <string>
 #include <vector>
 
 namespace wex

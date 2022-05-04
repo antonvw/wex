@@ -2,13 +2,15 @@
 // Name:      text-window.h
 // Purpose:   Declaration of class wex::factory::text_window
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #define LINE_COUNT_UNKNOWN -1
 #define LINE_NUMBER_UNKNOWN -1
+
+#include <string>
 
 namespace wex
 {

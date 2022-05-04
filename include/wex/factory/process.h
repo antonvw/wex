@@ -9,7 +9,6 @@
 
 #include <chrono>
 #include <memory>
-#include <string>
 
 #include <wex/factory/process-data.h>
 

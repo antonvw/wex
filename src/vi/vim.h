@@ -2,12 +2,12 @@
 // Name:      vim.h
 // Purpose:   Declaration of wex::vim class to handle vim special commands
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wex/vi/vi.h>
+#include "motion.h"
 
 namespace wex
 {
