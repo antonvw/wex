@@ -25,7 +25,10 @@ TEST_CASE("wex::process")
 
   wex::process process;
 
-  SUBCASE("constructor") { REQUIRE(process.get_frame() != nullptr); }
+  SUBCASE("constructor")
+  {
+    REQUIRE(process.get_frame() != nullptr);
+  }
 
 #ifdef __UNIX__
   SUBCASE("async_system")

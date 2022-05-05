@@ -153,11 +153,22 @@ TEST_CASE("wex::vi")
       vi->command(":so test-source.txt");
     }
 
-    SUBCASE("full") { vi->command(":source test-source.txt"); }
+    SUBCASE("full")
+    {
+      vi->command(":source test-source.txt");
+    }
 
-    SUBCASE("not-existing") { REQUIRE(!vi->command(":so test-surce.txt")); }
+    SUBCASE("not-existing")
+    {
+      REQUIRE(!vi->command(":so test-surce.txt"));
+    }
 
-    SUBCASE("invalid") { REQUIRE(!vi->command(":so test-source-2.txt")); }
+    SUBCASE("invalid")
+    {
+      REQUIRE(!vi->command(":so test-source-2.txt"));
+    }
+
+    remove("test-ex.txt");
   }
 #endif
 

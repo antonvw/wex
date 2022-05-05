@@ -15,6 +15,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+          # until clang-format github action uses same version as used on MacOS
+          VALIDATE_CLANG_FORMAT: false
+
           # until C_CPPLINT_ARGUMENTS variable works?
           VALIDATE_CPP: false
 

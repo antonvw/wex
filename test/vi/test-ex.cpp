@@ -97,7 +97,10 @@ TEST_CASE("wex::ex")
     }
   }
 
-  SUBCASE("ctags") { REQUIRE(ex->ctags() != nullptr); }
+  SUBCASE("ctags")
+  {
+    REQUIRE(ex->ctags() != nullptr);
+  }
 
   SUBCASE("general")
   {
@@ -296,7 +299,10 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->command(":1,'us/s/w/"));
   }
 
-  SUBCASE("print") { ex->print("This is printed"); }
+  SUBCASE("print")
+  {
+    ex->print("This is printed");
+  }
 
   SUBCASE("range")
   {
@@ -321,6 +327,8 @@ TEST_CASE("wex::ex")
       CAPTURE(cmd);
       REQUIRE(ex->command(":" + wex::ex_command::selection_range() + cmd));
     }
+
+    REQUIRE(remove("text-ex.txt") == 0);
 
     stc->GotoLine(2);
     stc->LineDownExtend();
