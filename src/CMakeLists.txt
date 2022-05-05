@@ -1,8 +1,10 @@
 project(wex-lib VERSION ${WEX_VERSION})
 
 if (CMAKE_BUILD_TYPE MATCHES "Coverage")
-  set(wexBUILD_SAMPLES ON CACHE FORCE)
-  set(wexBUILD_TESTS ON CACHE FORCE)
+  set(wexBUILD_SAMPLES ON)
+  set(wexBUILD_SAMPLES CACHE BOOL FORCE)
+  set(wexBUILD_TESTS ON)
+  set(wexBUILD_TESTS CACHE BOOL FORCE)
   
   add_custom_target(lcov-prep
     # prepare initial tracefile
