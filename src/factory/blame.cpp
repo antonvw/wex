@@ -119,17 +119,17 @@ bool wex::blame::parse(const path& p, const std::string& text)
   {
     if (regex r(m_blame_format); r.search(text) >= 4)
     {
-      if (m_name == "svn" && r.matches().size() == 4)
+      if (m_name == "svn" && r.size() == 4)
       {
         return parse_compact(text, r);
       }
-      else if (r.matches().size() == 6)
+      else if (r.size() == 6)
       {
         return parse_full(text, r);
       }
       else
       {
-        log("blame parsing") << m_name << r.matches().size();
+        log("blame parsing") << m_name << r.size();
         return false;
       }
     }

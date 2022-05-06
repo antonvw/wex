@@ -351,9 +351,9 @@ bool wex::cmdline::parse_set(data::cmdline& data) const
   try
   {
     for (auto line(boost::algorithm::trim_copy(data.string())); !line.empty();
-         line = r.matches().back())
+         line = r.back())
     {
-      switch (r.search(line); r.which_no())
+      switch (r.search(line); r.match_no())
       {
         case -1:
           data.help("unmatched cmdline: " + line);

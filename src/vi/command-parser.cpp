@@ -159,7 +159,7 @@ bool wex::command_parser::parse_selection()
 
   const auto& cmds_2addr(addressrange(m_ex).regex_commands());
 
-  if (regex v(
+  if (regex r(
         {{ex_command::selection_range() + cmds_2addr,
           [&](const regex::match_t& m)
           {
@@ -169,7 +169,7 @@ bool wex::command_parser::parse_selection()
             m_text  = m[1];
             log::trace("ex selection") << m_range;
           }}});
-      v.match(m_text) == 2)
+      r.match(m_text) == 2)
   {
     return true;
   }

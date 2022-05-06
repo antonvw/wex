@@ -15,9 +15,10 @@ TEST_CASE("wex::regex")
   {
     REQUIRE(wex::regex(std::string()).match("") == 0);
     REQUIRE(wex::regex({"", "", ""}).match("") == 0);
-    REQUIRE(wex::regex({"", "", ""}).matches().empty());
+    REQUIRE(wex::regex({"", "", ""}).empty());
     REQUIRE(wex::regex({"", "", ""}).size() == 0);
-    REQUIRE(wex::regex("").which_no() == -1);
+    REQUIRE(wex::regex("").match_no() == -1);
+    REQUIRE(wex::regex("").match_data().text().empty());
   }
 
   SUBCASE("match")
@@ -47,11 +48,13 @@ TEST_CASE("wex::regex")
         }}});
 
     REQUIRE(r.match("99xx88") == 3);
-    REQUIRE(std::get<2>(r.which()) == "([0-9]+)([a-z]+)([0-9]+)");
-    REQUIRE(r.which_no() == 1);
+    REQUIRE(r.size() == 3);
+    REQUIRE(r.back() == "88");
+    REQUIRE(r.match_data().text() == "([0-9]+)([a-z]+)([0-9]+)");
+    REQUIRE(r.match_no() == 1);
 
     REQUIRE(r.search("aaa .77xx77 xx") == 1);
-    REQUIRE(r.which_no() == 0);
+    REQUIRE(r.match_no() == 0);
     REQUIRE(r[0] == ".77xx77");
   }
 

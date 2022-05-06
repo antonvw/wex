@@ -9,7 +9,6 @@
 #include <boost/tokenizer.hpp>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
-#include <wex/core/regex.h>
 #include <wex/factory/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/vi/macros.h>
