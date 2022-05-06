@@ -176,7 +176,9 @@ protected:
 private:
   listview* activate_and_clear(const wex::tool& tool);
 
-  stc_entry_dialog* entry_dialog(const std::string& title = std::string());
+  stc_entry_dialog* entry_dialog(
+    const std::string& title = std::string(),
+    const std::string& text  = std::string());
 
   void find_in_files(window_id id);
   void on_idle(wxIdleEvent& event);

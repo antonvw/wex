@@ -382,14 +382,27 @@ wex::config::strings_t wex::del::frame::default_extensions() const
   return l;
 }
 
-wex::stc_entry_dialog* wex::del::frame::entry_dialog(const std::string& title)
+wex::stc_entry_dialog*
+wex::del::frame::entry_dialog(const std::string& title, const std::string& text)
 {
   if (m_entry_dialog == nullptr)
   {
     m_entry_dialog = new stc_entry_dialog(
-      std::string(),
+      text,
       std::string(),
       data::window().title(title).size({450, 450}));
+  }
+  else
+  {
+    if (!text.empty())
+    {
+      m_entry_dialog->get_stc()->set_text(text);
+    }
+
+    if (!title.empty())
+    {
+      m_entry_dialog->SetTitle(title);
+    }
   }
 
   return m_entry_dialog;
@@ -577,7 +590,7 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
   {
     statustext(cmdl.help(), std::string());
     statustext(std::string(), std::string());
-    stc_entry_dialog(cmdl.help()).ShowModal();
+    entry_dialog(!sed ? "grep" : "sed", cmdl.help())->Show();
     return false;
   }
 
