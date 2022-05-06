@@ -17,7 +17,7 @@
 #include <wex/vi/command-parser.h>
 #include <wex/vi/macros.h>
 
-namespace wex
+namespace wex::del
 {
 const std::string find_replace_string(bool replace)
 {
@@ -33,7 +33,7 @@ bool is_ex(textctrl* tc)
 {
   return tc->stc() != nullptr && !tc->stc()->is_visual();
 }
-} // namespace wex
+} // namespace wex::del
 
 wex::del::frame::frame(
   size_t              maxFiles,
