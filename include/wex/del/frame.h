@@ -176,6 +176,8 @@ protected:
 private:
   listview* activate_and_clear(const wex::tool& tool);
 
+  void bind_all();
+
   stc_entry_dialog* entry_dialog(
     const std::string& title = std::string(),
     const std::string& text  = std::string());
@@ -203,4 +205,6 @@ private:
   // as a list of checkboxes.
   const std::set<std::string> m_info;
 };
+
+const std::string find_replace_string(bool replace);
 }; // namespace wex::del
