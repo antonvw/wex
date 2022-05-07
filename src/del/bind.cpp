@@ -12,6 +12,22 @@
 #include <wex/ui/wex.h>
 #include <wex/vi/ctags.h>
 
+#define IN_FILES(ACTION, DIALOG)                                         \
+  {                                                                      \
+    if (!event.GetString().empty())                                      \
+    {                                                                    \
+      ACTION(event.GetString());                                         \
+    }                                                                    \
+    else                                                                 \
+    {                                                                    \
+      if (get_stc() != nullptr && !get_stc()->get_find_string().empty()) \
+      {                                                                  \
+        DIALOG->reload();                                                \
+      }                                                                  \
+      DIALOG->Show();                                                    \
+    }                                                                    \
+  }
+
 void wex::del::frame::bind_all()
 {
   Bind(
@@ -94,36 +110,13 @@ void wex::del::frame::bind_all()
 
      {[=, this](wxCommandEvent& event)
       {
-        if (!event.GetString().empty())
-        {
-          sed(event.GetString());
-        }
-        else
-        {
-          if (get_stc() != nullptr && !get_stc()->get_find_string().empty())
-          {
-            m_rif_dialog->reload();
-          }
-          m_rif_dialog->Show();
-        }
+        IN_FILES(sed, m_rif_dialog)
       },
       ID_TOOL_REPLACE},
 
      {[=, this](wxCommandEvent& event)
       {
-        if (!event.GetString().empty())
-        {
-          grep(event.GetString());
-        }
-        else
-        {
-          if (get_stc() != nullptr && !get_stc()->get_find_string().empty())
-          {
-            m_fif_dialog->reload();
-          }
-
-          m_fif_dialog->Show();
-        }
+        IN_FILES(grep, m_fif_dialog)
       },
       ID_TOOL_REPORT_FIND},
 
