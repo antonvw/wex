@@ -7,11 +7,13 @@
 
 #include <thread>
 
-#include <wex/common/wex.h>
-#include <wex/core/wex.h>
-#include <wex/del/wex.h>
-#include <wex/stc/wex.h>
-#include <wex/ui/wex.h>
+#include <wex/common/dir.h>
+#include <wex/common/stream.h>
+#include <wex/core/log.h>
+#include <wex/del/frame.h>
+#include <wex/stc/stc.h>
+#include <wex/ui/frd.h>
+#include <wex/ui/item-dialog.h>
 
 void wex::del::frame::find_in_files(window_id dialogid)
 {
