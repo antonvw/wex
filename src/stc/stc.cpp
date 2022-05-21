@@ -2,24 +2,19 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2008-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <boost/tokenizer.hpp>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
 #include <wex/core/path.h>
-#include <wex/factory/blame.h>
 #include <wex/factory/indicator.h>
 #include <wex/factory/lexers.h>
 #include <wex/factory/printing.h>
-#include <wex/factory/stc-undo.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/auto-indent.h>
 #include <wex/stc/entry-dialog.h>
-#include <wex/stc/link.h>
 #include <wex/stc/stc.h>
-#include <wex/stc/vcs-entry.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/item-vector.h>
@@ -475,84 +470,10 @@ bool wex::stc::is_visual() const
   return m_vi->visual() != ex::EX;
 }
 
-bool wex::stc::link_open()
-{
-  return link_open(link_t().set(LINK_OPEN).set(LINK_OPEN_MIME));
-}
-
-bool wex::stc::link_open(link_t mode, std::string* filename)
-{
-  const auto sel = GetSelectedText().ToStdString();
-
-  if (sel.size() > 200 || (!sel.empty() && sel.find('\n') != std::string::npos))
-  {
-    return false;
-  }
-
-  const std::string text = (!sel.empty() ? sel : GetCurLine().ToStdString());
-
-  if (mode[LINK_OPEN])
-  {
-    data::control data;
-
-    if (const wex::path path(m_link->get_path(text, data, this));
-        !path.string().empty())
-    {
-      if (filename != nullptr)
-      {
-        *filename = path.filename();
-      }
-      else if (!mode[LINK_CHECK])
-      {
-        m_frame->open_file(path, data);
-      }
-
-      return true;
-    }
-  }
-
-  if (mode[LINK_OPEN_MIME])
-  {
-    if (const wex::path path(m_link->get_path(
-          text,
-          data::control().line(link::LINE_OPEN_URL),
-          this));
-        !path.string().empty())
-    {
-      if (!mode[LINK_CHECK])
-      {
-        browser(path.string());
-      }
-
-      return true;
-    }
-    else if (const wex::path mime(m_link->get_path(
-               text,
-               data::control().line(link::LINE_OPEN_MIME),
-               this));
-             !mime.string().empty())
-    {
-      if (!mode[LINK_CHECK])
-      {
-        return mime.open_mime();
-      }
-
-      return true;
-    }
-  }
-
-  return false;
-}
-
 std::string wex::stc::margin_get_revision_id() const
 {
   std::string revision(MarginGetText(m_margin_text_click));
   return get_word(revision);
-}
-
-std::string wex::stc::margin_get_revision_renamed() const
-{
-  return blame::margin_renamed(this);
 }
 
 bool wex::stc::marker_delete_all_change()
@@ -769,121 +690,6 @@ void wex::stc::properties_message(path::log_t flags)
   }
 }
 
-int wex::stc::replace_all(
-  const std::string& find_text,
-  const std::string& replace_text)
-{
-  int selection_from_end = 0;
-
-  if (
-    SelectionIsRectangle() ||
-    get_number_of_lines(GetSelectedText().ToStdString()) > 1)
-  {
-    TargetFromSelection();
-    selection_from_end = GetLength() - GetTargetEnd();
-  }
-  else
-  {
-    TargetWholeDocument();
-  }
-
-  int nr_replacements = 0;
-  set_search_flags(-1);
-  stc_undo undo(this);
-
-  while (SearchInTarget(find_text) != -1)
-  {
-    bool skip_replace = false;
-
-    // Check that the target is within the rectangular selection.
-    // If not just continue without replacing.
-    if (SelectionIsRectangle())
-    {
-      const auto line      = LineFromPosition(GetTargetStart());
-      const auto start_pos = GetLineSelStartPosition(line);
-      const auto end_pos   = GetLineSelEndPosition(line);
-      const auto length    = GetTargetEnd() - GetTargetStart();
-
-      if (
-        start_pos == wxSTC_INVALID_POSITION ||
-        end_pos == wxSTC_INVALID_POSITION || GetTargetStart() < start_pos ||
-        GetTargetStart() + length > end_pos)
-      {
-        skip_replace = true;
-      }
-    }
-
-    if (!skip_replace)
-    {
-      if (is_hexmode())
-      {
-        m_hexmode.replace_target(replace_text);
-      }
-      else
-      {
-        find_replace_data::get()->is_regex() ? ReplaceTargetRE(replace_text) :
-                                               ReplaceTarget(replace_text);
-      }
-
-      nr_replacements++;
-    }
-
-    SetTargetRange(GetTargetEnd(), GetLength() - selection_from_end);
-
-    if (GetTargetStart() >= GetTargetEnd())
-    {
-      break;
-    }
-  }
-
-  log::status(_("Replaced"))
-    << nr_replacements << "occurrences of" << find_text;
-
-  return nr_replacements;
-}
-
-bool wex::stc::replace_next(bool stc_find_string)
-{
-  return replace_next(
-    find_replace_data::get()->get_find_string(),
-    find_replace_data::get()->get_replace_string(),
-    -1,
-    stc_find_string);
-}
-
-bool wex::stc::replace_next(
-  const std::string& find_text,
-  const std::string& replace_text,
-  int                find_flags,
-  bool               stc_find_string)
-{
-  if (stc_find_string && !GetSelectedText().empty())
-  {
-    TargetFromSelection();
-  }
-  else
-  {
-    SetTargetRange(GetCurrentPos(), GetLength());
-    set_search_flags(find_flags);
-    if (SearchInTarget(find_text) == -1)
-      return false;
-  }
-
-  if (is_hexmode())
-  {
-    m_hexmode.replace_target(replace_text);
-  }
-  else
-  {
-    find_replace_data::get()->is_regex() ? ReplaceTargetRE(replace_text) :
-                                           ReplaceTarget(replace_text);
-  }
-
-  find(find_text, find_flags);
-
-  return true;
-}
-
 void wex::stc::reset_margins(margin_t type)
 {
   if (type[MARGIN_FOLDING])
@@ -930,27 +736,6 @@ bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
   return true;
 }
 
-void wex::stc::set_margin(const wex::blame* blame)
-{
-  const item_vector iv(m_config_items);
-  const auto        margin_blame(iv.find<int>(_("stc.margin.Text")));
-  const int         w(std::max(
-    config(_("stc.Default font"))
-        .get(wxFont(
-          12,
-          wxFONTFAMILY_DEFAULT,
-          wxFONTSTYLE_NORMAL,
-          wxFONTWEIGHT_NORMAL))
-        .GetPixelSize()
-        .GetWidth() +
-      1,
-    5));
-
-  SetMarginWidth(
-    m_margin_text_number,
-    margin_blame == -1 ? blame->info().size() * w : margin_blame);
-}
-
 void wex::stc::set_search_flags(int flags)
 {
   if (flags == -1)
@@ -982,62 +767,6 @@ void wex::stc::set_text(const std::string& value)
 
   // Do not allow the text specified to be undone.
   EmptyUndoBuffer();
-}
-
-bool wex::stc::show_blame(vcs_entry* vcs)
-{
-  if (!vcs->get_blame().use() || vcs->std_out().empty())
-  {
-    log::debug("no blame (or no output)");
-    return false;
-  }
-
-  log::trace("blame show") << vcs->name();
-
-  const bool  is_empty(GetTextLength() == 0);
-  std::string prev("!@#$%");
-  SetWrapMode(wxSTC_WRAP_NONE);
-  wex::blame* blame = &vcs->get_blame();
-  bool        first = true;
-
-  blame->line_no(-1);
-  int ex_line_no = 0;
-
-  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
-         vcs->std_out(),
-         boost::char_separator<char>("\r\n")))
-  {
-    blame->parse(path(), it);
-
-    if (first)
-    {
-      set_margin(blame);
-      first = false;
-    }
-
-    if (blame->info() != prev)
-    {
-      prev = blame->info();
-    }
-    else
-    {
-      blame->skip_info(true);
-    }
-
-    if (!is_visual())
-    {
-      blame->line_no(ex_line_no++);
-    }
-
-    if (is_empty)
-    {
-      add_text(blame->line_text() + "\n");
-    }
-
-    lexers::get()->apply_margin_text_style(this, blame);
-  }
-
-  return true;
 }
 
 void wex::stc::show_line_numbers(bool show)

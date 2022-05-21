@@ -24,6 +24,54 @@ class stc;
 /// using the xml_node constructor (see wex-menus.xml),
 /// the kind of info returned after parse is configurable using
 /// blame_get_author, blame_get_id, blame_get_date.
+// clang-format off
+/// \dot
+/// digraph mode {
+///   apply_margin   [label="lexers::apply_margin_text_style", fontsize=9, shape=diamond, color=grey]
+///   blame          [label="factory::blame", fontsize=9, shape=component, color=grey]
+///   blame_margin   [label="stc::blame_margin", fontsize=9, shape=diamond, color=grey]
+///   blame_revision [label="stc::blame_revision", fontsize=9, shape=diamond, color=grey]
+///   blame_show     [label="stc::blame_show", fontsize=9, shape=diamond, color=grey]
+///   boost          [label="boost::process", fontsize=9, shape=component, color=grey]
+///   open_file      [label="frame::open_file", fontsize=9, shape=diamond, color=grey]
+///   process        [label="wex::process", fontsize=9, shape=component, color=grey]
+///   stc            [label="wex::stc", fontsize=9, shape=component, color=grey]
+///   stc_no_margin  [label="stc no margin"]
+///   stc_margin     [label="stc margin"]
+///   vcs_execute    [label="wex::vcs_execute", fontsize=9, shape=diamond, color=grey]
+///   vcs_entry      [label="vcs_entry", fontsize=9, shape=component, color=grey]
+///
+///   {rank=same init stc_no_margin stc_margin}
+///   {rank=same blame_margin blame_revision vcs_execute}
+/// 
+///   init            -> stc_no_margin [style=dotted,label="start"]
+///   apply_margin    -> stc_margin [label="done"]
+///   apply_margin    -> blame [label="info" dir="none"]
+///   blame           -> blame_show [label="done"]
+///   blame           -> blame_margin [label="info" dir="none"]
+///   blame           -> stc [label="margin_renamed" dir="none"]
+///   blame_margin    -> stc [label="SetMarginWidth"]
+///   blame_revision  -> vcs_entry [label="system"]
+///   blame_show      -> blame [label="parse"]
+///   blame_show      -> apply_margin [label=""]
+///   blame_show      -> blame_margin [label=""]
+///   blame_show      -> vcs_entry [label="std_out" dir="none"]
+///   open_file       -> blame_show [label="done"]
+///   process         -> vcs_entry [label="done"]
+///   process         -> boost [label="system" dir="none"]
+///   stc             -> blame_revision [label="margin_get_revision_id\nmargin_get_revision_renamed" dir="none" ]
+///   stc             -> stc_no_margin [label="reset_margins"]
+///   stc             -> stc_margin [label="blame_margin"]
+///   stc_no_margin   -> vcs_execute [label="git blame", fontsize=9, fontname="times italic"]
+///   stc_margin      -> blame_revision [label="Blame Revision", fontsize=9, fontname="times italic"]
+///   stc_margin      -> blame_revision [label="Blame Previous", fontsize=9, fontname="times italic"]
+///   stc_margin      -> stc [label="Hide", fontsize=9, fontname="times italic"]
+///   vcs_entry       -> open_file [label="done"]
+///   vcs_entry       -> process [label="system"]
+///   vcs_execute     -> vcs_entry [label="system"]
+///  }
+/// \enddot
+// clang-format on
 class blame
 {
 public:

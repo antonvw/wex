@@ -55,13 +55,13 @@ TEST_CASE("wex::stc")
                             "</vcs>"));
     wex::vcs_entry entry(doc.document_element());
     REQUIRE(entry.name() == "git");
-    REQUIRE(!stc->show_blame(&entry));
+    REQUIRE(!stc->blame_show(&entry));
 
 #ifndef __WXMSW__
     REQUIRE(
       entry.system(wex::process_data().args(
         "blame " + wex::test::get_path("test.h").string())) == 0);
-    REQUIRE(stc->show_blame(&entry));
+    REQUIRE(stc->blame_show(&entry));
 #endif
 
     stc->get_file().reset_contents_changed();
@@ -119,7 +119,10 @@ TEST_CASE("wex::stc")
     stc->WordRightEndRectExtend();
   }
 
-  SUBCASE("eol") { REQUIRE(!stc->eol().empty()); }
+  SUBCASE("eol")
+  {
+    REQUIRE(!stc->eol().empty());
+  }
 
   SUBCASE("find")
   {
@@ -290,7 +293,10 @@ TEST_CASE("wex::stc")
     REQUIRE(!stc->is_shown_line_numbers());
   }
 
-  SUBCASE("marker") { REQUIRE(stc->marker_delete_all_change()); }
+  SUBCASE("marker")
+  {
+    REQUIRE(stc->marker_delete_all_change());
+  }
 
   SUBCASE("modeline")
   {
@@ -329,7 +335,10 @@ TEST_CASE("wex::stc")
     REQUIRE(!stc.open(wex::path("XXX")));
   }
 
-  SUBCASE("popup") { REQUIRE(stc->get_lexer().set("cpp")); }
+  SUBCASE("popup")
+  {
+    REQUIRE(stc->get_lexer().set("cpp"));
+  }
 
   SUBCASE("position")
   {

@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <bitset>
 #include <set>
+#include <string>
 #include <vector>
 
 class wxWindow;

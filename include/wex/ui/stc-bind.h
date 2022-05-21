@@ -25,6 +25,7 @@ enum stc
   lowercase,
   margin_text_author,
   margin_text_blame_revision,
+  margin_text_blame_revision_previous,
   margin_text_date,
   margin_text_hide,
   margin_text_id,

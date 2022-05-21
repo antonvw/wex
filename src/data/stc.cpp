@@ -2,7 +2,7 @@
 // Name:      data/stc.cpp
 // Purpose:   Implementation of wex::data::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2017-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -20,6 +20,7 @@ wex::data::stc::stc(wex::factory::stc* stc, const data::stc& r)
   : m_stc(stc)
 {
   *this = r;
+  m_stc = stc;
 }
 
 wex::data::stc::stc(const data::control& data, wex::factory::stc* stc)

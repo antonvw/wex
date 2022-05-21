@@ -120,6 +120,8 @@ void margin_menu(stc* stc)
   if (stc->is_visual())
   {
     menu->append({{id::stc::margin_text_blame_revision, "&Blame Revision"}});
+    menu->append(
+      {{id::stc::margin_text_blame_revision_previous, "&Blame Previous"}});
   }
 
   menu->append({{}});
