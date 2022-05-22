@@ -11,6 +11,32 @@
 #include <wex/stc/stc.h>
 #include <wex/ui/frd.h>
 
+namespace wex
+{
+bool skip_target(wex::stc* stc)
+{
+  // Check that the target is within the rectangular selection.
+  // If not just continue without replacing.
+  if (stc->SelectionIsRectangle())
+  {
+    const auto line      = stc->LineFromPosition(stc->GetTargetStart());
+    const auto start_pos = stc->GetLineSelStartPosition(line);
+    const auto end_pos   = stc->GetLineSelEndPosition(line);
+    const auto length    = stc->GetTargetEnd() - stc->GetTargetStart();
+
+    if (
+      start_pos == wxSTC_INVALID_POSITION ||
+      end_pos == wxSTC_INVALID_POSITION || stc->GetTargetStart() < start_pos ||
+      stc->GetTargetStart() + length > end_pos)
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+} // namespace wex
+
 int wex::stc::replace_all(
   const std::string& find_text,
   const std::string& replace_text)
@@ -35,27 +61,7 @@ int wex::stc::replace_all(
 
   while (SearchInTarget(find_text) != -1)
   {
-    bool skip_replace = false;
-
-    // Check that the target is within the rectangular selection.
-    // If not just continue without replacing.
-    if (SelectionIsRectangle())
-    {
-      const auto line      = LineFromPosition(GetTargetStart());
-      const auto start_pos = GetLineSelStartPosition(line);
-      const auto end_pos   = GetLineSelEndPosition(line);
-      const auto length    = GetTargetEnd() - GetTargetStart();
-
-      if (
-        start_pos == wxSTC_INVALID_POSITION ||
-        end_pos == wxSTC_INVALID_POSITION || GetTargetStart() < start_pos ||
-        GetTargetStart() + length > end_pos)
-      {
-        skip_replace = true;
-      }
-    }
-
-    if (!skip_replace)
+    if (!skip_target(this))
     {
       if (is_hexmode())
       {
