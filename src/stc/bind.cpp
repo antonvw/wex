@@ -15,6 +15,7 @@
 #include <wex/factory/path-lexer.h>
 #include <wex/factory/sort.h>
 #include <wex/stc/beautify.h>
+#include <wex/stc/bind.h>
 #include <wex/stc/entry-dialog.h>
 #include <wex/stc/stc.h>
 #include <wex/stc/vcs.h>
@@ -24,7 +25,6 @@
 #include <wex/ui/frd.h>
 #include <wex/ui/item-vector.h>
 #include <wex/ui/menu.h>
-#include <wex/ui/stc-bind.h>
 #include <wx/accel.h>
 #include <wx/msgdlg.h>
 #include <wx/numdlg.h>
@@ -395,12 +395,6 @@ void wex::stc::bind_all()
       },
       ID_EDIT_VCS_LOWEST},
 
-     {[=, this](const wxCommandEvent& event)
-      {
-        eol_action(event);
-      },
-      id::stc::eol_dos},
-
      {[=, this](wxCommandEvent& event)
       {
         auto line = MarkerNext(get_current_line() + 1, 0xFFFF);
@@ -436,6 +430,14 @@ void wex::stc::bind_all()
         }
       },
       id::stc::marker_previous}});
+
+  bind(this).command(
+    {{[=, this](const wxCommandEvent& event)
+      {
+        eol_action(event);
+      },
+      id::stc::eol_dos,
+      id::stc::eol_mac}});
 
   bind_other();
 }
@@ -818,8 +820,7 @@ void wex::stc::show_properties()
 {
   const std::string propnames(PropertyNames());
   const lexer_props l;
-
-  std::string properties =
+  auto properties =
     (!propnames.empty() ? l.make_section("Current properties") :
                           std::string()) +
     // Add current (global and lexer) properties.

@@ -38,7 +38,7 @@ bool wex::blaming::execute(const path& path)
 
   m_vcs.entry().get_blame().caption(
     "blame " + m_revision + " " + m_path.filename());
-    
+
   return (m_vcs.entry().name() == "git" && exec_git()) ||
          (m_vcs.entry().name() == "svn" && exec_svn());
 }

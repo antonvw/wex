@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      stc-bind.h
+// Name:      bind.h
 // Purpose:   Declaration of bind id's
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020-2022 Anton van Wezenbeek

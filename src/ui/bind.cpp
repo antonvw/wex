@@ -2,12 +2,11 @@
 // Name:      bind.cpp
 // Purpose:   Implementation of class wex::bind
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/defs.h>
 #include <wex/ui/bind.h>
-#include <wex/ui/stc-bind.h>
 #include <wx/fdrepdlg.h>
 
 wex::bind::bind(wxEvtHandler* evt)
@@ -43,14 +42,7 @@ void wex::bind::command(
         break;
 
       default:
-        if (it.second == id::stc::eol_dos)
-        {
-          m_handler->Bind(wxEVT_MENU, it.first, it.second, id::stc::eol_mac);
-        }
-        else
-        {
-          m_handler->Bind(wxEVT_MENU, it.first, it.second);
-        }
+        m_handler->Bind(wxEVT_MENU, it.first, it.second);
     }
   }
 }

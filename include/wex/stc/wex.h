@@ -2,7 +2,7 @@
 // Name:      stc/wex.h
 // Purpose:   General wex include file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,6 +10,7 @@
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/auto-indent.h>
 #include <wex/stc/beautify.h>
+#include <wex/stc/bind.h>
 #include <wex/stc/debug.h>
 #include <wex/stc/entry-dialog.h>
 #include <wex/stc/file.h>
