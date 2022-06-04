@@ -11,12 +11,13 @@
 #include <wex/factory/stc.h>
 #include <wex/ui/art.h>
 #include <wex/ui/bind.h>
+#include <wex/ui/ex-commandline-input.h>
+#include <wex/ui/ex-commandline.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/grid.h>
 #include <wex/ui/listview.h>
 #include <wex/ui/menu.h>
-#include <wex/ui/textctrl.h>
 #include <wex/ui/toolbar.h>
 #include <wx/checkbox.h>
 #include <wx/stockitem.h>
@@ -26,26 +27,26 @@
 namespace wex
 {
 /// Support class.
-/// Offers a find text ctrl that allows you to find text
-/// on a current grid, listview or stc on an frame.
+/// Offers a find bar that allows you to find text
+/// on a current grid, listview or stc on a frame.
 /// Pressing key up and down browses through values from
 /// find_replace_data, and pressing enter sets value
 /// in find_replace_data.
-class find_textctrl : public textctrl
+class find_bar : public ex_commandline
 {
 public:
-  /// Constructor. Fills the textctrl with value
+  /// Constructor. Fills the bar with value
   /// from find_replace_data.
-  find_textctrl(wex::frame* frame, const data::window& data);
+  find_bar(wex::frame* frame, const data::window& data);
 
   /// Finds current value in control.
   void find(bool find_next = true, bool restore_position = false);
 };
 
 void find_popup_menu(
-  wxWindow*                       win,
-  const textctrl_input::values_t& l,
-  const wxPoint&                  pos)
+  wxWindow*                             win,
+  const ex_commandline_input::values_t& l,
+  const wxPoint&                        pos)
 {
   auto*     menu     = new wex::menu();
   const int max_size = 25;
@@ -169,7 +170,7 @@ void wex::toolbar::add_checkboxes_standard(bool realize)
 
 void wex::toolbar::add_find(bool realize)
 {
-  auto* findCtrl = new find_textctrl(m_frame, data::window().parent(this));
+  auto* findCtrl = new find_bar(m_frame, data::window().parent(this));
 
   AddControl(findCtrl->control());
 
@@ -363,10 +364,10 @@ bool wex::toolbar::set_checkbox(const std::string& name, bool show) const
 
 // Implementation of support class.
 
-wex::find_textctrl::find_textctrl(wex::frame* mng, const data::window& data)
-  : textctrl(mng, find_replace_data::get()->get_find_string(), data)
+wex::find_bar::find_bar(wex::frame* frame, const data::window& data)
+  : ex_commandline(frame, find_replace_data::get()->get_find_string(), data)
 {
-  mng->bind_accelerators(
+  frame->bind_accelerators(
     control(),
     {{wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE}});
 
@@ -376,7 +377,7 @@ wex::find_textctrl::find_textctrl(wex::frame* mng, const data::window& data)
     {
       if (!find_replace_data::get()->m_find_strings.set(
             event.GetKeyCode(),
-            this))
+            control()))
       {
         event.Skip();
       }
@@ -386,7 +387,7 @@ wex::find_textctrl::find_textctrl(wex::frame* mng, const data::window& data)
     wxEVT_SET_FOCUS,
     [=, this](wxFocusEvent& event)
     {
-      if (auto* stc = get_frame()->get_stc(); stc != nullptr)
+      if (auto* stc = frame->get_stc(); stc != nullptr)
       {
         stc->position_save();
       }
@@ -394,27 +395,34 @@ wex::find_textctrl::find_textctrl(wex::frame* mng, const data::window& data)
     });
 
   control()->Bind(
-    wxEVT_TEXT,
-    [=, this](wxCommandEvent& event)
+    wxEVT_KEY_DOWN,
+    [=, this](wxKeyEvent& event)
+    {
+      if (event.GetKeyCode() == WXK_RETURN)
+      {
+        if (!get_text().empty())
+        {
+          find_replace_data::get()->set_find_string(get_text());
+          find();
+        }
+      }
+      else
+      {
+        // using a the bind in ex_commandline did not work
+        on_key_down(event);
+      }
+    });
+
+  control()->Bind(
+    wxEVT_STC_CHARADDED,
+    [=, this](wxStyledTextEvent& event)
     {
       event.Skip();
       find(true, true);
     });
-
-  control()->Bind(
-    wxEVT_TEXT_ENTER,
-    [=, this](wxCommandEvent& event)
-    {
-      event.Skip();
-      if (!get_text().empty())
-      {
-        find_replace_data::get()->set_find_string(get_text());
-        find();
-      }
-    });
 }
 
-void wex::find_textctrl::find(bool find_next, bool restore_position)
+void wex::find_bar::find(bool find_next, bool restore_position)
 {
   if (auto* stc = get_frame()->get_stc(); stc != nullptr)
   {
@@ -423,7 +431,7 @@ void wex::find_textctrl::find(bool find_next, bool restore_position)
       stc->position_restore();
     }
 
-    stc->find(get_text(), -1, find_next);
+    stc->find(get_text(), 0, find_next);
   }
   else if (auto* grid = dynamic_cast<wex::grid*>(get_frame()->get_grid());
            grid != nullptr)

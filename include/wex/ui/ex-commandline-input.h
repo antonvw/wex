@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      textctrl-input.h
-// Purpose:   Declaration of wex::textctrl_input class
+// Name:      ex-commandline-input.h
+// Purpose:   Declaration of wex::ex_commandline_input class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -11,12 +11,14 @@
 
 #include <list>
 
+class wxTextEntryBase;
+
 namespace wex
 {
-class textctrl;
+class ex_commandline;
 
-/// Offers a class to relate textctrl to values with iterators.
-class textctrl_input
+/// Offers a class to relate ex_commandline to values with iterators.
+class ex_commandline_input
 {
 public:
   /// Type for keeping the values.
@@ -25,14 +27,14 @@ public:
   /// Constructor, fills values from config.
   /// The specified type determines which key to use
   /// to retrieve the values.
-  textctrl_input(
+  ex_commandline_input(
     /// the ex_command type used to get config values
     ex_command::type_t type,
     /// the name, as used in config to store values
     const std::string& name = "ex-cmd.other");
 
   /// Destructor, writes values (with a max for integers on the list) to config.
-  ~textctrl_input();
+  ~ex_commandline_input();
 
   /// Returns value on the list pointed to by iterator,
   /// or empty string, if iterator is at end.
@@ -43,8 +45,8 @@ public:
   /// Sets iterator to begin of list.
   void set(const std::string& value);
 
-  /// Sets first value on the list from specified text control.
-  void set(const textctrl* tc);
+  /// Sets first value on the list from specified commandline.
+  void set(const ex_commandline* cl);
 
   /// Sets iterator according to specified key, and then
   /// sets value of text control (if not nullptr) to the list value
@@ -59,8 +61,8 @@ public:
     /// - WXK_PAGEUP
     /// - WXK_PAGEDOWN
     int key,
-    /// the text control
-    textctrl* tc = nullptr);
+    /// the text entry
+    wxTextEntryBase* te = nullptr);
 
   /// Sets all values (values might be empty).
   /// Sets iterator to begin of list.

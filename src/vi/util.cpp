@@ -24,7 +24,7 @@ const std::string wex::find_first_of(
   const std::string& chars,
   size_t             pos)
 {
-  const auto match = text.find_first_of(chars, pos);
+  const auto& match = text.find_first_of(chars, pos);
   return match == std::string::npos ? std::string() : text.substr(match + 1);
 }
 
@@ -74,7 +74,7 @@ bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
   // Replace any register in text with contents and any marker with line no.
   // E.g. xxx 11  22 'x control_ry
   //      xxx 11  22 5 7
-  // if 'x contains 5 and register y contains 7
+  // where 'x contains 5 and register y contains 7
   std::string output;
   bool        changed = false;
 
@@ -106,16 +106,16 @@ bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
           }
           else
           {
-            const auto next(std::next(it));
-
-            if (next == text.end())
+            if (const auto next(std::next(it)); next == text.end())
             {
               log("missing register") << text;
               return false;
             }
-
-            const auto& reg(ex->get_macros().get_register(*(next)));
-            output += reg;
+            else
+            {
+              const auto& reg(ex->get_macros().get_register(*(next)));
+              output += reg;
+            }
           }
 
           ++it;

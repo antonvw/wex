@@ -2,7 +2,7 @@
 // Name:      factory/stc.h
 // Purpose:   Declaration of class wex::factory::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -74,7 +74,7 @@ public:
     ;
   };
 
-  /// Returns a ex command.
+  /// Returns the ex command.
   virtual const ex_command& get_ex_command() const { return m_command; }
 
   /// Returns find string, from selected text or from config.
@@ -306,10 +306,11 @@ public:
   int  get_line_count_request() override { return GetLineCount(); }
   void goto_line(int line) override;
 
+protected:
+  ex_command m_command;
+
 private:
   lexer m_lexer;
-
-  ex_command m_command;
 };
 }; // namespace factory
 }; // namespace wex
