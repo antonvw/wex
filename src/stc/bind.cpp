@@ -15,6 +15,7 @@
 #include <wex/factory/path-lexer.h>
 #include <wex/factory/sort.h>
 #include <wex/stc/beautify.h>
+#include <wex/stc/bind.h>
 #include <wex/stc/entry-dialog.h>
 #include <wex/stc/stc.h>
 #include <wex/stc/vcs.h>
@@ -24,13 +25,11 @@
 #include <wex/ui/frd.h>
 #include <wex/ui/item-vector.h>
 #include <wex/ui/menu.h>
-#include <wex/ui/stc-bind.h>
 #include <wx/accel.h>
 #include <wx/msgdlg.h>
 #include <wx/numdlg.h>
 
 #include <numeric>
-#include <vector>
 
 namespace wex
 {
@@ -318,6 +317,12 @@ void wex::stc::bind_all()
 
      {[=, this](wxCommandEvent& event)
       {
+        blame_revision("~1");
+      },
+      id::stc::margin_text_blame_revision_previous},
+
+     {[=, this](wxCommandEvent& event)
+      {
         config("blame.date").toggle(true);
       },
       id::stc::margin_text_date},
@@ -381,18 +386,14 @@ void wex::stc::bind_all()
 
      {[=, this](wxCommandEvent& event)
       {
+        m_renamed.clear();
+
         vcs_execute(
           m_frame,
           event.GetId() - ID_EDIT_VCS_LOWEST - 1,
           std::vector<wex::path>{path().data()});
       },
       ID_EDIT_VCS_LOWEST},
-
-     {[=, this](const wxCommandEvent& event)
-      {
-        eol_action(event);
-      },
-      id::stc::eol_dos},
 
      {[=, this](wxCommandEvent& event)
       {
@@ -430,82 +431,15 @@ void wex::stc::bind_all()
       },
       id::stc::marker_previous}});
 
+  bind(this).command(
+    {{[=, this](const wxCommandEvent& event)
+      {
+        eol_action(event);
+      },
+      id::stc::eol_dos,
+      id::stc::eol_mac}});
+
   bind_other();
-}
-
-void wex::stc::blame_revision()
-{
-  const auto& revision(margin_get_revision_id());
-  auto        renamed(margin_get_revision_renamed());
-  wex::vcs    vcs({m_data.head_path().empty() ? path() : m_data.head_path()});
-  const auto  extra(!is_visual() ? "-L %LINES " : std::string());
-
-  log::trace("blame revision") << vcs.entry().name();
-
-  if (vcs.entry().name() == "git")
-  {
-    if (!renamed.empty())
-    {
-      if (revision != find_before(renamed, " "))
-      {
-        if (
-          vcs.entry().system(
-            process_data()
-              .args("blame " + extra + revision + " -- " + renamed)
-              .start_dir(vcs.toplevel().string())) != 0)
-        {
-          log::status("blame") << "error";
-          return;
-        }
-      }
-      else
-      {
-        log::status("blame") << "at oldest: " << revision;
-        log::trace("blame equal") << revision << renamed;
-        return;
-      }
-    }
-    else if (
-      vcs.entry().system(
-        process_data()
-          .args("blame " + extra + path().string() + " " + revision)
-          .start_dir(path().parent_path())) != 0)
-    {
-      log::status("blame") << "error";
-      return;
-    }
-  }
-  else if (vcs.entry().name() == "svn")
-  {
-    if (
-      vcs.entry().system(
-        process_data()
-          .args("blame " + path().string() + " -v -r " + revision)
-          .start_dir(path().parent_path())) != 0)
-    {
-      log::status("blame") << "error";
-      return;
-    }
-  }
-
-  if (renamed.empty())
-  {
-    renamed = revision + " " + path().string();
-  }
-
-  vcs.entry().get_blame().caption(
-    "blame " + revision + " " + path().filename());
-
-  data::stc data(m_data);
-  data.control().line(m_margin_text_click);
-
-  if (data.head_path().empty())
-  {
-    data.head_path(path());
-  }
-
-  ((wex::factory::frame*)m_frame)
-    ->open_file(wex::path(renamed), vcs.entry(), data);
 }
 
 void wex::stc::build_popup_menu(menu& menu)
@@ -886,8 +820,7 @@ void wex::stc::show_properties()
 {
   const std::string propnames(PropertyNames());
   const lexer_props l;
-
-  std::string properties =
+  auto properties =
     (!propnames.empty() ? l.make_section("Current properties") :
                           std::string()) +
     // Add current (global and lexer) properties.

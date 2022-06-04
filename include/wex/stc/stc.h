@@ -91,6 +91,10 @@ public:
   /// Returns auto_complete.
   auto* auto_complete() { return m_auto_complete; }
 
+  /// Shows blame info for vcs in the text margin.
+  /// Returns true if info was added.
+  bool blame_show(vcs_entry* vcs);
+
   /// Sets the configurable parameters to values currently in config.
   void config_get();
 
@@ -169,10 +173,6 @@ public:
     int find_flags = 0,
     /// argument passed on to find_next
     bool stc_find_string = true);
-
-  /// Shows blame info for vcs in the text margin.
-  /// Returns true if info was added.
-  bool show_blame(vcs_entry* vcs);
 
   /// Virtual methods from wxWidgets.
 
@@ -270,7 +270,8 @@ private:
 
   void        bind_all();
   void        bind_other();
-  void        blame_revision();
+  void        blame_margin(const blame* blame);
+  void        blame_revision(const std::string& offset = std::string());
   void        build_popup_menu(menu& menu);
   void        build_popup_menu_edit(menu& menu);
   void        build_popup_menu_link(menu& menu);
@@ -291,7 +292,6 @@ private:
   void        mark_modified(const wxStyledTextEvent& event);
   void        on_idle(wxIdleEvent& event);
   void        on_styled_text(wxStyledTextEvent& event);
-  void        set_margin(const blame* blame);
   void        show_properties();
   void        sort_action(const wxCommandEvent& event);
 
@@ -309,6 +309,8 @@ private:
 
   class auto_complete* m_auto_complete;
   hexmode              m_hexmode;
+
+  std::string m_renamed;
 
   data::stc m_data;
   stc_file  m_file;

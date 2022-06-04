@@ -10,13 +10,13 @@
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/stc/auto-complete.h>
+#include <wex/stc/bind.h>
 #include <wex/stc/stc.h>
 #include <wex/stc/vcs.h>
 #include <wex/ui/debug-entry.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/menu.h>
-#include <wex/ui/stc-bind.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 
 #include <chrono>
@@ -66,7 +66,7 @@ void hypertext(stc* stc)
       match_pos != wxSTC_INVALID_POSITION &&
       stc->GetCharAt(match_pos + 1) != '!')
   {
-    if (const auto match(stc->get_word_at_pos(match_pos + 1));
+    if (const auto& match(stc->get_word_at_pos(match_pos + 1));
         match.find("/") != 0 &&
         stc->GetCharAt(stc->GetCurrentPos() - 2) != '/' &&
         (stc->get_lexer().language() == "xml" ||
@@ -120,6 +120,8 @@ void margin_menu(stc* stc)
   if (stc->is_visual())
   {
     menu->append({{id::stc::margin_text_blame_revision, "&Blame Revision"}});
+    menu->append(
+      {{id::stc::margin_text_blame_revision_previous, "&Blame Previous"}});
   }
 
   menu->append({{}});

@@ -22,7 +22,7 @@ public:
   process_data(
     /// the exe
     const std::string& exe = std::string(),
-    // the args
+    /// the args
     const std::string& args = std::string());
 
   /// Returns args as a vector of strings,

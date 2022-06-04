@@ -33,7 +33,6 @@
 #include <wex/ui/odbc.h>
 #include <wex/ui/statusbar-pane.h>
 #include <wex/ui/statusbar.h>
-#include <wex/ui/stc-bind.h>
 #include <wex/ui/textctrl-input.h>
 #include <wex/ui/textctrl.h>
 #include <wex/ui/toolbar.h>
