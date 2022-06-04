@@ -460,7 +460,7 @@ void wex::debug::process_stdout(const std::string& text)
       log::trace("debug path and exec") << m_path.string();
     }
     data.indicator_no(data::stc::IND_DEBUG);
-    data.control().line(std::stoi(v.matches().back()));
+    data.control().line(std::stoi(v.back()));
     m_stdout.clear();
   }
   else if (regex v(

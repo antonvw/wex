@@ -159,7 +159,7 @@ const wex::path wex::factory::link::find_filename(
 
   if (regex v(t); v.search(text_filter) > 0)
   {
-    const auto& link(v.which_no() == 0 ? find_before(v[0], " ") : v[0]);
+    const auto& link(v.match_no() == 0 ? find_before(v[0], " ") : v[0]);
 
     data.reset();
 

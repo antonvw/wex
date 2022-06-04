@@ -98,7 +98,6 @@ void wex::path::current(const wex::path& p)
     try
     {
       fs::current_path(p.data());
-      log::trace("path current") << p;
     }
     catch (const std::exception& e)
     {
