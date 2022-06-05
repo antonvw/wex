@@ -4,7 +4,7 @@
 - added blame revision
 - ex commands more closely follow
   The Open Group Base Specifications Issue 7, 2018 edition
-- ex commandline is improved, it is now a factory::stc
+- ex command-line is improved, it is now a factory::stc
 
 **v22.04** *March 6, 2022*
 - Microsoft Visual Studio 2022
