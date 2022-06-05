@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
-#include <wex/ui/bind.h>
+#include <wex/factory/bind.h>
 #include <wex/ui/ex-commandline-input.h>
 #include <wex/ui/ex-commandline.h>
 #include <wex/ui/frame.h>
@@ -59,22 +59,14 @@ wex::ex_commandline_imp::ex_commandline_imp(
 
 void wex::ex_commandline_imp::bind()
 {
+  bind_wx();
+
   wex::bind(this).command(
     {{[=, this](wxCommandEvent& event)
       {
         WriteText(event.GetString());
       },
-      m_id_register},
-     {[=, this](wxCommandEvent& event)
-      {
-        Cut();
-      },
-      wxID_CUT},
-     {[=, this](wxCommandEvent& event)
-      {
-        Paste();
-      },
-      wxID_PASTE}});
+      m_id_register}});
 
   Bind(
     wxEVT_CHAR,
@@ -263,6 +255,8 @@ void wex::ex_commandline_imp::init(const data::window& data)
             .get(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
 
   get_lexer().set(lexer(this));
+  reset_margins();
+  SetMarginWidth(0, 5);
 }
 
 bool wex::ex_commandline_imp::input_mode_finish() const

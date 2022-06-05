@@ -9,6 +9,7 @@
 #include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
+#include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/lexer-props.h>
 #include <wex/factory/lexers.h>
@@ -19,7 +20,6 @@
 #include <wex/stc/entry-dialog.h>
 #include <wex/stc/stc.h>
 #include <wex/stc/vcs.h>
-#include <wex/ui/bind.h>
 #include <wex/ui/debug-entry.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
@@ -127,55 +127,14 @@ void wex::stc::bind_all()
      {wxACCEL_SHIFT, WXK_DELETE, wxID_CUT}},
     m_data.menu().test(data::stc::MENU_DEBUG));
 
+  bind_wx();
+
   bind(this).command(
     {{[=, this](wxCommandEvent& event)
-      {
-        Copy();
-      },
-      wxID_COPY},
-
-     {[=, this](wxCommandEvent& event)
       {
         m_vi->command(event.GetString());
       },
       id::stc::vi_command},
-
-     {[=, this](wxCommandEvent& event)
-      {
-        Cut();
-      },
-      wxID_CUT},
-
-     {[=, this](wxCommandEvent& event)
-      {
-        Paste();
-      },
-      wxID_PASTE},
-
-     {[=, this](wxCommandEvent& event)
-      {
-        Undo();
-      },
-      wxID_UNDO},
-
-     {[=, this](wxCommandEvent& event)
-      {
-        Redo();
-      },
-      wxID_REDO},
-
-     {[=, this](wxCommandEvent& event)
-      {
-        SelectAll();
-      },
-      wxID_SELECTALL},
-
-     {[=, this](wxCommandEvent& event)
-      {
-        if (!GetReadOnly() && !is_hexmode())
-          Clear();
-      },
-      wxID_DELETE},
 
      {[=, this](wxCommandEvent& event)
       {
@@ -820,26 +779,25 @@ void wex::stc::show_properties()
 {
   const std::string propnames(PropertyNames());
   const lexer_props l;
-  auto properties =
-    (!propnames.empty() ? l.make_section("Current properties") :
-                          std::string()) +
-    // Add current (global and lexer) properties.
-    std::accumulate(
-      lexers::get()->properties().begin(),
-      lexers::get()->properties().end(),
-      std::string(),
-      [this, l](const std::string& a, const property& b)
-      {
-        return a + l.make_key(b.name(), GetProperty(b.name()));
-      }) +
-    std::accumulate(
-      get_lexer().properties().begin(),
-      get_lexer().properties().end(),
-      std::string(),
-      [this, l](const std::string& a, const property& b)
-      {
-        return a + l.make_key(b.name(), GetProperty(b.name()));
-      });
+  auto properties = (!propnames.empty() ? l.make_section("Current properties") :
+                                          std::string()) +
+                    // Add current (global and lexer) properties.
+                    std::accumulate(
+                      lexers::get()->properties().begin(),
+                      lexers::get()->properties().end(),
+                      std::string(),
+                      [this, l](const std::string& a, const property& b)
+                      {
+                        return a + l.make_key(b.name(), GetProperty(b.name()));
+                      }) +
+                    std::accumulate(
+                      get_lexer().properties().begin(),
+                      get_lexer().properties().end(),
+                      std::string(),
+                      [this, l](const std::string& a, const property& b)
+                      {
+                        return a + l.make_key(b.name(), GetProperty(b.name()));
+                      });
 
   // Add available properties.
   if (!propnames.empty())

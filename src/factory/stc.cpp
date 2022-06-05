@@ -2,11 +2,59 @@
 // Name:      factory/stc.cpp
 // Purpose:   Implementation of class wex::factory::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
+#include <wex/factory/bind.h>
 #include <wex/factory/stc.h>
+
+void wex::factory::stc::bind_wx()
+{
+  wex::bind(this).command(
+    {{[=, this](wxCommandEvent& event)
+      {
+        Copy();
+      },
+      wxID_COPY},
+
+     {[=, this](wxCommandEvent& event)
+      {
+        Cut();
+      },
+      wxID_CUT},
+
+     {[=, this](wxCommandEvent& event)
+      {
+        Paste();
+      },
+      wxID_PASTE},
+
+     {[=, this](wxCommandEvent& event)
+      {
+        Undo();
+      },
+      wxID_UNDO},
+
+     {[=, this](wxCommandEvent& event)
+      {
+        Redo();
+      },
+      wxID_REDO},
+
+     {[=, this](wxCommandEvent& event)
+      {
+        SelectAll();
+      },
+      wxID_SELECTALL},
+
+     {[=, this](wxCommandEvent& event)
+      {
+        if (!GetReadOnly() && !is_hexmode())
+          Clear();
+      },
+      wxID_DELETE}});
+}
 
 const std::string wex::factory::stc::eol() const
 {
@@ -96,6 +144,17 @@ void wex::factory::stc::goto_line(int line)
   GotoLine(line);
   EnsureVisible(line);
   EnsureCaretVisible();
+}
+
+void wex::factory::stc::reset_margins(margin_t type)
+{
+  if (type.all())
+  {
+    for (int i = 0; i < wxSTC_MAX_MARGIN; i++)
+    {
+      SetMarginWidth(i, 0);
+    }
+  }
 }
 
 #define BIGWORD(DIRECTION)                                     \

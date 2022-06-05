@@ -7,10 +7,10 @@
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
+#include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/stc.h>
 #include <wex/ui/art.h>
-#include <wex/ui/bind.h>
 #include <wex/ui/ex-commandline-input.h>
 #include <wex/ui/ex-commandline.h>
 #include <wex/ui/frame.h>

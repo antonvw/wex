@@ -174,9 +174,9 @@ public:
     ;
   }
 
-  /// Reset all margins.
-  /// Default not implemented.
-  virtual void reset_margins(margin_t type = margin_t().set()) { ; }
+  /// Resets (all) margins.
+  /// Default just resets all margins.
+  virtual void reset_margins(margin_t type = margin_t().set());
 
   /// Sets hex mode (default false).
   virtual bool set_hexmode(bool on) { return false; }
@@ -239,6 +239,9 @@ public:
   virtual void visual(bool on) { ; }
 
   /// Other methods.
+
+  /// Binds wx methods.
+  void bind_wx();
 
   /// Returns EOL string.
   /// If you only want to insert a newline, use NewLine()

@@ -7,12 +7,12 @@
 
 #include <wex/del/frame.h>
 #include <wex/del/listview-file.h>
+#include <wex/factory/bind.h>
 #include <wex/factory/lexers.h>
 #include <wex/factory/printing.h>
 #include <wex/stc/debug.h>
 #include <wex/stc/stc.h>
 #include <wex/stc/vcs.h>
-#include <wex/ui/bind.h>
 #include <wex/ui/frd.h>
 #include <wex/vi/ctags.h>
 

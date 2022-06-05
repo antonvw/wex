@@ -8,7 +8,6 @@
 #pragma once
 
 #include <wex/ui/art.h>
-#include <wex/ui/bind.h>
 #include <wex/ui/debug-entry.h>
 #include <wex/ui/dialog.h>
 #include <wex/ui/ex-commandline-input.h>

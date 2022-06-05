@@ -11,8 +11,8 @@
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/del/wex.h>
+#include <wex/factory/bind.h>
 #include <wex/stc/vcs.h>
-#include <wex/ui/bind.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/listitem.h>
 #include <wx/app.h>

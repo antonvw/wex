@@ -5,8 +5,8 @@
 // Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
-#include <wex/ui/bind.h>
 #include <wx/fdrepdlg.h>
 
 wex::bind::bind(wxEvtHandler* evt)
