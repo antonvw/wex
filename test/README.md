@@ -5,7 +5,7 @@ This directory contains the tests for the wex libraries.
 ## Purpose
 - Achieve a high test coverage, when adding functionality,
   add a test for it. syncped can help in checking
-  coverage by using the @Coverage@ macro by opening the cpp and h 
+  coverage by using the @Coverage@ macro by opening the cpp and h
   file, and running the macro on the h file.
 
 ## Organization
