@@ -8,9 +8,10 @@
 #pragma once
 
 #include <wex/ui/art.h>
-#include <wex/ui/bind.h>
 #include <wex/ui/debug-entry.h>
 #include <wex/ui/dialog.h>
+#include <wex/ui/ex-commandline-input.h>
+#include <wex/ui/ex-commandline.h>
 #include <wex/ui/file-dialog.h>
 #include <wex/ui/file-history.h>
 #include <wex/ui/frame.h>
@@ -33,6 +34,4 @@
 #include <wex/ui/odbc.h>
 #include <wex/ui/statusbar-pane.h>
 #include <wex/ui/statusbar.h>
-#include <wex/ui/textctrl-input.h>
-#include <wex/ui/textctrl.h>
 #include <wex/ui/toolbar.h>

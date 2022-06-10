@@ -73,26 +73,6 @@ TEST_CASE("wex::ex_command")
     REQUIRE(command.command() == "wwwww");
   }
 
-  SUBCASE("erase")
-  {
-    command.set("xyz");
-    command.no_type();
-    command.erase(5);
-    REQUIRE(command.command() == "xyz");
-    command.erase(0);
-    REQUIRE(command.command() == "yz");
-
-    command = wex::ex_command("/xyz");
-    REQUIRE(command.command() == "/xyz");
-    command.erase(0);
-    REQUIRE(command.command() == "/yz");
-
-    command = wex::ex_command("/0123456789");
-    REQUIRE(command.command() == "/0123456789");
-    command.erase(3, 4);
-    REQUIRE(command.command() == "/012789");
-  }
-
   SUBCASE("exec")
   {
     command.set("G");
@@ -100,47 +80,6 @@ TEST_CASE("wex::ex_command")
     REQUIRE(stc->get_current_line() == 0);
     REQUIRE(!command.exec());
     REQUIRE(stc->get_current_line() == 0);
-  }
-
-  SUBCASE("handle")
-  {
-    auto* tc = new wxTextCtrl(stc, wxID_ANY);
-
-    tc->SetValue("hello");
-    tc->SetInsertionPointEnd();
-    command.set("/hello");
-    REQUIRE(command.command() == "/hello");
-
-    command.handle(tc, WXK_NONE);
-    REQUIRE(command.command() == "/hello");
-
-    command.handle(tc, WXK_BACK);
-    REQUIRE(command.command() == "/hell");
-
-    command.handle(tc, WXK_BACK);
-    REQUIRE(command.command() == "/hel");
-
-    tc->SetInsertionPoint(0);
-    command.handle(tc, WXK_BACK);
-    REQUIRE(command.command() == "/hel");
-  }
-
-  SUBCASE("insert")
-  {
-    command = wex::ex_command("/0123456789");
-    REQUIRE(command.command() == "/0123456789");
-    command.insert(1, 'a');
-    REQUIRE(command.command() == "/0a123456789");
-    command.insert(1, "xyz");
-    REQUIRE(command.command() == "/0xyza123456789");
-    command.insert(0, '5');
-    REQUIRE(command.command() == "/50xyza123456789");
-    command.insert(100, 'X');
-    REQUIRE(command.command() == "/50xyza123456789X");
-
-    command = wex::ex_command("/");
-    command.insert(0, 'x');
-    REQUIRE(command.command() == "/x");
   }
 
   SUBCASE("reset")

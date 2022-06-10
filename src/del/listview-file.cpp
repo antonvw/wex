@@ -13,7 +13,7 @@
 #include <wex/del/defs.h>
 #include <wex/del/frame.h>
 #include <wex/del/listview-file.h>
-#include <wex/ui/bind.h>
+#include <wex/factory/bind.h>
 #include <wex/ui/listitem.h>
 #include <wex/ui/menu.h>
 

@@ -26,9 +26,9 @@ namespace wex
 {
 class debug_entry;
 class ex_command;
+class ex_commandline;
 class menu_item;
 class process_data;
-class textctrl;
 class toolbar;
 
 /// Offers an aui managed frame with a notebook multiple document interface,
@@ -337,7 +337,7 @@ protected:
 
   class debug_entry* m_debug_entry{nullptr};
   statusbar*         m_statusbar{nullptr};
-  textctrl*          m_textctrl;
+  ex_commandline*    m_ex_commandline;
 
 private:
   bool     add_toolbar_panes(const panes_t& panes);

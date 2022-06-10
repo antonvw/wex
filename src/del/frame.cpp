@@ -29,9 +29,9 @@ const std::string find_replace_string(bool replace)
                     std::string());
 }
 
-bool is_ex(textctrl* tc)
+bool is_ex(ex_commandline* cl)
 {
-  return tc->stc() != nullptr && !tc->stc()->is_visual();
+  return cl->stc() != nullptr && !cl->stc()->is_visual();
 }
 } // namespace wex::del
 
@@ -532,11 +532,11 @@ void wex::del::frame::show_ex_bar(int action, factory::stc* stc)
   {
     if (action >= SHOW_BAR && stc != nullptr)
     {
-      m_textctrl->set_stc(stc, ":");
+      m_ex_commandline->set_stc(stc, ":");
     }
     else if (stc != nullptr)
     {
-      m_textctrl->set_stc(stc);
+      m_ex_commandline->set_stc(stc);
     }
 
     pane_show("VIBAR", action >= SHOW_BAR);
@@ -552,16 +552,16 @@ void wex::del::frame::show_ex_bar(int action, factory::stc* stc)
 
     if (
       (action == HIDE_BAR_FOCUS_STC || action == HIDE_BAR_FORCE_FOCUS_STC) &&
-      m_textctrl->stc() != nullptr)
+      m_ex_commandline->stc() != nullptr)
     {
-      m_textctrl->stc()->SetFocus();
+      m_ex_commandline->stc()->SetFocus();
     }
   }
 }
 
 void wex::del::frame::show_ex_message(const std::string& text)
 {
-  if (!is_ex(m_textctrl))
+  if (!is_ex(m_ex_commandline))
   {
     show_ex_bar();
   }

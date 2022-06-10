@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      textctrl.h
-// Purpose:   Declaration of wex::textctrl class
+// Name:      ex-commandline.h
+// Purpose:   Declaration of wex::ex_commandline class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2016-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -19,23 +19,28 @@ class stc;
 };
 
 class frame;
-class textctrl_imp;
+class ex_commandline_imp;
 
-/// Offers a text ctrl related to a factory::stc object.
-class textctrl
+/// Offers a ex commandline control related to a factory::stc object,
+/// allowing you to enter ex commands for that stc object in the
+/// commandline.
+class ex_commandline
 {
 public:
   /// Constructor. Creates empty control.
-  explicit textctrl(frame* frame, wxControl* prefix, const data::window& data);
+  explicit ex_commandline(
+    frame*              frame,
+    wxControl*          prefix,
+    const data::window& data);
 
   /// Constructor. Skips prefix.
-  explicit textctrl(
+  explicit ex_commandline(
     frame*              frame,
     const std::string&  value = std::string(),
     const data::window& data  = data::window());
 
-  /// Returns the control window for the component.
-  wxControl* control();
+  /// Returns the stc control window for the component.
+  factory::stc* control();
 
   /// Returns frame.
   auto* get_frame() { return m_frame; }
@@ -45,6 +50,9 @@ public:
 
   /// Destroys the implementation.
   void on_exit();
+
+  /// Handles keydown event.
+  void on_key_down(wxKeyEvent& event);
 
   /// Selects all text.
   void select_all() const;
@@ -67,8 +75,8 @@ public:
   auto* stc() { return m_stc; }
 
 private:
-  wex::factory::stc* m_stc{nullptr};
-  frame*             m_frame;
-  textctrl_imp*      m_imp;
+  wex::factory::stc*  m_stc{nullptr};
+  frame*              m_frame;
+  ex_commandline_imp* m_imp;
 };
 }; // namespace wex

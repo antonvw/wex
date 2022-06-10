@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <wex/factory/bind.h>
 #include <wex/factory/blame.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/ex-command.h>

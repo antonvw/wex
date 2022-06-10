@@ -12,10 +12,10 @@
 #include <wex/del/defs.h>
 #include <wex/del/dirctrl.h>
 #include <wex/del/frame.h>
+#include <wex/factory/bind.h>
 #include <wex/factory/lexers.h>
 #include <wex/factory/path-lexer.h>
 #include <wex/stc/vcs.h>
-#include <wex/ui/bind.h>
 #include <wx/stockitem.h> // for wxGetStockLabel
 
 #define GET_VECTOR_FILES                              \

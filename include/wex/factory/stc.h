@@ -2,7 +2,7 @@
 // Name:      factory/stc.h
 // Purpose:   Declaration of class wex::factory::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -74,7 +74,7 @@ public:
     ;
   };
 
-  /// Returns a ex command.
+  /// Returns the ex command.
   virtual const ex_command& get_ex_command() const { return m_command; }
 
   /// Returns find string, from selected text or from config.
@@ -174,9 +174,9 @@ public:
     ;
   }
 
-  /// Reset all margins.
-  /// Default not implemented.
-  virtual void reset_margins(margin_t type = margin_t().set()) { ; }
+  /// Resets (all) margins.
+  /// Default just resets all margins.
+  virtual void reset_margins(margin_t type = margin_t().set());
 
   /// Sets hex mode (default false).
   virtual bool set_hexmode(bool on) { return false; }
@@ -239,6 +239,9 @@ public:
   virtual void visual(bool on) { ; }
 
   /// Other methods.
+
+  /// Binds wx methods.
+  void bind_wx();
 
   /// Returns EOL string.
   /// If you only want to insert a newline, use NewLine()
@@ -306,10 +309,11 @@ public:
   int  get_line_count_request() override { return GetLineCount(); }
   void goto_line(int line) override;
 
+protected:
+  ex_command m_command;
+
 private:
   lexer m_lexer;
-
-  ex_command m_command;
 };
 }; // namespace factory
 }; // namespace wex

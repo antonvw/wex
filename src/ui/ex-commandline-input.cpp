@@ -1,20 +1,22 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      textctrl-input.cpp
-// Purpose:   Implementation of wex::textctrl_input class
+// Name:      ex-commandline-input.cpp
+// Purpose:   Implementation of wex::ex_commandline_input class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <stdlib.h>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
+#include <wex/ui/ex-commandline-input.h>
+#include <wex/ui/ex-commandline.h>
 #include <wex/ui/frd.h>
-#include <wex/ui/textctrl-input.h>
-#include <wex/ui/textctrl.h>
+
+#include <wx/textentry.h>
 
 #include <charconv>
 
-wex::textctrl_input::textctrl_input(
+wex::ex_commandline_input::ex_commandline_input(
   ex_command::type_t type,
   const std::string& name)
   : m_type(type)
@@ -28,7 +30,7 @@ wex::textctrl_input::textctrl_input(
   }
 }
 
-wex::textctrl_input::~textctrl_input()
+wex::ex_commandline_input::~ex_commandline_input()
 {
   if (!m_values.empty())
   {
@@ -63,7 +65,7 @@ wex::textctrl_input::~textctrl_input()
   }
 }
 
-const std::string wex::textctrl_input::get() const
+const std::string wex::ex_commandline_input::get() const
 {
   try
   {
@@ -76,7 +78,7 @@ const std::string wex::textctrl_input::get() const
   }
 }
 
-void wex::textctrl_input::set(const std::string& value)
+void wex::ex_commandline_input::set(const std::string& value)
 {
   assert(!value.empty());
 
@@ -87,15 +89,15 @@ void wex::textctrl_input::set(const std::string& value)
   config(m_name).set(m_values);
 }
 
-void wex::textctrl_input::set(const textctrl* tc)
+void wex::ex_commandline_input::set(const ex_commandline* cl)
 {
-  if (const auto v(tc->get_text()); !v.empty())
+  if (const auto v(cl->get_text()); !v.empty())
   {
     set(v);
   }
 }
 
-bool wex::textctrl_input::set(int key, textctrl* tc)
+bool wex::ex_commandline_input::set(int key, wxTextEntryBase* te)
 {
   if (m_values.empty())
   {
@@ -154,16 +156,16 @@ bool wex::textctrl_input::set(int key, textctrl* tc)
       return false;
   }
 
-  if (tc != nullptr)
+  if (te != nullptr)
   {
-    tc->set_text(get());
-    tc->select_all();
+    te->SetValue(get());
+    te->SelectAll();
   }
 
   return true;
 }
 
-void wex::textctrl_input::set(const values_t& values)
+void wex::ex_commandline_input::set(const values_t& values)
 {
   m_values.assign(values.cbegin(), values.cend());
   m_iterator = m_values.cbegin();
