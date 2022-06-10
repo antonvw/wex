@@ -8,7 +8,6 @@
 
 #include <wex/core/cmdline.h>
 #include <wex/core/config.h>
-#include <wex/core/file.h>
 #include <wex/core/log.h>
 #include <wex/factory/stc.h>
 #include <wex/ui/frame.h>
@@ -23,7 +22,7 @@ bool wex::ex::command_set(const std::string& command)
   wex::cmdline cmdline(
     // switches
     {{{"ac", _("Auto complete")}, nullptr},
-     {{"ai", "ex-set.ai"},
+     {{"autoindent,ai", "ex-set.ai"},
       [&](bool on)
       {
         if (!modeline)
@@ -34,7 +33,7 @@ bool wex::ex::command_set(const std::string& command)
       {
         m_auto_write = on;
       }},
-     {{"eb", _("stc.Error bells")}, nullptr},
+     {{"errorbells,eb", _("stc.Error bells")}, nullptr},
      {{"el", "ex-set.el"},
       [&](bool on)
       {
@@ -44,7 +43,7 @@ bool wex::ex::command_set(const std::string& command)
         else
           get_stc()->SetEdgeMode(wxSTC_EDGE_LINE);
       }},
-     {{"ic", "ex-set.ignorecase"},
+     {{"ignorecase,ic", "ex-set.ignorecase"},
       [&](bool on)
       {
         if (!on)
@@ -62,7 +61,7 @@ bool wex::ex::command_set(const std::string& command)
           m_search_flags &= ~wxSTC_FIND_WHOLEWORD;
         wex::find_replace_data::get()->set_match_word(on);
       }},
-     {{"nu", _("stc.Line numbers")},
+     {{"number,nu", _("stc.Line numbers")},
       [&](bool on)
       {
         if (modeline)
@@ -73,7 +72,7 @@ bool wex::ex::command_set(const std::string& command)
       {
         get_stc()->SetReadOnly(on);
       }},
-     {{"showmode", _("stc.Show mode")},
+     {{"showmode,sm", _("stc.Show mode")},
       [&](bool on)
       {
         m_frame->get_statusbar()->pane_show("PaneMode", on);
@@ -94,11 +93,10 @@ bool wex::ex::command_set(const std::string& command)
           get_stc()->SetViewEOL(true);
         }
       }},
-     {{"ut", _("stc.Use tabs")},
+     {{"expandtab,et", _("stc.Expand tabs")},
       [&](bool on)
       {
-        if (modeline)
-          get_stc()->SetUseTabs(on);
+        get_stc()->SetUseTabs(!on);
       }},
      {{"wm", "ex-set.wm"},
       [&](bool on)
@@ -134,7 +132,9 @@ bool wex::ex::command_set(const std::string& command)
        {
          config("stc.Reported lines").set(std::any_cast<int>(val));
        }}},
-     {{"sw", _("stc.Indent"), std::to_string(get_stc()->GetIndent())},
+     {{"shiftwidth,sw",
+       _("stc.Indent"),
+       std::to_string(get_stc()->GetIndent())},
       {cmdline::INT,
        [&](const std::any& val)
        {
@@ -154,7 +154,9 @@ bool wex::ex::command_set(const std::string& command)
          else
            get_stc()->get_lexer().clear();
        }}},
-     {{"ts", _("stc.Tab width"), std::to_string(get_stc()->GetTabWidth())},
+     {{"softtabstop,ts",
+       _("stc.Tab width"),
+       std::to_string(get_stc()->GetTabWidth())},
       {cmdline::INT,
        [&](const std::any& val)
        {

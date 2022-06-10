@@ -137,8 +137,15 @@ void wex::stc::add_text(const std::string& text)
   }
   else if (!GetOvertype())
   {
-    Allocate(GetTextLength() + text.size());
-    AddTextRaw(text.data(), text.size());
+    if (text == "\t" && !GetUseTabs())
+    {
+      Tab();
+    }
+    else
+    {
+      Allocate(GetTextLength() + text.size());
+      AddTextRaw(text.data(), text.size());
+    }
   }
   else
   {
@@ -425,7 +432,9 @@ void wex::stc::guess_type_and_modeline()
   if (regex v("\\s+vim?:\\s*(set [a-z0-9:= ]+)");
       get_vi().is_active() && (v.search(head) > 0 || v.search(tail) > 0))
   {
-    if (!get_vi().command(":" + v[0] + "*")) // add * to indicate modeline
+    if (!get_vi().command(
+          // the vim modeline command sometimes ends with a : (see test)
+          ":" + rfind_before(v[0], ":") + "*")) // add * to indicate modeline
     {
       log::status("Could not apply vi settings");
     }

@@ -84,7 +84,7 @@ void wex::stc::config_get()
   SetTabDrawMode(iv.find<long>(_("stc.Tab draw mode")));
   SetTabWidth(iv.find<int>(_("stc.Tab width")));
   SetUseHorizontalScrollBar(iv.find<bool>(_("stc.Scroll bars")));
-  SetUseTabs(iv.find<bool>(_("stc.Use tabs")));
+  SetUseTabs(!iv.find<bool>(_("stc.Expand tabs")));
 
   if (m_data.flags().test(data::stc::WIN_EX))
   {
@@ -149,7 +149,7 @@ void wex::stc::on_init()
           {{_("Switches"),
             {{{_("stc.End of line"),
                _("stc.Line numbers"),
-               _("stc.Use tabs"),
+               def(_("stc.Expand tabs")),
                _("stc.Ex mode show hex"),
                def(_("stc.Caret line")),
                def(_("stc.Scroll bars")),

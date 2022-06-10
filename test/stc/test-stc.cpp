@@ -313,11 +313,22 @@ TEST_CASE("wex::stc")
       REQUIRE(stc->get_lexer().scintilla_lexer() == "sql");
     }
 
-    SUBCASE("modeline")
+    SUBCASE("modeline-vi")
     {
-      auto* stc = new wex::stc(std::string("// 	vim: set ts=120 "
+      auto* stc = new wex::stc(std::string("// 	vi: set ts=120 "
                                            "// this is a modeline"));
       frame()->pane_add(stc);
+      REQUIRE(stc->GetTabWidth() == 120);
+      REQUIRE(stc->get_vi().mode().is_command());
+    }
+
+    SUBCASE("modeline-vim")
+    {
+      auto* stc =
+        // see e.g. libre-office-xmlreader.h
+        new wex::stc(std::string("// vim: set softtabstop=120 expandtab:"));
+      frame()->pane_add(stc);
+      REQUIRE(!stc->GetUseTabs());
       REQUIRE(stc->GetTabWidth() == 120);
       REQUIRE(stc->get_vi().mode().is_command());
     }

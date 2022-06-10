@@ -38,7 +38,8 @@ const auto find_if(const T& t, const std::vector<std::string>& v)
     t.end(),
     [v](auto const& i)
     {
-      return v[0] == find_before(i.first[0], ",");
+      return v[0] == find_before(i.first[0], ",") ||
+             v[0] == find_after(i.first[0], ",");
     });
 }
 
@@ -388,7 +389,9 @@ bool wex::cmdline::set_option(const std::vector<std::string>& v, bool save)
 
     for (const auto& it : m_options)
     {
-      if (v[0] == find_before(it.first[0], ","))
+      if (
+        v[0] == find_before(it.first[0], ",") ||
+        v[0] == find_after(it.first[0], ","))
       {
         switch (it.second.first)
         {

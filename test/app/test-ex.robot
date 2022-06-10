@@ -69,7 +69,7 @@ saveas
 set
 	Input	:set all *
 	Appl
-	Output Contains	ts=
+	Output Contains	ec=
 
 set-bool
 	Input	:set nosws *
@@ -80,7 +80,7 @@ set-bool
 set-info
 	Input	:set ts ? *
 	Appl
-	Output Contains	ts=
+	Output Contains	tabstop=
 
 set-verbosity
 	Input	:set ve?
