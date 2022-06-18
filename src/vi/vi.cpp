@@ -34,7 +34,7 @@ bool is_special_key(const wxKeyEvent& event, const vi_mode& mode)
          (event.GetKeyCode() == WXK_ESCAPE || event.GetKeyCode() == WXK_BACK ||
           event.GetKeyCode() == WXK_RETURN ||
           event.GetKeyCode() == WXK_NUMPAD_ENTER ||
-          (!mode.is_visual() && event.GetKeyCode() == WXK_TAB) ||
+          event.GetKeyCode() == WXK_TAB ||
           (!mode.is_insert() &&
            (event.GetKeyCode() == WXK_LEFT ||
             event.GetKeyCode() == WXK_DELETE ||

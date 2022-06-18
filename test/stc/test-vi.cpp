@@ -130,6 +130,11 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command(":set nosws"));
     REQUIRE(vi->command(":set dir=./"));
 
+    REQUIRE(vi->command(":set noexpandtab"));
+    REQUIRE(stc->GetUseTabs());
+    REQUIRE(vi->command(":set expandtab"));
+    REQUIRE(!stc->GetUseTabs());
+
     REQUIRE(vi->command(":set report=10"));
     REQUIRE(wex::config("stc.Reported lines").get(5) == 10);
 
@@ -193,6 +198,33 @@ TEST_CASE("wex::vi")
     REQUIRE(exs->get_line_count() == 1);
 
     stc->visual(true);
+  }
+
+  SUBCASE("tab")
+  {
+    stc->clear();
+
+    wxKeyEvent event(wxEVT_CHAR);
+    event.m_uniChar = 'i';
+    REQUIRE(!vi->on_char(event));
+
+    stc->SetUseTabs(true);
+    REQUIRE(stc->GetUseTabs());
+
+    event.m_uniChar = WXK_TAB;
+    REQUIRE(vi->on_key_down(event));
+    REQUIRE(!vi->on_char(event));
+
+    REQUIRE(stc->get_text() == "\t");
+
+    stc->clear();
+    stc->SetUseTabs(false);
+    REQUIRE(!stc->GetUseTabs());
+    REQUIRE(vi->on_key_down(event));
+    REQUIRE(!vi->on_char(event));
+    REQUIRE(stc->get_text().find("\t") == std::string::npos);
+
+    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
   }
 
   SUBCASE("visual")

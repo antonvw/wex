@@ -671,13 +671,13 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
   if (const std::string v(node->attribute("tabmode").value()); !v.empty())
   {
     m_attribs.push_back(
-      {_("Use tabs"),
-       convert_int_attrib({{"use", 1}, {"off", 0}}, v),
+      {_("Expand tabs"),
+       convert_int_attrib({{"use", 0}, {"off", 1}}, v),
        [&](factory::stc* stc, int attrib)
        {
          if (attrib >= 0)
          {
-           stc->SetUseTabs(true);
+           stc->SetUseTabs(attrib);
          }
        }});
   }
