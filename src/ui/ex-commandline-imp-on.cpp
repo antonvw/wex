@@ -241,6 +241,7 @@ void wex::ex_commandline_imp::on_text_enter_do()
   if (m_command.type() == ex_command::type_t::FIND)
   {
     find_replace_data::get()->set_find_string(get_text());
+    m_command.exec_finish();
   }
   else
   {

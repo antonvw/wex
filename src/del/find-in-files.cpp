@@ -37,6 +37,9 @@ void wex::del::frame::find_in_files(window_id dialogid)
 
   find_replace_data::get()->set_regex(
     config(find_replace_data::get()->text_regex()).get(true));
+    
+  find_replace_data::get()->set_match_word(
+    config(find_replace_data::get()->text_match_word()).get(true));
 
   wex::dir dir(
     path(config(m_text_in_folder).get_first_of()),

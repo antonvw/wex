@@ -810,6 +810,11 @@ bool wex::stc::vi_command(const std::string& command)
   return m_vi->command(command);
 }
 
+bool wex::stc::vi_command_finish()
+{
+  return m_vi->command_finish();
+}
+
 const std::string wex::stc::vi_mode() const
 {
   return m_vi->mode().str();

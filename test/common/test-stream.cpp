@@ -2,7 +2,7 @@
 // Name:      test-stream.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/stream.h>
@@ -16,7 +16,6 @@ void find_prep(wex::stream& s, wex::factory::find_replace_data* frd)
 {
   REQUIRE(s.path() == wex::test::get_path("test.h"));
 
-  frd->set_match_word(true);
   frd->set_replace_string("test");
 
   const auto start = std::chrono::system_clock::now();
@@ -28,10 +27,11 @@ void find_prep(wex::stream& s, wex::factory::find_replace_data* frd)
   REQUIRE(!s.get_statistics().get_elements().get_items().empty());
 }
 
-#define STREAM_FIND(RE, FIND, MC, AC)                     \
-  frd.set_regex(RE);                                      \
+#define STREAM_FIND(IS_RE, FIND, MC, MW, AC)              \
+  frd.set_regex(IS_RE);                                   \
   frd.set_find_string(FIND);                              \
   frd.set_match_case(MC);                                 \
+  frd.set_match_word(MW);                                 \
                                                           \
   wex::stream s(                                          \
     &frd,                                                 \
@@ -66,15 +66,29 @@ TEST_CASE("wex::stream")
 
   // to verify: git grep "\btest\b" test.h | wc
 
-  SUBCASE("find") { STREAM_FIND(false, "test", true, 193); }
+  SUBCASE("find")
+  {
+    STREAM_FIND(false, "test", true, true, 193);
+  }
 
-  SUBCASE("find-regex") { STREAM_FIND(true, "\\btest\\b", true, 193); }
+  SUBCASE("find-no-matchword")
+  {
+    STREAM_FIND(false, "test", true, false, 197);
+  }
 
-  SUBCASE("find-ignore-case") { STREAM_FIND(false, "tESt", false, 194); }
+  SUBCASE("find-regex")
+  {
+    STREAM_FIND(true, "\\btest\\b", true, true, 193);
+  }
+
+  SUBCASE("find-ignore-case")
+  {
+    STREAM_FIND(false, "tESt", false, true, 194);
+  }
 
   SUBCASE("find-regex-ignore-case")
   {
-    STREAM_FIND(true, "\\btESt\\b", false, 194);
+    STREAM_FIND(true, "\\btESt\\b", false, true, 194);
   }
 
   SUBCASE("replace")

@@ -54,14 +54,14 @@ bool wex::stc::link_open()
 
 bool wex::stc::link_open(link_t mode, std::string* filename)
 {
-  const auto sel = GetSelectedText().ToStdString();
+  const auto& sel(GetSelectedText().ToStdString());
 
   if (sel.size() > 200 || (!sel.empty() && sel.find('\n') != std::string::npos))
   {
     return false;
   }
 
-  const std::string text = (!sel.empty() ? sel : GetCurLine().ToStdString());
+  const auto& text(!sel.empty() ? sel : GetCurLine().ToStdString());
 
   if (mode[LINK_OPEN])
   {

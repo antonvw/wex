@@ -89,6 +89,9 @@ public:
   /// Executes the command on the stc component if available.
   bool exec() const;
 
+  /// Finishes the execute.
+  bool exec_finish() const;
+
   /// Returns front of command text.
   auto front() const { return m_text.front(); }
 

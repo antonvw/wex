@@ -930,6 +930,11 @@ const std::string wex::listview::item_to_text(long item_number) const
     return text;
   }
 
+  if (item_number >= GetItemCount())
+  {
+    return text;
+  }
+
   switch (m_data.type())
   {
     case data::listview::FILE:
@@ -989,6 +994,8 @@ bool wex::listview::load(const std::list<std::string>& l)
 
   if (m_data.type() == data::listview::TSV && GetColumnCount() == 0)
   {
+    // Use front item to setup the columns, so we assume each
+    // item in the vector has the same columns.
     boost::tokenizer<boost::char_separator<char>> tok(
       l.front(),
       boost::char_separator<char>("\t"));

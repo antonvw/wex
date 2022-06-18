@@ -58,6 +58,11 @@ bool wex::ex_command::exec() const
   return m_stc != nullptr && m_stc->vi_command(command());
 }
 
+bool wex::ex_command::exec_finish() const
+{
+  return m_stc != nullptr && m_stc->vi_command_finish();
+}
+
 void wex::ex_command::no_type()
 {
   m_has_type = false;
