@@ -87,16 +87,25 @@ constexpr int c_strcmp(char const* lhs, char const* rhs)
     return 1;                                                               \
   }
 
-bool wex::vi::command_finish()
+bool wex::vi::command_finish(bool user_input)
 {
   // The command string contains original command, optional count,
   // followed by / or ?, and optional search text.
   if (regex v("^([1-9][0-9]*)([/?])"); v.search(m_command_string) == 2)
   {
-    m_count--;
+    if (user_input)
+    {
+      m_count--;
+    }
 
     find_next(v[1] == "/" ? "n" : "N");
   }
+  else if (!user_input)
+  {
+    find_next(m_command_string.find("/") == 0 ? "n" : "N");
+  }
+
+  m_count = 1;
 
   return true;
 }
@@ -512,7 +521,7 @@ size_t wex::vi::find_next(const std::string& direction)
          !get_stc()->find(
            find,
            search_flags(),
-           direction == "n" == m_search_forward))
+           direction == "n"))
      {
        m_command.clear();
        return (size_t)0;
@@ -543,7 +552,7 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
 
   filter_count(command);
 
-  if (wex::vim vim(this, command, type); vim.is_vim_motion())
+  if (wex::vim vim(this, command, type); vim.is_motion())
   {
     vim.motion_prep();
   }
@@ -584,7 +593,7 @@ bool wex::vi::motion_command_handle(
   size_t parsed = 0;
   auto   start  = get_stc()->GetCurrentPos();
 
-  if (wex::vim vim(this, command, type); vim.is_vim_motion())
+  if (wex::vim vim(this, command, type); vim.is_motion())
   {
     if (!vim.motion(start, parsed, f_type))
     {

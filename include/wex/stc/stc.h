@@ -252,7 +252,7 @@ public:
   void use_modification_markers(bool use) override;
 
   bool        vi_command(const std::string& command) override;
-  bool        vi_command_finish() override;
+  bool        vi_command_finish(bool user_input) override;
   void        vi_record(const std::string& command) override;
   std::string vi_register(char c) const override;
   int         vi_search_flags() const override { return m_vi->search_flags(); }

@@ -224,7 +224,7 @@ void wex::ex_commandline_imp::on_text_enter(wxEvent& event)
     event.Skip();
   }
   else if (
-    (m_user_input && m_command.type() == ex_command::type_t::FIND) ||
+    (m_command.type() == ex_command::type_t::FIND) ||
     m_command.reset(get_text()).exec())
   {
     on_text_enter_do();
@@ -241,7 +241,7 @@ void wex::ex_commandline_imp::on_text_enter_do()
   if (m_command.type() == ex_command::type_t::FIND)
   {
     find_replace_data::get()->set_find_string(get_text());
-    m_command.exec_finish();
+    m_command.exec_finish(m_user_input);
   }
   else
   {

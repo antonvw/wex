@@ -2,7 +2,7 @@
 // Name:      command-parse.cpp
 // Purpose:   Implementation of class wex::vi::parse_command
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/stc.h>
@@ -13,15 +13,18 @@
 
 bool wex::vi::parse_command(std::string& command)
 {
-  const auto org(command);
-
   if (const auto& it = get_macros().get_keys_map().find(command.front());
       it != get_macros().get_keys_map().end())
   {
     command = it->second;
   }
 
-  m_count = 1;
+  if (
+    m_command.type() != ex_command::type_t::FIND &&
+    m_command.type() != ex_command::type_t::FIND_MARGIN)
+  {
+    m_count = 1;
+  }
 
   if (command.front() == '"')
   {
@@ -45,10 +48,10 @@ bool wex::vi::parse_command(std::string& command)
     return false;
   }
 
-  return parse_command_handle(org, command);
+  return parse_command_handle(command);
 }
 
-bool wex::vi::parse_command_handle(const std::string& org, std::string& command)
+bool wex::vi::parse_command_handle(std::string& command)
 {
   const motion_t motion      = get_motion(command);
   bool           check_other = true;
@@ -83,7 +86,7 @@ bool wex::vi::parse_command_handle(const std::string& org, std::string& command)
     {
       return insert_mode(command);
     }
-    else if (command != org)
+    else if (command != m_command_string)
     {
       return parse_command(command);
     }
@@ -136,7 +139,7 @@ bool wex::vi::parse_command_motion(
   std::string& command,
   bool&        check_other)
 {
-  if (wex::vim vim(this, command, motion); vim.is_vim_special())
+  if (wex::vim vim(this, command, motion); vim.is_special())
   {
     if (vim.special())
     {

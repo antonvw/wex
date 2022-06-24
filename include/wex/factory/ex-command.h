@@ -90,7 +90,7 @@ public:
   bool exec() const;
 
   /// Finishes the execute.
-  bool exec_finish() const;
+  bool exec_finish(bool user_input) const;
 
   /// Returns front of command text.
   auto front() const { return m_text.front(); }

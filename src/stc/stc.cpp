@@ -810,9 +810,9 @@ bool wex::stc::vi_command(const std::string& command)
   return m_vi->command(command);
 }
 
-bool wex::stc::vi_command_finish()
+bool wex::stc::vi_command_finish(bool user_input)
 {
-  return m_vi->command_finish();
+  return m_vi->command_finish(user_input);
 }
 
 const std::string wex::stc::vi_mode() const

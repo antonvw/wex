@@ -58,9 +58,9 @@ bool wex::ex_command::exec() const
   return m_stc != nullptr && m_stc->vi_command(command());
 }
 
-bool wex::ex_command::exec_finish() const
+bool wex::ex_command::exec_finish(bool user_input) const
 {
-  return m_stc != nullptr && m_stc->vi_command_finish();
+  return m_stc != nullptr && m_stc->vi_command_finish(user_input);
 }
 
 void wex::ex_command::no_type()

@@ -48,7 +48,7 @@ public:
   bool command(const std::string& command) final;
 
   /// Finishes vi command.
-  bool command_finish();
+  bool command_finish(bool user_input);
 
   /// Returns inserted text.
   const auto& inserted_text() const { return m_insert_text; }
@@ -109,7 +109,7 @@ private:
   bool motion_command_handle(motion_t type, std::string& command, function_t t);
   bool other_command(std::string& command);
   bool parse_command(std::string& command);
-  bool parse_command_handle(const std::string& org, std::string& command);
+  bool parse_command_handle(std::string& command);
   bool parse_command_handle_single(
     motion_t     type,
     std::string& command,
