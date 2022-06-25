@@ -118,6 +118,28 @@ std::string ignore_case(const std::string& text)
 
   return output;
 };
+
+int check_match(int index, const std::string look, const std::string& input)
+{
+  const auto& text(ignore_case(input));
+
+  if (find_replace_data::get()->match_word())
+  {
+    if (text == look)
+    {
+      return index;
+    }
+  }
+  else
+  {
+    if (text.find(look) != std::string::npos)
+    {
+      return index;
+    }
+  }
+
+  return -1;
+}
 }; // namespace wex
 
 wex::listview::listview(const data::listview& data)
@@ -606,26 +628,9 @@ bool wex::listview::find_next(const std::string& text, bool forward)
   for (int index = start_item; index != end_item && match == -1;
        (forward ? index++ : index--))
   {
-    std::string text;
-
     for (int col = 0; col < GetColumnCount() && match == -1; col++)
     {
-      text = ignore_case(std::string(GetItemText(index, col)));
-
-      if (find_replace_data::get()->match_word())
-      {
-        if (text == text_use)
-        {
-          match = index;
-        }
-      }
-      else
-      {
-        if (text.find(text_use) != std::string::npos)
-        {
-          match = index;
-        }
-      }
+      match = check_match(index, text_use, GetItemText(index, col));
     }
   }
 
