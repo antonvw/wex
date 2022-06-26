@@ -67,6 +67,10 @@ private:
     bool m_show_inserts{true};
     bool m_show_keywords{true};
   };
+  
+  bool action_back();
+  bool action_default(char c);
+  bool action_request(char c, actions& a);
 
   void clear_insert();
   bool determine_actions(char c, actions& a);

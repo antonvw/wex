@@ -26,6 +26,70 @@ wex::auto_complete::~auto_complete()
   delete m_scope;
 }
 
+bool wex::auto_complete::action_back()
+{
+  switch (m_insert.size())
+  {
+    case 0:
+      return false;
+
+    case 1:
+      m_insert.pop_back();
+      return false;
+
+    default:
+      m_insert.pop_back();
+      return true;
+  }
+}
+    
+bool wex::auto_complete::action_default(char c)
+{
+  if (is_codeword_separator(c) || iscntrl(c))
+  {
+    clear_insert();
+    clear();
+    return false;
+  }
+  else
+  {
+    m_request_members.clear();
+
+    if (is_codeword_separator(m_stc->GetCharAt(m_stc->GetCurrentPos() - 1)))
+    {
+      m_insert = c;
+    }
+    else
+    {
+      m_insert += c;
+    }
+      
+    return true;
+  }
+}
+    
+bool wex::auto_complete::action_request(char c, actions& ac)
+{
+  if (
+    c == '.' ||
+    (c == '>' && m_stc->GetCharAt(m_stc->GetCurrentPos() - 1) == '-'))
+  {
+    if (!m_insert.empty())
+    {
+      m_request_members = (c == '>' ? "->" : ".");
+
+      if (!m_active.empty())
+      {
+        clear_insert();
+      }
+    }
+
+    ac.reset();
+  }
+    
+  return true;
+}
+    
 void wex::auto_complete::clear()
 {
   clear_insert();
@@ -118,42 +182,14 @@ bool wex::auto_complete::determine_actions(char c, actions& ac)
   switch (c)
   {
     case WXK_BACK:
-      switch (m_insert.size())
-      {
-        case 0:
-          return false;
-
-        case 1:
-          m_insert.pop_back();
-          return false;
-
-        default:
-          m_insert.pop_back();
-      }
-      break;
+      return action_back();
 
     case WXK_RETURN:
       return false;
 
     case '.':
     case '>':
-      if (
-        c == '.' ||
-        (c == '>' && m_stc->GetCharAt(m_stc->GetCurrentPos() - 1) == '-'))
-      {
-        if (!m_insert.empty())
-        {
-          m_request_members = (c == '>' ? "->" : ".");
-
-          if (!m_active.empty())
-          {
-            clear_insert();
-          }
-        }
-
-        ac.reset();
-      }
-      break;
+      return action_request(c, ac);
 
     case ',':
       store_variable();
@@ -174,25 +210,7 @@ bool wex::auto_complete::determine_actions(char c, actions& ac)
       return false;
 
     default:
-      if (is_codeword_separator(c) || iscntrl(c))
-      {
-        clear_insert();
-        clear();
-        return false;
-      }
-      else
-      {
-        m_request_members.clear();
-
-        if (is_codeword_separator(m_stc->GetCharAt(m_stc->GetCurrentPos() - 1)))
-        {
-          m_insert = c;
-        }
-        else
-        {
-          m_insert += c;
-        }
-      }
+      return action_default(c);
   }
 
   return true;
