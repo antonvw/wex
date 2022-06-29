@@ -521,7 +521,7 @@ size_t wex::vi::find_next(const std::string& direction)
          !get_stc()->find(
            find,
            search_flags(),
-           direction == "n"))
+           direction == "n" && m_search_forward))
      {
        m_command.clear();
        return (size_t)0;

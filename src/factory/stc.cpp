@@ -26,6 +26,12 @@ void wex::factory::stc::bind_wx()
 
      {[=, this](wxCommandEvent& event)
       {
+        // do nothing, to eat the event (for ex commandline)
+      },
+      wxID_JUMP_TO},
+
+     {[=, this](wxCommandEvent& event)
+      {
         Paste();
       },
       wxID_PASTE},
@@ -74,6 +80,21 @@ const std::string wex::factory::stc::eol() const
   return "\r\n";
 }
 
+#define FIND_TEXT(FROM, TO)                                               \
+  if (const auto pos = FindText(GetCurrentPos(), TO, text, find_flags);   \
+      pos != wxSTC_INVALID_POSITION)                                      \
+  {                                                                       \
+    SetSelection(pos, pos + text.size());                                 \
+    return true;                                                          \
+  }                                                                       \
+                                                                          \
+  if (const auto pos = FindText(FROM, GetCurrentPos(), text, find_flags); \
+      pos != wxSTC_INVALID_POSITION)                                      \
+  {                                                                       \
+    SetSelection(pos, pos + text.size());                                 \
+    return true;                                                          \
+  }
+
 bool wex::factory::stc::find(
   const std::string& text,
   int                find_flags,
@@ -81,36 +102,11 @@ bool wex::factory::stc::find(
 {
   if (find_next)
   {
-    if (const auto pos =
-          FindText(GetCurrentPos(), GetTextLength(), text, find_flags);
-        pos != wxSTC_INVALID_POSITION)
-    {
-      SetSelection(pos, pos + text.size());
-      return true;
-    }
-
-    if (const auto pos = FindText(0, GetCurrentPos(), text, find_flags);
-        pos != wxSTC_INVALID_POSITION)
-    {
-      SetSelection(pos, pos + text.size());
-      return true;
-    }
+    FIND_TEXT(0, GetTextLength())
   }
   else
   {
-    if (const auto pos = FindText(GetCurrentPos(), 0, text, find_flags);
-        pos != wxSTC_INVALID_POSITION)
-    {
-      SetSelection(pos, pos + text.size());
-      return true;
-    }
-    if (const auto pos =
-          FindText(GetTextLength() - 1, GetCurrentPos(), text, find_flags);
-        pos != wxSTC_INVALID_POSITION)
-    {
-      SetSelection(pos, pos + text.size());
-      return true;
-    }
+    FIND_TEXT(GetTextLength() - 1, 0)
   }
 
   return false;
@@ -133,7 +129,7 @@ size_t wex::factory::stc::get_fold_level() const
 
 const std::string wex::factory::stc::get_selected_text() const
 {
-  const wxCharBuffer& b(const_cast<stc*>(this)->GetSelectedTextRaw());
+  const auto& b(const_cast<stc*>(this)->GetSelectedTextRaw());
 
   return b.length() == 0 ? std::string() :
                            std::string(b.data(), b.length() - 1);
