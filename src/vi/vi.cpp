@@ -135,6 +135,8 @@ bool wex::vi::command(const std::string& command)
     return false;
   }
 
+  m_command_string = command;
+
   if (command.front() != ':' && command.front() != '!')
   {
     log::trace("vi command") << command;

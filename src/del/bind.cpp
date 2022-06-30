@@ -32,6 +32,13 @@
     }                                                                    \
   }
 
+#define TOOL_ACTION(TOOL, DIALOG, ACTION) \
+  {[=, this](wxCommandEvent& event)       \
+   {                                      \
+     IN_FILES(ACTION, DIALOG)             \
+   },                                     \
+   TOOL},
+
 void wex::del::frame::bind_all()
 {
   Bind(
@@ -50,6 +57,18 @@ void wex::del::frame::bind_all()
 
       event.Skip();
     });
+
+  Bind(
+    wxEVT_MENU,
+    [=, this](wxCommandEvent& event)
+    {
+      on_menu_history(
+        m_project_history,
+        event.GetId() - m_project_history.get_base_id(),
+        wex::data::stc::window_t().set(data::stc::WIN_IS_PROJECT));
+    },
+    m_project_history.get_base_id(),
+    m_project_history.get_base_id() + m_project_history.get_max_files());
 
   bind(this).command(
     {{[=, this](const wxCommandEvent& event)
@@ -112,17 +131,10 @@ void wex::del::frame::bind_all()
       },
       ID_PROJECT_SAVE},
 
-     {[=, this](wxCommandEvent& event)
-      {
-        IN_FILES(sed, m_rif_dialog)
-      },
-      ID_TOOL_REPLACE},
-
-     {[=, this](wxCommandEvent& event)
-      {
-        IN_FILES(grep, m_fif_dialog)
-      },
-      ID_TOOL_REPORT_FIND},
+     // clang-format off
+     TOOL_ACTION(ID_TOOL_REPLACE, m_rif_dialog, sed)
+     TOOL_ACTION(ID_TOOL_REPORT_FIND, m_fif_dialog, grep)
+     // clang-format on
 
      {[=, this](wxCommandEvent& event)
       {
@@ -149,16 +161,4 @@ void wex::del::frame::bind_all()
         Refresh();
       },
       ID_VIEW_TITLEBAR}});
-
-  Bind(
-    wxEVT_MENU,
-    [=, this](wxCommandEvent& event)
-    {
-      on_menu_history(
-        m_project_history,
-        event.GetId() - m_project_history.get_base_id(),
-        wex::data::stc::window_t().set(data::stc::WIN_IS_PROJECT));
-    },
-    m_project_history.get_base_id(),
-    m_project_history.get_base_id() + m_project_history.get_max_files());
 }

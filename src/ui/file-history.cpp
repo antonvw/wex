@@ -2,7 +2,7 @@
 // Name:      file-history.cpp
 // Purpose:   Implementation of wex::file_history class methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -60,8 +60,8 @@ public:
 private:
   void AddFileToHistory(const wxString& file) override;
 
-  const std::string m_key;
-  config::strings_t m_contents;
+  const std::string         m_key;
+  mutable config::strings_t m_contents;
 };
 }; // namespace wex
 
@@ -225,7 +225,7 @@ wxString wex::file_history_imp::GetHistoryFile(size_t index) const
 
     if (error)
     {
-      const_cast<file_history_imp*>(this)->m_contents.remove(file);
+      m_contents.remove(file);
       const_cast<file_history_imp*>(this)->RemoveFileFromHistory(index);
       log::status(_("Removed not existing file")) << file << "from history";
     }

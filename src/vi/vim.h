@@ -13,7 +13,7 @@ namespace wex
 {
 enum class motion_t;
 
-/// This class offers special vim commands handling (g commands).
+/// This class offers vim commands handling (g commands).
 class vim
 {
 public:
@@ -24,10 +24,10 @@ public:
   vim(vi* vi, std::string& command, vi::motion_t t);
 
   /// Returns true if this is a vim motion command.
-  bool is_vim_motion() const;
+  bool is_motion() const;
 
   /// Returns true if this is a vim special command.
-  bool is_vim_special() const;
+  bool is_special() const;
 
   /// Handles the motion commands.
   bool motion(int start_pos, size_t& parsed, vi::function_t t);

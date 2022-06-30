@@ -20,7 +20,6 @@
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 
 #include <chrono>
-#include <vector>
 
 namespace wex
 {

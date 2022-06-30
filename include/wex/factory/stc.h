@@ -223,6 +223,9 @@ public:
   /// Runs a vi command on this stc (default false).
   virtual bool vi_command(const std::string& command) { return false; }
 
+  /// Finish last vi command (default false).
+  virtual bool vi_command_finish(bool user_input) { return false; }
+
   /// Returns vi mode as a string.
   virtual const std::string vi_mode() const { return std::string(); }
 

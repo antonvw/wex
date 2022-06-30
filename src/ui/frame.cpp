@@ -320,8 +320,6 @@ bool wex::frame::add_toolbar_panes(const panes_t& panes)
           .CloseButton(false)
           .DockFixed(true)
           .Movable(false)
-          .ToolbarPane()
-          .MinSize(-1, 30)
           .CaptionVisible(false);
       }
       else
@@ -372,7 +370,7 @@ wxPanel* wex::frame::create_ex_panel()
   // An ex panel starts with small static text for : or /, then
   // comes the ex ex_commandline for getting user input.
   auto* panel = new wxPanel(this);
-  auto* text  = new wxStaticText(panel, wxID_ANY, " ");
+  auto* text  = new wxStaticText(panel, wxID_ANY, "  ");
   m_ex_commandline =
     new ex_commandline(this, text, data::window().parent(panel));
 
@@ -388,8 +386,6 @@ wxPanel* wex::frame::create_ex_panel()
 
 bool wex::frame::Destroy()
 {
-  pane_show("FINDBAR", false);
-
   if (m_find_replace_dialog != nullptr)
   {
     m_find_replace_dialog->Destroy();
@@ -499,6 +495,10 @@ bool wex::frame::pane_add(const panes_t& panes, const std::string& perspective)
     }
   }
 
+  pane_show("FINDBAR", false);
+
+  // This should not be necessary, but when exiting with a shown findbar,
+  // it reappears too large.
   m_manager.Update();
 
   return true;

@@ -146,13 +146,18 @@ TEST_CASE("wex::vi")
 
   SUBCASE("find")
   {
-    stc->set_text("some text to find");
+    stc->set_text("some text to find another find");
     REQUIRE(vi->mode().is_command());
     REQUIRE(vi->command("/find"));
+    REQUIRE(stc->GetCurrentPos() == 17);
     REQUIRE(vi->mode().is_command());
     REQUIRE(vi->command("yb"));
     REQUIRE(vi->mode().is_command());
     REQUIRE(!vi->command("/xfind"));
+
+    stc->DocumentStart();
+    REQUIRE(vi->command("2/find"));
+    REQUIRE(stc->GetCurrentPos() == 30);
   }
 
   SUBCASE("insert")

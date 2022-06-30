@@ -173,7 +173,8 @@ protected:
   /// disabling current register.
   void set_register(char name) { m_register = name; }
 
-  ex_command m_command;
+  ex_command  m_command;
+  std::string m_command_string;
 
 private:
   typedef std::vector<std::pair<

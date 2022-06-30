@@ -2,7 +2,7 @@
 // Name:      listview.h
 // Purpose:   Declaration of class wex::del::listview
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -36,6 +36,8 @@ protected:
 private:
   void build_popup_menu_multiple(const menu_env* env, menu& menu);
   void build_popup_menu_single(const menu_env* env, menu& menu);
+  void on_compare();
+  void on_tool(const wxCommandEvent& event);
 
   const data::listview::menu_t m_menu_flags;
   class frame*                 m_frame;
