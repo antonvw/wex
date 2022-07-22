@@ -5,6 +5,7 @@
 - ex commands more closely follow
   The Open Group Base Specifications Issue 7, 2018 edition
 - ex command-line is improved, it is now a factory::stc
+- wxWidgets 3.2
 
 **v22.04** *March 6, 2022*
 - Microsoft Visual Studio 2022
