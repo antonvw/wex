@@ -119,7 +119,7 @@ std::string ignore_case(const std::string& text)
   return output;
 };
 
-int check_match(int index, const std::string look, const std::string& input)
+int check_match(int index, const std::string& look, const std::string& input)
 {
   const auto& text(ignore_case(input));
 

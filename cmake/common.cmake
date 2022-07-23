@@ -99,9 +99,11 @@ function(wex_install)
   else ()
     if (wexBUILD_SHARED)
       if (APPLE)
-        file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.dylib)
+        file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.dylib
+          ${CMAKE_BINARY_DIR}/*.a)
       else ()
-        file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.so*)
+        file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.so*
+          ${CMAKE_BINARY_DIR}/*.a)
       endif ()
     else ()
       file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.a)
