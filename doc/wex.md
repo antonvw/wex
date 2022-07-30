@@ -358,7 +358,7 @@ wex::regex::regex(
   wxbase
   wxcore
   wxaui
-  wxhtml
+  wxHTML
   wxscintilla
   wxstc
 
