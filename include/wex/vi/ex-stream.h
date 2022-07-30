@@ -55,6 +55,9 @@ public:
   /// Returns context lines.
   size_t get_context_lines() const { return m_context_lines; }
 
+  /// Returns content of work file.
+  const std::string* get_work() const;
+
   /// Inserts text at specified address.
   bool insert_text(
     const address&     address,

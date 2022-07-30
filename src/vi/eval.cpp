@@ -149,14 +149,19 @@ struct eval
   int operator()(signed_ const& x) const
   {
     int rhs = boost::apply_visitor(*this, x.operand_);
+
+    // A <plus-sign> ( '+' ) or a <hyphen-minus> ( '-' ) followed by
+    // a decimal number shall address the current line plus or minus the number.
+    // A '+' or '-' not followed by a decimal number shall address the current
+    // line plus or minus 1.
     switch (x.sign)
     {
       case '~':
         return ~rhs;
       case '-':
-        return -rhs;
+        return m_ex->get_command().get_stc()->get_current_line() + 1 - rhs;
       case '+':
-        return +rhs;
+        return m_ex->get_command().get_stc()->get_current_line() + 1 + rhs;
     }
     BOOST_ASSERT(0);
     return 0;
@@ -260,7 +265,18 @@ wex::evaluator::~evaluator()
 std::tuple<int, std::string>
 wex::evaluator::eval(const wex::ex* ex, const std::string& text) const
 {
-  std::string expanded(text);
-  marker_and_register_expansion(ex, expanded);
-  return m_eval->eval(ex, expanded);
+  if (text == "-")
+  {
+    return {ex->get_command().get_stc()->get_current_line(), ""};
+  }
+  else if (text == "+")
+  {
+    return {ex->get_command().get_stc()->get_current_line() + 2, ""};
+  }
+  else
+  {
+    std::string expanded(text);
+    marker_and_register_expansion(ex, expanded);
+    return m_eval->eval(ex, expanded);
+  }
 }

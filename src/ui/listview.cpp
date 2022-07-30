@@ -19,6 +19,7 @@
 #include <wex/factory/lexers.h>
 #include <wex/factory/printing.h>
 #include <wex/factory/stc.h>
+#include <wex/factory/util.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/item-dialog.h>
@@ -268,13 +269,7 @@ wex::listview::listview(const data::listview& data)
       process_mouse(event);
     });
 
-  Bind(
-    wxEVT_SET_FOCUS,
-    [=, this](wxFocusEvent& event)
-    {
-      m_frame->set_find_focus(this);
-      event.Skip();
-    });
+  bind_set_focus(this);
 
   Bind(
     wxEVT_SHOW,

@@ -252,8 +252,9 @@ TEST_CASE("wex::ex_stream")
 
     const wex::addressrange ar(&ex, "1,2");
 
-    REQUIRE(exs.substitute(ar, wex::data::substitute("s/test/1234")));
+    REQUIRE(exs.substitute(ar, wex::data::substitute("s/test/12345678")));
     REQUIRE(exs.is_modified());
+    REQUIRE(*exs.get_work() == "123456781\n123456782\ntest3\ntest4\n\n");
   }
 
   SUBCASE("write")
