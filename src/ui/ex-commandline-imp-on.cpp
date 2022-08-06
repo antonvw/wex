@@ -63,38 +63,12 @@ void wex::ex_commandline_imp::on_key_down(wxKeyEvent& event)
   switch (event.GetKeyCode())
   {
     case WXK_TAB:
-      if (m_cl->stc() != nullptr && m_cl->stc()->path().file_exists())
-      {
-        path::current(m_cl->stc()->path().data().parent_path());
-      }
-
-      if (const auto& [r, e, v] = auto_complete_filename(get_text());
-          r)
-      {
-        append_text(e);
-        DocumentEnd();
-      }
+      on_key_down_tab();
       break;
 
     case 'r':
     case 'R':
-      Cut();
-
-#ifdef __WXMAC__
-      /* NOLINTNEXTLINE */
-      if (event.GetModifiers() & wxMOD_RAW_CONTROL)
-#else
-      /* NOLINTNEXTLINE */
-      if (event.GetModifiers() & wxMOD_CONTROL)
-#endif
-      {
-        m_user_input = true;
-        m_control_r  = true;
-      }
-      else
-      {
-        event.Skip();
-      }
+      on_key_down_control_r(event);
       break;
 
     case WXK_DOWN:
@@ -106,28 +80,8 @@ void wex::ex_commandline_imp::on_key_down(wxKeyEvent& event)
       on_key_down_page(event);
       break;
 
-    case WXK_BACK:
-      event.Skip();
-      break;
-
     case WXK_ESCAPE:
-      if (is_ex_mode())
-      {
-        ClearAll();
-        m_command = ex_command(":");
-      }
-      else if (m_cl->stc() != nullptr)
-      {
-        m_cl->stc()->position_restore();
-      }
-
-      if (!is_ex_mode())
-      {
-        m_cl->get_frame()->show_ex_bar(frame::HIDE_BAR_FORCE_FOCUS_STC);
-      }
-
-      m_control_r  = false;
-      m_user_input = false;
+      on_key_down_escape();
       break;
 
     case WXK_RETURN:
@@ -141,6 +95,48 @@ void wex::ex_commandline_imp::on_key_down(wxKeyEvent& event)
       }
       event.Skip();
   }
+}
+
+void wex::ex_commandline_imp::on_key_down_control_r(wxKeyEvent& event)
+{
+  Cut();
+
+#ifdef __WXMAC__
+  /* NOLINTNEXTLINE */
+  if (event.GetModifiers() & wxMOD_RAW_CONTROL)
+#else
+  /* NOLINTNEXTLINE */
+  if (event.GetModifiers() & wxMOD_CONTROL)
+#endif
+  {
+    m_user_input = true;
+    m_control_r  = true;
+  }
+  else
+  {
+    event.Skip();
+  }
+}
+
+void wex::ex_commandline_imp::on_key_down_escape()
+{
+  if (is_ex_mode())
+  {
+    ClearAll();
+    m_command = ex_command(":");
+  }
+  else if (m_cl->stc() != nullptr)
+  {
+    m_cl->stc()->position_restore();
+  }
+
+  if (!is_ex_mode())
+  {
+    m_cl->get_frame()->show_ex_bar(frame::HIDE_BAR_FORCE_FOCUS_STC);
+  }
+
+  m_control_r  = false;
+  m_user_input = false;
 }
 
 void wex::ex_commandline_imp::on_key_down_page(wxKeyEvent& event)
@@ -172,6 +168,20 @@ void wex::ex_commandline_imp::on_key_down_page(wxKeyEvent& event)
   else
   {
     event.Skip();
+  }
+}
+
+void wex::ex_commandline_imp::on_key_down_tab()
+{
+  if (m_cl->stc() != nullptr && m_cl->stc()->path().file_exists())
+  {
+    path::current(m_cl->stc()->path().data().parent_path());
+  }
+
+  if (const auto& [r, e, v] = auto_complete_filename(get_text()); r)
+  {
+    append_text(e);
+    DocumentEnd();
   }
 }
 
