@@ -9,6 +9,7 @@
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
+#include <wex/factory/util.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/bind.h>
 #include <wex/stc/stc.h>
@@ -245,13 +246,7 @@ void wex::stc::bind_other()
       });
   }
 
-  Bind(
-    wxEVT_SET_FOCUS,
-    [=, this](wxFocusEvent& event)
-    {
-      m_frame->set_find_focus(this);
-      event.Skip();
-    });
+  bind_set_focus(this);
 
   Bind(
     wxEVT_STC_AUTOCOMP_COMPLETED,

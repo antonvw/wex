@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      stc/ex-stream.cpp
+// Name:      ex-stream.cpp
 // Purpose:   Implementation of class wex::ex_stream
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
@@ -367,6 +367,16 @@ bool wex::ex_stream::get_previous_line()
   }
 
   return false;
+}
+
+const std::string* wex::ex_stream::get_work() const
+{
+  if (m_work == nullptr)
+  {
+    return nullptr;
+  }
+
+  return m_work->read();
 }
 
 void wex::ex_stream::goto_line(int no)

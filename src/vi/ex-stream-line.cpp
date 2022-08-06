@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      stc/ex-stream-line.cpp
+// Name:      ex-stream-line.cpp
 // Purpose:   Implementation of class wex::ex_stream_line
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-20222 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cassert>
@@ -121,47 +121,8 @@ wex::ex_stream_line::handle_t wex::ex_stream_line::handle(char* line, int& pos)
         break;
 
       case ACTION_SUBSTITUTE:
-      {
-        char* pch = line;
-
-        if (find_replace_data::get()->is_regex())
-        {
-          // if match writes modified line, else write original line
-          std::string text(line, pos);
-
-          if (regex r(m_data.pattern()); r.search(text))
-          {
-            r.replace(text, m_data.replacement());
-            m_actions++;
-          }
-
-          m_file->write(text);
-        }
-        else if ((pch = strstr(pch, m_data.pattern().c_str())) != nullptr)
-        {
-          do
-          {
-            strncpy(
-              pch,
-              m_data.replacement().c_str(),
-              m_data.replacement().size());
-
-            pch++;
-            m_actions++;
-            pos +=
-              (int)m_data.replacement().size() - (int)m_data.pattern().size();
-          } while (m_data.is_global() &&
-                   (pch = strstr(pch, m_data.pattern().c_str())) != nullptr);
-
-          m_file->write(line, pos);
-        }
-        else
-        {
-          m_file->write(line, pos);
-        }
-      }
-
-      break;
+        handle_substitute(line, pos);
+        break;
 
       case ACTION_WRITE:
         m_actions++;
@@ -202,4 +163,18 @@ wex::ex_stream_line::handle_t wex::ex_stream_line::handle(char* line, int& pos)
   m_line++;
 
   return HANDLE_CONTINUE;
+}
+
+void wex::ex_stream_line::handle_substitute(char* line, int& pos)
+{
+  std::string text(line, pos);
+
+  // if regex matches replace text with replacement
+  if (regex r(m_data.pattern()); r.search(text) != -1)
+  {
+    r.replace(text, m_data.replacement());
+    m_actions++;
+  }
+
+  m_file->write(text);
 }

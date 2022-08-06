@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      stc/ex-stream-line.cpp
-// Purpose:   Implementation of class wex::ex_stream_line
+// Name:      ex-stream-line.h
+// Purpose:   Declaration of class wex::ex_stream_line
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -67,6 +67,8 @@ public:
   int lines() const { return m_line; }
 
 private:
+  void handle_substitute(char* line, int& pos);
+
   const action_t         m_action;
   const data::substitute m_data;
   const std::string      m_text;
