@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
+#include <wex/core/log.h>
 #include <wex/factory/blame.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/indicator.h>
@@ -30,7 +31,10 @@ TEST_CASE("wex::stc")
   SUBCASE("auto_complete")
   {
     stc->auto_complete()->use(true);
+    REQUIRE(stc->auto_complete()->use());
+
     stc->auto_complete()->use(false);
+    REQUIRE(!stc->auto_complete()->use());
   }
 
   SUBCASE("binary")
@@ -143,6 +147,7 @@ TEST_CASE("wex::stc")
     REQUIRE(stc->find(std::string("HELLO"))); // uses flags from frd
     REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
 
+    wex::log_none off;
     REQUIRE(!stc->set_indicator(wex::indicator(4, 5), 100, 200));
     wex::find_replace_data::get()->set_match_case(false);
     stc->set_search_flags(-1);

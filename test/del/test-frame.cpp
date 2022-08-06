@@ -7,6 +7,7 @@
 
 #include <thread>
 
+#include <wex/core/log.h>
 #include <wex/del/defs.h>
 #include <wex/stc/process.h>
 #include <wex/ui/frd.h>
@@ -54,7 +55,10 @@ TEST_CASE("wex::del::frame")
 #endif
   }
 
-  SUBCASE("get_debug") { REQUIRE(del_frame()->get_debug() != nullptr); }
+  SUBCASE("get_debug")
+  {
+    REQUIRE(del_frame()->get_debug() != nullptr);
+  }
 
   SUBCASE("get_project_history")
   {
@@ -96,7 +100,10 @@ TEST_CASE("wex::del::frame")
     del_frame()->show_ex_bar(wex::frame::HIDE_BAR_FORCE_FOCUS_STC);
   }
 
-  SUBCASE("statustext_vcs") { del_frame()->statustext_vcs(get_stc()); }
+  SUBCASE("statustext_vcs")
+  {
+    del_frame()->statustext_vcs(get_stc());
+  }
 
   SUBCASE("stc_entry_dialog")
   {
@@ -125,6 +132,8 @@ TEST_CASE("wex::del::frame")
   {
     auto*          menu = new wex::menu();
     wex::menu_item item;
+
+    wex::log_none off;
 
     del_frame()->append_vcs(menu, &item);
 

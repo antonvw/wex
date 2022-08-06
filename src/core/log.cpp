@@ -2,7 +2,7 @@
 // Name:      log.cpp
 // Purpose:   Implementation of class wex::log
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/log/core.hpp>
@@ -258,8 +258,8 @@ void wex::log::init(level_t loglevel, const std::string& default_logfile)
   logging::add_file_log(
     logging::keywords::file_name =
       default_logfile.empty() ? logfile.string() : default_logfile,
-    logging::keywords::open_mode     = std::ios_base::app,
-    logging::keywords::format        = "%TimeStamp% [%Severity%] %Message%");
+    logging::keywords::open_mode = std::ios_base::app,
+    logging::keywords::format    = "%TimeStamp% [%Severity%] %Message%");
 
   m_initialized = true;
 }
@@ -283,6 +283,7 @@ void wex::log::set_level(level_t loglevel)
         logging::trivial::severity >= logging::trivial::error);
       break;
 
+    case LEVEL_OFF:
     case LEVEL_FATAL:
       logging::core::get()->set_filter(
         logging::trivial::severity >= logging::trivial::fatal);
@@ -332,4 +333,15 @@ const std::string wex::log::S()
   const std::string s(m_separator ? " " : "");
   m_separator = true;
   return s;
+}
+
+wex::log_none::log_none()
+  : m_level(log::get_level())
+{
+  log::set_level(log::LEVEL_OFF);
+}
+
+wex::log_none::~log_none()
+{
+  log::set_level(m_level);
 }

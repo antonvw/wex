@@ -2,7 +2,7 @@
 // Name:      log.h
 // Purpose:   Declaration of wex::log class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -30,6 +30,7 @@ public:
     LEVEL_ERROR,   /// error level
     LEVEL_FATAL,   /// fatal level
     LEVEL_STATUS,  /// from wxLog
+    LEVEL_OFF,     /// no logging
   };
 
   /// Static methods.
@@ -160,4 +161,19 @@ private:
   static inline bool    m_initialized{false};
   static inline level_t m_level_filter;
 };
+
+/// This class disables logging, and restores to previous loglevel.
+class log_none
+{
+public:
+  /// Default constructor, disables logging.
+  log_none();
+
+  /// Destructor, restores previous loglevel.
+  ~log_none();
+
+private:
+  const log::level_t m_level;
+};
+
 }; // namespace wex

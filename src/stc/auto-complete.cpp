@@ -42,7 +42,7 @@ bool wex::auto_complete::action_back()
       return true;
   }
 }
-    
+
 bool wex::auto_complete::action_default(char c)
 {
   if (is_codeword_separator(c) || iscntrl(c))
@@ -63,11 +63,11 @@ bool wex::auto_complete::action_default(char c)
     {
       m_insert += c;
     }
-      
+
     return true;
   }
 }
-    
+
 bool wex::auto_complete::action_request(char c, actions& ac)
 {
   if (
@@ -86,10 +86,10 @@ bool wex::auto_complete::action_request(char c, actions& ac)
 
     ac.reset();
   }
-    
+
   return true;
 }
-    
+
 void wex::auto_complete::clear()
 {
   clear_insert();
@@ -216,6 +216,12 @@ bool wex::auto_complete::determine_actions(char c, actions& ac)
   return true;
 }
 
+void wex::auto_complete::actions::reset()
+{
+  m_show_inserts  = false;
+  m_show_keywords = false;
+}
+
 bool wex::auto_complete::show_ctags()
 {
   // If members are requested, and class is active, save it in the filters.
@@ -311,10 +317,4 @@ bool wex::auto_complete::use() const
 const std::string wex::auto_complete::variable(const std::string& name) const
 {
   return m_scope->class_name(name);
-}
-
-void wex::auto_complete::actions::reset()
-{
-  m_show_inserts  = false;
-  m_show_keywords = false;
 }

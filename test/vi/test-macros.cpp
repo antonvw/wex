@@ -5,6 +5,7 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log.h>
 #include <wex/vi/macro-mode.h>
 #include <wex/vi/macros.h>
 #include <wex/vi/vi.h>
@@ -67,6 +68,8 @@ TEST_CASE("wex::macros" * doctest::may_fail())
     REQUIRE(macros.is_recorded("a"));
     REQUIRE(!macros.get_macro_commands("a").empty());
     REQUIRE(macros.erase());
+
+    wex::log_none off;
     REQUIRE(!macros.is_recorded("a"));
     REQUIRE(!macros.erase());
   }
@@ -81,6 +84,7 @@ TEST_CASE("wex::macros" * doctest::may_fail())
 
     std::string expanded;
 
+    wex::log_none off;
     REQUIRE(!macros.mode().expand(vi, wex::variable(), expanded));
     REQUIRE(!macros.mode().expand(vi, wex::variable("x"), expanded));
   }

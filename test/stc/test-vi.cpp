@@ -171,6 +171,8 @@ TEST_CASE("wex::vi")
 
     SUBCASE("invalid")
     {
+      // and skip the error message for recursive line
+      wex::log_none off;
       REQUIRE(!vi->command(":so test-source-2.txt"));
     }
 
