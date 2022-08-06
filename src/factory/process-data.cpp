@@ -8,7 +8,7 @@
 #include <filesystem>
 #include <numeric>
 
-#include <boost/process.hpp>
+#include <boost/process/search_path.hpp>
 
 #include <wex/common/tostring.h>
 #include <wex/core/core.h>

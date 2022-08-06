@@ -60,7 +60,6 @@ private:
   bool is_ex_mode() const;
 
   void on_char(wxKeyEvent& event);
-  void on_char_others(wxKeyEvent& event);
   void on_key_down_page(wxKeyEvent& event);
   void on_text();
   void on_text_enter(wxEvent& event);

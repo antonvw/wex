@@ -91,6 +91,9 @@ TEST_CASE("wex::address")
       REQUIRE(address.get_line() == 3);
       REQUIRE(address.get_line(25) == 7);
       REQUIRE(address.get_line() == 3);
+
+      wex::address address2(ex, "/hello2");
+      REQUIRE(address2.get_line() == 6);
     }
   }
 
@@ -102,7 +105,10 @@ TEST_CASE("wex::address")
     REQUIRE(stc->get_text().find("inserted text") != std::string::npos);
   }
 
-  SUBCASE("marker_add") { REQUIRE(address.marker_add('x')); }
+  SUBCASE("marker_add")
+  {
+    REQUIRE(address.marker_add('x'));
+  }
 
   SUBCASE("marker_delete")
   {
@@ -133,5 +139,8 @@ TEST_CASE("wex::address")
 #endif
   }
 
-  SUBCASE("write_line_number") { REQUIRE(ex->command(":5=")); }
+  SUBCASE("write_line_number")
+  {
+    REQUIRE(ex->command(":5="));
+  }
 }

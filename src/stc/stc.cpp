@@ -733,7 +733,6 @@ bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
 
   if (end == start)
   {
-    m_vi->marker_add('l', LineFromPosition(start));
     return true;
   }
 
@@ -780,11 +779,14 @@ void wex::stc::set_text(const std::string& value)
 
 void wex::stc::show_line_numbers(bool show)
 {
-  const item_vector iv(m_config_items);
+  if (is_visual())
+  {
+    const item_vector iv(m_config_items);
 
-  SetMarginWidth(
-    m_margin_line_number,
-    show ? iv.find<int>(_("stc.margin.Line number")) : 0);
+    SetMarginWidth(
+      m_margin_line_number,
+      show ? iv.find<int>(_("stc.margin.Line number")) : 0);
+  }
 }
 
 void wex::stc::sync(bool start)

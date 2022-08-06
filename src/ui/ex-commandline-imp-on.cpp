@@ -23,32 +23,6 @@ void wex::ex_commandline_imp::on_char(wxKeyEvent& event)
     return;
   }
 
-  switch (event.GetKeyCode())
-  {
-    case WXK_RETURN:
-      event.Skip();
-      break;
-
-    case WXK_TAB:
-      if (m_cl->stc() != nullptr && m_cl->stc()->path().file_exists())
-      {
-        path::current(m_cl->stc()->path().data().parent_path());
-      }
-
-      if (const auto& [r, e, v] = auto_complete_filename(m_command.command());
-          r)
-      {
-        append_text(e);
-      }
-      break;
-
-    default:
-      on_char_others(event);
-  }
-}
-
-void wex::ex_commandline_imp::on_char_others(wxKeyEvent& event)
-{
   bool skip = true;
 
   if (m_control_r)
@@ -88,6 +62,20 @@ void wex::ex_commandline_imp::on_key_down(wxKeyEvent& event)
 {
   switch (event.GetKeyCode())
   {
+    case WXK_TAB:
+      if (m_cl->stc() != nullptr && m_cl->stc()->path().file_exists())
+      {
+        path::current(m_cl->stc()->path().data().parent_path());
+      }
+
+      if (const auto& [r, e, v] = auto_complete_filename(get_text());
+          r)
+      {
+        append_text(e);
+        DocumentEnd();
+      }
+      break;
+
     case 'r':
     case 'R':
       Cut();

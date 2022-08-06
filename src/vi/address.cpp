@@ -195,9 +195,17 @@ int wex::address::get_line(int start_pos) const
 
   m_ex->get_stc()->set_search_flags(m_ex->search_flags());
 
-  // If this is a //, ?? address, return line with first forward, backward
-  // match.
-  if (regex v({std::string("/(.*)/$"), "\\?(.*)\\?$"}); v.match(m_address) > 0)
+  // Addressing in ex:
+  // 5. A regular expression enclosed by <slash> characters ( '/' )
+  // shall address the first line found by searching forward.
+  // In addition, the second <slash> can be omitted at the end of a command
+  // line.
+  // 6. A regular expression enclosed in <question-mark> characters ( '?' )
+  // shall address the first line found by searching backward.
+  // In addition, the second <question-mark> can be omitted at the end of a
+  // command line.
+  if (regex v({std::string("/(.*)/$"), "/(.*)$", "\\?(.*)\\?$", "\\?(.*)$"});
+      v.match(m_address) > 0)
   {
     const auto use_pos =
       start_pos == -1 ? m_ex->get_stc()->GetCurrentPos() : start_pos;

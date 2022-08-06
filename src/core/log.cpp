@@ -166,7 +166,7 @@ wex::log wex::log::fatal(const std::string& topic)
 
 void wex::log::flush()
 {
-  if (const std::string text(get()); !text.empty() || m_level == LEVEL_STATUS)
+  if (const auto& text(get()); !text.empty() || m_level == LEVEL_STATUS)
   {
     switch (m_level)
     {
@@ -259,7 +259,6 @@ void wex::log::init(level_t loglevel, const std::string& default_logfile)
     logging::keywords::file_name =
       default_logfile.empty() ? logfile.string() : default_logfile,
     logging::keywords::open_mode     = std::ios_base::app,
-    logging::keywords::rotation_size = 10 * 1024 * 1024,
     logging::keywords::format        = "%TimeStamp% [%Severity%] %Message%");
 
   m_initialized = true;
