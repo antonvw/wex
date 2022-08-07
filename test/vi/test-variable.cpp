@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/chrono.h>
-#include <wex/core/log.h>
+#include <wex/core/log-none.h>
 #include <wex/vi/ex.h>
 #include <wex/vi/variable.h>
 

@@ -161,19 +161,4 @@ private:
   static inline bool    m_initialized{false};
   static inline level_t m_level_filter;
 };
-
-/// This class disables logging, and restores to previous loglevel.
-class log_none
-{
-public:
-  /// Default constructor, disables logging.
-  log_none();
-
-  /// Destructor, restores previous loglevel.
-  ~log_none();
-
-private:
-  const log::level_t m_level;
-};
-
 }; // namespace wex

@@ -5,7 +5,7 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/core/log.h>
+#include <wex/core/log-none.h>
 #include <wex/factory/defs.h>
 #include <wex/stc/vcs-entry.h>
 

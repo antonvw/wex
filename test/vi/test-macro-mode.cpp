@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
-#include <wex/core/log.h>
+#include <wex/core/log-none.h>
 #include <wex/vi/macro-mode.h>
 #include <wex/vi/macros.h>
 #include <wex/vi/variable.h>

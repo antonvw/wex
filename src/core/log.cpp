@@ -283,7 +283,6 @@ void wex::log::set_level(level_t loglevel)
         logging::trivial::severity >= logging::trivial::error);
       break;
 
-    case LEVEL_OFF:
     case LEVEL_FATAL:
       logging::core::get()->set_filter(
         logging::trivial::severity >= logging::trivial::fatal);
@@ -292,6 +291,11 @@ void wex::log::set_level(level_t loglevel)
     case LEVEL_INFO:
       logging::core::get()->set_filter(
         logging::trivial::severity >= logging::trivial::info);
+      break;
+
+    case LEVEL_OFF:
+      logging::core::get()->set_filter(
+        logging::trivial::severity > logging::trivial::fatal);
       break;
 
     case LEVEL_TRACE:
@@ -333,15 +337,4 @@ const std::string wex::log::S()
   const std::string s(m_separator ? " " : "");
   m_separator = true;
   return s;
-}
-
-wex::log_none::log_none()
-  : m_level(log::get_level())
-{
-  log::set_level(log::LEVEL_OFF);
-}
-
-wex::log_none::~log_none()
-{
-  log::set_level(m_level);
 }
