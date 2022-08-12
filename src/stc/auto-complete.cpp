@@ -8,9 +8,9 @@
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
+#include <wex/ex/ctags.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/stc.h>
-#include <wex/vi/ctags.h>
 
 #include "scope.h"
 

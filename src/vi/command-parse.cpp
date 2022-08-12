@@ -5,8 +5,8 @@
 // Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/ex/macros.h>
 #include <wex/factory/stc.h>
-#include <wex/vi/macros.h>
 #include <wex/vi/vi.h>
 
 #include "vim.h"

@@ -8,6 +8,9 @@
 #include <wex/core/config.h>
 #include <wex/core/log.h>
 #include <wex/core/path.h>
+#include <wex/ex/address.h>
+#include <wex/ex/ex-stream.h>
+#include <wex/ex/macros.h>
 #include <wex/factory/indicator.h>
 #include <wex/factory/lexers.h>
 #include <wex/factory/printing.h>
@@ -18,9 +21,6 @@
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/item-vector.h>
-#include <wex/vi/address.h>
-#include <wex/vi/ex-stream.h>
-#include <wex/vi/macros.h>
 #include <wx/app.h>
 #include <wx/settings.h>
 

@@ -9,12 +9,12 @@
 #include <boost/tokenizer.hpp>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
+#include <wex/ex/macros.h>
+#include <wex/ex/util.h>
 #include <wex/factory/stc.h>
 #include <wex/ui/frame.h>
-#include <wex/vi/macros.h>
 #include <wex/vi/vi.h>
 
-#include "util.h"
 #include "vim.h"
 
 // without this code adding tab in block insert mode fails, it only

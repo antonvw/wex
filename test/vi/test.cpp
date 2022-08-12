@@ -5,8 +5,8 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/vi/ex.h>
-#include <wex/vi/macros.h>
+#include <wex/ex/ex.h>
+#include <wex/ex/macros.h>
 
 #include "test.h"
 

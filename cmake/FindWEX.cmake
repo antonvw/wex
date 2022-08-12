@@ -167,6 +167,7 @@ set(wex_LIBRARIES
   wex-del${USE_DEBUG}
   wex-stc${USE_DEBUG}
   wex-vi${USE_DEBUG}
+  wex-ex${USE_DEBUG}
   wex-ui${USE_DEBUG}
   wex-common${USE_DEBUG}
   wex-data${USE_DEBUG}

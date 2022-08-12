@@ -6,10 +6,10 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/ex/ctags.h>
 #include <wex/factory/stc-undo.h>
 #include <wex/factory/stc.h>
 #include <wex/ui/frd.h>
-#include <wex/vi/ctags.h>
 
 #include <algorithm>
 
