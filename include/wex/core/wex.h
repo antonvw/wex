@@ -16,6 +16,7 @@
 #include <wex/core/file-status.h>
 #include <wex/core/file.h>
 #include <wex/core/interruptible.h>
+#include <wex/core/log-none.h>
 #include <wex/core/log.h>
 #include <wex/core/menu-command.h>
 #include <wex/core/path.h>

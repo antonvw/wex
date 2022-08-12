@@ -2,9 +2,10 @@
 // Name:      test-presentation.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log-none.h>
 #include <wex/factory/presentation.h>
 #include <wx/stc/stc.h>
 
@@ -67,6 +68,7 @@ TEST_CASE("wex::presentation")
 
   SUBCASE("constructor-xml-invalid")
   {
+    wex::log_none      off;
     pugi::xml_document doc;
     REQUIRE(doc.load_string("<marker no = \"x\"></marker>"));
     wex::presentation p(wex::presentation::MARKER, doc.document_element());

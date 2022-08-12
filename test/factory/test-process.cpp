@@ -5,6 +5,7 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log-none.h>
 #include <wex/factory/process.h>
 
 #include "../test.h"
@@ -62,6 +63,7 @@ TEST_CASE("wex::factory::process")
 #ifndef __WXMSW__
     SUBCASE("invalid")
     {
+      wex::log_none off;
       REQUIRE(process.system(wex::process_data("xxxx")) != 0);
       REQUIRE(process.std_out().empty());
       REQUIRE(!process.std_err().empty());

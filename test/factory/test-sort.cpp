@@ -2,12 +2,13 @@
 // Name:      test-sort.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
 
 #include <boost/algorithm/string.hpp>
+#include <wex/core/log-none.h>
 #include <wex/factory/sort.h>
 #include <wex/factory/stc.h>
 
@@ -67,6 +68,7 @@ TEST_CASE("wex::sort")
 
   SUBCASE("selection")
   {
+    wex::log_none off;
     s->SelectNone();
     REQUIRE(!wex::factory::sort().selection(s));
 
