@@ -2,7 +2,7 @@
 // Name:      data/listview.cpp
 // Purpose:   Implementation of wex::data::listview
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/listview.h>
@@ -123,8 +123,11 @@ bool wex::data::listview::inject()
     {
       case FOLDER:
       case NONE:
-      case TSV:
         m_listview->SetSingleStyle(wxLC_LIST);
+        break;
+
+      case TSV:
+        m_listview->SetSingleStyle(wxLC_REPORT);
         break;
 
       default:

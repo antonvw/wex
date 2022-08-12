@@ -2,7 +2,7 @@
 // Name:      log.cpp
 // Purpose:   Implementation of class wex::log
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/log/core.hpp>
@@ -166,7 +166,7 @@ wex::log wex::log::fatal(const std::string& topic)
 
 void wex::log::flush()
 {
-  if (const std::string text(get()); !text.empty() || m_level == LEVEL_STATUS)
+  if (const auto& text(get()); !text.empty() || m_level == LEVEL_STATUS)
   {
     switch (m_level)
     {
@@ -258,9 +258,8 @@ void wex::log::init(level_t loglevel, const std::string& default_logfile)
   logging::add_file_log(
     logging::keywords::file_name =
       default_logfile.empty() ? logfile.string() : default_logfile,
-    logging::keywords::open_mode     = std::ios_base::app,
-    logging::keywords::rotation_size = 10 * 1024 * 1024,
-    logging::keywords::format        = "%TimeStamp% [%Severity%] %Message%");
+    logging::keywords::open_mode = std::ios_base::app,
+    logging::keywords::format    = "%TimeStamp% [%Severity%] %Message%");
 
   m_initialized = true;
 }
@@ -292,6 +291,11 @@ void wex::log::set_level(level_t loglevel)
     case LEVEL_INFO:
       logging::core::get()->set_filter(
         logging::trivial::severity >= logging::trivial::info);
+      break;
+
+    case LEVEL_OFF:
+      logging::core::get()->set_filter(
+        logging::trivial::severity > logging::trivial::fatal);
       break;
 
     case LEVEL_TRACE:

@@ -84,6 +84,8 @@ constexpr int c_strcmp(char const* lhs, char const* rhs)
           break;                                                            \
       }                                                                     \
     }                                                                       \
+    m_count = 1;                                                            \
+    m_count_present = false; \
     return 1;                                                               \
   }
 

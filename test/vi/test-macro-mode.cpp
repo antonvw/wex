@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
+#include <wex/core/log-none.h>
 #include <wex/vi/macro-mode.h>
 #include <wex/vi/macros.h>
 #include <wex/vi/variable.h>
@@ -28,6 +29,7 @@ TEST_CASE("wex::macro_mode")
   {
     wex::macro_mode mode(&macros);
     std::string     expanded;
+    wex::log_none   off;
     REQUIRE(!mode.expand(nullptr, wex::variable("test"), expanded));
   }
 

@@ -5,6 +5,7 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log-none.h>
 #include <wex/factory/defs.h>
 #include <wex/stc/vcs-entry.h>
 
@@ -34,7 +35,10 @@ TEST_CASE("wex::vcs_entry")
 
     wex::vcs_entry entry(doc.document_element());
     REQUIRE(entry.name() == "git");
+
+    wex::log_none off;
     REQUIRE(!entry.log(wex::test::get_path("test.h"), "x"));
+
     REQUIRE(entry.log(wex::test::get_path("test.h"), "-1"));
     REQUIRE(entry.get_blame().use());
 

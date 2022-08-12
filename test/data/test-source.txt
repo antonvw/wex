@@ -10,19 +10,22 @@
 :sed
 :set ac
 :set ai
+:set noaw
+:set noeb
 :set el
 :set ic
 :set mw
 :set nu
+:set noreadonly
 :set sm
-:set ut
+:set nosws
 :set wm
 :set ws
 :set ec=80
+:set report=5
 :set sw=4
 :set sy=cpp
 :set ts=10
-:set ai
 :syntax off
 :syntax on
 :ve

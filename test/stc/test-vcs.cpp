@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
+#include <wex/core/log-none.h>
 #include <wex/stc/vcs.h>
 #include <wex/ui/menu.h>
 
@@ -39,6 +40,8 @@ TEST_CASE("wex::vcs")
 #ifndef __WXMSW__
     REQUIRE(vcs.execute());
     REQUIRE(vcs.execute("status"));
+
+    wex::log_none off;
     REQUIRE(!vcs.execute("xxx"));
 
     REQUIRE(vcs.show_dialog(wex::data::window().button(wxAPPLY | wxCANCEL)));

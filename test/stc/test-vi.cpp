@@ -7,6 +7,7 @@
 
 #include <wex/core/config.h>
 #include <wex/core/log.h>
+#include <wex/core/log-none.h>
 #include <wex/ui/frd.h>
 #include <wex/vi/addressrange.h>
 #include <wex/vi/ex-stream.h>
@@ -171,6 +172,8 @@ TEST_CASE("wex::vi")
 
     SUBCASE("invalid")
     {
+      // and skip the error message for recursive line
+      wex::log_none off;
       REQUIRE(!vi->command(":so test-source-2.txt"));
     }
 

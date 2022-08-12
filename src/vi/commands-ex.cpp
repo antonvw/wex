@@ -7,6 +7,7 @@
 
 #include <sstream>
 
+#include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 #include <wex/core/core.h>
 #include <wex/core/file.h>
@@ -165,7 +166,8 @@ wex::ex::commands_t wex::ex::commands_ex()
      {
        if (command.find(" ") == std::string::npos)
          return true;
-       wex::path::current(path(wex::find_first_of(command, " ")));
+       wex::path::current(path(
+         wex::find_first_of(boost::algorithm::trim_right_copy(command), " ")));
        return true;
      }},
     {":close\\b",

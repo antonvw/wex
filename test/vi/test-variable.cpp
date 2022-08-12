@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/chrono.h>
+#include <wex/core/log-none.h>
 #include <wex/vi/ex.h>
 #include <wex/vi/variable.h>
 
@@ -37,6 +38,8 @@ TEST_CASE("wex::variable")
 
   SUBCASE("XML")
   {
+    wex::log_none off;
+
     for (const auto& it : std::vector<
            std::tuple<std::string, std::string, std::string, std::string>>{
            {"Created", "BUILTIN", "", ""},
@@ -142,5 +145,8 @@ TEST_CASE("wex::variable")
     }
   }
 
-  SUBCASE("static") { wex::variable::set_argument("hello world"); }
+  SUBCASE("static")
+  {
+    wex::variable::set_argument("hello world");
+  }
 }

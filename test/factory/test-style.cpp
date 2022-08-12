@@ -5,6 +5,7 @@
 // Copyright: (c) 2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log-none.h>
 #include <wex/factory/style.h>
 #include <wx/stc/stc.h>
 
@@ -14,10 +15,14 @@
 
 TEST_CASE("wex::style")
 {
-  SUBCASE("constructor") { REQUIRE(!wex::style().is_ok()); }
+  SUBCASE("constructor")
+  {
+    REQUIRE(!wex::style().is_ok());
+  }
 
   SUBCASE("constructor-no-value")
   {
+    wex::log_none off;
     for (const auto& style : std::vector<std::pair<
            std::pair<std::string, std::set<int>>,
            std::pair<std::string, std::string>>>{

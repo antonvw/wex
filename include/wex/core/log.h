@@ -2,7 +2,7 @@
 // Name:      log.h
 // Purpose:   Declaration of wex::log class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -30,6 +30,7 @@ public:
     LEVEL_ERROR,   /// error level
     LEVEL_FATAL,   /// fatal level
     LEVEL_STATUS,  /// from wxLog
+    LEVEL_OFF,     /// no logging
   };
 
   /// Static methods.
