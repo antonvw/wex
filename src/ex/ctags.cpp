@@ -21,7 +21,6 @@
 #include <wx/choicdlg.h>
 
 #include <algorithm>
-#include <vector>
 
 namespace wex
 {

@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      vi/mode.cpp
+// Name:      mode.cpp
 // Purpose:   Implementation of class wex::vi_mode
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020-2022 Anton van Wezenbeek

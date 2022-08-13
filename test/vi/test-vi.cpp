@@ -12,7 +12,7 @@
 #include <wex/ui/frd.h>
 #include <wex/vi/vi.h>
 
-#include "test.h"
+#include "../ex/test.h"
 
 #define ESC "\x1b"
 
