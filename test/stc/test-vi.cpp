@@ -6,11 +6,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
-#include <wex/core/log.h>
 #include <wex/core/log-none.h>
+#include <wex/core/log.h>
+#include <wex/ex/addressrange.h>
+#include <wex/ex/ex-stream.h>
 #include <wex/ui/frd.h>
-#include <wex/vi/addressrange.h>
-#include <wex/vi/ex-stream.h>
 #include <wex/vi/vi.h>
 
 #include "test.h"

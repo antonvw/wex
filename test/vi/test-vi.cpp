@@ -7,12 +7,12 @@
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
+#include <wex/ex/macro-mode.h>
+#include <wex/ex/macros.h>
 #include <wex/ui/frd.h>
-#include <wex/vi/macro-mode.h>
-#include <wex/vi/macros.h>
 #include <wex/vi/vi.h>
 
-#include "test.h"
+#include "../ex/test.h"
 
 #define ESC "\x1b"
 

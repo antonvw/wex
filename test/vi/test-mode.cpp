@@ -1,14 +1,14 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-vi-mode.cpp
+// Name:      test-mode.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/vi/mode.h>
 #include <wex/vi/vi.h>
 
-#include "test.h"
+#include "../ex/test.h"
 
 TEST_SUITE_BEGIN("wex::vi");
 

@@ -23,14 +23,14 @@ public:
   /// See <boost/log/trivial.hpp>
   enum level_t
   {
-    LEVEL_TRACE,   /// trace level logging (most verbose)
-    LEVEL_DEBUG,   /// debug level
-    LEVEL_INFO,    /// info level
-    LEVEL_WARNING, /// warning level
-    LEVEL_ERROR,   /// error level
-    LEVEL_FATAL,   /// fatal level
-    LEVEL_STATUS,  /// from wxLog
-    LEVEL_OFF,     /// no logging
+    LEVEL_TRACE,   ///< trace level logging (most verbose)
+    LEVEL_DEBUG,   ///< debug level
+    LEVEL_INFO,    ///< info level
+    LEVEL_WARNING, ///< warning level
+    LEVEL_ERROR,   ///< error level
+    LEVEL_FATAL,   ///< fatal level
+    LEVEL_STATUS,  ///< from wxLog
+    LEVEL_OFF,     ///< no logging
   };
 
   /// Static methods.

@@ -11,11 +11,11 @@
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
 #include <wex/del/wex.h>
+#include <wex/ex/command-parser.h>
+#include <wex/ex/macros.h>
 #include <wex/factory/lexers.h>
 #include <wex/stc/wex.h>
 #include <wex/ui/wex.h>
-#include <wex/vi/command-parser.h>
-#include <wex/vi/macros.h>
 
 namespace wex::del
 {

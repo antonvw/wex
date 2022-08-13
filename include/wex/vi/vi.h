@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <wex/vi/ex.h>
+#include <wex/ex/ex.h>
 #include <wex/vi/mode.h>
 #include <wx/event.h>
 

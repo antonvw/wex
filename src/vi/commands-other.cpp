@@ -11,17 +11,16 @@
 #include <boost/algorithm/string.hpp>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
+#include <wex/ex/addressrange.h>
+#include <wex/ex/ctags.h>
+#include <wex/ex/macros.h>
+#include <wex/ex/util.h>
 #include <wex/factory/stc-undo.h>
 #include <wex/factory/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
-#include <wex/vi/addressrange.h>
-#include <wex/vi/ctags.h>
-#include <wex/vi/macros.h>
 #include <wex/vi/vi.h>
 #include <wx/app.h>
-
-#include "util.h"
 
 namespace wex
 {

@@ -6,8 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
+#include <wex/ex/ex-stream.h>
 #include <wex/stc/stc.h>
-#include <wex/vi/ex-stream.h>
 
 #include "util.h"
 

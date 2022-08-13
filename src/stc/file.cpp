@@ -2,16 +2,16 @@
 // Name:      stc/file.cpp
 // Purpose:   Implementation of class wex::stc_file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
+#include <wex/ex/ex-stream.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/path-lexer.h>
 #include <wex/stc/file.h>
 #include <wex/stc/stc.h>
 #include <wex/ui/file-dialog.h>
-#include <wex/vi/ex-stream.h>
 
 //#define USE_THREAD 1
 
