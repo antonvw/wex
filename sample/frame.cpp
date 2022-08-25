@@ -18,7 +18,8 @@
 
 enum
 {
-  ID_DLG_CONFIG_ITEM = wex::del::ID_HIGHEST + 1,
+  ID_SAMPLE_LOWEST = wex::del::ID_HIGHEST + 1,
+  ID_DLG_CONFIG_ITEM,
   ID_DLG_CONFIG_ITEM_COL,
   ID_DLG_CONFIG_ITEM_READONLY,
   ID_DLG_ITEM,
@@ -30,6 +31,7 @@ enum
   ID_STATISTICS_SHOW,
   ID_STC_FLAGS,
   ID_STC_SPLIT,
+  ID_SAMPLE_HIGHEST
 };
 
 frame::frame()
@@ -181,7 +183,9 @@ void frame::bind_all()
         {
           wex::item_dialog(
             test_config_items(0, val),
-            wex::data::window().title("Config Dialog Columns"),
+            wex::data::window()
+              .title("Config Dialog Columns")
+              .size(wxSize(600, 400)),
             0,
             val)
             .ShowModal();
@@ -194,21 +198,24 @@ void frame::bind_all()
           test_config_items(0, 1),
           wex::data::window()
             .title("Config Dialog")
-            .button(wxAPPLY | wxCANCEL)
+            .id(ID_DLG_CONFIG_ITEM)
             .
 #ifdef __WXMSW__
           size(wxSize(500, 500)));
 #else
-          size(wxSize(600, 600)));
+          size(wxSize(600, 400)));
 #endif
-        dlg->Show();
+        dlg->ShowModal();
       },
       ID_DLG_CONFIG_ITEM},
      {[=, this](wxCommandEvent& event)
       {
         wex::item_dialog(
           test_config_items(0, 1),
-          wex::data::window().button(wxCANCEL).title("Config Dialog Readonly"),
+          wex::data::window()
+            .button(wxCANCEL)
+            .title("Config Dialog Readonly")
+            .size(wxSize(600, 400)),
           0,
           4)
           .ShowModal();
@@ -428,7 +435,7 @@ void frame::on_command_item_dialog(
       m_stc_lexers->config_get();
     }
   }
-  else if (event.GetId() >= 1000 && event.GetId() < 1050)
+  else if (dialogid > ID_SAMPLE_LOWEST && dialogid < ID_SAMPLE_HIGHEST)
   {
     wex::log::trace("button")
       << event.GetId() << "checked:" << event.IsChecked();

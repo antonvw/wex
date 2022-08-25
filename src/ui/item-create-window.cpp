@@ -267,9 +267,8 @@ void create_grid_control(
   win.parent(parent);
   auto* gr = new grid(win);
 
-  gr->CreateGrid(0, 0);
-  gr->AppendCols(26);
-  gr->AppendRows(100);
+  gr->CreateGrid(10, item.data().columns());
+  gr->ShowScrollbars(wxSHOW_SB_ALWAYS, wxSHOW_SB_ALWAYS);
 
   window = gr;
 }
