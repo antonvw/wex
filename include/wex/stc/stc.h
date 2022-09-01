@@ -29,7 +29,6 @@ class link;
 class frame;
 class menu;
 class stc_entry_dialog;
-class vcs_entry;
 
 namespace factory
 {
@@ -91,9 +90,8 @@ public:
   /// Returns auto_complete.
   auto* auto_complete() { return m_auto_complete; }
 
-  /// Shows blame info for vcs in the text margin.
-  /// Returns true if info was added.
-  bool blame_show(vcs_entry* vcs);
+  /// Blames margin.
+  void blame_margin(const blame* blame);
 
   /// Sets the configurable parameters to values currently in config.
   void config_get();
@@ -203,6 +201,8 @@ public:
 
   void fold(bool fold_all = false) override;
 
+  wex::data::stc* get_data() override { return &m_data; }
+
   const ex_command& get_ex_command() const override
   {
     return m_vi->get_command();
@@ -218,10 +218,9 @@ public:
     override;
   bool get_hexmode_sync() override;
 
-  int get_current_line() const override;
-  int get_line_count() const override;
-  int get_line_count_request() override;
-  int get_margin_text_click() const override { return m_margin_text_click; }
+  int               get_current_line() const override;
+  int               get_line_count() const override;
+  int               get_line_count_request() override;
   const std::string get_word_at_pos(int pos) const override;
 
   void goto_line(int line) override;
@@ -271,7 +270,6 @@ private:
 
   void        bind_all();
   void        bind_other();
-  void        blame_margin(const blame* blame);
   void        blame_revision(const std::string& offset = std::string());
   void        build_popup_menu(menu& menu);
   void        build_popup_menu_edit(menu& menu);
@@ -287,7 +285,6 @@ private:
   void        key_action(wxKeyEvent& event);
   bool        link_open(link_t mode, std::string* filename = nullptr);
   void        margin_action(wxStyledTextEvent& event);
-  std::string margin_get_revision_id() const;
   std::string margin_get_revision_renamed() const;
   void        mouse_action(wxMouseEvent& event);
   void        mark_modified(const wxStyledTextEvent& event);
@@ -310,8 +307,6 @@ private:
 
   class auto_complete* m_auto_complete;
   hexmode              m_hexmode;
-
-  std::string m_renamed;
 
   data::stc m_data;
   stc_file  m_file;

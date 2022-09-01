@@ -6,8 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
-#include <wex/stc/process.h>
 #include <wex/stc/shell.h>
+#include <wex/vcs/process.h>
 
 #include "test.h"
 

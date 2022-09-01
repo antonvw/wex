@@ -7,9 +7,9 @@
 
 #include <wex/core/config.h>
 #include <wex/factory/defs.h>
-#include <wex/stc/debug.h>
-#include <wex/stc/process.h>
 #include <wex/ui/menu.h>
+#include <wex/vcs/debug.h>
+#include <wex/vcs/process.h>
 
 #include "test.h"
 

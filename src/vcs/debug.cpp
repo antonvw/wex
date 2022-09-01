@@ -14,13 +14,13 @@
 #include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/process.h>
-#include <wex/stc/debug.h>
 #include <wex/stc/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/item-dialog.h>
 #include <wex/ui/listview.h>
 #include <wex/ui/menu.h>
 #include <wex/ui/menus.h>
+#include <wex/vcs/debug.h>
 
 #include <algorithm>
 #include <fstream>

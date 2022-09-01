@@ -11,10 +11,10 @@
 #include <wex/factory/bind.h>
 #include <wex/factory/lexers.h>
 #include <wex/factory/printing.h>
-#include <wex/stc/debug.h>
 #include <wex/stc/stc.h>
-#include <wex/stc/vcs.h>
 #include <wex/ui/frd.h>
+#include <wex/vcs/debug.h>
+#include <wex/vcs/vcs.h>
 
 #define IN_FILES(ACTION, DIALOG)                                         \
   {                                                                      \

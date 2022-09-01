@@ -9,7 +9,7 @@
 
 #include <string>
 
-#include <wex/stc/vcs.h>
+#include <wex/vcs/vcs.h>
 
 namespace wex
 {

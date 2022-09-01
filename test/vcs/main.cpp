@@ -5,6 +5,8 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/vcs/process.h>
+
 #include "test.h"
 
 namespace wex
@@ -48,6 +50,8 @@ bool wex::test::stc_app::OnInit()
 
   m_stc = new wex::stc();
   m_frame->Show();
+
+  process::prepare_output(m_frame);
 
   m_frame->pane_add(m_stc);
 

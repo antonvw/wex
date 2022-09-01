@@ -7,8 +7,7 @@
 
 #include <wex/core/core.h>
 #include <wex/core/log.h>
-
-#include "blaming.h"
+#include <wex/vcs/blaming.h>
 
 wex::blaming::blaming(
   const wex::vcs&    vcs,

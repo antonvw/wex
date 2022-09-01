@@ -27,6 +27,7 @@ namespace wex
 class debug_entry;
 class ex_command;
 class ex_commandline;
+class line_data;
 class menu_item;
 class process_data;
 class toolbar;
@@ -203,6 +204,34 @@ public:
   /// Called after all pages from the notebooks are deleted.
   /// Default resets the find focus.
   virtual void sync_close_all(wxWindowID id);
+
+  /// Adds vcs path.
+  virtual void vcs_add_path(factory::link* l) { ; }
+
+  /// Annotates commmit.
+  virtual void
+  vcs_annotate_commit(factory::stc*, int line, const std::string& commit_id)
+  {
+    ;
+  };
+
+  /// Blames revision.
+  virtual void vcs_blame_revison(
+    factory::stc*,
+    const std::string& renamed,
+    const std::string& offset)
+  {
+    ;
+  }
+
+  /// Returns true if dir exists.
+  virtual bool vcs_dir_exists(const path& p) const { return false; };
+
+  /// Executes vcs.
+  virtual void vcs_execute(int event_id, const std::vector<wex::path>& paths)
+  {
+    ;
+  }
 
   /// Other methods
 

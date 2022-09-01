@@ -6,7 +6,7 @@
   The Open Group Base Specifications Issue 7, 2018 edition
 - ex command-line is improved, it is now a factory::stc
 - wxWidgets 3.2
-- wex-ex library added
+- wex-ex and wex-vcs library added
 
 **v22.04** *March 6, 2022*
 - Microsoft Visual Studio 2022

@@ -74,6 +74,9 @@ public:
     ;
   };
 
+  /// Returns stc data.
+  virtual wex::data::stc* get_data() { return nullptr; }
+
   /// Returns the ex command.
   virtual const ex_command& get_ex_command() const { return m_command; }
 
@@ -112,7 +115,7 @@ public:
 
   /// Returns line on which text margin was clicked,
   /// or -1 if not.
-  virtual int get_margin_text_click() const { return -1; }
+  int get_margin_text_click() const { return m_margin_text_click; }
 
   /// Returns word at position.
   virtual const std::string get_word_at_pos(int pos) const
@@ -270,6 +273,11 @@ public:
     return std::string(b.data(), b.length());
   }
 
+  std::string margin_get_revision_id() const;
+
+  /// Returns renamed.
+  auto& vcs_renamed() const { return m_renamed; }
+
   // These methods are not yet available in scintilla, create stubs
   // (for the vi MOTION macro).
   void BigWordLeft();
@@ -314,6 +322,10 @@ public:
 
 protected:
   ex_command m_command;
+
+  int m_margin_text_click{-1};
+
+  std::string m_renamed;
 
 private:
   lexer m_lexer;

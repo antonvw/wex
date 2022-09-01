@@ -2,7 +2,7 @@
 // Name:      link.h
 // Purpose:   Declaration of class wex::factory::link
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2021 Anton van Wezenbeek
+// Copyright: (c) 2011-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -37,6 +37,11 @@ public:
   /// Destructor.
   virtual ~link();
 
+  /// Adds a search path.
+  /// Returns false if path does not exist, or is already present.
+  /// Otherwise returns true and the path is added.
+  bool add_path(const path& p);
+
   /// Sets paths with info from config.
   /// If there is no config, paths will be empty.
   void config_get();
@@ -52,11 +57,6 @@ public:
     factory::stc* stc = nullptr);
 
 protected:
-  /// Adds a search path.
-  /// Returns false if path does not exist, or is already present.
-  /// Otherwise returns true and the path is added.
-  bool add_path(const path& p);
-
   /// Returns link pairs.
   virtual std::string get_link_pairs(const std::string& text) const
   {

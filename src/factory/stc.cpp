@@ -142,6 +142,12 @@ void wex::factory::stc::goto_line(int line)
   EnsureCaretVisible();
 }
 
+std::string wex::factory::stc::margin_get_revision_id() const
+{
+  std::string revision(MarginGetText(m_margin_text_click));
+  return get_word(revision);
+}
+
 void wex::factory::stc::reset_margins(margin_t type)
 {
   if (type.all())

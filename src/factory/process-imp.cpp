@@ -78,7 +78,7 @@ void wex::factory::process_imp::boost_async_system(
   log::debug("async_system") << data.exe() << "debug:" << m_debug.load();
 }
 
-bool wex::factory::process_imp::stop()
+bool wex::factory::process_imp::stop(wxEvtHandler* e)
 {
   try
   {
@@ -91,6 +91,12 @@ bool wex::factory::process_imp::stop()
 
       m_io->stop();
       m_is_running.store(false);
+
+      if (m_debug.load() && e != nullptr)
+      {
+        WEX_POST(ID_DEBUG_EXIT, "", e)
+      }
+
       return true;
     }
   }

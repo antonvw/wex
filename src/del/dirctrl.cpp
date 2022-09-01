@@ -15,7 +15,7 @@
 #include <wex/factory/bind.h>
 #include <wex/factory/lexers.h>
 #include <wex/factory/path-lexer.h>
-#include <wex/stc/vcs.h>
+#include <wex/vcs/vcs.h>
 #include <wx/stockitem.h> // for wxGetStockLabel
 
 #define GET_VECTOR_FILES                              \

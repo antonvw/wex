@@ -11,8 +11,8 @@
 #include <wex/core/vcs-command.h>
 #include <wex/factory/blame.h>
 #include <wex/factory/lexer.h>
-#include <wex/stc/process.h>
 #include <wex/ui/menu-commands.h>
+#include <wex/vcs/process.h>
 
 namespace wex
 {

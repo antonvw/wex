@@ -13,6 +13,7 @@
 #include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/lexers.h>
+#include <wex/factory/link.h>
 #include <wex/factory/listview.h>
 #include <wex/factory/printing.h>
 #include <wex/factory/stc.h>
