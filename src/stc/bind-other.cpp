@@ -5,7 +5,6 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <boost/algorithm/string.hpp>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
@@ -13,7 +12,6 @@
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/bind.h>
 #include <wex/stc/stc.h>
-#include <wex/stc/vcs.h>
 #include <wex/ui/debug-entry.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
@@ -396,20 +394,7 @@ void wex::stc::margin_action(wxStyledTextEvent& event)
 
     if (config("blame.id").get(true))
     {
-      wex::vcs vcs{{!m_data.head_path().empty() ? m_data.head_path() : path()}};
-
-      if (const auto& revision(margin_get_revision_id());
-          !revision.empty() && vcs.entry().log(path(), revision))
-      {
-        AnnotationSetText(
-          line,
-          lexer().make_comment(
-            boost::algorithm::trim_copy(vcs.entry().std_out())));
-      }
-      else if (!vcs.entry().std_err().empty())
-      {
-        log("margin") << vcs.entry().std_err();
-      }
+      m_frame->vcs_annotate_commit(this, line, margin_get_revision_id());
     }
   }
   else if (event.GetMargin() == m_margin_divider_number)

@@ -7,20 +7,32 @@
 
 #include <wex/core/core.h>
 #include <wex/core/log.h>
+#include <wex/data/stc.h>
+#include <wex/factory/stc.h>
 
 #include "blaming.h"
 
-wex::blaming::blaming(
-  const wex::vcs&    vcs,
-  const std::string& offset,
-  const std::string& revision,
-  const std::string& renamed,
-  const std::string& extra)
+namespace wex
+{
+const std::vector<path> paths(factory::stc* stc)
+{
+  if (const auto& p(stc->get_data()->head_path()); p.empty())
+  {
+    return {{path()}};
+  }
+  else
+  {
+    return {{p}};
+  }
+}
+} // namespace wex
+
+wex::blaming::blaming(factory::stc* stc, const std::string& offset)
   : m_offset(offset)
-  , m_revision(revision)
-  , m_renamed(renamed)
-  , m_vcs(vcs)
-  , m_range(extra)
+  , m_revision(stc->margin_get_revision_id())
+  , m_renamed(stc->vcs_renamed())
+  , m_vcs(paths(stc))
+  , m_range(!stc->is_visual() ? "-L %LINES " : std::string())
 {
 }
 

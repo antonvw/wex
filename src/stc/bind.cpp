@@ -19,7 +19,6 @@
 #include <wex/stc/bind.h>
 #include <wex/stc/entry-dialog.h>
 #include <wex/stc/stc.h>
-#include <wex/stc/vcs.h>
 #include <wex/ui/debug-entry.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
@@ -347,8 +346,7 @@ void wex::stc::bind_all()
       {
         m_renamed.clear();
 
-        vcs_execute(
-          m_frame,
+        m_frame->vcs_execute(
           event.GetId() - ID_EDIT_VCS_LOWEST - 1,
           std::vector<wex::path>{path().data()});
       },
@@ -427,7 +425,7 @@ void wex::stc::build_popup_menu(menu& menu)
 
   if (
     m_data.menu().test(data::stc::MENU_VCS) && path().file_exists() &&
-    vcs::dir_exists(path()))
+    m_frame->vcs_dir_exists(path()))
   {
     menu.append({{}, {path(), m_frame}});
   }

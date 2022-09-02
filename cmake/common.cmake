@@ -174,7 +174,7 @@ function(wex_target_link_all)
   set (wxWidgets_LIBRARIES wxaui wxstc wxhtml wxcore wxnet wxbase wxscintilla)
   
   if (${ARGC} STREQUAL "0")
-    set (wex_LIBRARIES wex-del wex-stc wex-vi wex-ex wex-ui wex-common wex-data wex-factory wex-core)
+    set (wex_LIBRARIES wex-del wex-vcs wex-stc wex-vi wex-ex wex-ui wex-common wex-data wex-factory wex-core)
   else ()
     set (wex_LIBRARIES ${use_libs})
     separate_arguments(wex_LIBRARIES)

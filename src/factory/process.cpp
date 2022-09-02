@@ -67,7 +67,7 @@ void wex::factory::process::set_handler_out(wxEvtHandler* eh)
 
 bool wex::factory::process::stop()
 {
-  return m_imp->stop();
+  return m_imp->stop(m_eh_debug);
 }
 
 int wex::factory::process::system(const process_data& data)

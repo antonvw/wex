@@ -15,6 +15,7 @@ add_subdirectory(ui)
 add_subdirectory(ex)
 add_subdirectory(vi)
 add_subdirectory(stc)
+add_subdirectory(vcs)
 add_subdirectory(del)
 
 if (WIN32)

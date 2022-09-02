@@ -12,9 +12,9 @@
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/factory/path-lexer.h>
-#include <wex/stc/vcs.h>
 #include <wex/ui/item-dialog.h>
 #include <wex/ui/menus.h>
+#include <wex/vcs/vcs.h>
 
 #define SET_ENTRY                                                \
   if (                                                           \

@@ -15,4 +15,5 @@
 #include <wex/factory/wex.h>
 #include <wex/stc/wex.h>
 #include <wex/ui/wex.h>
+#include <wex/vcs/wex.h>
 #include <wex/vi/wex.h>

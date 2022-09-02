@@ -165,6 +165,7 @@ set(wex_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib")
       
 set(wex_LIBRARIES
   wex-del${USE_DEBUG}
+  wex-vcs${USE_DEBUG}
   wex-stc${USE_DEBUG}
   wex-vi${USE_DEBUG}
   wex-ex${USE_DEBUG}

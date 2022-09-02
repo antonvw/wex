@@ -8,11 +8,11 @@
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
-#include <wex/stc/process.h>
 #include <wex/stc/shell.h>
 #include <wex/ui/debug-entry.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/item-dialog.h>
+#include <wex/vcs/process.h>
 #include <wx/valtext.h>
 
 #include <algorithm>

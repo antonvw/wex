@@ -7,13 +7,13 @@
 
 #pragma once
 
+#include <wex/core/path.h>
 #include <wx/frame.h>
 
 class wxListView;
 
 namespace wex
 {
-class path;
 class vcs_entry;
 
 namespace data
@@ -24,6 +24,7 @@ class stc;
 namespace factory
 {
 class grid;
+class link;
 class listview;
 class process;
 class stc;

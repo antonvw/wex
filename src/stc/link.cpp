@@ -8,9 +8,9 @@
 #include <boost/algorithm/string.hpp>
 #include <wex/stc/link.h>
 #include <wex/stc/stc.h>
-#include <wex/stc/vcs.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/item-vector.h>
+#include <wx/app.h>
 
 wex::link::link()
   : factory::link()
@@ -39,11 +39,8 @@ std::string wex::link::get_link_pairs(const std::string& text) const
 const wex::path
 wex::link::get_path(const std::string& text, line_data& data, factory::stc* stc)
 {
-  if (vcs v; v.use() && v.toplevel().dir_exists())
-  {
-    add_path(v.toplevel());
-  }
-
+  auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+  frame->vcs_add_path(this);
   return factory::link::get_path(text, data, stc);
 }
 

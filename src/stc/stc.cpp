@@ -479,12 +479,6 @@ bool wex::stc::is_visual() const
   return m_vi->visual() != ex::EX;
 }
 
-std::string wex::stc::margin_get_revision_id() const
-{
-  std::string revision(MarginGetText(m_margin_text_click));
-  return get_word(revision);
-}
-
 bool wex::stc::marker_delete_all_change()
 {
   if (!lexers::get()->marker_is_loaded(m_marker_change))

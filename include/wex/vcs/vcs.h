@@ -2,12 +2,12 @@
 // Name:      vcs.h
 // Purpose:   Declaration of wex::vcs class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wex/stc/vcs-entry.h>
+#include <wex/vcs/vcs-entry.h>
 
 namespace wex
 {

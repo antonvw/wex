@@ -38,7 +38,7 @@ public:
   bool is_running() const { return m_is_running; }
 
   /// Stops the async process.
-  bool stop();
+  bool stop(wxEvtHandler* e);
 
   /// Writes text to the proess.
   bool write(const std::string& text);

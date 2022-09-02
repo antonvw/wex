@@ -2,19 +2,17 @@
 // Name:      test-vcs.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
 #include <wex/core/log-none.h>
-#include <wex/stc/vcs.h>
 #include <wex/ui/menu.h>
+#include <wex/vcs/vcs.h>
 
-#include "../test.h"
+#include "test.h"
 
 #include <vector>
-
-TEST_SUITE_BEGIN("wex::vcs");
 
 TEST_CASE("wex::vcs")
 {
@@ -66,5 +64,3 @@ TEST_CASE("wex::vcs")
 #endif
   }
 }
-
-TEST_SUITE_END();

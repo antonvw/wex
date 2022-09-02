@@ -5,17 +5,24 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
+#include <boost/tokenizer.hpp>
 #include <wex/common/tostring.h>
 #include <wex/common/util.h>
 #include <wex/core/cmdline.h>
 #include <wex/core/log.h>
+#include <wex/core/path.h>
 #include <wex/core/regex.h>
 #include <wex/del/wex.h>
 #include <wex/ex/command-parser.h>
 #include <wex/ex/macros.h>
+#include <wex/factory/blame.h>
 #include <wex/factory/lexers.h>
 #include <wex/stc/wex.h>
 #include <wex/ui/wex.h>
+#include <wex/vcs/wex.h>
+
+#include "blaming.h"
 
 namespace wex::del
 {
@@ -735,4 +742,128 @@ void wex::del::frame::use_file_history_list(listview* list)
       item.insert();
     }
   }
+}
+
+void wex::del::frame::vcs_add_path(factory::link* l)
+{
+  if (vcs v; v.use() && v.toplevel().dir_exists())
+  {
+    l->add_path(v.toplevel());
+  }
+}
+
+void wex::del::frame::vcs_annotate_commit(
+  factory::stc*      stc,
+  int                line,
+  const std::string& commit_id)
+{
+  wex::vcs vcs{
+    {!stc->get_data()->head_path().empty() ? stc->get_data()->head_path() :
+                                             path()}};
+
+  if (const auto& revision(commit_id);
+      !revision.empty() && vcs.entry().log(path(), revision))
+  {
+    stc->AnnotationSetText(
+      line,
+      lexer().make_comment(boost::algorithm::trim_copy(vcs.entry().std_out())));
+  }
+  else if (!vcs.entry().std_err().empty())
+  {
+    log("margin") << vcs.entry().std_err();
+  }
+}
+
+void wex::del::frame::vcs_blame_revison(
+  factory::stc*      stc,
+  const std::string& renamed,
+  const std::string& offset)
+{
+  blaming bl(stc, offset);
+
+  if (!bl.execute(path()))
+  {
+    return;
+  }
+
+  data::stc data(*stc->get_data());
+  data.control().line(stc->get_margin_text_click() + 1);
+  data::window window(stc->get_data()->control().window());
+  window.name(std::string());
+  data.control().window(window);
+
+  if (data.head_path().empty())
+  {
+    data.head_path(path());
+  }
+
+  factory::frame::open_file(wex::path(bl.renamed()), bl.vcs().entry(), data);
+}
+
+bool wex::del::frame::vcs_blame_show(vcs_entry* vcs, stc* stc)
+{
+  if (!vcs->get_blame().use() || vcs->std_out().empty())
+  {
+    log::debug("no blame (or no output)");
+    return false;
+  }
+
+  log::trace("blame show") << vcs->name();
+
+  const bool  is_empty(stc->GetTextLength() == 0);
+  std::string prev("!@#$%");
+  stc->SetWrapMode(wxSTC_WRAP_NONE);
+  wex::blame* blame = &vcs->get_blame();
+  bool        first = true;
+
+  blame->line_no(-1);
+  int ex_line_no = 0;
+
+  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+         vcs->std_out(),
+         boost::char_separator<char>("\r\n")))
+  {
+    blame->parse(path(), it);
+
+    if (first)
+    {
+      stc->blame_margin(blame);
+      first = false;
+    }
+
+    if (blame->info() != prev)
+    {
+      prev = blame->info();
+    }
+    else
+    {
+      blame->skip_info(true);
+    }
+
+    if (!stc->is_visual())
+    {
+      blame->line_no(ex_line_no++);
+    }
+
+    if (is_empty)
+    {
+      stc->add_text(blame->line_text() + "\n");
+    }
+
+    lexers::get()->apply_margin_text_style(stc, blame);
+  }
+
+  return true;
+}
+
+bool wex::del::frame::vcs_dir_exists(const path& p) const
+{
+  return vcs::dir_exists(p);
+}
+
+void wex::del::frame::vcs_execute(
+  int                           event_id,
+  const std::vector<wex::path>& paths)
+{
+  wex::vcs_execute(this, event_id, paths);
 }
