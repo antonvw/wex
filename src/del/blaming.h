@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      blaming.cpp
+// Name:      blaming.h
 // Purpose:   Implementation of class wex::blaming
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2022 Anton van Wezenbeek
@@ -19,11 +19,10 @@ class blaming
 public:
   /// Constructor, provide the data.
   blaming(
-    const wex::vcs&    vcs,
-    const std::string& offset,
-    const std::string& revision,
-    const std::string& rename,
-    const std::string& range);
+    /// stc component (for margin revision id etc).
+    factory::stc* stc,
+    /// offset
+    const std::string& offset);
 
   /// Executes blaming.
   /// Returns false in case of error.

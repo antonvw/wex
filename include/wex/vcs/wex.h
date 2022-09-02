@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <wex/vcs/blaming.h>
 #include <wex/vcs/debug.h>
 #include <wex/vcs/process.h>
 #include <wex/vcs/vcs-entry.h>

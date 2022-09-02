@@ -22,6 +22,8 @@
 #include <wex/ui/wex.h>
 #include <wex/vcs/wex.h>
 
+#include "blaming.h"
+
 namespace wex::del
 {
 const std::string find_replace_string(bool replace)
@@ -777,13 +779,7 @@ void wex::del::frame::vcs_blame_revison(
   const std::string& renamed,
   const std::string& offset)
 {
-  blaming bl(
-    {{stc->get_data()->head_path().empty() ? path() :
-                                             stc->get_data()->head_path()}},
-    offset,
-    stc->margin_get_revision_id(),
-    stc->vcs_renamed(),
-    !stc->is_visual() ? "-L %LINES " : std::string());
+  blaming bl(stc, offset);
 
   if (!bl.execute(path()))
   {
