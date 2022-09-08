@@ -1,6 +1,6 @@
 # changes
 
-**v22.10**
+**v22.10** *September 18, 2022*
 - added blame revision
 - ex commands more closely follow
   The Open Group Base Specifications Issue 7, 2018 edition

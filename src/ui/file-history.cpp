@@ -6,14 +6,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
-#include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/core/path.h>
 #include <wex/ui/file-history.h>
 #include <wex/ui/menu.h>
 #include <wx/filehistory.h>
-#include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
-#include <wx/imaglist.h>
 #include <wx/stockitem.h>
 
 #include <filesystem>
@@ -147,9 +144,9 @@ void wex::file_history::popup_menu(
     {
       auto* item = new wxMenuItem(menu, get_base_id() + i, file.filename());
 
-      item->SetBitmap(
-        wxTheFileIconsTable->GetSmallImageList()->GetBitmap(get_iconid(file)));
-
+      // We could add a bitmap here, but on MSW shown with black edges.
+      // item->SetBitmap(wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
+      // wxTheFileIconsTable->GetIconID(file.extension())))
       menu->Append(item);
     }
   }
