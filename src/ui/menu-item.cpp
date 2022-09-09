@@ -2,7 +2,7 @@
 // Name:      menu.cpp
 // Purpose:   Implementation of wex::menu_item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/defs.h>
@@ -109,7 +109,7 @@ void wex::menu_item::append(wex::menu* menu) const
       }
       else if (!m_data.art().empty())
       {
-        if (const wxBitmap bitmap(wxArtProvider::GetBitmap(
+        if (const auto& bitmap(wxArtProvider::GetBitmap(
               m_data.art(),
               wxART_MENU,
               wxArtProvider::GetSizeHint(wxART_MENU, true)));

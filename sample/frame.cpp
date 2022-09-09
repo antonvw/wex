@@ -80,7 +80,9 @@ frame::frame()
              {wex::ID_TOOL_REPLACE, "Replace In Files"}}),
           _("&Find And Replace")}}),
       "&Edit"},
+#ifndef __WXMSW__
      {new wex::menu({{this}, {ID_STATISTICS_SHOW, "Statistics"}}), "&View"},
+#endif
      {new wex::menu(
         {{ID_DLG_ITEM, wex::ellipsed("Item Dialog")},
          {},
