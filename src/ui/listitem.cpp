@@ -148,7 +148,7 @@ void wex::listitem::update()
     SetImage(
       m_listview->data().image() == data::listview::IMAGE_FILE_ICON &&
           m_path.stat().is_ok() ?
-        wxTheFileIconsTable->GetIconID(m_path.extension()) :
+        wxFileIconsTable::file :
         -1);
   }
 
