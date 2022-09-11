@@ -1,15 +1,16 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      listitem.cpp
-// Purpose:   Implementation of class 'wex::listitem'
+// Purpose:   Implementation of class wex::listitem
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
-#include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/factory/lexers.h>
 #include <wex/ui/listitem.h>
+
+#include <wx/generic/dirctrlg.h>
 
 // Do not give an error if columns do not exist.
 // E.g. the LIST_PROCESS has none of the file columns.
@@ -138,11 +139,18 @@ void wex::listitem::set_readonly(bool readonly)
 
 void wex::listitem::update()
 {
-  SetImage(
-    m_listview->data().image() == data::listview::IMAGE_FILE_ICON &&
-        m_path.stat().is_ok() ?
-      get_iconid(m_path) :
-      -1);
+  if (m_path.dir_exists())
+  {
+    SetImage(wxFileIconsTable::folder);
+  }
+  else
+  {
+    SetImage(
+      m_listview->data().image() == data::listview::IMAGE_FILE_ICON &&
+          m_path.stat().is_ok() ?
+        wxTheFileIconsTable->GetIconID(m_path.extension()) :
+        -1);
+  }
 
   set_readonly(m_path.stat().is_readonly());
 

@@ -182,14 +182,6 @@ const std::string wex::get_find_result(
   }
 }
 
-int wex::get_iconid(const path& filename)
-{
-  return filename.file_exists() ?
-           wxFileIconsTable::file :
-           (filename.dir_exists() ? wxFileIconsTable::folder :
-                                    wxFileIconsTable::computer);
-}
-
 int wex::get_number_of_lines(const std::string& text, bool trim)
 {
   if (text.empty())
