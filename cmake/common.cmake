@@ -157,7 +157,13 @@ function(wex_process_po_files)
 endfunction()  
 
 function(wex_target_link_all)
-  set (use_libs ${ARGN})
+  if (${ARGC} STREQUAL "0")
+    set (wex_use_LIBRARIES ${wex_own_LIBRARIES})
+  else ()
+    set (wex_use_LIBRARIES ${ARGN})
+  endif ()  
+          
+  separate_arguments(wex_use_LIBRARIES)
 
   if (CENTOS)
     set (cpp_std_LIBRARIES 
@@ -172,25 +178,18 @@ function(wex_target_link_all)
   endif ()
 
   set (wxWidgets_LIBRARIES wxaui wxstc wxhtml wxcore wxnet wxbase wxscintilla)
-  
-  if (${ARGC} STREQUAL "0")
-    set (wex_LIBRARIES wex-del wex-vcs wex-stc wex-vi wex-ex wex-ui wex-common wex-data wex-factory wex-core)
-  else ()
-    set (wex_LIBRARIES ${use_libs})
-    separate_arguments(wex_LIBRARIES)
-  endif ()  
-          
+
   if (WIN32)
     target_link_libraries(
       ${PROJECT_NAME}
-      ${wex_LIBRARIES}
+      ${wex_use_LIBRARIES}
       ${wxWidgets_LIBRARIES}
       ${Boost_LIBRARIES}
       )
   elseif (APPLE)
     target_link_libraries(
       ${PROJECT_NAME}
-      ${wex_LIBRARIES}
+      ${wex_use_LIBRARIES}
       ${wxWidgets_LIBRARIES} 
       ${Boost_LIBRARIES}
       stdc++
@@ -198,7 +197,7 @@ function(wex_target_link_all)
   else ()
     target_link_libraries(
       ${PROJECT_NAME}
-      ${wex_LIBRARIES}
+      ${wex_use_LIBRARIES}
       ${wxWidgets_LIBRARIES} 
       ${Boost_LIBRARIES}
       ${cpp_std_LIBRARIES}
@@ -207,15 +206,28 @@ function(wex_target_link_all)
   endif ()
 endfunction()
 
+set_property(GLOBAL PROPERTY test_libs)
+
+function(add_test_libs)
+    get_property(tmp GLOBAL PROPERTY test_libs)
+    foreach(arg ${ARGV})
+        set(tmp "${tmp} ${arg}")
+    endforeach()
+    set_property(GLOBAL PROPERTY test_libs "${tmp}")
+endfunction(add_test_libs)
+
 function(wex_test_app libs)
+  add_test_libs(${libs})
   add_executable(
     ${PROJECT_NAME} 
     ${SRCS})
 
+  get_property(tmp GLOBAL PROPERTY test_libs)
+  
   if (ODBC_FOUND)
-    wex_target_link_all(${libs} ${ODBC_LIBRARIES})
+    wex_target_link_all(${tmp} ${ODBC_LIBRARIES})
   else ()
-    wex_target_link_all(${libs})
+    wex_target_link_all(${tmp})
   endif()
   
   add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME}

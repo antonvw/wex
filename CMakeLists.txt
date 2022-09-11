@@ -81,6 +81,12 @@ if (wexENABLE_ASAN)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
 endif ()
 
+# See also FindWEX
+set(wex_own_LIBRARIES
+  wex-del wex-vcs wex-stc wex-vi wex-ex wex-ui wex-common wex-data wex-factory wex-core)
+
+separate_arguments(wex_own_LIBRARIES)
+
 add_subdirectory(ci)
 add_subdirectory(src)
 
