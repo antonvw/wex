@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <wex/common/dir.h>
 #include <wex/core/file.h>
+#include <wex/data/dir.h>
 #include <wex/del/listview.h>
 #include <wex/ui/item-dialog.h>
 

@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <pugixml.hpp>
+#include <wex/common/dir.h>
 #include <wex/common/util.h>
 #include <wex/core/chrono.h>
 #include <wex/core/config.h>
