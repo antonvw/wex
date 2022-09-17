@@ -36,17 +36,6 @@ class stc;
 class lexers
 {
 public:
-  /// Margin text style type.
-  enum class margin_style_t
-  {
-    UNKNOWN,
-    DAY,
-    WEEK,
-    MONTH,
-    YEAR,
-    OTHER
-  };
-
   /// Name values type for macros.
   typedef std::map<std::string, std::string> name_values_t;
 

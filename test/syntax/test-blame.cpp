@@ -18,7 +18,7 @@ TEST_CASE("wex::blame")
     REQUIRE(wex::blame().caption().empty());
     REQUIRE(!wex::blame().parse(wex::path(), ""));
     REQUIRE(wex::blame().info().empty());
-    REQUIRE(wex::blame().style() == wex::lexers::margin_style_t::UNKNOWN);
+    REQUIRE(wex::blame().style() == wex::blame::margin_style_t::UNKNOWN);
     REQUIRE(wex::blame().vcs_name().empty());
   }
 
@@ -64,7 +64,7 @@ TEST_CASE("wex::blame")
     REQUIRE(blame.info().find("2019-02-01") != std::string::npos);
     REQUIRE(blame.info().find("bf5d87cc") != std::string::npos);
 
-    REQUIRE(blame.style() != wex::lexers::margin_style_t::UNKNOWN);
+    REQUIRE(blame.style() != wex::blame::margin_style_t::UNKNOWN);
 
     REQUIRE(blame.line_no() == 14);
     REQUIRE(blame.line_text().find("get_country") != std::string::npos);

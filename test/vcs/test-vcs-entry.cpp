@@ -6,7 +6,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
+#include <wex/core/path.h>
 #include <wex/factory/defs.h>
+#include <wex/syntax/lexers.h>
 #include <wex/vcs/vcs-entry.h>
 
 #include "test.h"

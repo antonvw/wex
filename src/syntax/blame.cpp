@@ -46,9 +46,9 @@ wex::blame::blame(const pugi::xml_node& node)
 {
 }
 
-wex::lexers::margin_style_t wex::blame::get_style(const std::string& text) const
+wex::blame::margin_style_t wex::blame::get_style(const std::string& text) const
 {
-  lexers::margin_style_t style = lexers::margin_style_t::UNKNOWN;
+  margin_style_t style = margin_style_t::UNKNOWN;
 
   if (text.empty())
   {
@@ -69,23 +69,23 @@ wex::lexers::margin_style_t wex::blame::get_style(const std::string& text) const
 
     if (dt < seconds_in_day)
     {
-      style = lexers::margin_style_t::DAY;
+      style = margin_style_t::DAY;
     }
     else if (dt < seconds_in_week)
     {
-      style = lexers::margin_style_t::WEEK;
+      style = margin_style_t::WEEK;
     }
     else if (dt < seconds_in_month)
     {
-      style = lexers::margin_style_t::MONTH;
+      style = margin_style_t::MONTH;
     }
     else if (dt < seconds_in_year)
     {
-      style = lexers::margin_style_t::YEAR;
+      style = margin_style_t::YEAR;
     }
     else
     {
-      style = lexers::margin_style_t::OTHER;
+      style = margin_style_t::OTHER;
     }
   }
 

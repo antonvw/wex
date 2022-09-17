@@ -144,27 +144,27 @@ void wex::lexers::apply_margin_text_style(factory::stc* stc, const blame* blame)
 
   switch (blame->style())
   {
-    case margin_style_t::DAY:
+    case blame::margin_style_t::DAY:
       stc->MarginSetStyle(blame->line_no(), m_style_no_text_margin_day);
       break;
 
-    case margin_style_t::MONTH:
+    case blame::margin_style_t::MONTH:
       stc->MarginSetStyle(blame->line_no(), m_style_no_text_margin_month);
       break;
 
-    case margin_style_t::OTHER:
+    case blame::margin_style_t::OTHER:
       stc->MarginSetStyle(blame->line_no(), m_style_no_text_margin);
       break;
 
-    case margin_style_t::WEEK:
+    case blame::margin_style_t::WEEK:
       stc->MarginSetStyle(blame->line_no(), m_style_no_text_margin_week);
       break;
 
-    case margin_style_t::YEAR:
+    case blame::margin_style_t::YEAR:
       stc->MarginSetStyle(blame->line_no(), m_style_no_text_margin_year);
       break;
 
-    case margin_style_t::UNKNOWN:
+    case blame::margin_style_t::UNKNOWN:
       break;
   }
 

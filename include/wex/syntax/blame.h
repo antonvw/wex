@@ -8,7 +8,6 @@
 #pragma once
 
 #include <pugixml.hpp>
-#include <wex/syntax/lexers.h>
 
 namespace wex
 {
@@ -75,6 +74,17 @@ class stc;
 class blame
 {
 public:
+  /// Margin text style type.
+  enum class margin_style_t
+  {
+    UNKNOWN,
+    DAY,
+    WEEK,
+    MONTH,
+    YEAR,
+    OTHER
+  };
+
   /// Static interface.
 
   /// Returns a renamed path present in the stc margin,
@@ -123,7 +133,7 @@ public:
   bool use() const { return !m_blame_format.empty(); }
 
   /// Style for blame margin based on commit date.
-  lexers::margin_style_t style() const { return m_style; };
+  margin_style_t style() const { return m_style; };
 
   /// Returns vcs name for which this blaming is done.
   const auto& vcs_name() const { return m_name; };
@@ -133,14 +143,14 @@ private:
   bool parse_compact(const std::string& line, const regex& r);
   bool parse_full(const std::string& line, const regex& r);
 
-  lexers::margin_style_t get_style(const std::string& text) const;
+  margin_style_t get_style(const std::string& text) const;
 
   std::string m_blame_format, m_caption, m_date_format, m_info, m_line_text,
     m_name, m_path;
 
   wex::path m_path_original;
 
-  lexers::margin_style_t m_style{lexers::margin_style_t::UNKNOWN};
+  margin_style_t m_style{margin_style_t::UNKNOWN};
 
   int m_line_no{0};
 
