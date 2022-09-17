@@ -8,7 +8,7 @@
 #pragma once
 
 #include <wex/core/path.h>
-#include <wex/factory/marker.h>
+#include <wex/syntax/marker.h>
 #include <wex/ui/debug-entry.h>
 
 #include <map>

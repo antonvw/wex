@@ -31,8 +31,12 @@ class vcs_command;
 namespace factory
 {
 class frame;
-class stc;
 }; // namespace factory
+
+namespace syntax
+{
+class stc;
+};
 
 /*! \file */
 
@@ -76,7 +80,7 @@ bool compare_file(const path& file1, const path& file2);
 /// Shows a dialog with all lexers, allowing you to choose one.
 /// Returns true and sets the lexer on the stc component if you selected
 /// one.
-bool lexers_dialog(factory::stc* stc);
+bool lexers_dialog(syntax::stc* stc);
 
 /// Runs make on specified makefile.
 /// Returns value from executing the make process.
@@ -109,7 +113,7 @@ void vcs_command_stc(
   /// lexer to be used
   const lexer& lexer,
   /// stc on which lexer is set
-  factory::stc* stc);
+  syntax::stc* stc);
 
 /// Shows xml error.
 void xml_error(

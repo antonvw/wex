@@ -7,7 +7,7 @@
 
 #include <wex/core/config.h>
 #include <wex/core/log.h>
-#include <wex/factory/lexers.h>
+#include <wex/syntax/lexers.h>
 #include <wex/ui/listitem.h>
 
 #include <wx/generic/dirctrlg.h>

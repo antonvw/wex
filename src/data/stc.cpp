@@ -8,8 +8,8 @@
 #include <wex/core/config.h>
 #include <wex/core/path.h>
 #include <wex/data/stc.h>
-#include <wex/factory/indicator.h>
 #include <wex/factory/stc.h>
+#include <wex/syntax/indicator.h>
 
 wex::data::stc::stc(wex::factory::stc* stc)
   : m_stc(stc)

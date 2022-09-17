@@ -9,8 +9,8 @@
 #include <wex/del/listview-file.h>
 #include <wex/ex/ctags.h>
 #include <wex/factory/bind.h>
-#include <wex/factory/lexers.h>
-#include <wex/factory/printing.h>
+#include <wex/syntax/lexers.h>
+#include <wex/syntax/printing.h>
 #include <wex/stc/stc.h>
 #include <wex/ui/frd.h>
 #include <wex/vcs/debug.h>

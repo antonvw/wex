@@ -11,7 +11,7 @@
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
-#include <wex/factory/path-lexer.h>
+#include <wex/syntax/path-lexer.h>
 #include <wex/ui/item-dialog.h>
 #include <wex/ui/menus.h>
 #include <wex/vcs/vcs.h>

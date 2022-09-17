@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 
 #include "../test.h"
@@ -16,7 +16,7 @@ namespace wex
 {
 namespace test
 {
-class ex_stc : public wex::factory::stc
+class ex_stc : public wex::syntax::stc
 {
 public:
   explicit ex_stc(wxFrame* parent)
@@ -54,4 +54,4 @@ std::vector<std::string> get_builtin_variables();
 wex::frame* frame();
 
 /// Returns an stc.
-wex::factory::stc* get_stc();
+wex::syntax::stc* get_stc();

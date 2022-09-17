@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
-#include <wex/factory/blame.h>
+#include <wex/syntax/blame.h>
 #include <wex/stc/stc.h>
 #include <wex/ui/item-vector.h>
 

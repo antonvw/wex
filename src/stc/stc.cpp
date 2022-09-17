@@ -11,9 +11,9 @@
 #include <wex/ex/address.h>
 #include <wex/ex/ex-stream.h>
 #include <wex/ex/macros.h>
-#include <wex/factory/indicator.h>
-#include <wex/factory/lexers.h>
-#include <wex/factory/printing.h>
+#include <wex/syntax/indicator.h>
+#include <wex/syntax/lexers.h>
+#include <wex/syntax/printing.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/auto-indent.h>
 #include <wex/stc/entry-dialog.h>

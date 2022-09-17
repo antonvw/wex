@@ -11,7 +11,7 @@
 #include <wex/data/notebook.h>
 #include <wex/data/window.h>
 #include <wex/factory/defs.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/file-dialog.h>
 #include <wex/ui/frame.h>
 #include <wx/aui/auibook.h>
@@ -177,15 +177,15 @@ template <class T> bool wex::notebook::for_each(int id)
       case ID_ALL_STC_SET_LEXER:
         // At this moment same as themed change,
         // as we want default colour updates as well.
-        ((factory::stc*)win)
+        ((syntax::stc*)win)
           ->get_lexer()
-          .set(((factory::stc*)win)->get_lexer().display_lexer());
+          .set(((syntax::stc*)win)->get_lexer().display_lexer());
         break;
 
       case ID_ALL_STC_SET_LEXER_THEME:
-        ((factory::stc*)win)
+        ((syntax::stc*)win)
           ->get_lexer()
-          .set(((factory::stc*)win)->get_lexer().display_lexer());
+          .set(((syntax::stc*)win)->get_lexer().display_lexer());
         break;
 
       case ID_ALL_STC_SYNC:

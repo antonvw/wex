@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      factory/hexmode.h
+// Name:      hexmode.h
 // Purpose:   Declaration of class wex::factory::hexmode
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021 Anton van Wezenbeek

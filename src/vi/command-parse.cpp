@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex/macros.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 #include <wex/vi/vi.h>
 
 #include "vim.h"

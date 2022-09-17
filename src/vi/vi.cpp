@@ -11,7 +11,7 @@
 #include <wex/core/log.h>
 #include <wex/ex/macros.h>
 #include <wex/ex/util.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/vi/vi.h>
 
@@ -79,7 +79,7 @@ bool visual_vi_command(const std::string& command, vi* vi)
 }
 } // namespace wex
 
-wex::vi::vi(wex::factory::stc* arg, mode_t ex_mode)
+wex::vi::vi(wex::syntax::stc* arg, mode_t ex_mode)
   : ex(arg, ex_mode)
   , m_mode(
       this,

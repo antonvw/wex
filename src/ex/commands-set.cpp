@@ -10,7 +10,7 @@
 #include <wex/core/config.h>
 #include <wex/core/log.h>
 #include <wex/ex/ex.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/statusbar.h>

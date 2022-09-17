@@ -16,7 +16,7 @@
 #include <wex/ex/macros.h>
 #include <wex/ex/util.h>
 #include <wex/factory/stc-undo.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/vi/vi.h>
@@ -24,7 +24,7 @@
 
 namespace wex
 {
-size_t fold(wex::factory::stc* stc, const std::string& command)
+size_t fold(wex::syntax::stc* stc, const std::string& command)
 {
   if (command.size() <= 1)
     return (size_t)0;

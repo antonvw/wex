@@ -32,6 +32,11 @@ class menu_item;
 class process_data;
 class toolbar;
 
+namespace syntax
+{
+class stc;
+};
+
 /// Offers an aui managed frame with a notebook multiple document interface,
 /// used by the notebook classes, and toolbar, findbar and vibar support.
 /// - The toolbar and findbar are added as toolbarpanes to the aui manager.
@@ -97,10 +102,10 @@ public:
   virtual void debug_add_menu(menu&, bool) { ; }
 
   /// Runs debug action.
-  virtual void debug_exe(int menu_id, factory::stc* stc) { ; }
+  virtual void debug_exe(int menu_id, syntax::stc* stc) { ; }
 
   /// Runs debug command.
-  virtual void debug_exe(const std::string& command, factory::stc* stc) { ; }
+  virtual void debug_exe(const std::string& command, syntax::stc* stc) { ; }
 
   /// Invoked when a debug exe path is opened.
   virtual void debug_exe(const path& p) { ; }
@@ -115,7 +120,7 @@ public:
   virtual bool debug_print(const std::string& text) { return false; }
 
   /// Toggles a breakpoint on line.
-  virtual bool debug_toggle_breakpoint(int line, factory::stc* stc)
+  virtual bool debug_toggle_breakpoint(int line, syntax::stc* stc)
   {
     return false;
   };
@@ -130,7 +135,7 @@ public:
   /// del frame, returning true if text specifies
   /// a one or two address based ex address (including command).
   /// e.g. 1,5y, %y, etc.
-  virtual bool is_address(factory::stc* stc, const std::string& text)
+  virtual bool is_address(syntax::stc* stc, const std::string& text)
   {
     return false;
   };
@@ -142,7 +147,7 @@ public:
   virtual void open_file_same_page(wxCommandEvent& event) { ; }
 
   /// Allows you to override print ex.
-  virtual bool print_ex(factory::stc* stc, const std::string& text)
+  virtual bool print_ex(syntax::stc* stc, const std::string& text)
   {
     return false;
   };
@@ -156,10 +161,7 @@ public:
 
   /// Restores a previous saved current page.
   /// Returns restored page (default returns nullptr).
-  virtual factory::stc* restore_page(const std::string& key)
-  {
-    return nullptr;
-  };
+  virtual syntax::stc* restore_page(const std::string& key) { return nullptr; };
 
   /// Saves the current page, to restore later on.
   virtual bool save_current_page(const std::string& key) { return false; }
@@ -175,7 +177,7 @@ public:
     /// action
     int action = HIDE_BAR_FOCUS_STC,
     /// stc component to use for showing ex bar (for SHOW_ actions)
-    factory::stc* stc = nullptr)
+    syntax::stc* stc = nullptr)
   {
     ;
   };
@@ -187,7 +189,7 @@ public:
   virtual int show_stc_entry_dialog(bool modal = false) { return wxID_CANCEL; }
 
   /// Returns stc component for stc entry dialog.
-  virtual factory::stc* stc_entry_dialog_component() { return nullptr; }
+  virtual syntax::stc* stc_entry_dialog_component() { return nullptr; }
 
   /// Returns stc entry dialog title.
   virtual std::string stc_entry_dialog_title() const { return std::string(); }
@@ -210,14 +212,14 @@ public:
 
   /// Annotates commmit.
   virtual void
-  vcs_annotate_commit(factory::stc*, int line, const std::string& commit_id)
+  vcs_annotate_commit(syntax::stc*, int line, const std::string& commit_id)
   {
     ;
   };
 
   /// Blames revision.
   virtual void vcs_blame_revison(
-    factory::stc*,
+    syntax::stc*,
     const std::string& renamed,
     const std::string& offset)
   {
@@ -323,7 +325,7 @@ public:
   /// Returns false if label is not supported.
   bool show_ex_command(
     /// the ex on which command is to be done
-    factory::stc* stc,
+    syntax::stc* stc,
     /// label for the ex bar (/, ?, :, =)
     const std::string& label);
 
@@ -331,7 +333,7 @@ public:
   /// Returns false if command is not supported.
   bool show_ex_input(
     /// the ex on which command is to be done
-    factory::stc* stc,
+    syntax::stc* stc,
     /// the command (a, c, or i)
     char command);
 

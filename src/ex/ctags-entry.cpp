@@ -9,7 +9,7 @@
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
 #include <wex/ex/ctags-entry.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 #include <wx/artprov.h>
 
 wex::ctags_entry& wex::ctags_entry::access(const std::string& v)

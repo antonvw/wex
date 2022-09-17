@@ -8,8 +8,8 @@
 #pragma once
 
 #include <wex/data/stc.h>
-#include <wex/factory/marker.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/marker.h>
+#include <wex/syntax/stc.h>
 #include <wex/stc/file.h>
 #include <wex/stc/hexmode.h>
 #include <wex/ui/item.h>
@@ -35,12 +35,12 @@ namespace factory
 class frame;
 };
 
-/// Offers a styled text ctrl with:
+/// Offers a syntax stc with:
 /// - ex or vi support (default vi mode is on)
 /// - find/replace
 /// - popup menu
 /// - printing
-class stc : public factory::stc
+class stc : public syntax::stc
 {
 public:
   /// Static interface
@@ -306,7 +306,8 @@ private:
   frame* m_frame;
 
   class auto_complete* m_auto_complete;
-  hexmode              m_hexmode;
+
+  hexmode m_hexmode;
 
   data::stc m_data;
   stc_file  m_file;

@@ -8,7 +8,7 @@
 
 #include <wex/ex/ctags.h>
 #include <wex/factory/stc-undo.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/frd.h>
 
 #include <algorithm>

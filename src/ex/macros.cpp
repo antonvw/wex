@@ -14,7 +14,7 @@
 #include <wex/core/path.h>
 #include <wex/core/type-to-value.h>
 #include <wex/ex/macros.h>
-#include <wex/factory/lexer-props.h>
+#include <wex/syntax/lexer-props.h>
 #include <wex/ui/frame.h>
 
 #include <algorithm>

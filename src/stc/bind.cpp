@@ -11,10 +11,10 @@
 #include <wex/core/log.h>
 #include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
-#include <wex/factory/lexer-props.h>
-#include <wex/factory/lexers.h>
-#include <wex/factory/path-lexer.h>
 #include <wex/factory/sort.h>
+#include <wex/syntax/lexer-props.h>
+#include <wex/syntax/lexers.h>
+#include <wex/syntax/path-lexer.h>
 #include <wex/stc/beautify.h>
 #include <wex/stc/bind.h>
 #include <wex/stc/entry-dialog.h>

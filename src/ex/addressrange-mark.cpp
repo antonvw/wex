@@ -7,7 +7,7 @@
 
 #include <wex/ex/addressrange.h>
 #include <wex/ex/ex.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 
 #include "addressrange-mark.h"
 #include "block-lines.h"

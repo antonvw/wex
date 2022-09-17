@@ -9,6 +9,7 @@ endif ()
 
 add_subdirectory(core)
 add_subdirectory(factory)
+add_subdirectory(syntax)
 add_subdirectory(data-src)
 add_subdirectory(common)
 add_subdirectory(ui)

@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      factory/frame.cpp
+// Name:      frame.cpp
 // Purpose:   Implementation of wex::factory::frame class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021 Anton van Wezenbeek
@@ -10,7 +10,6 @@
 #include <wex/core/path.h>
 #include <wex/factory/frame.h>
 #include <wex/factory/grid.h>
-#include <wex/factory/lexers.h>
 #include <wex/factory/listview.h>
 #include <wex/factory/stc.h>
 
@@ -185,10 +184,7 @@ bool wex::factory::frame::update_statusbar(stc* stc, const std::string& pane)
   }
   else if (pane == "PaneLexer")
   {
-    if (!lexers::get()->theme().empty())
-    {
-      text << stc->get_lexer().display_lexer();
-    }
+    text << stc->lexer_name();
   }
   else if (pane == "PaneFileType")
   {

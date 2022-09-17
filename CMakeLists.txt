@@ -34,10 +34,10 @@ execute_process(
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets)
 
 configure_file(
-  src/lexers/LexAda.cxx 
+  src/syntax/wex/LexAda.cxx 
   ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/scintilla/lexers COPYONLY)
 configure_file(
-  src/lexers/Catalogue.cxx 
+  src/syntax/wex/Catalogue.cxx 
   ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/scintilla/src COPYONLY)
 
 add_subdirectory(external)
@@ -83,7 +83,7 @@ endif ()
 
 # See also FindWEX
 set(wex_own_LIBRARIES
-  wex-del wex-vcs wex-stc wex-vi wex-ex wex-ui wex-common wex-data wex-factory wex-core)
+  wex-del wex-vcs wex-stc wex-vi wex-ex wex-ui wex-common wex-data wex-syntax wex-factory wex-core)
 
 separate_arguments(wex_own_LIBRARIES)
 

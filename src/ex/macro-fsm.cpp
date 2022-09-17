@@ -17,7 +17,7 @@
 #include <wex/ex/macros.h>
 #include <wex/ex/variable.h>
 #include <wex/factory/stc-undo.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/statusbar.h>
 

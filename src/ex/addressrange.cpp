@@ -20,7 +20,7 @@
 #include <wex/factory/process.h>
 #include <wex/factory/sort.h>
 #include <wex/factory/stc-undo.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wx/app.h>

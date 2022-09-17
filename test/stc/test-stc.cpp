@@ -8,8 +8,8 @@
 #include <wex/core/config.h>
 #include <wex/core/log-none.h>
 #include <wex/factory/defs.h>
-#include <wex/factory/indicator.h>
-#include <wex/factory/lexers.h>
+#include <wex/syntax/indicator.h>
+#include <wex/syntax/lexers.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/ui/frd.h>
 

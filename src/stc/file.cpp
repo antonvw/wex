@@ -8,7 +8,7 @@
 #include <wex/core/config.h>
 #include <wex/ex/ex-stream.h>
 #include <wex/factory/defs.h>
-#include <wex/factory/path-lexer.h>
+#include <wex/syntax/path-lexer.h>
 #include <wex/stc/file.h>
 #include <wex/stc/stc.h>
 #include <wex/ui/file-dialog.h>

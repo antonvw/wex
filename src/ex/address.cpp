@@ -16,7 +16,7 @@
 #include <wex/ex/macros.h>
 #include <wex/ex/util.h>
 #include <wex/factory/process.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 
 #define SEARCH_TARGET                                                         \

@@ -10,7 +10,7 @@ languages:
       - /external/.*
       - /locale/.*
       - /sample/.*
-      - /src/lexers/.*
+      - /src/syntax/.*
       - /test/.*
       
   test:

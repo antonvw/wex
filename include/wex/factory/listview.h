@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      factory/listview.h
+// Name:      listview.h
 // Purpose:   Declaration of wex::factory::listview and related classes
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021 Anton van Wezenbeek

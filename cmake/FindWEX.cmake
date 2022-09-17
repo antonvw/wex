@@ -172,6 +172,7 @@ set(wex_LIBRARIES
   wex-ui${USE_DEBUG}
   wex-common${USE_DEBUG}
   wex-data${USE_DEBUG}
+  wex-syntax${USE_DEBUG}
   wex-factory${USE_DEBUG}
   wex-core${USE_DEBUG}
   ${wx_LIBRARIES}

@@ -5,7 +5,7 @@
 // Copyright: (c) 2019-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/factory/lexers.h>
+#include <wex/syntax/lexers.h>
 #include <wex/stc/hexmode.h>
 
 #include "test.h"

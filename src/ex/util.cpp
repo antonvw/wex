@@ -11,7 +11,7 @@
 #include <wex/ex/ex.h>
 #include <wex/ex/macros.h>
 #include <wex/ex/util.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 
 const std::string wex::esc()
 {
