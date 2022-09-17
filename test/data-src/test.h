@@ -8,9 +8,9 @@
 #pragma once
 
 #include <wex/factory/listview.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 
 #include "../test.h"
 
 wex::factory::listview* get_listview();
-wex::factory::stc*      get_stc();
+wex::syntax::stc*       get_stc();

@@ -2,7 +2,7 @@
 // Name:      main.cpp
 // Purpose:   main for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021
+// Copyright: (c) 2021-2022
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "test.h"
@@ -21,7 +21,7 @@ private:
   wxFrame* m_frame{nullptr};
 
   static inline wex::factory::listview* m_listview = nullptr;
-  static inline wex::factory::stc*      m_stc      = nullptr;
+  static inline wex::syntax::stc*       m_stc      = nullptr;
 };
 }; // namespace wex::test
 
@@ -35,7 +35,7 @@ public:
   }
 };
 
-class data_stc : public wex::factory::stc
+class data_stc : public wex::syntax::stc
 {
 public:
   explicit data_stc(wxFrame* parent)
@@ -76,7 +76,7 @@ wex::factory::listview* get_listview()
   return wex::test::data::get_listview();
 }
 
-wex::factory::stc* get_stc()
+wex::syntax::stc* get_stc()
 {
   return wex::test::data::get_stc();
 }

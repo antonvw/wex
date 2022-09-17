@@ -12,6 +12,8 @@
 
 namespace wex
 {
+class indicator;
+
 namespace syntax
 {
 
@@ -38,6 +40,16 @@ public:
 
   /// Returns the lexer.
   auto& get_lexer() { return m_lexer; }
+
+  /// Sets an indicator at specified start and end pos.
+  /// Default false, not implemented.
+  bool set_indicator(
+    /// indicator to use
+    const indicator& indicator,
+    /// start pos, if -1 GetTargetStart is used
+    int start = -1,
+    /// end pos, if -1 GetTargetEnd is used
+    int end = -1);
 
 private:
   lexer m_lexer;

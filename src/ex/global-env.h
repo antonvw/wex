@@ -39,9 +39,9 @@ private:
 
   std::vector<std::string> m_commands;
 
-  int           m_hits{0};
-  bool          m_recursive{false};
-  ex*           m_ex;
-  factory::stc* m_stc;
+  int          m_hits{0};
+  bool         m_recursive{false};
+  ex*          m_ex;
+  syntax::stc* m_stc;
 };
 }; // namespace wex

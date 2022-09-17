@@ -17,7 +17,6 @@
 
 namespace wex
 {
-class indicator;
 
 namespace data
 {
@@ -187,19 +186,6 @@ public:
 
   /// Sets hex mode (default false).
   virtual bool set_hexmode(bool on) { return false; }
-
-  /// Sets an indicator at specified start and end pos.
-  /// Default false, not implemented.
-  virtual bool set_indicator(
-    /// indicator to use
-    const indicator& indicator,
-    /// start pos, if -1 GetTargetStart is used
-    int start = -1,
-    /// end pos, if -1 GetTargetEnd is used
-    int end = -1)
-  {
-    return false;
-  };
 
   /// Sets search flags, default invokes SetSearchFlags.
   /// search flags to be used:

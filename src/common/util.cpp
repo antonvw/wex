@@ -307,7 +307,7 @@ void wex::vcs_command_stc(
 void wex::xml_error(
   const path&                   filename,
   const pugi::xml_parse_result* result,
-  factory::stc*                 stc)
+  syntax::stc*                  stc)
 {
   log::status("xml error") << result->description();
   log(*result) << filename.name();
@@ -319,7 +319,7 @@ void wex::xml_error(
           dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
         frame != nullptr)
     {
-      stc = frame->open_file(filename, data::stc());
+      stc = dynamic_cast<syntax::stc*>(frame->open_file(filename, data::stc()));
     }
   }
 

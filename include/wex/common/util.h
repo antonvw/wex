@@ -122,5 +122,5 @@ void xml_error(
   /// result of parsing describing the error
   const pugi::xml_parse_result* result,
   /// stc component containing the filename
-  factory::stc* stc = nullptr);
+  syntax::stc* stc = nullptr);
 }; // namespace wex
