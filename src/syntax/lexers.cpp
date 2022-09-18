@@ -19,12 +19,9 @@
 #include <functional>
 #include <numeric>
 
-// Constructor for lexers from specified filename.
-// This must be an existing xml file containing all lexers.
-// It does not do load_document, however if you use the static get,
-// it both constructs and loads the lexers.
-wex::lexers::lexers(const wex::path& filename)
-  : m_path(filename)
+wex::lexers::lexers()
+  : m_path(wex::path(config::dir(), "wex-lexers.xml"))
+  , m_path_macro(wex::path(config::dir(), "wex-lexers-macro.xml"))
   , m_theme(config("theme").get())
 {
 }
@@ -250,7 +247,7 @@ wex::lexers* wex::lexers::get(bool createOnDemand)
 {
   if (m_self == nullptr && createOnDemand)
   {
-    m_self = new lexers(wex::path(config::dir(), "wex-lexers.xml"));
+    m_self = new lexers();
     m_self->load_document();
   }
 
@@ -289,65 +286,54 @@ const std::string& wex::lexers::keywords(const std::string& set) const
 
 bool wex::lexers::load_document()
 {
-  if (m_is_loaded)
-  {
-    m_default_style.clear();
-    m_folding_background_colour.clear();
-    m_folding_foreground_colour.clear();
-    m_global_properties.clear();
-    m_indicators.clear();
-    m_keywords.clear();
-    m_lexers.clear();
-    m_macros.clear();
-    m_markers.clear();
-    m_styles.clear();
-    m_styles_hex.clear();
-    m_texts.clear();
-    m_theme_colours.clear();
-    m_theme_macros.clear();
-  }
-
-  m_indicators.insert(indicator());
-  m_keywords[std::string()] = std::string();
-  m_lexers.push_back(lexer());
-  m_macros[std::string()] = name_values_t{};
-  m_markers.insert(marker());
-  m_theme_colours[std::string()] = m_default_colours;
-  m_theme_macros[std::string()]  = name_values_t{};
-
-  // This test is to prevent showing an error if the lexers file does not exist,
-  // as this is not required.
-  if (!m_path.file_exists())
+  if (!load_document_init())
   {
     return false;
   }
 
   pugi::xml_document doc;
 
-  if (const auto result = doc.load_file(
-        m_path.string().c_str(),
-        pugi::parse_default | pugi::parse_trim_pcdata);
-      !result)
-  {
-    log(result) << m_path;
-  }
+  load_document(doc, m_path);
 
   for (const auto& node : doc.document_element().children())
   {
-    if (strcmp(node.name(), "macro") == 0)
-      parse_node_macro(node);
-    else if (strcmp(node.name(), "global") == 0)
+    if (strcmp(node.name(), "global") == 0)
+    {
       parse_node_global(node);
+    }
     else if (strcmp(node.name(), "keyword") == 0)
+    {
       parse_node_keyword(node);
+    }
     else if (strcmp(node.name(), "lexer") == 0)
     {
       if (const wex::lexer lexer(&node); lexer.is_ok())
+      {
         m_lexers.emplace_back(lexer);
+      }
     }
   }
 
-  // Do some checking.
+  load_document_check();
+
+  m_is_loaded = true;
+
+  return true;
+}
+
+void wex::lexers::load_document(pugi::xml_document& doc, const wex::path& file)
+{
+  if (const auto result = doc.load_file(
+        file.string().c_str(),
+        pugi::parse_default | pugi::parse_trim_pcdata);
+      !result)
+  {
+    log(result) << file;
+  }
+}
+
+void wex::lexers::load_document_check()
+{
   if (!m_lexers.empty() && !m_theme.empty())
   {
     if (!m_default_style.is_ok())
@@ -356,7 +342,7 @@ bool wex::lexers::load_document()
       log() << "default style does not contain default style";
   }
 
-  if (m_theme_macros.size() == 1)
+  if (m_theme_macros.size() <= 1)
   {
     log() << "themes are missing";
   }
@@ -380,8 +366,62 @@ bool wex::lexers::load_document()
     << "styles hex:" << m_styles_hex.size() << "texts:" << m_texts.size()
     << "theme colours:" << m_theme_colours.size()
     << "theme macros:" << m_theme_macros.size();
+}
 
-  m_is_loaded = true;
+bool wex::lexers::load_document_init()
+{
+  // This test is to prevent showing an error if the lexers file does not exist,
+  // as this is not required.
+  if (!m_path.file_exists() || !m_path_macro.file_exists())
+  {
+    return false;
+  }
+
+  if (m_is_loaded)
+  {
+    m_default_style.clear();
+    m_folding_background_colour.clear();
+    m_folding_foreground_colour.clear();
+    m_global_properties.clear();
+    m_indicators.clear();
+    m_keywords.clear();
+    m_lexers.clear();
+    m_markers.clear();
+    m_styles.clear();
+    m_styles_hex.clear();
+    m_texts.clear();
+    m_theme_colours.clear();
+    m_theme_macros.clear();
+  }
+  else
+  {
+    pugi::xml_document doc;
+
+    load_document(doc, m_path_macro);
+
+    for (const auto& node : doc.document_element().children())
+    {
+      if (strcmp(node.name(), "macro") == 0)
+      {
+        parse_node_macro(node);
+      }
+      else if (strcmp(node.name(), "colour") == 0)
+      {
+        wxTheColourDatabase->AddColour(
+          node.attribute("no").value(),
+          node.text().get());
+      }
+    }
+  }
+
+
+  m_indicators.insert(indicator());
+  m_keywords[std::string()] = std::string();
+  m_lexers.push_back(lexer());
+  m_macros[std::string()] = name_values_t{};
+  m_markers.insert(marker());
+  m_theme_colours[std::string()] = m_default_colours;
+  m_theme_macros[std::string()]  = name_values_t{};
 
   return true;
 }
@@ -397,15 +437,14 @@ void wex::lexers::parse_node_global(const pugi::xml_node& node)
 {
   for (const auto& child : node.children())
   {
-    if (m_theme.empty())
+    // this should be the first, to fill themes
+    if (strcmp(child.name(), "themes") == 0)
+    {
+      parse_node_themes(child);
+    }
+    else if (m_theme.empty())
     {
       // Do nothing.
-    }
-    else if (strcmp(child.name(), "colour") == 0)
-    {
-      wxTheColourDatabase->AddColour(
-        child.attribute("no").value(),
-        child.text().get());
     }
     else if (strcmp(child.name(), "foldmargin") == 0)
     {
@@ -542,10 +581,6 @@ void wex::lexers::parse_node_macro(const pugi::xml_node& node)
       }
 
       m_macros[name] = macro_map;
-    }
-    else if (strcmp(child.name(), "themes") == 0)
-    {
-      parse_node_themes(child);
     }
     else
     {

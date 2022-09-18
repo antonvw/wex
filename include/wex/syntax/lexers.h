@@ -152,7 +152,11 @@ public:
   const name_values_t& theme_macros() const;
 
 private:
-  explicit lexers(const wex::path& filename);
+  explicit lexers();
+
+  void load_document(pugi::xml_document& doc, const wex::path& p);
+  void load_document_check();
+  bool load_document_init();
 
   void parse_node_folding(const pugi::xml_node& node);
   void parse_node_global(const pugi::xml_node& node);
@@ -181,7 +185,7 @@ private:
 
   style m_default_style;
 
-  const wex::path m_path;
+  const wex::path m_path, m_path_macro;
 
   std::string m_folding_background_colour, m_folding_foreground_colour, m_theme,
     m_theme_previous;

@@ -10,7 +10,7 @@ languages:
       - /external/.*
       - /locale/.*
       - /sample/.*
-      - /src/syntax/.*
+      - /src/syntax/wex/.*
       - /test/.*
       
   test:
