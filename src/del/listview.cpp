@@ -8,11 +8,13 @@
 #include <wex/common/dir.h>
 #include <wex/common/stream.h>
 #include <wex/common/util.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
 #include <wex/del/wex.h>
-#include <wex/stc/vcs.h>
-#include <wex/ui/bind.h>
+#include <wex/factory/bind.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/listitem.h>
+#include <wex/vcs/vcs.h>
 #include <wx/app.h>
 
 namespace wex::del
@@ -43,46 +45,7 @@ wex::del::listview::listview(const data::listview& data)
   bind(this).command(
     {{[=, this](wxCommandEvent& event)
       {
-        bool           first = true;
-        std::string    file1, file2;
-        wex::listview* list = nullptr;
-        for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
-        {
-          listitem         li(this, i);
-          const wex::path* filename = &li.path();
-          if (!filename->file_exists())
-            continue;
-          switch (event.GetId())
-          {
-            case ID_LIST_COMPARE:
-            {
-              if (GetSelectedItemCount() == 1)
-              {
-                list = m_frame->activate(data::listview::FILE);
-                if (list == nullptr)
-                  return;
-                const int main_selected = list->GetFirstSelected();
-                compare_file(listitem(list, main_selected).path(), *filename);
-              }
-              else
-              {
-                if (first)
-                {
-                  first = false;
-                  file1 = filename->string();
-                }
-                else
-                {
-                  first = true;
-                  file2 = filename->string();
-                }
-                if (first)
-                  compare_file(path(file1), path(file2));
-              }
-            }
-            break;
-          }
-        }
+        on_compare();
       },
       ID_LIST_COMPARE},
 
@@ -94,43 +57,7 @@ wex::del::listview::listview(const data::listview& data)
 
      {[=, this](wxCommandEvent& event)
       {
-        const wex::tool tool((window_id)event.GetId());
-        if (
-          tool.is_find_type() &&
-          m_frame->find_in_files_dialog(tool) == wxID_CANCEL)
-        {
-          return;
-        }
-
-        if (auto* lv = m_frame->activate(listview::type_tool(tool));
-            lv != nullptr)
-        {
-          statistics<int> stats;
-
-          for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
-          {
-            const listitem item(this, i);
-            log::status() << item.path();
-
-            if (item.path().file_exists())
-            {
-              wex::stream file(find_replace_data::get(), item.path(), tool, lv);
-              file.run_tool();
-              stats += file.get_statistics().get_elements();
-            }
-            else
-            {
-              wex::dir dir(
-                item.path(),
-                data::dir().file_spec(item.file_spec()),
-                lv);
-              dir.find_files(tool);
-              stats += dir.get_statistics().get_elements();
-            }
-          }
-
-          log::status(tool.info(&stats));
-        }
+        on_tool(event);
       },
       ID_TOOL_LOWEST},
 
@@ -263,6 +190,84 @@ bool wex::del::listview::Destroy()
 {
   interruptible::end();
   return wex::listview::Destroy();
+}
+
+void wex::del::listview::on_compare()
+{
+  bool           first = true;
+  std::string    file1, file2;
+  wex::listview* list = nullptr;
+
+  for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+  {
+    listitem         li(this, i);
+    const wex::path* filename = &li.path();
+
+    if (!filename->file_exists())
+      continue;
+
+    if (GetSelectedItemCount() == 1)
+    {
+      list = m_frame->activate(data::listview::FILE);
+
+      if (list == nullptr)
+        return;
+
+      const int main_selected = list->GetFirstSelected();
+      compare_file(listitem(list, main_selected).path(), *filename);
+    }
+    else
+    {
+      if (first)
+      {
+        first = false;
+        file1 = filename->string();
+      }
+      else
+      {
+        first = true;
+        file2 = filename->string();
+      }
+      if (first)
+        compare_file(path(file1), path(file2));
+    }
+  }
+}
+
+void wex::del::listview::on_tool(const wxCommandEvent& event)
+{
+  const wex::tool tool((window_id)event.GetId());
+
+  if (tool.is_find_type() && m_frame->find_in_files_dialog(tool) == wxID_CANCEL)
+  {
+    return;
+  }
+
+  if (auto* lv = m_frame->activate(listview::type_tool(tool)); lv != nullptr)
+  {
+    statistics<int> stats;
+
+    for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+    {
+      const listitem item(this, i);
+      log::status() << item.path();
+
+      if (item.path().file_exists())
+      {
+        wex::stream file(find_replace_data::get(), item.path(), tool, lv);
+        file.run_tool();
+        stats += file.get_statistics().get_elements();
+      }
+      else
+      {
+        wex::dir dir(item.path(), data::dir().file_spec(item.file_spec()), lv);
+        dir.find_files(tool);
+        stats += dir.get_statistics().get_elements();
+      }
+    }
+
+    log::status(tool.info(&stats));
+  }
 }
 
 wex::data::listview::type_t wex::del::listview::type_tool(const tool& tool)

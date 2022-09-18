@@ -19,7 +19,7 @@ mkdir build && cd build
 cmake .. && make && make install
 ```
 
-For Visual Studio 2019 do
+For Visual Studio do
   `devenv wex.sln /build Release`,
 for mingw add `-G "MinGW Makefiles"` and do `mingw32-make`.
 

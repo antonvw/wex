@@ -2,21 +2,21 @@
 // Name:      frd.h
 // Purpose:   Declaration of wex::find_replace_data class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ///////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/factory/frd.h>
-#include <wex/ui/textctrl-input.h>
+#include <wex/ui/ex-commandline-input.h>
 
 namespace wex
 {
 /// Offers a class to hold data for find replace functionality.
 class find_replace_data : public factory::find_replace_data
 {
-  friend class find_textctrl;
-  friend class textctrl_imp;
+  friend class ex_commandline_imp;
+  friend class find_bar;
 
 public:
   /// Static interface.
@@ -43,12 +43,12 @@ public:
   /// Sets the find strings.
   /// Also moves the find string to the beginning of the find
   /// strings list.
-  void set_find_strings(const textctrl_input::values_t& v);
+  void set_find_strings(const ex_commandline_input::values_t& v);
 
   /// Sets the replace strings.
   /// Also moves the replace string to the beginning of the replace
   /// strings list.
-  void set_replace_strings(const textctrl_input::values_t& v);
+  void set_replace_strings(const ex_commandline_input::values_t& v);
 
   /// Virtual overrides.
 
@@ -60,6 +60,6 @@ private:
 
   static inline find_replace_data* m_self = nullptr;
 
-  textctrl_input m_find_strings, m_replace_strings;
+  ex_commandline_input m_find_strings, m_replace_strings;
 };
 }; // namespace wex

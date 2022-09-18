@@ -2,18 +2,15 @@
 // Name:      file-history.cpp
 // Purpose:   Implementation of wex::file_history class methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
-#include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/core/path.h>
 #include <wex/ui/file-history.h>
 #include <wex/ui/menu.h>
 #include <wx/filehistory.h>
-#include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
-#include <wx/imaglist.h>
 #include <wx/stockitem.h>
 
 #include <filesystem>
@@ -60,8 +57,8 @@ public:
 private:
   void AddFileToHistory(const wxString& file) override;
 
-  const std::string m_key;
-  config::strings_t m_contents;
+  const std::string         m_key;
+  mutable config::strings_t m_contents;
 };
 }; // namespace wex
 
@@ -147,9 +144,9 @@ void wex::file_history::popup_menu(
     {
       auto* item = new wxMenuItem(menu, get_base_id() + i, file.filename());
 
-      item->SetBitmap(
-        wxTheFileIconsTable->GetSmallImageList()->GetBitmap(get_iconid(file)));
-
+      // We could add a bitmap here, but on MSW shown with black edges.
+      // item->SetBitmap(wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
+      // wxTheFileIconsTable->GetIconID(file.extension())))
       menu->Append(item);
     }
   }
@@ -225,7 +222,7 @@ wxString wex::file_history_imp::GetHistoryFile(size_t index) const
 
     if (error)
     {
-      const_cast<file_history_imp*>(this)->m_contents.remove(file);
+      m_contents.remove(file);
       const_cast<file_history_imp*>(this)->RemoveFileFromHistory(index);
       log::status(_("Removed not existing file")) << file << "from history";
     }

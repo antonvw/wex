@@ -10,11 +10,11 @@
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
+#include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/process.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/shell.h>
-#include <wex/ui/bind.h>
 #include <wex/ui/frame.h>
 
 #include <numeric>

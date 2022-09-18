@@ -131,7 +131,7 @@ const std::string
 wex::find_after(const std::string& text, const std::string& seq)
 {
   const auto pos = text.find(seq);
-  return pos == std::string::npos ? text : text.substr(pos + 1);
+  return pos == std::string::npos ? text : text.substr(pos + seq.size());
 }
 
 const std::string
@@ -230,6 +230,12 @@ const std::string wex::get_word(std::string& text)
     boost::char_separator<char>(" \t"));
 
   std::string token;
+  boost::algorithm::trim_left(text);
+
+  if (text.empty())
+  {
+    return text;
+  }
 
   if (auto it = tok.begin(); it != tok.end())
   {
@@ -294,7 +300,7 @@ const std::string
 wex::rfind_after(const std::string& text, const std::string& seq)
 {
   const auto pos = text.rfind(seq);
-  return pos == std::string::npos ? text : text.substr(pos + 1);
+  return pos == std::string::npos ? text : text.substr(pos + seq.size());
 }
 
 const std::string

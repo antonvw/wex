@@ -2,7 +2,7 @@
 // Name:      factory/stc.h
 // Purpose:   Declaration of class wex::factory::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -74,7 +74,10 @@ public:
     ;
   };
 
-  /// Returns a ex command.
+  /// Returns stc data.
+  virtual wex::data::stc* get_data() { return nullptr; }
+
+  /// Returns the ex command.
   virtual const ex_command& get_ex_command() const { return m_command; }
 
   /// Returns find string, from selected text or from config.
@@ -112,7 +115,7 @@ public:
 
   /// Returns line on which text margin was clicked,
   /// or -1 if not.
-  virtual int get_margin_text_click() const { return -1; }
+  int get_margin_text_click() const { return m_margin_text_click; }
 
   /// Returns word at position.
   virtual const std::string get_word_at_pos(int pos) const
@@ -174,16 +177,22 @@ public:
     ;
   }
 
-  /// Reset all margins.
-  /// Default not implemented.
-  virtual void reset_margins(margin_t type = margin_t().set()) { ; }
+  /// Resets (all) margins.
+  /// Default just resets all margins.
+  virtual void reset_margins(margin_t type = margin_t().set());
 
   /// Sets hex mode (default false).
   virtual bool set_hexmode(bool on) { return false; }
 
   /// Sets an indicator at specified start and end pos.
   /// Default false, not implemented.
-  virtual bool set_indicator(const indicator& indicator, int start, int end)
+  virtual bool set_indicator(
+    /// indicator to use
+    const indicator& indicator,
+    /// start pos, if -1 GetTargetStart is used
+    int start = -1,
+    /// end pos, if -1 GetTargetEnd is used
+    int end = -1)
   {
     return false;
   };
@@ -217,6 +226,9 @@ public:
   /// Runs a vi command on this stc (default false).
   virtual bool vi_command(const std::string& command) { return false; }
 
+  /// Finish last vi command (default false).
+  virtual bool vi_command_finish(bool user_input) { return false; }
+
   /// Returns vi mode as a string.
   virtual const std::string vi_mode() const { return std::string(); }
 
@@ -233,6 +245,9 @@ public:
   virtual void visual(bool on) { ; }
 
   /// Other methods.
+
+  /// Binds wx methods.
+  void bind_wx();
 
   /// Returns EOL string.
   /// If you only want to insert a newline, use NewLine()
@@ -257,6 +272,11 @@ public:
     const wxCharBuffer& b(const_cast<factory::stc*>(this)->GetTextRaw());
     return std::string(b.data(), b.length());
   }
+
+  std::string margin_get_revision_id() const;
+
+  /// Returns renamed.
+  auto& vcs_renamed() const { return m_renamed; }
 
   // These methods are not yet available in scintilla, create stubs
   // (for the vi MOTION macro).
@@ -300,10 +320,15 @@ public:
   int  get_line_count_request() override { return GetLineCount(); }
   void goto_line(int line) override;
 
+protected:
+  ex_command m_command;
+
+  int m_margin_text_click{-1};
+
+  std::string m_renamed;
+
 private:
   lexer m_lexer;
-
-  ex_command m_command;
 };
 }; // namespace factory
 }; // namespace wex

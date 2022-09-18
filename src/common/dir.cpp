@@ -2,7 +2,7 @@
 // Name:      dir.cpp
 // Purpose:   Implementation of class wex::dir
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/dir.h>
@@ -224,7 +224,6 @@ bool wex::dir::on_file(const path& p) const
 void wex::dir::post_event(const path& p) const
 {
   wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_LIST_MATCH);
-  event.SetString(m_data.file_spec());
   event.SetClientData(new wex::path_match(p));
   wxPostEvent(m_eh, event);
 }

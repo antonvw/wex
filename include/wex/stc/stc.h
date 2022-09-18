@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2021 Anton van Wezenbeek
+// Copyright: (c) 2008-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -21,6 +21,7 @@
 namespace wex
 {
 class auto_complete;
+class blame;
 class indicator;
 class item;
 class item_dialog;
@@ -28,7 +29,6 @@ class link;
 class frame;
 class menu;
 class stc_entry_dialog;
-class vcs_entry;
 
 namespace factory
 {
@@ -89,6 +89,9 @@ public:
 
   /// Returns auto_complete.
   auto* auto_complete() { return m_auto_complete; }
+
+  /// Blames margin.
+  void blame_margin(const blame* blame);
 
   /// Sets the configurable parameters to values currently in config.
   void config_get();
@@ -169,10 +172,6 @@ public:
     /// argument passed on to find_next
     bool stc_find_string = true);
 
-  /// Shows blame info for vcs in the text margin.
-  /// Returns true if info was added.
-  bool show_blame(const vcs_entry* vcs);
-
   /// Virtual methods from wxWidgets.
 
   bool CanCut() const override;
@@ -202,6 +201,8 @@ public:
 
   void fold(bool fold_all = false) override;
 
+  wex::data::stc* get_data() override { return &m_data; }
+
   const ex_command& get_ex_command() const override
   {
     return m_vi->get_command();
@@ -217,10 +218,9 @@ public:
     override;
   bool get_hexmode_sync() override;
 
-  int get_current_line() const override;
-  int get_line_count() const override;
-  int get_line_count_request() override;
-  int get_margin_text_click() const override { return m_margin_text_click; }
+  int               get_current_line() const override;
+  int               get_line_count() const override;
+  int               get_line_count_request() override;
   const std::string get_word_at_pos(int pos) const override;
 
   void goto_line(int line) override;
@@ -251,6 +251,7 @@ public:
   void use_modification_markers(bool use) override;
 
   bool        vi_command(const std::string& command) override;
+  bool        vi_command_finish(bool user_input) override;
   void        vi_record(const std::string& command) override;
   std::string vi_register(char c) const override;
   int         vi_search_flags() const override { return m_vi->search_flags(); }
@@ -267,27 +268,30 @@ private:
 
   typedef std::bitset<3> link_t;
 
-  void bind_all();
-  void bind_other();
-  void build_popup_menu(menu& menu);
-  void build_popup_menu_edit(menu& menu);
-  void check_brace();
-  bool check_brace(int pos);
-  void eol_action(const wxCommandEvent& event);
-  void file_action(const wxCommandEvent& event);
-  bool file_readonly_attribute_changed();
-  void fold_all();
-  void guess_type_and_modeline();
-  void jump_action();
-  void key_action(wxKeyEvent& event);
-  bool link_open(link_t mode, std::string* filename = nullptr);
-  void margin_action(wxStyledTextEvent& event);
-  void mouse_action(wxMouseEvent& event);
-  void mark_modified(const wxStyledTextEvent& event);
-  void on_idle(wxIdleEvent& event);
-  void on_styled_text(wxStyledTextEvent& event);
-  void show_properties();
-  void sort_action(const wxCommandEvent& event);
+  void        bind_all();
+  void        bind_other();
+  void        blame_revision(const std::string& offset = std::string());
+  void        build_popup_menu(menu& menu);
+  void        build_popup_menu_edit(menu& menu);
+  void        build_popup_menu_link(menu& menu);
+  void        check_brace();
+  bool        check_brace(int pos);
+  void        eol_action(const wxCommandEvent& event);
+  void        file_action(const wxCommandEvent& event);
+  bool        file_readonly_attribute_changed();
+  void        fold_all();
+  void        guess_type_and_modeline();
+  void        jump_action();
+  void        key_action(wxKeyEvent& event);
+  bool        link_open(link_t mode, std::string* filename = nullptr);
+  void        margin_action(wxStyledTextEvent& event);
+  std::string margin_get_revision_renamed() const;
+  void        mouse_action(wxMouseEvent& event);
+  void        mark_modified(const wxStyledTextEvent& event);
+  void        on_idle(wxIdleEvent& event);
+  void        on_styled_text(wxStyledTextEvent& event);
+  void        show_properties();
+  void        sort_action(const wxCommandEvent& event);
 
   const int m_margin_divider_number{1}, m_margin_folding_number{2},
     m_margin_line_number{0}, m_margin_text_number{3};

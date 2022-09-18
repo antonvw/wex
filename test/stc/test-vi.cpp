@@ -2,12 +2,15 @@
 // Name:      test-vi.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/config.h>
+#include <wex/core/log-none.h>
+#include <wex/core/log.h>
+#include <wex/ex/addressrange.h>
+#include <wex/ex/ex-stream.h>
 #include <wex/ui/frd.h>
-#include <wex/vi/addressrange.h>
-#include <wex/vi/ex-stream.h>
 #include <wex/vi/vi.h>
 
 #include "test.h"
@@ -51,7 +54,8 @@ TEST_CASE("wex::vi")
     REQUIRE(stc->get_line_count() == 12);
     stc->GotoLine(2);
     for (const auto& go : std::vector<std::pair<std::string, int>>{
-           {"gg", 0},      {"G", 11},     {"1G", 0},    {"10G", 9},
+           {"gg", 0},      {"G", 11},     {":-5", 6},   {":+5", 11},
+           {":-", 10},     {":+", 11},    {"1G", 0},    {"10G", 9},
            {"10000G", 11}, {":$", 11},    {":100", 11}, {"/bbbbb", 1},
            {":-10", 0},    {":10", 9},    {":/c/", 2},  {":10000", 11},
            {":2", 1},      {"/d", 1},     {"/a", 3},    {"n", 3},
@@ -118,6 +122,31 @@ TEST_CASE("wex::vi")
     REQUIRE(stc->get_text() == "test.h");
   }
 
+  SUBCASE("set")
+  {
+    stc->set_text("xx\nxx\nyy\nzz\n");
+
+    REQUIRE(vi->command(":set noaw"));
+    REQUIRE(vi->command(":set noic"));
+    REQUIRE(vi->command(":set noreadonly"));
+    REQUIRE(vi->command(":set nosws"));
+    REQUIRE(vi->command(":set dir=./"));
+
+    REQUIRE(vi->command(":set noexpandtab"));
+    REQUIRE(stc->GetUseTabs());
+    REQUIRE(vi->command(":set expandtab"));
+    REQUIRE(!stc->GetUseTabs());
+
+    REQUIRE(vi->command(":set report=10"));
+    REQUIRE(wex::config("stc.Reported lines").get(5) == 10);
+
+    REQUIRE(vi->command(":set ve=5"));
+    REQUIRE(wex::log::get_level() == 5);
+
+    REQUIRE(vi->command(":set ve=4"));
+    REQUIRE(wex::log::get_level() == 4);
+  }
+
 #ifdef __UNIX__
   SUBCASE("source")
   {
@@ -131,11 +160,24 @@ TEST_CASE("wex::vi")
       vi->command(":so test-source.txt");
     }
 
-    SUBCASE("full") { vi->command(":source test-source.txt"); }
+    SUBCASE("full")
+    {
+      vi->command(":source test-source.txt");
+    }
 
-    SUBCASE("not-existing") { REQUIRE(!vi->command(":so test-surce.txt")); }
+    SUBCASE("not-existing")
+    {
+      REQUIRE(!vi->command(":so test-surce.txt"));
+    }
 
-    SUBCASE("invalid") { REQUIRE(!vi->command(":so test-source-2.txt")); }
+    SUBCASE("invalid")
+    {
+      // and skip the error message for recursive line
+      wex::log_none off;
+      REQUIRE(!vi->command(":so test-source-2.txt"));
+    }
+
+    remove("test-ex.txt");
   }
 #endif
 
@@ -152,14 +194,41 @@ TEST_CASE("wex::vi")
 
     wex::addressrange ar(vi, "%");
     REQUIRE(exs->get_line_count_request() == 5);
-    REQUIRE(ar.get_begin().get_line() == 1);
-    REQUIRE(ar.get_end().get_line() == 5);
+    REQUIRE(ar.begin().get_line() == 1);
+    REQUIRE(ar.end().get_line() == 5);
 
     REQUIRE(exs->join(ar));
     REQUIRE(exs->is_modified());
     REQUIRE(exs->get_line_count() == 1);
 
     stc->visual(true);
+  }
+
+  SUBCASE("tab")
+  {
+    stc->clear();
+
+    wxKeyEvent event(wxEVT_CHAR);
+    event.m_uniChar = 'i';
+    REQUIRE(!vi->on_char(event));
+
+    stc->SetUseTabs(true);
+    REQUIRE(stc->GetUseTabs());
+
+    event.m_uniChar = WXK_TAB;
+    REQUIRE(vi->on_key_down(event));
+    REQUIRE(!vi->on_char(event));
+
+    REQUIRE(stc->get_text() == "\t");
+
+    stc->clear();
+    stc->SetUseTabs(false);
+    REQUIRE(!stc->GetUseTabs());
+    REQUIRE(vi->on_key_down(event));
+    REQUIRE(!vi->on_char(event));
+    REQUIRE(stc->get_text().find("\t") == std::string::npos);
+
+    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
   }
 
   SUBCASE("visual")

@@ -2,14 +2,12 @@
 // Name:      ex-command.h
 // Purpose:   Declaration of class wex::ex_command
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2018-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <string>
-
-class wxTextEntry;
 
 namespace wex
 {
@@ -25,7 +23,7 @@ public:
   /// The type of ex command.
   enum class type_t
   {
-    // these types are indexed in textctrl_imp
+    // these types are indexed in ex_commandline_imp
     COMMAND,       ///< a normal (ex) command (:)
     COMMAND_RANGE, ///< a normal (ex) command on a range (:'<,'>)
     CALC,          ///< a calculation command (control-r =)
@@ -88,26 +86,17 @@ public:
   /// Returns true if command text is empty.
   auto empty() const { return m_text.empty(); }
 
-  /// Erases element(s) at position from command text.
-  void erase(size_t pos, size_t len = 1);
-
   /// Executes the command on the stc component if available.
   bool exec() const;
+
+  /// Finishes the execute.
+  bool exec_finish(bool user_input) const;
 
   /// Returns front of command text.
   auto front() const { return m_text.front(); }
 
   /// Returns stc component.
   auto* get_stc() const { return m_stc; }
-
-  /// Handles keycode from textentry component.
-  void handle(const wxTextEntry* te, int keycode);
-
-  /// Inserts char at pos.
-  void insert(size_t pos, char c);
-
-  /// Inserts string at pos.
-  void insert(size_t pos, const std::string& s);
 
   /// Sets to no type.
   void no_type();

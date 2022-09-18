@@ -2,17 +2,17 @@
 // Name:      stc/find.cpp
 // Purpose:   Implementation of class wex::stc find methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/data/find.h>
+#include <wex/ex/ex-stream.h>
 #include <wex/stc/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
-#include <wex/vi/ex-stream.h>
 
 namespace wex
 {

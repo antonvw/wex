@@ -1,0 +1,1 @@
+# This file is exactly like a .gitignore and specific to Codiga. # Put here all the files and directories that you want Codiga to ignore.# Ignore all in src/lexers, it will be redesigned when scintilla lexers # are usedsrc/lexers

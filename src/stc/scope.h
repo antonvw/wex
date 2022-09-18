@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <wex/vi/ctags-entry.h>
+#include <wex/ex/ctags-entry.h>
 
 #include <bitset>
 #include <map>

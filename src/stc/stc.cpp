@@ -2,28 +2,25 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2008-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <boost/tokenizer.hpp>
 #include <wex/core/config.h>
+#include <wex/core/log.h>
 #include <wex/core/path.h>
-#include <wex/factory/blame.h>
+#include <wex/ex/address.h>
+#include <wex/ex/ex-stream.h>
+#include <wex/ex/macros.h>
 #include <wex/factory/indicator.h>
 #include <wex/factory/lexers.h>
 #include <wex/factory/printing.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/auto-indent.h>
 #include <wex/stc/entry-dialog.h>
-#include <wex/stc/link.h>
 #include <wex/stc/stc.h>
-#include <wex/stc/vcs-entry.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/item-vector.h>
-#include <wex/vi/address.h>
-#include <wex/vi/ex-stream.h>
-#include <wex/vi/macros.h>
 #include <wx/app.h>
 #include <wx/settings.h>
 
@@ -140,8 +137,15 @@ void wex::stc::add_text(const std::string& text)
   }
   else if (!GetOvertype())
   {
-    Allocate(GetTextLength() + text.size());
-    AddTextRaw(text.data(), text.size());
+    if (text == "\t" && !GetUseTabs())
+    {
+      Tab();
+    }
+    else
+    {
+      Allocate(GetTextLength() + text.size());
+      AddTextRaw(text.data(), text.size());
+    }
   }
   else
   {
@@ -428,7 +432,9 @@ void wex::stc::guess_type_and_modeline()
   if (regex v("\\s+vim?:\\s*(set [a-z0-9:= ]+)");
       get_vi().is_active() && (v.search(head) > 0 || v.search(tail) > 0))
   {
-    if (!get_vi().command(":" + v[0] + "*")) // add * to indicate modeline
+    if (!get_vi().command(
+          // the vim modeline command sometimes ends with a : (see test)
+          ":" + rfind_before(v[0], ":") + "*")) // add * to indicate modeline
     {
       log::status("Could not apply vi settings");
     }
@@ -470,76 +476,7 @@ bool wex::stc::IsModified() const
 
 bool wex::stc::is_visual() const
 {
-  return m_vi->visual() == ex::VISUAL;
-}
-
-bool wex::stc::link_open()
-{
-  return link_open(link_t().set(LINK_OPEN).set(LINK_OPEN_MIME));
-}
-
-bool wex::stc::link_open(link_t mode, std::string* filename)
-{
-  const auto sel = GetSelectedText().ToStdString();
-
-  if (sel.size() > 200 || (!sel.empty() && sel.find('\n') != std::string::npos))
-  {
-    return false;
-  }
-
-  const std::string text = (!sel.empty() ? sel : GetCurLine().ToStdString());
-
-  if (mode[LINK_OPEN])
-  {
-    data::control data;
-
-    if (const wex::path path(m_link->get_path(text, data, this));
-        !path.string().empty())
-    {
-      if (filename != nullptr)
-      {
-        *filename = path.filename();
-      }
-      else if (!mode[LINK_CHECK])
-      {
-        m_frame->open_file(path, data);
-      }
-
-      return true;
-    }
-  }
-
-  if (mode[LINK_OPEN_MIME])
-  {
-    if (const wex::path path(m_link->get_path(
-          text,
-          data::control().line(link::LINE_OPEN_URL),
-          this));
-        !path.string().empty())
-    {
-      if (!mode[LINK_CHECK])
-      {
-        browser(path.string());
-      }
-
-      return true;
-    }
-    else if (const wex::path mime(m_link->get_path(
-               text,
-               data::control().line(link::LINE_OPEN_MIME),
-               this));
-             !mime.string().empty())
-    {
-      if (!mode[LINK_CHECK])
-      {
-        return mime.open_mime();
-      }
-
-      return true;
-    }
-  }
-
-  return false;
+  return m_vi->visual() != ex::EX;
 }
 
 bool wex::stc::marker_delete_all_change()
@@ -756,123 +693,6 @@ void wex::stc::properties_message(path::log_t flags)
   }
 }
 
-int wex::stc::replace_all(
-  const std::string& find_text,
-  const std::string& replace_text)
-{
-  int selection_from_end = 0;
-
-  if (
-    SelectionIsRectangle() ||
-    get_number_of_lines(GetSelectedText().ToStdString()) > 1)
-  {
-    TargetFromSelection();
-    selection_from_end = GetLength() - GetTargetEnd();
-  }
-  else
-  {
-    TargetWholeDocument();
-  }
-
-  int nr_replacements = 0;
-  set_search_flags(-1);
-  BeginUndoAction();
-
-  while (SearchInTarget(find_text) != -1)
-  {
-    bool skip_replace = false;
-
-    // Check that the target is within the rectangular selection.
-    // If not just continue without replacing.
-    if (SelectionIsRectangle())
-    {
-      const auto line      = LineFromPosition(GetTargetStart());
-      const auto start_pos = GetLineSelStartPosition(line);
-      const auto end_pos   = GetLineSelEndPosition(line);
-      const auto length    = GetTargetEnd() - GetTargetStart();
-
-      if (
-        start_pos == wxSTC_INVALID_POSITION ||
-        end_pos == wxSTC_INVALID_POSITION || GetTargetStart() < start_pos ||
-        GetTargetStart() + length > end_pos)
-      {
-        skip_replace = true;
-      }
-    }
-
-    if (!skip_replace)
-    {
-      if (is_hexmode())
-      {
-        m_hexmode.replace_target(replace_text);
-      }
-      else
-      {
-        find_replace_data::get()->is_regex() ? ReplaceTargetRE(replace_text) :
-                                               ReplaceTarget(replace_text);
-      }
-
-      nr_replacements++;
-    }
-
-    SetTargetRange(GetTargetEnd(), GetLength() - selection_from_end);
-
-    if (GetTargetStart() >= GetTargetEnd())
-    {
-      break;
-    }
-  }
-
-  EndUndoAction();
-
-  log::status(_("Replaced"))
-    << nr_replacements << "occurrences of" << find_text;
-
-  return nr_replacements;
-}
-
-bool wex::stc::replace_next(bool stc_find_string)
-{
-  return replace_next(
-    find_replace_data::get()->get_find_string(),
-    find_replace_data::get()->get_replace_string(),
-    -1,
-    stc_find_string);
-}
-
-bool wex::stc::replace_next(
-  const std::string& find_text,
-  const std::string& replace_text,
-  int                find_flags,
-  bool               stc_find_string)
-{
-  if (stc_find_string && !GetSelectedText().empty())
-  {
-    TargetFromSelection();
-  }
-  else
-  {
-    SetTargetRange(GetCurrentPos(), GetLength());
-    set_search_flags(find_flags);
-    if (SearchInTarget(find_text) == -1)
-      return false;
-  }
-
-  if (is_hexmode())
-  {
-    m_hexmode.replace_target(replace_text);
-  }
-  else
-  {
-    find_replace_data::get()->is_regex() ? ReplaceTargetRE(replace_text) :
-                                           ReplaceTarget(replace_text);
-  }
-
-  find(find_text, find_flags);
-
-  return true;
-}
-
 void wex::stc::reset_margins(margin_t type)
 {
   if (type[MARGIN_FOLDING])
@@ -893,27 +713,25 @@ void wex::stc::SelectNone()
 
 bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
 {
-  if (const bool loaded(lexers::get()->indicator_is_loaded(indicator));
-      !loaded || start == -1 || end == -1 || end < start)
-  {
-    if (!loaded)
-    {
-      log("indicator") << indicator.number() << "not loaded";
-    }
-    else
-    {
-      log("indicator") << indicator.number() << start << end;
-    }
+  if (start == -1)
+    start = GetTargetStart();
+  if (end == -1)
+    end = GetTargetEnd();
 
+  if (const bool loaded(lexers::get()->indicator_is_loaded(indicator));
+      !loaded || start == -1 || end == -1)
+  {
+    log("indicator") << indicator.number() << loaded << start << end;
     return false;
   }
 
-  SetIndicatorCurrent(indicator.number());
-
-  if (end - start > 0)
+  if (end == start)
   {
-    IndicatorFillRange(start, end - start);
+    return true;
   }
+
+  SetIndicatorCurrent(indicator.number());
+  IndicatorFillRange(start, end - start);
 
   log::trace("indicator") << start << end << GetIndicatorCurrent();
 
@@ -953,85 +771,16 @@ void wex::stc::set_text(const std::string& value)
   EmptyUndoBuffer();
 }
 
-bool wex::stc::show_blame(const vcs_entry* vcs)
-{
-  if (!vcs->get_blame().use())
-  {
-    return false;
-  }
-
-  if (vcs->std_out().empty())
-  {
-    log::debug("no vcs output");
-    return false;
-  }
-
-  std::string prev("!@#$%");
-  bool        first = true;
-  int         line  = 0;
-
-  SetWrapMode(wxSTC_WRAP_NONE);
-  const item_vector iv(m_config_items);
-  const auto        margin_blame(iv.find<int>(_("stc.margin.Text")));
-
-  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
-         vcs->std_out(),
-         boost::char_separator<char>("\r\n")))
-  {
-    if (const auto& [r, bl, t, l] = vcs->get_blame().get(it); bl != prev && r)
-    {
-      if (first)
-      {
-        const int w(std::max(
-          config(_("stc.Default font"))
-              .get(wxFont(
-                12,
-                wxFONTFAMILY_DEFAULT,
-                wxFONTSTYLE_NORMAL,
-                wxFONTWEIGHT_NORMAL))
-              .GetPixelSize()
-              .GetWidth() +
-            1,
-          5));
-
-        SetMarginWidth(
-          m_margin_text_number,
-          margin_blame == -1 ? bl.size() * w : margin_blame);
-
-        first = false;
-      }
-
-      const int real_line(
-        is_visual() ? l : l - get_current_line() + GetLineCount() - 2);
-
-      lexers::get()->apply_margin_text_style(
-        this,
-        real_line >= 0 ? real_line : line,
-        t,
-        bl);
-      prev = bl;
-    }
-    else
-    {
-      lexers::get()->apply_margin_text_style(
-        this,
-        l >= 0 ? l : line,
-        r ? t : lexers::margin_style_t::OTHER);
-    }
-
-    line++;
-  }
-
-  return true;
-}
-
 void wex::stc::show_line_numbers(bool show)
 {
-  const item_vector iv(m_config_items);
+  if (is_visual())
+  {
+    const item_vector iv(m_config_items);
 
-  SetMarginWidth(
-    m_margin_line_number,
-    show ? iv.find<int>(_("stc.margin.Line number")) : 0);
+    SetMarginWidth(
+      m_margin_line_number,
+      show ? iv.find<int>(_("stc.margin.Line number")) : 0);
+  }
 }
 
 void wex::stc::sync(bool start)
@@ -1055,6 +804,11 @@ void wex::stc::use_modification_markers(bool use)
 bool wex::stc::vi_command(const std::string& command)
 {
   return m_vi->command(command);
+}
+
+bool wex::stc::vi_command_finish(bool user_input)
+{
+  return m_vi->command_finish(user_input);
 }
 
 const std::string wex::stc::vi_mode() const

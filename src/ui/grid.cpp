@@ -2,17 +2,17 @@
 // Name:      grid.cpp
 // Purpose:   Implementation of wex::grid class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 #include <wex/core/core.h>
+#include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/frame.h>
 #include <wex/factory/lexers.h>
 #include <wex/factory/printing.h>
-#include <wex/ui/bind.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/grid.h>
 #include <wx/app.h>

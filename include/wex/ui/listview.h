@@ -2,7 +2,7 @@
 // Name:      listview.h
 // Purpose:   Declaration of wex::listview and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -15,8 +15,6 @@
 
 #include <list>
 #include <map>
-#include <string>
-#include <vector>
 
 namespace wex
 {

@@ -19,9 +19,7 @@ namespace wex
 {
 const std::string substitute_tilde(const std::string& text)
 {
-  auto out(text);
-  boost::algorithm::replace_all(out, "~", wxGetHomeDir());
-  return out;
+  return boost::algorithm::replace_all_copy(text, "~", wxGetHomeDir());
 }
 }; // namespace wex
 
@@ -100,7 +98,6 @@ void wex::path::current(const wex::path& p)
     try
     {
       fs::current_path(p.data());
-      log::trace("path current") << p;
     }
     catch (const std::exception& e)
     {

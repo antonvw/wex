@@ -2,7 +2,7 @@
 // Name:      dir.h
 // Purpose:   Declaration of class wex::dir
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -29,7 +29,7 @@ public:
   static auto& get_statistics() { return m_statistics; }
 
   /// Constructor.
-  dir(
+  explicit dir(
     /// the path to start finding
     const path& path,
     /// the dir data

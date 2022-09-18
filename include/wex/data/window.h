@@ -2,7 +2,7 @@
 // Name:      data/window.h
 // Purpose:   Declaration of wex::data::window
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2021 Anton van Wezenbeek
+// Copyright: (c) 2009-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -29,7 +29,7 @@ public:
   /// Default extensions are not moved.
   window& allow_move_path_extension(const std::string& rhs);
 
-  /// Returns the extension for which it is alloed to
+  /// Returns the extension for which it is allowed to
   /// move path extension in a file dialog.
   const auto& allow_move_path_extension() const
   {

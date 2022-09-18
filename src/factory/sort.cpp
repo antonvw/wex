@@ -10,6 +10,7 @@
 #include <wex/core/config.h>
 #include <wex/core/log.h>
 #include <wex/factory/sort.h>
+#include <wex/factory/stc-undo.h>
 #include <wex/factory/stc.h>
 
 #include <algorithm>
@@ -55,6 +56,7 @@ bool wex::factory::sort::selection(factory::stc* stc)
 
   try
   {
+    stc_undo undo(stc);
     return stc->SelectionIsRectangle() ? selection_block(stc) :
                                          selection_other(stc);
   }
@@ -63,8 +65,6 @@ bool wex::factory::sort::selection(factory::stc* stc)
     log(e) << "sort::selection";
     error = true;
   }
-
-  stc->EndUndoAction();
 
   return !error;
 }
@@ -94,8 +94,6 @@ bool wex::factory::sort::selection_block(factory::stc* stc)
 
     selection += stc->GetTextRange(start, end) + "\n";
   }
-
-  stc->BeginUndoAction();
 
   const auto nr_cols =
     stc->GetColumn(stc->GetSelectionEnd()) - stc->GetColumn(start_pos);
@@ -144,7 +142,6 @@ bool wex::factory::sort::selection_other(factory::stc* stc)
 
   const auto& text(sort(m_sort_t).string(stc->get_selected_text(), stc->eol()));
 
-  stc->BeginUndoAction();
   stc->ReplaceSelection(text);
   stc->SetSelection(start_pos, start_pos + text.size());
 

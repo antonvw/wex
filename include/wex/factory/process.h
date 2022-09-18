@@ -9,7 +9,6 @@
 
 #include <chrono>
 #include <memory>
-#include <string>
 
 #include <wex/factory/process-data.h>
 
@@ -43,6 +42,11 @@ public:
   /// Returns true if the async process is started.
   virtual bool async_system(const process_data& data);
 
+  /// Runs the sync process, collecting output in stdout and stderr.
+  /// It will execute the process and wait for it's exit,
+  /// then returns the exit_code.
+  virtual int system(const process_data& data);
+
   // Writes data to the input of the async process.
   virtual bool write(const std::string& text);
 
@@ -51,8 +55,8 @@ public:
   /// Sleeps for some milliseconds time.
   void async_sleep_for(const std::chrono::milliseconds& ms);
 
-  /// Returns last or current data used by async_system.
-  const process_data& data() const;
+  /// Returns last or current data used by async_system or system.
+  const process_data& data() const { return m_data; };
 
   /// Is this a debug process.
   bool is_debug() const;
@@ -75,15 +79,12 @@ public:
   // Stops the async process.
   bool stop();
 
-  /// Runs the sync process, collecting output in stdout and stderr.
-  /// It will execute the process and wait for it's exit,
-  /// then returns the exit_code.
-  int system(const process_data& data);
-
 private:
   std::string m_stderr, m_stdout;
 
   wxEvtHandler *m_eh_debug{nullptr}, *m_eh_out{nullptr};
+
+  process_data m_data;
 
   std::unique_ptr<process_imp> m_imp;
 };

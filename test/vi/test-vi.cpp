@@ -7,12 +7,12 @@
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
+#include <wex/ex/macro-mode.h>
+#include <wex/ex/macros.h>
 #include <wex/ui/frd.h>
-#include <wex/vi/macro-mode.h>
-#include <wex/vi/macros.h>
 #include <wex/vi/vi.h>
 
-#include "test.h"
+#include "../ex/test.h"
 
 #define ESC "\x1b"
 
@@ -146,13 +146,18 @@ TEST_CASE("wex::vi")
 
   SUBCASE("find")
   {
-    stc->set_text("some text to find");
+    stc->set_text("some text to find another find");
     REQUIRE(vi->mode().is_command());
     REQUIRE(vi->command("/find"));
+    REQUIRE(stc->GetCurrentPos() == 17);
     REQUIRE(vi->mode().is_command());
     REQUIRE(vi->command("yb"));
     REQUIRE(vi->mode().is_command());
     REQUIRE(!vi->command("/xfind"));
+
+    stc->DocumentStart();
+    REQUIRE(vi->command("2/find"));
+    REQUIRE(stc->GetCurrentPos() == 30);
   }
 
   SUBCASE("insert")

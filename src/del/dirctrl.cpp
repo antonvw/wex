@@ -2,18 +2,20 @@
 // Name:      dirctrl.cpp
 // Purpose:   Implementation of class wex::del::dirctrl
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
 #include <wex/common/util.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
 #include <wex/del/defs.h>
 #include <wex/del/dirctrl.h>
 #include <wex/del/frame.h>
+#include <wex/factory/bind.h>
 #include <wex/factory/lexers.h>
 #include <wex/factory/path-lexer.h>
-#include <wex/stc/vcs.h>
-#include <wex/ui/bind.h>
+#include <wex/vcs/vcs.h>
 #include <wx/stockitem.h> // for wxGetStockLabel
 
 #define GET_VECTOR_FILES                              \

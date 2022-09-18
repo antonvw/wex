@@ -38,7 +38,8 @@ const auto find_if(const T& t, const std::vector<std::string>& v)
     t.end(),
     [v](auto const& i)
     {
-      return v[0] == find_before(i.first[0], ",");
+      return v[0] == find_before(i.first[0], ",") ||
+             v[0] == find_after(i.first[0], ",");
     });
 }
 
@@ -341,7 +342,7 @@ bool wex::cmdline::parse_set(data::cmdline& data) const
         }
       }},
      // [option[=[value]] ...]
-     {"([a-z0-9]+)(=[a-z0-9]+)?(.*)",
+     {"([a-z0-9]+)(=[a-z0-9/.]+)?(.*)",
       [&, this](const regex::match_t& m)
       {
         if (set_option(m, data.save()))
@@ -351,9 +352,9 @@ bool wex::cmdline::parse_set(data::cmdline& data) const
   try
   {
     for (auto line(boost::algorithm::trim_copy(data.string())); !line.empty();
-         line = r.matches().back())
+         line = r.back())
     {
-      switch (r.search(line); r.which_no())
+      switch (r.search(line); r.match_no())
       {
         case -1:
           data.help("unmatched cmdline: " + line);
@@ -388,7 +389,9 @@ bool wex::cmdline::set_option(const std::vector<std::string>& v, bool save)
 
     for (const auto& it : m_options)
     {
-      if (v[0] == find_before(it.first[0], ","))
+      if (
+        v[0] == find_before(it.first[0], ",") ||
+        v[0] == find_after(it.first[0], ","))
       {
         switch (it.second.first)
         {

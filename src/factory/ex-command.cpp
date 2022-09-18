@@ -7,7 +7,6 @@
 
 #include <wex/factory/ex-command.h>
 #include <wex/factory/stc.h>
-#include <wx/textentry.h>
 
 wex::ex_command::ex_command() {}
 
@@ -54,105 +53,14 @@ bool wex::ex_command::append_exec(char c)
   return exec();
 }
 
-void wex::ex_command::erase(size_t pos, size_t len)
-{
-  if (pos >= m_text.size())
-  {
-    return;
-  }
-
-  if (pos + len >= m_text.size())
-  {
-    len = std::string::npos;
-  }
-
-  m_text.erase(pos + (m_has_type ? str().size() : 0), len);
-}
-
 bool wex::ex_command::exec() const
 {
   return m_stc != nullptr && m_stc->vi_command(command());
 }
 
-void wex::ex_command::handle(const wxTextEntry* te, int keycode)
+bool wex::ex_command::exec_finish(bool user_input) const
 {
-  switch (const size_t pos = te->GetInsertionPoint(); keycode)
-  {
-    case wxID_CUT:
-      if (!te->GetStringSelection().empty())
-      {
-        long from, to;
-        te->GetSelection(&from, &to);
-        erase(from, to - from);
-      }
-      break;
-
-    case WXK_BACK:
-      if (!empty())
-      {
-        size_t len = 1;
-
-        if (!te->GetStringSelection().empty())
-        {
-          long from, to;
-          te->GetSelection(&from, &to);
-          len = to - from;
-        }
-
-        if (pos == te->GetLastPosition())
-        {
-          pop_back();
-        }
-        else
-        {
-          erase(pos - 1, len);
-        }
-      }
-      break;
-
-    case WXK_NONE:
-      break;
-
-    default:
-      if (pos == te->GetLastPosition())
-      {
-        append(keycode);
-      }
-      else
-      {
-        insert(pos, keycode);
-      }
-  }
-}
-
-void wex::ex_command::insert(size_t pos, char c)
-{
-  if (m_has_type)
-  {
-    if (pos < m_text.size())
-    {
-      m_text.insert(str().size() + pos, 1, c);
-    }
-    else
-    {
-      append(c);
-    }
-  }
-}
-
-void wex::ex_command::insert(size_t pos, const std::string& s)
-{
-  if (m_has_type)
-  {
-    if (pos < m_text.size())
-    {
-      m_text.insert(str().size() + pos, s);
-    }
-    else
-    {
-      append(s);
-    }
-  }
+  return m_stc != nullptr && m_stc->vi_command_finish(user_input);
 }
 
 void wex::ex_command::no_type()

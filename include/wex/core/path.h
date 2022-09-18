@@ -12,7 +12,6 @@
 #include <bitset>
 #include <filesystem>
 #include <sstream>
-#include <string>
 #include <vector>
 
 namespace wex
@@ -141,7 +140,7 @@ public:
   path& replace_filename(const std::string& filename);
 
   /// Sets new log type.
-  void set_log(log_t t) { m_log = t; }
+  void set_log(const log_t& t) { m_log = t; }
 
   /// Returns the stat.
   const auto& stat() const { return m_stat; }

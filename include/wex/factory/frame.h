@@ -2,18 +2,18 @@
 // Name:      factory/frame.h
 // Purpose:   Declaration of wex::factory::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <wex/core/path.h>
 #include <wx/frame.h>
 
 class wxListView;
 
 namespace wex
 {
-class path;
 class vcs_entry;
 
 namespace data
@@ -24,6 +24,7 @@ class stc;
 namespace factory
 {
 class grid;
+class link;
 class listview;
 class process;
 class stc;
@@ -83,7 +84,7 @@ public:
   /// Allows you to open a filename with info from vcs.
   /// Returns stc component opened, or nullptr.
   virtual factory::stc*
-  open_file(const path& filename, const vcs_entry& vcs, const data::stc& data)
+  open_file(const path& filename, vcs_entry& vcs, const data::stc& data)
   {
     return nullptr;
   };

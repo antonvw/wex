@@ -2,7 +2,7 @@
 // Name:      frd.cpp
 // Purpose:   Implementation of wex::find_replace_data class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -17,9 +17,9 @@ wex::find_replace_data::find_replace_data()
       ex_command::type_t::REPLACE,
       find_replace_data::text_replace_with())
 {
-  set_find_strings(config(text_find()).get(textctrl_input::values_t{}));
+  set_find_strings(config(text_find()).get(ex_commandline_input::values_t{}));
   set_replace_strings(
-    config(text_replace_with()).get(textctrl_input::values_t{}));
+    config(text_replace_with()).get(ex_commandline_input::values_t{}));
 }
 
 wex::find_replace_data* wex::find_replace_data::get(bool createOnDemand)
@@ -47,7 +47,7 @@ void wex::find_replace_data::set_find_string(const std::string& value)
 }
 
 void wex::find_replace_data::set_find_strings(
-  const textctrl_input::values_t& values)
+  const ex_commandline_input::values_t& values)
 {
   m_find_strings.set(values);
   data()->SetFindString(m_find_strings.get());
@@ -65,7 +65,7 @@ void wex::find_replace_data::set_replace_string(const std::string& value)
 }
 
 void wex::find_replace_data::set_replace_strings(
-  const textctrl_input::values_t& value)
+  const ex_commandline_input::values_t& value)
 {
   m_replace_strings.set(value);
   data()->SetReplaceString(m_replace_strings.get());

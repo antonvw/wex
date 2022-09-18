@@ -7,11 +7,15 @@
 
 #include <thread>
 
+#include <wex/core/log-none.h>
 #include <wex/del/defs.h>
-#include <wex/stc/process.h>
+#include <wex/factory/blame.h>
+#include <wex/stc/link.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/menu.h>
-#include <wex/vi/addressrange.h>
+#include <wex/vcs/process.h>
+#include <wex/vcs/vcs-entry.h>
+#include <wex/vcs/vcs.h>
 
 #include "test.h"
 
@@ -55,7 +59,10 @@ TEST_CASE("wex::del::frame")
 #endif
   }
 
-  SUBCASE("get_debug") { REQUIRE(del_frame()->get_debug() != nullptr); }
+  SUBCASE("get_debug")
+  {
+    REQUIRE(del_frame()->get_debug() != nullptr);
+  }
 
   SUBCASE("get_project_history")
   {
@@ -77,7 +84,7 @@ TEST_CASE("wex::del::frame")
   SUBCASE("prepare_output")
   {
     wex::process::prepare_output(del_frame());
-    REQUIRE(wex::addressrange(&get_stc()->get_vi(), "").escape("ls"));
+    REQUIRE(get_stc()->get_vi().command("!ls"));
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
 
@@ -97,7 +104,10 @@ TEST_CASE("wex::del::frame")
     del_frame()->show_ex_bar(wex::frame::HIDE_BAR_FORCE_FOCUS_STC);
   }
 
-  SUBCASE("statustext_vcs") { del_frame()->statustext_vcs(get_stc()); }
+  SUBCASE("statustext_vcs")
+  {
+    del_frame()->statustext_vcs(get_stc());
+  }
 
   SUBCASE("stc_entry_dialog")
   {
@@ -119,12 +129,84 @@ TEST_CASE("wex::del::frame")
     del_frame()->pane_add(list);
     list->Show();
     del_frame()->use_file_history_list(list);
+    REQUIRE(del_frame()->activate(wex::data::listview::HISTORY) != nullptr);
+  }
+
+  SUBCASE("vcs_add_path")
+  {
+    auto*              stc = get_stc();
+    wex::link          lnk;
+    wex::data::control data;
+    wex::config(_("vcs.Base folder"))
+      .set(wex::config::strings_t{wxGetCwd().ToStdString()});
+    stc->get_lexer().clear();
+    REQUIRE(wex::vcs::load_document());
+    REQUIRE(lnk.get_path("modified:  test/vcs/test-vcs.cpp", data, stc)
+              .file_exists());
+  }
+
+  SUBCASE("vcs_annotate_commit")
+  {
+    auto*       stc = get_stc();
+    std::string commit_id;
+
+    del_frame()->vcs_annotate_commit(stc, 5, commit_id);
+  }
+
+  SUBCASE("vcs_blame_revison")
+  {
+    auto*             stc = get_stc();
+    const std::string renamed;
+    const std::string offset;
+
+    del_frame()->vcs_blame_revison(stc, renamed, offset);
+  }
+
+  SUBCASE("vcs_blame_show")
+  {
+    auto*      stc = get_stc();
+    wex::blame blame;
+    wex::lexers::get()->apply_margin_text_style(stc, &blame);
+
+    pugi::xml_document doc;
+    REQUIRE(doc.load_string("<vcs name=\"git\" admin-dir=\"./\" log-flags=\"-n "
+                            "1\" blame-format=\"(^[a-zA-Z0-9^]+) "
+                            "(.*?)\\((.+)\\s+([0-9]{2,4}.[0-9]{2}.[0-9]{2}.[0-"
+                            "9:]{8}) .[0-9]+\\s+([0-9]+)\\) (.*)\">"
+                            "</vcs>"));
+    wex::vcs_entry entry(doc.document_element());
+    REQUIRE(entry.name() == "git");
+    REQUIRE(!del_frame()->vcs_blame_show(&entry, stc));
+
+#ifndef __WXMSW__
+    REQUIRE(
+      entry.system(wex::process_data().args(
+        "blame " + wex::test::get_path("test.h").string())) == 0);
+    REQUIRE(del_frame()->vcs_blame_show(&entry, stc));
+#endif
+
+    stc->get_file().reset_contents_changed();
+  }
+
+  SUBCASE("vcs_dir_exists")
+  {
+    REQUIRE(del_frame()->vcs_dir_exists(wex::test::get_path()));
+#ifndef __WXMSW__
+    REQUIRE(!del_frame()->vcs_dir_exists(wex::path("/tmp")));
+#endif
+  }
+
+  SUBCASE("vcs_execute")
+  {
+    del_frame()->vcs_execute(10, {wex::path()});
   }
 
   SUBCASE("virtual")
   {
     auto*          menu = new wex::menu();
     wex::menu_item item;
+
+    wex::log_none off;
 
     del_frame()->append_vcs(menu, &item);
 
@@ -146,8 +228,8 @@ TEST_CASE("wex::del::frame")
     REQUIRE(!del_frame()->debug_toggle_breakpoint(100, get_stc()));
 
     REQUIRE(!del_frame()->is_address(get_stc(), "xx"));
-    REQUIRE(del_frame()->is_address(get_stc(), "1,5y"));
-    REQUIRE(del_frame()->is_address(get_stc(), "%y"));
+    REQUIRE(del_frame()->is_address(get_stc(), "1,5ya"));
+    REQUIRE(del_frame()->is_address(get_stc(), "%ya"));
 
     del_frame()->on_command_item_dialog(
       wxID_ADD,

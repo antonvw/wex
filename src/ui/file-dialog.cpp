@@ -2,60 +2,35 @@
 // Name:      file-dialog.cpp
 // Purpose:   Implementation of wex::file_dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
 #include <wex/core/file.h>
 #include <wex/factory/lexers.h>
 #include <wex/ui/file-dialog.h>
-#include <wx/checkbox.h>
-#include <wx/checklst.h>
+#include <wx/filedlgcustomize.h>
 #include <wx/msgdlg.h>
-#include <wx/panel.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
 
-class extra_panel : public wxPanel
+class file_dialog_hook : public wxFileDialogCustomizeHook
 {
 public:
-  explicit extra_panel(wxWindow* parent);
-  bool checked() const { return m_checked; }
+  void AddCustomControls(wxFileDialogCustomize& customizer) override
+  {
+    m_checkbox = customizer.AddCheckBox("Hex");
+  }
+
+  void TransferDataFromCustomControls() override
+  {
+    m_hexmode = m_checkbox->GetValue();
+  }
+
+  auto is_hexmode() const { return m_hexmode; }
 
 private:
-  const int   m_id_checkbox;
-  bool        m_checked{false};
-  wxCheckBox* m_cb;
+  wxFileDialogCheckBox* m_checkbox{nullptr};
+  bool                  m_hexmode{false};
 };
-
-extra_panel::extra_panel(wxWindow* parent)
-  : wxPanel(parent)
-  , m_id_checkbox(NewControlId())
-  , m_cb(new wxCheckBox(this, m_id_checkbox, "Hex"))
-{
-  Bind(
-    wxEVT_CHECKBOX,
-    [&](wxCommandEvent& event)
-    {
-      m_checked = !m_checked;
-    },
-    m_id_checkbox);
-
-  auto* sizerTop = new wxBoxSizer(wxHORIZONTAL);
-  sizerTop->Add(
-    new wxStaticText(this, wxID_ANY, "Mode:"),
-    wxSizerFlags().Centre().Border());
-  sizerTop->AddSpacer(10);
-  sizerTop->Add(m_cb, wxSizerFlags().Centre().Border());
-  sizerTop->AddSpacer(5);
-
-  SetSizerAndFit(sizerTop);
-}
-
-static wxWindow* create_extra_panel(wxWindow* parent)
-{
-  return new extra_panel(parent);
-}
 
 wex::file_dialog::file_dialog(wex::file* file, const data::window& data)
   : wxFileDialog(
@@ -74,17 +49,18 @@ wex::file_dialog::file_dialog(wex::file* file, const data::window& data)
     m_file != nullptr && data.wildcard() == wxFileSelectorDefaultWildcardStr &&
     m_file->path().stat().is_ok())
   {
-    std::string wildcards = _("All Files") + " (" +
-                            wxFileSelectorDefaultWildcardStr + ") |" +
-                            wxFileSelectorDefaultWildcardStr;
+    std::string wildcards(
+      _("All Files") + " (" + wxFileSelectorDefaultWildcardStr + ") |" +
+      wxFileSelectorDefaultWildcardStr);
     const auto& allow_ext(data.allow_move_path_extension());
 
     for (const auto& it : lexers::get()->get_lexers())
     {
       if (!it.extensions().empty())
       {
-        const std::string wildcard =
-          it.display_lexer() + " (" + it.extensions() + ") |" + it.extensions();
+        const std::string wildcard(
+          it.display_lexer() + " (" + it.extensions() + ") |" +
+          it.extensions());
         wildcards =
           (allow_ext == file->path().extension() &&
                matches_one_of(file->path().filename(), it.extensions()) ?
@@ -145,7 +121,7 @@ int wex::file_dialog::show_modal_if_changed(bool show_modal)
 
   if (show_modal)
   {
-    const int result = ShowModal();
+    const auto result(ShowModal());
 
     if (reset && result != wxID_CANCEL)
     {
@@ -160,17 +136,16 @@ int wex::file_dialog::show_modal_if_changed(bool show_modal)
 
 int wex::file_dialog::ShowModal()
 {
+  file_dialog_hook hook;
+
   if (!(GetWindowStyle() & wxFD_SAVE) && (GetWindowStyle() & wxFD_HEX_MODE))
   {
-    SetExtraControlCreator(&create_extra_panel);
+    SetCustomizeHook(hook);
   }
 
-  const auto id = wxFileDialog::ShowModal();
+  const auto id(wxFileDialog::ShowModal());
 
-  if (auto* extra = GetExtraControl(); id == wxID_OK && extra != nullptr)
-  {
-    m_hexmode = static_cast<extra_panel*>(extra)->checked();
-  }
+  m_hexmode = hook.is_hexmode();
 
   return id;
 }

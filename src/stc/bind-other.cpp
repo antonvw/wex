@@ -5,24 +5,56 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <boost/algorithm/string.hpp>
 #include <wex/core/config.h>
+#include <wex/core/core.h>
 #include <wex/core/log.h>
+#include <wex/factory/util.h>
 #include <wex/stc/auto-complete.h>
+#include <wex/stc/bind.h>
 #include <wex/stc/stc.h>
-#include <wex/stc/vcs.h>
 #include <wex/ui/debug-entry.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/menu.h>
-#include <wex/ui/stc-bind.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 
 #include <chrono>
-#include <vector>
 
 namespace wex
 {
+void check_double_click(stc* stc, wxKeyEvent& event)
+{
+  static bool first_click = false;
+
+  // Check whether to generate shift double.
+  if (event.GetKeyCode() == WXK_SHIFT)
+  {
+    static std::chrono::time_point<std::chrono::system_clock> start;
+
+    if (!first_click)
+    {
+      start       = std::chrono::system_clock::now();
+      first_click = true;
+    }
+    else
+    {
+      if (const auto milli =
+            std::chrono::duration_cast<std::chrono::milliseconds>(
+              std::chrono::system_clock::now() - start);
+          milli.count() < 500)
+      {
+        stc->get_frame()->shift_double_click();
+      }
+
+      first_click = false;
+    }
+  }
+  else
+  {
+    first_click = false;
+  }
+}
+
 void hypertext(stc* stc)
 {
   if (const auto match_pos = stc->FindText(
@@ -32,7 +64,7 @@ void hypertext(stc* stc)
       match_pos != wxSTC_INVALID_POSITION &&
       stc->GetCharAt(match_pos + 1) != '!')
   {
-    if (const auto match(stc->get_word_at_pos(match_pos + 1));
+    if (const auto& match(stc->get_word_at_pos(match_pos + 1));
         match.find("/") != 0 &&
         stc->GetCharAt(stc->GetCurrentPos() - 2) != '/' &&
         (stc->get_lexer().language() == "xml" ||
@@ -77,6 +109,44 @@ menu::menu_t get_style(stc* stc)
     style.set(menu::CAN_PASTE);
 
   return style;
+}
+
+void margin_menu(stc* stc)
+{
+  auto* menu = new wex::menu({{id::stc::margin_text_hide, "&Hide"}});
+
+  if (stc->is_visual())
+  {
+    menu->append({{id::stc::margin_text_blame_revision, "&Blame Revision"}});
+    menu->append(
+      {{id::stc::margin_text_blame_revision_previous, "&Blame Previous"}});
+  }
+
+  menu->append({{}});
+
+  if (auto* author =
+        menu->AppendCheckItem(id::stc::margin_text_author, "&Show Author");
+      config("blame.author").get(true))
+  {
+    author->Check();
+  }
+
+  if (auto* date =
+        menu->AppendCheckItem(id::stc::margin_text_date, "&Show Date");
+      config("blame.date").get(true))
+  {
+    date->Check();
+  }
+
+  if (auto* id = menu->AppendCheckItem(id::stc::margin_text_id, "&Show Id");
+      config("blame.id").get(true))
+  {
+    id->Check();
+  }
+
+  stc->PopupMenu(menu);
+
+  delete menu;
 }
 }; // namespace wex
 
@@ -146,35 +216,8 @@ void wex::stc::bind_other()
     [=, this](wxKeyEvent& event)
     {
       event.Skip();
-
       check_brace();
-
-      static bool first_click = false;
-
-      // Check whether to generate shift double.
-      if (event.GetKeyCode() == WXK_SHIFT)
-      {
-        static std::chrono::time_point<std::chrono::system_clock> start;
-
-        if (!first_click)
-        {
-          start       = std::chrono::system_clock::now();
-          first_click = true;
-        }
-        else
-        {
-          const auto milli =
-            std::chrono::duration_cast<std::chrono::milliseconds>(
-              std::chrono::system_clock::now() - start);
-
-          if (milli.count() < 500)
-          {
-            m_frame->shift_double_click();
-          }
-
-          first_click = false;
-        }
-      }
+      check_double_click(this, event);
     });
 
   Bind(
@@ -201,13 +244,7 @@ void wex::stc::bind_other()
       });
   }
 
-  Bind(
-    wxEVT_SET_FOCUS,
-    [=, this](wxFocusEvent& event)
-    {
-      m_frame->set_find_focus(this);
-      event.Skip();
-    });
+  bind_set_focus(this);
 
   Bind(
     wxEVT_STC_AUTOCOMP_COMPLETED,
@@ -272,22 +309,8 @@ void wex::stc::bind_other()
     {
       if (event.GetMargin() == m_margin_text_number)
       {
-        auto* menu = new wex::menu({{id::stc::margin_text_hide, "&Hide"}, {}});
-        auto* author =
-          menu->AppendCheckItem(id::stc::margin_text_author, "&Show Author");
-        auto* date =
-          menu->AppendCheckItem(id::stc::margin_text_date, "&Show Date");
-        auto* id = menu->AppendCheckItem(id::stc::margin_text_id, "&Show Id");
-
-        if (config("blame.author").get(true))
-          author->Check();
-        if (config("blame.date").get(true))
-          date->Check();
-        if (config("blame.id").get(true))
-          id->Check();
-
-        PopupMenu(menu);
-        delete menu;
+        m_margin_text_click = LineFromPosition(event.GetPosition());
+        margin_menu(this);
       }
     });
 
@@ -371,20 +394,7 @@ void wex::stc::margin_action(wxStyledTextEvent& event)
 
     if (config("blame.id").get(true))
     {
-      wex::vcs vcs{{path()}};
-
-      if (std::string margin(MarginGetText(line));
-          !margin.empty() && vcs.entry().log(path(), get_word(margin)))
-      {
-        AnnotationSetText(
-          line,
-          lexer().make_comment(
-            boost::algorithm::trim_copy(vcs.entry().std_out())));
-      }
-      else if (!vcs.entry().std_err().empty())
-      {
-        log("margin") << vcs.entry().std_err();
-      }
+      m_frame->vcs_annotate_commit(this, line, margin_get_revision_id());
     }
   }
   else if (event.GetMargin() == m_margin_divider_number)

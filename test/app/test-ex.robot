@@ -7,6 +7,20 @@ Resource	wex-keywords.resource
 
 
 *** Test Cases ***
+addressing
+	Input	:a|line has text
+	...	:a|line has a tiger
+	...	:a|line has a tiger
+	...	:a|line has a tiger
+	...	:a|line has a tiger
+	...	:a|line has a tiger
+	...	:a|line has a tiger
+	...	:a|line has simon and simon and garfunkel
+	...	:a|line has no match
+	...	:/text/,/u/ya
+	Appl
+	Output Contains	8
+
 empty
 	Input	:1000
 	...	:.=
@@ -48,14 +62,14 @@ saveas
 	Appl	2000
 	Sleep	1
 	File Should Exist	copy.txt
-	${size-copy}=	Get File Size	copy.txt
-	Should Be Equal	${size}	${size-copy}
+	${size_copy}=	Get File Size	copy.txt
+	Should Be Equal	${size}	${size_copy}
 	Remove File	copy.txt
 
 set
 	Input	:set all *
 	Appl
-	Output Contains	ts=
+	Output Contains	ec=
 
 set-bool
 	Input	:set nosws *
@@ -66,7 +80,7 @@ set-bool
 set-info
 	Input	:set ts ? *
 	Appl
-	Output Contains	ts=
+	Output Contains	tabstop=
 
 set-verbosity
 	Input	:set ve?

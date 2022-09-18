@@ -2,7 +2,7 @@
 // Name:      test-auto-indent.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -18,7 +18,10 @@ TEST_CASE("wex::auto_indent")
 
   wex::auto_indent ai(stc);
 
-  SUBCASE("constructor") { REQUIRE(ai.use()); }
+  SUBCASE("constructor")
+  {
+    REQUIRE(ai.use());
+  }
 
   SUBCASE("level")
   {
@@ -35,7 +38,7 @@ TEST_CASE("wex::auto_indent")
     stc->set_text("  \n  line with indentation");
     stc->SetEOLMode(wxSTC_EOL_CR);
     stc->DocumentEnd();
-    REQUIRE(ai.on_char(stc->eol().front()));
+    ai.on_char(stc->eol().front());
     // the \n is not added, but indentation does
     REQUIRE(stc->get_text() == "  \n  line with indentation");
     REQUIRE(stc->get_line_count() == 2);

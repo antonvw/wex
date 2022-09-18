@@ -32,16 +32,10 @@
 ## Analyse it
 
 At GitHub some code analysers will do this, it is also possible to do
-some local checks:
-
-- codespell
-- cppcheck
-- cpplint
+some local checks, these are invoked using the analyse target:
 
 ```bash
-ci/codespell
-ci/cppcheck
-ci/cpplint src/*/*.cpp
+make analyse
 ```
 
 ## Test it

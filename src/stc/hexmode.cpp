@@ -2,11 +2,12 @@
 // Name:      hexmode.cpp
 // Purpose:   Implementation of class wex::hexmode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
 #include <wex/factory/lexers.h>
+#include <wex/factory/stc-undo.h>
 #include <wex/factory/stc.h>
 #include <wex/stc/hexmode.h>
 #include <wex/ui/item-dialog.h>
@@ -284,12 +285,10 @@ void wex::hexmode::set_text(const std::string text)
   m_buffer_original.clear();
 
   get_stc()->SelectNone();
-  get_stc()->position_save();
+  stc_undo(get_stc(), stc_undo::undo_t().set(stc_undo::UNDO_POS));
   get_stc()->clear(false);
 
   append_text(text);
-
-  get_stc()->position_restore();
 }
 
 bool wex::hexmode::sync()

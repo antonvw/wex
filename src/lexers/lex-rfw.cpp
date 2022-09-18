@@ -255,8 +255,9 @@ static void colourise(
             testCaseSectionPos != -1 && sc.currentPos > testCaseSectionPos &&
             std::regex_search(words, m, std::regex(re_keyw, std::regex::icase)))
           {
-            testCaseSectionEndPos = sc.currentPos - (size_t)sc.LengthCurrent() -
-                                    std::string(m[0]).size();
+            testCaseSectionEndPos =
+              sc.currentPos - static_cast<Sci_PositionU>(sc.LengthCurrent()) -
+              std::string(m[0]).size();
           }
           else if (std::regex_search(
                      words,

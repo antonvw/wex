@@ -31,7 +31,9 @@ TEST_CASE("wex::core")
     REQUIRE(wex::find_after("nospace", " ") == "nospace");
     REQUIRE(wex::rfind_after("some space and more", " ") == "more");
     REQUIRE(wex::find_after("some space and more", " ") == "space and more");
+    REQUIRE(wex::find_after("some space and more", "space") == " and more");
     REQUIRE(wex::rfind_after("some space and more", "m") == "ore");
+    REQUIRE(wex::rfind_after("some space and more", " m") == "ore");
   }
 
   SUBCASE("find_before")
@@ -106,8 +108,17 @@ TEST_CASE("wex::core")
   {
     std::string word("this is a test");
     REQUIRE(wex::get_word(word) == "this");
+    REQUIRE(word == "is a test");
     REQUIRE(wex::get_word(word) == "is");
     REQUIRE(wex::get_word(word) == "a");
+
+    std::string other("    code improvements");
+    REQUIRE(wex::get_word(other) == "code");
+    REQUIRE(other == "improvements");
+
+    std::string spaces("    ");
+    REQUIRE(wex::get_word(spaces).empty());
+    REQUIRE(spaces.empty());
   }
 
   SUBCASE("is_brace")

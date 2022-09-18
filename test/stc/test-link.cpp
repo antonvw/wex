@@ -2,12 +2,11 @@
 // Name:      test-link.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-20222 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
 #include <wex/stc/link.h>
-#include <wex/stc/vcs.h>
 
 #include "test.h"
 
@@ -16,17 +15,6 @@ TEST_CASE("wex::link")
 {
   auto*     stc = get_stc();
   wex::link lnk;
-
-  SUBCASE("git")
-  {
-    wex::data::control data;
-    wex::config(_("vcs.Base folder"))
-      .set(std::list<std::string>{wxGetCwd().ToStdString()});
-    stc->get_lexer().clear();
-    REQUIRE(wex::vcs::load_document());
-    REQUIRE(lnk.get_path("modified:  test/stc/test-link.cpp", data, stc)
-              .file_exists());
-  }
 
   SUBCASE("mime")
   {
@@ -41,10 +29,14 @@ TEST_CASE("wex::link")
 
   SUBCASE("pairs")
   {
-    wex::config(_("stc.link.Pairs")).set(std::list<std::string>{{"[\t]"}});
+    wex::config(_("stc.link.Pairs")).set(wex::config::strings_t{{"[\t]"}});
     wex::config(_("stc.link.Include directory"))
-      .set(std::list<std::string>{{"/usr/bin"}});
+      .set(wex::config::strings_t{{"/usr/bin"}});
     lnk.config_get();
+
+    REQUIRE(
+      wex::config("stc.link.Pairs").get(wex::config::strings_t{{}}).size() ==
+      1);
 
     wex::data::control data;
     REQUIRE(
@@ -55,7 +47,7 @@ TEST_CASE("wex::link")
   SUBCASE("source")
   {
     wex::config(_("stc.link.Include directory"))
-      .set(std::list<std::string>{{"/usr/bin"}});
+      .set(wex::config::strings_t{{"/usr/bin"}});
     lnk.config_get();
 
     wex::data::control data;

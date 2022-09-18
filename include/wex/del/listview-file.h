@@ -2,7 +2,7 @@
 // Name:      listview-file.h
 // Purpose:   Declaration of class wex::del::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -31,9 +31,9 @@ public:
 
   /// Adds items.
   void add_items(
-    const std::string& folder,
-    const std::string& files,
-    data::dir::type_t  flags);
+    const std::string&       folder,
+    const std::string&       files,
+    const data::dir::type_t& flags);
 
   /// Returns the file.
   file& get_file() { return *this; }

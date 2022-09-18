@@ -6,14 +6,13 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/ex/ctags.h>
+#include <wex/factory/stc-undo.h>
 #include <wex/factory/stc.h>
 #include <wex/ui/frd.h>
-#include <wex/vi/ctags.h>
 
 #include <algorithm>
-#include <string>
 
-#include "motion.h"
 #include "vim.h"
 
 namespace wex
@@ -47,10 +46,10 @@ bool wex::vim::command_motion(int start_pos)
     return false;
   }
 
-  bool ok = true;
-
-  m_vi->get_stc()->BeginUndoAction();
-  m_vi->get_stc()->position_save();
+  bool     ok = true;
+  stc_undo undo(
+    m_vi->get_stc(),
+    stc_undo::undo_t().set(stc_undo::UNDO_ACTION).set(stc_undo::UNDO_POS));
 
   if (const auto end_pos = m_vi->get_stc()->GetCurrentPos();
       end_pos - start_pos > 0)
@@ -81,9 +80,7 @@ bool wex::vim::command_motion(int start_pos)
       assert(0);
   }
 
-  m_vi->get_stc()->EndUndoAction();
   m_vi->get_stc()->SelectNone();
-  m_vi->get_stc()->position_restore();
 
   return ok;
 }
@@ -172,19 +169,19 @@ wex::vi::motion_t wex::vim::get_motion(const std::string& command)
   }
 }
 
-bool wex::vim::is_vim_motion() const
+bool wex::vim::is_motion() const
 {
   return m_motion >= vi::motion_t::G_tilde && m_motion <= vi::motion_t::G_U;
 }
 
-bool wex::vim::is_vim_special() const
+bool wex::vim::is_special() const
 {
   return m_motion >= vi::motion_t::G_a && m_motion <= vi::motion_t::G_star;
 }
 
 bool wex::vim::motion(int start_pos, size_t& parsed, vi::function_t f)
 {
-  if (!is_vim_motion())
+  if (!is_motion())
   {
     return false;
   }
@@ -199,7 +196,7 @@ bool wex::vim::motion(int start_pos, size_t& parsed, vi::function_t f)
 
 void wex::vim::motion_prep()
 {
-  if (is_vim_motion() && m_command.size() > 2)
+  if (is_motion() && m_command.size() > 2)
   {
     m_command.erase(0, 2);
   }
@@ -207,7 +204,7 @@ void wex::vim::motion_prep()
 
 bool wex::vim::special()
 {
-  if (is_vim_special() && m_command.size() == 2)
+  if (is_special() && m_command.size() == 2)
   {
     command_special();
     return true;

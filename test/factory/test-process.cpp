@@ -5,6 +5,7 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log-none.h>
 #include <wex/factory/process.h>
 
 #include "../test.h"
@@ -52,7 +53,7 @@ TEST_CASE("wex::factory::process")
       REQUIRE(process.async_system(wex::process_data("xxxx")));
       process.stop();
       REQUIRE(!process.is_running());
-      process.set_handler_dbg(&out); // if after out, crash
+      process.set_handler_dbg(&out); // if directly after out: crash
     }
   }
 #endif
@@ -62,6 +63,7 @@ TEST_CASE("wex::factory::process")
 #ifndef __WXMSW__
     SUBCASE("invalid")
     {
+      wex::log_none off;
       REQUIRE(process.system(wex::process_data("xxxx")) != 0);
       REQUIRE(process.std_out().empty());
       REQUIRE(!process.std_err().empty());
@@ -73,6 +75,7 @@ TEST_CASE("wex::factory::process")
     {
       REQUIRE(process.system(wex::process_data("wc -c").std_in("xxxxxx")) == 0);
       CAPTURE(process.std_out());
+      REQUIRE(process.std_err().empty());
       REQUIRE(process.std_out().find("6") != std::string::npos);
     }
 
@@ -81,6 +84,7 @@ TEST_CASE("wex::factory::process")
       wex::path cwd;
 
       REQUIRE(process.system(wex::process_data("ls -l").start_dir("/")) == 0);
+      REQUIRE(process.std_err().empty());
       REQUIRE(!process.std_out().empty());
       REQUIRE(wxGetCwd().Contains("data"));
       wex::path::current(cwd.original());

@@ -1,5 +1,13 @@
 # changes
 
+**v22.10** *September 18, 2022*
+- added blame revision
+- ex commands more closely follow
+  The Open Group Base Specifications Issue 7, 2018 edition
+- ex command-line is improved, it is now a factory::stc
+- wxWidgets 3.2
+- wex-ex and wex-vcs library added
+
 **v22.04** *March 6, 2022*
 - Microsoft Visual Studio 2022
 - boost::json lib instead of nlohmann/json lib, requiring boost 1.75

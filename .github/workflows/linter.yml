@@ -1,31 +1,34 @@
 name: Lint Code Base
-  on: [push]
+on: [push]
 
-  jobs:
-    build:
+jobs:
+  build:
 
-      runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v2
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-        - name: Lint code base
-          uses: docker://github/super-linter:v4
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Lint code base
+        uses: docker://github/super-linter:v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-            # until C_CPPLINT_ARGUMENTS variable works?
-            VALIDATE_CPP: false
+          # until clang-format github action uses same version as used on MacOS
+          VALIDATE_CLANG_FORMAT: false
 
-            # we use escape sequence in wex-macros.xml
-            VALIDATE_XML: false
+          # until C_CPPLINT_ARGUMENTS variable works?
+          VALIDATE_CPP: false
 
-            VALIDATE_SQLFLUFF: false
+          # we use escape sequence in wex-macros.xml
+          VALIDATE_XML: false
 
-            # exclude xsl, all externals
-            FILTER_REGEX_EXCLUDE: .*data/*.xsl|external|src/lexers|locale/po-sync.sh
+          VALIDATE_SQLFLUFF: false
 
-            # cpplint
-            C_CPPLINT_ARGUMENTS: --quiet --filter=-build,-readability/fn_size,-readability/multiline_string,-runtime/explicit,-runtime/indentation_namespace,-runtime/int,-runtime/references,-whitespace
-            C_CPPLINT_FILTER_REGEX_INCLUDE: (src|include|test)
+          # exclude xsl, all externals
+          FILTER_REGEX_EXCLUDE: .*data/*.xsl|external|src/lexers|locale/po-sync.sh|.bettercodehub.yml|ci/osx-script.sh
+
+          # cpplint
+          C_CPPLINT_ARGUMENTS: --quiet --filter=-build,-readability/fn_size,-readability/multiline_string,-runtime/explicit,-runtime/indentation_namespace,-runtime/int,-runtime/references,-whitespace
+          C_CPPLINT_FILTER_REGEX_INCLUDE: (src|include|test)

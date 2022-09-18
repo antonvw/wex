@@ -32,6 +32,7 @@ bool wex::factory::process::async_system(const process_data& data)
   {
     if (m_eh_out != nullptr)
     {
+      m_data = data;
       m_imp->async_system(this, data); // this is a void
       return true;
     }
@@ -42,11 +43,6 @@ bool wex::factory::process::async_system(const process_data& data)
   }
 
   return false;
-}
-
-const wex::process_data& wex::factory::process::data() const
-{
-  return m_imp->data();
 }
 
 bool wex::factory::process::is_debug() const
@@ -71,7 +67,7 @@ void wex::factory::process::set_handler_out(wxEvtHandler* eh)
 
 bool wex::factory::process::stop()
 {
-  return m_imp->stop();
+  return m_imp->stop(m_eh_debug);
 }
 
 int wex::factory::process::system(const process_data& data)
@@ -109,7 +105,10 @@ int wex::factory::process::system(const process_data& data)
     {
       const auto& text(!m_stderr.empty() ? ":" + m_stderr : std::string());
       log("system") << data.log() << "ec:" << ec << text;
+      log::status("system") << text << data.log();
     }
+
+    m_data = data;
 
     return ec;
   }

@@ -2,11 +2,12 @@
 // Name:      test-item.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
 #include <wex/core/log.h>
+#include <wex/ui/item-build.h>
 #include <wex/ui/item-dialog.h>
 #include <wex/ui/item.h>
 #include <wx/artprov.h>
@@ -97,9 +98,6 @@ TEST_CASE("wex::item")
     {
     }
 
-    std::cout << "sep: "
-              << std::string(1, wxNumberFormatter::GetDecimalSeparator())
-              << "\n";
     wex::item item_float(
       "float",
       wex::item::TEXTCTRL_FLOAT,
@@ -327,6 +325,14 @@ TEST_CASE("wex::item")
     REQUIRE(!ci_grid.to_config(false));
   }
 
+  SUBCASE("group")
+  {
+    auto* dlg = new wex::item_dialog(
+      {wex::add_combobox_with_max("combo", "max"), {"text1"}, {"text2"}});
+
+    dlg->Show();
+  }
+
   SUBCASE("label")
   {
     wex::item::use_config(true);
@@ -341,15 +347,6 @@ TEST_CASE("wex::item")
     REQUIRE(wex::config("item-parent.child").exists());
     REQUIRE(!wex::config("item-parent.child").is_child());
     REQUIRE(wex::config("item-parent.child").get() == "karmeliet");
-  }
-
-  SUBCASE("group")
-  {
-    auto* dlg = new wex::item_dialog(
-      {{{"group", {{"element1"}, {"element2"}, {"element3"}, {"element4"}}}}},
-      wex::data::window().button(wxOK | wxCANCEL | wxAPPLY));
-
-    dlg->Show();
   }
 
   SUBCASE("notebooks")
@@ -411,6 +408,14 @@ TEST_CASE("wex::item")
       wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxAPPLY));
       wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxOK));
     }
+  }
+
+  SUBCASE("staticbox")
+  {
+    auto* dlg = new wex::item_dialog(
+      {{{"staticbox", {{"element1"}, {"element2"}, {"element3"}, {"element4"}}}}});
+
+    dlg->Show();
   }
 
   SUBCASE("validate")

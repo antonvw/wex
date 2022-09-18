@@ -11,16 +11,16 @@
 #include <boost/algorithm/string.hpp>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
+#include <wex/ex/addressrange.h>
+#include <wex/ex/ctags.h>
+#include <wex/ex/macros.h>
+#include <wex/ex/util.h>
+#include <wex/factory/stc-undo.h>
 #include <wex/factory/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
-#include <wex/vi/addressrange.h>
-#include <wex/vi/ctags.h>
-#include <wex/vi/macros.h>
 #include <wex/vi/vi.h>
 #include <wx/app.h>
-
-#include "util.h"
 
 namespace wex
 {
@@ -88,8 +88,8 @@ bool replace_char(factory::stc* stc, char c, int count)
 
     const auto start = stc->GetSelectionStart();
     const auto end   = stc->GetSelectionEnd();
+    stc_undo   undo(stc);
 
-    stc->BeginUndoAction();
     stc->Cut();
 
     for (int line = stc->LineFromPosition(start);
@@ -100,8 +100,6 @@ bool replace_char(factory::stc* stc, char c, int count)
         stc->PositionFromLine(line) + stc->GetColumn(start),
         std::string(count, c));
     }
-
-    stc->EndUndoAction();
   }
   else
   {
@@ -120,6 +118,7 @@ size_t shift(vi* vi, int count, const std::string& command)
       command == ">" ? addressrange(vi, count).shift_right() :
                        addressrange(vi, count).shift_left();
       break;
+
     case vi_mode::state_t::VISUAL:
     case vi_mode::state_t::VISUAL_LINE:
     case vi_mode::state_t::VISUAL_BLOCK:
@@ -127,8 +126,9 @@ size_t shift(vi* vi, int count, const std::string& command)
         addressrange(vi, ex_command::selection_range()).shift_right() :
         addressrange(vi, ex_command::selection_range()).shift_left();
       break;
+
     default:
-      break;
+      assert(0);
   }
 
   return 1;
@@ -141,7 +141,7 @@ size_t word_action(vi* vi, const std::string& command)
   const auto end =
     vi->get_stc()->WordEndPosition(vi->get_stc()->GetCurrentPos(), true);
 
-  if (const std::string word(
+  if (const auto word(
         vi->get_stc()->GetSelectedText().empty() ?
           vi->get_stc()->GetTextRange(start, end).ToStdString() :
           vi->get_stc()->GetSelectedText().ToStdString());

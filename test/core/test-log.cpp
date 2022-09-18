@@ -2,7 +2,7 @@
 // Name:      test-log.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2021 Anton van Wezenbeek
+// Copyright: (c) 2019-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
@@ -17,6 +17,16 @@ TEST_CASE("wex::log")
     wex::log() << "default constructor";
 
     REQUIRE(wex::log("hello world").get() == "hello world");
+  }
+
+  SUBCASE("level")
+  {
+    REQUIRE(wex::log::get_level() == wex::log::LEVEL_ERROR);
+
+    wex::log::set_level(wex::log::LEVEL_TRACE);
+    REQUIRE(wex::log::get_level() == wex::log::LEVEL_TRACE);
+
+    wex::log::set_level(wex::log::level_t_def());
     REQUIRE(wex::log::get_level() == wex::log::LEVEL_ERROR);
   }
 
@@ -35,7 +45,10 @@ TEST_CASE("wex::log")
     REQUIRE(log.get().find("25") != std::string::npos);
   }
 
-  SUBCASE("info") { wex::log::info() << "info"; }
+  SUBCASE("info")
+  {
+    wex::log::info() << "info";
+  }
 
   SUBCASE("status")
   {
@@ -50,5 +63,8 @@ TEST_CASE("wex::log")
     wex::log::trace("trace") << "hello world";
   }
 
-  SUBCASE("warning") { wex::log::warning("warning") << "hello"; }
+  SUBCASE("warning")
+  {
+    wex::log::warning("warning") << "hello";
+  }
 }

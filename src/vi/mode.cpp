@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      vi/mode.cpp
+// Name:      mode.cpp
 // Purpose:   Implementation of class wex::vi_mode
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020-2022 Anton van Wezenbeek
@@ -12,11 +12,11 @@
 #include <boost/statechart/transition.hpp>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
+#include <wex/ex/macro-mode.h>
+#include <wex/ex/macros.h>
 #include <wex/factory/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/statusbar.h>
-#include <wex/vi/macro-mode.h>
-#include <wex/vi/macros.h>
 #include <wex/vi/mode.h>
 #include <wex/vi/vi.h>
 

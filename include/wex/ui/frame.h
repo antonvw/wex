@@ -8,11 +8,11 @@
 #pragma once
 
 #include <wex/core/path.h>
-#include <wex/core/statusbar-pane.h>
 #include <wex/data/stc.h>
 #include <wex/data/window.h>
 #include <wex/factory/frame.h>
 #include <wex/ui/file-history.h>
+#include <wex/ui/statusbar-pane.h>
 #include <wex/ui/statusbar.h>
 #include <wx/aui/framemanager.h>
 
@@ -26,9 +26,10 @@ namespace wex
 {
 class debug_entry;
 class ex_command;
+class ex_commandline;
+class line_data;
 class menu_item;
 class process_data;
-class textctrl;
 class toolbar;
 
 /// Offers an aui managed frame with a notebook multiple document interface,
@@ -125,7 +126,10 @@ public:
   /// allowing you to override any command.
   virtual bool exec_ex_command(ex_command& command) { return false; }
 
-  /// Allows you to override is_address.
+  /// Allows you to override is_address, it is overridden in
+  /// del frame, returning true if text specifies
+  /// a one or two address based ex address (including command).
+  /// e.g. 1,5y, %y, etc.
   virtual bool is_address(factory::stc* stc, const std::string& text)
   {
     return false;
@@ -200,6 +204,34 @@ public:
   /// Called after all pages from the notebooks are deleted.
   /// Default resets the find focus.
   virtual void sync_close_all(wxWindowID id);
+
+  /// Adds vcs path.
+  virtual void vcs_add_path(factory::link* l) { ; }
+
+  /// Annotates commmit.
+  virtual void
+  vcs_annotate_commit(factory::stc*, int line, const std::string& commit_id)
+  {
+    ;
+  };
+
+  /// Blames revision.
+  virtual void vcs_blame_revison(
+    factory::stc*,
+    const std::string& renamed,
+    const std::string& offset)
+  {
+    ;
+  }
+
+  /// Returns true if dir exists.
+  virtual bool vcs_dir_exists(const path& p) const { return false; };
+
+  /// Executes vcs.
+  virtual void vcs_execute(int event_id, const std::vector<wex::path>& paths)
+  {
+    ;
+  }
 
   /// Other methods
 
@@ -334,7 +366,7 @@ protected:
 
   class debug_entry* m_debug_entry{nullptr};
   statusbar*         m_statusbar{nullptr};
-  textctrl*          m_textctrl;
+  ex_commandline*    m_ex_commandline;
 
 private:
   bool     add_toolbar_panes(const panes_t& panes);

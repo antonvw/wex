@@ -32,3 +32,21 @@
 #include <wex/ui/grid.h>
 #include <wex/ui/item.h>
 #include <wex/ui/listview.h>
+
+namespace wex
+{
+const std::any get_value_prim(const wex::item* item);
+
+template <typename T> std::any get_value_simple(wxWindow* window)
+{
+  return (reinterpret_cast<T>(window))->GetValue();
+}
+
+bool get_value_simple(wex::item::type_t t, wxWindow* window, std::any& any);
+
+bool no_value(wex::item::type_t t);
+
+const std::string str(const std::string& name, const std::any& any);
+
+const item::type_t use_type(const std::string& label, item::type_t t);
+} // namespace wex

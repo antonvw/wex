@@ -8,10 +8,7 @@
 #include <filesystem>
 #include <numeric>
 
-
-#define BOOST_ASIO_HAS_STD_INVOKE_RESULT ON
-#include <boost/process.hpp>
-#include <boost/tokenizer.hpp>
+#include <boost/process/search_path.hpp>
 
 #include <wex/common/tostring.h>
 #include <wex/core/core.h>
@@ -20,21 +17,32 @@
 
 namespace bp = boost::process;
 
-wex::process_data::process_data(const std::string& exe)
+wex::process_data::process_data(const std::string& exe, const std::string& args)
   : m_exe(exe)
+  , m_args(args)
 {
 }
 
 const std::vector<std::string> wex::process_data::args() const
 {
-  if (const auto pos = m_exe.find(" "); pos == std::string::npos)
+  if (!m_args.empty())
   {
-    return std::vector <std::string> {};
+    return to_vector_string(m_args).get();
+  }
+  else if (const auto pos = m_exe.find(" "); pos == std::string::npos)
+  {
+    return std::vector<std::string>{};
   }
   else
   {
     return to_vector_string(m_exe.substr(pos + 1)).get();
   }
+}
+
+wex::process_data& wex::process_data::args(const std::string& rhs)
+{
+  m_args = rhs;
+  return *this;
 }
 
 wex::process_data& wex::process_data::exe(const std::string& rhs)
@@ -63,12 +71,16 @@ const std::string wex::process_data::log() const
   const auto& arg_v(args());
 
   return "exe: " + exe_path() +
-    (!arg_v.empty() ? " args:" +
-         std::accumulate(arg_v.begin(), arg_v.end(), std::string(""),
-          [](const std::string& a, const std::string& b)
-            {
-              return a + " " + b;
-            }): std::string()) +
+         (!arg_v.empty() ?
+            " args:" + std::accumulate(
+                         arg_v.begin(),
+                         arg_v.end(),
+                         std::string(""),
+                         [](const std::string& a, const std::string& b)
+                         {
+                           return a + " " + b;
+                         }) :
+            std::string()) +
          (!m_start_dir.empty() ? " dir: " + m_start_dir : std::string()) +
          (!m_stdin.empty() ? " stdin: " + m_stdin : std::string());
 }

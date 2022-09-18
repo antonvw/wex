@@ -36,7 +36,21 @@ void wex::factory::process_imp::async_system(
   const process_data& data)
 {
   m_debug.store(p->m_eh_debug != nullptr);
+  m_data = data;
 
+  boost_async_system(p, data);
+
+  m_is_running.store(true);
+
+  thread_input(p);
+  thread_output(p);
+  thread_error(p);
+}
+
+void wex::factory::process_imp::boost_async_system(
+  process*            p,
+  const process_data& data)
+{
   bp::async_system(
     *m_io.get(),
     [this, p, data](boost::system::error_code error, int i)
@@ -61,12 +75,63 @@ void wex::factory::process_imp::async_system(
     m_group);
   // clang-format on
 
-  m_data = data;
+  log::debug("async_system") << data.exe() << "debug:" << m_debug.load();
+}
 
-  log::debug("async_system") << m_data.exe() << "debug:" << m_debug.load();
+bool wex::factory::process_imp::stop(wxEvtHandler* e)
+{
+  try
+  {
+    if (m_is_running.load())
+    {
+      if (m_group.valid())
+      {
+        m_group.terminate();
+      }
 
-  m_is_running.store(true);
+      m_io->stop();
+      m_is_running.store(false);
 
+      if (m_debug.load() && e != nullptr)
+      {
+        WEX_POST(ID_DEBUG_EXIT, "", e)
+      }
+
+      return true;
+    }
+  }
+  catch (std::exception& e)
+  {
+    log(e) << "stop" << m_data.exe();
+  }
+
+  return false;
+}
+
+void wex::factory::process_imp::thread_error(process* p)
+{
+  std::thread v(
+    [out = p->m_eh_out, &es = m_es]
+    {
+      std::string text;
+
+      while (es.good())
+      {
+        text.push_back(es.get());
+
+        if (text.back() == '\n')
+        {
+          WEX_POST(ID_SHELL_APPEND_ERROR, text, out)
+          text.clear();
+        }
+      }
+    });
+
+  v.detach();
+}
+
+void wex::factory::process_imp::thread_input(process* p)
+{
   std::thread t(
     [debug = m_debug.load(),
      &dbg  = p->m_eh_debug,
@@ -113,8 +178,12 @@ void wex::factory::process_imp::async_system(
         }
       }
     });
-  t.detach();
 
+  t.detach();
+}
+
+void wex::factory::process_imp::thread_output(process* p)
+{
   std::thread u(
     [debug = m_debug.load(),
      io    = m_io,
@@ -150,50 +219,8 @@ void wex::factory::process_imp::async_system(
         }
       }
     });
+
   u.detach();
-
-  std::thread v(
-    [out = p->m_eh_out, &es = m_es]
-    {
-      std::string text;
-
-      while (es.good())
-      {
-        text.push_back(es.get());
-
-        if (text.back() == '\n')
-        {
-          WEX_POST(ID_SHELL_APPEND_ERROR, text, out)
-          text.clear();
-        }
-      }
-    });
-
-  v.detach();
-}
-
-bool wex::factory::process_imp::stop()
-{
-  try
-  {
-    if (m_is_running.load())
-    {
-      if (m_group.valid())
-      {
-        m_group.terminate();
-      }
-
-      m_io->stop();
-      m_is_running.store(false);
-      return true;
-    }
-  }
-  catch (std::exception& e)
-  {
-    log(e) << "stop" << m_data.exe();
-  }
-
-  return false;
 }
 
 bool wex::factory::process_imp::write(const std::string& text)

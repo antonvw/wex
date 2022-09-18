@@ -20,6 +20,7 @@ namespace wex
 class debug;
 class item_dialog;
 class process;
+class stc;
 class stc_entry_dialog;
 }; // namespace wex
 
@@ -56,6 +57,10 @@ public:
   /// your implementation should return that one.
   /// Default it returns nullptr.
   virtual file* get_project() { return nullptr; }
+
+  /// Shows blame info for vcs in the text margin.
+  /// Returns true if info was added.
+  virtual bool vcs_blame_show(vcs_entry* vcs, stc*);
 
   /// Other methods
 
@@ -112,15 +117,15 @@ public:
     return grep(line, true);
   };
 
-  /// Starts or stops syncing.
-  /// Default syncing is started during construction.
-  void sync(bool start);
-
   /// Updates project history.
   void set_recent_project(const path& path) { m_project_history.append(path); }
 
   /// Shows vcs info on statusbar.
   void statustext_vcs(factory::stc* stc);
+
+  /// Starts or stops syncing.
+  /// Default syncing is started during construction.
+  void sync(bool start);
 
   /// Uses specified history list, and adds all elements from file history
   /// to the list.
@@ -163,6 +168,18 @@ public:
   void          stc_entry_dialog_title(const std::string& title) override;
   void          stc_entry_dialog_validator(const std::string& regex) override;
 
+  void vcs_add_path(factory::link*) override;
+  void vcs_annotate_commit(
+    factory::stc*,
+    int                line,
+    const std::string& commit_id) override;
+  void vcs_blame_revison(
+    factory::stc*,
+    const std::string& renamed,
+    const std::string& offset) override;
+  bool vcs_dir_exists(const path& p) const override;
+  void vcs_execute(int event_id, const std::vector<wex::path>& paths) override;
+
 protected:
   /// Access to file history list,
   /// if you use this as a page in a notebook,
@@ -176,7 +193,11 @@ protected:
 private:
   listview* activate_and_clear(const wex::tool& tool);
 
-  stc_entry_dialog* entry_dialog(const std::string& title = std::string());
+  void bind_all();
+
+  stc_entry_dialog* entry_dialog(
+    const std::string& title = std::string(),
+    const std::string& text  = std::string());
 
   void find_in_files(window_id id);
   void on_idle(wxIdleEvent& event);
@@ -201,4 +222,6 @@ private:
   // as a list of checkboxes.
   const std::set<std::string> m_info;
 };
+
+const std::string find_replace_string(bool replace);
 }; // namespace wex::del

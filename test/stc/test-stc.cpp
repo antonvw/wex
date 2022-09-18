@@ -2,10 +2,11 @@
 // Name:      test-stc.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
+#include <wex/core/log-none.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/indicator.h>
 #include <wex/factory/lexers.h>
@@ -28,7 +29,10 @@ TEST_CASE("wex::stc")
   SUBCASE("auto_complete")
   {
     stc->auto_complete()->use(true);
+    REQUIRE(stc->auto_complete()->use());
+
     stc->auto_complete()->use(false);
+    REQUIRE(!stc->auto_complete()->use());
   }
 
   SUBCASE("binary")
@@ -92,7 +96,10 @@ TEST_CASE("wex::stc")
     stc->WordRightEndRectExtend();
   }
 
-  SUBCASE("eol") { REQUIRE(!stc->eol().empty()); }
+  SUBCASE("eol")
+  {
+    REQUIRE(!stc->eol().empty());
+  }
 
   SUBCASE("find")
   {
@@ -113,6 +120,7 @@ TEST_CASE("wex::stc")
     REQUIRE(stc->find(std::string("HELLO"))); // uses flags from frd
     REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
 
+    wex::log_none off;
     REQUIRE(!stc->set_indicator(wex::indicator(4, 5), 100, 200));
     wex::find_replace_data::get()->set_match_case(false);
     stc->set_search_flags(-1);
@@ -241,10 +249,6 @@ TEST_CASE("wex::stc")
     stc->open(wex::test::get_path());
     wex::lexers::get()->apply_global_styles(stc);
     wex::lexers::get()->apply(stc);
-    wex::lexers::get()->apply_margin_text_style(
-      stc,
-      30,
-      wex::lexers::margin_style_t::DAY);
 
     stc->get_file().reset_contents_changed();
   }
@@ -267,7 +271,10 @@ TEST_CASE("wex::stc")
     REQUIRE(!stc->is_shown_line_numbers());
   }
 
-  SUBCASE("marker") { REQUIRE(stc->marker_delete_all_change()); }
+  SUBCASE("marker")
+  {
+    REQUIRE(stc->marker_delete_all_change());
+  }
 
   SUBCASE("modeline")
   {
@@ -284,11 +291,22 @@ TEST_CASE("wex::stc")
       REQUIRE(stc->get_lexer().scintilla_lexer() == "sql");
     }
 
-    SUBCASE("modeline")
+    SUBCASE("modeline-vi")
     {
-      auto* stc = new wex::stc(std::string("// 	vim: set ts=120 "
+      auto* stc = new wex::stc(std::string("// 	vi: set ts=120 "
                                            "// this is a modeline"));
       frame()->pane_add(stc);
+      REQUIRE(stc->GetTabWidth() == 120);
+      REQUIRE(stc->get_vi().mode().is_command());
+    }
+
+    SUBCASE("modeline-vim")
+    {
+      auto* stc =
+        // see e.g. libre-office-xmlreader.h
+        new wex::stc(std::string("// vim: set softtabstop=120 expandtab:"));
+      frame()->pane_add(stc);
+      REQUIRE(!stc->GetUseTabs());
       REQUIRE(stc->GetTabWidth() == 120);
       REQUIRE(stc->get_vi().mode().is_command());
     }
@@ -306,7 +324,10 @@ TEST_CASE("wex::stc")
     REQUIRE(!stc.open(wex::path("XXX")));
   }
 
-  SUBCASE("popup") { REQUIRE(stc->get_lexer().set("cpp")); }
+  SUBCASE("popup")
+  {
+    REQUIRE(stc->get_lexer().set("cpp"));
+  }
 
   SUBCASE("position")
   {

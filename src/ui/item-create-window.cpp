@@ -267,9 +267,8 @@ void create_grid_control(
   win.parent(parent);
   auto* gr = new grid(win);
 
-  gr->CreateGrid(0, 0);
-  gr->AppendCols(26);
-  gr->AppendRows(100);
+  gr->CreateGrid(10, item.data().columns());
+  gr->ShowScrollbars(wxSHOW_SB_ALWAYS, wxSHOW_SB_ALWAYS);
 
   window = gr;
 }
@@ -286,6 +285,11 @@ void create_hyperlink_control(
     std::any_cast<std::string>(item.data().initial()),
     PSS == data::NUMBER_NOT_SET ? wxHL_DEFAULT_STYLE :
                                   item.data().window().style());
+}
+
+void create_panel(wxWindow* parent, wxWindow*& window, const wex::item& item)
+{
+  window = new wxPanel(parent, item.data().window().id());
 }
 
 void create_radiobox(wxWindow* parent, wxWindow*& window, const wex::item& item)
@@ -447,6 +451,7 @@ wex::item::create_t wex::item::creators()
     CREATE_CTRL(create_file_picker_control) 
     CREATE_CTRL(create_font_picker_control)
     CREATE_CTRL(create_grid_control)
+    CREATE_CTRL(create_panel) 
     CREATE_CTRL(create_hyperlink_control)
     {[&](wxWindow* parent, wxWindow*& window, const wex::item& item)
       {

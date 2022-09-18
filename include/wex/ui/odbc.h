@@ -2,7 +2,7 @@
 // Name:      odbc.h
 // Purpose:   Declaration of wex::odbc class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -51,7 +51,7 @@ public:
   /// Returns false if dialog cancelled or logon fails.
   bool logon(const data::window& data = data::window());
 
-  /// Runs the query and retuns the rows processed count.
+  /// Runs the query and returns the rows processed count.
   /// Or -1 in case there was an error.
   long query(const std::string& query);
 

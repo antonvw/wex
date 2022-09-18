@@ -9,14 +9,12 @@
 #include <boost/tokenizer.hpp>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
-#include <wex/core/regex.h>
+#include <wex/ex/macros.h>
+#include <wex/ex/util.h>
 #include <wex/factory/stc.h>
 #include <wex/ui/frame.h>
-#include <wex/vi/macros.h>
 #include <wex/vi/vi.h>
 
-#include "motion.h"
-#include "util.h"
 #include "vim.h"
 
 // without this code adding tab in block insert mode fails, it only
@@ -36,7 +34,7 @@ bool is_special_key(const wxKeyEvent& event, const vi_mode& mode)
          (event.GetKeyCode() == WXK_ESCAPE || event.GetKeyCode() == WXK_BACK ||
           event.GetKeyCode() == WXK_RETURN ||
           event.GetKeyCode() == WXK_NUMPAD_ENTER ||
-          (!mode.is_visual() && event.GetKeyCode() == WXK_TAB) ||
+          event.GetKeyCode() == WXK_TAB ||
           (!mode.is_insert() &&
            (event.GetKeyCode() == WXK_LEFT ||
             event.GetKeyCode() == WXK_DELETE ||
@@ -136,6 +134,8 @@ bool wex::vi::command(const std::string& command)
   {
     return false;
   }
+
+  m_command_string = command;
 
   if (command.front() != ':' && command.front() != '!')
   {

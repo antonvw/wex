@@ -2,7 +2,7 @@
 // Name:      test-tool.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2021 Anton van Wezenbeek
+// Copyright: (c) 2018-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
@@ -20,7 +20,6 @@ TEST_CASE("wex::tool")
   REQUIRE(!tool.get_tool_info().empty());
   REQUIRE(tool.info(&stat) == "this is ok 0 file(s)");
   REQUIRE(!tool.is_find_type());
-  REQUIRE(!tool.is_report_type());
 
   REQUIRE(!wex::tool(wex::ID_TOOL_REPORT_FIND).info().empty());
 

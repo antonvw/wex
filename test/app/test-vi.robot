@@ -12,8 +12,11 @@ browse
 	Input	:a|wxWidgets.org has some text
 	...	:1
 	...	ll
+	...	:set ve=0
 	...	U
+	...	:set ve=${level}
 	Appl
+	Std Output Contains	duckduckgo
 
 calculate
 	Input	=9+9+9+9-2+(3*3)
@@ -40,6 +43,7 @@ delete-d
 	...	ww
 	...	D
 	Appl
+	Contents Contains	line has
 	Contents Does Not Contain	some text
 
 escape
@@ -79,7 +83,7 @@ info
 	Output Contains	level
 
 macro
-	${date}=  Get Current Date	result_format=%Y-%m-%d
+	${date}=	Get Current Date	result_format=%Y-%m-%d
 	Input	@Template-test@
 	Appl
 	Contents Does Not Contain	@Created@
@@ -143,7 +147,7 @@ mode-block-ce
 	...	
 	Appl
 	# stc does not offer rect insert (needs upgrade)
-	#Contents Contains	line other text\nline other text
+	# Contents Contains	line other text\nline other text
 	Contents Contains	line other text
 
 mode-insert

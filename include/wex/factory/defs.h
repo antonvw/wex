@@ -2,7 +2,7 @@
 // Name:      defs.h
 // Purpose:   Common defs for all wex classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -76,9 +76,7 @@ enum window_id
   ID_TOOL_LOWEST,
   ID_TOOL_ADD,
   ID_TOOL_REPLACE,
-  ID_TOOL_REPORT_FIRST, // after this the first report
   ID_TOOL_REPORT_FIND,
-  ID_TOOL_REPORT_LAST,
   ID_TOOL_HIGHEST,
 
   ID_UPDATE_STATUS_BAR,

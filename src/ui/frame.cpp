@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
@@ -10,16 +10,17 @@
 #include <wex/core/cmdline.h>
 #include <wex/core/config.h>
 #include <wex/core/file.h>
+#include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/lexers.h>
+#include <wex/factory/link.h>
 #include <wex/factory/listview.h>
 #include <wex/factory/printing.h>
 #include <wex/factory/stc.h>
-#include <wex/ui/bind.h>
+#include <wex/ui/ex-commandline.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/grid.h>
-#include <wex/ui/textctrl.h>
 #include <wex/ui/toolbar.h>
 
 #include <wx/app.h>
@@ -213,7 +214,7 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
     [=, this](wxCloseEvent& event)
     {
       m_file_history.save();
-      m_textctrl->on_exit();
+      m_ex_commandline->on_exit();
 
       delete find_replace_data::set(nullptr);
 
@@ -314,11 +315,22 @@ bool wex::frame::add_toolbar_panes(const panes_t& panes)
     // If the toolbar has a caption.
     if (!pane.caption.empty())
     {
+      if (pane.name == "FINDBAR")
+      {
+        pane.Top()
+          .CloseButton(false)
+          .DockFixed(true)
+          .Movable(false)
+          .CaptionVisible(false);
+      }
+      else
+      {
 #ifndef __WXOSX__
-      pane.Top().ToolbarPane().MinSize(-1, 30);
+        pane.Top().ToolbarPane().MinSize(-1, 30);
 #else
-      pane.Bottom().ToolbarPane().MinSize(-1, 30);
+        pane.Bottom().ToolbarPane().MinSize(-1, 30);
 #endif
+      }
 
       // Initially hide special bars.
       if (pane.name == "FINDBAR" || pane.name == "OPTIONSBAR")
@@ -349,7 +361,7 @@ bool wex::frame::allow_close(wxWindowID id, wxWindow* page)
 {
   // The page will be closed, so do not update find focus now.
   set_find_focus(nullptr);
-  m_textctrl->set_stc(nullptr, std::string());
+  m_ex_commandline->set_stc(nullptr, std::string());
 
   return true;
 }
@@ -357,15 +369,16 @@ bool wex::frame::allow_close(wxWindowID id, wxWindow* page)
 wxPanel* wex::frame::create_ex_panel()
 {
   // An ex panel starts with small static text for : or /, then
-  // comes the ex textctrl for getting user input.
+  // comes the ex ex_commandline for getting user input.
   auto* panel = new wxPanel(this);
-  auto* text  = new wxStaticText(panel, wxID_ANY, " ");
-  m_textctrl  = new textctrl(this, text, data::window().parent(panel));
+  auto* text  = new wxStaticText(panel, wxID_ANY, "  ");
+  m_ex_commandline =
+    new ex_commandline(this, text, data::window().parent(panel));
 
   auto* sizer = new wxFlexGridSizer(2);
   sizer->AddGrowableCol(1);
   sizer->Add(text, wxSizerFlags().Center());
-  sizer->Add(m_textctrl->control(), wxSizerFlags().Expand());
+  sizer->Add(m_ex_commandline->control(), wxSizerFlags().Expand());
 
   panel->SetSizerAndFit(sizer);
 
@@ -458,7 +471,7 @@ const std::string wex::frame::pane_add(wxWindow* pane)
   const std::string name("PANE " + std::to_string(no++));
 
   pane_add(
-    {{pane, wxAuiPaneInfo(info).Name(name).MinSize(250, 200).Caption(name)}});
+    {{pane, wxAuiPaneInfo(info).Name(name).MinSize(250, 30).Caption(name)}});
 
   return name;
 }
@@ -483,6 +496,10 @@ bool wex::frame::pane_add(const panes_t& panes, const std::string& perspective)
     }
   }
 
+  pane_show("FINDBAR", false);
+
+  // This should not be necessary, but when exiting with a shown findbar,
+  // it reappears too large.
   m_manager.Update();
 
   return true;
@@ -607,12 +624,12 @@ bool wex::frame::statustext(const std::string& text, const std::string& pane)
 
 bool wex::frame::show_ex_command(factory::stc* stc, const std::string& command)
 {
-  return pane_show("VIBAR") && m_textctrl->set_stc(stc, command);
+  return pane_show("VIBAR") && m_ex_commandline->set_stc(stc, command);
 }
 
 bool wex::frame::show_ex_input(factory::stc* stc, char cmd)
 {
-  return pane_show("VIBAR") && m_textctrl->set_stc(stc, cmd);
+  return pane_show("VIBAR") && m_ex_commandline->set_stc(stc, cmd);
 }
 
 void wex::frame::statusbar_clicked_right(const std::string& pane)

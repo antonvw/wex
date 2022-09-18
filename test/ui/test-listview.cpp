@@ -5,6 +5,7 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log-none.h>
 #include <wex/factory/defs.h>
 #include <wex/ui/listview.h>
 
@@ -46,6 +47,8 @@ TEST_CASE("wex::listview")
 
     REQUIRE(lv->insert_item({"95"}));
     REQUIRE(lv->insert_item({"95", "", "", "100"}));
+
+    wex::log_none off;
     REQUIRE(!lv->insert_item({"test"}));
     REQUIRE(!lv->insert_item({"1", "2", "3", "4", "5"}));
 

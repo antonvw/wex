@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/cmdline.h>
+#include <wex/core/log-none.h>
 
 #include "../test.h"
 
@@ -23,6 +24,7 @@ TEST_CASE("wex::cmdline")
 
     SUBCASE("2")
     {
+      wex::log_none      off;
       wex::data::cmdline data("xxx");
       REQUIRE(!cmdl.parse(data));
     }
@@ -128,6 +130,7 @@ TEST_CASE("wex::cmdline")
 
     SUBCASE("parse_set")
     {
+      wex::log_none      off;
       wex::data::cmdline data("all");
       REQUIRE(cmdl.parse_set(data));
       REQUIRE(!data.help().empty());

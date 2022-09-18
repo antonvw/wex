@@ -2,11 +2,12 @@
 // Name:      stc/auto-indent.cpp
 // Purpose:   Implementation of class wex::auto_indent
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
 #include <wex/core/log.h>
+#include <wex/factory/stc-undo.h>
 #include <wex/stc/auto-indent.h>
 #include <wex/stc/stc.h>
 
@@ -68,7 +69,7 @@ bool wex::auto_indent::find_indented_line(int start_line)
 
 void wex::auto_indent::indent(int line, int level)
 {
-  m_stc->BeginUndoAction();
+  stc_undo undo(m_stc);
 
   m_stc->SetLineIndentation(line, m_indent);
 
@@ -76,8 +77,6 @@ void wex::auto_indent::indent(int line, int level)
   {
     m_stc->SetLineIndentation(line - 1, m_indent);
   }
-
-  m_stc->EndUndoAction();
 }
 
 bool wex::auto_indent::is_indentable(int c) const

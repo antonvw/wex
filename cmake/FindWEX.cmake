@@ -54,8 +54,8 @@ elseif (APPLE)
   set(cpp_LIBRARIES stdc++)
 
   set(apple_LIBRARIES 
-    wxjpeg-3.1 
-    wxpng-3.1
+    wxjpeg-3.2 
+    wxpng-3.2
     ${ICONV_LIBRARIES}
     ${ZLIB_LIBRARIES})
 elseif (UNIX)
@@ -119,14 +119,14 @@ if (MSVC)
     /std:c++latest /Zc:__cplusplus")
         
   set(wx_LIBRARIES
-    wx${PLATFORM}31u_aui
-    wx${PLATFORM}31u_stc
-    wx${PLATFORM}31u_html
-    wx${PLATFORM}31u_core
-    wx${PLATFORM}31u_qa
-    wx${PLATFORM}31u_gl
-    wxbase31u 
-    wxbase31u_net
+    wx${PLATFORM}32u_aui
+    wx${PLATFORM}32u_stc
+    wx${PLATFORM}32u_html
+    wx${PLATFORM}32u_core
+    wx${PLATFORM}32u_qa
+    wx${PLATFORM}32u_gl
+    wxbase32u 
+    wxbase32u_net
     wxjpeg
     wxpng
     wxzlib
@@ -135,15 +135,15 @@ if (MSVC)
     Rpcrt4.lib)
 else()
   set(wx_LIBRARIES
-    wx_${PLATFORM}u_aui-3.1
-    wx_${PLATFORM}u_stc-3.1
-    wx_${PLATFORM}u_html-3.1
-    wx_${PLATFORM}u_core-3.1
-    wx_baseu-3.1 
-    wx_baseu_net-3.1)
+    wx_${PLATFORM}u_aui-3.2
+    wx_${PLATFORM}u_stc-3.2
+    wx_${PLATFORM}u_html-3.2
+    wx_${PLATFORM}u_core-3.2
+    wx_baseu-3.2 
+    wx_baseu_net-3.2)
     
   if (NOT APPLE AND NOT wexBUILD_SHARED)
-    set(wx_LIBRARIES ${wx_LIBRARIES} wxscintilla-3.1)
+    set(wx_LIBRARIES ${wx_LIBRARIES} wxscintilla-3.2)
   endif()
 
   if (APPLE)
@@ -165,8 +165,10 @@ set(wex_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib")
       
 set(wex_LIBRARIES
   wex-del${USE_DEBUG}
+  wex-vcs${USE_DEBUG}
   wex-stc${USE_DEBUG}
   wex-vi${USE_DEBUG}
+  wex-ex${USE_DEBUG}
   wex-ui${USE_DEBUG}
   wex-common${USE_DEBUG}
   wex-data${USE_DEBUG}

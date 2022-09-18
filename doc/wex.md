@@ -358,10 +358,10 @@ wex::regex::regex(
   wxbase
   wxcore
   wxaui
-  wxhtml
+  wxHTML
   wxscintilla
   wxstc
 
 ## wex c++ libraries
 
-wex-core <- wex-factory <- wex-data <- wex-common <- wex-ui <- wex-vi <- wex-stc <- wex-del
+wex-core <- wex-factory <- wex-data <- wex-common <- wex-ui <- wex-ex <- wex-vi <- wex-stc <- wex-vcs <- wex-del

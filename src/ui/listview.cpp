@@ -14,11 +14,12 @@
 #include <wex/core/regex.h>
 #include <wex/core/tokenize.h>
 #include <wex/data/stc.h>
+#include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/lexers.h>
 #include <wex/factory/printing.h>
 #include <wex/factory/stc.h>
-#include <wex/ui/bind.h>
+#include <wex/factory/util.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/item-dialog.h>
@@ -118,6 +119,28 @@ std::string ignore_case(const std::string& text)
 
   return output;
 };
+
+int check_match(int index, const std::string& look, const std::string& input)
+{
+  const auto& text(ignore_case(input));
+
+  if (find_replace_data::get()->match_word())
+  {
+    if (text == look)
+    {
+      return index;
+    }
+  }
+  else
+  {
+    if (text.find(look) != std::string::npos)
+    {
+      return index;
+    }
+  }
+
+  return -1;
+}
 }; // namespace wex
 
 wex::listview::listview(const data::listview& data)
@@ -246,13 +269,7 @@ wex::listview::listview(const data::listview& data)
       process_mouse(event);
     });
 
-  Bind(
-    wxEVT_SET_FOCUS,
-    [=, this](wxFocusEvent& event)
-    {
-      m_frame->set_find_focus(this);
-      event.Skip();
-    });
+  bind_set_focus(this);
 
   Bind(
     wxEVT_SHOW,
@@ -606,26 +623,9 @@ bool wex::listview::find_next(const std::string& text, bool forward)
   for (int index = start_item; index != end_item && match == -1;
        (forward ? index++ : index--))
   {
-    std::string text;
-
     for (int col = 0; col < GetColumnCount() && match == -1; col++)
     {
-      text = ignore_case(std::string(GetItemText(index, col)));
-
-      if (find_replace_data::get()->match_word())
-      {
-        if (text == text_use)
-        {
-          match = index;
-        }
-      }
-      else
-      {
-        if (text.find(text_use) != std::string::npos)
-        {
-          match = index;
-        }
-      }
+      match = check_match(index, text_use, GetItemText(index, col));
     }
   }
 
@@ -930,6 +930,11 @@ const std::string wex::listview::item_to_text(long item_number) const
     return text;
   }
 
+  if (item_number >= GetItemCount())
+  {
+    return text;
+  }
+
   switch (m_data.type())
   {
     case data::listview::FILE:
@@ -989,6 +994,8 @@ bool wex::listview::load(const std::list<std::string>& l)
 
   if (m_data.type() == data::listview::TSV && GetColumnCount() == 0)
   {
+    // Use front item to setup the columns, so we assume each
+    // item in the vector has the same columns.
     boost::tokenizer<boost::char_separator<char>> tok(
       l.front(),
       boost::char_separator<char>("\t"));
@@ -1015,7 +1022,7 @@ bool wex::listview::load(const std::list<std::string>& l)
 bool wex::listview::on_command(wxCommandEvent& event)
 {
   switch (const long new_index =
-            GetSelectedItemCount() > 0 ? GetFirstSelected() : -1;
+            GetSelectedItemCount() > 0 ? GetFirstSelected() : 0;
           data().type())
   {
     case data::listview::TSV:
@@ -1024,7 +1031,7 @@ bool wex::listview::on_command(wxCommandEvent& event)
 
       if (m_frame->show_stc_entry_dialog(true) == wxID_OK)
       {
-        insert_item(
+        return insert_item(
           tokenize<std::vector<std::string>>(
             m_frame->stc_entry_dialog_component()->get_text(),
             std::string(1, field_separator()).c_str()),
@@ -1163,7 +1170,6 @@ void wex::listview::process_match(wxCommandEvent& event)
   item.set_item(_("Line No"), std::to_string(m->line_no() + 1));
   item.set_item(_("Line"), context(m->line(), m->pos()));
   item.set_item(_("Match"), find_replace_data::get()->get_find_string());
-  item.set_item(_("Type"), event.GetString());
 
   delete m;
 }
@@ -1176,7 +1182,9 @@ void wex::listview::process_mouse(wxMouseEvent& event)
     style.set(menu::IS_SELECTED);
   if (GetItemCount() == 0)
     style.set(menu::IS_EMPTY);
-  if (m_data.type() != data::listview::FIND)
+  if (
+    m_data.type() != data::listview::FIND &&
+    m_data.type() != data::listview::FILE)
     style.set(menu::CAN_PASTE);
 
   if (GetSelectedItemCount() == 0 && GetItemCount() > 0)

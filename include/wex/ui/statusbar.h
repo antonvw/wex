@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <wex/core/statusbar-pane.h>
 #include <wex/data/window.h>
+#include <wex/ui/statusbar-pane.h>
 #include <wx/statusbr.h>
 
 #include <tuple>
@@ -16,6 +16,8 @@
 
 namespace wex
 {
+class item_dialog;
+
 namespace factory
 {
 class frame;
@@ -81,7 +83,8 @@ private:
 
   std::tuple<bool, int, int> pane_info(const std::string& pane) const;
 
-  factory::frame*                    m_frame;
+  factory::frame* m_frame;
+
   static std::vector<statusbar_pane> m_panes;
 };
 }; // namespace wex

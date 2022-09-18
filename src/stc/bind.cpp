@@ -2,35 +2,33 @@
 // Name:      stc/bind.cpp
 // Purpose:   Implementation of class wex::stc method bind_all
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
 #include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
+#include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/lexer-props.h>
 #include <wex/factory/lexers.h>
 #include <wex/factory/path-lexer.h>
 #include <wex/factory/sort.h>
 #include <wex/stc/beautify.h>
+#include <wex/stc/bind.h>
 #include <wex/stc/entry-dialog.h>
 #include <wex/stc/stc.h>
-#include <wex/stc/vcs.h>
-#include <wex/ui/bind.h>
 #include <wex/ui/debug-entry.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/item-vector.h>
 #include <wex/ui/menu.h>
-#include <wex/ui/stc-bind.h>
 #include <wx/accel.h>
 #include <wx/msgdlg.h>
 #include <wx/numdlg.h>
 
 #include <numeric>
-#include <vector>
 
 namespace wex
 {
@@ -128,55 +126,14 @@ void wex::stc::bind_all()
      {wxACCEL_SHIFT, WXK_DELETE, wxID_CUT}},
     m_data.menu().test(data::stc::MENU_DEBUG));
 
+  bind_wx();
+
   bind(this).command(
     {{[=, this](wxCommandEvent& event)
-      {
-        Copy();
-      },
-      wxID_COPY},
-
-     {[=, this](wxCommandEvent& event)
       {
         m_vi->command(event.GetString());
       },
       id::stc::vi_command},
-
-     {[=, this](wxCommandEvent& event)
-      {
-        Cut();
-      },
-      wxID_CUT},
-
-     {[=, this](wxCommandEvent& event)
-      {
-        Paste();
-      },
-      wxID_PASTE},
-
-     {[=, this](wxCommandEvent& event)
-      {
-        Undo();
-      },
-      wxID_UNDO},
-
-     {[=, this](wxCommandEvent& event)
-      {
-        Redo();
-      },
-      wxID_REDO},
-
-     {[=, this](wxCommandEvent& event)
-      {
-        SelectAll();
-      },
-      wxID_SELECTALL},
-
-     {[=, this](wxCommandEvent& event)
-      {
-        if (!GetReadOnly() && !is_hexmode())
-          Clear();
-      },
-      wxID_DELETE},
 
      {[=, this](wxCommandEvent& event)
       {
@@ -312,6 +269,18 @@ void wex::stc::bind_all()
 
      {[=, this](wxCommandEvent& event)
       {
+        blame_revision();
+      },
+      id::stc::margin_text_blame_revision},
+
+     {[=, this](wxCommandEvent& event)
+      {
+        blame_revision("~1");
+      },
+      id::stc::margin_text_blame_revision_previous},
+
+     {[=, this](wxCommandEvent& event)
+      {
         config("blame.date").toggle(true);
       },
       id::stc::margin_text_date},
@@ -375,18 +344,13 @@ void wex::stc::bind_all()
 
      {[=, this](wxCommandEvent& event)
       {
-        vcs_execute(
-          m_frame,
+        m_renamed.clear();
+
+        m_frame->vcs_execute(
           event.GetId() - ID_EDIT_VCS_LOWEST - 1,
           std::vector<wex::path>{path().data()});
       },
       ID_EDIT_VCS_LOWEST},
-
-     {[=, this](const wxCommandEvent& event)
-      {
-        eol_action(event);
-      },
-      id::stc::eol_dos},
 
      {[=, this](wxCommandEvent& event)
       {
@@ -424,29 +388,22 @@ void wex::stc::bind_all()
       },
       id::stc::marker_previous}});
 
+  bind(this).command(
+    {{[=, this](const wxCommandEvent& event)
+      {
+        eol_action(event);
+      },
+      id::stc::eol_dos,
+      id::stc::eol_mac}});
+
   bind_other();
 }
 
 void wex::stc::build_popup_menu(menu& menu)
 {
-  const auto sel(GetSelectedText().ToStdString());
-
   if (get_current_line() == 0 && !lexers::get()->get_lexers().empty())
   {
     menu.append({{id::stc::show_properties, _("Properties")}});
-  }
-
-  if (m_data.menu().test(data::stc::MENU_OPEN_LINK))
-  {
-    if (sel.empty() && link_open(link_t().set(LINK_OPEN_MIME).set(LINK_CHECK)))
-    {
-      menu.append({{}, {id::stc::open_mime, _("&Preview")}});
-    }
-    else if (std::string filename;
-             link_open(link_t().set(LINK_OPEN).set(LINK_CHECK), &filename))
-    {
-      menu.append({{}, {id::stc::open_link, _("Open") + " " + filename}});
-    }
   }
 
   if (GetEdgeMode() == wxSTC_EDGE_MULTILINE)
@@ -457,10 +414,7 @@ void wex::stc::build_popup_menu(menu& menu)
        {id::stc::edge_clear, _("Edge Column Reset")}});
   }
 
-  if (m_data.menu().test(data::stc::MENU_OPEN_WWW) && !sel.empty())
-  {
-    menu.append({{}, {id::stc::open_www, _("&Search")}});
-  }
+  build_popup_menu_link(menu);
 
   if (
     m_data.menu().test(data::stc::MENU_DEBUG) &&
@@ -471,7 +425,7 @@ void wex::stc::build_popup_menu(menu& menu)
 
   if (
     m_data.menu().test(data::stc::MENU_VCS) && path().file_exists() &&
-    vcs::dir_exists(path()))
+    m_frame->vcs_dir_exists(path()))
   {
     menu.append({{}, {path(), m_frame}});
   }
@@ -486,8 +440,8 @@ void wex::stc::build_popup_menu(menu& menu)
   // Folding if nothing selected, property is set,
   // and we have a lexer.
   if (
-    sel.empty() && GetProperty("fold") == "1" && get_lexer().is_ok() &&
-    !get_lexer().scintilla_lexer().empty())
+    GetSelectedText().ToStdString().empty() && GetProperty("fold") == "1" &&
+    get_lexer().is_ok() && !get_lexer().scintilla_lexer().empty())
   {
     menu.append(
       {{},
@@ -557,6 +511,29 @@ void wex::stc::build_popup_menu_edit(menu& menu)
   if (sel.empty() && beautify_add && beautify().is_supported(get_lexer()))
   {
     menu.append({{}, {id::stc::beautify, _("&Beautify")}});
+  }
+}
+
+void wex::stc::build_popup_menu_link(menu& menu)
+{
+  const auto sel(GetSelectedText().ToStdString());
+
+  if (m_data.menu().test(data::stc::MENU_OPEN_LINK))
+  {
+    if (sel.empty() && link_open(link_t().set(LINK_OPEN_MIME).set(LINK_CHECK)))
+    {
+      menu.append({{}, {id::stc::open_mime, _("&Preview")}});
+    }
+    else if (std::string filename;
+             link_open(link_t().set(LINK_OPEN).set(LINK_CHECK), &filename))
+    {
+      menu.append({{}, {id::stc::open_link, _("Open") + " " + filename}});
+    }
+  }
+
+  if (m_data.menu().test(data::stc::MENU_OPEN_WWW) && !sel.empty())
+  {
+    menu.append({{}, {id::stc::open_www, _("&Search")}});
   }
 }
 
@@ -800,27 +777,25 @@ void wex::stc::show_properties()
 {
   const std::string propnames(PropertyNames());
   const lexer_props l;
-
-  std::string properties =
-    (!propnames.empty() ? l.make_section("Current properties") :
-                          std::string()) +
-    // Add current (global and lexer) properties.
-    std::accumulate(
-      lexers::get()->properties().begin(),
-      lexers::get()->properties().end(),
-      std::string(),
-      [this, l](const std::string& a, const property& b)
-      {
-        return a + l.make_key(b.name(), GetProperty(b.name()));
-      }) +
-    std::accumulate(
-      get_lexer().properties().begin(),
-      get_lexer().properties().end(),
-      std::string(),
-      [this, l](const std::string& a, const property& b)
-      {
-        return a + l.make_key(b.name(), GetProperty(b.name()));
-      });
+  auto properties = (!propnames.empty() ? l.make_section("Current properties") :
+                                          std::string()) +
+                    // Add current (global and lexer) properties.
+                    std::accumulate(
+                      lexers::get()->properties().begin(),
+                      lexers::get()->properties().end(),
+                      std::string(),
+                      [this, l](const std::string& a, const property& b)
+                      {
+                        return a + l.make_key(b.name(), GetProperty(b.name()));
+                      }) +
+                    std::accumulate(
+                      get_lexer().properties().begin(),
+                      get_lexer().properties().end(),
+                      std::string(),
+                      [this, l](const std::string& a, const property& b)
+                      {
+                        return a + l.make_key(b.name(), GetProperty(b.name()));
+                      });
 
   // Add available properties.
   if (!propnames.empty())

@@ -7,15 +7,14 @@
 
 #include <boost/algorithm/string.hpp>
 #include <wex/core/config.h>
+#include <wex/ex/addressrange.h>
+#include <wex/ex/macros.h>
+#include <wex/ex/util.h>
 #include <wex/factory/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
-#include <wex/vi/addressrange.h>
-#include <wex/vi/macros.h>
 #include <wex/vi/vi.h>
 
-#include "motion.h"
-#include "util.h"
 #include "vim.h"
 
 namespace wex
@@ -85,8 +84,33 @@ constexpr int c_strcmp(char const* lhs, char const* rhs)
           break;                                                            \
       }                                                                     \
     }                                                                       \
+    m_count         = 1;                                                    \
+    m_count_present = false;                                                \
     return 1;                                                               \
   }
+
+bool wex::vi::command_finish(bool user_input)
+{
+  // The command string contains original command, optional count,
+  // followed by / or ?, and optional search text.
+  if (regex v("^([1-9][0-9]*)([/?])"); v.search(m_command_string) == 2)
+  {
+    if (user_input)
+    {
+      m_count--;
+    }
+
+    find_next(v[1] == "/" ? "n" : "N");
+  }
+  else if (!user_input)
+  {
+    find_next(m_command_string.find("/") == 0 ? "n" : "N");
+  }
+
+  m_count = 1;
+
+  return true;
+}
 
 wex::vi::commands_t wex::vi::commands_motion()
 {
@@ -156,23 +180,7 @@ wex::vi::commands_t wex::vi::commands_motion()
     {"nN",
      [&](const std::string& command)
      {
-       // clang-format off
-       REPEAT (
-         if (const std::string find(
-               get_stc()->get_margin_text_click() > 0 ?
-                 config("ex-cmd.margin").get(config::strings_t{}).front() :
-                 find_replace_data::get()->get_find_string());
-             !get_stc()->find(
-               find,
-               search_flags(),
-               command == "n" == m_search_forward))
-         {
-           m_command.clear();
-           return (size_t)0;
-         })
-         ;
-       return (size_t)1;
-       // clang-format on
+       return find_next(command);
      }},
     {"G",
      [&](const std::string& command)
@@ -483,8 +491,10 @@ size_t wex::vi::find_command(const std::string& command)
       command.back() != '\n' ? command.substr(1) :
                                boost::algorithm::trim_copy(command.substr(1)));
 
-    if (!get_stc()->find(text, search_flags(), m_search_forward))
+    REPEAT(if (!get_stc()->find(text, search_flags(), m_search_forward)) {
       return (size_t)0;
+    });
+
     if (get_stc()->get_margin_text_click() == -1)
       find_replace_data::get()->set_find_string(text);
 
@@ -500,6 +510,27 @@ size_t wex::vi::find_command(const std::string& command)
              command.size() :
              (size_t)0;
   }
+}
+
+size_t wex::vi::find_next(const std::string& direction)
+{
+  // clang-format off
+   REPEAT (
+     if (const auto& find(
+           get_stc()->get_margin_text_click() > 0 ?
+             config("ex-cmd.margin").get(config::strings_t{}).front() :
+             find_replace_data::get()->get_find_string());
+         !get_stc()->find(
+           find,
+           search_flags(),
+           direction == "n" && m_search_forward))
+     {
+       m_command.clear();
+       return (size_t)0;
+   })
+   
+   return (size_t)1;
+  // clang-format on
 }
 
 bool wex::vi::motion_command(motion_t type, std::string& command)
@@ -523,7 +554,7 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
 
   filter_count(command);
 
-  if (wex::vim vim(this, command, type); vim.is_vim_motion())
+  if (wex::vim vim(this, command, type); vim.is_motion())
   {
     vim.motion_prep();
   }
@@ -564,7 +595,7 @@ bool wex::vi::motion_command_handle(
   size_t parsed = 0;
   auto   start  = get_stc()->GetCurrentPos();
 
-  if (wex::vim vim(this, command, type); vim.is_vim_motion())
+  if (wex::vim vim(this, command, type); vim.is_motion())
   {
     if (!vim.motion(start, parsed, f_type))
     {
@@ -634,8 +665,11 @@ bool wex::vi::motion_command_handle(
 
   command = command.substr(parsed);
 
-  m_count         = 1; // restart with a new count
-  m_count_present = false;
+  if (!command.empty())
+  {
+    m_count         = 1; // restart with a new count
+    m_count_present = false;
+  }
 
   return true;
 }
