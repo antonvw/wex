@@ -162,6 +162,8 @@ private:
   void parse_node_global(const pugi::xml_node& node);
   void parse_node_keyword(const pugi::xml_node& node);
   void parse_node_macro(const pugi::xml_node& node);
+  void
+  parse_node_macro_def(const pugi::xml_node& node, const std::string& name);
   void parse_node_theme(const pugi::xml_node& node);
   void parse_node_themes(const pugi::xml_node& node);
 

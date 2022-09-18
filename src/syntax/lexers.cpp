@@ -414,7 +414,6 @@ bool wex::lexers::load_document_init()
     }
   }
 
-
   m_indicators.insert(indicator());
   m_keywords[std::string()] = std::string();
   m_lexers.push_back(lexer());
@@ -532,61 +531,67 @@ void wex::lexers::parse_node_macro(const pugi::xml_node& node)
     if (const std::string name = child.attribute("name").value();
         strcmp(child.name(), "def") == 0)
     {
-      name_values_t macro_map;
-      int           val = 0;
-
-      for (const auto& macro : child.children())
-      {
-        if (const std::string no = macro.attribute("no").value(); !no.empty())
-        {
-          if (const auto& it = macro_map.find(no); it != macro_map.end())
-          {
-            log("macro") << no << macro << " already exists";
-          }
-          else
-          {
-            if (const std::string content = macro.text().get();
-                !content.empty())
-            {
-              if (
-                std::from_chars(
-                  content.data(),
-                  content.data() + content.size(),
-                  val)
-                  .ec == std::errc())
-              {
-                val++;
-                macro_map[no] = content;
-              }
-              else
-              {
-                log("macro") << content << "not a number" << node;
-              }
-            }
-            else
-            {
-              const auto [ptr, ec] = std::to_chars(
-                m_buffer.data(),
-                m_buffer.data() + m_buffer.size(),
-                val++);
-              macro_map[no] =
-                std::string_view(m_buffer.data(), ptr - m_buffer.data());
-            }
-          }
-        }
-        else
-        {
-          log("macro") << name << "attribute no is missing" << macro;
-        }
-      }
-
-      m_macros[name] = macro_map;
+      parse_node_macro_def(child, name);
     }
     else
     {
       log("unsupported macro node") << name;
     }
   }
+}
+
+void wex::lexers::parse_node_macro_def(
+  const pugi::xml_node& child,
+  const std::string&    name)
+{
+  name_values_t macro_map;
+  int           val = 0;
+
+  for (const auto& macro : child.children())
+  {
+    if (const std::string no = macro.attribute("no").value(); !no.empty())
+    {
+      if (const auto& it = macro_map.find(no); it != macro_map.end())
+      {
+        log("macro") << no << macro << " already exists";
+      }
+      else
+      {
+        if (const std::string content = macro.text().get(); !content.empty())
+        {
+          if (
+            std::from_chars(
+              content.data(),
+              content.data() + content.size(),
+              val)
+              .ec == std::errc())
+          {
+            val++;
+            macro_map[no] = content;
+          }
+          else
+          {
+            log("macro") << content << "not a number" << child;
+          }
+        }
+        else
+        {
+          const auto [ptr, ec] = std::to_chars(
+            m_buffer.data(),
+            m_buffer.data() + m_buffer.size(),
+            val++);
+          macro_map[no] =
+            std::string_view(m_buffer.data(), ptr - m_buffer.data());
+        }
+      }
+    }
+    else
+    {
+      log("macro") << name << "attribute no is missing" << macro;
+    }
+  }
+
+  m_macros[name] = macro_map;
 }
 
 void wex::lexers::parse_node_theme(const pugi::xml_node& node)
