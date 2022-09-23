@@ -2,7 +2,7 @@
 // Name:      test-lexers.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/syntax/lexers.h>
@@ -35,11 +35,6 @@ TEST_CASE("wex::lexers")
       CAPTURE(result);
       REQUIRE(result == macro.second);
     }
-  }
-
-  SUBCASE("properties")
-  {
-    REQUIRE(wex::lexers::get()->properties().empty());
   }
 
   SUBCASE("find_by")
@@ -75,6 +70,20 @@ TEST_CASE("wex::lexers")
     }
   }
 
+  SUBCASE("keywords")
+  {
+    REQUIRE(!wex::lexers::get()->keywords("cpp").empty());
+    REQUIRE(!wex::lexers::get()->keywords("csh").empty());
+
+    REQUIRE(wex::lexers::get()->keywords("xxx").empty());
+    REQUIRE(wex::lexers::get()->keywords(std::string()).empty());
+  }
+
+  SUBCASE("properties")
+  {
+    REQUIRE(wex::lexers::get()->properties().empty());
+  }
+
   SUBCASE("rest")
   {
     REQUIRE(!wex::lexers::get()->path().empty());
@@ -99,10 +108,6 @@ TEST_CASE("wex::lexers")
     REQUIRE(wex::lexers::get()->get_indicator(wex::indicator(0)).is_ok());
     REQUIRE(wex::lexers::get()->get_marker(wex::marker(0)).is_ok());
 
-    REQUIRE(!wex::lexers::get()->keywords("cpp").empty());
-    REQUIRE(!wex::lexers::get()->keywords("csh").empty());
-    REQUIRE(wex::lexers::get()->keywords("xxx").empty());
-    REQUIRE(wex::lexers::get()->keywords(std::string()).empty());
     REQUIRE(wxTheColourDatabase->Find("gray 2").IsOk());
 
     REQUIRE(wex::lexers::get()->load_document());

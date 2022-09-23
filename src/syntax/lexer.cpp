@@ -18,6 +18,8 @@
 #include <algorithm>
 #include <charconv>
 
+#include "lexer-attribute-data.h"
+
 namespace wex
 {
 int convert_int_attrib(
@@ -727,48 +729,7 @@ void wex::lexer::parse_childen(const pugi::xml_node* node)
     }
     else if (strcmp(child.name(), "keywords") == 0)
     {
-      // Add all direct keywords
-      if (const std::string direct(child.text().get());
-          !direct.empty() && !add_keywords(direct))
-      {
-        wex::log("keywords")
-          << direct << " could not be set" << child << m_scintilla_lexer;
-      }
-
-      // Add all keywords that point to a keyword set.
-      for (const auto& att : child.attributes())
-      {
-        const std::string nm(att.name());
-        const auto        pos = nm.find("-");
-
-        try
-        {
-          int setno = 0;
-
-          if (pos != std::string::npos)
-          {
-            const auto subs(nm.substr(pos + 1));
-            std::from_chars(subs.data(), subs.data() + subs.size(), setno);
-          }
-
-          const auto keywords = lexers::get()->keywords(att.value());
-
-          if (keywords.empty())
-          {
-            wex::log("empty keywords for") << att.value() << child;
-          }
-
-          if (!add_keywords(keywords, setno))
-          {
-            wex::log("keywords for")
-              << att.value() << "could not be set" << child;
-          }
-        }
-        catch (std::exception& e)
-        {
-          wex::log(e) << "keyword:" << att.name();
-        }
-      }
+      parse_keyword(&child);
     }
     else if (strcmp(child.name(), "properties") == 0)
     {
@@ -785,6 +746,31 @@ void wex::lexer::parse_childen(const pugi::xml_node* node)
       m_command_end    = child.attribute("end1").value();
       m_comment_begin2 = child.attribute("begin2").value();
       m_command_end2   = child.attribute("end2").value();
+    }
+  }
+}
+
+void wex::lexer::parse_keyword(const pugi::xml_node* node)
+{
+  // Add all direct keywords
+  if (const std::string direct(node->text().get());
+      !direct.empty() && !add_keywords(direct))
+  {
+    wex::log("keywords") << direct << " could not be set" << *node
+                         << m_scintilla_lexer;
+  }
+
+  // Add all keywords that point to a keyword set.
+  for (const auto& att : node->attributes())
+  {
+    try
+    {
+      lexer_attribute_data data(node, att);
+      data.add_keywords(*this);
+    }
+    catch (std::exception& e)
+    {
+      wex::log(e) << "keyword:" << att.name();
     }
   }
 }

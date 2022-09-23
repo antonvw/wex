@@ -907,7 +907,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   <lexer name="caml"/>
   <lexer display="cisco" extensions="*.ios" name="fortran">
-    <keywords set-0="cisco-0" set-1="cisco-1" set-2="cisco-3" set-2="cisco-4" set-2="cisco-4" set-2="cisco-5">
+    <keywords set-0="cisco-0" set-1="cisco-1" set-2="cisco-2,cisco-3,cisco-4,cisco-5">
     </keywords>
   </lexer>
   <lexer name="clarion"/>
