@@ -26,6 +26,7 @@ enum
   ID_DLG_LISTVIEW,
   ID_DLG_STC_ENTRY,
   ID_DLG_VCS,
+  ID_PROJECT_OPEN,
   ID_RECENTFILE_MENU,
   ID_SHOW_VCS,
   ID_STATISTICS_SHOW,
@@ -46,6 +47,7 @@ frame::frame()
   , m_stc_lexers(new wex::stc())
 {
   wex::process::prepare_output(this);
+  m_statistics->show(false);
 
   SetIcon(wxICON(app));
 
@@ -53,6 +55,7 @@ frame::frame()
     {{new wex::menu(
         {{wxID_OPEN},
          {ID_RECENTFILE_MENU, file_history()},
+         {ID_PROJECT_OPEN, "Open Project..."},
          {},
          {ID_SHOW_VCS, "Show VCS"},
          {wex::menu_item::PRINT},
@@ -253,6 +256,43 @@ void frame::bind_all()
           .ShowModal();
       },
       ID_DLG_STC_ENTRY},
+
+     {[=, this](wxCommandEvent& event)
+      {
+        const std::string project_wildcard{
+          _("Project Files") + " (*.prj)|*.prj"};
+
+        wxFileDialog dlg(
+          this,
+          _("Select Projects"),
+          (!get_project_history()[0].empty() ?
+             get_project_history()[0].parent_path() :
+             wex::config::dir().string()),
+          wxEmptyString,
+          project_wildcard,
+// osx asserts on GetPath with wxFD_MULTIPLE flag,
+// and the to_vector_path does not do anything
+#ifdef __WXOSX__
+          wxFD_OPEN);
+#else
+          wxFD_OPEN | wxFD_MULTIPLE);
+#endif
+        if (dlg.ShowModal() == wxID_CANCEL)
+          return;
+        const std::vector<wex::path> v(
+#ifdef __WXOSX__
+          {wex::path(dlg.GetPath().ToStdString())});
+#else
+          wex::to_vector_path(dlg).get());
+#endif
+        wex::open_files(
+          this,
+          v,
+          wex::data::stc().flags(
+            wex::data::stc::window_t().set(wex::data::stc::WIN_IS_PROJECT)));
+      },
+      ID_PROJECT_OPEN},
+
      {[=, this](wxCommandEvent& event)
       {
         wex::vcs().config_dialog();
@@ -280,6 +320,7 @@ void frame::bind_all()
         wex::stc_entry_dialog(vcs.name()).ShowModal();
       },
       ID_SHOW_VCS},
+
      {[=, this](wxCommandEvent& event)
       {
         if (m_notebook->set_selection("Statistics") == nullptr)
@@ -289,7 +330,8 @@ void frame::bind_all()
           m_notebook->add_page(wex::data::notebook()
                                  .page(m_statistics->show())
                                  .caption("Statistics")
-                                 .key("Statistics"));
+                                 .key("Statistics")
+                                 .select());
         }
       },
       ID_STATISTICS_SHOW},
@@ -450,10 +492,21 @@ void frame::on_command_item_dialog(
 
 wex::stc* frame::open_file(const wex::path& file, const wex::data::stc& data)
 {
-  m_stc->get_lexer().clear();
-  m_stc->open(file, wex::data::stc(data).flags(0));
+  if (data.flags().test(wex::data::stc::WIN_IS_PROJECT))
+  {
+    m_project->file_load(file);
+    m_notebook->set_selection("wex::project");
 
-  return m_stc;
+    return nullptr;
+  }
+  else
+  {
+    m_stc->get_lexer().clear();
+    m_stc->open(file, wex::data::stc(data).flags(0));
+    m_notebook->set_selection("wex::stc");
+
+    return m_stc;
+  }
 }
 
 void frame::open_file_same_page(wxCommandEvent& event)
@@ -513,17 +566,25 @@ void frame::update(app* a)
         .Caption(_("Process"))
         .CloseButton(false)}});
 
+  m_project = new wex::del::file(
+    wex::path(),
+    wex::data::listview().window(wex::data::window().parent(m_notebook)));
+
   m_stc = new wex::stc(
     !a->get_files().empty() ? a->get_files().front() : wex::path(),
     wex::data::stc(a->data()).window(wex::data::window().parent(m_notebook)));
 
   m_notebook->add_page(
     wex::data::notebook().page(m_stc).key("wex::stc").select());
+
   m_notebook->add_page(wex::data::notebook()
                          .page(m_stc_lexers)
                          .key(wex::lexers::get()->path().filename()));
 
   m_stc_lexers->open(wex::lexers::get()->path());
+
+  m_notebook->add_page(
+    wex::data::notebook().page(m_project).key("wex::project"));
 
   m_notebook->add_page(
     wex::data::notebook().page(m_listview).key("wex::listview"));

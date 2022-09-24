@@ -37,6 +37,7 @@ private:
   wex::stc *                 m_stc{nullptr}, *m_stc_lexers{nullptr};
   wex::grid*                 m_grid{nullptr};
   wex::listview*             m_listview{nullptr};
+  wex::del::file*            m_project{nullptr};
   wex::process*              m_process{nullptr};
   wex::shell*                m_shell{nullptr};
   wex::grid_statistics<int>* m_statistics{nullptr};
