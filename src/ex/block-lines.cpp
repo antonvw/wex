@@ -7,7 +7,7 @@
 
 #include <wex/core/log.h>
 #include <wex/ex/ex.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 
 #include "block-lines.h"
 

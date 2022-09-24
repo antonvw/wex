@@ -6,9 +6,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
-#include <wex/factory/lexers.h>
 #include <wex/factory/stc-undo.h>
 #include <wex/factory/stc.h>
+#include <wex/syntax/lexers.h>
 #include <wex/stc/hexmode.h>
 #include <wex/ui/item-dialog.h>
 #include <wx/numdlg.h>

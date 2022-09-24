@@ -10,7 +10,6 @@
 #include <wex/core/core.h>
 #include <wex/core/path.h>
 #include <wex/core/regex.h>
-#include <wex/factory/lexer.h>
 #include <wex/factory/link.h>
 #include <wex/factory/stc.h>
 
@@ -95,25 +94,22 @@ const wex::path wex::factory::link::find_between(
   }
 
   // Path in po files.
-  if (regex v("#: "); stc != nullptr &&
-                      stc->get_lexer().scintilla_lexer() == "po" &&
-                      v.search(text) > 0)
+  if (regex v("#: ");
+      stc != nullptr && stc->lexer_name() == "po" && v.search(text) > 0)
   {
     return path(v[0]);
   }
 
   // Path in bash files.
-  if (regex v("^source (.*)"); stc != nullptr &&
-                               stc->get_lexer().scintilla_lexer() == "bash" &&
-                               v.search(text) > 0)
+  if (regex v("^source (.*)");
+      stc != nullptr && stc->lexer_name() == "bash" && v.search(text) > 0)
   {
     return path(v[0]);
   }
 
   // Path in git status.
-  if (regex v(": +(.*)"); stc != nullptr &&
-                          stc->get_lexer().scintilla_lexer().empty() &&
-                          v.search(text) > 0)
+  if (regex v(": +(.*)");
+      stc != nullptr && stc->lexer_name().empty() && v.search(text) > 0)
   {
     return path(v[0]);
   }
@@ -217,8 +213,7 @@ const wex::path wex::factory::link::find_url_or_mime(
   }
 
   // previewable (MIME) file
-  return (stc != nullptr && stc->get_lexer().is_previewable()) ? stc->path() :
-                                                                 path();
+  return (stc != nullptr && stc->lexer_is_previewable()) ? stc->path() : path();
 }
 
 // text contains selected text, or current line

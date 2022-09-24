@@ -54,6 +54,7 @@ endif ()
 
 add_subdirectory(core)
 add_subdirectory(factory)
+add_subdirectory(syntax)
 add_subdirectory(data)
 add_subdirectory(common)
 add_subdirectory(ui)
@@ -64,13 +65,13 @@ add_subdirectory(vcs)
 add_subdirectory(del)
 
 set_target_properties(
-    wex-common wex-core wex-data wex-ex wex-factory wex-ui wex-del wex-stc wex-vcs wex-vi
+  ${WEX-LIBS}
   PROPERTIES 
   VERSION ${PROJECT_VERSION}
   SOVERSION ${PROJECT_VERSION_MAJOR})
 
 if (CMAKE_BUILD_TYPE EQUAL "Debug")
   set_target_properties(
-    wex-common wex-core wex-data wex-ex wex-factory wex-ui wex-del wex-stc wex-vcs wex-vi
+    ${WEX-LIBS}
     PROPERTIES DEBUG_POSTFIX "d")
 endif ()

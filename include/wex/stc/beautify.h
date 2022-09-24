@@ -9,7 +9,7 @@
 
 #include <wex/core/config.h>
 #include <wex/core/path.h>
-#include <wex/factory/lexer.h>
+#include <wex/syntax/lexer.h>
 #include <wex/stc/stc.h>
 
 #include <string>

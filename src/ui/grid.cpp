@@ -11,8 +11,8 @@
 #include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/frame.h>
-#include <wex/factory/lexers.h>
-#include <wex/factory/printing.h>
+#include <wex/syntax/lexers.h>
+#include <wex/syntax/printing.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/grid.h>
 #include <wx/app.h>

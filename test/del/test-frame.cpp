@@ -8,9 +8,11 @@
 #include <thread>
 
 #include <wex/core/log-none.h>
+#include <wex/core/path.h>
 #include <wex/del/defs.h>
-#include <wex/factory/blame.h>
 #include <wex/stc/link.h>
+#include <wex/syntax/blame.h>
+#include <wex/syntax/lexers.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/menu.h>
 #include <wex/vcs/process.h>

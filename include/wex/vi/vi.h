@@ -35,7 +35,7 @@ public:
   enum class motion_t;
 
   /// Constructor.
-  explicit vi(wex::factory::stc* stc, mode_t mode = VISUAL);
+  explicit vi(wex::syntax::stc* stc, mode_t mode = VISUAL);
 
   /// Appends string to executed insert command.
   void append_insert_command(const std::string& s);

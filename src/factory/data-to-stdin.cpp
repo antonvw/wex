@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      process.cpp
+// Name:      data-to-stdin.cpp
 // Purpose:   Implementation of class wex::factory::process
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021-2022 Anton van Wezenbeek

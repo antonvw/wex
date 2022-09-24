@@ -21,7 +21,7 @@ private:
 
   static inline wex::factory::frame*    m_frame    = {nullptr};
   static inline wex::factory::listview* m_listview = nullptr;
-  static inline wex::factory::stc*      m_stc      = nullptr;
+  static inline wex::syntax::stc*       m_stc      = nullptr;
 };
 }; // namespace wex::test
 
@@ -52,7 +52,7 @@ public:
   }
 };
 
-class common_stc : public wex::factory::stc
+class common_stc : public wex::syntax::stc
 {
 public:
   explicit common_stc(wxFrame* parent)
@@ -89,7 +89,7 @@ wex::factory::listview* get_listview()
   return wex::test::common::get_listview();
 }
 
-wex::factory::stc* get_stc()
+wex::syntax::stc* get_stc()
 {
   return wex::test::common::get_stc();
 }

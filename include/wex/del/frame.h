@@ -139,14 +139,14 @@ public:
     const std::vector<wxAcceleratorEntry>& v,
     bool                                   debug = false) override;
   void          debug_add_menu(menu& m, bool b) override;
-  void          debug_exe(int id, factory::stc* stc) override;
-  void          debug_exe(const std::string& exe, factory::stc* stc) override;
+  void          debug_exe(int id, syntax::stc* stc) override;
+  void          debug_exe(const std::string& exe, syntax::stc* stc) override;
   wxEvtHandler* debug_handler() override;
   bool          debug_is_active() const override;
   bool          debug_print(const std::string& text) override;
-  bool          debug_toggle_breakpoint(int line, factory::stc* stc) override;
+  bool          debug_toggle_breakpoint(int line, syntax::stc* stc) override;
 
-  bool is_address(factory::stc* stc, const std::string& text) override;
+  bool is_address(syntax::stc* stc, const std::string& text) override;
 
   void on_command_item_dialog(wxWindowID dialogid, const wxCommandEvent& event)
     override;
@@ -156,25 +156,23 @@ public:
 
   void set_recent_file(const path& path) override;
 
-  void show_ex_bar(int action = HIDE_BAR_FOCUS_STC, factory::stc* stc = nullptr)
+  void show_ex_bar(int action = HIDE_BAR_FOCUS_STC, syntax::stc* stc = nullptr)
     override;
   void show_ex_message(const std::string& text) override;
   void statusbar_clicked(const std::string&) override;
   void statusbar_clicked_right(const std::string&) override;
 
-  int           show_stc_entry_dialog(bool modal = false) override;
-  factory::stc* stc_entry_dialog_component() override;
-  std::string   stc_entry_dialog_title() const override;
-  void          stc_entry_dialog_title(const std::string& title) override;
-  void          stc_entry_dialog_validator(const std::string& regex) override;
+  int          show_stc_entry_dialog(bool modal = false) override;
+  syntax::stc* stc_entry_dialog_component() override;
+  std::string  stc_entry_dialog_title() const override;
+  void         stc_entry_dialog_title(const std::string& title) override;
+  void         stc_entry_dialog_validator(const std::string& regex) override;
 
   void vcs_add_path(factory::link*) override;
-  void vcs_annotate_commit(
-    factory::stc*,
-    int                line,
-    const std::string& commit_id) override;
+  void vcs_annotate_commit(syntax::stc*, int line, const std::string& commit_id)
+    override;
   void vcs_blame_revison(
-    factory::stc*,
+    syntax::stc*,
     const std::string& renamed,
     const std::string& offset) override;
   bool vcs_dir_exists(const path& p) const override;

@@ -15,11 +15,11 @@
 #include <wex/core/regex.h>
 #include <wex/core/vcs-command.h>
 #include <wex/factory/frame.h>
-#include <wex/factory/lexer.h>
-#include <wex/factory/lexers.h>
 #include <wex/factory/link.h>
 #include <wex/factory/process.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/lexer.h>
+#include <wex/syntax/lexers.h>
+#include <wex/syntax/stc.h>
 #include <wx/app.h>
 #include <wx/wupdlock.h>
 
@@ -158,7 +158,7 @@ bool wex::compare_file(const path& file1, const path& file2)
   }
 }
 
-bool wex::lexers_dialog(factory::stc* stc)
+bool wex::lexers_dialog(syntax::stc* stc)
 {
   std::vector<std::string> s;
 
@@ -281,7 +281,7 @@ bool wex::shell_expansion(std::string& command)
 void wex::vcs_command_stc(
   const vcs_command& command,
   const lexer&       lexer,
-  factory::stc*      stc)
+  syntax::stc*       stc)
 {
   if (command.is_blame())
   {
@@ -307,7 +307,7 @@ void wex::vcs_command_stc(
 void wex::xml_error(
   const path&                   filename,
   const pugi::xml_parse_result* result,
-  factory::stc*                 stc)
+  syntax::stc*                  stc)
 {
   log::status("xml error") << result->description();
   log(*result) << filename.name();
@@ -319,7 +319,7 @@ void wex::xml_error(
           dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
         frame != nullptr)
     {
-      stc = frame->open_file(filename, data::stc());
+      stc = dynamic_cast<syntax::stc*>(frame->open_file(filename, data::stc()));
     }
   }
 

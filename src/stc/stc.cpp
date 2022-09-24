@@ -11,13 +11,12 @@
 #include <wex/ex/address.h>
 #include <wex/ex/ex-stream.h>
 #include <wex/ex/macros.h>
-#include <wex/factory/indicator.h>
-#include <wex/factory/lexers.h>
-#include <wex/factory/printing.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/auto-indent.h>
 #include <wex/stc/entry-dialog.h>
 #include <wex/stc/stc.h>
+#include <wex/syntax/lexers.h>
+#include <wex/syntax/printing.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/item-vector.h>
@@ -709,33 +708,6 @@ void wex::stc::SelectNone()
 {
   // The base styledtextctrl version uses scintilla, sets caret at 0.
   wxTextEntryBase::SelectNone();
-}
-
-bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
-{
-  if (start == -1)
-    start = GetTargetStart();
-  if (end == -1)
-    end = GetTargetEnd();
-
-  if (const bool loaded(lexers::get()->indicator_is_loaded(indicator));
-      !loaded || start == -1 || end == -1)
-  {
-    log("indicator") << indicator.number() << loaded << start << end;
-    return false;
-  }
-
-  if (end == start)
-  {
-    return true;
-  }
-
-  SetIndicatorCurrent(indicator.number());
-  IndicatorFillRange(start, end - start);
-
-  log::trace("indicator") << start << end << GetIndicatorCurrent();
-
-  return true;
 }
 
 void wex::stc::set_search_flags(int flags)

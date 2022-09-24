@@ -7,10 +7,10 @@
 
 #include <wex/common/tool.h>
 #include <wex/core/core.h>
-#include <wex/factory/lexers.h>
 #include <wex/factory/listview.h>
-#include <wex/factory/printing.h>
 #include <wex/factory/stc.h>
+#include <wex/syntax/lexers.h>
+#include <wex/syntax/printing.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/menu.h>
 #include <wx/app.h>

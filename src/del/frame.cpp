@@ -16,8 +16,8 @@
 #include <wex/del/wex.h>
 #include <wex/ex/command-parser.h>
 #include <wex/ex/macros.h>
-#include <wex/factory/blame.h>
-#include <wex/factory/lexers.h>
+#include <wex/syntax/blame.h>
+#include <wex/syntax/lexers.h>
 #include <wex/stc/wex.h>
 #include <wex/ui/wex.h>
 #include <wex/vcs/wex.h>
@@ -190,12 +190,12 @@ void wex::del::frame::debug_add_menu(menu& m, bool b)
   m_debug->add_menu(&m, b);
 }
 
-void wex::del::frame::debug_exe(int id, factory::stc* stc)
+void wex::del::frame::debug_exe(int id, syntax::stc* stc)
 {
   m_debug->execute(id, dynamic_cast<wex::stc*>(stc));
 }
 
-void wex::del::frame::debug_exe(const std::string& exe, factory::stc* stc)
+void wex::del::frame::debug_exe(const std::string& exe, syntax::stc* stc)
 {
   m_debug->execute(exe, dynamic_cast<wex::stc*>(stc));
 }
@@ -215,7 +215,7 @@ bool wex::del::frame::debug_print(const std::string& text)
   return m_debug->print(text);
 }
 
-bool wex::del::frame::debug_toggle_breakpoint(int line, factory::stc* stc)
+bool wex::del::frame::debug_toggle_breakpoint(int line, syntax::stc* stc)
 {
   return m_debug->toggle_breakpoint(line, dynamic_cast<wex::stc*>(stc));
 }
@@ -340,7 +340,7 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
   return true;
 }
 
-bool wex::del::frame::is_address(factory::stc* stc, const std::string& text)
+bool wex::del::frame::is_address(syntax::stc* stc, const std::string& text)
 {
   if (auto* wexstc = dynamic_cast<wex::stc*>(stc); wexstc != nullptr)
   {
@@ -533,7 +533,7 @@ void wex::del::frame::set_recent_file(const wex::path& path)
   }
 }
 
-void wex::del::frame::show_ex_bar(int action, factory::stc* stc)
+void wex::del::frame::show_ex_bar(int action, syntax::stc* stc)
 {
   if (action == SHOW_BAR || stc != nullptr)
   {
@@ -699,7 +699,7 @@ void wex::del::frame::statustext_vcs(factory::stc* stc)
   }
 }
 
-wex::factory::stc* wex::del::frame::stc_entry_dialog_component()
+wex::syntax::stc* wex::del::frame::stc_entry_dialog_component()
 {
   return entry_dialog()->get_stc();
 }
@@ -753,7 +753,7 @@ void wex::del::frame::vcs_add_path(factory::link* l)
 }
 
 void wex::del::frame::vcs_annotate_commit(
-  factory::stc*      stc,
+  syntax::stc*       stc,
   int                line,
   const std::string& commit_id)
 {
@@ -775,7 +775,7 @@ void wex::del::frame::vcs_annotate_commit(
 }
 
 void wex::del::frame::vcs_blame_revison(
-  factory::stc*      stc,
+  syntax::stc*       stc,
   const std::string& renamed,
   const std::string& offset)
 {

@@ -7,7 +7,7 @@
 
 #include <wex/core/core.h>
 #include <wex/core/file.h>
-#include <wex/factory/lexers.h>
+#include <wex/syntax/lexers.h>
 #include <wex/ui/file-dialog.h>
 #include <wx/filedlgcustomize.h>
 #include <wx/msgdlg.h>

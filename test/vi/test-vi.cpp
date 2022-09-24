@@ -76,12 +76,12 @@ TEST_CASE("wex::vi")
 
   SUBCASE("delete")
   {
-    stc->set_text("XXXXX\nYYYYY\nZZZZZ\n");
+    stc->set_text("XXXXX\nYYYYY  \nZZZZZ\n");
 
     SUBCASE("normal")
     {
       REQUIRE(vi->command("x"));
-      REQUIRE(stc->get_text() == "XXXX\nYYYYY\nZZZZZ\n");
+      REQUIRE(stc->get_text() == "XXXX\nYYYYY  \nZZZZZ\n");
     }
 
     SUBCASE("block")
@@ -92,8 +92,15 @@ TEST_CASE("wex::vi")
       REQUIRE(vi->command("j"));
       REQUIRE(vi->command(" "));
       REQUIRE(vi->command("x"));
-      REQUIRE(stc->get_text() == "XXXX\nYYYY\nZZZZ\n");
+      REQUIRE(stc->get_text() == "XXXX\nYYYY  \nZZZZ\n");
       change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    }
+
+    SUBCASE("selection")
+    {
+      REQUIRE(vi->command("/ +"));
+      REQUIRE(vi->command("d"));
+      REQUIRE(stc->get_text() == "XXXXX\nYYYYY\nZZZZZ\n");
     }
   }
 

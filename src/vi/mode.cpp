@@ -14,7 +14,7 @@
 #include <wex/core/log.h>
 #include <wex/ex/macro-mode.h>
 #include <wex/ex/macros.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/statusbar.h>
 #include <wex/vi/mode.h>

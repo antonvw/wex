@@ -47,7 +47,7 @@ wex::frame* frame()
   return wex::test::ex::frame();
 }
 
-wex::factory::stc* get_stc()
+wex::syntax::stc* get_stc()
 {
   return wex::test::ex::get_stc();
 }

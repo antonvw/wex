@@ -10,7 +10,7 @@
 #include <wex/ex/addressrange.h>
 #include <wex/ex/macros.h>
 #include <wex/ex/util.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/vi/vi.h>

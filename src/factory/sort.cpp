@@ -14,6 +14,8 @@
 #include <wex/factory/stc.h>
 
 #include <algorithm>
+#include <map>
+#include <set>
 
 wex::factory::sort::sort(sort_t sort_t, size_t pos, size_t len)
   : m_sort_t(sort_t)

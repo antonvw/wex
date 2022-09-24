@@ -5,6 +5,8 @@
 // Copyright: (c) 2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/factory/stc.h>
+
 #include "test.h"
 
 TEST_CASE("wex::factory::stc")
@@ -56,5 +58,7 @@ TEST_CASE("wex::factory::stc")
   {
     REQUIRE(!stc->eol().empty());
     REQUIRE(stc->get_fold_level() == 0);
+    REQUIRE(stc->lexer_name().empty());
+    REQUIRE(!stc->lexer_is_previewable());
   }
 }

@@ -10,7 +10,7 @@
 #include <wex/common/path-match.h>
 #include <wex/common/stream-statistics.h>
 #include <wex/common/tool.h>
-#include <wex/factory/path-lexer.h>
+#include <wex/syntax/path-lexer.h>
 
 class wxEvtHandler;
 

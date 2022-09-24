@@ -10,7 +10,7 @@
 #include <wex/data/control.h>
 #include <wex/ex/addressrange.h>
 #include <wex/ex/command-parser.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 
 wex::command_parser::command_parser(
   ex*                ex,

@@ -19,7 +19,7 @@ class addressrange;
 class ex;
 class file;
 
-namespace factory
+namespace syntax
 {
 class stc;
 }
@@ -140,7 +140,7 @@ private:
   char* m_buffer;
   char* m_current_line;
 
-  factory::stc* m_stc;
-  wex::ex*      m_ex;
+  syntax::stc* m_stc;
+  wex::ex*     m_ex;
 };
 }; // namespace wex

@@ -16,10 +16,10 @@
 #include <wex/data/stc.h>
 #include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
-#include <wex/factory/lexers.h>
-#include <wex/factory/printing.h>
-#include <wex/factory/stc.h>
 #include <wex/factory/util.h>
+#include <wex/syntax/lexers.h>
+#include <wex/syntax/printing.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/item-dialog.h>

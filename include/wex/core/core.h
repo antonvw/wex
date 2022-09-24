@@ -70,12 +70,6 @@ const std::string find_tail(const std::string& text, size_t max_chars = 15);
 const std::string
 get_find_result(const std::string& find_text, bool find_next, bool recursive);
 
-/// Returns the icon index for this filename (uses the file extension to get
-/// it). The return value is an index in wxTheFileIconsTable. You can use this
-/// index as a bitmap using:
-/// wxTheFileIconsTable->GetSmallImageList()->GetBitmap(get_iconid(file))
-int get_iconid(const path& filename);
-
 /// Returns the number of lines in a (trimmed) string.
 /// If text is empty, 0 is returned, otherwise at least 1.
 int get_number_of_lines(const std::string& text, bool trimmed = false);

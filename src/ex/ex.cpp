@@ -15,8 +15,8 @@
 #include <wex/ex/ex.h>
 #include <wex/ex/macros.h>
 #include <wex/factory/defs.h>
-#include <wex/factory/lexers.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/lexers.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/statusbar.h>
@@ -26,7 +26,7 @@
 
 wex::macros wex::ex::m_macros;
 
-wex::ex::ex(wex::factory::stc* stc, mode_t mode)
+wex::ex::ex(wex::syntax::stc* stc, mode_t mode)
   : m_command(ex_command(stc))
   , m_frame(dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()))
   , m_ex_stream(new wex::ex_stream(this))
@@ -132,9 +132,9 @@ void wex::ex::cut()
   info_message(sel, wex::info_message_t::DEL);
 }
 
-wex::factory::stc* wex::ex::get_stc() const
+wex::syntax::stc* wex::ex::get_stc() const
 {
-  return m_command.get_stc();
+  return dynamic_cast<syntax::stc*>(m_command.get_stc());
 }
 
 void wex::ex::info_message(const std::string& text, wex::info_message_t type)

@@ -13,6 +13,7 @@
 #include <wex/del/wex.h>
 #include <wex/ex/wex.h>
 #include <wex/factory/wex.h>
+#include <wex/syntax/wex.h>
 #include <wex/stc/wex.h>
 #include <wex/ui/wex.h>
 #include <wex/vcs/wex.h>

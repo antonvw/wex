@@ -7,7 +7,7 @@
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
-#include <wex/factory/lexers.h>
+#include <wex/syntax/lexers.h>
 #include <wex/stc/beautify.h>
 #include <wex/stc/entry-dialog.h>
 #include <wex/stc/link.h>

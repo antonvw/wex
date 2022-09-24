@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex/macros.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 #include <wex/vi/vi.h>
 
 #include "vim.h"
@@ -105,7 +105,8 @@ bool wex::vi::parse_command_handle_single(
   bool&        check_other)
 {
   if (
-    m_mode.is_visual() && !get_stc()->get_selected_text().empty() &&
+    (m_mode.is_visual() || command == "d") &&
+    !get_stc()->get_selected_text().empty() &&
     (motion == motion_t::CHANGE || motion == motion_t::DEL ||
      motion == motion_t::YANK))
   {

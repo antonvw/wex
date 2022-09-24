@@ -52,7 +52,7 @@ index af8507d7de..4a804678bd 100644
  #include "CharacterSet.h"
  #include "LexerModule.h"
  
-+#include "../../../../../../src/lexers/lex-rfw.cpp"
++#include "../../../../../../src/syntax/wex/lex-rfw.cpp"
 +
  #ifdef SCI_NAMESPACE
  using namespace Scintilla;

@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 
 namespace wex
 {
@@ -17,7 +17,7 @@ class ex_commandline_input;
 /// Offers the ex_commandline implementation.
 /// It creates just another stc component that acts as the
 /// ex commandline, providing lexer functionality for the commandline.
-class ex_commandline_imp : public factory::stc
+class ex_commandline_imp : public syntax::stc
 {
 public:
   /// Constructor. Creates empty control.

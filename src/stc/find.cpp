@@ -20,7 +20,10 @@ bool find_margin(data::find& f, factory::frame* frame)
 {
   if (int line = 0; f.find_margin(line))
   {
-    data::stc(data::control().line(line + 1), f.stc()).inject();
+    data::stc(
+      data::control().line(line + 1),
+      dynamic_cast<syntax::stc*>(f.stc()))
+      .inject();
     log::trace(f.stc()->path().filename())
       << "found margin text:" << f.text() << "on line:" << line + 1;
     return true;

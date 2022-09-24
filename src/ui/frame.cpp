@@ -12,11 +12,11 @@
 #include <wex/core/file.h>
 #include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
-#include <wex/factory/lexers.h>
 #include <wex/factory/link.h>
 #include <wex/factory/listview.h>
-#include <wex/factory/printing.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/lexers.h>
+#include <wex/syntax/printing.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/ex-commandline.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
@@ -37,7 +37,7 @@
                                                                          \
     auto* win = wxWindow::FindFocus();                                   \
                                                                          \
-    if (auto* cl = dynamic_cast<wex::factory::stc*>(win); cl != nullptr) \
+    if (auto* cl = dynamic_cast<wex::syntax::stc*>(win); cl != nullptr)  \
     {                                                                    \
       m_find_focus = cl;                                                 \
     }                                                                    \
@@ -622,12 +622,12 @@ bool wex::frame::statustext(const std::string& text, const std::string& pane)
       m_statusbar->set_statustext(text, pane));
 }
 
-bool wex::frame::show_ex_command(factory::stc* stc, const std::string& command)
+bool wex::frame::show_ex_command(syntax::stc* stc, const std::string& command)
 {
   return pane_show("VIBAR") && m_ex_commandline->set_stc(stc, command);
 }
 
-bool wex::frame::show_ex_input(factory::stc* stc, char cmd)
+bool wex::frame::show_ex_input(syntax::stc* stc, char cmd)
 {
   return pane_show("VIBAR") && m_ex_commandline->set_stc(stc, cmd);
 }
@@ -640,7 +640,7 @@ void wex::frame::statusbar_clicked_right(const std::string& pane)
 
     if (pane == "PaneLexer")
     {
-      if (auto* stc = get_stc(); stc != nullptr)
+      if (auto* stc = dynamic_cast<syntax::stc*>(get_stc()); stc != nullptr)
       {
         if (
           !stc->get_lexer().scintilla_lexer().empty() &&

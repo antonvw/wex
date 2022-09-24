@@ -9,7 +9,7 @@
 
 #include <wex/core/file.h>
 #include <wex/core/path.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 
 #include "../test.h"
@@ -19,7 +19,7 @@ namespace wex
 class file;
 };
 
-class ui_stc : public wex::factory::stc
+class ui_stc : public wex::syntax::stc
 {
 public:
   ui_stc(const wex::data::stc& data = wex::data::stc());
@@ -42,4 +42,4 @@ wex::frame* frame();
 wex::statusbar* get_statusbar();
 
 /// Returns an stc.
-wex::factory::stc* get_stc();
+wex::syntax::stc* get_stc();

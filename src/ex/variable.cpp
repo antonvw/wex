@@ -13,7 +13,7 @@
 #include <wex/ex/macros.h>
 #include <wex/ex/variable.h>
 #include <wex/factory/process.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 #include <wx/app.h>
 

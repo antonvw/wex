@@ -10,8 +10,8 @@
 #include <wex/core/regex.h>
 #include <wex/core/type-to-value.h>
 #include <wex/factory/ex-command.h>
-#include <wex/factory/lexer-props.h>
-#include <wex/factory/marker.h>
+#include <wex/syntax/lexer-props.h>
+#include <wex/syntax/marker.h>
 
 #include <functional>
 #include <map>
@@ -26,6 +26,11 @@ class macros;
 class macro_mode;
 class frame;
 
+namespace syntax
+{
+class stc;
+};
+
 enum class info_message_t
 {
   ADD,
@@ -36,7 +41,7 @@ enum class info_message_t
   YANK,
 };
 
-/// Offers a class that adds ex editor to wex::factory::stc.
+/// Offers a class that adds ex editor to wex::syntax::stc.
 class ex
 {
   friend class macro_mode;
@@ -71,7 +76,7 @@ public:
 
   /// Constructor.
   /// Provide stc cpomponent and ex mode.
-  explicit ex(factory::stc* stc, mode_t mode = VISUAL);
+  explicit ex(syntax::stc* stc, mode_t mode = VISUAL);
 
   /// Destructor.
   virtual ~ex();
@@ -109,7 +114,7 @@ public:
   const auto& get_command() const { return m_command; }
 
   /// Returns stc component.
-  factory::stc* get_stc() const;
+  syntax::stc* get_stc() const;
 
   /// Shows info message.
   void info_message(const std::string& text, info_message_t type) const;

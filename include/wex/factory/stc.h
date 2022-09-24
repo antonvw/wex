@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      factory/stc.h
+// Name:      stc.h
 // Purpose:   Declaration of class wex::factory::stc
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020-2022 Anton van Wezenbeek
@@ -9,7 +9,6 @@
 
 #include <wex/core/path.h>
 #include <wex/factory/ex-command.h>
-#include <wex/factory/lexer.h>
 #include <wex/factory/text-window.h>
 #include <wx/print.h>
 #include <wx/stc/stc.h>
@@ -18,7 +17,6 @@
 
 namespace wex
 {
-class indicator;
 
 namespace data
 {
@@ -28,8 +26,7 @@ class stc;
 
 namespace factory
 {
-/// Offers a styled text ctrl with:
-/// - lexer support (syntax colouring, folding)
+/// Offers a basic styled text ctrl
 class stc
   : public wxStyledTextCtrl
   , public text_window
@@ -138,6 +135,12 @@ public:
   /// Returns true if we are in visual mode (default true).
   virtual bool is_visual() const { return true; }
 
+  /// Returns the name of the lexer.
+  virtual std::string lexer_name() const { return std::string(); }
+
+  /// Returns whether lexer is previewable.
+  virtual bool lexer_is_previewable() const { return false; }
+
   /// If selected text is a link, opens the link.
   virtual bool link_open() { return false; }
 
@@ -183,19 +186,6 @@ public:
 
   /// Sets hex mode (default false).
   virtual bool set_hexmode(bool on) { return false; }
-
-  /// Sets an indicator at specified start and end pos.
-  /// Default false, not implemented.
-  virtual bool set_indicator(
-    /// indicator to use
-    const indicator& indicator,
-    /// start pos, if -1 GetTargetStart is used
-    int start = -1,
-    /// end pos, if -1 GetTargetEnd is used
-    int end = -1)
-  {
-    return false;
-  };
 
   /// Sets search flags, default invokes SetSearchFlags.
   /// search flags to be used:
@@ -256,12 +246,6 @@ public:
 
   /// Returns current line fold level.
   size_t get_fold_level() const;
-
-  /// Returns the lexer.
-  const auto& get_lexer() const { return m_lexer; }
-
-  /// Returns the lexer.
-  auto& get_lexer() { return m_lexer; }
 
   /// Returns selected text as a string.
   const std::string get_selected_text() const;
@@ -326,9 +310,6 @@ protected:
   int m_margin_text_click{-1};
 
   std::string m_renamed;
-
-private:
-  lexer m_lexer;
 };
 }; // namespace factory
 }; // namespace wex

@@ -79,11 +79,6 @@ TEST_CASE("wex::core")
       wex::get_find_result("%d", false, false).find("%d") != std::string::npos);
   }
 
-  SUBCASE("get_iconid")
-  {
-    REQUIRE(wex::get_iconid(wex::test::get_path("test.h")) != -1);
-  }
-
   SUBCASE("get_number_of_lines")
   {
     REQUIRE(wex::get_number_of_lines("test") == 1);

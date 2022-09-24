@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      factory/stc.cpp
+// Name:      stc.cpp
 // Purpose:   Implementation of class wex::factory::stc
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
