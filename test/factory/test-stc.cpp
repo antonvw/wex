@@ -5,8 +5,6 @@
 // Copyright: (c) 2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/factory/stc.h>
-
 #include "test.h"
 
 TEST_CASE("wex::factory::stc")

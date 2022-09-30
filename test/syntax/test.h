@@ -10,6 +10,7 @@
 #include <wex/syntax/stc.h>
 #include <wx/app.h>
 
+/// Add general test header.
 #include "../test.h"
 
 namespace wex::test
@@ -17,12 +18,17 @@ namespace wex::test
 
 /// This class offers a testable syntax::stc by implementing
 /// the pure virtual methods.
+/// We cannot use the wex::test::stc, as that derives from factory.
 class stc : public wex::syntax::stc
 {
 public:
-  stc()
+  stc(wxFrame* parent = nullptr)
   {
-    if (wxTheApp != nullptr)
+    if (parent != nullptr)
+    {
+      Create(parent, -1);
+    }
+    else if (wxTheApp != nullptr)
     {
       Create(wxTheApp->GetTopWindow(), -1);
     }

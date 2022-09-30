@@ -17,7 +17,6 @@
 
 namespace wex
 {
-class ex;
 class path;
 class macro_fsm;
 
