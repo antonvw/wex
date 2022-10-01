@@ -2,10 +2,10 @@
 // Name:      test-ctags-entry.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/ex/ctags-entry.h>
+#include <wex/ctags/ctags-entry.h>
 
 #include "../test.h"
 

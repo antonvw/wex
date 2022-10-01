@@ -2,13 +2,13 @@
 // Name:      auto-complete.cpp
 // Purpose:   Implementation of class wex::auto_complete
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
-#include <wex/ex/ctags.h>
+#include <wex/ctags/ctags.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/stc.h>
 

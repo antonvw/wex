@@ -161,6 +161,8 @@ public:
   bool starts_with(const std::string_view& text);
 
 private:
+  bool load_document_init();
+
   template <typename S, typename T>
   void
   parse_node(const pugi::xml_node& node, const std::string& name, T& container);

@@ -2,12 +2,12 @@
 // Name:      scope.h
 // Purpose:   Implementation of class wex::scope
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wex/ex/ctags-entry.h>
+#include <wex/ctags/ctags-entry.h>
 
 #include <bitset>
 #include <map>

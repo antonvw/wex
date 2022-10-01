@@ -12,9 +12,8 @@
 #include <wex/core/config.h>
 #include <wex/core/log.h>
 #include <wex/core/path.h>
-#include <wex/ex/ctags.h>
-#include <wex/ex/ex.h>
-#include <wex/syntax/stc.h>
+#include <wex/ctags/ctags.h>
+#include <wex/factory/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wx/app.h>
@@ -83,8 +82,8 @@ private:
 std::map<std::string, wex::ctags_info>           wex::ctags::m_matches;
 std::map<std::string, wex::ctags_info>::iterator wex::ctags::m_iterator;
 
-wex::ctags::ctags(wex::ex* ex, bool open_file)
-  : m_ex(ex)
+wex::ctags::ctags(wex::factory::stc* stc, bool open_file)
+  : m_stc(stc)
 {
   if (open_file)
   {
@@ -153,10 +152,10 @@ wex::ctags::auto_complete(const std::string& text, const ctags_entry& filter)
 
 void wex::ctags::auto_complete_prepare()
 {
-  m_ex->get_stc()->AutoCompSetIgnoreCase(false);
-  m_ex->get_stc()->AutoCompSetAutoHide(false);
+  m_stc->AutoCompSetIgnoreCase(false);
+  m_stc->AutoCompSetAutoHide(false);
 
-  ctags_entry::register_image(m_ex->get_stc());
+  ctags_entry::register_image(m_stc);
 
   m_is_prepared = true;
 }
@@ -184,7 +183,7 @@ bool wex::ctags::do_open(const std::string& path)
   return false;
 }
 
-bool wex::ctags::find(const std::string& tag, ex* ex)
+bool wex::ctags::find(const std::string& tag, factory::stc* stc)
 {
   if (m_file == nullptr)
   {
@@ -211,7 +210,7 @@ bool wex::ctags::find(const std::string& tag, ex* ex)
   do
   {
     if (const ctags_info ct(entry.entry());
-        ex == nullptr || (ct.name() != tag_name(ex->get_stc()->path())))
+        stc == nullptr || (ct.name() != tag_name(stc->path())))
     {
       m_matches.insert({ct.name(), ct});
     }
@@ -224,9 +223,9 @@ bool wex::ctags::find(const std::string& tag, ex* ex)
   switch (m_matches.size())
   {
     case 0:
-      if (ex != nullptr)
+      if (stc != nullptr)
       {
-        ex->get_stc()->find(tag);
+        stc->find(tag);
       }
       break;
 

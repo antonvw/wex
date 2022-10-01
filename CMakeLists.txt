@@ -83,7 +83,8 @@ endif ()
 
 # See also FindWEX
 set(wex_own_LIBRARIES
-  wex-del wex-vcs wex-stc wex-vi wex-ex wex-ui wex-common wex-data wex-syntax wex-factory wex-core)
+  wex-del wex-vcs wex-stc wex-vi wex-ex wex-ctags
+  wex-ui wex-common wex-data wex-syntax wex-factory wex-core)
 
 separate_arguments(wex_own_LIBRARIES)
 

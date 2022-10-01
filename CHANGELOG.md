@@ -1,7 +1,7 @@
 # changes
 
 **v23.04**
-- wex-syntax library added
+- wex-ctags and wex-syntax library added
 
 **v22.10** *September 18, 2022*
 - added blame revision

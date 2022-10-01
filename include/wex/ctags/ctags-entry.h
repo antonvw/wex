@@ -11,12 +11,10 @@
 
 #include <readtags.h>
 
+class wxStyledTextCtrl;
+
 namespace wex
 {
-namespace factory
-{
-class stc;
-};
 
 /// Offers information about a specific tag (see tagEntry).
 class ctags_entry
@@ -25,7 +23,7 @@ public:
   /// Static interface.
 
   /// Register image on stc component.
-  static void register_image(factory::stc*);
+  static void register_image(wxStyledTextCtrl* stc);
 
   /// Other methods.
 
