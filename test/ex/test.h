@@ -7,28 +7,14 @@
 
 #pragma once
 
-#include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 
-#include "../test.h"
+#include "../syntax/test.h"
 
 namespace wex
 {
 namespace test
 {
-class ex_stc : public wex::syntax::stc
-{
-public:
-  explicit ex_stc(wxFrame* parent)
-  {
-    Create(parent, -1);
-    Show();
-  };
-
-private:
-  const wex::path& path() const override { return m_path; };
-  wex::path        m_path;
-};
 
 class ex : public app
 {
@@ -43,7 +29,7 @@ public:
 
 private:
   inline static wex::frame* m_frame = nullptr;
-  inline static ex_stc*     m_stc   = nullptr;
+  inline static test::stc*  m_stc   = nullptr;
 };
 }; // namespace test
 }; // namespace wex
