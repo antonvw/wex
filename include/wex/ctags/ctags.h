@@ -92,6 +92,8 @@ public:
 private:
   void        auto_complete_prepare();
   static bool do_open(const std::string& path);
+  static bool find_exit(const std::string& tag, factory::stc* stc);
+  static bool find_init(const std::string& tag, ctags_entry& entry);
 
   factory::stc* m_stc{nullptr};
   const int     m_separator{3};

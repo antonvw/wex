@@ -185,41 +185,57 @@ bool wex::ctags::do_open(const std::string& path)
 
 bool wex::ctags::find(const std::string& tag, factory::stc* stc)
 {
-  if (m_file == nullptr)
+  if (ctags_entry entry; !find_init(tag, entry))
   {
     return false;
   }
-
-  if (tag.empty())
+  else
   {
-    log::trace("ctags::find empty tag") << m_matches.size();
-    return next();
-  }
+    m_matches.clear();
 
-  ctags_entry entry;
-
-  if (
-    tagsFind(m_file, &entry.entry(), tag.c_str(), TAG_FULLMATCH) == TagFailure)
-  {
-    log::status("Tag not found") << tag;
-    return false;
-  }
-
-  m_matches.clear();
-
-  do
-  {
-    if (const ctags_info ct(entry.entry());
-        stc == nullptr || (ct.name() != tag_name(stc->path())))
+    do
     {
-      m_matches.insert({ct.name(), ct});
-    }
-  } while (tagsFindNext(m_file, &entry.entry()) == TagSuccess);
+      if (const ctags_info ct(entry.entry());
+          stc == nullptr || (ct.name() != tag_name(stc->path())))
+      {
+        m_matches.insert({ct.name(), ct});
+      }
+    } while (tagsFindNext(m_file, &entry.entry()) == TagSuccess);
 
-  m_iterator = m_matches.begin();
+    m_iterator = m_matches.begin();
 
-  log::trace("ctags::find matches") << m_matches.size();
+    log::trace("ctags::find matches") << m_matches.size();
 
+    return find_exit(tag, stc);
+  }
+}
+
+bool wex::ctags::find(const std::string& tag, wex::ctags_entry& filter)
+{
+  if (ctags_entry entry; !find_init(tag, entry))
+  {
+    return false;
+  }
+  else
+  {
+    filter.clear();
+
+    do
+    {
+      if (entry.is_master())
+      {
+        filter.filter(entry);
+        return true;
+      }
+    } while (!entry.is_master() &&
+             tagsFindNext(m_file, &entry.entry()) == TagSuccess);
+
+    return false;
+  }
+}
+
+bool wex::ctags::find_exit(const std::string& tag, factory::stc* stc)
+{
   switch (m_matches.size())
   {
     case 0:
@@ -262,36 +278,27 @@ bool wex::ctags::find(const std::string& tag, factory::stc* stc)
   return true;
 }
 
-bool wex::ctags::find(const std::string& tag, wex::ctags_entry& filter)
+bool wex::ctags::find_init(const std::string& tag, ctags_entry& entry)
 {
   if (m_file == nullptr)
   {
     return false;
   }
 
-  ctags_entry entry;
+  if (tag.empty())
+  {
+    log::trace("ctags::find empty tag") << m_matches.size();
+    return next();
+  }
 
-  // Find first entry. This entry determines which kind of
-  // filter will be set.
   if (
     tagsFind(m_file, &entry.entry(), tag.c_str(), TAG_FULLMATCH) == TagFailure)
   {
+    log::status("Tag not found") << tag;
     return false;
   }
 
-  filter.clear();
-
-  do
-  {
-    if (entry.is_master())
-    {
-      filter.filter(entry);
-      return true;
-    }
-  } while (!entry.is_master() &&
-           tagsFindNext(m_file, &entry.entry()) == TagSuccess);
-
-  return false;
+  return true;
 }
 
 bool wex::ctags::next()
