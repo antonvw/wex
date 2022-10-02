@@ -2,7 +2,7 @@
 // Name:      ctags-entry.h
 // Purpose:   Declaration of class wex::ctags_entry
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2021 Anton van Wezenbeek
+// Copyright: (c) 2019-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once

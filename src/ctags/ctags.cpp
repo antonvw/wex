@@ -7,7 +7,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
-#include <readtags.h>
 
 #include <wex/core/config.h>
 #include <wex/core/log.h>
