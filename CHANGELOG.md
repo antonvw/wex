@@ -1,7 +1,7 @@
 # changes
 
 **v23.04**
-- wex-syntax library added
+- wex-ctags and wex-syntax library added
 
 **v22.10** *September 18, 2022*
 - added blame revision
@@ -120,7 +120,7 @@
 - rfw lexer
 
 **v2.9.2** *December 16, 2011*
-- use git (github)
+- use git (GitHub)
 - vi mode
 - c++0x
 - wxWidgets 2.9.2

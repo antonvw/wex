@@ -6,7 +6,7 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/ex/ctags.h>
+#include <wex/ctags/ctags.h>
 #include <wex/factory/stc-undo.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/frd.h>
@@ -96,7 +96,7 @@ bool wex::vim::command_special()
     case vi::motion_t::G_d:
       ctags::find(
         m_vi->get_stc()->get_word_at_pos(m_vi->get_stc()->GetCurrentPos()),
-        m_vi);
+        m_vi->get_stc());
       break;
 
     case vi::motion_t::G_f:

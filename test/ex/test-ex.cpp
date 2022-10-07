@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
+#include <wex/ctags/ctags.h>
 #include <wex/ex/ex.h>
 #include <wex/ex/macros.h>
 
@@ -100,6 +101,8 @@ TEST_CASE("wex::ex")
   SUBCASE("ctags")
   {
     REQUIRE(ex->ctags() != nullptr);
+    REQUIRE(wex::ctags::find("test_app"));
+    REQUIRE(!wex::ctags::find("xest_app"));
   }
 
   SUBCASE("general")

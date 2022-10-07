@@ -8,9 +8,9 @@
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
-#include <wex/ex/ctags-entry.h>
-#include <wex/syntax/stc.h>
+#include <wex/ctags/ctags-entry.h>
 #include <wx/artprov.h>
+#include <wx/stc/stc.h>
 
 wex::ctags_entry& wex::ctags_entry::access(const std::string& v)
 {
@@ -178,7 +178,7 @@ const std::stringstream wex::ctags_entry::log() const
   return ss;
 }
 
-void wex::ctags_entry::register_image(factory::stc* stc)
+void wex::ctags_entry::register_image(wxStyledTextCtrl* stc)
 {
   stc->RegisterImage(IMAGE_PUBLIC, wxArtProvider::GetBitmap(wxART_PLUS));
   stc->RegisterImage(IMAGE_PROTECTED, wxArtProvider::GetBitmap(wxART_MINUS));

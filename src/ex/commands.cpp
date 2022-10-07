@@ -13,7 +13,7 @@
 #include <wex/core/file.h>
 #include <wex/core/log.h>
 #include <wex/core/version.h>
-#include <wex/ex/ctags.h>
+#include <wex/ctags/ctags.h>
 #include <wex/ex/ex.h>
 #include <wex/ex/macros.h>
 #include <wex/ex/util.h>

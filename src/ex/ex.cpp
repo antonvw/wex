@@ -9,8 +9,8 @@
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
+#include <wex/ctags/ctags.h>
 #include <wex/ex/command-parser.h>
-#include <wex/ex/ctags.h>
 #include <wex/ex/ex-stream.h>
 #include <wex/ex/ex.h>
 #include <wex/ex/macros.h>
@@ -32,7 +32,7 @@ wex::ex::ex(wex::syntax::stc* stc, mode_t mode)
   , m_ex_stream(new wex::ex_stream(this))
   , m_mode(mode)
   , m_commands(commands_ex())
-  , m_ctags(new wex::ctags(this))
+  , m_ctags(new wex::ctags(stc))
   , m_auto_write(config(_("stc.Auto write")).get(false))
 {
   assert(m_frame != nullptr);

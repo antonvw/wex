@@ -11,8 +11,8 @@
 #include <boost/algorithm/string.hpp>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
+#include <wex/ctags/ctags.h>
 #include <wex/ex/addressrange.h>
-#include <wex/ex/ctags.h>
 #include <wex/ex/macros.h>
 #include <wex/ex/util.h>
 #include <wex/factory/stc-undo.h>
@@ -273,11 +273,11 @@ wex::vi::commands_t wex::vi::commands_other()
            ctags::find(std::string()) :
            ctags::find(
              get_stc()->get_word_at_pos(get_stc()->GetCurrentPos()),
-             this);
+             get_stc());
        }
        else
        {
-         ctags::find(get_stc()->GetSelectedText().ToStdString(), this);
+         ctags::find(get_stc()->GetSelectedText().ToStdString(), get_stc());
        }
 
        return 1;

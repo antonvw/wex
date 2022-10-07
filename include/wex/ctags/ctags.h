@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <wex/ex/ctags-entry.h>
+#include <wex/ctags/ctags-entry.h>
 
 #include <map>
 
@@ -16,7 +16,11 @@ typedef struct sTagFile tagFile;
 namespace wex
 {
 class ctags_info;
-class ex;
+
+namespace factory
+{
+class stc;
+};
 
 const char DEFAULT_TAGFILE[] = "tags";
 
@@ -36,14 +40,15 @@ public:
   /// there is no next match in another file.
   /// If the name is empty, next is invoked.
   /// Otherwise shows a dialog to select a file from the matches.
-  /// Returns false if dialog was cancelled.
+  /// Returns false if dialog was cancelled or ctags file not yet open.
   static bool find(
     /// tag to find
     const std::string& tag,
-    /// a possible active ex
-    ex* ex = nullptr);
+    /// a possible active stc
+    factory::stc* stc = nullptr);
 
   /// Finds the tag matching 'tag' and uses it to fill the supplied entries.
+  /// Returns false if ctags file not yet opened.
   /// Returns true if a matching tag is found,
   /// and can be used as a master.
   static bool find(
@@ -68,9 +73,9 @@ public:
   /// Other methods.
 
   /// Constructor.
-  /// Uses ex component for presenting ctags results,
+  /// Uses stc component for presenting ctags results,
   /// and opens default tag file, if tag file is not yet opened.
-  explicit ctags(ex* ex, bool open = true);
+  explicit ctags(factory::stc* stc, bool open = true);
 
   /// Tries to auto_complete text using the tags file.
   /// Returns a string with matches separated by the
@@ -87,10 +92,12 @@ public:
 private:
   void        auto_complete_prepare();
   static bool do_open(const std::string& path);
+  static bool find_exit(const std::string& tag, factory::stc* stc);
+  static bool find_init(const std::string& tag, ctags_entry& entry);
 
-  ex*       m_ex{nullptr};
-  const int m_separator{3};
-  bool      m_is_prepared{false};
+  factory::stc* m_stc{nullptr};
+  const int     m_separator{3};
+  bool          m_is_prepared{false};
 
   static inline tagFile*                             m_file = nullptr;
   static std::map<std::string, ctags_info>           m_matches;
