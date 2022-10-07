@@ -13,7 +13,7 @@ wex-syntax  |           | syntax highlighting
 wex-data    |           | data
 wex-common  |           | common
 wex-ui      | wex-ctags | user interface
-wex-ex      |           | ex 
+wex-ex      |           | ex
 wex-vi      |           | vi
 wex-stc     |           | stc
 wex-vcs     |           | version control
@@ -254,7 +254,7 @@ bool wex::global_env::for_each(const block_lines& match) const
 
   This method can be used as replacement for e.g. stol.
   example used in textctrl-input.cpp:
-  
+
 ```cpp
     for (const auto& v : m_values)
     {
@@ -272,7 +272,7 @@ bool wex::global_env::for_each(const block_lines& match) const
       filtered.emplace_back(v);
     }
 ```
-  
+
 ## c++ language
 
 - init_statement in if, case statements (c++17), and for range (c++20)
@@ -290,8 +290,7 @@ bool wex::global_env::for_each(const block_lines& match) const
 ```cpp
     for (int item  = 0; const auto& b : std::any_cast<choices_t>(m_data.initial()))
 ```
-  
-  
+
 - initializer_list (c++11)
 
 - lambda expressions (c++11)
