@@ -12,7 +12,6 @@
 #include <wex/core/file.h>
 #include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
-#include <wex/factory/link.h>
 #include <wex/factory/listview.h>
 #include <wex/syntax/lexers.h>
 #include <wex/syntax/printing.h>
@@ -139,28 +138,36 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
     [=, this](wxFindDialogEvent& event)
     {
       if (m_find_focus != nullptr)
+      {
         wxPostEvent(m_find_focus, event);
+      }
     });
   Bind(
     wxEVT_FIND_NEXT,
     [=, this](wxFindDialogEvent& event)
     {
       if (m_find_focus != nullptr)
+      {
         wxPostEvent(m_find_focus, event);
+      }
     });
   Bind(
     wxEVT_FIND_REPLACE,
     [=, this](wxFindDialogEvent& event)
     {
       if (m_find_focus != nullptr)
+      {
         wxPostEvent(m_find_focus, event);
+      }
     });
   Bind(
     wxEVT_FIND_REPLACE_ALL,
     [=, this](wxFindDialogEvent& event)
     {
       if (m_find_focus != nullptr)
+      {
         wxPostEvent(m_find_focus, event);
+      }
     });
 
   Bind(
@@ -375,9 +382,10 @@ wxPanel* wex::frame::create_ex_panel()
   m_ex_commandline =
     new ex_commandline(this, text, data::window().parent(panel));
 
-  auto* sizer = new wxFlexGridSizer(2);
-  sizer->AddGrowableCol(1);
-  sizer->Add(text, wxSizerFlags().Center());
+  auto* sizer = new wxFlexGridSizer(3);
+  sizer->AddGrowableCol(2);
+  sizer->Add(text, wxSizerFlags().Top()); // similar to ex_commandline->control
+  sizer->AddSpacer(2);
   sizer->Add(m_ex_commandline->control(), wxSizerFlags().Expand());
 
   panel->SetSizerAndFit(sizer);

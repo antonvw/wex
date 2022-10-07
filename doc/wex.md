@@ -1,8 +1,23 @@
 # wex library
-This ibrary is written in the c++ language, and offers classes
+This library is written in the c++ language, and offers classes
 to add vi or ex functionality as specified in
 "The Open Group Base Specifications Issue 7, 2018 edition"
 to your apps.
+
+## wex c++ libraries
+lib         | sub-lib   | info
+------------|-----------|--
+wex-core    |           | core
+wex-factory |           | virtual base
+wex-syntax  |           | syntax highlighting
+wex-data    |           | data
+wex-common  |           | common
+wex-ui      | wex-ctags | user interface
+wex-ex      |           | ex 
+wex-vi      |           | vi
+wex-stc     |           | stc
+wex-vcs     |           | version control
+wex-del     |           | delivered
 
 It benefits from the following c++ features:
 
@@ -328,40 +343,29 @@ wex::regex::regex(
   }
 ```
 
+It benefits from the following boost libraries:
+
 ## boost c++ libraries
-- boost::algorithm lib
-  uses find_tail, replace_all, to_upper, trim
+lib | info
+-----|------
+boost::algorithm lib | uses find_tail, replace_all, to_upper, trim
+boost::json lib | to implement wex::config
+boost::log lib | to implement wex::log
+boost::process lib | to implement wex::process
+boost::program_options lib | to implement wex::cmdline
+boost::spirit lib | to implement the wex::evaluator
+boost::statechart lib | to implement the statemachine for vi mode and macro mode
+boost::tokenizer lib | to tokenize expressions
 
-- boost::json lib
-  to implement wex::config
-
-- boost::log lib
-  to implement wex::log
-
-- boost::process lib
-  to implement wex::process
-
-- boost::program_options lib
-  to implement wex::cmdline
-
-- boost::spirit lib
-  to implement the wex::evaluator
-
-- boost::statechart lib
-  to implement the statemachine for vi mode and macro mode
-
-- boost::tokenizer lib
-  to tokenize expressions
+It benefits from the following wxWidgets libraries:
 
 ## wxWidgets libraries
 - all gui classes are derived from / use wxWidgets base classes
-  wxbase
-  wxcore
-  wxaui
-  wxHTML
-  wxscintilla
-  wxstc
-
-## wex c++ libraries
-
-wex-core <- wex-factory <- wex-syntax <- wex-data <- wex-common <- wex-ui <- wex-ex <- wex-ctags <- wex-vi <- wex-stc <- wex-vcs <- wex-del
+lib | info
+-----|------
+wxbase | base
+wxcore | core
+wxaui | advanced user interface
+wxHTML | HTML
+wxscintilla | stc
+wxstc | stc

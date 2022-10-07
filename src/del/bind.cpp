@@ -112,7 +112,7 @@ void wex::del::frame::bind_all()
         {
           auto it = find_replace_data::get()->get_find_strings().begin();
           std::advance(it, event.GetId() - ID_FIND_FIRST);
-          if (const std::string text(*it); stc->find(
+          if (const auto& text(*it); stc->find(
                 text,
                 stc->get_vi().is_active() ? stc->get_vi().search_flags() : -1))
           {
