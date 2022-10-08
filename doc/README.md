@@ -5,19 +5,18 @@ to add vi or ex functionality as specified in
 to your apps.
 
 ## wex c++ libraries
-lib         | sub-lib   | info
-------------|-----------|--
-wex-core    |           | core
-wex-factory |           | virtual base
-wex-syntax  |           | syntax highlighting
-wex-data    |           | data
-wex-common  |           | common
-wex-ui      | wex-ctags | user interface
-wex-ex      |           | ex
-wex-vi      |           | vi
-wex-stc     |           | stc
-wex-vcs     |           | version control
-wex-del     |           | delivered
+src     | lib         | sub-lib   | info
+--------|-------------|-----------|--
+core    | wex-core    |           | core
+factory | wex-factory |           | virtual base
+syntax  | wex-syntax  |           | syntax highlighting
+data    | wex-data    |           | data
+common  | wex-common  |           | common
+ui      | wex-ui      | wex-ctags | user interface
+ex      | wex-ex      | wex-vi    | ex and vi classes
+stc     | wex-stc     |           | stc
+vcs     | wex-vcs     |           | version control
+del     | wex-del     |           | delivered
 
 It benefits from the following c++ features:
 

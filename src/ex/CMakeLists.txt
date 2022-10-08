@@ -4,3 +4,5 @@ file(GLOB SRCS
 add_library(
   wex-ex
   ${SRCS})
+
+add_subdirectory(vi)
