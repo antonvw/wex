@@ -83,9 +83,16 @@ public:
   address_t type() const { return m_type; }
 
 private:
+  enum add_t
+  {
+    ADD_APPEND,
+    ADD_INSERT
+  };
+
   bool adjust_window(const std::string& text) const;
-  bool append(const std::string& text) const;
-  bool insert(const std::string& text) const;
+  bool add(add_t type, const std::string& text) const;
+  bool append(const std::string& text) const { return add(ADD_APPEND, text); };
+  bool insert(const std::string& text) const { return add(ADD_INSERT, text); };
   bool put(char name = '0') const;
   bool read(const std::string& arg) const;
   void set_line(int line);

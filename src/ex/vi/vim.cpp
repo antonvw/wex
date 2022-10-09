@@ -104,20 +104,13 @@ bool wex::vim::command_special()
       break;
 
     case vi::motion_t::G_star:
-      find_replace_data::get()->set_find_string(
-        m_vi->get_stc()->get_word_at_pos(m_vi->get_stc()->GetCurrentPos()));
-      m_vi->get_stc()->find(
-        find_replace_data::get()->get_find_string(),
-        m_vi->search_flags());
-      break;
-
     case vi::motion_t::G_hash:
       find_replace_data::get()->set_find_string(
         m_vi->get_stc()->get_word_at_pos(m_vi->get_stc()->GetCurrentPos()));
       m_vi->get_stc()->find(
         find_replace_data::get()->get_find_string(),
         m_vi->search_flags(),
-        false);
+        m_motion == vi::motion_t::G_star);
       break;
 
     default:

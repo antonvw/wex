@@ -86,6 +86,39 @@ wex::address::address(ex* ex, const std::string& address)
 {
 }
 
+bool wex::address::add(add_t type, const std::string& text) const
+{
+  if (const auto line = get_line(); line <= 0)
+  {
+    return false;
+  }
+  else if (!m_ex->get_stc()->is_visual())
+  {
+    m_ex->ex_stream()->insert_text(
+      *this,
+      text,
+      type == ADD_APPEND ? ex_stream::INSERT_AFTER : ex_stream::INSERT_BEFORE);
+    return true;
+  }
+  else if (m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode())
+  {
+    return false;
+  }
+  else
+  {
+    m_ex->get_stc()->insert_text(
+      m_ex->get_stc()->PositionFromLine(type == ADD_APPEND ? line : line - 1),
+      text);
+
+    if (type == ADD_APPEND)
+    {
+      m_ex->get_stc()->goto_line(line + get_number_of_lines(text) - 1);
+    }
+
+    return true;
+  }
+}
+
 bool wex::address::adjust_window(const std::string& text) const
 {
   regex v("([-+=.^]*)([0-9]+)?(.*)");
@@ -143,29 +176,6 @@ bool wex::address::adjust_window(const std::string& text) const
   m_ex->print(output);
 
   return true;
-}
-
-bool wex::address::append(const std::string& text) const
-{
-  if (const auto line = get_line(); line <= 0)
-  {
-    return false;
-  }
-  else if (!m_ex->get_stc()->is_visual())
-  {
-    m_ex->ex_stream()->insert_text(*this, text, ex_stream::INSERT_AFTER);
-    return true;
-  }
-  else if (m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode())
-  {
-    return false;
-  }
-  else
-  {
-    m_ex->get_stc()->insert_text(m_ex->get_stc()->PositionFromLine(line), text);
-    m_ex->get_stc()->goto_line(line + get_number_of_lines(text) - 1);
-    return true;
-  }
 }
 
 bool wex::address::flags_supported(const std::string& flags)
@@ -227,30 +237,6 @@ int wex::address::get_line(int start_pos) const
   else
   {
     return sum;
-  }
-}
-
-bool wex::address::insert(const std::string& text) const
-{
-  if (const auto line = get_line(); line <= 0)
-  {
-    return false;
-  }
-  else if (!m_ex->get_stc()->is_visual())
-  {
-    m_ex->ex_stream()->insert_text(*this, text);
-    return true;
-  }
-  else if (m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode())
-  {
-    return false;
-  }
-  else
-  {
-    m_ex->get_stc()->insert_text(
-      m_ex->get_stc()->PositionFromLine(line - 1),
-      text);
-    return true;
   }
 }
 

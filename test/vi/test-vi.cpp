@@ -118,14 +118,15 @@ TEST_CASE("wex::vi")
       REQUIRE(stc->GetLineText(0) == "zzz third");
     }
 
+    stc->set_text("xxxxxxxxxx second third\nxxxxxxxxxx\naaaaaaaaaa\n");
+
+    REQUIRE(vi->command("K"));
+    REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL_BLOCK);
+    REQUIRE(vi->command("j"));
+    REQUIRE(vi->command("j"));
+
     SUBCASE("block")
     {
-      stc->set_text("xxxxxxxxxx second third\nxxxxxxxxxx\naaaaaaaaaa\n");
-
-      REQUIRE(vi->command("K"));
-      REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL_BLOCK);
-      REQUIRE(vi->command("j"));
-      REQUIRE(vi->command("j"));
       // Next should be the OK..
       // REQUIRE(vi->command("ce"));
       // REQUIRE(vi->mode().get() == wex::vi_mode::state_t::INSERT_BLOCK);
@@ -136,12 +137,6 @@ TEST_CASE("wex::vi")
 
     SUBCASE("block-select")
     {
-      stc->set_text("xxxxxxxxxx second third\nxxxxxxxxxx\naaaaaaaaaa\n");
-
-      REQUIRE(vi->command("K"));
-      REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL_BLOCK);
-      REQUIRE(vi->command("j"));
-      REQUIRE(vi->command("j"));
       REQUIRE(vi->command("l"));
       REQUIRE(vi->command("l"));
       REQUIRE(vi->command("c"));

@@ -1,4 +1,4 @@
 # stc library
 
 This library contains stc classes and functions for wex.
-It uses the vi and predecessor wex libraries.
+It uses the ex and predecessor wex libraries.
