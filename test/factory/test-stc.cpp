@@ -15,10 +15,20 @@ TEST_CASE("wex::factory::stc")
   SUBCASE("margin")
   {
     stc->SetMarginWidth(0, 10);
+    stc->SetMarginWidth(1, 20);
     REQUIRE(stc->GetMarginWidth(0) == 10);
+    REQUIRE(stc->GetMarginWidth(1) == 20);
 
     stc->reset_margins();
     REQUIRE(stc->GetMarginWidth(0) == 0);
+    REQUIRE(stc->GetMarginWidth(1) == 0);
+
+    stc->SetMarginWidth(0, 10);
+    stc->SetMarginWidth(1, 20);
+    stc->reset_margins(
+      wex::factory::stc::margin_t().set(wex::factory::stc::MARGIN_FOLDING));
+    REQUIRE(stc->GetMarginWidth(0) == 10);
+    REQUIRE(stc->GetMarginWidth(1) == 0);
   }
 
   SUBCASE("motion")

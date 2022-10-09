@@ -7,10 +7,10 @@
 
 #pragma once
 
-class wxEvtHandler;
+class wxWindow;
 
 namespace wex
 {
 /// Binds to focus.
-void bind_set_focus(wxEvtHandler* handler);
+void bind_set_focus(wxWindow* window);
 }; // namespace wex

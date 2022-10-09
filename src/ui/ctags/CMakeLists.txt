@@ -1,5 +1,5 @@
 file(GLOB SRCS 
-  "../../external/ctags/libreadtags/*.c"
+  "../../../external/ctags/libreadtags/*.c"
   "*.cpp")
 
 add_library(

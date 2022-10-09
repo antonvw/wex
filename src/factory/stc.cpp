@@ -150,9 +150,9 @@ std::string wex::factory::stc::margin_get_revision_id() const
 
 void wex::factory::stc::reset_margins(margin_t type)
 {
-  if (type.all())
+  for (int i = 0; i < type.size(); ++i)
   {
-    for (int i = 0; i < wxSTC_MAX_MARGIN; i++)
+    if (type.test(i))
     {
       SetMarginWidth(i, 0);
     }

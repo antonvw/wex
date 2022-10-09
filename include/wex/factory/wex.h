@@ -22,3 +22,4 @@
 #include <wex/factory/stc-undo.h>
 #include <wex/factory/stc.h>
 #include <wex/factory/text-window.h>
+#include <wex/factory/util.h>

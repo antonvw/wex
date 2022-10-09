@@ -9,15 +9,17 @@
 #include <wex/factory/util.h>
 #include <wx/app.h>
 
-void wex::bind_set_focus(wxEvtHandler* handler)
+void wex::bind_set_focus(wxWindow* win)
 {
-  auto* frame = dynamic_cast<factory::frame*>(wxTheApp->GetTopWindow());
-
-  handler->Bind(
-    wxEVT_SET_FOCUS,
-    [&, frame](wxFocusEvent& event)
-    {
-      frame->set_find_focus(frame);
-      event.Skip();
-    });
+  if (auto* frame = dynamic_cast<factory::frame*>(wxTheApp->GetTopWindow());
+      frame != nullptr)
+  {
+    win->Bind(
+      wxEVT_SET_FOCUS,
+      [frame, win](wxFocusEvent& event)
+      {
+        frame->set_find_focus(win);
+        event.Skip();
+      });
+  }
 }

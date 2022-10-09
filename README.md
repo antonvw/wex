@@ -34,6 +34,7 @@ and do `find_package(WEX)` in your CMakeLists.txt. This will provide the
 ## Build process
 
   [![Appveyor](https://ci.appveyor.com/api/projects/status/a346d8537whyrjev?svg=true)](https://ci.appveyor.com/project/antonvw/wex)
+  [![Codiga](https://api.codiga.io/project/30476/score/svg)]
 
 ## Uses
 

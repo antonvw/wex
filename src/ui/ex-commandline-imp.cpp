@@ -256,7 +256,6 @@ void wex::ex_commandline_imp::init(const data::window& data)
 
   get_lexer().set(lexer(this));
   reset_margins();
-  SetMarginWidth(0, 5);
 }
 
 bool wex::ex_commandline_imp::input_mode_finish() const
