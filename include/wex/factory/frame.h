@@ -84,7 +84,7 @@ public:
   /// Allows you to open a filename with info from vcs.
   /// Returns stc component opened, or nullptr.
   virtual factory::stc*
-  open_file(const path& filename, vcs_entry& vcs, const data::stc& data)
+  open_file_vcs(const path& filename, vcs_entry& vcs, const data::stc& data)
   {
     return nullptr;
   };

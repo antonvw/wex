@@ -55,11 +55,6 @@ public:
   /// as previous line.
   virtual bool auto_indentation(int c) { return false; }
 
-  // Clears the component: all text is cleared and all styles are reset.
-  // Invoked by Open and do_file_new.
-  // (Clear is used by scintilla to clear the selection).
-  virtual void clear(bool set_savepoint = true) { ; }
-
   /// Enables or disables folding depending on fold property
   /// (default not implemented).
   virtual void fold(
@@ -109,10 +104,6 @@ public:
 
   /// Hex sync.
   virtual bool get_hexmode_sync() { return false; }
-
-  /// Returns line on which text margin was clicked,
-  /// or -1 if not.
-  int get_margin_text_click() const { return m_margin_text_click; }
 
   /// Returns word at position.
   virtual const std::string get_word_at_pos(int pos) const
@@ -180,10 +171,6 @@ public:
     ;
   }
 
-  /// Resets (all) margins.
-  /// Default just resets all margins.
-  virtual void reset_margins(margin_t type = margin_t().set());
-
   /// Sets hex mode (default false).
   virtual bool set_hexmode(bool on) { return false; }
 
@@ -239,6 +226,10 @@ public:
   /// Binds wx methods.
   void bind_wx();
 
+  /// Clears the component: all text is cleared and all styles are reset.
+  /// (Clear is used by scintilla to clear the selection).
+  void clear(bool set_savepoint = true);
+
   /// Returns EOL string.
   /// If you only want to insert a newline, use NewLine()
   /// (from wxStyledTextCtrl).
@@ -246,6 +237,10 @@ public:
 
   /// Returns current line fold level.
   size_t get_fold_level() const;
+
+  /// Returns line on which text margin was clicked,
+  /// or -1 if not.
+  int get_margin_text_click() const { return m_margin_text_click; }
 
   /// Returns selected text as a string.
   const std::string get_selected_text() const;
@@ -257,7 +252,19 @@ public:
     return std::string(b.data(), b.length());
   }
 
+  /// When clicked on a line with a text margin,
+  /// returns revision id on the text margin, otherwise returns empty string.
   std::string margin_get_revision_id() const;
+
+  /// Returns true if margin text is shown.
+  bool margin_text_is_shown() const { return m_margin_text_is_shown; };
+
+  /// Shows text margin.
+  void margin_text_show() { m_margin_text_is_shown = true; };
+
+  /// Resets (all) margins.
+  /// Default just resets all margins.
+  void reset_margins(margin_t type = margin_t().set());
 
   /// Returns renamed.
   auto& vcs_renamed() const { return m_renamed; }
@@ -307,7 +314,11 @@ public:
 protected:
   ex_command m_command;
 
-  int m_margin_text_click{-1};
+  int  m_margin_text_click{-1};
+  bool m_margin_text_is_shown{false};
+
+  const int m_margin_divider_number{1}, m_margin_folding_number{2},
+    m_margin_line_number{0}, m_margin_text_number{3};
 
   std::string m_renamed;
 };

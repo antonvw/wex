@@ -29,7 +29,21 @@ build(const std::string& key, const std::string& field, bool first = false)
       add += " ";
     }
 
-    add += boost::algorithm::trim_copy(field);
+    if (key == "author")
+    {
+      auto text(boost::algorithm::trim_copy(field));
+
+      if (const int shown(config(_("blame.Author size")).get(-1)); shown != -1)
+      {
+        text = text.substr(0, shown);
+      }
+
+      add += text;
+    }
+    else
+    {
+      add += boost::algorithm::trim_copy(field);
+    }
   }
 
   return add;
@@ -163,7 +177,10 @@ bool wex::blame::parse_compact(const std::string& line, const regex& r)
   m_line_no++; // not present in svn blame
   m_line_text = r[3];
 
-  log::trace("parse_compact") << m_info << "no:" << m_line_no;
+  if (m_line_no < 5)
+  {
+    log::trace("parse_compact") << m_info << "no:" << m_line_no;
+  }
 
   return true;
 }
@@ -191,7 +208,10 @@ bool wex::blame::parse_full(const std::string& line, const regex& r)
   m_line_no   = std::stoi(r[4]) - 1;
   m_line_text = r[5];
 
-  log::trace("parse_full") << m_info;
+  if (m_line_no < 5)
+  {
+    log::trace("parse_full") << m_info;
+  }
 
   return true;
 }

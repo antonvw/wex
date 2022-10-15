@@ -12,6 +12,7 @@
 
 namespace wex
 {
+class blame;
 class indicator;
 
 namespace syntax
@@ -35,11 +36,17 @@ public:
 
   /// Other methods.
 
+  /// Blames margin.
+  void blame_margin(const blame* blame);
+
   /// Returns the lexer.
   const auto& get_lexer() const { return m_lexer; }
 
   /// Returns the lexer.
   auto& get_lexer() { return m_lexer; }
+
+  /// Returns renamed revision.
+  std::string margin_get_revision_renamed() const;
 
   /// Sets an indicator at specified start and end pos.
   /// Default false, not implemented.

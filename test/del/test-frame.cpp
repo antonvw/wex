@@ -155,13 +155,13 @@ TEST_CASE("wex::del::frame")
     del_frame()->vcs_annotate_commit(stc, 5, commit_id);
   }
 
-  SUBCASE("vcs_blame_revison")
+  SUBCASE("vcs_blame_revision")
   {
     auto*             stc = get_stc();
     const std::string renamed;
     const std::string offset;
 
-    del_frame()->vcs_blame_revison(stc, renamed, offset);
+    del_frame()->vcs_blame_revision(stc, renamed, offset);
   }
 
   SUBCASE("vcs_blame_show")

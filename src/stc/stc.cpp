@@ -181,19 +181,6 @@ void wex::stc::Clear()
     factory::stc::Clear();
 }
 
-void wex::stc::clear(bool set_savepoint)
-{
-  SetReadOnly(false);
-
-  ClearAll();
-
-  if (set_savepoint)
-  {
-    EmptyUndoBuffer();
-    SetSavePoint();
-  }
-}
-
 void wex::stc::Copy()
 {
   if (CanCopy())
@@ -690,18 +677,6 @@ void wex::stc::properties_message(path::log_t flags)
     m_frame->SetTitle(
       !title.empty() ? title : wxTheApp->GetAppName().ToStdString());
   }
-}
-
-void wex::stc::reset_margins(margin_t type)
-{
-  if (type[MARGIN_FOLDING])
-    SetMarginWidth(m_margin_folding_number, 0);
-  if (type[MARGIN_DIVIDER])
-    SetMarginWidth(m_margin_divider_number, 0);
-  if (type[MARGIN_LINENUMBER])
-    SetMarginWidth(m_margin_line_number, 0);
-  if (type[MARGIN_TEXT])
-    SetMarginWidth(m_margin_text_number, 0);
 }
 
 void wex::stc::SelectNone()

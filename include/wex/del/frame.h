@@ -20,7 +20,6 @@ namespace wex
 class debug;
 class item_dialog;
 class process;
-class stc;
 class stc_entry_dialog;
 }; // namespace wex
 
@@ -57,10 +56,6 @@ public:
   /// your implementation should return that one.
   /// Default it returns nullptr.
   virtual file* get_project() { return nullptr; }
-
-  /// Shows blame info for vcs in the text margin.
-  /// Returns true if info was added.
-  virtual bool vcs_blame_show(vcs_entry* vcs, stc*);
 
   /// Other methods
 
@@ -131,6 +126,10 @@ public:
   /// to the list.
   void use_file_history_list(listview* list);
 
+  /// Shows blame info for vcs in the text margin.
+  /// Returns true if info was added.
+  bool vcs_blame_show(vcs_entry* vcs, syntax::stc*);
+
   /// Overridden methods.
 
   void append_vcs(menu*, const menu_item* i) const override;
@@ -171,7 +170,8 @@ public:
   void vcs_add_path(factory::link*) override;
   void vcs_annotate_commit(syntax::stc*, int line, const std::string& commit_id)
     override;
-  void vcs_blame_revison(
+  void vcs_blame(syntax::stc*) override;
+  void vcs_blame_revision(
     syntax::stc*,
     const std::string& renamed,
     const std::string& offset) override;

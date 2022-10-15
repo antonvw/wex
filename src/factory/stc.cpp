@@ -62,6 +62,19 @@ void wex::factory::stc::bind_wx()
       wxID_DELETE}});
 }
 
+void wex::factory::stc::clear(bool set_savepoint)
+{
+  SetReadOnly(false);
+
+  ClearAll();
+
+  if (set_savepoint)
+  {
+    EmptyUndoBuffer();
+    SetSavePoint();
+  }
+}
+
 const std::string wex::factory::stc::eol() const
 {
   switch (GetEOLMode())
@@ -155,6 +168,11 @@ void wex::factory::stc::reset_margins(margin_t type)
     if (type.test(i))
     {
       SetMarginWidth(i, 0);
+
+      if (i == MARGIN_TEXT)
+      {
+        m_margin_text_is_shown = false;
+      }
     }
   }
 }

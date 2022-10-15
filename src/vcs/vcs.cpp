@@ -503,7 +503,7 @@ void wex::vcs_execute(
           {
             if (!vcs.entry().std_out().empty())
             {
-              frame->open_file(it, vcs.entry(), data::stc());
+              frame->open_file_vcs(it, vcs.entry(), data::stc());
             }
             else if (!vcs.entry().std_err().empty())
             {
