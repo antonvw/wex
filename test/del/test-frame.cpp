@@ -16,9 +16,9 @@
 #include <wex/ui/frd.h>
 #include <wex/ui/menu.h>
 #include <wex/vcs/process.h>
-#include <wex/vcs/vcs-entry.h>
 #include <wex/vcs/vcs.h>
 
+#include "../vcs/test.h"
 #include "test.h"
 
 TEST_CASE("wex::del::frame")
@@ -169,22 +169,15 @@ TEST_CASE("wex::del::frame")
     auto*      stc = get_stc();
     wex::blame blame;
     wex::lexers::get()->apply_margin_text_style(stc, &blame);
+    auto* entry(load_git_entry());
 
-    pugi::xml_document doc;
-    REQUIRE(doc.load_string("<vcs name=\"git\" admin-dir=\"./\" log-flags=\"-n "
-                            "1\" blame-format=\"(^[a-zA-Z0-9^]+) "
-                            "(.*?)\\((.+)\\s+([0-9]{2,4}.[0-9]{2}.[0-9]{2}.[0-"
-                            "9:]{8}) .[0-9]+\\s+([0-9]+)\\) (.*)\">"
-                            "</vcs>"));
-    wex::vcs_entry entry(doc.document_element());
-    REQUIRE(entry.name() == "git");
-    REQUIRE(!del_frame()->vcs_blame_show(&entry, stc));
+    REQUIRE(!del_frame()->vcs_blame_show(entry, stc));
 
 #ifndef __WXMSW__
     REQUIRE(
-      entry.system(wex::process_data().args(
+      entry->system(wex::process_data().args(
         "blame " + wex::test::get_path("test.h").string())) == 0);
-    REQUIRE(del_frame()->vcs_blame_show(&entry, stc));
+    REQUIRE(del_frame()->vcs_blame_show(entry, stc));
 #endif
 
     stc->get_file().reset_contents_changed();
