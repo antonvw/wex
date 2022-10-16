@@ -93,6 +93,13 @@ TEST_CASE("wex::factory::stc")
     REQUIRE(stc->get_line_count_request() == 1);
   }
 
+  SUBCASE("position")
+  {
+    stc->position_restore();
+    stc->position_save();
+    REQUIRE(stc->position_restore());
+  }
+
   SUBCASE("text")
   {
     stc->clear();

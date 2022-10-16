@@ -6,10 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
-#include <wex/core/log-none.h>
 #include <wex/factory/defs.h>
-#include <wex/syntax/indicator.h>
-#include <wex/syntax/lexers.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/ui/frd.h>
 
@@ -68,9 +65,6 @@ TEST_CASE("wex::stc")
     stc->clear();
     stc->config_get();
     stc->Cut();
-    stc->fold();
-    wex::config(_("stc.Auto fold")).set(3);
-    stc->fold(true);
     stc->Paste();
     stc->process_char(5);
     stc->properties_message();
@@ -120,8 +114,6 @@ TEST_CASE("wex::stc")
     REQUIRE(stc->find(std::string("HELLO"))); // uses flags from frd
     REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
 
-    wex::log_none off;
-    REQUIRE(!stc->set_indicator(wex::indicator(4, 5), 100, 200));
     wex::find_replace_data::get()->set_match_case(false);
     stc->set_search_flags(-1);
     REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
@@ -223,36 +215,6 @@ TEST_CASE("wex::stc")
     REQUIRE(lexer_s.scintilla_lexer() == "rust");
   }
 
-  SUBCASE("lexers")
-  {
-    for (const auto& l : wex::lexers::get()->get_lexers())
-    {
-      if (!l.scintilla_lexer().empty())
-      {
-        CAPTURE(l.scintilla_lexer());
-        wex::lexer one(l.scintilla_lexer());
-        REQUIRE(one.is_ok());
-#ifndef __WXMSW__
-        wex::lexer two(stc);
-        REQUIRE(two.set(one));
-        REQUIRE(two.is_ok());
-#endif
-      }
-    }
-
-    REQUIRE(!wex::lexer().is_ok());
-    REQUIRE(!wex::lexer(" cpp").is_ok());
-    REQUIRE(!wex::lexer("cpp ").is_ok());
-    REQUIRE(!wex::lexer("xxx").is_ok());
-
-    stc->get_lexer().set("cpp");
-    stc->open(wex::test::get_path());
-    wex::lexers::get()->apply_global_styles(stc);
-    wex::lexers::get()->apply(stc);
-
-    stc->get_file().reset_contents_changed();
-  }
-
   SUBCASE("link")
   {
     stc->SetText("no link");
@@ -327,13 +289,6 @@ TEST_CASE("wex::stc")
   SUBCASE("popup")
   {
     REQUIRE(stc->get_lexer().set("cpp"));
-  }
-
-  SUBCASE("position")
-  {
-    stc->position_restore();
-    stc->position_save();
-    REQUIRE(stc->position_restore());
   }
 
   SUBCASE("shift-double-click")

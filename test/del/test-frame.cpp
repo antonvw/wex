@@ -155,6 +155,12 @@ TEST_CASE("wex::del::frame")
     del_frame()->vcs_annotate_commit(stc, 5, commit_id);
   }
 
+  SUBCASE("vcs_blame")
+  {
+    auto* stc = get_stc();
+    del_frame()->vcs_blame(stc);
+  }
+
   SUBCASE("vcs_blame_revision")
   {
     auto*             stc = get_stc();

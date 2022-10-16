@@ -249,7 +249,7 @@ void wex::stc::bind_all()
       id::stc::uppercase},
      {[=, this](wxCommandEvent& event)
       {
-        fold_all();
+        fold(true);
       },
       id::stc::fold_all},
 

@@ -2,7 +2,7 @@
 // Name:      blame.h
 // Purpose:   Declaration of class wex::blame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2019-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -27,21 +27,23 @@ class stc;
 /// \dot
 /// digraph mode {
 ///   apply_margin    [label="lexers::apply_margin_text_style", fontsize=9, shape=diamond, color=grey]
-///   blame           [label="factory::blame", fontsize=9, shape=component, color=grey]
+///   blame           [label="wex::blame", fontsize=9, shape=component, color=grey]
 ///   blame_margin    [label="stc::blame_margin", fontsize=9, shape=diamond, color=grey]
 ///   blame_revision  [label="stc::blame_revision", fontsize=9, shape=diamond, color=grey]
 ///   boost           [label="boost::process", fontsize=9, shape=component, color=grey]
 ///   open_file       [label="frame::open_file", fontsize=9, shape=diamond, color=grey]
 ///   process         [label="wex::process", fontsize=9, shape=component, color=grey]
 ///   stc             [label="wex::stc", fontsize=9, shape=component, color=grey]
-///   stc_no_margin   [label="stc no margin"]
-///   stc_margin      [label="stc margin"]
+///   stc_no_margin   [label="stc no margin", fontname="times bold"]
+///   stc_margin      [label="stc margin", fontname="times bold"]
 ///   vcs_blame_show  [label="frame::vcs_blame_show", fontsize=9, shape=diamond, color=grey]
 ///   vcs_entry       [label="wex::vcs_entry", fontsize=9, shape=component, color=grey]
 ///   vcs_execute     [label="frame::vcs_execute", fontsize=9, shape=diamond, color=grey]
 ///
 ///   {rank=same init stc_no_margin stc_margin}
-///   {rank=same blame_margin blame_revision vcs_execute}
+///   {rank=same blame_margin blame_revision}
+///   {rank=same blame stc}
+///   {rank=same vcs_execute vcs_entry vcs_blame_show}
 /// 
 ///   init            -> stc_no_margin [style=dotted,label="start"]
 ///   apply_margin    -> stc_margin [label="done"]
@@ -156,6 +158,6 @@ private:
 
   bool m_skip_info{false};
 
-  size_t m_date_print{10};
+  size_t m_date_print{10}; // cannot be const because of used copy assignment
 };
 }; // namespace wex

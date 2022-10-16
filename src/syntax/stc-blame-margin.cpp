@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      stc.cpp
-// Purpose:   Implementation of class wex::stc blame margin methods
+// Name:      stc-blame-margin.cpp
+// Purpose:   Implementation of class wex::syntax::stc blame_margin methods
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////

@@ -55,17 +55,6 @@ public:
   /// as previous line.
   virtual bool auto_indentation(int c) { return false; }
 
-  /// Enables or disables folding depending on fold property
-  /// (default not implemented).
-  virtual void fold(
-    /// if document contains more than 'Auto fold' lines,
-    /// or if fold_all (and fold property is on) is specified,
-    /// always all lines are folded.
-    bool fold_all = false)
-  {
-    ;
-  };
-
   /// Returns stc data.
   virtual wex::data::stc* get_data() { return nullptr; }
 
@@ -105,12 +94,6 @@ public:
   /// Hex sync.
   virtual bool get_hexmode_sync() { return false; }
 
-  /// Returns word at position.
-  virtual const std::string get_word_at_pos(int pos) const
-  {
-    return std::string();
-  };
-
   /// Injects data.
   virtual bool inject(const data::control& data) { return false; }
 
@@ -145,13 +128,6 @@ public:
   /// Returns the path, as used by the file.
   /// Pure virtual, must be overridden.
   virtual const wex::path& path() const = 0;
-
-  /// Restores saved position.
-  /// Returns true if position was saved before.
-  virtual bool position_restore() { return false; }
-
-  /// Saves position.
-  virtual void position_save() { ; }
 
   /// Prints the document.
   virtual void print(bool prompt = true) { ; }
@@ -252,6 +228,9 @@ public:
     return std::string(b.data(), b.length());
   }
 
+  /// Returns word at position.
+  const std::string get_word_at_pos(int pos) const;
+
   /// When clicked on a line with a text margin,
   /// returns revision id on the text margin, otherwise returns empty string.
   std::string margin_get_revision_id() const;
@@ -261,6 +240,13 @@ public:
 
   /// Shows text margin.
   void margin_text_show() { m_margin_text_is_shown = true; };
+
+  /// Restores saved position.
+  /// Returns true if position was saved before.
+  bool position_restore();
+
+  /// Saves position.
+  void position_save();
 
   /// Resets (all) margins.
   /// Default just resets all margins.
@@ -319,6 +305,8 @@ protected:
 
   const int m_margin_divider_number{1}, m_margin_folding_number{2},
     m_margin_line_number{0}, m_margin_text_number{3};
+
+  int m_saved_pos{-1}, m_saved_selection_start{-1}, m_saved_selection_end{-1};
 
   std::string m_renamed;
 };

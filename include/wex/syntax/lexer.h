@@ -22,7 +22,7 @@ class xml_node;
 
 namespace wex
 {
-namespace factory
+namespace syntax
 {
 class stc;
 };
@@ -37,8 +37,8 @@ public:
   /// Default constructor.
   explicit lexer(const std::string& lexer = std::string());
 
-  /// Constructor using factory stc.
-  explicit lexer(factory::stc* stc);
+  /// Constructor using syntax stc.
+  explicit lexer(syntax::stc* stc);
 
   /// Constructor using xml node.
   explicit lexer(const pugi::xml_node* node);
@@ -207,11 +207,11 @@ private:
   std::vector<std::tuple<
     std::string,
     int,
-    std::function<void(factory::stc* stc, int attrib)>>>
+    std::function<void(syntax::stc* stc, int attrib)>>>
     m_attribs;
 
   bool m_is_ok{false}, m_previewable{false};
 
-  factory::stc* m_stc{nullptr};
+  syntax::stc* m_stc{nullptr};
 };
 }; // namespace wex

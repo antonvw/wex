@@ -11,52 +11,56 @@
 
 TEST_CASE("wex::stc_undo")
 {
-  get_stc()->set_text("aaaaa\nbbbbb\nccccc\nddddddddd\n");
+  auto* stc = new wex::test::stc();
+
+  stc->set_text("aaaaa\nbbbbb\nccccc\nddddddddd\n");
 
   SUBCASE("action")
   {
-    REQUIRE(!get_stc()->CanUndo());
+    REQUIRE(stc->CanUndo());
 
     {
       wex::stc_undo undo(
-        get_stc(),
+        stc,
         wex::stc_undo::undo_t().set(wex::stc_undo::UNDO_ACTION));
 
-      get_stc()->AppendText("hello1");
-      get_stc()->AppendText("hello2");
-      get_stc()->AppendText("hello3");
+      stc->AppendText("hello1");
+      stc->AppendText("hello2");
+      stc->AppendText("hello3");
     }
 
-    get_stc()->Undo();
+    stc->Undo();
 
-    REQUIRE(get_stc()->get_text().find("hello") == std::string::npos);
+    REQUIRE(stc->get_text().find("hello") == std::string::npos);
   }
 
   SUBCASE("pos")
   {
-    get_stc()->SetCurrentPos(5);
+    stc->SetCurrentPos(5); // should not set a selection, but it does?
+    stc->SetSelection(5, 5);
+    REQUIRE(stc->GetCurrentPos() == 5);
 
     {
       wex::stc_undo uno(
-        get_stc(),
+        stc,
         wex::stc_undo::undo_t().set(wex::stc_undo::UNDO_POS));
-      get_stc()->SetCurrentPos(25);
+      stc->SetCurrentPos(25);
     }
 
-    REQUIRE(get_stc()->GetCurrentPos() == 5);
+    REQUIRE(stc->GetCurrentPos() == 5);
   }
 
   SUBCASE("sel-none")
   {
-    get_stc()->SelectNone();
+    stc->SelectNone();
 
     {
       wex::stc_undo undo(
-        get_stc(),
+        stc,
         wex::stc_undo::undo_t().set(wex::stc_undo::UNDO_SEL_NONE));
-      get_stc()->SetSelection(4, 8);
+      stc->SetSelection(4, 8);
     }
 
-    REQUIRE(get_stc()->GetSelectedText().empty());
+    REQUIRE(stc->GetSelectedText().empty());
   }
 }

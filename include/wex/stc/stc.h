@@ -21,7 +21,6 @@
 namespace wex
 {
 class auto_complete;
-class blame;
 class indicator;
 class item;
 class item_dialog;
@@ -194,8 +193,6 @@ public:
   bool find(const std::string& text, int find_flags = -1, bool find_next = true)
     override;
 
-  void fold(bool fold_all = false) override;
-
   wex::data::stc* get_data() override { return &m_data; }
 
   const ex_command& get_ex_command() const override
@@ -213,10 +210,9 @@ public:
     override;
   bool get_hexmode_sync() override;
 
-  int               get_current_line() const override;
-  int               get_line_count() const override;
-  int               get_line_count_request() override;
-  const std::string get_word_at_pos(int pos) const override;
+  int get_current_line() const override;
+  int get_line_count() const override;
+  int get_line_count_request() override;
 
   void goto_line(int line) override;
   bool inject(const data::control& data) override;
@@ -228,8 +224,6 @@ public:
 
   const wex::path& path() const override { return m_file.path(); }
 
-  bool position_restore() override;
-  void position_save() override;
   void print(bool prompt = true) override;
   void print_preview(
     wxPreviewFrameModalityKind kind = wxPreviewFrame_AppModal) override;
@@ -272,7 +266,6 @@ private:
   void eol_action(const wxCommandEvent& event);
   void file_action(const wxCommandEvent& event);
   bool file_readonly_attribute_changed();
-  void fold_all();
   void guess_type_and_modeline();
   void jump_action();
   void key_action(wxKeyEvent& event);
@@ -286,8 +279,6 @@ private:
   void sort_action(const wxCommandEvent& event);
 
   const marker m_marker_change = marker(1);
-
-  int m_saved_pos{-1}, m_saved_selection_start{-1}, m_saved_selection_end{-1};
 
   bool m_skip{false};
 
