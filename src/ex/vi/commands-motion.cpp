@@ -91,6 +91,8 @@ constexpr int c_strcmp(char const* lhs, char const* rhs)
 
 bool wex::vi::command_finish(bool user_input)
 {
+  reset_search_flags();
+
   // The command string contains original command, optional count,
   // followed by / or ?, and optional search text.
   if (regex v("^([1-9][0-9]*)([/?])"); v.search(m_command_string) == 2)

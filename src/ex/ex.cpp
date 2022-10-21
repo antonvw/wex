@@ -343,6 +343,11 @@ void wex::ex::reset_search_flags()
      wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX);
 }
 
+void wex::ex::search_whole_word()
+{
+  m_search_flags |= wxSTC_FIND_WHOLEWORD;
+}
+
 void wex::ex::set_registers_delete(const std::string& value)
 {
   if (value.empty())

@@ -36,8 +36,7 @@ TEST_CASE("wex::stc_undo")
 
   SUBCASE("pos")
   {
-    stc->SetCurrentPos(5); // should not set a selection, but it does?
-    stc->SetSelection(5, 5);
+    stc->SetCurrentPos(5);
     REQUIRE(stc->GetCurrentPos() == 5);
 
     {

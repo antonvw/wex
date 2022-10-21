@@ -194,6 +194,16 @@ navigate
 	Appl
 	Output Contains	8
 
+substitute-undo
+	Input	:a|line has text
+	...	:a|line has a tiger
+	...	:a|line has simon and simon and garfunkel
+	...	:%s/simon/nick/g
+	...	u
+	Appl
+	Output Contains	2
+	Output Contains	simon
+
 undo
 	Input Many	:a|line	10
 	Input	:1

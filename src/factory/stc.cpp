@@ -208,7 +208,7 @@ void wex::factory::stc::position_save()
 {
   m_saved_pos = GetCurrentPos();
 
-  if (is_visual() && !GetSelectionEmpty())
+  if (is_visual() && vi_is_visual())
   {
     m_saved_selection_start = GetSelectionStart();
     m_saved_selection_end   = GetSelectionEnd();

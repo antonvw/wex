@@ -307,4 +307,17 @@ TEST_CASE("wex::stc")
     stc->add_text(" added");
     REQUIRE(stc->get_text().find("added") != std::string::npos);
   }
+
+  SUBCASE("vi")
+  {
+    REQUIRE(stc->vi_command("G"));
+    REQUIRE(stc->vi_command_finish(false));
+    stc->vi_record("xx");
+    REQUIRE(!stc->vi_is_visual());
+    REQUIRE(stc->vi_register('c').empty());
+    REQUIRE((stc->vi_search_flags() & wxSTC_FIND_REGEXP) > 0);
+    REQUIRE(stc->vi_mode().empty());
+
+    REQUIRE(stc->is_visual());
+  }
 }

@@ -106,7 +106,7 @@ public:
   /// Returns true if we are in hex mode (default false).
   virtual bool is_hexmode() const { return false; }
 
-  /// Returns true if we are in visual mode (default true).
+  /// Returns true if we are in visual mode (not ex mode) (default true).
   virtual bool is_visual() const { return true; }
 
   /// Returns the name of the lexer.
@@ -181,6 +181,9 @@ public:
 
   /// Finish last vi command (default false).
   virtual bool vi_command_finish(bool user_input) { return false; }
+
+  /// Returns true if we are in vi visual mode (default false).
+  virtual bool vi_is_visual() const { return false; }
 
   /// Returns vi mode as a string.
   virtual const std::string vi_mode() const { return std::string(); }

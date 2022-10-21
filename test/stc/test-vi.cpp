@@ -48,6 +48,14 @@ TEST_CASE("wex::vi")
   auto* vi  = &get_stc()->get_vi();
   stc->set_text("");
 
+  SUBCASE("find")
+  {
+    stc->set_text("find findnottext to another find");
+    REQUIRE(vi->command("l"));
+    REQUIRE(vi->command("*"));
+    REQUIRE(stc->GetCurrentPos() == 32);
+  }
+
   SUBCASE("goto") // goto, /, ?, n and N.
   {
     stc->set_text("aaaaa\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");
