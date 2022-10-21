@@ -9,9 +9,9 @@
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
-#include <wex/factory/stc.h>
 #include <wex/syntax/lexer.h>
 #include <wex/syntax/lexers.h>
+#include <wex/syntax/stc.h>
 #include <wex/syntax/util.h>
 #include <wx/platinfo.h>
 
@@ -74,7 +74,7 @@ wex::lexer::lexer(const std::string& lexer)
   }
 }
 
-wex::lexer::lexer(factory::stc* stc)
+wex::lexer::lexer(syntax::stc* stc)
   : m_stc(stc)
 {
 }
@@ -615,7 +615,7 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
           {"line", wxSTC_EDGE_LINE},
           {"background", wxSTC_EDGE_BACKGROUND}},
          v),
-       [&](factory::stc* stc, int attrib)
+       [&](syntax::stc* stc, int attrib)
        {
          switch (attrib)
          {
@@ -645,7 +645,7 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
           {"afterindent", wxSTC_WS_VISIBLEAFTERINDENT},
           {"onlyindent", wxSTC_WS_VISIBLEONLYININDENT}},
          v),
-       [&](factory::stc* stc, int attrib)
+       [&](syntax::stc* stc, int attrib)
        {
          if (attrib >= 0)
          {
@@ -661,7 +661,7 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
        convert_int_attrib(
          {{"arrow", wxSTC_TD_LONGARROW}, {"strike", wxSTC_TD_STRIKEOUT}},
          v),
-       [&](factory::stc* stc, int attrib)
+       [&](syntax::stc* stc, int attrib)
        {
          if (attrib >= 0)
          {
@@ -675,7 +675,7 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
     m_attribs.push_back(
       {_("Expand tabs"),
        convert_int_attrib({{"use", 0}, {"off", 1}}, v),
-       [&](factory::stc* stc, int attrib)
+       [&](syntax::stc* stc, int attrib)
        {
          if (attrib >= 0)
          {
@@ -689,7 +689,7 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
     m_attribs.push_back(
       {_("Tab width"),
        v,
-       [&](factory::stc* stc, int attrib)
+       [&](syntax::stc* stc, int attrib)
        {
          if (attrib >= 0)
          {
@@ -709,7 +709,7 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
           {"char", wxSTC_WRAP_CHAR},
           {"whitespace", wxSTC_WRAP_WHITESPACE}},
          v),
-       [&](factory::stc* stc, int attrib)
+       [&](syntax::stc* stc, int attrib)
        {
          if (attrib >= 0)
          {

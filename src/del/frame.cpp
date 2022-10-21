@@ -17,9 +17,9 @@
 #include <wex/del/wex.h>
 #include <wex/ex/command-parser.h>
 #include <wex/ex/macros.h>
+#include <wex/stc/wex.h>
 #include <wex/syntax/blame.h>
 #include <wex/syntax/lexers.h>
-#include <wex/stc/wex.h>
 #include <wex/ui/wex.h>
 #include <wex/vcs/wex.h>
 
@@ -760,10 +760,10 @@ void wex::del::frame::vcs_annotate_commit(
 {
   wex::vcs vcs{
     {!stc->get_data()->head_path().empty() ? stc->get_data()->head_path() :
-                                             path()}};
+                                             stc->path()}};
 
   if (const auto& revision(commit_id);
-      !revision.empty() && vcs.entry().log(path(), revision))
+      !revision.empty() && vcs.entry().log(stc->path(), revision))
   {
     stc->AnnotationSetText(
       line,
@@ -775,14 +775,22 @@ void wex::del::frame::vcs_annotate_commit(
   }
 }
 
-void wex::del::frame::vcs_blame_revison(
+void wex::del::frame::vcs_blame(syntax::stc* stc)
+{
+  if (wex::vcs vcs{{stc->path()}}; vcs.execute("blame " + stc->path().string()))
+  {
+    vcs_blame_show(&vcs.entry(), stc);
+  }
+}
+
+void wex::del::frame::vcs_blame_revision(
   syntax::stc*       stc,
   const std::string& renamed,
   const std::string& offset)
 {
   blaming bl(stc, offset);
 
-  if (!bl.execute(path()))
+  if (!bl.execute(stc->path()))
   {
     return;
   }
@@ -795,13 +803,13 @@ void wex::del::frame::vcs_blame_revison(
 
   if (data.head_path().empty())
   {
-    data.head_path(path());
+    data.head_path(stc->path());
   }
 
-  factory::frame::open_file(wex::path(bl.renamed()), bl.vcs().entry(), data);
+  open_file_vcs(wex::path(path(bl.renamed())), bl.vcs().entry(), data);
 }
 
-bool wex::del::frame::vcs_blame_show(vcs_entry* vcs, stc* stc)
+bool wex::del::frame::vcs_blame_show(vcs_entry* vcs, syntax::stc* stc)
 {
   if (!vcs->get_blame().use() || vcs->std_out().empty())
   {
@@ -824,7 +832,7 @@ bool wex::del::frame::vcs_blame_show(vcs_entry* vcs, stc* stc)
          vcs->std_out(),
          boost::char_separator<char>("\r\n")))
   {
-    blame->parse(path(), it);
+    blame->parse(stc->path(), it);
 
     if (first)
     {

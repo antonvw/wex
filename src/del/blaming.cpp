@@ -18,7 +18,7 @@ const std::vector<path> paths(factory::stc* stc)
 {
   if (const auto& p(stc->get_data()->head_path()); p.empty())
   {
-    return {{path()}};
+    return {{stc->path()}};
   }
   else
   {
@@ -44,7 +44,7 @@ bool wex::blaming::error(const std::string& msg)
 
 bool wex::blaming::execute(const path& path)
 {
-  log::trace("blame revision") << m_vcs.entry().name();
+  log::trace("blame revision") << m_vcs.entry().name() << " id: " << m_revision;
 
   m_path = path;
 

@@ -157,9 +157,10 @@ size_t word_action(vi* vi, const std::string& command)
     else
     {
       find_replace_data::get()->set_find_string(word);
+      vi->search_whole_word();
       vi->get_stc()->find(
         find_replace_data::get()->get_find_string(),
-        vi->search_flags() | wxSTC_FIND_WHOLEWORD,
+        vi->search_flags(),
         command == "*");
     }
   }

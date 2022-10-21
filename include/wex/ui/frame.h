@@ -217,8 +217,11 @@ public:
     ;
   };
 
+  /// Blames the specified stc.
+  virtual void vcs_blame(syntax::stc*) { ; }
+
   /// Blames revision.
-  virtual void vcs_blame_revison(
+  virtual void vcs_blame_revision(
     syntax::stc*,
     const std::string& renamed,
     const std::string& offset)

@@ -7,10 +7,10 @@
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
-#include <wex/syntax/lexers.h>
 #include <wex/stc/beautify.h>
 #include <wex/stc/entry-dialog.h>
 #include <wex/stc/link.h>
+#include <wex/syntax/lexers.h>
 #include <wex/ui/item-dialog.h>
 #include <wex/ui/item-vector.h>
 #include <wx/settings.h>
@@ -80,6 +80,13 @@ void wex::stc::config_get()
   SetMarginWidth(
     m_margin_divider_number,
     iv.find<int>(_("stc.margin.Divider")));
+
+  if (const auto blame_margin(iv.find<int>(_("stc.margin.Text")));
+      blame_margin != -1 && margin_text_is_shown())
+  {
+    SetMarginWidth(m_margin_text_number, blame_margin);
+  }
+
   SetPrintColourMode(iv.find<long>(_("stc.Print flags")));
   SetTabDrawMode(iv.find<long>(_("stc.Tab draw mode")));
   SetTabWidth(iv.find<int>(_("stc.Tab width")));
@@ -229,6 +236,7 @@ void wex::stc::on_init()
          {_("stc.Autocomplete maxwidth"), 0, 100, 0},
          {_("stc.Indent"), 0, 500, 2},
          {_("stc.Tab width"), 1, 500, 2},
+         {_("blame.Author size"), -1, 500, -1},
          {_("<i>Line Margins:</i>")},
          {_("stc.margin.Divider"), 0, 40, 16},
          {_("stc.margin.Folding"), 0, 40, 16},

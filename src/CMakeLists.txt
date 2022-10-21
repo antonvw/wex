@@ -64,13 +64,13 @@ add_subdirectory(vcs)
 add_subdirectory(del)
 
 set_target_properties(
-  ${WEX-LIBS}
+  ${wex_own_LIBRARIES}
   PROPERTIES 
   VERSION ${PROJECT_VERSION}
   SOVERSION ${PROJECT_VERSION_MAJOR})
 
 if (CMAKE_BUILD_TYPE EQUAL "Debug")
   set_target_properties(
-    ${WEX-LIBS}
+    ${wex_own_LIBRARIES}
     PROPERTIES DEBUG_POSTFIX "d")
 endif ()

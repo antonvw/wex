@@ -62,6 +62,19 @@ void wex::factory::stc::bind_wx()
       wxID_DELETE}});
 }
 
+void wex::factory::stc::clear(bool set_savepoint)
+{
+  SetReadOnly(false);
+
+  ClearAll();
+
+  if (set_savepoint)
+  {
+    EmptyUndoBuffer();
+    SetSavePoint();
+  }
+}
+
 const std::string wex::factory::stc::eol() const
 {
   switch (GetEOLMode())
@@ -135,6 +148,27 @@ const std::string wex::factory::stc::get_selected_text() const
                            std::string(b.data(), b.length() - 1);
 }
 
+const std::string wex::factory::stc::get_word_at_pos(int pos) const
+{
+  const auto word_start = const_cast<stc*>(this)->WordStartPosition(pos, true);
+  const auto word_end   = const_cast<stc*>(this)->WordEndPosition(pos, true);
+
+  if (word_start == word_end && word_start < GetTextLength())
+  {
+    const std::string word = const_cast<stc*>(this)
+                               ->GetTextRange(word_start, word_start + 1)
+                               .ToStdString();
+
+    return !isspace(word[0]) ? word : std::string();
+  }
+  else
+  {
+    return const_cast<stc*>(this)
+      ->GetTextRange(word_start, word_end)
+      .ToStdString();
+  }
+}
+
 void wex::factory::stc::goto_line(int line)
 {
   GotoLine(line);
@@ -148,6 +182,39 @@ std::string wex::factory::stc::margin_get_revision_id() const
   return get_word(revision);
 }
 
+bool wex::factory::stc::position_restore()
+{
+  if (m_saved_selection_start != -1 && m_saved_selection_end != -1)
+  {
+    SetSelection(m_saved_selection_start, m_saved_selection_end);
+    SetCurrentPos(m_saved_selection_start);
+  }
+  else if (m_saved_pos != -1)
+  {
+    SetSelection(m_saved_pos, m_saved_pos);
+    SetCurrentPos(m_saved_pos);
+  }
+  else
+  {
+    return false;
+  }
+
+  EnsureCaretVisible();
+
+  return true;
+}
+
+void wex::factory::stc::position_save()
+{
+  m_saved_pos = GetCurrentPos();
+
+  if (is_visual() && vi_is_visual())
+  {
+    m_saved_selection_start = GetSelectionStart();
+    m_saved_selection_end   = GetSelectionEnd();
+  }
+}
+
 void wex::factory::stc::reset_margins(margin_t type)
 {
   for (int i = 0; i < type.size(); ++i)
@@ -155,6 +222,11 @@ void wex::factory::stc::reset_margins(margin_t type)
     if (type.test(i))
     {
       SetMarginWidth(i, 0);
+
+      if (i == MARGIN_TEXT)
+      {
+        m_margin_text_is_shown = false;
+      }
     }
   }
 }

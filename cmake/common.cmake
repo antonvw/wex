@@ -95,18 +95,18 @@ function(wex_install)
   # install libraries
   # this should be the same dir as in FindWEX.cmake
   if (MSVC)
-    file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.lib)
+    file(GLOB_RECURSE wex_own_LIBRARIES ${CMAKE_BINARY_DIR}/*.lib)
   else ()
     if (wexBUILD_SHARED)
       if (APPLE)
-        file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.dylib
+        file(GLOB_RECURSE wex_own_LIBRARIES ${CMAKE_BINARY_DIR}/*.dylib
           ${CMAKE_BINARY_DIR}/*.a)
       else ()
-        file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.so*
+        file(GLOB_RECURSE wex_own_LIBRARIES ${CMAKE_BINARY_DIR}/*.so*
           ${CMAKE_BINARY_DIR}/*.a)
       endif ()
     else ()
-      file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.a)
+      file(GLOB_RECURSE wex_own_LIBRARIES ${CMAKE_BINARY_DIR}/*.a)
     endif ()
   endif ()
   
@@ -116,7 +116,7 @@ function(wex_install)
       DESTINATION "lib")
   endif ()
 
-  install(FILES ${wex_LIBS} 
+  install(FILES ${wex_own_LIBRARIES} 
     DESTINATION "lib")
 endfunction()
 
@@ -158,7 +158,7 @@ endfunction()
 
 function(wex_target_link_all)
   if (${ARGC} STREQUAL "0")
-    set (wex_use_LIBRARIES ${wex_own_LIBRARIES})
+    set (wex_use_LIBRARIES ${wex_own_LIBRARIES} ${ODBC_LIBRARIES})
   else ()
     set (wex_use_LIBRARIES ${ARGN})
   endif ()  

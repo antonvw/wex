@@ -12,6 +12,7 @@
 
 namespace wex
 {
+class blame;
 class indicator;
 
 namespace syntax
@@ -23,17 +24,28 @@ class stc : public factory::stc
 public:
   /// Virtual interface
 
-  virtual std::string lexer_name() const final
-  {
-    return m_lexer.display_lexer();
-  }
-
   virtual bool lexer_is_previewable() const final
   {
     return m_lexer.is_previewable();
   }
 
+  virtual std::string lexer_name() const final
+  {
+    return m_lexer.display_lexer();
+  }
+
   /// Other methods.
+
+  /// Blames margin.
+  void blame_margin(const blame* blame);
+
+  /// Enables or disables folding depending on fold property
+  /// (default not implemented).
+  void fold(
+    /// if document contains more than 'Auto fold' lines,
+    /// or if fold_all (and fold property is on) is specified,
+    /// always all lines are folded.
+    bool fold_all = false);
 
   /// Returns the lexer.
   const auto& get_lexer() const { return m_lexer; }
@@ -41,8 +53,11 @@ public:
   /// Returns the lexer.
   auto& get_lexer() { return m_lexer; }
 
+  /// Returns renamed revision.
+  std::string margin_get_revision_renamed() const;
+
   /// Sets an indicator at specified start and end pos.
-  /// Default false, not implemented.
+  /// Returns false if indicator is not loaded.
   bool set_indicator(
     /// indicator to use
     const indicator& indicator,
@@ -52,6 +67,8 @@ public:
     int end = -1);
 
 private:
+  void fold_all();
+
   lexer m_lexer;
 };
 }; // namespace syntax

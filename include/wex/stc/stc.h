@@ -21,7 +21,6 @@
 namespace wex
 {
 class auto_complete;
-class blame;
 class indicator;
 class item;
 class item_dialog;
@@ -89,9 +88,6 @@ public:
 
   /// Returns auto_complete.
   auto* auto_complete() { return m_auto_complete; }
-
-  /// Blames margin.
-  void blame_margin(const blame* blame);
 
   /// Sets the configurable parameters to values currently in config.
   void config_get();
@@ -194,12 +190,8 @@ public:
 
   bool auto_indentation(int c) override;
 
-  void clear(bool set_savepoint = true) override;
-
   bool find(const std::string& text, int find_flags = -1, bool find_next = true)
     override;
-
-  void fold(bool fold_all = false) override;
 
   wex::data::stc* get_data() override { return &m_data; }
 
@@ -218,10 +210,9 @@ public:
     override;
   bool get_hexmode_sync() override;
 
-  int               get_current_line() const override;
-  int               get_line_count() const override;
-  int               get_line_count_request() override;
-  const std::string get_word_at_pos(int pos) const override;
+  int get_current_line() const override;
+  int get_line_count() const override;
+  int get_line_count_request() override;
 
   void goto_line(int line) override;
   bool inject(const data::control& data) override;
@@ -233,14 +224,11 @@ public:
 
   const wex::path& path() const override { return m_file.path(); }
 
-  bool position_restore() override;
-  void position_save() override;
   void print(bool prompt = true) override;
   void print_preview(
     wxPreviewFrameModalityKind kind = wxPreviewFrame_AppModal) override;
   void
   properties_message(path::log_t t = path::log_t().set(path::LOG_MOD)) override;
-  void reset_margins(margin_t type = margin_t().set()) override;
   bool set_hexmode(bool on) override { return get_hexmode().set(on); }
   void set_search_flags(int flags) override;
   void set_text(const std::string& value) override;
@@ -252,6 +240,7 @@ public:
   bool        vi_command(const std::string& command) override;
   bool        vi_command_finish(bool user_input) override;
   void        vi_record(const std::string& command) override;
+  bool        vi_is_visual() const override;
   std::string vi_register(char c) const override;
   int         vi_search_flags() const override { return m_vi->search_flags(); }
   const std::string vi_mode() const override;
@@ -267,38 +256,30 @@ private:
 
   typedef std::bitset<3> link_t;
 
-  void        bind_all();
-  void        bind_other();
-  void        blame_revision(const std::string& offset = std::string());
-  void        build_popup_menu(menu& menu);
-  void        build_popup_menu_edit(menu& menu);
-  void        build_popup_menu_link(menu& menu);
-  void        check_brace();
-  bool        check_brace(int pos);
-  void        eol_action(const wxCommandEvent& event);
-  void        file_action(const wxCommandEvent& event);
-  bool        file_readonly_attribute_changed();
-  void        fold_all();
-  void        guess_type_and_modeline();
-  void        jump_action();
-  void        key_action(wxKeyEvent& event);
-  bool        link_open(link_t mode, std::string* filename = nullptr);
-  void        margin_action(wxStyledTextEvent& event);
-  std::string margin_get_revision_renamed() const;
-  void        mouse_action(wxMouseEvent& event);
-  void        mark_modified(const wxStyledTextEvent& event);
-  void        on_idle(wxIdleEvent& event);
-  void        on_styled_text(wxStyledTextEvent& event);
-  void        show_properties();
-  void        sort_action(const wxCommandEvent& event);
-
-  const int m_margin_divider_number{1}, m_margin_folding_number{2},
-    m_margin_line_number{0}, m_margin_text_number{3};
+  void bind_all();
+  void bind_other();
+  void blame_revision(const std::string& offset = std::string());
+  void build_popup_menu(menu& menu);
+  void build_popup_menu_edit(menu& menu);
+  void build_popup_menu_link(menu& menu);
+  void check_brace();
+  bool check_brace(int pos);
+  void eol_action(const wxCommandEvent& event);
+  void file_action(const wxCommandEvent& event);
+  bool file_readonly_attribute_changed();
+  void guess_type_and_modeline();
+  void jump_action();
+  void key_action(wxKeyEvent& event);
+  bool link_open(link_t mode, std::string* filename = nullptr);
+  void margin_action(wxStyledTextEvent& event);
+  void mouse_action(wxMouseEvent& event);
+  void mark_modified(const wxStyledTextEvent& event);
+  void on_idle(wxIdleEvent& event);
+  void on_styled_text(wxStyledTextEvent& event);
+  void show_properties();
+  void sort_action(const wxCommandEvent& event);
 
   const marker m_marker_change = marker(1);
-
-  int m_margin_text_click{-1}, m_saved_pos{-1}, m_saved_selection_start{-1},
-    m_saved_selection_end{-1};
 
   bool m_skip{false};
 

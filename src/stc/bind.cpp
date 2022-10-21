@@ -249,7 +249,7 @@ void wex::stc::bind_all()
       id::stc::uppercase},
      {[=, this](wxCommandEvent& event)
       {
-        fold_all();
+        fold(true);
       },
       id::stc::fold_all},
 
@@ -279,6 +279,7 @@ void wex::stc::bind_all()
      {[=, this](wxCommandEvent& event)
       {
         config("blame.author").toggle(true);
+        m_frame->vcs_blame(this);
       },
       id::stc::margin_text_author},
 
@@ -297,12 +298,14 @@ void wex::stc::bind_all()
      {[=, this](wxCommandEvent& event)
       {
         config("blame.date").toggle(true);
+        m_frame->vcs_blame(this);
       },
       id::stc::margin_text_date},
 
      {[=, this](wxCommandEvent& event)
       {
         config("blame.id").toggle(false);
+        m_frame->vcs_blame(this);
       },
       id::stc::margin_text_id},
 

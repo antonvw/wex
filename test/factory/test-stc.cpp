@@ -14,12 +14,16 @@ TEST_CASE("wex::factory::stc")
 
   SUBCASE("margin")
   {
+    REQUIRE(!stc->margin_text_is_shown());
     stc->SetMarginWidth(0, 10);
     stc->SetMarginWidth(1, 20);
     REQUIRE(stc->GetMarginWidth(0) == 10);
     REQUIRE(stc->GetMarginWidth(1) == 20);
+    stc->margin_text_show();
+    REQUIRE(stc->margin_text_is_shown());
 
     stc->reset_margins();
+    REQUIRE(!stc->margin_text_is_shown());
     REQUIRE(stc->GetMarginWidth(0) == 0);
     REQUIRE(stc->GetMarginWidth(1) == 0);
 
@@ -29,6 +33,11 @@ TEST_CASE("wex::factory::stc")
       wex::factory::stc::margin_t().set(wex::factory::stc::MARGIN_FOLDING));
     REQUIRE(stc->GetMarginWidth(0) == 10);
     REQUIRE(stc->GetMarginWidth(1) == 0);
+
+    stc->SetMarginWidth(3, 10);
+    stc->MarginSetText(0, "54321 xxx");
+    REQUIRE(stc->get_margin_text_click() == -1);
+    REQUIRE(stc->margin_get_revision_id().empty()); // not yet clicked
   }
 
   SUBCASE("motion")
@@ -64,9 +73,40 @@ TEST_CASE("wex::factory::stc")
 
   SUBCASE("other")
   {
+    stc->bind_wx();
+
+    REQUIRE(stc->get_selected_text().empty());
+
+    stc->set_text("baan");
+    stc->SelectAll();
+    REQUIRE(stc->get_text() == "baan");
+    REQUIRE(stc->get_selected_text() == "baan");
+
+    REQUIRE(stc->vcs_renamed().empty());
+
     REQUIRE(!stc->eol().empty());
     REQUIRE(stc->get_fold_level() == 0);
     REQUIRE(stc->lexer_name().empty());
     REQUIRE(!stc->lexer_is_previewable());
+
+    REQUIRE(stc->get_line_count() == 1);
+    REQUIRE(stc->get_line_count_request() == 1);
+  }
+
+  SUBCASE("position")
+  {
+    stc->position_restore();
+    stc->position_save();
+    REQUIRE(stc->position_restore());
+  }
+
+  SUBCASE("text")
+  {
+    stc->clear();
+    stc->add_text("baan");
+    REQUIRE(stc->get_text() == "baan");
+
+    stc->append_text("baan");
+    REQUIRE(stc->get_text() == "baanbaan");
   }
 }

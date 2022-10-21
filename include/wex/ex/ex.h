@@ -155,6 +155,9 @@ public:
   /// Returns search flags.
   auto search_flags() const { return m_search_flags; }
 
+  /// Sets the whole word flag in search flags.
+  void search_whole_word();
+
   /// Set mode.
   void use(mode_t mode);
 

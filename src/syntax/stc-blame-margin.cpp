@@ -1,20 +1,18 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      stc.cpp
-// Purpose:   Implementation of class wex::stc blame margin methods
+// Name:      stc-blame-margin.cpp
+// Purpose:   Implementation of class wex::syntax::stc blame_margin methods
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
 #include <wex/syntax/blame.h>
-#include <wex/stc/stc.h>
-#include <wex/ui/item-vector.h>
+#include <wex/syntax/stc.h>
 
-void wex::stc::blame_margin(const wex::blame* blame)
+void wex::syntax::stc::blame_margin(const wex::blame* blame)
 {
-  const item_vector iv(m_config_items);
-  const auto        margin_blame(iv.find<int>(_("stc.margin.Text")));
-  const int         w(std::max(
+  const int margin_blame(config(_("stc.margin.Text")).get(-1));
+  const int w(std::max(
     config(_("stc.Default font"))
         .get(wxFont(
           12,
@@ -29,9 +27,11 @@ void wex::stc::blame_margin(const wex::blame* blame)
   SetMarginWidth(
     m_margin_text_number,
     margin_blame == -1 ? blame->info().size() * w : margin_blame);
+
+  margin_text_show();
 }
 
-std::string wex::stc::margin_get_revision_renamed() const
+std::string wex::syntax::stc::margin_get_revision_renamed() const
 {
   return blame::margin_renamed(this);
 }
