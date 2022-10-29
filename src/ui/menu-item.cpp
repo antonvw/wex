@@ -105,14 +105,14 @@ void wex::menu_item::append(wex::menu* menu) const
       {
         item->SetBitmap(art.get_bitmap(
           wxART_MENU,
-          wxArtProvider::GetSizeHint(wxART_MENU, true)));
+          wxArtProvider::GetSizeHint(wxART_MENU)));
       }
       else if (!m_data.art().empty())
       {
         if (const auto& bitmap(wxArtProvider::GetBitmap(
               m_data.art(),
               wxART_MENU,
-              wxArtProvider::GetSizeHint(wxART_MENU, true)));
+              wxArtProvider::GetSizeHint(wxART_MENU)));
             bitmap.IsOk())
         {
           item->SetBitmap(bitmap);
