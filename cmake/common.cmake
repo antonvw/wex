@@ -21,11 +21,7 @@ function(wex_config)
   set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-v${CPACK_PACKAGE_VERSION}")
 
   if (MSVC)
-    if (${MSVC_TOOLSET_VERSION} LESS 142)
-      # Visual studio 2017:
-      file(GLOB_RECURSE dlls 
-        "C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/redist/x86/*.dll")
-    elseif(${MSVC_TOOLSET_VERSION} LESS 143)
+    if(${MSVC_TOOLSET_VERSION} LESS 143)
       # Visual studio 2019:
       file(GLOB_RECURSE dlls 
         "C:/Program Files (x86)/Microsoft Visual Studio/2019/vcruntime14*.dll")
@@ -57,6 +53,7 @@ function(wex_config)
 endfunction()  
 
 function(wex_install)
+  set(WEX_INSTALL_DIR "include/wex")
   set(MODULE_INSTALL_DIR ${CMAKE_ROOT}/Modules)
 
   # install FindWEX.cmake
@@ -70,27 +67,27 @@ function(wex_install)
   # install include files
   # this should be the same dir as in FindWEX.cmake
   install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/wex 
-    DESTINATION "include/wex")
+    DESTINATION ${WEX_INSTALL_DIR})
 
   install(DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets/include/wx 
-    DESTINATION "include/wex")
+    DESTINATION ${WEX_INSTALL_DIR})
 
   install(FILES ${CMAKE_SOURCE_DIR}/external/pugixml/src/pugiconfig.hpp 
-    DESTINATION "include/wex")
+    DESTINATION ${WEX_INSTALL_DIR})
 
   install(FILES ${CMAKE_SOURCE_DIR}/external/pugixml/src/pugixml.hpp 
-    DESTINATION "include/wex")
+    DESTINATION ${WEX_INSTALL_DIR})
 
   install(FILES ${CMAKE_SOURCE_DIR}/external/ctags/libreadtags/readtags.h
-    DESTINATION "include/wex")
+    DESTINATION ${WEX_INSTALL_DIR})
 
   if (ODBC_FOUND)
     install(FILES ${CMAKE_SOURCE_DIR}/external/otl/otlv4.h
-      DESTINATION "include/wex")
+      DESTINATION ${WEX_INSTALL_DIR})
   endif ()
   
   install(FILES ${wexSETUP_H} 
-    DESTINATION "include/wex/wx")
+    DESTINATION ${WEX_INSTALL_DIR}/wx)
   
   # install libraries
   # this should be the same dir as in FindWEX.cmake

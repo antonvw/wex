@@ -33,13 +33,6 @@ execute_process(
   COMMAND git apply ../wxWidgets.patch
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets)
 
-configure_file(
-  src/syntax/wex/LexAda.cxx 
-  ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/scintilla/lexers COPYONLY)
-configure_file(
-  src/syntax/wex/Catalogue.cxx 
-  ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/scintilla/src COPYONLY)
-
 add_subdirectory(external)
 
 include(external/wxWidgets/build/cmake/toolkit.cmake)

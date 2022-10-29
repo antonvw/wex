@@ -3,7 +3,7 @@
 <!--
 Name:      wex-lexers-macro.xml
 Purpose:   Lexers configuration for wex.
-           See scintilla 3.7.2 (www.scintilla.org).
+           See scintilla 3.21.1 (https://scintilla.sourceforge.io/ScintillaHistory.html)
 Author:    Anton van Wezenbeek
 Copyright: (c) 2009-2022, Anton van Wezenbeek
 -->
@@ -356,6 +356,20 @@ Copyright: (c) 2009-2022, Anton van Wezenbeek
       <def no ="comment3"/>
     </def>
     
+    <def name = "cil">
+      <def no ="default"/>
+      <def no ="comment"/>
+      <def no ="commentline"/>
+      <def no ="word"/>
+      <def no ="word2"/>
+      <def no ="word3"/>
+      <def no ="string"/>
+      <def no ="label"/>
+      <def no ="operator"/>
+      <def no ="identifier"/>
+      <def no ="stringeol"/>
+    </def>
+
     <def name = "clarion">
       <def no ="default"/>
       <def no ="label"/>
@@ -535,6 +549,24 @@ Copyright: (c) 2009-2022, Anton van Wezenbeek
       <def no ="commentdockeyworderror"/>
     </def>
     
+    <def name = "dataflex">
+      <def no ="default"/>
+      <def no ="identifier"/>
+      <def no ="metatag"/>
+      <def no ="image"/>
+      <def no ="commentline"/>
+      <def no ="preprocessor"/>
+      <def no ="preprocessor2"/>
+      <def no ="number"/>
+      <def no ="hexnumber"/>
+      <def no ="word"/>
+      <def no ="string"/>
+      <def no ="stringeol"/>
+      <def no ="scopeword"/>
+      <def no ="operator"/>
+      <def no ="icode"/>
+    </def>
+
     <def name = "diff">
       <def no ="default"/>
       <def no ="comment"/>
@@ -544,6 +576,10 @@ Copyright: (c) 2009-2022, Anton van Wezenbeek
       <def no ="deleted"/>
       <def no ="added"/>
       <def no ="changed"/>
+      <def no ="patch_add"/>
+      <def no ="patch_delete"/>
+      <def no ="removed_patch_add"/>
+      <def no ="removed_patch_delete"/>
     </def>
     
     <def name = "DMAP">
@@ -850,6 +886,24 @@ Copyright: (c) 2009-2022, Anton van Wezenbeek
       <def no ="literate_codelim"/>
     </def>
     
+    <def name = "hollywood">
+      <def no ="default"/>
+      <def no ="comment"/>
+      <def no ="commentblock"/>
+      <def no ="number"/>
+      <def no ="keyword"/>
+      <def no ="stdapi"/>
+      <def no ="pluginapi"/>
+      <def no ="pluginmethod"/>
+      <def no ="string"/>
+      <def no ="stringblock"/>
+      <def no ="preprocessor"/>
+      <def no ="operator"/>
+      <def no ="identifier"/>
+      <def no ="constant"/>
+      <def no ="hexnumber"/>
+    </def>
+
     <def name = "hypertext">
       <def no ="default"/>
       <def no ="tag"/>
@@ -1137,6 +1191,17 @@ Copyright: (c) 2009-2022, Anton van Wezenbeek
       <def no ="label"/>
     </def>
     
+    <def name = "maxima">
+      <def no="operator"/>
+      <def no="commandending"/>
+      <def no="comment"/>
+      <def no="number"/>
+      <def no="string"/>
+      <def no="command"/>
+      <def no="variable"/>
+      <def no="unknown"/>
+    </def>
+  
     <def name = "magiksf">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1302,6 +1367,26 @@ Copyright: (c) 2009-2022, Anton van Wezenbeek
       <def no ="hiddencommand"/>
     </def>
     
+    <def name = "nim">
+      <def no ="default"/>
+      <def no ="comment"/>
+      <def no ="commentdoc"/>
+      <def no ="commentline"/>
+      <def no ="commentlinedoc"/>
+      <def no ="number"/>
+      <def no ="string"/>
+      <def no ="character"/>
+      <def no ="word"/>
+      <def no ="triple"/>
+      <def no ="tripledouble"/>
+      <def no ="backticks"/>
+      <def no ="funcname"/>
+      <def no ="stringeol"/>
+      <def no ="numerror"/>
+      <def no ="operator"/>
+      <def no ="identifier"/>
+    </def>
+
     <def name = "nncrontab">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1607,6 +1692,38 @@ Copyright: (c) 2009-2022, Anton van Wezenbeek
       <def no ="infixeol"/>
     </def>
     
+    <def name = "raku">
+      <def no ="default"/>
+      <def no ="error"/>
+      <def no ="commentline"/>
+      <def no ="commentembed"/>
+      <def no ="pod"/>
+      <def no ="character"/>
+      <def no ="heredoc_q"/>
+      <def no ="heredoc_qq"/>
+      <def no ="string"/>
+      <def no ="string_q"/>
+      <def no ="string_qq"/>
+      <def no ="string_lang"/>
+      <def no ="string_var"/>
+      <def no ="regex"/>
+      <def no ="regex_var"/>
+      <def no ="adverb"/>
+      <def no ="number"/>
+      <def no ="preprocessor"/>
+      <def no ="operator"/>
+      <def no ="word"/>
+      <def no ="function"/>
+      <def no ="identifier"/>
+      <def no ="typedef"/>
+      <def no ="mu"/>
+      <def no ="positional"/>
+      <def no ="associative"/>
+      <def no ="callable"/>
+      <def no ="grammar"/>
+      <def no ="class"/>
+    </def>
+  
     <def name = "rebol">
       <def no ="default"/>
       <def no ="commentline"/>
@@ -1736,6 +1853,25 @@ Copyright: (c) 2009-2022, Anton van Wezenbeek
       <def no ="bytecharacter"/>
     </def>
     
+    <def name = "sas">
+      <def no ="default"/>
+      <def no ="comment"/>
+      <def no ="commentline"/>
+      <def no ="commentblock"/>
+      <def no ="number"/>
+      <def no ="operator"/>
+      <def no ="identifier"/>
+      <def no ="string"/>
+      <def no ="type"/>
+      <def no ="word"/>
+      <def no ="global_macro"/>
+      <def no ="macro"/>
+      <def no ="macro_keyword"/>
+      <def no ="block_keyword"/>
+      <def no ="macro_function"/>
+      <def no ="statement"/>
+    </def>
+
     <def name = "scriptol">
       <def no ="default"/>
       <def no ="white"/>
@@ -1863,6 +1999,20 @@ Copyright: (c) 2009-2022, Anton van Wezenbeek
       <def no ="qoperator"/>
     </def>
     
+    <def name = "stata">
+      <def no ="default"/>
+      <def no ="comment"/>
+      <def no ="commentline"/>
+      <def no ="commentblock"/>
+      <def no ="number"/>
+      <def no ="operator"/>
+      <def no ="identifier"/>
+      <def no ="string"/>
+      <def no ="type"/>
+      <def no ="word"/>
+      <def no ="macro"/>
+    </def>
+
     <def name = "tads3">
       <def no ="default"/>
       <def no ="x_default"/>
@@ -2056,6 +2206,18 @@ Copyright: (c) 2009-2022, Anton van Wezenbeek
       <def no ="string_verbatim_eol"/>
     </def>
     
+    <def name = "x12">
+      <def no ="default"/>
+      <def no ="bad"/>
+      <def no ="envelope"/>
+      <def no ="functiongroup"/>
+      <def no ="transactionset"/>
+      <def no ="segmentheader"/>
+      <def no ="segmentend"/>
+      <def no ="element"/>
+      <def no ="subelement"/>
+    </def>
+
     <def name = "yaml">
       <def no ="default"/>
       <def no ="comment"/>

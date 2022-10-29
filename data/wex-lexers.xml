@@ -1,10 +1,10 @@
 <?xml version="1.0" ?>
 <?xml-stylesheet href="wex-lexers.xsl" type="text/xsl" ?>
 <!--
-Name:      wex-lexers.xml
-Purpose:   Lexers configuration for wex.
-           See scintilla 3.7.2 (www.scintilla.org).
-Author:    Anton van Wezenbeek
+Name:    wex-lexers.xml
+Purpose: Lexers configuration for wex.
+         See scintilla 3.21.1 (https://scintilla.sourceforge.io/ScintillaHistory.html)
+Author:  Anton van Wezenbeek
 Copyright: (c) 2009-2022, Anton van Wezenbeek
 -->
 
@@ -906,6 +906,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     </keywords>
   </lexer>
   <lexer name="caml"/>
+  <lexer name="cil"/>
   <lexer display="cisco" extensions="*.ios" name="fortran">
     <keywords set-0="cisco-0" set-1="cisco-1" set-2="cisco-2,cisco-3,cisco-4,cisco-5">
     </keywords>
@@ -955,6 +956,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     <keywords set-0="css1" set-2="css2" set-3="css3"/>
   </lexer>
   <lexer name="d"/> 
+  <lexer name="dataflex"/>
   <lexer name="diff" extensions="*.diff;*.patch" edgemode="none">
     <styles>
     <style no="header"> fore:grey </style> 
@@ -1027,6 +1029,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   <lexer name="gui4cli"/>
   <lexer name="haskell"/>
+  <lexer name="hollywood"/>
   <lexer name="hypertext" extensions="*.htm;*.html;*.php" preview="true">
     <styles>
       <style no="tag"> tag </style>
@@ -1179,6 +1182,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     </keywords>
   </lexer>
   <lexer name="ihex"/>
+  <lexer name="indent"/>
   <lexer name="inno"/>
   <lexer display="java" name="cpp" extensions="*.java">
     <keywords>
@@ -1217,6 +1221,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <property name="fold.comment"> 1 </property>
     </properties>
   </lexer>
+  <lexer name="lpeg"/>
   <lexer display="lilypond" name="latex" extensions="*.ly">
   </lexer>
   <lexer name="lisp">
@@ -1290,6 +1295,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   
   <lexer name="matlab"/>
+  <lexer name="maxima"/>
   <lexer name="metapost"/>
   <lexer name="mmixal"/>
   <lexer name="modula"/>
@@ -1317,6 +1323,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       unhex upper weight_string 
     </keywords>
   </lexer>
+  <lexer name="nim"/>
   <lexer name="nimrod" macro="python"/>
   <lexer name="nncrontab"/>
   <lexer name="nsis"/>
@@ -1435,6 +1442,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     <comments begin1="#"/>
   </lexer>
   <lexer name="r"/>
+  <lexer name="raku"/>
   <lexer name="rebol"/>
   <lexer name="registry"/>
   <lexer display="rfwv" name="rfw"
@@ -1488,6 +1496,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     </keywords>
   </lexer>
   <lexer name="rust" extensions="*.rs"/>
+  <lexer name="sas"/>
   <lexer name="scriptol"/>
   <lexer display="sh" name="bash"> 
     <keywords>    
@@ -1511,6 +1520,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     <comments begin1="--" />
   </lexer>
   <lexer name="srec" macro="ihex"/>
+  <lexer name="stata"/>
   <lexer name="fcST"/>
   <lexer name="TACL" macro="cpp"/>
   <lexer name="tads3"/>
@@ -1568,6 +1578,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   <lexer name="verilog"/>
   <lexer name="vhdl"/>
   <lexer name="visualprolog"/>
+  <lexer name="x12"/>
   <lexer display="xml" name="hypertext" extensions="*.xml" language = "xml" edgemode="none" wrapline="char">
     <styles>
       <style no="xmlstart,xmlend"> fore:sky blue,bold </style>

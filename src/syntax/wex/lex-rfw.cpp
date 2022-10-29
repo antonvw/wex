@@ -2,12 +2,14 @@
 // Name:      lex-rfw.cpp
 // Purpose:   Implementation of lmRFW
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <regex>
 #include <string>
 #include <vector>
+
+using namespace Scintilla;
 
 #include "lex-rfw.h"
 

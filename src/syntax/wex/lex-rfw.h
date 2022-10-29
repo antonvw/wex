@@ -2,7 +2,7 @@
 // Name:      lex-rfw.h
 // Purpose:   Declaration of wex::lex_rfw class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -34,6 +34,8 @@
 // should be part of interface
 #define SCE_SH_TESTCASE SCE_SH_HERE_DELIM // i.e. testcase in lexers.xml
 #define SCE_SH_WORD2 SCE_SH_HERE_Q
+
+#include "Accessor.h"
 
 namespace wex
 {

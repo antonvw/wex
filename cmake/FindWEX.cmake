@@ -54,8 +54,8 @@ elseif (APPLE)
   set(cpp_LIBRARIES stdc++)
 
   set(apple_LIBRARIES 
-    wxjpeg-3.2 
-    wxpng-3.2
+    wxjpeg-3.3 
+    wxpng-3.3
     ${ICONV_LIBRARIES}
     ${ZLIB_LIBRARIES})
 elseif (UNIX)
@@ -135,15 +135,15 @@ if (MSVC)
     Rpcrt4.lib)
 else()
   set(wx_LIBRARIES
-    wx_${PLATFORM}u_aui-3.2
-    wx_${PLATFORM}u_stc-3.2
-    wx_${PLATFORM}u_html-3.2
-    wx_${PLATFORM}u_core-3.2
-    wx_baseu-3.2 
-    wx_baseu_net-3.2)
+    wx_${PLATFORM}u_aui-3.3
+    wx_${PLATFORM}u_stc-3.3
+    wx_${PLATFORM}u_html-3.3
+    wx_${PLATFORM}u_core-3.3
+    wx_baseu-3.3 
+    wx_baseu_net-3.3)
     
   if (NOT APPLE AND NOT wexBUILD_SHARED)
-    set(wx_LIBRARIES ${wx_LIBRARIES} wxscintilla-3.2)
+    set(wx_LIBRARIES ${wx_LIBRARIES} wxscintilla-3.3)
   endif()
 
   if (APPLE)
