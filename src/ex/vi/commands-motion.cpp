@@ -559,6 +559,7 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
   if (wex::vim vim(this, command, type); vim.is_motion())
   {
     vim.motion_prep();
+    filter_count(command);
   }
 
   if (const auto& it = std::find_if(
