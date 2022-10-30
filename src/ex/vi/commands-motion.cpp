@@ -504,6 +504,7 @@ size_t wex::vi::find_command(const std::string& command)
   }
   else
   {
+    reset_search_flags();
     return get_stc()->is_visual() &&
                frame()->show_ex_command(
                  get_stc(),
