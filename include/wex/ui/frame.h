@@ -210,7 +210,7 @@ public:
   /// Adds vcs path.
   virtual void vcs_add_path(factory::link* l) { ; }
 
-  /// Annotates commmit.
+  /// Annotates commit.
   virtual void
   vcs_annotate_commit(syntax::stc*, int line, const std::string& commit_id)
   {

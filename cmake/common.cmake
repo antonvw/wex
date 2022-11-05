@@ -53,7 +53,7 @@ function(wex_config)
 endfunction()  
 
 function(wex_install)
-  set(WEX_INSTALL_DIR "include/wex")
+  set(WEX_INSTALL_DIR "include/wex/${WEX_VERSION_INCLUDE}")
   set(MODULE_INSTALL_DIR ${CMAKE_ROOT}/Modules)
 
   # install FindWEX.cmake
