@@ -2,344 +2,204 @@
 // Name:      lex-rfw.h
 // Purpose:   Declaration of wex::lex_rfw class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <stack>
-
-#define RFW_CMD_BODY 0
-#define RFW_CMD_START 1
-#define RFW_CMD_WORD 2
-#define RFW_CMD_TEST 3
-#define RFW_CMD_ARITH 4
-#define RFW_CMD_DELIM 5
-#define RFW_CMD_SKW_PARTIAL 6
-#define RFW_CMD_TESTCASE 7
-
-// state constants for nested delimiter pairs, used by
-// SCE_SH_STRING and SCE_SH_BACKTICKS processing
-#define RFW_DELIM_LITERAL 0
-#define RFW_DELIM_STRING 1
-#define RFW_DELIM_CSTRING 2
-#define RFW_DELIM_LSTRING 3
-#define RFW_DELIM_COMMAND 4
-#define RFW_DELIM_BACKTICK 5
-
-#define RFW_BASE_ERROR 65
-#define RFW_BASE_DECIMAL 66
-#define RFW_BASE_HEX 67
-
-// should be part of interface
-#define SCE_SH_TESTCASE SCE_SH_HERE_DELIM // i.e. testcase in lexers.xml
-#define SCE_SH_WORD2 SCE_SH_HERE_Q
+#include "DefaultLexer.h"
+#include "lex-rfw-defs.h"
 
 namespace wex
 {
-  /// The robotframework lexer class.
-  /// It is compiled during wxWidgets LexBash compiling,
-  /// and uses c++11.
-  class lex_rfw
-  {
-  public:
-    /// Default constructor, sets accessor and line.
-    lex_rfw(Accessor& styler, int line = -1)
-      : m_line(line)
-      , m_styler(styler)
-    {
-      ;
-    };
-
-    /// Returns count.
-    int count() const { return m_count; };
-
-    /// Decreases count.
-    void decrease() { m_count--; };
-
-    /// Returns down.
-    int down() const { return m_down; };
-
-    /// Performs global scan.
-    int glob_scan(StyleContext& sc) const;
-
-    /// Increases count.
-    void increase() { m_count++; };
-
-    /// Initializes.
-    Sci_Position init(Sci_PositionU startPos) const;
-
-    /// Returns whether this is a comment line.
-    bool is_comment_line(int offset = 0) const;
-
-    /// Returns whether this is a piped line.
-    bool is_pipe_line(int offset = 0) const;
-
-    /// Returns whether this is a tabbed line.
-    bool is_tab_line(int offset = 0) const;
-
-    /// Returns number base.
-    int number_base(char* s) const;
-
-    /// Returns translated digit.
-    int translate_digit(int ch) const;
-
-    /// Return up.
-    int up() const { return m_up; };
-
-  protected:
-    int opposite(int ch) const;
-
-    int m_count{0}, m_down{0}, m_up{0};
-
-  private:
-    bool get_line_pos_eol(int offset, char i) const;
-
-    Sci_Position m_line;
-    Accessor&    m_styler;
-  };
-
-  // Class to manage quote pairs (simplified vs LexPerl)
-  class quote : public lex_rfw
-  {
-  public:
-    /// Constructor.
-    quote(Accessor& styler, int line = -1)
-      : lex_rfw(styler, line)
-    {
-      ;
-    };
-
-    /// Opens.
-    void open(int u);
-
-    /// Starts.
-    void start(int u);
-  };
-
-  // Class to manage quote pairs that nest
-  class quote_stack : public lex_rfw
-  {
-  public:
-    /// Constructor.
-    quote_stack(Accessor& styler, int line = -1)
-      : lex_rfw(styler, line)
-    {
-      ;
-    };
-
-    /// Returns depth.
-    size_t depth() const { return m_stack.size(); };
-
-    /// Pops.
-    void pop(void);
-
-    /// Pushes.
-    void push(int u, int s);
-
-    /// Starts.
-    void start(int u, int s);
-
-    /// Returns style.
-    int style() const { return m_style; };
-
-  private:
-    int m_style{0};
-
-    struct stack_t
-    {
-      int m_count;
-      int m_style;
-      int m_up;
-    };
-
-    std::stack<stack_t> m_stack;
-  };
-}; // namespace wex
-
-// inline implementation lex_rfw
-
-inline bool wex::lex_rfw::get_line_pos_eol(int offset, char c) const
+struct options_rfw
 {
-  Sci_Position pos = m_styler.LineStart(m_line + offset);
-  Sci_Position eol = m_styler.LineStart(m_line + 1 + offset) - 1;
+  friend class option_set_rfw;
 
-  for (Sci_Position i = pos; i < eol; i++)
+public:
+  bool fold() const { return m_fold; };
+  bool fold_comment() const { return m_fold_comment; };
+  bool fold_compact() const { return m_fold_compact; };
+  bool fold_pipes() const { return m_fold_pipes; };
+  bool fold_tabs() const { return m_fold_tabs; };
+  bool vi_script() const { return m_vi_script; };
+
+private:
+  bool m_fold{false}, m_fold_comment{false}, m_fold_compact{false},
+    m_fold_pipes{false}, m_fold_tabs{false}, m_vi_script{false};
+};
+
+struct option_set_rfw : public OptionSet<options_rfw>
+{
+public:
+  /// Returns keywords.
+  static auto keywords() { return m_keywords; }
+
+  /// Default constructor.
+  option_set_rfw()
   {
-    char ch = m_styler[i];
-    if (ch == c)
-      return true;
-    else if (c != '\t' && ch != ' ' && ch != '\t')
-      return false;
+    DefineProperty("fold", &options_rfw::m_fold);
+    DefineProperty("fold.comment", &options_rfw::m_fold_comment);
+    DefineProperty("fold.compact", &options_rfw::m_fold_compact);
+    DefineProperty("fold.pipes", &options_rfw::m_fold_pipes);
+    DefineProperty("fold.tabs", &options_rfw::m_fold_tabs);
+    DefineProperty("vi.Script", &options_rfw::m_vi_script);
+
+    DefineWordListSets(m_keywords);
   }
 
-  return false;
-}
+private:
+  static inline const char* m_keywords[] = {
+    "Primary Keywords",
+    "Secondary Keywords",
+    0};
+};
 
-inline int wex::lex_rfw::glob_scan(StyleContext& sc) const
+/// The robotframework lexer class.
+/// It is compiled during wxWidgets LexBash compiling,
+/// and uses c++11.
+class lex_rfw : public DefaultLexer
 {
-  // forward scan for a glob-like (...), no whitespace allowed
-  int c, sLen = 0;
-  while ((c = sc.GetRelativeCharacter(++sLen)) != 0)
+public:
+  /// Static interface.
+
+  /// Returns and creates the lexers object.
+  static ILexer* get() { return new lex_rfw(); }
+
+  /// Returns language.
+  static inline int language() { return SCLEX_AUTOMATIC; };
+
+  /// Returns lexer name.
+  static inline const char* name() { return "rfw"; };
+
+  /// Subable styles.
+  static inline char style_subable[] = {SCE_SH_IDENTIFIER, SCE_SH_SCALAR, 0};
+
+private:
+  /// Default constructor.
+  lex_rfw();
+
+  /// Destructor.
+  virtual ~lex_rfw() { ; }
+
+  /// Overide methods.
+
+  int SCI_METHOD AllocateSubStyles(int styleBase, int numberStyles) override
   {
-    if (IsASpace(c))
+    return m_sub_styles.Allocate(styleBase, numberStyles);
+  };
+
+  const char* SCI_METHOD DescribeProperty(const char* name) override
+  {
+    return m_option_set.DescribeProperty(name);
+  };
+
+  const char* SCI_METHOD DescribeWordListSets() override
+  {
+    return m_option_set.DescribeWordListSets();
+  };
+
+  int SCI_METHOD DistanceToSecondaryStyles() override { return 0; }
+
+  void SCI_METHOD Fold(
+    Sci_PositionU startPos,
+    Sci_Position  length,
+    int           initStyle,
+    IDocument*    pAccess) override;
+
+  void SCI_METHOD FreeSubStyles() override { m_sub_styles.Free(); };
+
+  const char* SCI_METHOD GetSubStyleBases() override { return style_subable; };
+
+  void SCI_METHOD Lex(
+    Sci_PositionU startPos,
+    Sci_Position  length,
+    int           initStyle,
+    IDocument*    pAccess) override;
+
+  int SCI_METHOD PrimaryStyleFromStyle(int style) override { return style; };
+
+  void* SCI_METHOD PrivateCall(int, void*) override { return 0; }
+
+  const char* SCI_METHOD PropertyGet(const char* key) override
+  {
+    return m_option_set.PropertyGet(key);
+  };
+
+  const char* SCI_METHOD PropertyNames() override
+  {
+    return m_option_set.PropertyNames();
+  };
+
+  int SCI_METHOD PropertyType(const char* name) override
+  {
+    return m_option_set.PropertyType(name);
+  };
+
+  Sci_Position SCI_METHOD PropertySet(const char* key, const char* val) override
+  {
+    if (m_option_set.PropertySet(&m_options, key, val))
     {
       return 0;
     }
-    else if (c == ')')
-    {
-      return sLen;
-    }
-  }
+
+    return -1;
+  };
+
+  void SCI_METHOD Release() override;
+
+  void SCI_METHOD SetIdentifiers(int style, const char* identifiers) override
+  {
+    m_sub_styles.SetIdentifiers(style, identifiers);
+  };
+
+  int SCI_METHOD StyleFromSubStyle(int subStyle) override
+  {
+    const int styleBase = m_sub_styles.BaseStyle(subStyle);
+    return styleBase;
+  };
+
+  int SCI_METHOD SubStylesStart(int styleBase) override
+  {
+    return m_sub_styles.Start(styleBase);
+  };
+
+  int SCI_METHOD SubStylesLength(int styleBase) override
+  {
+    return m_sub_styles.Length(styleBase);
+  };
+
+  int SCI_METHOD Version() const override { return lvIdentity; };
+
+  Sci_Position SCI_METHOD WordListSet(int n, const char* wl) override;
+
+  /// Other methods.
+
+  void parse_keyword(
+    const CharacterSet& setWord,
+    const WordList&     cmdDelimiter,
+    StyleContext&       sc,
+    int                 cmdState,
+    int&                cmdStateNew);
+
+private:
+  enum
+  {
+    ssIdentifier,
+    ssScalar
+  };
+
+  SubStyles m_sub_styles;
+
+  WordList m_keywords1;
+  WordList m_keywords2;
+
+  options_rfw    m_options;
+  option_set_rfw m_option_set;
   
-  return 0;
-}
-
-inline Sci_Position wex::lex_rfw::init(Sci_PositionU startPos) const
-{
-  // Always backtracks to the start of a line that is not a continuation
-  // of the previous line (i.e. start of a rfw command segment)
-  Sci_Position ln = m_styler.GetLine(startPos);
-
-  if (ln > 0 && startPos == static_cast<Sci_PositionU>(m_styler.LineStart(ln)))
-    ln--;
-
-  for (;;)
-  {
-    startPos = m_styler.LineStart(ln);
-    if (ln == 0 || m_styler.GetLineState(ln) == RFW_CMD_START)
-      break;
-    ln--;
-  }
-
-  return ln;
-}
-
-inline bool wex::lex_rfw::is_comment_line(int offset) const
-{
-  return get_line_pos_eol(offset, '#');
-}
-
-inline bool wex::lex_rfw::is_pipe_line(int offset) const
-{
-  return get_line_pos_eol(offset, '|');
-}
-
-inline bool wex::lex_rfw::is_tab_line(int offset) const
-{
-  return get_line_pos_eol(offset, '\t');
-}
-
-inline int wex::lex_rfw::number_base(char* s) const
-{
-  int i    = 0;
-  int base = 0;
+  bool m_visual_mode{true};
   
-  while (*s)
-  {
-    base = base * 10 + (*s++ - '0');
-    i++;
-  }
-  
-  if (base > 64 || i > 2)
-  {
-    return RFW_BASE_ERROR;
-  }
-
-  return base;
-}
-
-inline int wex::lex_rfw::opposite(int ch) const
-{
-  switch (ch)
-  {
-    case '(':
-      return ')';
-    case '[':
-      return ']';
-    case '{':
-      return '}';
-    case '<':
-      return '>';
-    default:
-      return ch;
-  }
-}
-
-inline int wex::lex_rfw::translate_digit(int ch) const
-{
-  if (ch >= '0' && ch <= '9')
-  {
-    return ch - '0';
-  }
-  else if (ch >= 'a' && ch <= 'z')
-  {
-    return ch - 'a' + 10;
-  }
-  else if (ch >= 'A' && ch <= 'Z')
-  {
-    return ch - 'A' + 36;
-  }
-  else if (ch == '@')
-  {
-    return 62;
-  }
-  else if (ch == '_')
-  {
-    return 63;
-  }
-  
-  return RFW_BASE_ERROR;
-}
-
-// inline implementation quote
-
-inline void wex::quote::open(int u)
-{
-  m_count++;
-
-  m_up   = u;
-  m_down = opposite(m_up);
-}
-
-inline void wex::quote::start(int u)
-{
-  m_count = 0;
-  open(u);
-}
-
-// inline implementation quote_stack
-
-inline void wex::quote_stack::pop(void)
-{
-  if (m_stack.empty())
-    return;
-
-  m_stack.pop();
-
-  m_count = m_stack.top().m_count;
-  m_up    = m_stack.top().m_up;
-  m_style = m_stack.top().m_style;
-
-  m_down = opposite(m_up);
-}
-
-inline void wex::quote_stack::push(int u, int s)
-{
-  m_stack.push({m_count, m_style, m_up});
-
-  m_count = 1;
-  m_up    = u;
-  m_style = s;
-
-  m_down = opposite(m_up);
-}
-
-inline void wex::quote_stack::start(int u, int s)
-{
-  m_count = 1;
-
-  m_up    = u;
-  m_down  = opposite(m_up);
-  m_style = s;
-}
+  std::vector<std::string> m_sections;  
+  std::vector<std::string> m_special_keywords;
+};
+} // namespace wex

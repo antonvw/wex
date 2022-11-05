@@ -48,19 +48,23 @@ size_t fold(wex::syntax::stc* stc, const std::string& command)
         boost::algorithm::trim_copy(command) == "zo")
         stc->ToggleFold(line_to_fold);
       break;
+
     case 'f':
       stc->get_lexer().set_property("fold", "1");
       stc->get_lexer().apply();
       stc->fold(true);
       break;
+
     case 'E':
       stc->get_lexer().set_property("fold", "0");
       stc->get_lexer().apply();
       stc->fold(false);
       break;
+
     case 'M':
       stc->fold(true);
       break;
+
     case 'R':
       for (int i = 0; i < stc->get_line_count(); i++)
         stc->EnsureVisible(i);

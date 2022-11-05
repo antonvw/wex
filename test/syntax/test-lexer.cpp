@@ -171,6 +171,10 @@ TEST_CASE("wex::lexer")
     REQUIRE(wex::lexer(lexer).is_ok());
     REQUIRE(lexer.display_lexer() == "cpp");
     REQUIRE(lexer.scintilla_lexer() == "cpp");
+    
+    REQUIRE(lexer.set("rfw"));
+    REQUIRE(lexer.display_lexer() == "rfw");
+    REQUIRE(lexer.is_keyword("Documentation"));
   }
 
   SUBCASE("several methods")

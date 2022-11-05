@@ -12,6 +12,9 @@
 
 void wex::syntax::stc::fold(bool all)
 {
+  if (GetProperty("fold") != "1")
+    return;
+
   if (all || get_line_count() > config(_("stc.Auto fold")).get(1500))
   {
     fold_all();
@@ -20,14 +23,17 @@ void wex::syntax::stc::fold(bool all)
 
 void wex::syntax::stc::fold_all()
 {
-  if (GetProperty("fold") != "1")
+  const bool json = (get_lexer().scintilla_lexer() == "json");
+  const bool xml  = (get_lexer().language() == "xml");
+
+  if (!json && !xml)
+  {
+    FoldAll(wxSTC_FOLDACTION_CONTRACT);
     return;
+  }
 
   const auto current_line = get_current_line();
-  const bool json         = (get_lexer().scintilla_lexer() == "json");
-  const bool xml          = (get_lexer().language() == "xml");
-
-  int line = (json ? 1 : 0);
+  int        line         = (json ? 1 : 0);
 
   while (line < get_line_count())
   {
@@ -41,7 +47,7 @@ void wex::syntax::stc::fold_all()
     {
       if (GetFoldExpanded(line))
       {
-        ToggleFold(line);
+        FoldLine(line, wxSTC_FOLDACTION_CONTRACT);
       }
 
       line = last_child_line + 1;

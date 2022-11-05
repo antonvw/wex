@@ -2,25 +2,85 @@
 // Name:      lex-rfw.cpp
 // Purpose:   Implementation of lmRFW
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <regex>
 #include <string>
 #include <vector>
 
+using namespace Scintilla;
+
+#include "lex-rfw-access.h"
 #include "lex-rfw.h"
 
-void parse_keyword(
+LexicalClass lexical_classes[] = {
+  // Lexer Bash SCLEX_BASH SCE_SH_:
+  0,  "SCE_SH_DEFAULT",     "default",         "White space",
+  1,  "SCE_SH_ERROR",       "error",           "Error",
+  2,  "SCE_SH_COMMENTLINE", "comment line",    "Line comment: #",
+  3,  "SCE_SH_NUMBER",      "literal numeric", "Number",
+  4,  "SCE_SH_WORD",        "keyword",         "Keyword",
+  5,  "SCE_SH_STRING",      "literal string",  "String",
+  6,  "SCE_SH_CHARACTER",   "literal string",  "Single quoted string",
+  7,  "SCE_SH_OPERATOR",    "operator",        "Operators",
+  8,  "SCE_SH_IDENTIFIER",  "identifier",      "Identifiers",
+  9,  "SCE_SH_SCALAR",      "identifier",      "Scalar variable",
+  10, "SCE_SH_PARAM",       "identifier",      "Parameter",
+  11, "SCE_SH_BACKTICKS",   "literal string",  "Backtick quoted command",
+  12, "SCE_SH_HERE_DELIM",  "operator",        "Heredoc delimiter",
+  13, "SCE_SH_HERE_Q",      "literal string",  "Heredoc quoted string",
+};
+
+wex::lex_rfw::lex_rfw()
+  : DefaultLexer(name(), language(), lexical_classes, ELEMENTS(lexical_classes))
+  , m_sub_styles(style_subable, 0x80, 0x40, 0)
+{
+  m_sections.emplace_back("Settings");
+  m_sections.emplace_back("Variables");
+  m_sections.emplace_back("Test Cases");
+  m_sections.emplace_back("Tasks");
+  m_sections.emplace_back("Keywords");
+  m_sections.emplace_back("Comments");
+
+  for (const auto& section : m_sections)
+  {
+    m_special_keywords.emplace_back("*" + section + "*");
+    m_special_keywords.emplace_back("* " + section + " *");
+    m_special_keywords.emplace_back("** " + section + " **");
+    m_special_keywords.emplace_back("*** " + section + " ***");
+  }
+
+  for (int i = 0; i < m_keywords2.Length(); i++)
+  {
+    std::string keyword(m_keywords2.WordAt(i));
+
+    for (int j = 0; j < keyword.size(); j++)
+    {
+      if (keyword[j] == '_')
+      {
+        keyword[j] = ' ';
+      }
+    }
+
+    if (keyword != "EX")
+    {
+      m_special_keywords.emplace_back(keyword);
+    }
+    else
+    {
+      m_visual_mode = false;
+    }
+  }
+}
+
+void wex::lex_rfw::parse_keyword(
   const CharacterSet& setWord,
   const WordList&     cmdDelimiter,
-  WordList*           keywordlists[],
   StyleContext&       sc,
   int                 cmdState,
   int&                cmdStateNew)
 {
-  const WordList& keywords1 = *keywordlists[0];
-
   WordList rfwStruct;
   rfwStruct.Set("");
 
@@ -75,7 +135,8 @@ void parse_keyword(
         sc.ChangeState(SCE_SH_IDENTIFIER);
     }
     // disambiguate keywords and identifiers
-    else if (cmdState != RFW_CMD_START || !(keywords1.InList(s) && keywordEnds))
+    else if (
+      cmdState != RFW_CMD_START || !(m_keywords1.InList(s) && keywordEnds))
     {
       if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
         sc.ChangeState(SCE_SH_IDENTIFIER);
@@ -84,63 +145,18 @@ void parse_keyword(
     if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
       sc.SetState(SCE_SH_DEFAULT);
   }
-};
+}
 
-static void colourise(
+void SCI_METHOD wex::lex_rfw::Lex(
   Sci_PositionU startPos,
   Sci_Position  length,
   int           initStyle,
-  WordList*     keywordlists[],
-  Accessor&     styler)
+  IDocument*    pAccess)
 {
-  const bool is_vi = styler.GetPropertyInt("vi.Script") != 0;
+  LexAccessor styler(pAccess);
 
   WordList cmdDelimiter;
   cmdDelimiter.Set("| || |& & && ; ;; ( ) { }");
-
-  std::vector<std::string> sections;
-  sections.emplace_back("Settings");
-  sections.emplace_back("Variables");
-  sections.emplace_back("Test Cases");
-  sections.emplace_back("Tasks");
-  sections.emplace_back("Keywords");
-  sections.emplace_back("Comments");
-
-  std::vector<std::string> special_keywords;
-
-  for (const auto& section : sections)
-  {
-    special_keywords.emplace_back("*" + section + "*");
-    special_keywords.emplace_back("* " + section + " *");
-    special_keywords.emplace_back("** " + section + " **");
-    special_keywords.emplace_back("*** " + section + " ***");
-  }
-
-  const WordList& keywords2 = *keywordlists[1];
-
-  bool visual_mode = true;
-
-  for (int i = 0; i < keywords2.Length(); i++)
-  {
-    std::string keyword(keywords2.WordAt(i));
-
-    for (int j = 0; j < keyword.size(); j++)
-    {
-      if (keyword[j] == '_')
-      {
-        keyword[j] = ' ';
-      }
-    }
-
-    if (keyword != "EX")
-    {
-      special_keywords.emplace_back(keyword);
-    }
-    else
-    {
-      visual_mode = false;
-    }
-  }
 
   const CharacterSet setWordStart(CharacterSet::setAlpha, ":_[*");
   const CharacterSet setWordStartTSV(CharacterSet::setAlphaNum, ":_[*");
@@ -167,7 +183,7 @@ static void colourise(
   static Sci_PositionU testCaseSectionEndPos = -1;
 
   Sci_PositionU endPos = startPos + length;
-  Sci_Position  ln     = wex::lex_rfw(styler).init(startPos);
+  Sci_Position  ln     = wex::lex_rfw_access(styler).init(startPos);
   initStyle            = SCE_SH_DEFAULT;
 
   std::string words;
@@ -223,11 +239,11 @@ static void colourise(
 
     // detect special keywords
     words.append(1, sc.ch);
-    for (unsigned ki = 0; ki < special_keywords.size(); ki++)
+    for (unsigned ki = 0; ki < m_special_keywords.size(); ki++)
     {
-      if (std::equal(words.begin(), words.end(), special_keywords[ki].begin()))
+      if (std::equal(words.begin(), words.end(), m_special_keywords[ki].begin()))
       {
-        if (words.size() == special_keywords[ki].size())
+        if (words.size() == m_special_keywords[ki].size())
         {
           sc.Forward();
           sc.SetState(SCE_SH_WORD);
@@ -308,13 +324,7 @@ static void colourise(
 
       case SCE_SH_WORD:
       case SCE_SH_WORD2:
-        parse_keyword(
-          setWord,
-          cmdDelimiter,
-          keywordlists,
-          sc,
-          cmdState,
-          cmdStateNew);
+        parse_keyword(setWord, cmdDelimiter, sc, cmdState, cmdStateNew);
         break;
 
       case SCE_SH_IDENTIFIER:
@@ -333,7 +343,7 @@ static void colourise(
         break;
 
       case SCE_SH_NUMBER:
-        digit = wex::lex_rfw(styler).translate_digit(sc.ch);
+        digit = wex::lex_rfw_access(styler).translate_digit(sc.ch);
 
         if (numBase == RFW_BASE_DECIMAL)
         {
@@ -341,7 +351,7 @@ static void colourise(
           {
             char s[10];
             sc.GetCurrent(s, sizeof(s));
-            numBase = wex::lex_rfw(styler).number_base(s);
+            numBase = wex::lex_rfw_access(styler).number_base(s);
             if (numBase != RFW_BASE_ERROR)
               break;
           }
@@ -387,7 +397,7 @@ static void colourise(
 
       case SCE_SH_COMMENTLINE:
         if (
-          visual_mode && sc.atLineEnd && sc.chPrev != '\\' &&
+          m_visual_mode && sc.atLineEnd && sc.chPrev != '\\' &&
           sc.currentPos < commentsSectionPos)
         {
           sc.SetState(SCE_SH_DEFAULT);
@@ -458,7 +468,7 @@ static void colourise(
             {
               quoteStack.push(sc.ch, RFW_DELIM_LITERAL);
             }
-            else if (sc.ch == '\"' && !is_vi)
+            else if (sc.ch == '\"' && !m_options.vi_script())
             {
               quoteStack.push(sc.ch, RFW_DELIM_STRING);
             }
@@ -473,7 +483,7 @@ static void colourise(
                 sc.Forward();
                 quoteStack.push(sc.ch, RFW_DELIM_CSTRING);
               }
-              else if (sc.chNext == '\"' && !is_vi)
+              else if (sc.chNext == '\"' && !m_options.vi_script())
               {
                 sc.Forward();
                 quoteStack.push(sc.ch, RFW_DELIM_LSTRING);
@@ -537,7 +547,7 @@ static void colourise(
       }
     }
     else if (
-      visual_mode && !pipes && sc.ch != '#' && !isspace(sc.ch) &&
+      m_visual_mode && !pipes && sc.ch != '#' && !isspace(sc.ch) &&
       sc.atLineStart && sc.currentPos > testCaseSectionPos)
     {
       if (testCaseSectionEndPos == -1 || sc.currentPos < testCaseSectionEndPos)
@@ -623,7 +633,7 @@ static void colourise(
           }
         }
       }
-      else if (sc.ch == '\"' && !is_vi)
+      else if (sc.ch == '\"' && !m_options.vi_script())
       {
         sc.SetState(SCE_SH_STRING);
         quoteStack.start(sc.ch, RFW_DELIM_STRING);
@@ -681,7 +691,7 @@ static void colourise(
         // globs have no whitespace, do not appear in arithmetic expressions
         if (cmdState != RFW_CMD_ARITH && sc.ch == '(' && sc.chNext != '(')
         {
-          int i = wex::lex_rfw(styler).glob_scan(sc);
+          int i = wex::lex_rfw_access(styler).glob_scan(sc);
           if (i > 1)
           {
             sc.SetState(SCE_SH_IDENTIFIER);
@@ -770,17 +780,13 @@ static void colourise(
   sc.Complete();
 }
 
-static void fold(
+void SCI_METHOD wex::lex_rfw::Fold(
   Sci_PositionU startPos,
   Sci_Position  length,
   int,
-  WordList*[],
-  Accessor& styler)
+  IDocument* pAccess)
 {
-  const bool foldComment = styler.GetPropertyInt("fold.comment") != 0;
-  const bool foldPipes   = styler.GetPropertyInt("fold.pipes") != 0;
-  const bool foldTabs    = styler.GetPropertyInt("fold.tabs") != 0;
-  const bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;
+  LexAccessor styler(pAccess);
 
   Sci_PositionU endPos      = startPos + length;
   Sci_Position  lineCurrent = styler.GetLine(startPos);
@@ -800,10 +806,10 @@ static void fold(
 
     const bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
 
-    wex::lex_rfw rfw(styler, lineCurrent);
+    wex::lex_rfw_access rfw(styler, lineCurrent);
 
     // Comment folding
-    if (foldComment && atEOL && rfw.is_comment_line())
+    if (m_options.fold_comment() && atEOL && rfw.is_comment_line())
     {
       if (!rfw.is_comment_line(-1) && rfw.is_comment_line(1))
         levelCurrent++;
@@ -812,7 +818,7 @@ static void fold(
     }
 
     // Pipe folding
-    if (foldPipes && atEOL && rfw.is_pipe_line())
+    if (m_options.fold_pipes() && atEOL && rfw.is_pipe_line())
     {
       if (!rfw.is_pipe_line(-1) && rfw.is_pipe_line(1))
         levelCurrent++;
@@ -821,7 +827,7 @@ static void fold(
     }
 
     // Tab folding
-    if (foldTabs && atEOL && rfw.is_tab_line())
+    if (m_options.fold_tabs() && atEOL && rfw.is_tab_line())
     {
       if (!rfw.is_tab_line(-1) && rfw.is_tab_line(1))
         levelCurrent++;
@@ -832,7 +838,7 @@ static void fold(
     if (atEOL)
     {
       int lev = levelPrev;
-      if (visibleChars == 0 && foldCompact)
+      if (visibleChars == 0 && m_options.fold_compact())
         lev |= SC_FOLDLEVELWHITEFLAG;
       if ((levelCurrent > levelPrev) && (visibleChars > 0))
         lev |= SC_FOLDLEVELHEADERFLAG;
@@ -855,9 +861,44 @@ static void fold(
   styler.SetLevel(lineCurrent, levelPrev | flagsNext);
 }
 
-static const char* const keywords[] = {
-  "Primary Keywords",
-  "Secondary Keywords",
-  0};
+void SCI_METHOD wex::lex_rfw::Release()
+{
+  delete this;
+}
 
-LexerModule lmRFW(SCLEX_AUTOMATIC, colourise, "rfw", fold, keywords);
+Sci_Position SCI_METHOD wex::lex_rfw::WordListSet(int n, const char* wl)
+{
+  WordList* wordListN = 0;
+
+  switch (n)
+  {
+    case 0:
+      wordListN = &m_keywords1;
+      break;
+
+    case 1:
+      wordListN = &m_keywords2;
+      break;
+  }
+
+  Sci_Position firstModification = -1;
+
+  if (wordListN)
+  {
+    WordList wlNew;
+    wlNew.Set(wl);
+    if (*wordListN != wlNew)
+    {
+      wordListN->Set(wl);
+      firstModification = 0;
+    }
+  }
+
+  return firstModification;
+}
+
+LexerModule lmRFW(
+  wex::lex_rfw::language(),
+  wex::lex_rfw::get,
+  wex::lex_rfw::name(),
+  wex::option_set_rfw::keywords());
