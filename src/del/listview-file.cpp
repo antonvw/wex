@@ -152,16 +152,16 @@ void wex::del::file::after_sorting()
 
 void wex::del::file::build_popup_menu(wex::menu& menu)
 {
-  const bool ro(path().file_exists() && path().is_readonly());
+  const bool is_ro(path().file_exists() && path().is_readonly());
 
-  if (ro)
+  if (is_ro)
   {
-    menu.style().set(wex::menu::IS_READ_ONLY, ro);
+    menu.style().set(wex::menu::IS_READ_ONLY, is_ro);
   }
 
   listview::build_popup_menu(menu);
 
-  if (!ro)
+  if (!is_ro)
   {
     menu.append({{}, {wxID_ADD}});
   }
