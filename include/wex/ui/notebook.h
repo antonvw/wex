@@ -92,10 +92,10 @@ public:
   /// on the page for the given key.
   /// If the key does not exist false is returned.
   bool set_page_text(
-    const std::string& key,
-    const std::string& new_key,
-    const std::string& caption,
-    const wxBitmap&    bitmap = wxNullBitmap);
+    const std::string&    key,
+    const std::string&    new_key,
+    const std::string&    caption,
+    const wxBitmapBundle& bitmap = wxNullBitmap);
 
   /// Selects (and returns) the page specified by the given key.
   /// If the key does not exist nullptr is returned.

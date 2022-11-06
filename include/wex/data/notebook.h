@@ -2,12 +2,12 @@
 // Name:      data/notebook.h
 // Purpose:   Declaration of wex::data::notebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wx/bitmap.h>
+#include <wx/bmpbndl.h>
 
 class wxWindow;
 
@@ -17,11 +17,11 @@ namespace wex::data
 class notebook
 {
 public:
-  /// Returns bitmap for the page
+  /// Returns bitmap bundle for the page
   const auto& bitmap() const { return m_bitmap; }
 
-  /// Sets bitmap.
-  notebook& bitmap(const wxBitmap& rhs);
+  /// Sets bitmap bundle.
+  notebook& bitmap(const wxBitmapBundle& rhs);
 
   /// Returns caption for the page, if empty uses key as caption.
   const auto& caption() const { return m_caption; }
@@ -55,10 +55,10 @@ public:
   notebook& select();
 
 private:
-  wxWindow*   m_page{nullptr};
-  size_t      m_page_index{0};
-  std::string m_caption, m_key;
-  bool        m_select{false};
-  wxBitmap    m_bitmap{wxNullBitmap};
+  wxWindow*      m_page{nullptr};
+  size_t         m_page_index{0};
+  std::string    m_caption, m_key;
+  bool           m_select{false};
+  wxBitmapBundle m_bitmap{wxNullBitmap};
 };
 }; // namespace wex::data

@@ -2,12 +2,13 @@
 // Name:      toolbar.cpp
 // Purpose:   Implementation of wex::data::toolbar_item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/toolbar-item.h>
 
-wex::data::toolbar_item& wex::data::toolbar_item::bitmap(const wxBitmap& rhs)
+wex::data::toolbar_item&
+wex::data::toolbar_item::bitmap(const wxBitmapBundle& rhs)
 {
   m_bitmap = rhs;
 
