@@ -2,13 +2,13 @@
 // Name:      data/toolbar.h
 // Purpose:   Declaration of wex::data::toolbar_item
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <string>
-#include <wx/bitmap.h>
+#include <wx/bmpbndl.h>
 #include <wx/defs.h>
 
 namespace wex::data
@@ -24,11 +24,11 @@ public:
     ;
   };
 
-  /// Returns bitmap.
-  const wxBitmap& bitmap() const { return m_bitmap; }
+  /// Returns bitmap bundle.
+  const auto& bitmap() const { return m_bitmap; }
 
-  /// Sets bitmap.
-  toolbar_item& bitmap(const wxBitmap& rhs);
+  /// Sets bitmap bundle.
+  toolbar_item& bitmap(const wxBitmapBundle& rhs);
 
   /// Returns id.
   int id() const { return m_id; }
@@ -52,9 +52,9 @@ public:
   toolbar_item& help(const std::string& rhs);
 
 private:
-  wxBitmap    m_bitmap{wxNullBitmap};
-  const int   m_id;
-  wxItemKind  m_kind{wxITEM_NORMAL};
-  std::string m_short_help, m_label;
+  wxBitmapBundle m_bitmap{wxNullBitmap};
+  const int      m_id;
+  wxItemKind     m_kind{wxITEM_NORMAL};
+  std::string    m_short_help, m_label;
 };
 }; // namespace wex::data

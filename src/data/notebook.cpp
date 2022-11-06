@@ -2,13 +2,13 @@
 // Name:      data/notebook.h
 // Purpose:   Implementation of wex::data::notebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/notebook.h>
 #include <wx/window.h>
 
-wex::data::notebook& wex::data::notebook::bitmap(const wxBitmap& rhs)
+wex::data::notebook& wex::data::notebook::bitmap(const wxBitmapBundle& rhs)
 {
   m_bitmap = rhs;
 

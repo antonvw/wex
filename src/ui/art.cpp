@@ -51,7 +51,7 @@ void wex::stockart::add(int id, const wxArtID& art)
   m_art_ids.insert({(wxWindowID)id, art});
 }
 
-const wxBitmap wex::stockart::get_bitmap(
+const wxBitmapBundle wex::stockart::get_bitmap(
   const wxArtClient& client,
   const wxSize&      bitmap_size) const
 {
@@ -62,9 +62,9 @@ const wxBitmap wex::stockart::get_bitmap(
 
     if (art_it != m_art_ids.end())
     {
-      return wxArtProvider::GetBitmap(art_it->second, client, bitmap_size);
+      return wxArtProvider::GetBitmapBundle(art_it->second, client, bitmap_size);
     }
   }
 
-  return wxBitmap();
+  return wxBitmapBundle();
 }

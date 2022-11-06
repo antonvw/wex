@@ -199,10 +199,10 @@ void wex::notebook::rearrange(int direction)
 }
 
 bool wex::notebook::set_page_text(
-  const std::string& key,
-  const std::string& new_key,
-  const std::string& caption,
-  const wxBitmap&    bitmap)
+  const std::string&    key,
+  const std::string&    new_key,
+  const std::string&    caption,
+  const wxBitmapBundle& bitmap)
 {
   if (const auto index = page_index_by_key(key);
       index == wxNOT_FOUND || !SetPageText(index, caption))
