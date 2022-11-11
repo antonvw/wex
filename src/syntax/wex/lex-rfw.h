@@ -7,16 +7,22 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include "DefaultLexer.h"
 #include "lex-rfw-defs.h"
 
 namespace wex
 {
+/// Collects bool options
 struct options_rfw
 {
   friend class option_set_rfw;
 
 public:
+  /// Access to mebers.
+
   bool fold() const { return m_fold; };
   bool fold_comment() const { return m_fold_comment; };
   bool fold_compact() const { return m_fold_compact; };
@@ -29,6 +35,7 @@ private:
     m_fold_pipes{false}, m_fold_tabs{false}, m_vi_script{false};
 };
 
+/// Collects option set
 struct option_set_rfw : public OptionSet<options_rfw>
 {
 public:
@@ -53,6 +60,26 @@ private:
     "Primary Keywords",
     "Secondary Keywords",
     0};
+};
+
+/// Collects section positions
+class rfw_section_pos
+{
+public:
+  /// get or set comments pos
+  auto comments() const { return m_comments; };
+  void comments(const StyleContext& sc) { m_comments = sc.currentPos; };
+
+  /// get or set test_case pos
+  auto test_case() const { return m_test_case; };
+  void test_case(const StyleContext& sc) { m_test_case = sc.currentPos; };
+
+  /// get or set test_case_end pos
+  auto test_case_end() const { return m_test_case_end; };
+  void test_case_end(int pos) { m_test_case_end = pos; };
+
+private:
+  Sci_PositionU m_comments = -1, m_test_case = -1, m_test_case_end = -1;
 };
 
 /// The robotframework lexer class.
@@ -80,7 +107,7 @@ private:
   lex_rfw();
 
   /// Destructor.
-  virtual ~lex_rfw() { ; }
+  virtual ~lex_rfw();
 
   /// Overide methods.
 
@@ -175,12 +202,16 @@ private:
 
   /// Other methods.
 
-  void parse_keyword(
-    const CharacterSet& setWord,
-    const WordList&     cmdDelimiter,
-    StyleContext&       sc,
-    int                 cmdState,
-    int&                cmdStateNew);
+  void parse_keyword(StyleContext& sc, int cmdState, int& cmdStateNew);
+
+  void special_keywords_detect(
+    const std::string& word,
+    StyleContext&      sc,
+    int&               cmdStateNew);
+  void special_keywords_update();
+
+  void state_check(StyleContext& sc, int& state, int& state_new, LexAccessor&);
+  bool state_check_continue(StyleContext& sc, int& state, LexAccessor&);
 
 private:
   enum
@@ -191,15 +222,18 @@ private:
 
   SubStyles m_sub_styles;
 
-  WordList m_keywords1;
-  WordList m_keywords2;
+  WordList m_keywords1, m_keywords2, m_cmd_delimiter;
 
-  options_rfw    m_options;
-  option_set_rfw m_option_set;
-  
+  options_rfw     m_options;
+  option_set_rfw  m_option_set;
+  rfw_section_pos m_sp;
+
   bool m_visual_mode{true};
-  
-  std::vector<std::string> m_sections;  
-  std::vector<std::string> m_special_keywords;
+  int  m_style_prev{-1};
+
+  wex::quote*       m_quote{nullptr};
+  wex::quote_stack* m_quote_stack{nullptr};
+
+  std::vector<std::string> m_sections, m_special_keywords;
 };
 } // namespace wex
