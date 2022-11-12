@@ -161,7 +161,7 @@ bool wex::lexer::add_keywords(const std::string& value, int setno)
     if (line.find(":") != std::string::npos)
     {
       keyword = find_before(line, ":");
-      const auto a_l(find_after(line, ":"));
+      const auto& a_l(find_after(line, ":"));
 
       try
       {
@@ -228,7 +228,7 @@ const std::string wex::lexer::align_text(
 
   while (!in.empty())
   {
-    if (const auto word = get_word(in);
+    if (const auto& word = get_word(in);
         line.size() + 1 + word.size() > line_length)
     {
       out +=
@@ -674,7 +674,7 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
   {
     m_attribs.push_back(
       {_("Expand tabs"),
-       convert_int_attrib({{"use", 0}, {"off", 1}}, v),
+       convert_int_attrib({{"use", 1}, {"off", 0}}, v),
        [&](syntax::stc* stc, int attrib)
        {
          if (attrib >= 0)

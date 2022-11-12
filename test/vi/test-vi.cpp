@@ -566,6 +566,20 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command("y"));
     REQUIRE(vi->mode().is_command());
     REQUIRE(vi->register_text() == "1234");
+
+    // visual mode and brace match
+    stc->set_text("some text\n{and text within brace} some text");
+    vi->command("gg");
+    vi->command("v");
+    vi->command("j");
+    vi->command("%");
+    REQUIRE(stc->GetSelectedText().size() == 33);
+    vi->command("G");
+    vi->command("v");
+    vi->command("2bh");
+    vi->command("%");
+    // README: This should pass, but selection is not ok.
+    // REQUIRE(stc->GetSelectedText().size() == 33);
   }
 
   SUBCASE("yank")

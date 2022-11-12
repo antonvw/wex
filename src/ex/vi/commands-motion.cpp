@@ -294,7 +294,7 @@ wex::vi::commands_t wex::vi::commands_motion()
     {"%",
      [&](const std::string& command)
      {
-       auto pos         = get_stc()->GetCurrentPos();
+       int pos = get_stc()->GetCurrentPos();
        auto brace_match = get_stc()->BraceMatch(pos);
 
        if (brace_match == wxSTC_INVALID_POSITION)
@@ -304,8 +304,12 @@ wex::vi::commands_t wex::vi::commands_motion()
 
        if (brace_match != wxSTC_INVALID_POSITION)
        {
-         get_stc()->GotoPos(brace_match);
-         visual_extend(pos, brace_match + 1);
+         if (get_stc()->GetSelectionStart() != -1)
+         {
+           pos = get_stc()->GetAnchor();
+         }
+
+         visual_extend(pos, brace_match);
        }
        else
        {
@@ -688,7 +692,14 @@ void wex::vi::visual_extend(int begin_pos, int end_pos) const
   switch (m_mode.get())
   {
     case vi_mode::state_t::VISUAL:
-      get_stc()->SetSelection(begin_pos, end_pos);
+      if (begin_pos < end_pos)
+      {
+        get_stc()->SetSelection(begin_pos, end_pos + 1);
+      }
+      else
+      {
+        get_stc()->SetSelection(begin_pos, end_pos + 1);
+      }
       break;
 
     case vi_mode::state_t::VISUAL_LINE:

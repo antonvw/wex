@@ -59,6 +59,7 @@ TEST_CASE("wex::vi")
   SUBCASE("goto") // goto, /, ?, n and N.
   {
     stc->set_text("aaaaa\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");
+    vi->reset_search_flags();
     REQUIRE(stc->get_line_count() == 12);
     stc->GotoLine(2);
     for (const auto& go : std::vector<std::pair<std::string, int>>{
