@@ -14,20 +14,53 @@ TEST_CASE("wex::data::find")
   auto* stc = get_stc();
   assert(stc != nullptr);
 
-  SUBCASE("constructor")
+  SUBCASE("static")
   {
-    stc->DocumentStart();
-
     wex::data::find::recursive(true);
     REQUIRE(wex::data::find::recursive());
 
     wex::data::find::recursive(false);
     REQUIRE(!wex::data::find::recursive());
+  }
 
+  SUBCASE("constructor")
+  {
+    SUBCASE("stc")
+    {
+      stc->DocumentStart();
+      wex::data::find f(stc, std::string());
+
+      REQUIRE(f.end_pos() == stc->GetTextLength());
+      REQUIRE(f.flags() == -1);
+      REQUIRE(f.is_forward());
+      REQUIRE(f.line_no() == -1);
+      REQUIRE(f.pos() == -1);
+      REQUIRE(f.stc() == stc);
+      REQUIRE(f.start_pos() == 0);
+      REQUIRE(f.text().empty());
+    }
+
+    SUBCASE("stream")
+    {
+      wex::data::find f(std::string(), 5, 6);
+
+      REQUIRE(f.end_pos() == wxSTC_INVALID_POSITION);
+      REQUIRE(f.flags() == -1);
+      REQUIRE(f.is_forward());
+      REQUIRE(f.line_no() == 5);
+      REQUIRE(f.pos() == 6);
+      REQUIRE(f.stc() == nullptr);
+      REQUIRE(f.start_pos() == wxSTC_INVALID_POSITION);
+      REQUIRE(f.text().empty());
+    }
+  }
+
+  SUBCASE("flags")
+  {
     wex::data::find f(stc, std::string());
+    f.flags(100);
 
-    REQUIRE(f.start_pos() == 0);
-    REQUIRE(f.end_pos() == stc->GetTextLength());
+    REQUIRE(f.flags() == 100);
   }
 
   SUBCASE("find_margin")
@@ -45,5 +78,10 @@ TEST_CASE("wex::data::find")
 
     REQUIRE(wex::data::find(stc, "hello").find_margin(line));
     REQUIRE(line == 1);
+  }
+
+  SUBCASE("statustext")
+  {
+    wex::data::find(stc, "xxx").statustext();
   }
 }

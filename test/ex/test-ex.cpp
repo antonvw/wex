@@ -12,7 +12,7 @@
 
 #include "test.h"
 
-// See stc/test-vi.cpp for testing goto and :set
+// See stc/test-vi.cpp and test-ex-mode for testing goto and :set
 
 TEST_CASE("wex::ex")
 {
@@ -144,10 +144,12 @@ TEST_CASE("wex::ex")
   SUBCASE("input-mode")
   {
     REQUIRE(ex->command(":a|added"));
-    REQUIRE(stc->get_text().find("added") != std::string::npos);
+    CAPTURE(stc->get_text());
+    REQUIRE(stc->get_text().find("xx\nadded\nxx") != std::string::npos);
 
     REQUIRE(ex->command(":i|inserted"));
-    REQUIRE(stc->get_text().find("inserted") != std::string::npos);
+    CAPTURE(stc->get_text());
+    REQUIRE(stc->get_text().find("inserted\nadded\nxx") != std::string::npos);
 
     REQUIRE(ex->command(":c|changed"));
     REQUIRE(stc->get_text().find("changed") != std::string::npos);
@@ -247,6 +249,7 @@ TEST_CASE("wex::ex")
     REQUIRE(!ex->is_active());
     ex->use(wex::ex::VISUAL);
     REQUIRE(ex->is_active());
+    REQUIRE(ex->visual() == wex::ex::VISUAL);
   }
 
   SUBCASE("map")

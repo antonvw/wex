@@ -139,9 +139,10 @@ bool wex::data::stc::inject() const
 
   if (injected)
   {
-    m_stc->properties_message(
-      m_event_data.is_synced() ? path::log_t().set(path::LOG_SYNC) :
-                                 path::log_t());
+    if (m_event_data.is_synced())
+    {
+      m_stc->properties_message(path::log_t().set(path::LOG_SYNC));
+    }
 
     if (!m_event_data.is_synced() && m_stc->is_visual())
     {

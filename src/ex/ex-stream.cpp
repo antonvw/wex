@@ -8,6 +8,7 @@
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/core/temp-filename.h>
+#include <wex/data/find.h>
 #include <wex/ex/addressrange.h>
 #include <wex/ex/ex-stream.h>
 #include <wex/ex/ex.h>
@@ -53,7 +54,7 @@
     }                                                                         \
                                                                               \
     if (                                                                      \
-      sl.actions() > 0 && sl.action() != ex_stream_line::ACTION_WRITE &&      \
+      (sl.actions() > 0 || sl.action() == ex_stream_line::ACTION_WRITE) &&    \
       !copy(m_temp, m_work))                                                  \
     {                                                                         \
       return false;                                                           \
@@ -171,55 +172,102 @@ bool wex::ex_stream::find(
     return false;
   }
 
-  const auto line_no = m_line_no;
-  const auto pos     = m_stream->tellg();
-  const bool use_regex(find_replace_data::get()->is_regex());
-  bool       found = false;
+  wex::data::find f(
+    text,
+    m_line_no,
+    m_stream->tellg(),
+    find_next || (find_flags == -1 && find_replace_data::get()->search_down()));
 
+  f.flags(find_flags);
+
+  return find_data(f);
+}
+
+bool wex::ex_stream::find_data(data::find& f)
+{
+  if (m_stream == nullptr)
+  {
+    return false;
+  }
+
+  const bool use_regex(find_replace_data::get()->is_regex());
   std::regex r;
 
   try
   {
     if (use_regex)
     {
-      r = std::regex(text);
+      r = std::regex(f.text());
     }
   }
   catch (std::exception& e)
   {
-    log(e) << "find";
+    log::status() << e.what();
+    log::trace("ex stream find") << e.what();
     return false;
   }
+
+  bool found = false;
 
   m_stream->clear();
 
   // Notice we start get..line, and not searching in the current line.
-  while (!found && ((find_next && get_next_line()) ||
-                    (!find_next && get_previous_line())))
+  while (!found && ((f.is_forward() && get_next_line()) ||
+                    (!f.is_forward() && get_previous_line())))
   {
     if (
-      (!use_regex && strstr(m_current_line, text.c_str()) != nullptr) ||
+      (!use_regex && strstr(m_current_line, f.text().c_str()) != nullptr) ||
       (use_regex && std::regex_search(m_current_line, r)))
     {
       found = true;
     }
   }
 
-  m_current_line_size = default_line_size;
+  return find_finish(f, found);
+}
 
+bool wex::ex_stream::find_finish(data::find& f, bool& found)
+{
   if (!found)
   {
-    m_line_no = line_no;
-    m_stream->clear();
-    m_stream->seekg(pos);
+    if (!f.recursive())
+    {
+      f.statustext();
+      f.recursive(true);
 
-    m_ex->frame()->statustext(get_find_result(text, true, true), std::string());
+      m_stream->clear();
+
+      if (f.is_forward())
+      {
+        m_line_no = LINE_COUNT_UNKNOWN;
+        m_stream->seekg(0);
+      }
+      else
+      {
+        m_line_no = m_last_line_no;
+        m_stream->seekg(0, std::ios_base::end);
+      }
+
+      found = find_data(f);
+
+      if (!found)
+      {
+        f.statustext();
+
+        m_line_no = f.line_no();
+        m_stream->clear();
+        m_stream->seekg(f.pos());
+      }
+
+      f.recursive(false);
+    }
   }
   else
   {
-    log::trace("ex stream found") << text << "current" << m_line_no;
-    find_replace_data::get()->set_find_string(text);
+    log::trace("ex stream found") << f.text() << "current" << m_line_no;
   }
+
+  m_current_line_size = default_line_size;
 
   return found;
 }
@@ -419,8 +467,6 @@ void wex::ex_stream::goto_line(int no)
 
   if (m_stream->gcount() > 0)
   {
-    log::trace("ex stream goto_line last read")
-      << m_stream->gcount() << "current" << m_line_no;
     set_text();
   }
 
@@ -443,7 +489,7 @@ bool wex::ex_stream::insert_text(
   const auto line(loc == INSERT_BEFORE ? a.get_line() : a.get_line() + 1);
   const addressrange range(
     m_ex,
-    std::to_string(line) + "," + std::to_string(line + 1));
+    std::to_string(line) + "," + std::to_string(line));
 
   ex_stream_line sl(m_temp, range, text);
 
@@ -598,6 +644,9 @@ bool wex::ex_stream::write()
 
   m_is_modified = false;
 
+  log::info("saved") << m_file->path();
+  log::status(_("Saved")) << m_file->path();
+
   return true;
 }
 
@@ -611,6 +660,8 @@ bool wex::ex_stream::write(
     return false;
   }
 
+  log::trace("ex stream write");
+
   wex::file file(
     path(filename),
     append ? std::ios::out | std::ios_base::app : std::ios::out);
@@ -618,6 +669,9 @@ bool wex::ex_stream::write(
   ex_stream_line sl(&file, ex_stream_line::ACTION_WRITE, range);
 
   STREAM_LINE_ON_CHAR();
+
+  log::info("saved") << filename;
+  log::status(_("Saved")) << filename;
 
   return true;
 }

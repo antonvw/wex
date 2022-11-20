@@ -2,10 +2,12 @@
 // Name:      data/find.cpp
 // Purpose:   Implementation of class wex::data::find
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
 #include <wex/data/find.h>
 #include <wex/factory/stc.h>
 
@@ -22,14 +24,18 @@ wex::data::find::find(
   set_pos();
 }
 
-wex::data::find& wex::data::find::flags(int rhs)
+wex::data::find::find(const std::string& text, int line, int pos, bool forward)
+  : m_text(text)
+  , m_line_no(line)
+  , m_pos(pos)
+  , m_forward(forward)
 {
-  m_flags = rhs;
-  return *this;
 }
 
 bool wex::data::find::find_margin(int& found_line)
 {
+  assert(m_stc != nullptr);
+
   const bool wrapscan(config(_("stc.Wrap scan")).get(true));
   std::match_results<std::string::const_iterator> m;
 
@@ -59,6 +65,8 @@ bool wex::data::find::find_margin(int& found_line)
 
   if (!found && !m_recursive && wrapscan)
   {
+    statustext();
+
     m_recursive = true;
 
     set_pos();
@@ -68,6 +76,10 @@ bool wex::data::find::find_margin(int& found_line)
     {
       found_line = line;
     }
+    else
+    {
+      statustext();
+    }
 
     m_recursive = false;
   }
@@ -75,8 +87,16 @@ bool wex::data::find::find_margin(int& found_line)
   return found;
 }
 
+wex::data::find& wex::data::find::flags(int rhs)
+{
+  m_flags = rhs;
+  return *this;
+}
+
 void wex::data::find::set_pos()
 {
+  assert(m_stc != nullptr);
+
   if (m_forward)
   {
     if (m_recursive)
@@ -110,4 +130,9 @@ void wex::data::find::set_pos()
       m_end_pos = 0;
     }
   }
+}
+
+void wex::data::find::statustext() const
+{
+  log::status(get_find_result(text(), is_forward(), recursive()));
 }

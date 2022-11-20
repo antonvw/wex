@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
-#include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/data/find.h>
 #include <wex/ex/ex-stream.h>
@@ -29,10 +28,6 @@ bool find_margin(data::find& f, factory::frame* frame)
     return true;
   }
 
-  frame->statustext(
-    get_find_result(f.text(), f.is_forward(), true),
-    std::string());
-
   return false;
 }
 
@@ -54,9 +49,7 @@ bool find_other(const vi& vi, data::find& f, factory::frame* frame)
 
   if (f.stc()->SearchInTarget(stext) == -1)
   {
-    frame->statustext(
-      get_find_result(f.text(), f.is_forward(), f.recursive()),
-      std::string());
+    f.statustext();
 
     bool found = false;
 
@@ -125,7 +118,7 @@ bool wex::stc::find(const std::string& text, int find_flags, bool forward)
   switch (m_vi->visual())
   {
     case ex::EX:
-      return m_file.ex_stream()->find(text, find_flags, forward);
+      return m_file.ex_stream()->find_data(f);
 
     case ex::VISUAL:
       if (m_margin_text_click >= 0)

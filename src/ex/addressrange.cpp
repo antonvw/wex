@@ -887,6 +887,10 @@ bool wex::addressrange::write(const command_parser& cp)
       stc_undo::undo_t().set(stc_undo::UNDO_POS).set(stc_undo::UNDO_SEL_NONE));
     return write(cp.text());
   }
+  else if (!m_stc->is_visual())
+  {
+    return m_ex->ex_stream()->write();
+  }
   else
   {
     wxCommandEvent event(
