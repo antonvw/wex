@@ -88,6 +88,13 @@ TEST_CASE("wex::core")
     REQUIRE(wex::get_number_of_lines("test\rtest\r") == 3);
     REQUIRE(wex::get_number_of_lines("test\r\ntest\n") == 3);
 
+    // A DOS file.
+    REQUIRE(wex::get_number_of_lines("test\rtest\n\n\r\r\r\n\n\n") == 6);
+
+    // No DOS file.
+    REQUIRE(wex::get_number_of_lines("test\rtest\n\n\r\r\rx\n\n\n") == 10);
+
+    // trimmed
     REQUIRE(wex::get_number_of_lines("test\r\ntest\n\n\n", true) == 2);
     REQUIRE(wex::get_number_of_lines("test\r\ntest\n\n", true) == 2);
     REQUIRE(wex::get_number_of_lines("test\r\ntest\n\n", true) == 2);

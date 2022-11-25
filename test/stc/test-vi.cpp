@@ -141,6 +141,17 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command(":set nosws"));
     REQUIRE(vi->command(":set dir=./"));
 
+    // Default setting.
+    REQUIRE(bool(vi->search_flags() & wxSTC_FIND_REGEXP));
+
+    // Test nomagic.
+    REQUIRE(vi->command(":set nomagic"));
+    REQUIRE(bool(!(vi->search_flags() & wxSTC_FIND_REGEXP)));
+
+    // Back to default.
+    REQUIRE(vi->command(":set magic"));
+    REQUIRE(bool(vi->search_flags() & wxSTC_FIND_REGEXP));
+
     REQUIRE(vi->command(":set noexpandtab"));
     REQUIRE(stc->GetUseTabs());
     REQUIRE(vi->command(":set expandtab"));

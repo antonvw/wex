@@ -15,7 +15,6 @@
 #include <wex/ex/ex-stream.h>
 #include <wex/ex/ex.h>
 #include <wex/ex/macros.h>
-#include <wex/ui/frd.h>
 
 #include "test.h"
 
@@ -111,12 +110,12 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(exs.get_current_line() == 3);
     REQUIRE(!exs.is_block_mode());
 
-    wex::find_replace_data::get()->set_regex(true);
+    ex.command(":set magic");
     exs.goto_line(0);
     REQUIRE(exs.find(std::string("o.e")));
     REQUIRE(!exs.find(std::string("oxe")));
 
-    wex::find_replace_data::get()->set_regex(false);
+    ex.command(":set nomagic");
     exs.goto_line(0);
     REQUIRE(!exs.find(std::string("o.e")));
 
@@ -282,7 +281,7 @@ TEST_CASE("wex::ex_stream")
     wex::file ifs(open_file());
     REQUIRE(ifs.open());
     exs.stream(ifs);
-    wex::find_replace_data::get()->set_regex(false);
+    ex.command(":set nomagic");
 
     const wex::addressrange ar(&ex, "1,2");
 

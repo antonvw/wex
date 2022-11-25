@@ -438,9 +438,9 @@ TEST_CASE("wex::ex")
   {
     stc->set_text("xyz\n");
     REQUIRE(ex->command(":append|extra"));
-    REQUIRE(stc->get_text() == "xyz\nextra");
+    REQUIRE(stc->get_text() == "xyz\nextra\n");
     REQUIRE(ex->command(":insert|before\n"));
-    REQUIRE(stc->get_text() == "xyz\nbefore\nextra");
+    REQUIRE(stc->get_text() == "xyz\nbefore\n\nextra\n");
     stc->set_text("xyz\n");
     REQUIRE(ex->command(":c|new\n"));
     REQUIRE(stc->get_text() == "new\n");

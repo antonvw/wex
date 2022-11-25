@@ -190,7 +190,8 @@ bool wex::ex_stream::find_data(data::find& f)
     return false;
   }
 
-  const bool use_regex(find_replace_data::get()->is_regex());
+  const bool use_regex(m_ex->search_flags() & wxSTC_FIND_REGEXP);
+
   std::regex r;
 
   try

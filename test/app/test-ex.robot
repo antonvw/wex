@@ -19,7 +19,7 @@ addressing
 	...	:a|line has no match
 	...	:/text/,/u/ya
 	Appl
-	Output Contains	8
+	Output Contains	15
 
 empty
 	Input	:1000
