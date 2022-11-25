@@ -51,6 +51,10 @@ public:
   /// Destructor.
   ~ex_stream() override;
 
+  /// Copies range to destination.
+  /// Returns false if no stream, or range or dest is invalid.
+  bool copy(const addressrange& range, const address& dest);
+
   /// Deletes the range.
   bool erase(const addressrange& range);
 
@@ -79,7 +83,7 @@ public:
   bool is_modified() const { return m_is_modified; }
 
   /// Joins all lines in the range.
-  /// Returns false if no stream, of address is invalid.
+  /// Returns false if no stream, or range is invalid.
   bool join(const addressrange& range);
 
   /// Sets marker.
@@ -93,12 +97,16 @@ public:
   /// Returns LINE_NUMBER_UNKNOWN if marker not known.
   int marker_line(char marker) const;
 
+  /// Moves range to destination.
+  /// Returns false if no stream, or range or dest is invalid.
+  bool move(const addressrange& range, const address& dest);
+
   /// Sets the streams. Puts first line on stc.
   /// This must be called before the other methods.
   void stream(file& f);
 
   /// Substitutes within the range find by replace.
-  /// Returns false if no stream, of range is invalid.
+  /// Returns false if no stream, or range is invalid.
   bool substitute(const addressrange& range, const data::substitute& data);
 
   /// Writes working stream to file.
@@ -106,13 +114,14 @@ public:
   bool write();
 
   /// Writes range to file.
-  /// Returns false if no stream, of address is invalid.
+  /// Returns false if no stream, or range is invalid.
   bool write(
     const addressrange& range,
     const std::string&  file,
     bool                append = false);
 
   /// Yanks range to register, default to yank register.
+  /// Returns false if no stream, or range is invalid.
   bool yank(const addressrange& range, char name = '0');
 
   /// Virtual methods from text_window.

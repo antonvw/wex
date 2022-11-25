@@ -20,7 +20,7 @@
 
 #define STREAM_LINE_ON_CHAR()                                                 \
   {                                                                           \
-    if (!range.is_ok())                                                       \
+    if (m_stream == nullptr || !range.is_ok())                                \
     {                                                                         \
       return false;                                                           \
     }                                                                         \
@@ -114,13 +114,21 @@ bool wex::ex_stream::copy(file* from, file* to)
   return true;
 }
 
+bool wex::ex_stream::copy(const addressrange& range, const address& dest)
+{
+  ex_stream_line sl(m_temp, range, dest, ex_stream_line::ACTION_COPY);
+
+  STREAM_LINE_ON_CHAR();
+
+  m_last_line_no = sl.lines() + sl.actions() - 1;
+
+  m_ex->frame()->show_ex_message(std::to_string(sl.actions()) + " added lines");
+  
+  return true;
+}
+
 bool wex::ex_stream::erase(const addressrange& range)
 {
-  if (m_stream == nullptr)
-  {
-    return false;
-  }
-
   ex_stream_line sl(m_temp, ex_stream_line::ACTION_ERASE, range);
 
   STREAM_LINE_ON_CHAR();
@@ -128,8 +136,6 @@ bool wex::ex_stream::erase(const addressrange& range)
   m_last_line_no = sl.lines() - sl.actions() - 1;
 
   m_ex->frame()->show_ex_message(std::to_string(sl.actions()) + " fewer lines");
-
-  goto_line(0);
 
   return true;
 }
@@ -482,11 +488,6 @@ bool wex::ex_stream::insert_text(
   const std::string& text,
   loc_t              loc)
 {
-  if (m_stream == nullptr)
-  {
-    return false;
-  }
-
   const auto line(loc == INSERT_BEFORE ? a.get_line() : a.get_line() + 1);
   const addressrange range(
     m_ex,
@@ -503,11 +504,6 @@ bool wex::ex_stream::insert_text(
 
 bool wex::ex_stream::join(const addressrange& range)
 {
-  if (m_stream == nullptr)
-  {
-    return false;
-  }
-
   ex_stream_line sl(m_temp, ex_stream_line::ACTION_JOIN, range);
 
   STREAM_LINE_ON_CHAR();
@@ -552,6 +548,17 @@ int wex::ex_stream::marker_line(char marker) const
   }
 
   return LINE_NUMBER_UNKNOWN;
+}
+
+bool wex::ex_stream::move(const addressrange& range, const address& dest)
+{
+  ex_stream_line sl(m_temp, range, dest, ex_stream_line::ACTION_MOVE);
+
+  STREAM_LINE_ON_CHAR();
+
+  m_ex->frame()->show_ex_message(std::to_string(sl.actions()) + " moved lines");
+
+  return true;
 }
 
 void wex::ex_stream::set_text()
@@ -616,11 +623,6 @@ bool wex::ex_stream::substitute(
   const addressrange&     range,
   const data::substitute& data)
 {
-  if (m_stream == nullptr)
-  {
-    return false;
-  }
-
   ex_stream_line sl(m_temp, range, data);
 
   STREAM_LINE_ON_CHAR();
@@ -628,8 +630,6 @@ bool wex::ex_stream::substitute(
   m_ex->frame()->show_ex_message(
     "Replaced: " + std::to_string(sl.actions()) +
     " occurrences of: " + data.pattern());
-
-  goto_line(0);
 
   return true;
 }
@@ -656,11 +656,6 @@ bool wex::ex_stream::write(
   const std::string&  filename,
   bool                append)
 {
-  if (m_stream == nullptr)
-  {
-    return false;
-  }
-
   log::trace("ex stream write");
 
   wex::file file(
@@ -679,11 +674,6 @@ bool wex::ex_stream::write(
 
 bool wex::ex_stream::yank(const addressrange& range, char name)
 {
-  if (m_stream == nullptr)
-  {
-    return false;
-  }
-
   ex_stream_line sl(m_temp, range, name);
 
   STREAM_LINE_ON_CHAR();

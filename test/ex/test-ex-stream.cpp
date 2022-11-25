@@ -77,6 +77,22 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(exs.get_line_count_request() == LINE_COUNT_UNKNOWN);
   }
 
+  SUBCASE("copy")
+  {
+    wex::file ifs(open_file());
+    REQUIRE(ifs.open());
+    exs.stream(ifs);
+
+    REQUIRE(exs.get_line_count_request() == 5);
+
+    const wex::address      dest(&ex, "$");
+    const wex::addressrange ar(&ex, "1,2");
+
+    REQUIRE(exs.copy(ar, dest));
+    REQUIRE(exs.is_modified());
+    REQUIRE(exs.get_line_count_request() == 7);
+  }
+
   SUBCASE("erase")
   {
     wex::file ifs(open_file());
@@ -216,6 +232,22 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(exs.marker_delete('x'));
     REQUIRE(!exs.marker_delete('x'));
     REQUIRE(exs.marker_line('x') == LINE_NUMBER_UNKNOWN);
+  }
+
+  SUBCASE("move")
+  {
+    wex::file ifs(open_file());
+    REQUIRE(ifs.open());
+    exs.stream(ifs);
+
+    REQUIRE(exs.get_line_count_request() == 5);
+
+    const wex::address      dest(&ex, "$");
+    const wex::addressrange ar(&ex, "1,2");
+
+    REQUIRE(exs.move(ar, dest));
+    REQUIRE(exs.is_modified());
+    REQUIRE(exs.get_line_count_request() == 5);
   }
 
   SUBCASE("previous")

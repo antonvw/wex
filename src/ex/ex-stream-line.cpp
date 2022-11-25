@@ -20,12 +20,16 @@ std::string action_name(ex_stream_line::action_t type)
 {
   switch (type)
   {
+    case ex_stream_line::ACTION_COPY:
+      return "copied";
     case ex_stream_line::ACTION_ERASE:
       return "erased";
     case ex_stream_line::ACTION_INSERT:
       return "inserted";
     case ex_stream_line::ACTION_JOIN:
       return "joined";
+    case ex_stream_line::ACTION_MOVE:
+      return "moved";
     case ex_stream_line::ACTION_SUBSTITUTE:
       return "substituted";
     case ex_stream_line::ACTION_WRITE:
@@ -80,6 +84,19 @@ wex::ex_stream_line::ex_stream_line(
 wex::ex_stream_line::ex_stream_line(
   file*               work,
   const addressrange& range,
+  const address&      dest,
+  action_t            type)
+  : m_action(type)
+  , m_file(work)
+  , m_begin(range.begin().get_line() - 1)
+  , m_end(range.end().get_line() - 1)
+  , m_dest(dest.get_line() - 1)
+{
+}
+
+wex::ex_stream_line::ex_stream_line(
+  file*               work,
+  const addressrange& range,
   char                name)
   : m_action(ACTION_YANK)
   , m_file(work)
@@ -103,6 +120,12 @@ wex::ex_stream_line::handle_t wex::ex_stream_line::handle(char* line, int& pos)
   {
     switch (m_action)
     {
+      case ACTION_COPY:
+        m_file->write(line, pos);
+        m_copy += line;
+        m_actions++;
+        break;
+
       case ACTION_ERASE:
         // skip this line: no write at all
         m_actions++;
@@ -118,6 +141,11 @@ wex::ex_stream_line::handle_t wex::ex_stream_line::handle(char* line, int& pos)
         // join: do not write last char, that is \n
         m_actions++;
         m_file->write(line, pos - 1);
+        break;
+
+      case ACTION_MOVE:
+        m_copy += line;
+        m_actions++;
         break;
 
       case ACTION_SUBSTITUTE:
@@ -145,6 +173,17 @@ wex::ex_stream_line::handle_t wex::ex_stream_line::handle(char* line, int& pos)
   {
     switch (m_action)
     {
+      case ACTION_COPY:
+      case ACTION_MOVE:
+        m_file->write(line, pos);
+
+        if (m_line > m_dest && !m_copy.empty())
+        {
+          m_file->write(m_copy);
+          m_copy.clear();
+        }
+        break;
+
       case ACTION_WRITE:
         break;
 

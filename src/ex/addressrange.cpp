@@ -22,7 +22,6 @@
 #include <wex/factory/stc-undo.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
-#include <wex/ui/frd.h>
 #include <wx/app.h>
 #include <wx/msgdlg.h>
 
@@ -222,12 +221,13 @@ bool wex::addressrange::copy(const command_parser& cp)
 
 bool wex::addressrange::copy(const address& destination) const
 {
-  return general(
-    destination,
-    [=, this]()
-    {
-      return yank();
-    });
+  return !m_stc->is_visual() ? m_ex->ex_stream()->copy(*this, destination) :
+                               general(
+                                 destination,
+                                 [=, this]()
+                                 {
+                                   return yank();
+                                 });
 }
 
 bool wex::addressrange::erase() const
@@ -547,12 +547,13 @@ bool wex::addressrange::join() const
 
 bool wex::addressrange::move(const address& destination) const
 {
-  return general(
-    destination,
-    [=, this]()
-    {
-      return erase();
-    });
+  return !m_stc->is_visual() ? m_ex->ex_stream()->move(*this, destination) :
+                               general(
+                                 destination,
+                                 [=, this]()
+                                 {
+                                   return erase();
+                                 });
 }
 
 bool wex::addressrange::parse(const command_parser& cp, info_message_t& im)
