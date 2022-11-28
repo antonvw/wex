@@ -67,12 +67,12 @@ TEST_CASE("wex::ex_stream")
 
   SUBCASE("constructor")
   {
-    REQUIRE(exs.get_current_line() == LINE_COUNT_UNKNOWN);
+    REQUIRE(exs.get_current_line() == 0);
     REQUIRE(exs.get_line_count() == LINE_COUNT_UNKNOWN);
     REQUIRE(exs.get_line_count_request() == LINE_COUNT_UNKNOWN);
 
     exs.goto_line(5);
-    REQUIRE(exs.get_current_line() == LINE_COUNT_UNKNOWN);
+    REQUIRE(exs.get_current_line() == 0);
     REQUIRE(exs.get_line_count() == LINE_COUNT_UNKNOWN);
     REQUIRE(exs.get_line_count_request() == LINE_COUNT_UNKNOWN);
   }

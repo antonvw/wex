@@ -123,7 +123,7 @@ bool wex::ex_stream::copy(const addressrange& range, const address& dest)
   m_last_line_no = sl.lines() + sl.actions() - 1;
 
   m_ex->frame()->show_ex_message(std::to_string(sl.actions()) + " added lines");
-  
+
   return true;
 }
 
@@ -281,7 +281,7 @@ bool wex::ex_stream::find_finish(data::find& f, bool& found)
 
 int wex::ex_stream::get_current_line() const
 {
-  return m_line_no;
+  return m_line_no == LINE_COUNT_UNKNOWN ? 0 : m_line_no;
 }
 
 int wex::ex_stream::get_line_count() const
