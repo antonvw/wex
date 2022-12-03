@@ -52,6 +52,14 @@ bool wex::ex::command_set(const std::string& command)
           m_search_flags &= ~wxSTC_FIND_MATCHCASE;
         wex::find_replace_data::get()->set_match_case(!on);
       }},
+     {{"magic", "ex-set.magic,1"},
+      [&](bool on)
+      {
+        if (on)
+          m_search_flags |= m_search_flags_regex;
+        else
+          m_search_flags &= ~m_search_flags_regex;
+      }},
      {{"mw", "ex-set.matchwords"},
       [&](bool on)
       {

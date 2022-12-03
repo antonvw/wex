@@ -54,7 +54,7 @@ escape
 	...	:!wc -l
 	...	
 	Appl
-	Contents Contains	10
+	Contents Contains	5
 
 find-not
 	Input	:a|x
@@ -63,7 +63,7 @@ find-not
 	...	/zz
 	...	:.=
 	Appl
-	Output Contains	4
+	Output Contains	7
 
 find-ok
 	Input	:a|x
@@ -72,7 +72,7 @@ find-ok
 	...	/z
 	...	:.=
 	Appl
-	Output Contains	3
+	Output Contains	5
 
 info
 	Input	:a|line has text
@@ -183,7 +183,7 @@ mode-visual-yank-range
 	...	G
 	...	y
 	Appl
-	Output Contains	50
+	Output Contains	100
 	Output Contains	yanked
 
 navigate
@@ -224,7 +224,7 @@ yank-range
 	Input	:1
 	...	yG
 	Appl
-	Output Contains	100
+	Output Contains	200
 	Output Contains	yanked
 
 yank-register

@@ -18,6 +18,7 @@
 #include <wex/factory/process.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
 
 #define SEARCH_TARGET                                                         \
   if (ex->get_stc()->SearchInTarget(text) != -1)                              \
@@ -96,7 +97,7 @@ bool wex::address::add(add_t type, const std::string& text) const
   {
     m_ex->ex_stream()->insert_text(
       *this,
-      text,
+      text + m_ex->get_stc()->eol(),
       type == ADD_APPEND ? ex_stream::INSERT_AFTER : ex_stream::INSERT_BEFORE);
     return true;
   }
@@ -108,7 +109,7 @@ bool wex::address::add(add_t type, const std::string& text) const
   {
     m_ex->get_stc()->insert_text(
       m_ex->get_stc()->PositionFromLine(type == ADD_APPEND ? line : line - 1),
-      text);
+      text + m_ex->get_stc()->eol());
 
     if (type == ADD_APPEND)
     {
@@ -217,11 +218,20 @@ int wex::address::get_line(int start_pos) const
       v.match(m_address) > 0)
   {
     const auto use_pos =
-      start_pos == -1 ? m_ex->get_stc()->GetCurrentPos() : start_pos;
+      start_pos == -1 ? m_ex->get_stc()->GetCurrentPos() + 1 : start_pos;
+    const auto& text(
+      !v[0].empty() ? v[0] : find_replace_data::get()->get_find_string());
 
-    return !m_ex->get_stc()->is_visual() ?
-             find_stream(m_ex, v[0], m_address[0] == '/') :
-             find_stc(m_ex, v[0], use_pos, m_address[0] == '/');
+    const auto result = !m_ex->get_stc()->is_visual() ?
+                          find_stream(m_ex, text, m_address[0] == '/') :
+                          find_stc(m_ex, text, use_pos, m_address[0] == '/');
+
+    if (result > 0)
+    {
+      find_replace_data::get()->set_find_string(text);
+    }
+
+    return result;
   }
   // Try address calculation.
   else if (const auto sum = m_ex->calculator(m_address); sum < 0)

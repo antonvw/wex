@@ -191,13 +191,17 @@ int wex::get_number_of_lines(const std::string& text, bool trim)
 
   const auto& trimmed = (trim ? boost::algorithm::trim_copy(text) : text);
 
-  if (const int c = std::count(trimmed.begin(), trimmed.end(), '\n') + 1;
-      c != 1)
-  {
-    return c;
-  }
-
-  return std::count(trimmed.begin(), trimmed.end(), '\r') + 1;
+  // If text contains \r\n, assume a DOS file, count only \n.
+  // Otherwise count all endings.
+  return ((trimmed.find("\r\n") != std::string::npos) ?
+           std::count(trimmed.begin(), trimmed.end(), '\n') :
+           std::count_if(
+             trimmed.begin(),
+             trimmed.end(),
+             [](auto i)
+             {
+               return i == '\n' || i == '\r';
+             })) + 1;
 }
 
 const std::string wex::get_string_set(

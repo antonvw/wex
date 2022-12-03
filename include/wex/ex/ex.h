@@ -216,7 +216,8 @@ private:
 
   bool m_auto_write{false}, m_copy{false}; // this is a copy, result of split
 
-  int m_search_flags;
+  const int m_search_flags_regex;
+  int       m_search_flags;
 
   char m_register{0};
 

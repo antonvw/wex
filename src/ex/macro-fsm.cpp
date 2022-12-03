@@ -226,6 +226,9 @@ void wex::macro_fsm::playback(const std::string& macro, ex* ex, int repeat)
     m_macro = macro;
   }
 
+  // E.g. otherwise Coverage macro not ok.
+  ex->reset_search_flags();
+
   const auto& commands(m_mode->get_macros()->get_macro_commands(macro));
 
   for (int i = 0; i < repeat && !error; i++)

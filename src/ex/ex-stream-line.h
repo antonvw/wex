@@ -18,9 +18,11 @@ class ex_stream_line
 public:
   enum action_t
   {
+    ACTION_COPY,
     ACTION_ERASE,
     ACTION_INSERT,
     ACTION_JOIN,
+    ACTION_MOVE,
     ACTION_SUBSTITUTE,
     ACTION_WRITE,
     ACTION_YANK,
@@ -45,10 +47,17 @@ public:
     const addressrange&     range,
     const data::substitute& data);
 
+  /// Constructor for ACTION_MOVE or COPY action.
+  ex_stream_line(
+    file*               work,
+    const addressrange& range,
+    const address&      dest,
+    action_t            type);
+
   /// Constructor for ACTION_YANK action.
   ex_stream_line(file* work, const addressrange& range, char name);
 
-  /// Constructor for other action.
+  /// Constructor for other actions.
   ex_stream_line(file* work, action_t type, const addressrange& range);
 
   /// Destructor.
@@ -73,9 +82,11 @@ private:
   const data::substitute m_data;
   const std::string      m_text;
   const char             m_register{0};
-  const int              m_begin, m_end;
+  const int              m_begin, m_end, m_dest{-1};
 
   file* m_file;
   int   m_actions{0}, m_line{0};
+
+  std::string m_copy;
 };
 }; // namespace wex

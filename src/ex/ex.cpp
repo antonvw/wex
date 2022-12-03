@@ -34,6 +34,8 @@ wex::ex::ex(wex::syntax::stc* stc, mode_t mode)
   , m_commands(commands_ex())
   , m_ctags(new wex::ctags(stc))
   , m_auto_write(config(_("stc.Auto write")).get(false))
+  , m_search_flags_regex(wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX)
+  , m_search_flags(m_search_flags_regex)
 {
   assert(m_frame != nullptr);
 
@@ -338,9 +340,7 @@ const std::string wex::ex::register_text() const
 
 void wex::ex::reset_search_flags()
 {
-  m_search_flags =
-    ((find_replace_data::get()->match_case() ? wxSTC_FIND_MATCHCASE : 0) |
-     wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX);
+  m_search_flags &= ~wxSTC_FIND_WHOLEWORD;
 }
 
 void wex::ex::search_whole_word()

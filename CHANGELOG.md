@@ -3,6 +3,7 @@
 **v23.04**
 - wex-ctags and wex-syntax library added
 - wxWidgets 3.3
+- ex mode fixes
 
 **v22.10** *September 18, 2022*
 - added blame revision

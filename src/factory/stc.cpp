@@ -64,6 +64,8 @@ void wex::factory::stc::bind_wx()
 
 void wex::factory::stc::clear(bool set_savepoint)
 {
+  const bool restore = !is_visual() && GetReadOnly();
+
   SetReadOnly(false);
 
   ClearAll();
@@ -72,6 +74,11 @@ void wex::factory::stc::clear(bool set_savepoint)
   {
     EmptyUndoBuffer();
     SetSavePoint();
+  }
+
+  if (restore)
+  {
+    SetReadOnly(true);
   }
 }
 

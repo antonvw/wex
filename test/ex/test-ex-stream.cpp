@@ -5,15 +5,16 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/core.h>
 #include <wex/core/file.h>
 #include <wex/core/log.h>
+#include <wex/data/find.h>
 #include <wex/data/substitute.h>
 #include <wex/ex/address.h>
 #include <wex/ex/addressrange.h>
 #include <wex/ex/ex-stream.h>
 #include <wex/ex/ex.h>
 #include <wex/ex/macros.h>
-#include <wex/ui/frd.h>
 
 #include "test.h"
 
@@ -66,14 +67,30 @@ TEST_CASE("wex::ex_stream")
 
   SUBCASE("constructor")
   {
-    REQUIRE(exs.get_current_line() == LINE_COUNT_UNKNOWN);
+    REQUIRE(exs.get_current_line() == 0);
     REQUIRE(exs.get_line_count() == LINE_COUNT_UNKNOWN);
     REQUIRE(exs.get_line_count_request() == LINE_COUNT_UNKNOWN);
 
     exs.goto_line(5);
-    REQUIRE(exs.get_current_line() == LINE_COUNT_UNKNOWN);
+    REQUIRE(exs.get_current_line() == 0);
     REQUIRE(exs.get_line_count() == LINE_COUNT_UNKNOWN);
     REQUIRE(exs.get_line_count_request() == LINE_COUNT_UNKNOWN);
+  }
+
+  SUBCASE("copy")
+  {
+    wex::file ifs(open_file());
+    REQUIRE(ifs.open());
+    exs.stream(ifs);
+
+    REQUIRE(exs.get_line_count_request() == 5);
+
+    const wex::address      dest(&ex, "$");
+    const wex::addressrange ar(&ex, "1,2");
+
+    REQUIRE(exs.copy(ar, dest));
+    REQUIRE(exs.is_modified());
+    REQUIRE(exs.get_line_count_request() == 7);
   }
 
   SUBCASE("erase")
@@ -81,6 +98,8 @@ TEST_CASE("wex::ex_stream")
     wex::file ifs(open_file());
     REQUIRE(ifs.open());
     exs.stream(ifs);
+
+    REQUIRE(exs.get_line_count_request() == 5);
 
     const wex::addressrange ar(&ex, "1,2");
 
@@ -107,14 +126,33 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(exs.get_current_line() == 3);
     REQUIRE(!exs.is_block_mode());
 
-    wex::find_replace_data::get()->set_regex(true);
+    ex.command(":set magic");
     exs.goto_line(0);
     REQUIRE(exs.find(std::string("o.e")));
     REQUIRE(!exs.find(std::string("oxe")));
 
-    wex::find_replace_data::get()->set_regex(false);
+    ex.command(":set nomagic");
     exs.goto_line(0);
     REQUIRE(!exs.find(std::string("o.e")));
+
+    exs.goto_line(10);
+    REQUIRE(exs.find(std::string("one")));
+    REQUIRE(exs.get_current_line() == 3);
+  }
+
+  SUBCASE("find_data")
+  {
+    wex::file ifs("test.md", std::ios_base::in);
+    REQUIRE(ifs.is_open());
+
+    wex::data::find f("one", 0, 0);
+
+    REQUIRE(!exs.find_data(f));
+
+    exs.stream(ifs);
+    REQUIRE(exs.find_data(f));
+    REQUIRE(!exs.is_modified());
+    REQUIRE(exs.get_current_line() == 3);
   }
 
   SUBCASE("find-noeol")
@@ -139,13 +177,24 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(ifs.open());
     exs.stream(ifs);
 
+    REQUIRE(exs.get_line_count_request() == 5);
+
     REQUIRE(!exs.insert_text(wex::address(&ex, 0), "TEXT_BEFORE"));
 
     REQUIRE(exs.insert_text(wex::address(&ex, 1), "TEXT_BEFORE"));
+    REQUIRE(exs.get_line_count_request() == 5);
+    CAPTURE(*exs.get_work());
+    REQUIRE((*exs.get_work()).find("TEXT_BEFORE") == 0);
+    REQUIRE((*exs.get_work()).rfind("TEXT_BEFORE") == 0);
+    REQUIRE(exs.get_line_count_request() == 5);
+    REQUIRE(wex::get_number_of_lines(*exs.get_work()) == 6);
+
     REQUIRE(exs.insert_text(
       wex::address(&ex, 3),
       "TEXT_AFTER",
       wex::ex_stream::INSERT_AFTER));
+    REQUIRE((*exs.get_work()).find("TEXT_AFTER") != std::string::npos);
+
     REQUIRE(exs.is_modified());
   }
 
@@ -185,6 +234,22 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(exs.marker_line('x') == LINE_NUMBER_UNKNOWN);
   }
 
+  SUBCASE("move")
+  {
+    wex::file ifs(open_file());
+    REQUIRE(ifs.open());
+    exs.stream(ifs);
+
+    REQUIRE(exs.get_line_count_request() == 5);
+
+    const wex::address      dest(&ex, "$");
+    const wex::addressrange ar(&ex, "1,2");
+
+    REQUIRE(exs.move(ar, dest));
+    REQUIRE(exs.is_modified());
+    REQUIRE(exs.get_line_count_request() == 5);
+  }
+
   SUBCASE("previous")
   {
     wex::file ifs("test.md", std::ios_base::in);
@@ -195,7 +260,7 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(!exs.is_modified());
     REQUIRE(exs.get_current_line() == 1);
     REQUIRE(exs.find(std::string("one")));
-    REQUIRE(exs.get_current_line() == 5);
+    REQUIRE(exs.get_current_line() == 3);
     REQUIRE(!exs.is_block_mode());
   }
 
@@ -248,7 +313,7 @@ TEST_CASE("wex::ex_stream")
     wex::file ifs(open_file());
     REQUIRE(ifs.open());
     exs.stream(ifs);
-    wex::find_replace_data::get()->set_regex(false);
+    ex.command(":set nomagic");
 
     const wex::addressrange ar(&ex, "1,2");
 

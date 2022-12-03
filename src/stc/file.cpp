@@ -6,11 +6,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
+#include <wex/core/log.h>
 #include <wex/ex/ex-stream.h>
 #include <wex/factory/defs.h>
-#include <wex/syntax/path-lexer.h>
 #include <wex/stc/file.h>
 #include <wex/stc/stc.h>
+#include <wex/syntax/path-lexer.h>
 #include <wex/ui/file-dialog.h>
 
 //#define USE_THREAD 1
@@ -143,6 +144,20 @@ void wex::stc_file::do_file_new()
 {
   m_stc->SetName(path().string());
   m_stc->properties_message();
+
+  if (!m_stc->is_visual())
+  {
+    if (!open(std::ios_base::out | std::ios_base::in | std::ios_base::trunc))
+    {
+      log("file not opened") << path();
+    }
+    else
+    {
+      ex_stream()->stream(*this);
+    }
+
+    m_stc->SetReadOnly(true);
+  }
 
   if (m_stc->data().control().command().empty())
   {

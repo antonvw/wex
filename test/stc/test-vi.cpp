@@ -63,13 +63,13 @@ TEST_CASE("wex::vi")
     REQUIRE(stc->get_line_count() == 12);
     stc->GotoLine(2);
     for (const auto& go : std::vector<std::pair<std::string, int>>{
-           {"gg", 0},      {"G", 11},     {":-5", 6},   {":+5", 11},
-           {":-", 10},     {":+", 11},    {"1G", 0},    {"10G", 9},
-           {"10000G", 11}, {":$", 11},    {":100", 11}, {"/bbbbb", 1},
-           {":-10", 0},    {":10", 9},    {":/c/", 2},  {":10000", 11},
-           {":2", 1},      {"/d", 1},     {"/a", 3},    {"n", 3},
-           {"N", 3},       {"?bbbbb", 1}, {"?d", 1},    {"?a", 0},
-           {"n", 0},       {"N", 0}})
+           {"gg", 0},      {"G", 11},      {":-5", 6},   {":+5", 11},
+           {":-", 10},     {":+", 11},     {"1G", 0},    {"10G", 9},
+           {"10000G", 11}, {":$", 11},     {":100", 11}, {"/bbbbb", 1},
+           {":-10", 0},    {":10", 9},     {":/c/", 2},  {":/aaaaa/", 3},
+           {"://", 0},     {":10000", 11}, {":2", 1},    {"/d", 1},
+           {"/a", 3},      {"n", 3},       {"N", 3},     {"?bbbbb", 1},
+           {"?d", 1},      {"?a", 0},      {"n", 0},     {"N", 0}})
     {
       CAPTURE(go.first);
 
@@ -140,6 +140,17 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command(":set noreadonly"));
     REQUIRE(vi->command(":set nosws"));
     REQUIRE(vi->command(":set dir=./"));
+
+    // Default setting.
+    REQUIRE(bool(vi->search_flags() & wxSTC_FIND_REGEXP));
+
+    // Test nomagic.
+    REQUIRE(vi->command(":set nomagic"));
+    REQUIRE(bool(!(vi->search_flags() & wxSTC_FIND_REGEXP)));
+
+    // Back to default.
+    REQUIRE(vi->command(":set magic"));
+    REQUIRE(bool(vi->search_flags() & wxSTC_FIND_REGEXP));
 
     REQUIRE(vi->command(":set noexpandtab"));
     REQUIRE(stc->GetUseTabs());
