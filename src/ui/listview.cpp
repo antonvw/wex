@@ -13,6 +13,7 @@
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
 #include <wex/core/tokenize.h>
+#include <wex/data/find.h>
 #include <wex/data/stc.h>
 #include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
@@ -599,22 +600,23 @@ bool wex::listview::find_next(const std::string& text, bool forward)
     return false;
   }
 
-  std::string text_use = ignore_case(text);
-
   const auto  firstselected = GetFirstSelected();
-  static bool recursive     = false;
   static long start_item;
   static long end_item;
 
+  data::find find(ignore_case(text), forward);
+
   if (forward)
   {
-    start_item = recursive ? 0 : (firstselected != -1 ? firstselected + 1 : 0);
-    end_item   = GetItemCount();
+    start_item =
+      find.recursive() ? 0 : (firstselected != -1 ? firstselected + 1 : 0);
+    end_item = GetItemCount();
   }
   else
   {
-    start_item = recursive ? GetItemCount() - 1 :
-                             (firstselected != -1 ? firstselected - 1 : 0);
+    start_item = find.recursive() ?
+                   GetItemCount() - 1 :
+                   (firstselected != -1 ? firstselected - 1 : 0);
     end_item   = -1;
   }
 
@@ -625,14 +627,12 @@ bool wex::listview::find_next(const std::string& text, bool forward)
   {
     for (int col = 0; col < GetColumnCount() && match == -1; col++)
     {
-      match = check_match(index, text_use, GetItemText(index, col));
+      match = check_match(index, find.text(), GetItemText(index, col));
     }
   }
 
   if (match != -1)
   {
-    recursive = false;
-
     Select(match);
     EnsureVisible(match);
 
@@ -645,15 +645,13 @@ bool wex::listview::find_next(const std::string& text, bool forward)
   }
   else
   {
-    m_frame->statustext(
-      get_find_result(text, forward, recursive),
-      std::string());
+    find.statustext();
 
-    if (!recursive)
+    if (!find.recursive())
     {
-      recursive = true;
+      data::find::recursive(true);
       find_next(text, forward);
-      recursive = false;
+      data::find::recursive(false);
     }
 
     return false;

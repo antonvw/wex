@@ -25,6 +25,15 @@ TEST_CASE("wex::data::find")
 
   SUBCASE("constructor")
   {
+    SUBCASE("default")
+    {
+      wex::data::find f;
+
+      REQUIRE(f.is_forward());
+      REQUIRE(f.stc() == nullptr);
+      REQUIRE(f.text().empty());
+    }
+
     SUBCASE("stc")
     {
       stc->DocumentStart();
@@ -55,14 +64,6 @@ TEST_CASE("wex::data::find")
     }
   }
 
-  SUBCASE("flags")
-  {
-    wex::data::find f(stc, std::string());
-    f.flags(100);
-
-    REQUIRE(f.flags() == 100);
-  }
-
   SUBCASE("find_margin")
   {
     stc->set_text("line 1\nline 2\nline 3\n");
@@ -78,6 +79,14 @@ TEST_CASE("wex::data::find")
 
     REQUIRE(wex::data::find(stc, "hello").find_margin(line));
     REQUIRE(line == 1);
+  }
+
+  SUBCASE("flags")
+  {
+    wex::data::find f(stc, std::string());
+    f.flags(100);
+
+    REQUIRE(f.flags() == 100);
   }
 
   SUBCASE("statustext")

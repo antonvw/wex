@@ -156,32 +156,6 @@ const std::string wex::find_tail(const std::string& text, size_t max_chars)
   }
 }
 
-const std::string wex::get_find_result(
-  const std::string& find_text,
-  bool               find_next,
-  bool               recursive)
-{
-  if (!recursive)
-  {
-    const auto where =
-      (find_next) ? _("bottom").ToStdString() : _("top").ToStdString();
-
-    return _("Searching for").ToStdString() + " " +
-           quoted(boost::algorithm::trim_copy(find_text)) + " " +
-           _("hit").ToStdString() + " " + where;
-  }
-  else
-  {
-    if (config(_("Error bells")).get(true))
-    {
-      wxBell();
-    }
-
-    return quoted(boost::algorithm::trim_copy(find_text)) + " " +
-           _("not found").ToStdString();
-  }
-}
-
 int wex::get_number_of_lines(const std::string& text, bool trim)
 {
   if (text.empty())
@@ -194,14 +168,15 @@ int wex::get_number_of_lines(const std::string& text, bool trim)
   // If text contains \r\n, assume a DOS file, count only \n.
   // Otherwise count all endings.
   return ((trimmed.find("\r\n") != std::string::npos) ?
-           std::count(trimmed.begin(), trimmed.end(), '\n') :
-           std::count_if(
-             trimmed.begin(),
-             trimmed.end(),
-             [](auto i)
-             {
-               return i == '\n' || i == '\r';
-             })) + 1;
+            std::count(trimmed.begin(), trimmed.end(), '\n') :
+            std::count_if(
+              trimmed.begin(),
+              trimmed.end(),
+              [](auto i)
+              {
+                return i == '\n' || i == '\r';
+              })) +
+         1;
 }
 
 const std::string wex::get_string_set(

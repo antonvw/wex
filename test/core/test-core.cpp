@@ -54,31 +54,6 @@ TEST_CASE("wex::core")
     REQUIRE(wex::find_tail("testtest", 9) == std::string("testtest"));
   }
 
-  SUBCASE("get_find_result")
-  {
-    REQUIRE(
-      wex::get_find_result("test", true, true).find("test") !=
-      std::string::npos);
-    REQUIRE(
-      wex::get_find_result("test", true, false).find("test") !=
-      std::string::npos);
-    REQUIRE(
-      wex::get_find_result("test", false, true).find("test") !=
-      std::string::npos);
-    REQUIRE(
-      wex::get_find_result("test", false, false).find("test") !=
-      std::string::npos);
-
-    REQUIRE(
-      wex::get_find_result("%d", true, true).find("%d") != std::string::npos);
-    REQUIRE(
-      wex::get_find_result("%d", true, false).find("%d") != std::string::npos);
-    REQUIRE(
-      wex::get_find_result("%d", false, true).find("%d") != std::string::npos);
-    REQUIRE(
-      wex::get_find_result("%d", false, false).find("%d") != std::string::npos);
-  }
-
   SUBCASE("get_number_of_lines")
   {
     REQUIRE(wex::get_number_of_lines("test") == 1);

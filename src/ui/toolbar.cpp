@@ -7,6 +7,7 @@
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
+#include <wex/data/find.h>
 #include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
 #include <wex/syntax/stc.h>
@@ -436,7 +437,8 @@ void wex::find_bar::find(bool find_next, bool restore_position)
   else if (auto* grid = dynamic_cast<wex::grid*>(get_frame()->get_grid());
            grid != nullptr)
   {
-    grid->find_next(get_text(), find_next);
+    data::find f(get_text(), find_next);
+    grid->find_next(f);
   }
   else if (auto* lv = get_frame()->get_listview(); lv != nullptr)
   {

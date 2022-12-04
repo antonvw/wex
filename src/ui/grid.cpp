@@ -8,6 +8,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 #include <wex/core/core.h>
+#include <wex/data/find.h>
 #include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/frame.h>
@@ -119,7 +120,10 @@ wex::grid::grid(const data::window& data)
     find_replace_data::get()->wx(),
     [=, this](const std::string& s, bool b)
     {
-      find_next(s, b);
+      data::find::recursive(false);
+      data::find find(s, b);
+
+      find_next(find);
     });
 
   Bind(
@@ -310,32 +314,26 @@ void wex::grid::empty_selection()
   }
 }
 
-bool wex::grid::find_next(const std::string& text, bool forward)
+bool wex::grid::find_next(const data::find& f)
 {
-  if (text.empty())
+  if (f.text().empty())
   {
     return false;
   }
 
-  static bool recursive = false;
-  static int  start_row;
-  static int  end_row;
-  static int  init_row;
-  static int  start_col;
-  static int  end_col;
-
-  const std::string text_use(
-    !find_replace_data::get()->match_case() ?
-      boost::algorithm::to_upper_copy(text) :
-      text);
+  static int start_row;
+  static int end_row;
+  static int init_row;
+  static int start_col;
+  static int end_col;
 
   wxGridCellCoords grid_cursor(GetGridCursorRow(), GetGridCursorCol());
 
-  if (forward)
+  if (f.is_forward())
   {
     init_row = 0;
 
-    if (recursive)
+    if (f.recursive())
     {
       start_row = init_row;
       start_col = 0;
@@ -353,7 +351,7 @@ bool wex::grid::find_next(const std::string& text, bool forward)
   {
     init_row = GetNumberRows() - 1;
 
-    if (recursive)
+    if (f.recursive())
     {
       start_row = init_row;
       start_col = GetNumberCols() - 1;
@@ -380,11 +378,11 @@ bool wex::grid::find_next(const std::string& text, bool forward)
 
   wxGridCellCoords match;
 
-  for (int j = start_col; j != end_col && !match; (forward ? j++ : j--))
+  for (int j = start_col; j != end_col && !match; (f.is_forward() ? j++ : j--))
   {
     for (int i = (j == start_col ? start_row : init_row);
          i != end_row && !match;
-         (forward ? i++ : i--))
+         (f.is_forward() ? i++ : i--))
     {
       std::string cv = GetCellValue(i, j);
 
@@ -395,14 +393,14 @@ bool wex::grid::find_next(const std::string& text, bool forward)
 
       if (find_replace_data::get()->match_word())
       {
-        if (cv == text_use)
+        if (cv == f.text())
         {
           match = wxGridCellCoords(i, j);
         }
       }
       else
       {
-        if (cv.find(text_use) != std::string::npos)
+        if (cv.find(f.text()) != std::string::npos)
         {
           match = wxGridCellCoords(i, j);
         }
@@ -414,21 +412,20 @@ bool wex::grid::find_next(const std::string& text, bool forward)
   {
     bool result = false;
 
-    auto* frame = dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
-    frame->statustext(get_find_result(text, forward, recursive), std::string());
+    f.statustext();
 
-    if (!recursive)
+    if (!f.recursive())
     {
-      recursive = true;
-      result    = find_next(text, forward);
-      recursive = false;
+      f.recursive(true);
+      result = find_next(f);
+      f.recursive(false);
     }
 
     return result;
   }
   else
   {
-    recursive = false;
+    f.recursive(false);
     SetGridCursor(match.GetRow(), match.GetCol());
     MakeCellVisible(match); // though docs say this isn't necessary, it is
     return true;
