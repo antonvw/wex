@@ -26,6 +26,14 @@ public:
   /// Sets recursive.
   static void recursive(bool rhs) { m_recursive = rhs; }
 
+  /// Default constructor. Sets members only, and
+  /// converts text to uppercase if match case is off.
+  find(
+    /// text to find
+    const std::string& text = std::string(),
+    /// forward
+    bool forward = true);
+
   /// Constructor. Sets stc and positions.
   find(
     /// component
@@ -80,7 +88,8 @@ public:
   const auto& text() const { return m_text; }
 
 private:
-  void set_pos();
+  const std::string get_find_result() const;
+  void              set_pos();
 
   factory::stc* m_stc{nullptr};
 

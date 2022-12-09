@@ -5,13 +5,31 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/data/find.h>
+#include <wex/factory/frd.h>
 #include <wex/factory/stc.h>
 
 #include <regex>
+
+namespace wex
+{
+const std::string ignore_case(const std::string& text)
+{
+  return !factory::find_replace_data().match_case() ?
+           boost::algorithm::to_upper_copy(text) :
+           text;
+}
+} // namespace wex
+
+wex::data::find::find(const std::string& text, bool forward)
+  : m_text(ignore_case(text))
+  , m_forward(forward)
+{
+}
 
 wex::data::find::find(
   wex::factory::stc* stc,
@@ -132,7 +150,30 @@ void wex::data::find::set_pos()
   }
 }
 
+const std::string wex::data::find::get_find_result() const
+{
+  if (!recursive())
+  {
+    const auto where =
+      (is_forward()) ? _("bottom").ToStdString() : _("top").ToStdString();
+
+    return _("Searching for").ToStdString() + " " +
+           quoted(boost::algorithm::trim_copy(text())) + " " +
+           _("hit").ToStdString() + " " + where;
+  }
+  else
+  {
+    if (config(_("Error bells")).get(true))
+    {
+      wxBell();
+    }
+
+    return quoted(boost::algorithm::trim_copy(text())) + " " +
+           _("not found").ToStdString();
+  }
+}
+
 void wex::data::find::statustext() const
 {
-  log::status(get_find_result(text(), is_forward(), recursive()));
+  log::status(get_find_result());
 }

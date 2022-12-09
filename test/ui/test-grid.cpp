@@ -2,9 +2,10 @@
 // Name:      test-grid.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/data/find.h>
 #include <wex/ui/grid.h>
 
 #include "test.h"
@@ -29,9 +30,12 @@ TEST_CASE("wex::grid")
   grid->empty_selection();
   grid->SetFocus();
 
-  REQUIRE(grid->find_next("test1"));
+  wex::data::find::recursive(false);
+  wex::data::find f("test1");
+
+  REQUIRE(grid->find_next(f));
   REQUIRE(grid->get_find_string() == "test1");
-  REQUIRE(!grid->find_next("text1"));
+  REQUIRE(grid->find_next(f));
 
   grid->paste_cells_from_clipboard();
   grid->use_drag_and_drop(true);
