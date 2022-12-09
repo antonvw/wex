@@ -2,7 +2,7 @@
 // Name:      sort.h
 // Purpose:   Declaration of wex::sort class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -19,12 +19,14 @@ class stc;
 class sort
 {
 public:
+  /// The sort flags.
   enum
   {
     SORT_DESCENDING = 0, ///< sort descending order
     SORT_UNIQUE     = 1, ///< flag to remove doubles
   };
 
+  /// A typedef containing sort flags.
   typedef std::bitset<2> sort_t;
 
   /// Default constructor.

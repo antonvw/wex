@@ -24,6 +24,7 @@ public:
     UNDO_SEL_NONE,   ///< enforce if no selection at cons, also at destruct
   };
 
+  /// A typedef containing undo flags.
   typedef std::bitset<3> undo_t;
 
   /// Constructor, depending on the type will start an action.

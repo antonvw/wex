@@ -27,6 +27,9 @@
 
 namespace wex::del
 {
+/// The lowest number of projects to be supported.
+const int ID_RECENT_PROJECT_LOWEST = wxID_FILE1 + NUMBER_RECENT_FILES + 1;
+
 const std::string find_replace_string(bool replace)
 {
   return std::string(_("Searching for") + ": ") +
@@ -394,7 +397,7 @@ void wex::del::frame::on_command_item_dialog(
 
         case id_find_in_files:
         case id_replace_in_files:
-          find_in_files((window_id)dialogid);
+          find_in_files((wex::window_id)dialogid);
           break;
 
         default:

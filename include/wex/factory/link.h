@@ -27,8 +27,8 @@ public:
   /// Afterwards line and col from data are filled in if possible.
   enum
   {
-    LINE_OPEN_URL  = -2,
-    LINE_OPEN_MIME = -3,
+    LINE_OPEN_URL  = -2, ///< open url
+    LINE_OPEN_MIME = -3, ///< open mime
   };
 
   /// Default constructor, initializes paths from config.

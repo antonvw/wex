@@ -2,7 +2,7 @@
 // Name:      menu-command.h
 // Purpose:   Declaration of wex::menu_command class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -27,6 +27,7 @@ public:
     INCLUDE_ACCELL,         ///< includes accelerator
   };
 
+  /// A typedef containing command flags.
   typedef std::bitset<2> include_t;
 
   /// The command type flags as read from xml file.
@@ -41,6 +42,7 @@ public:
     ELLIPSES,     ///< command is followed by an ellipses
   };
 
+  /// A typedef containing type flags.
   typedef std::bitset<7> type_t;
 
   /// Default constructor using xml node.

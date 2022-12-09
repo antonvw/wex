@@ -32,8 +32,10 @@ public:
     CAN_PASTE,   ///< add paste item in menu
   };
 
+  /// A typedef containing menu flags.
   typedef std::bitset<8> menu_t;
 
+  /// A typedef.
   typedef std::vector<menu_item> menu_items_t;
 
   /// Returns default menu flags.

@@ -9,19 +9,29 @@
 
 #include <wx/defs.h>
 
+/*! \file */
+
 namespace wex
 {
 const long NUMBER_NOT_SET = 0;
 
+/// The maximal number of debug menu entries.
 const int DEBUG_MAX_DEBUGS = 25;
-const int FIND_MAX_FINDS   = 25;
-const int VCS_MAX_COMMANDS = 25;
-const int VIEW_MAX_PANES   = 10;
 
-/// The maximal number of files and projects to be supported.
-const int NUMBER_RECENT_FILES      = 25;
-const int NUMBER_RECENT_PROJECTS   = 25;
-const int ID_RECENT_PROJECT_LOWEST = wxID_FILE1 + NUMBER_RECENT_FILES + 1;
+/// The maximal number of find menu entries.
+const int FIND_MAX_FINDS = 25;
+
+/// The maximal number of vcs menu entries.
+const int VCS_MAX_COMMANDS = 25;
+
+/// The maximal number of view menu entries.
+const int VIEW_MAX_PANES = 10;
+
+/// The maximal number of recent file menu entries.
+const int NUMBER_RECENT_FILES = 25;
+
+/// The maximal number of projects to be supported.
+const int NUMBER_RECENT_PROJECTS = 25;
 
 /// These are used as window event ID's. Therefore after the highest wxWidgets
 /// ID.

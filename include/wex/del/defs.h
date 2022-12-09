@@ -2,19 +2,21 @@
 // Name:      defs.h
 // Purpose:   Common definitions for wex::del
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/factory/defs.h>
 
+/*! \file */
+
 namespace wex::del
 {
 const int FREE_MAX = 30;
 
-// Window event ID's supported by wex del.
-enum
+/// Window event ID's supported by wex del.
+enum window_id
 {
   ID_LOWEST = wex::ID_HIGHEST + 1,
 

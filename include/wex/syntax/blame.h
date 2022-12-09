@@ -79,12 +79,12 @@ public:
   /// Margin text style type.
   enum class margin_style_t
   {
-    UNKNOWN,
-    DAY,
-    WEEK,
-    MONTH,
-    YEAR,
-    OTHER
+    UNKNOWN, ///< no style
+    DAY,     ///< within a day
+    WEEK,    ///< within a week
+    MONTH,   ///< within a month
+    YEAR,    ///< within a year
+    OTHER    ///< more than a year
   };
 
   /// Static interface.

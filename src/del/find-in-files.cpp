@@ -15,7 +15,7 @@
 #include <wex/ui/frd.h>
 #include <wex/ui/item-dialog.h>
 
-void wex::del::frame::find_in_files(window_id dialogid)
+void wex::del::frame::find_in_files(wex::window_id dialogid)
 {
   const bool      replace = (dialogid == id_replace_in_files);
   const wex::tool tool(replace ? ID_TOOL_REPLACE : ID_TOOL_REPORT_FIND);
@@ -37,7 +37,7 @@ void wex::del::frame::find_in_files(window_id dialogid)
 
   find_replace_data::get()->set_regex(
     config(find_replace_data::get()->text_regex()).get(true));
-    
+
   find_replace_data::get()->set_match_word(
     config(find_replace_data::get()->text_match_word()).get(true));
 
@@ -144,7 +144,7 @@ int wex::del::frame::find_in_files_dialog(const tool& tool, bool add_in_files)
   return wxID_OK;
 }
 
-const std::string wex::del::frame::find_in_files_title(window_id id) const
+const std::string wex::del::frame::find_in_files_title(wex::window_id id) const
 {
   return (
     id == ID_TOOL_REPLACE ? _("Replace In Selection") : _("Find In Selection"));
