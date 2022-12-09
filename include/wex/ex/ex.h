@@ -31,14 +31,15 @@ namespace syntax
 class stc;
 };
 
+/// The message shown for some action.
 enum class info_message_t
 {
-  ADD,
-  COPY,
-  DEL,
-  MOVE,
-  NONE,
-  YANK,
+  ADD,  ///< adding lines
+  COPY, ///< copying lines
+  DEL,  ///< erasing lines
+  MOVE, ///< moving lines
+  NONE, ///< no action shown
+  YANK, ///< yanking lines
 };
 
 /// Offers a class that adds ex editor to wex::syntax::stc.
@@ -69,9 +70,9 @@ public:
   /// The visual modes.
   enum mode_t
   {
-    OFF,    // off, not using ex or vi mode
-    EX,     // ex mode, without vi keys, for reading large files
-    VISUAL, // vi mode
+    OFF,    ///< not using ex or vi mode
+    EX,     ///< ex mode, without vi keys, for reading large files
+    VISUAL, ///< normal vi mode
   };
 
   /// Constructor.

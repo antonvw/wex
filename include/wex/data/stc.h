@@ -35,6 +35,7 @@ public:
     MENU_DEBUG,       ///< for adding debug menu
   };
 
+  /// A typedef containing menu flags.
   typedef std::bitset<5> menu_t;
 
   /// Window flags.
@@ -48,13 +49,15 @@ public:
     WIN_EX             ///< window in ex mode, instead of vi
   };
 
+  /// A typedef containing window flags.
   typedef std::bitset<5> window_t;
 
+  /// Indicator type.
   enum indicator_t
   {
-    IND_LINE = 0,
-    IND_ERR,
-    IND_DEBUG
+    IND_LINE = 0, ///< line indicatr
+    IND_ERR,      ///< error indicatr
+    IND_DEBUG     ///< debug indicatr
   };
 
   /// Support class for client data stored at the event.

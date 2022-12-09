@@ -41,6 +41,7 @@ public:
     MARGIN_TEXT       = 3, ///< text margin
   };
 
+  /// A typedef containing margin flags.
   typedef std::bitset<4> margin_t;
 
   /// Virtual interface.

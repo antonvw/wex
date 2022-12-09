@@ -32,6 +32,7 @@ public:
     LOG_PATH = 2  ///< uses 'path' instead of 'filename'
   };
 
+  /// A typedef containing log flags.
   typedef std::bitset<3> log_t;
 
   /// Static interface.

@@ -83,7 +83,7 @@ public:
     bool add_in_files = false);
 
   /// Returns caption for find_in_files_dialog.
-  const std::string find_in_files_title(window_id id) const;
+  const std::string find_in_files_title(wex::window_id id) const;
 
   /// Debugging interface.
   auto* get_debug() { return m_debug; }
@@ -197,7 +197,7 @@ private:
     const std::string& title = std::string(),
     const std::string& text  = std::string());
 
-  void find_in_files(window_id id);
+  void find_in_files(wex::window_id id);
   void on_idle(wxIdleEvent& event);
 
   item_dialog *     m_fif_dialog{nullptr}, *m_rif_dialog{nullptr};

@@ -100,14 +100,14 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
       {
         frame->find_in_files(
           to_vector_path(*this).get(),
-          tool((window_id)event.GetId()));
+          tool((wex::window_id)event.GetId()));
       },
       ID_TOOL_REPORT_FIND},
      {[=, this](wxCommandEvent& event)
       {
         frame->find_in_files(
           to_vector_path(*this).get(),
-          tool((window_id)event.GetId()));
+          tool((wex::window_id)event.GetId()));
       },
       ID_TOOL_REPLACE},
      {[=, this](wxCommandEvent& event)
