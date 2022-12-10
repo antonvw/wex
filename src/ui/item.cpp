@@ -696,7 +696,7 @@ bool wex::item::validate(const std::string& regex) const
   {
     return std::regex_match(get_value_as_string(), std::regex(regex));
   }
-  catch (std::exception& e)
+  catch (const std::exception& e)
   {
     return false;
   }
