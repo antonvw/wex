@@ -219,7 +219,7 @@ void wex::lex_rfw::special_keywords_update()
 
 void wex::lex_rfw::state_check(
   StyleContext& sc,
-  int&          cmdState,
+  int           cmdState,
   int&          cmdStateNew,
   LexAccessor&  styler)
 {
@@ -698,17 +698,14 @@ void SCI_METHOD wex::lex_rfw::Fold(
   Sci_Position  lineCurrent = styler.GetLine(startPos);
 
   int levelPrev    = styler.LevelAt(lineCurrent) & SC_FOLDLEVELNUMBERMASK,
-      levelCurrent = levelPrev, styleNext = styler.StyleAt(startPos),
-      visibleChars = 0;
+      levelCurrent = levelPrev, visibleChars = 0;
 
   char chNext = styler[startPos];
 
   for (Sci_PositionU i = startPos; i < endPos; i++)
   {
-    char ch   = chNext;
-    chNext    = styler.SafeGetCharAt(i + 1);
-    int style = styleNext;
-    styleNext = styler.StyleAt(i + 1);
+    char ch = chNext;
+    chNext  = styler.SafeGetCharAt(i + 1);
 
     const bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
 

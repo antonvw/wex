@@ -5,6 +5,7 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <numeric>
 #include <sstream>
 
 #include <boost/algorithm/string.hpp>
@@ -288,13 +289,14 @@ wex::ex::commands_t wex::ex::commands_ex()
      [&](const std::string& command)
      {
        const lexer_props l;
-       auto              output(l.make_section("Named buffers"));
-       for (const auto& it : m_macros.get_registers())
-       {
-         output += it;
-       }
-       output += l.make_section("Filename buffer");
-       output += l.make_key("%", m_command.get_stc()->path().filename());
+       const auto&       regs(m_macros.get_registers());
+       const auto        output(
+         std::accumulate(
+           regs.begin(),
+           regs.end(),
+           l.make_section("Named buffers")) +
+         l.make_section("Filename buffer") +
+         l.make_key("%", m_command.get_stc()->path().filename()));
        show_dialog("Registers", output, l.scintilla_lexer());
        return true;
      }},

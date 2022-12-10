@@ -210,7 +210,7 @@ private:
     int&               cmdStateNew);
   void special_keywords_update();
 
-  void state_check(StyleContext& sc, int& state, int& state_new, LexAccessor&);
+  void state_check(StyleContext& sc, int state, int& state_new, LexAccessor&);
   bool state_check_continue(StyleContext& sc, int& state, LexAccessor&);
 
 private:

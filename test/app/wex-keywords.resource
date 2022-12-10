@@ -66,7 +66,7 @@ Contents Does Not Contain
 
 Find Appl
 	[Documentation]	Appends text to input
-        [Tags]    robot:private
+	[Tags]	:private
 	${result}=	Run Process
 	...	find	../../
 	...	-name	wex-sample

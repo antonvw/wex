@@ -11,27 +11,27 @@ if (NOT WIN32)
     COMMAND cppcheck
       --std=c++20
       --quiet --enable=all
-      --suppress=constStatement 
-      --suppress=missingIncludeSystem 
+      --suppress=missingInclude
       --suppress=cppcheckError 
       --suppress=cstyleCast 
       --suppress=internalAstError 
-      --suppress=noCopyConstructor 
+      --suppress=invalidFunctionArg
       --suppress=noExplicitConstructor 
       --suppress=noOperatorEq 
       --suppress=ignoredReturnValue 
       --suppress=unknownMacro 
+      --suppress=unmatchedSuppression 
       --suppress=unusedScopedObject 
       --suppress=unusedFunction 
       --suppress=shadowArgument 
       --suppress=shadowVariable 
-      --suppress=virtualCallInConstructor
-      ${SRCS} -i LexAda.cxx -i odbc.cpp
+      ${SRCS} -i odbc.cpp
     COMMENT "cppcheck" VERBATIM)
 
   add_custom_target(cpplint
     COMMAND cpplint 
-      --quiet --exclude=../src/lexers --filter=-build,-readability/casting,-readability/fn_size,-readability/multiline_string,-runtime/explicit,-runtime/indentation_namespace,-runtime/int,-runtime/references,-whitespace 
+      --quiet 
+      --filter=-build,-readability/casting,-readability/fn_size,-readability/multiline_string,-runtime/explicit,-runtime/indentation_namespace,-runtime/int,-runtime/references,-whitespace 
       ${SRCS}
     COMMENT "cpplint" VERBATIM)
 
