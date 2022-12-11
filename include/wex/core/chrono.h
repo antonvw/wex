@@ -17,6 +17,7 @@ namespace wex
 class chrono
 {
 public:
+  /// The default time format.
   static inline const std::string TIME_FORMAT = "%Y-%m-%d %H:%M:%S";
 
   /// Precision used for outputting time.
