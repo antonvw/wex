@@ -85,7 +85,11 @@ bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
       {
         // Replace marker.
         case '\'':
-          if (const auto line = ex->marker_line(*(std::next(it))); line >= 0)
+          if (auto next = std::next(it); next == text.end())
+          {
+            output += *it;
+          }
+          else if (const auto line = ex->marker_line(*(next)); line >= 0)
           {
             output += std::to_string(line + 1);
             ++it;

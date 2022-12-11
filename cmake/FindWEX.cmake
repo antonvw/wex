@@ -113,24 +113,28 @@ if (APPLE)
     -framework IOKit")
 endif()
 
+if (${CMAKE_BUILD_TYPE} STREQUAL Debug)
+  set(USE_DEBUG "d")
+endif()
+
 if (MSVC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
     /D_CRT_SECURE_NO_WARNINGS /D_CRT_SECURE_NO_DEPRECATE /D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS \
     /std:c++latest /Zc:__cplusplus")
 
   set(wx_LIBRARIES
-    wx${PLATFORM}33u_aui
-    wx${PLATFORM}33u_stc
-    wx${PLATFORM}33u_html
-    wx${PLATFORM}33u_core
-    wx${PLATFORM}33u_qa
-    wx${PLATFORM}33u_gl
-    wxbase33u
-    wxbase33u_net
+    wx${PLATFORM}33u${USE_DEBUG}_aui
+    wx${PLATFORM}33u${USE_DEBUG}_stc
+    wx${PLATFORM}33u${USE_DEBUG}_html
+    wx${PLATFORM}33u${USE_DEBUG}_core
+    wx${PLATFORM}33u${USE_DEBUG}_qa
+    wx${PLATFORM}33u${USE_DEBUG}_gl
+    wxbase33u${USE_DEBUG}
+    wxbase33u${USE_DEBUG}_net
     wxjpeg
     wxpng
     wxzlib
-    wxscintilla
+    wxscintilla${USE_DEBUG}
     comctl32.lib
     Rpcrt4.lib)
 else()
@@ -151,10 +155,6 @@ else()
   else ()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -g")
   endif ()
-endif()
-
-if (CMAKE_BUILD_TYPE EQUAL "Debug")
-  set(USE_DEBUG "d")
 endif()
 
 include_directories(${Boost_INCLUDE_DIRS})

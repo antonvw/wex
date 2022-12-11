@@ -19,8 +19,8 @@ cmake ^
 echo %configuration%
 devenv wex.sln /build %configuration%
 
-:: test it, on appveyor ex gives Exit code 0xc0000374
-ctest -C %configuration% -VV -E wex-test-ex
+:: test it
+ctest -C %configuration% -VV
 
 :: install it
 :: does not work with Debug, but Release gives invalid return after ui test
