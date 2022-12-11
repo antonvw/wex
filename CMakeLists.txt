@@ -82,6 +82,10 @@ set(wex_own_LIBRARIES
 
 separate_arguments(wex_own_LIBRARIES)
 
+if (${CMAKE_BUILD_TYPE} STREQUAL Debug)
+  set(CMAKE_DEBUG_POSTFIX d)
+endif ()
+
 add_subdirectory(ci)
 add_subdirectory(src)
 
