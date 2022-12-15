@@ -22,8 +22,7 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.75.0 COMPONENTS 
   log_setup log filesystem program_options date_time regex json REQUIRED)
 
-# to support older cmake versions that do not known 17.
-# set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 set(user $ENV{USER} CACHE INTERNAL "keep user")
 
@@ -81,10 +80,6 @@ set(wex_own_LIBRARIES
   wex-ui wex-common wex-data wex-syntax wex-factory wex-core)
 
 separate_arguments(wex_own_LIBRARIES)
-
-if (${CMAKE_BUILD_TYPE} STREQUAL Debug)
-  set(CMAKE_DEBUG_POSTFIX d)
-endif ()
 
 add_subdirectory(ci)
 add_subdirectory(src)

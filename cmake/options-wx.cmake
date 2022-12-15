@@ -4,8 +4,6 @@
 # option to change toolkit
 # set(wxBUILD_TOOLKIT "gtk3")
 
-set(wxBUILD_CXX_STANDARD 20 CACHE INTERNAL "WX_CXX_STANDARD")
-
 option(wxBUILD_INSTALL "Create install/uninstall target for wxWidgets" OFF)
 
 option(wxUSE_CMDLINE_PARSER "Use cmdline parser" OFF)

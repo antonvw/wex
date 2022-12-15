@@ -1,4 +1,4 @@
-file(GLOB_RECURSE SRCS "../src/*.cpp")
+file(GLOB_RECURSE SRCS "../src/*.cpp" "../sample/*.cpp")
 file(GLOB_RECURSE INCLUDES "../include/*.h")
 
 if (NOT WIN32)

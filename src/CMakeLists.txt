@@ -63,14 +63,17 @@ add_subdirectory(stc)
 add_subdirectory(vcs)
 add_subdirectory(del)
 
-set_target_properties(
-  ${wex_own_LIBRARIES}
-  PROPERTIES 
-  VERSION ${PROJECT_VERSION}
-  SOVERSION ${PROJECT_VERSION_MAJOR})
-
-if (CMAKE_BUILD_TYPE EQUAL "Debug")
+if (${CMAKE_BUILD_TYPE} STREQUAL "Debug" AND MSVC)
   set_target_properties(
     ${wex_own_LIBRARIES}
-    PROPERTIES DEBUG_POSTFIX "d")
+    PROPERTIES 
+    VERSION ${PROJECT_VERSION}
+    SOVERSION ${PROJECT_VERSION_MAJOR}
+    DEBUG_POSTFIX "d")
+else ()
+  set_target_properties(
+    ${wex_own_LIBRARIES}
+    PROPERTIES 
+    VERSION ${PROJECT_VERSION}
+    SOVERSION ${PROJECT_VERSION_MAJOR})
 endif ()
