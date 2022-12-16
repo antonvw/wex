@@ -12,45 +12,41 @@ using namespace Scintilla;
 #include "lex-rfw-access.h"
 #include "lex-rfw.h"
 
-LexicalClass lexical_classes[] = {
-  // Lexer Bash SCLEX_BASH SCE_SH_:
-  0,  "SCE_SH_DEFAULT",     "default",         "White space",
-  1,  "SCE_SH_ERROR",       "error",           "Error",
-  2,  "SCE_SH_COMMENTLINE", "comment line",    "Line comment: #",
-  3,  "SCE_SH_NUMBER",      "literal numeric", "Number",
-  4,  "SCE_SH_WORD",        "keyword",         "Keyword",
-  5,  "SCE_SH_STRING",      "literal string",  "String",
-  6,  "SCE_SH_CHARACTER",   "literal string",  "Single quoted string",
-  7,  "SCE_SH_OPERATOR",    "operator",        "Operators",
-  8,  "SCE_SH_IDENTIFIER",  "identifier",      "Identifiers",
-  9,  "SCE_SH_SCALAR",      "identifier",      "Scalar variable",
-  10, "SCE_SH_PARAM",       "identifier",      "Parameter",
-  11, "SCE_SH_BACKTICKS",   "literal string",  "Backtick quoted command",
-  12, "SCE_SH_HERE_DELIM",  "operator",        "Heredoc delimiter",
-  13, "SCE_SH_HERE_Q",      "literal string",  "Heredoc quoted string",
-};
-
 const CharacterSet setWord(CharacterSet::setAlphaNum, "._+-]*");
 const CharacterSet setWordStart(CharacterSet::setAlpha, ":_[*");
 int                numBase = 0;
 
+const std::string delim(const std::string& text, const std::string lim)
+{
+  std::string reverse(lim);
+  std::reverse(reverse.begin(), reverse.end());
+  return lim + text + reverse;
+}
+
+// We do not use lexicalClasses (see LexCPP), this would require override
+// NameOfStyle, and using NameOfStyle in stc as well. Of course possible, but
+// for what purpose?
 wex::lex_rfw::lex_rfw()
-  : DefaultLexer(name(), language(), lexical_classes, ELEMENTS(lexical_classes))
+  : DefaultLexer(name(), language())
   , m_sub_styles(style_subable, 0x80, 0x40, 0)
 {
-  m_sections.emplace_back("Settings");
-  m_sections.emplace_back("Variables");
-  m_sections.emplace_back("Test Cases");
-  m_sections.emplace_back("Tasks");
-  m_sections.emplace_back("Keywords");
-  m_sections.emplace_back("Comments");
-
-  for (const auto& section : m_sections)
+  for (const auto& section : std::vector<std::string>{
+         "Settings",
+         "Variables",
+         "Test Cases",
+         "Tasks",
+         "Keywords",
+         "Comments"})
   {
-    m_special_keywords.emplace_back("*" + section + "*");
-    m_special_keywords.emplace_back("* " + section + " *");
-    m_special_keywords.emplace_back("** " + section + " **");
-    m_special_keywords.emplace_back("*** " + section + " ***");
+    const std::vector<std::string> specials{
+      delim(section, "*"),
+      delim(section, "* "),
+      delim(section, "** "),
+      delim(section, "*** ")};
+    std::copy(
+      specials.begin(),
+      specials.end(),
+      back_inserter(m_special_keywords));
   }
 
   m_cmd_delimiter.Set("| || |& & && ; ;; ( ) { }");
@@ -77,13 +73,12 @@ void wex::lex_rfw::parse_keyword(
   if (!setWord.Contains(sc.ch))
   {
     char s[500];
-    char s2[10];
     sc.GetCurrent(s, sizeof(s));
 
-    // allow keywords ending in a whitespace or command delimiter
-    s2[0] = static_cast<char>(sc.ch);
-    s2[1] = '\0';
+    char s2[2];
+    sprintf(s2, "%c", sc.ch);
 
+    // allow keywords ending in a whitespace or command delimiter
     const bool keywordEnds = IsASpace(sc.ch) || m_cmd_delimiter.InList(s2);
 
     // 'IN' may be construct keywords
