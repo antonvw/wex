@@ -16,7 +16,7 @@
 namespace wex
 {
 /// Collects bool options
-struct options_rfw
+class options_rfw
 {
   friend class option_set_rfw;
 
@@ -36,7 +36,7 @@ private:
 };
 
 /// Collects option set
-struct option_set_rfw : public OptionSet<options_rfw>
+class option_set_rfw : public OptionSet<options_rfw>
 {
 public:
   /// Returns keywords.
@@ -76,15 +76,13 @@ public:
 
   /// get or set test_case_end pos
   auto test_case_end() const { return m_test_case_end; };
-  void test_case_end(int pos) { m_test_case_end = pos; };
+  void test_case_end(Sci_PositionU pos) { m_test_case_end = pos; };
 
 private:
   Sci_PositionU m_comments = -1, m_test_case = -1, m_test_case_end = -1;
 };
 
 /// The robotframework lexer class.
-/// It is compiled during wxWidgets LexBash compiling,
-/// and uses c++11.
 class lex_rfw : public DefaultLexer
 {
 public:
@@ -234,6 +232,6 @@ private:
   wex::quote*       m_quote{nullptr};
   wex::quote_stack* m_quote_stack{nullptr};
 
-  std::vector<std::string> m_sections, m_special_keywords;
+  std::vector<std::string> m_special_keywords;
 };
 } // namespace wex

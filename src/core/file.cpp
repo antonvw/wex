@@ -2,7 +2,7 @@
 // Name:      file.cpp
 // Purpose:   Implementation of class wex::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -251,9 +251,7 @@ const std::string* wex::file::read(std::streampos seek_position)
     }
   }
 
-  if (
-    (m_buffer.get() != nullptr && seek_position > 0) ||
-    (m_fs.tellg() != seek_position))
+  if (m_fs.tellg() != seek_position)
   {
     m_fs.seekg(seek_position);
   }

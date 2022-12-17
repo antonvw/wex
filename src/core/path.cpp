@@ -2,7 +2,7 @@
 // Name:      path.cpp
 // Purpose:   Implementation of class wex::path
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -55,7 +55,7 @@ wex::path::path(const path& r)
 }
 
 wex::path::path(const std::vector<std::string>& v, log_t t)
-  : path(std::filesystem::path(), t)
+  : path(fs::path(), t)
 {
   for (const auto& it : v)
   {

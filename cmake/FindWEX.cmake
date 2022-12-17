@@ -25,6 +25,8 @@ endif ()
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
+set(CMAKE_CXX_STANDARD 20)
+
 find_package(Boost 1.75.0 COMPONENTS
   log_setup log filesystem program_options date_time regex json REQUIRED)
 
@@ -113,14 +115,14 @@ if (APPLE)
     -framework IOKit")
 endif()
 
-if (${CMAKE_BUILD_TYPE} STREQUAL Debug)
-  set(USE_DEBUG "d")
-endif()
-
 if (MSVC)
+  if ("${CMAKE_BUILD_TYPE}" STREQUAL Debug)
+    set(USE_DEBUG "d")
+  endif()
+
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
     /D_CRT_SECURE_NO_WARNINGS /D_CRT_SECURE_NO_DEPRECATE /D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS \
-    /std:c++latest /Zc:__cplusplus")
+    /Zc:__cplusplus")
 
   set(wx_LIBRARIES
     wx${PLATFORM}33u${USE_DEBUG}_aui
@@ -150,11 +152,7 @@ else()
     set(wx_LIBRARIES ${wx_LIBRARIES} wxscintilla-3.3)
   endif()
 
-  if (APPLE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -g -fmodules")
-  else ()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -g")
-  endif ()
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 endif()
 
 include_directories(${Boost_INCLUDE_DIRS})

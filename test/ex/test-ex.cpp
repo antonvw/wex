@@ -143,13 +143,17 @@ TEST_CASE("wex::ex")
 
   SUBCASE("input-mode")
   {
+    const std::string eol(ex->get_stc()->eol());
     REQUIRE(ex->command(":a|added"));
     CAPTURE(stc->get_text());
-    REQUIRE(stc->get_text().find("xx\nadded\nxx") != std::string::npos);
+    REQUIRE(
+      stc->get_text().find("xx\nadded" + eol + "xx") != std::string::npos);
 
     REQUIRE(ex->command(":i|inserted"));
     CAPTURE(stc->get_text());
-    REQUIRE(stc->get_text().find("inserted\nadded\nxx") != std::string::npos);
+    REQUIRE(
+      stc->get_text().find("inserted" + eol + "added" + eol + "xx") !=
+      std::string::npos);
 
     REQUIRE(ex->command(":c|changed"));
     REQUIRE(stc->get_text().find("changed") != std::string::npos);
@@ -436,11 +440,12 @@ TEST_CASE("wex::ex")
 
   SUBCASE("text-input")
   {
+    const std::string eol(ex->get_stc()->eol());
     stc->set_text("xyz\n");
     REQUIRE(ex->command(":append|extra"));
-    REQUIRE(stc->get_text() == "xyz\nextra\n");
+    REQUIRE(stc->get_text() == "xyz\nextra" + eol);
     REQUIRE(ex->command(":insert|before\n"));
-    REQUIRE(stc->get_text() == "xyz\nbefore\n\nextra\n");
+    REQUIRE(stc->get_text() == "xyz\nbefore\n" + eol + "extra" + eol);
     stc->set_text("xyz\n");
     REQUIRE(ex->command(":c|new\n"));
     REQUIRE(stc->get_text() == "new\n");
