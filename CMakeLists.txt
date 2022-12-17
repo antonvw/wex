@@ -21,9 +21,9 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 
 find_package(Boost 1.75.0 COMPONENTS 
   log_setup log filesystem program_options date_time regex json REQUIRED)
-
-set(CMAKE_CXX_STANDARD 20)
-
+  
+set(WEX_CXX_STANDARD 20) # see also FindWEX.cmake
+set(CMAKE_CXX_STANDARD ${WEX_CXX_STANDARD})
 set(user $ENV{USER} CACHE INTERNAL "keep user")
 
 include(cmake/options-wx.cmake)

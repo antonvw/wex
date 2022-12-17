@@ -431,6 +431,8 @@ const std::string* wex::ex_stream::get_work() const
     return nullptr;
   }
 
+  m_work->stream().clear();
+
   return m_work->read();
 }
 
