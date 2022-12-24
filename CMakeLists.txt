@@ -22,7 +22,7 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.75.0 COMPONENTS 
   log_setup log filesystem program_options date_time regex json REQUIRED)
   
-set(WEX_CXX_STANDARD 20) # see also FindWEX.cmake
+set(WEX_CXX_STANDARD 20) # see also FindWEX.cmake, c_cpp_properties.json
 set(CMAKE_CXX_STANDARD ${WEX_CXX_STANDARD})
 set(user $ENV{USER} CACHE INTERNAL "keep user")
 
@@ -94,11 +94,7 @@ endif ()
 
 add_subdirectory(locale)
 
-if (NOT DEFINED ENV{TRAVIS})
-  set(CMAKE_INSTALL_MESSAGE LAZY)
-else ()
-  set(CMAKE_INSTALL_MESSAGE NEVER)
-endif ()
+set(CMAKE_INSTALL_MESSAGE LAZY)
 
 wex_install()
 wex_config()

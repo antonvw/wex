@@ -44,7 +44,7 @@ public:
     return true;
   }
 
-  const auto& contents() { return m_contents; };
+  const auto& contents() { return m_contents; }
 
   void save() { config(m_key).set(m_contents); }
 
