@@ -16,7 +16,7 @@
 
 namespace wex
 {
-/// Offers a class that extends factory::stc with vi behaviour.
+/// Offers a class that extends ex class with vi behaviour.
 class vi : public ex
 {
 public:

@@ -9,7 +9,7 @@ if (NOT WIN32)
 
   add_custom_target(cppcheck
     COMMAND cppcheck
-      --std=c++20
+      --std=c++${WEX_CXX_STANDARD}20
       --quiet --enable=all
       --suppress=missingInclude
       --suppress=cppcheckError 

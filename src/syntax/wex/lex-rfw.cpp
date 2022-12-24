@@ -5,23 +5,17 @@
 // Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <regex>
+#include <iostream>
 
 using namespace Scintilla;
 
-#include "lex-rfw-access.h"
 #include "lex-rfw.h"
+
+#define ADD_SECTION(REGEX, NAME) {regex_part(REGEX, std::regex::icase), NAME},
 
 const CharacterSet setWord(CharacterSet::setAlphaNum, "._+-]*");
 const CharacterSet setWordStart(CharacterSet::setAlpha, ":_[*");
 int                numBase = 0;
-
-const std::string delim(const std::string& text, const std::string lim)
-{
-  std::string reverse(lim);
-  std::reverse(reverse.begin(), reverse.end());
-  return lim + text + reverse;
-}
 
 // We do not use lexicalClasses (see LexCPP), this would require override
 // NameOfStyle, and using NameOfStyle in stc as well. Of course possible, but
@@ -29,26 +23,26 @@ const std::string delim(const std::string& text, const std::string lim)
 wex::lex_rfw::lex_rfw()
   : DefaultLexer(name(), language())
   , m_sub_styles(style_subable, 0x80, 0x40, 0)
+  /* The recommended header format is *** Settings ***,
+     but the header is case-insensitive, surrounding spaces are
+     optional, and the number of asterisk characters can vary as long
+     as there is one asterisk in the beginning.
+     In addition to using the plural format, also singular variants
+     like Setting and Test Case are accepted.
+     In other words, also *setting would be recognized as a section
+     header.
+     -> we require 3 *, regex_part issue
+    */
+  , m_section_keywords(
+      // clang-format off
+      {ADD_SECTION("\\*+ *Settings? *\\*\\*\\*", SECTION_SETTING)
+       ADD_SECTION("\\*+ *Variables? *\\*\\*\\*", SECTION_VARIABLE)
+       ADD_SECTION("\\*+ *Test *Cases? *\\*\\*\\*", SECTION_TESTCASE)
+       ADD_SECTION("\\*+ *Tasks? *\\*\\*\\*", SECTION_TASK)
+       ADD_SECTION("\\*+ *Keywords? *\\*\\*\\*", SECTION_KEYWORD)
+       ADD_SECTION("\\*+ *Comments? *\\*\\*\\*", SECTION_COMMENT)})
+// clang-format on
 {
-  for (const auto& section : std::vector<std::string>{
-         "Settings",
-         "Variables",
-         "Test Cases",
-         "Tasks",
-         "Keywords",
-         "Comments"})
-  {
-    const std::vector<std::string> specials{
-      delim(section, "*"),
-      delim(section, "* "),
-      delim(section, "** "),
-      delim(section, "*** ")};
-    std::copy(
-      specials.begin(),
-      specials.end(),
-      back_inserter(m_special_keywords));
-  }
-
   m_cmd_delimiter.Set("| || |& & && ; ;; ( ) { }");
 }
 
@@ -56,6 +50,24 @@ wex::lex_rfw::~lex_rfw()
 {
   delete m_quote;
   delete m_quote_stack;
+}
+
+void wex::lex_rfw::keywords_update()
+{
+  for (int i = 0; i < m_keywords2.Length(); i++)
+  {
+    std::string keyword(m_keywords2.WordAt(i));
+    std::replace(keyword.begin(), keyword.end(), '_', ' ');
+
+    if (keyword != "EX")
+    {
+      m_spaced_keywords.emplace_back(keyword);
+    }
+    else
+    {
+      m_visual_mode = false;
+    }
+  }
 }
 
 void wex::lex_rfw::parse_keyword(
@@ -76,7 +88,7 @@ void wex::lex_rfw::parse_keyword(
     sc.GetCurrent(s, sizeof(s));
 
     char s2[2];
-    sprintf(s2, "%c", sc.ch);
+    snprintf(s2, sizeof(s2), "%c", sc.ch);
 
     // allow keywords ending in a whitespace or command delimiter
     const bool keywordEnds = IsASpace(sc.ch) || m_cmd_delimiter.InList(s2);
@@ -128,88 +140,95 @@ void wex::lex_rfw::parse_keyword(
   }
 }
 
-void wex::lex_rfw::special_keywords_detect(
-  const std::string& words,
+bool wex::lex_rfw::section_keywords_detect(
+  const std::string& word,
   StyleContext&      sc,
   int&               cmdStateNew)
 {
-  for (unsigned ki = 0; ki < m_special_keywords.size(); ki++)
-  {
-    if (std::equal(words.begin(), words.end(), m_special_keywords[ki].begin()))
+  std::for_each(
+    m_section_keywords.begin(),
+    m_section_keywords.end(),
+    [&sc](auto& i)
     {
-      if (words.size() == m_special_keywords[ki].size())
+      i.first.match(sc.ch);
+    });
+
+  return std::any_of(
+    m_section_keywords.begin(),
+    m_section_keywords.end(),
+    [&word, &sc, &cmdStateNew, this](const auto& i)
+    {
+      switch (i.first.match_type())
       {
-        sc.Forward();
-        sc.SetState(SCE_SH_WORD);
-        cmdStateNew = RFW_CMD_START;
+        case wex::regex_part::MATCH_ERROR:
+          std::cerr << "error: " << i.first.part() << "\n";
+          break;
 
-        /* The recommended header format is *** Settings ***,
-           but the header is case-insensitive, surrounding spaces are
-           optional, and the number of asterisk characters can vary as long
-           as there is one asterisk in the beginning.
-           In addition to using the plural format, also singular variants
-           like Setting and Test Case are accepted.
-           In other words, also *setting would be recognized as a section
-           header.
-          */
-        std::match_results<std::string::const_iterator> m;
-        std::string re_tc("\\*+ *Test Cases? *\\**");
-        std::string re_keyw("\\*+ *Keywords? *\\**");
-        std::string re_comm("\\*+ *Comments? *\\**");
+        case wex::regex_part::MATCH_ALL:
+          cmdStateNew = RFW_CMD_SKW_PARTIAL;
+          break;
 
-        if (std::regex_search(words, m, std::regex(re_tc, std::regex::icase)))
-        {
-          m_sp.test_case(sc);
-        }
-        else if (
-          m_sp.test_case() != -1 && sc.currentPos > m_sp.test_case() &&
-          std::regex_search(words, m, std::regex(re_keyw, std::regex::icase)))
-        {
-          m_sp.test_case_end(
-            sc.currentPos - static_cast<Sci_PositionU>(sc.LengthCurrent()) -
-            std::string(m[0]).size());
-        }
-        else if (std::regex_search(
-                   words,
-                   m,
-                   std::regex(re_comm, std::regex::icase)))
-        {
-          m_sp.comments(sc);
-        }
+        case wex::regex_part::MATCH_COMPLETE:
+          sc.Forward();
+          sc.SetState(SCE_SH_WORD);
+          cmdStateNew = RFW_CMD_START;
 
-        break;
+          switch (i.second)
+          {
+            case SECTION_COMMENT:
+              m_sp.comments(sc);
+              break;
+
+            case SECTION_KEYWORD:
+              if (m_sp.test_case() != -1 && sc.currentPos > m_sp.test_case())
+              {
+                m_sp.test_case_end(
+                  sc.currentPos -
+                  static_cast<Sci_PositionU>(sc.LengthCurrent()) - word.size());
+              }
+              break;
+
+            case SECTION_TESTCASE:
+              m_sp.test_case(sc);
+              break;
+
+            default:; // do nothing
+          }
+          return true;
+
+        default:; // do nothing
       }
-      else
-      {
-        cmdStateNew = RFW_CMD_SKW_PARTIAL;
-      }
-    }
-  }
+
+      return false;
+    });
 }
 
-void wex::lex_rfw::special_keywords_update()
+bool wex::lex_rfw::spaced_keywords_detect(
+  const std::string& word,
+  StyleContext&      sc,
+  int&               cmdStateNew)
 {
-  for (int i = 0; i < m_keywords2.Length(); i++)
-  {
-    std::string keyword(m_keywords2.WordAt(i));
-
-    for (int j = 0; j < keyword.size(); j++)
+  return std::any_of(
+    m_spaced_keywords.begin(),
+    m_spaced_keywords.end(),
+    [&sc, &word, &cmdStateNew](const auto& i)
     {
-      if (keyword[j] == '_')
+      if (std::equal(word.begin(), word.end(), i.begin()))
       {
-        keyword[j] = ' ';
+        if (word.size() == i.size())
+        {
+          sc.Forward();
+          sc.SetState(SCE_SH_WORD);
+          cmdStateNew = RFW_CMD_START;
+          return true;
+        }
+        else
+        {
+          cmdStateNew = RFW_CMD_SKW_PARTIAL;
+        }
       }
-    }
-
-    if (keyword != "EX")
-    {
-      m_special_keywords.emplace_back(keyword);
-    }
-    else
-    {
-      m_visual_mode = false;
-    }
-  }
+      return false;
+    });
 }
 
 void wex::lex_rfw::state_check(
@@ -329,7 +348,7 @@ void wex::lex_rfw::state_check(
       {
         if (sc.LengthCurrent() == 1)
         {
-          // Special variable: $(, $_ etc.
+          // section variable: $(, $_ etc.
           sc.ForwardSetState(SCE_SH_DEFAULT);
         }
         else
@@ -621,7 +640,7 @@ bool wex::lex_rfw::state_check_continue(
         testExprType = 2;
       }
     }
-    // special state -- for ((x;y;z)) in ... looping
+    // section state -- for ((x;y;z)) in ... looping
     if (cmdState == RFW_CMD_WORD && sc.Match('(', '('))
     {
       cmdState = RFW_CMD_ARITH;
@@ -831,10 +850,24 @@ void SCI_METHOD wex::lex_rfw::Lex(
 
     words.append(1, sc.ch);
 
-    special_keywords_detect(words, sc, cmdStateNew);
+    if (!spaced_keywords_detect(words, sc, cmdStateNew))
+    {
+      section_keywords_detect(words, sc, cmdStateNew);
 
-    if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
-      words.clear();
+      if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
+      {
+        words.clear();
+
+        std::for_each(
+          m_section_keywords.begin(),
+          m_section_keywords.end(),
+          [&sc](auto& i)
+          {
+            i.first.reset();
+            i.first.match(sc.ch);
+          });
+      }
+    }
 
     if (
       (sc.chPrev == '|' && sc.ch == ' ') && cmdState != RFW_CMD_TESTCASE &&
@@ -924,7 +957,7 @@ Sci_Position SCI_METHOD wex::lex_rfw::WordListSet(int n, const char* wl)
 
       if (n == 1)
       {
-        special_keywords_update();
+        keywords_update();
       }
     }
   }

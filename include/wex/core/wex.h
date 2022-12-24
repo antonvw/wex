@@ -21,6 +21,7 @@
 #include <wex/core/menu-command.h>
 #include <wex/core/path.h>
 #include <wex/core/queue-thread.h>
+#include <wex/core/regex-part.h>
 #include <wex/core/regex.h>
 #include <wex/core/temp-filename.h>
 #include <wex/core/tokenize.h>

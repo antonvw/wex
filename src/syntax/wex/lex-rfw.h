@@ -8,9 +8,13 @@
 #pragma once
 
 #include <string>
+#include <utility>
 #include <vector>
 
+#include <wex/core/regex-part.h>
+
 #include "DefaultLexer.h"
+#include "lex-rfw-access.h"
 #include "lex-rfw-defs.h"
 
 namespace wex
@@ -202,21 +206,30 @@ private:
 
   void parse_keyword(StyleContext& sc, int cmdState, int& cmdStateNew);
 
-  void special_keywords_detect(
+  void keywords_update();
+  bool section_keywords_detect(
     const std::string& word,
     StyleContext&      sc,
     int&               cmdStateNew);
-  void special_keywords_update();
+  bool spaced_keywords_detect(
+    const std::string& word,
+    StyleContext&      sc,
+    int&               cmdStateNew);
 
   void state_check(StyleContext& sc, int state, int& state_new, LexAccessor&);
   bool state_check_continue(StyleContext& sc, int& state, LexAccessor&);
 
-private:
-  enum
+  enum section_t
   {
-    ssIdentifier,
-    ssScalar
+    SECTION_COMMENT,
+    SECTION_KEYWORD,
+    SECTION_SETTING,
+    SECTION_TASK,
+    SECTION_TESTCASE,
+    SECTION_VARIABLE,
   };
+
+  typedef std::vector<std::pair<wex::regex_part, section_t>> keywords_t;
 
   SubStyles m_sub_styles;
 
@@ -232,6 +245,7 @@ private:
   wex::quote*       m_quote{nullptr};
   wex::quote_stack* m_quote_stack{nullptr};
 
-  std::vector<std::string> m_special_keywords;
+  keywords_t               m_section_keywords;
+  std::vector<std::string> m_spaced_keywords;
 };
 } // namespace wex
