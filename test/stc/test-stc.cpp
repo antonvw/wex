@@ -49,7 +49,7 @@ TEST_CASE("wex::stc")
   SUBCASE("contents_changed")
   {
     stc->SetText("added text");
-    REQUIRE(stc->get_text().find("added text") != std::string::npos);
+    REQUIRE(stc->get_text().contains("added text"));
     REQUIRE(stc->get_file().is_contents_changed());
     stc->get_file().reset_contents_changed();
     REQUIRE(!stc->get_file().is_contents_changed());
@@ -281,7 +281,7 @@ TEST_CASE("wex::stc")
   SUBCASE("open")
   {
     wex::stc stc(wex::test::get_path("test.h"));
-    REQUIRE(stc.path().string().find("test.h") != std::string::npos);
+    REQUIRE(stc.path().string().contains("test.h"));
     REQUIRE(stc.open(wex::test::get_path("test.h")));
     REQUIRE(!stc.open(wex::path("XXX")));
   }
@@ -305,7 +305,7 @@ TEST_CASE("wex::stc")
     REQUIRE(stc->get_text() == "hello stc");
 
     stc->add_text(" added");
-    REQUIRE(stc->get_text().find("added") != std::string::npos);
+    REQUIRE(stc->get_text().contains("added"));
   }
 
   SUBCASE("vi")

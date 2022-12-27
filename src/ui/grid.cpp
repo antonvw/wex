@@ -400,7 +400,7 @@ bool wex::grid::find_next(const data::find& f)
       }
       else
       {
-        if (cv.find(f.text()) != std::string::npos)
+        if (cv.contains(f.text()))
         {
           match = wxGridCellCoords(i, j);
         }

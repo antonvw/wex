@@ -17,17 +17,17 @@ wex::data::substitute::substitute(const std::string& text)
 
 bool wex::data::substitute::is_confirmed() const
 {
-  return m_options.find("c") != std::string::npos;
+  return m_options.contains("c");
 }
 
 bool wex::data::substitute::is_global() const
 {
-  return m_options.find("g") != std::string::npos;
+  return m_options.contains("g");
 }
 
 bool wex::data::substitute::is_ignore_case() const
 {
-  return m_options.find("i") != std::string::npos;
+  return m_options.contains("i");
 }
 
 bool wex::data::substitute::set(const std::string& command_org)
@@ -39,11 +39,9 @@ bool wex::data::substitute::set(const std::string& command_org)
 
   auto command(command_org);
 
-  if (
-    command.find("\\\\/") == std::string::npos &&
-    command.find("\\/") != std::string::npos)
+  if (!command.contains("\\\\/") && command.contains("\\/"))
   {
-    if (command.find(static_cast<char>(1)) == std::string::npos)
+    if (!command.contains(static_cast<char>(1)))
     {
       boost::algorithm::replace_all(command, "\\/", "\x01");
       escaped = true;

@@ -22,7 +22,7 @@ TEST_CASE("wex::core")
 
   SUBCASE("ellipsed")
   {
-    REQUIRE(wex::ellipsed("xxx").find("...") != std::string::npos);
+    REQUIRE(wex::ellipsed("xxx").contains("..."));
   }
 
   SUBCASE("find_after")

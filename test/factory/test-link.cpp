@@ -32,7 +32,7 @@ void link(
     CAPTURE(expect);
     const std::string p(link.get_path(path, data).string());
     CAPTURE(p);
-    REQUIRE(p.find(expect) != std::string::npos);
+    REQUIRE(p.contains(expect));
   }
   else
   {

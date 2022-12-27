@@ -105,8 +105,7 @@ TEST_CASE("wex::vi")
     REQUIRE(!vi->on_char(event));
 
     change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
-    REQUIRE(
-      vi->inserted_text().find(vi->get_stc()->eol()) != std::string::npos);
+    REQUIRE(vi->inserted_text().contains(vi->get_stc()->eol()));
   }
 
   SUBCASE("registers")
@@ -246,7 +245,7 @@ TEST_CASE("wex::vi")
     REQUIRE(!stc->GetUseTabs());
     REQUIRE(vi->on_key_down(event));
     REQUIRE(!vi->on_char(event));
-    REQUIRE(stc->get_text().find("\t") == std::string::npos);
+    REQUIRE(!stc->get_text().contains("\t"));
 
     change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
   }
@@ -321,7 +320,7 @@ TEST_CASE("wex::vi")
       REQUIRE(vi->on_key_down(event));
       REQUIRE(!vi->on_char(event));
       CAPTURE(number);
-      REQUIRE(stc->get_text().find(number) == std::string::npos);
+      REQUIRE(!stc->get_text().contains(number));
     }
 
     // Test navigate command keys.

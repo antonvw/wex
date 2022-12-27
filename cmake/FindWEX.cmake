@@ -25,7 +25,7 @@ endif ()
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 
 find_package(Boost 1.75.0 COMPONENTS
   log_setup log filesystem program_options date_time regex json REQUIRED)

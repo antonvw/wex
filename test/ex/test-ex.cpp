@@ -126,13 +126,13 @@ TEST_CASE("wex::ex")
     stc->AppendText("line xxxx 6 added\n");
     stc->AppendText("line xxxx 7 added\n");
     REQUIRE(ex->command(":g/xxxx/s//yyyy"));
-    REQUIRE(stc->get_text().find("yyyy") != std::string::npos);
+    REQUIRE(stc->get_text().contains("yyyy"));
     REQUIRE(ex->command(":g//"));
 
     // Test global move.
     stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
     REQUIRE(ex->command(":g/d/m$")); // possible infinite loop
-    REQUIRE(stc->get_text().find("d") != std::string::npos);
+    REQUIRE(stc->get_text().contains("d"));
 
     stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
     REQUIRE(ex->command(":g/d/p"));
@@ -146,8 +146,7 @@ TEST_CASE("wex::ex")
     const std::string eol(ex->get_stc()->eol());
     REQUIRE(ex->command(":a|added"));
     CAPTURE(stc->get_text());
-    REQUIRE(
-      stc->get_text().find("xx\nadded" + eol + "xx") != std::string::npos);
+    REQUIRE(stc->get_text().contains("xx\nadded" + eol + "xx"));
 
     REQUIRE(ex->command(":i|inserted"));
     CAPTURE(stc->get_text());
@@ -156,7 +155,7 @@ TEST_CASE("wex::ex")
       std::string::npos);
 
     REQUIRE(ex->command(":c|changed"));
-    REQUIRE(stc->get_text().find("changed") != std::string::npos);
+    REQUIRE(stc->get_text().contains("changed"));
 
     const int lines = stc->get_line_count();
 
@@ -225,8 +224,8 @@ TEST_CASE("wex::ex")
 
       REQUIRE(ex->command(":v/yy/d"));
       REQUIRE(stc->get_line_count() == 10);
-      REQUIRE(stc->get_text().find("xx") == std::string::npos);
-      REQUIRE(stc->get_text().find("pp") == std::string::npos);
+      REQUIRE(!stc->get_text().contains("xx"));
+      REQUIRE(!stc->get_text().contains("pp"));
     }
 
     SUBCASE("extra")
@@ -242,7 +241,7 @@ TEST_CASE("wex::ex")
 
       REQUIRE(ex->command(":v/xxxx/d"));
       REQUIRE(stc->get_line_count() == max + 1);
-      REQUIRE(stc->get_text().find("yy") == std::string::npos);
+      REQUIRE(!stc->get_text().contains("yy"));
     }
   }
 
@@ -358,7 +357,7 @@ TEST_CASE("wex::ex")
   {
 #ifdef __UNIX__
     REQUIRE(ex->command(":r !echo qwerty"));
-    REQUIRE(stc->get_text().find("qwerty") != std::string::npos);
+    REQUIRE(stc->get_text().contains("qwerty"));
 #endif
   }
 
@@ -457,8 +456,7 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->command(":1,5ya"));
     REQUIRE(ex->command(":1,5yank"));
     REQUIRE(ex->command(":1,5yank c"));
-    REQUIRE(
-      wex::ex::get_macros().get_register('c').find("xyz") != std::string::npos);
+    REQUIRE(wex::ex::get_macros().get_register('c').contains("xyz"));
 
     REQUIRE(!ex->command(":1,5yb"));
     REQUIRE(!ex->command(":1,5yankc"));

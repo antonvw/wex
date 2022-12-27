@@ -27,7 +27,7 @@
   {                                                           \
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID);    \
                                                               \
-    if (command.find(" ") != std::string::npos)               \
+    if (command.contains(" "))                                \
     {                                                         \
       event.SetString(command.substr(command.find(" ") + 1)); \
     }                                                         \
@@ -70,7 +70,7 @@ command_arg_t get_command_arg(const std::string& command)
 
 bool source(ex* ex, const std::string& cmd)
 {
-  if (cmd.find(" ") == std::string::npos)
+  if (!cmd.contains(" "))
   {
     return false;
   }
@@ -164,7 +164,7 @@ wex::ex::commands_t wex::ex::commands_ex()
     {":chd(ir)?\\b|:cd\\b",
      [&](const std::string& command)
      {
-       if (command.find(" ") == std::string::npos)
+       if (!command.find(" "))
          return true;
        wex::path::current(path(
          wex::find_first_of(boost::algorithm::trim_right_copy(command), " ")));
@@ -270,7 +270,7 @@ wex::ex::commands_t wex::ex::commands_ex()
     {":print\\b",
      [&](const std::string& command)
      {
-       get_stc()->print(command.find(" ") == std::string::npos);
+       get_stc()->print(!command.contains(" "));
        return true;
      }},
     {":pwd\\b",
@@ -282,7 +282,7 @@ wex::ex::commands_t wex::ex::commands_ex()
     {":q(uit)?!?\\b",
      [&](const std::string& command)
      {
-       POST_CLOSE(wxEVT_CLOSE_WINDOW, command.find("!") == std::string::npos)
+       POST_CLOSE(wxEVT_CLOSE_WINDOW, !command.contains("!"))
        return true;
      }},
     {":reg\\b",
@@ -346,7 +346,7 @@ wex::ex::commands_t wex::ex::commands_ex()
     {":una(bbrev)?\\b",
      [&](const std::string& command)
      {
-       if (command.find(" ") != std::string::npos)
+       if (command.contains(" "))
        {
          m_macros.set_abbreviation(find_after(command, " "), "");
        }
@@ -355,7 +355,7 @@ wex::ex::commands_t wex::ex::commands_ex()
     {":unm(ap)?\\b",
      [&](const std::string& command)
      {
-       if (command.find(" ") != std::string::npos)
+       if (command.contains(" "))
        {
          switch (get_command_arg(command))
          {

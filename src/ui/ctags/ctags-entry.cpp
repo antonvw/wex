@@ -48,7 +48,7 @@ bool wex::ctags_entry::entry_equal(
   if (const auto* valuep = tagsField(&m_entry, field.c_str());
       valuep != nullptr)
   {
-    if (std::string value(valuep); value.find("::") != std::string::npos)
+    if (std::string value(valuep); value.contains("::"))
     {
       value = wex::rfind_after(value, ":");
       return text == value;

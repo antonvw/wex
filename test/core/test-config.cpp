@@ -2,7 +2,7 @@
 // Name:      test-config.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -25,7 +25,7 @@ TEST_CASE("wex::config")
 #ifdef __WXMSW__
     REQUIRE(!wex::config::dir().empty());
 #else
-    REQUIRE(wex::config::dir().string().find(".config") != std::string::npos);
+    REQUIRE(wex::config::dir().string().contains(".config"));
 #endif
   }
 

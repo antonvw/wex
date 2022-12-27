@@ -31,7 +31,7 @@ TEST_CASE("wex::stc_undo")
 
     stc->Undo();
 
-    REQUIRE(stc->get_text().find("hello") == std::string::npos);
+    REQUIRE(!stc->get_text().contains("hello"));
   }
 
   SUBCASE("pos")

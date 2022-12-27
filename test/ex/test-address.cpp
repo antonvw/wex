@@ -57,7 +57,7 @@ TEST_CASE("wex::address")
   SUBCASE("append")
   {
     REQUIRE(ex->command(":5a|appended text"));
-    REQUIRE(stc->get_text().find("appended text") != std::string::npos);
+    REQUIRE(stc->get_text().contains("appended text"));
   }
 
   SUBCASE("flags_supported")
@@ -102,7 +102,7 @@ TEST_CASE("wex::address")
   SUBCASE("insert")
   {
     REQUIRE(ex->command(":5i|inserted text"));
-    REQUIRE(stc->get_text().find("inserted text") != std::string::npos);
+    REQUIRE(stc->get_text().contains("inserted text"));
   }
 
   SUBCASE("marker_add")
@@ -127,7 +127,7 @@ TEST_CASE("wex::address")
   {
     ex->get_macros().set_register('z', "zzzzz");
     REQUIRE(ex->command(":5pu z"));
-    REQUIRE(stc->get_text().find("zzzz") != std::string::npos);
+    REQUIRE(stc->get_text().contains("zzzz"));
   }
 
   SUBCASE("read")

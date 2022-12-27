@@ -83,7 +83,7 @@ void wex::style::set(const pugi::xml_node& node, const std::string& macro)
     {
       std::string value(it->second);
 
-      if (value.find("default-font") != std::string::npos)
+      if (value.contains("default-font"))
       {
         boost::algorithm::replace_all(
           value,

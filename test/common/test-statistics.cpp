@@ -22,8 +22,8 @@ TEST_CASE("wex::statistics")
   REQUIRE(statistics.get("test") == 12);
   statistics.inc("test2");
   REQUIRE(statistics.get("test2") == 1);
-  REQUIRE(statistics.get().find("test") != std::string::npos);
-  REQUIRE(statistics.get().find("test2") != std::string::npos);
+  REQUIRE(statistics.get().contains("test"));
+  REQUIRE(statistics.get().contains("test2"));
 
   wex::statistics<long> copy(statistics);
   REQUIRE(copy.get("test") == 12);

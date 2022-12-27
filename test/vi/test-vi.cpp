@@ -57,16 +57,14 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command("i"));
     REQUIRE(vi->command("=5+5"));
     REQUIRE(vi->command(""));
-    REQUIRE(stc->get_text().find("10") != std::string::npos);
+    REQUIRE(stc->get_text().contains("10"));
 
     change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
     REQUIRE(vi->command("=5+5"));
-    REQUIRE(
-      wex::ex::get_macros().get_register('0').find("10") != std::string::npos);
+    REQUIRE(wex::ex::get_macros().get_register('0').contains("10"));
 
     REQUIRE(!vi->command("=5+5+5"));
-    REQUIRE(
-      wex::ex::get_macros().get_register('0').find("15") == std::string::npos);
+    REQUIRE(!wex::ex::get_macros().get_register('0').contains("15"));
 
     REQUIRE(vi->command("i"));
     REQUIRE(!vi->command(""));
@@ -170,15 +168,14 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->mode().is_insert());
     REQUIRE(vi->last_command() == "i");
     REQUIRE(vi->command("xxxxxxxx"));
-    REQUIRE(stc->get_text().find("xxxxxxxx") != std::string::npos);
+    REQUIRE(stc->get_text().contains("xxxxxxxx"));
     REQUIRE(vi->last_command() == "i");
     change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
     REQUIRE(wex::ex::register_insert() == "xxxxxxxx");
     REQUIRE(vi->last_command() == std::string("ixxxxxxxx") + ESC);
     for (int i = 0; i < 10; i++)
       REQUIRE(vi->command("."));
-    REQUIRE(
-      stc->get_text().find("xxxxxxxxxxxxxxxxxxxxxxxxxxx") != std::string::npos);
+    REQUIRE(stc->get_text().contains("xxxxxxxxxxxxxxxxxxxxxxxxxxx"));
 
     // insert commands
     std::vector<std::string> commands;
@@ -213,8 +210,8 @@ TEST_CASE("wex::vi")
     change_mode(vi, "i", wex::vi_mode::state_t::INSERT);
     change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
     change_mode(vi, "iyyyyy", wex::vi_mode::state_t::INSERT);
-    REQUIRE(stc->get_text().find("yyyyy") != std::string::npos);
-    REQUIRE(stc->get_text().find("iyyyyy") == std::string::npos);
+    REQUIRE(stc->get_text().contains("yyyyy"));
+    REQUIRE(!stc->get_text().contains("iyyyyy"));
 
     change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
     const std::string lastcmd = std::string("iyyyyy") + ESC;
@@ -227,15 +224,15 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->last_command() == lastcmd);
     REQUIRE(vi->command("100izz"));
     REQUIRE(vi->mode().is_insert());
-    REQUIRE(stc->get_text().find("izz") == std::string::npos);
+    REQUIRE(!stc->get_text().contains("izz"));
 
     change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
-    REQUIRE(stc->get_text().find(std::string(100, 'z')) != std::string::npos);
+    REQUIRE(stc->get_text().contains(std::string(100, 'z')));
 
     // Test insert \n.
     change_mode(vi, "i\n\n\n\n", wex::vi_mode::state_t::INSERT);
-    REQUIRE(stc->get_text().find("\n") != std::string::npos);
-    REQUIRE(stc->get_text().find("i") == std::string::npos);
+    REQUIRE(stc->get_text().contains("\n"));
+    REQUIRE(!stc->get_text().contains("i"));
 
     change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
     REQUIRE(vi->inserted_text() == "\n\n\n\n");
@@ -450,9 +447,8 @@ TEST_CASE("wex::vi")
     vi->command("p");
     vi->command("P");
     REQUIRE(
-      stc->get_text().find("the chances of anything coming from mars") !=
-      std::string::npos);
-    REQUIRE(stc->get_text().find("mathe") == std::string::npos);
+      stc->get_text().contains("the chances of anything coming from mars"));
+    REQUIRE(!stc->get_text().contains("mathe"));
   }
 
   SUBCASE("registers")
@@ -476,7 +472,7 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command(ctrl_r + "2"));
     REQUIRE(vi->command("2"));
     change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
-    REQUIRE(stc->get_text().find("XXXXX") != std::string::npos);
+    REQUIRE(stc->get_text().contains("XXXXX"));
   }
 
   SUBCASE("replace")
@@ -508,12 +504,12 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->mode().is_insert());
     REQUIRE(vi->command("b"));
     change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
-    REQUIRE(stc->get_text().find("b") != std::string::npos);
+    REQUIRE(stc->get_text().contains("b"));
     stc->set_text("xxxxxxxxxx\nxxxxxxxx\naaaaaaaaaa\n");
     REQUIRE(vi->command(":.="));
     REQUIRE(vi->command(":1,$s/xx/yy/g"));
-    REQUIRE(stc->get_text().find("xx") == std::string::npos);
-    REQUIRE(stc->get_text().find("yy") != std::string::npos);
+    REQUIRE(!stc->get_text().contains("xx"));
+    REQUIRE(stc->get_text().contains("yy"));
   }
 
   SUBCASE("tags")
@@ -531,21 +527,21 @@ TEST_CASE("wex::vi")
   {
     stc->set_text("");
     REQUIRE(vi->command("@Date@"));
-    REQUIRE(stc->get_text().find("Date") == std::string::npos);
+    REQUIRE(!stc->get_text().contains("Date"));
 
     stc->set_text("");
     REQUIRE(vi->command("@Year@"));
-    REQUIRE(stc->get_text().find("20") != std::string::npos);
+    REQUIRE(stc->get_text().contains("20"));
     REQUIRE(stc->get_lexer().set("cpp"));
 
     stc->set_text("");
     REQUIRE(vi->command("@Cb@"));
     REQUIRE(vi->command("@Ce@"));
-    REQUIRE(stc->get_text().find("//") != std::string::npos);
+    REQUIRE(stc->get_text().contains("//"));
 
     stc->set_text("");
     REQUIRE(vi->command("@Cl@"));
-    REQUIRE(stc->get_text().find("//") != std::string::npos);
+    REQUIRE(stc->get_text().contains("//"));
     REQUIRE(vi->command("@Nl@"));
   }
 
@@ -589,9 +585,9 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->get_stc()->get_selected_text() == "xxxxxxxxxx ");
     REQUIRE(vi->command("w"));
     REQUIRE(vi->command("x"));
-    REQUIRE(stc->get_text().find("second") != std::string::npos);
+    REQUIRE(stc->get_text().contains("second"));
     REQUIRE(vi->command("p"));
-    REQUIRE(stc->get_text().find("second") != std::string::npos);
+    REQUIRE(stc->get_text().contains("second"));
   }
 
   SUBCASE("others")
@@ -606,7 +602,7 @@ TEST_CASE("wex::vi")
       REQUIRE(
         stc->get_text().find("abbreviation " + abbrev.second) !=
         std::string::npos);
-      REQUIRE(stc->get_text().find(abbrev.first) == std::string::npos);
+      REQUIRE(!stc->get_text().contains(abbrev.first));
     }
 
     // Test special delete commands.
