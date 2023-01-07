@@ -102,7 +102,7 @@ bool wex::vcs_entry::execute(
   std::string my_args(args);
 
   // If we specified help (flags), we do not need a file argument.
-  if (get_command().is_help() || flags.find("help") != std::string::npos)
+  if (get_command().is_help() || flags.contains("help"))
   {
     my_args.clear();
   }
@@ -155,7 +155,7 @@ void wex::vcs_entry::show_output(const std::string& caption) const
 {
   if (!std_out().empty() && get_shell() != nullptr)
   {
-    if (get_flags().find("xml") != std::string::npos)
+    if (get_flags().contains("xml"))
     {
       get_shell()->get_lexer().set("xml");
     }

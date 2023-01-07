@@ -69,7 +69,7 @@ bool visual_vi_command(const std::string& command, vi* vi)
 {
   if (
     vi->mode().is_visual() &&
-    command.find(ex_command::selection_range()) == std::string::npos &&
+    !command.contains(ex_command::selection_range()) &&
     !vi->get_stc()->get_selected_text().empty() && command[0] == ':')
   {
     return visual_ex_command(command, vi);
@@ -204,7 +204,7 @@ void wex::vi::command_reg(const std::string& reg)
 
           if (m_mode.is_insert())
           {
-            if (m_last_command.find('c') != std::string::npos)
+            if (m_last_command.contains('c'))
             {
               get_stc()->ReplaceSelection(wxEmptyString);
             }
@@ -423,7 +423,7 @@ bool wex::vi::insert_mode(const std::string& command)
     command_reg(command);
     return true;
   }
-  else if (command.find(k_s(WXK_CONTROL_R)) != std::string::npos)
+  else if (command.contains(k_s(WXK_CONTROL_R)))
   {
     return insert_mode_register(command);
   }
@@ -499,8 +499,7 @@ void wex::vi::insert_mode_normal(const std::string& text)
   if (boost::tokenizer<boost::char_separator<char>> tok(
         text,
         boost::char_separator<char>("", "\r\n", boost::keep_empty_tokens));
-      text.find('\0') == std::string::npos &&
-      std::distance(tok.begin(), tok.end()) >= 1)
+      !text.contains('\0') && std::distance(tok.begin(), tok.end()) >= 1)
   {
     for (auto it = tok.begin(); it != tok.end(); ++it)
     {
@@ -588,8 +587,7 @@ bool wex::vi::insert_mode_other(const std::string& command)
       break;
 
     default:
-      if (
-        m_last_command.find('c') != std::string::npos && m_insert_text.empty())
+      if (m_last_command.contains('c') && m_insert_text.empty())
       {
         get_stc()->ReplaceSelection(wxEmptyString);
       }

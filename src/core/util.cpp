@@ -167,7 +167,7 @@ int wex::get_number_of_lines(const std::string& text, bool trim)
 
   // If text contains \r\n, assume a DOS file, count only \n.
   // Otherwise count all endings.
-  return ((trimmed.find("\r\n") != std::string::npos) ?
+  return ((trimmed.contains("\r\n")) ?
             std::count(trimmed.begin(), trimmed.end(), '\n') :
             std::count_if(
               trimmed.begin(),
@@ -264,7 +264,7 @@ const std::string wex::quoted(const std::string& text)
 
 const std::string wex::quoted_find(const std::string& text, char c)
 {
-  return text.find(c) != std::string::npos ? "\"" + text + "\"" : text;
+  return text.contains(c) ? "\"" + text + "\"" : text;
 }
 
 const std::string

@@ -96,7 +96,7 @@ TEST_CASE("wex::util" * doctest::may_fail())
   {
     std::string command("xxx `pwd` `pwd`");
     REQUIRE(wex::shell_expansion(command));
-    REQUIRE(command.find("`") == std::string::npos);
+    REQUIRE(!command.contains("`"));
 
     command = "no quotes";
     REQUIRE(wex::shell_expansion(command));

@@ -32,7 +32,7 @@ const std::any get_value_prim(const wex::item* item)
         0L,
         [](long a, const auto& b)
         {
-          return (b.second.find(",") != std::string::npos) ? a |= b.first : a;
+          return (b.second.contains(",")) ? a |= b.first : a;
         }));
     }
 
@@ -144,6 +144,6 @@ const std::string str(const std::string& name, const std::any& any)
 
 const item::type_t use_type(const std::string& label, item::type_t t)
 {
-  return label.find(':') != std::string::npos ? item::STATICTEXT : t;
+  return label.contains(':') ? item::STATICTEXT : t;
 }
 } // namespace wex

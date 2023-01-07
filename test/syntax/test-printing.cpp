@@ -30,19 +30,17 @@ TEST_CASE("wex::printing")
 
   SUBCASE("print_caption")
   {
-    REQUIRE(
-      wex::print_caption(wex::path("test")).find("test") != std::string::npos);
+    REQUIRE(wex::print_caption(wex::path("test")).contains("test"));
   }
 
   SUBCASE("print_footer")
   {
-    REQUIRE(wex::print_footer().find("@") != std::string::npos);
+    REQUIRE(wex::print_footer().contains("@"));
   }
 
   SUBCASE("print_header")
   {
-    REQUIRE(
-      wex::print_header(wex::path_lexer(wex::test::get_path("test.h")))
-        .find("test") != std::string::npos);
+    REQUIRE(wex::print_header(wex::path_lexer(wex::test::get_path("test.h")))
+              .contains("test"));
   }
 }

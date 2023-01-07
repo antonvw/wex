@@ -60,18 +60,18 @@ TEST_CASE("wex::blame")
 
     REQUIRE(blame.parse(wex::path(), text));
 
-    REQUIRE(blame.info().find("A unknown user") != std::string::npos);
-    REQUIRE(blame.info().find("2019-02-01") != std::string::npos);
-    REQUIRE(blame.info().find("bf5d87cc") != std::string::npos);
+    REQUIRE(blame.info().contains("A unknown user"));
+    REQUIRE(blame.info().contains("2019-02-01"));
+    REQUIRE(blame.info().contains("bf5d87cc"));
 
     REQUIRE(blame.style() != wex::blame::margin_style_t::UNKNOWN);
 
     REQUIRE(blame.line_no() == 14);
-    REQUIRE(blame.line_text().find("get_country") != std::string::npos);
+    REQUIRE(blame.line_text().contains("get_country"));
 
     wex::config("blame", "author").set(false);
     REQUIRE(blame.parse(wex::path(), text));
-    REQUIRE(blame.info().find("A unknown user") == std::string::npos);
+    REQUIRE(!blame.info().contains("A unknown user"));
   }
 
   SUBCASE("set")

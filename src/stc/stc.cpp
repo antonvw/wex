@@ -359,11 +359,11 @@ void wex::stc::guess_type_and_modeline()
     }
   }
 
-  if (head.find("\r\n") != std::string::npos)
+  if (head.contains("\r\n"))
     SetEOLMode(wxSTC_EOL_CRLF);
-  else if (head.find("\n") != std::string::npos)
+  else if (head.contains("\n"))
     SetEOLMode(wxSTC_EOL_LF);
-  else if (head.find("\r") != std::string::npos)
+  else if (head.contains("\r"))
     SetEOLMode(wxSTC_EOL_CR);
   else
     return; // do nothing

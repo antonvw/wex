@@ -20,21 +20,20 @@ TEST_CASE("wex::chrono")
 
   SUBCASE("time_t")
   {
-    REQUIRE(chrono.get_time(0).find("1970") != std::string::npos);
+    REQUIRE(chrono.get_time(0).contains("1970"));
   }
 
   SUBCASE("precision")
   {
-    REQUIRE(chrono.get_time(0).find("1970") != std::string::npos);
-    REQUIRE(chrono.get_time(0).find(".") == std::string::npos);
-    REQUIRE(
-      wex::chrono("%Y-%m-%d %H:%M:%S", wex::chrono::PRECISION_MILLI)
-        .get_time(timespec{0, 123000000})
-        .find(".123") != std::string::npos);
+    REQUIRE(chrono.get_time(0).contains("1970"));
+    REQUIRE(!chrono.get_time(0).contains("."));
+    REQUIRE(wex::chrono("%Y-%m-%d %H:%M:%S", wex::chrono::PRECISION_MILLI)
+              .get_time(timespec{0, 123000000})
+              .contains(".123"));
   }
 
   SUBCASE("now")
   {
-    REQUIRE(wex::now("%Y-%m-%d %H:%M:%S").find("202") != std::string::npos);
+    REQUIRE(wex::now("%Y-%m-%d %H:%M:%S").contains("202"));
   }
 }

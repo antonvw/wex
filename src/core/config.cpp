@@ -216,7 +216,7 @@ wex::config_imp* wex::config::get_store() const
 {
   assert(m_store);
 
-  if (m_item.find(".") != std::string::npos)
+  if (m_item.contains("."))
   {
     return m_store;
   }

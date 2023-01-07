@@ -50,7 +50,7 @@ TEST_CASE("wex::vcs")
     REQUIRE(vcs.entry().get_command().get_command() == "add");
 
     REQUIRE(!vcs.get_branch().empty());
-    REQUIRE(vcs.toplevel().string().find("wex") != std::string::npos);
+    REQUIRE(vcs.toplevel().string().contains("wex"));
 
     REQUIRE(vcs.name() == "Auto");
     REQUIRE(!vcs.entry().get_command().is_open());

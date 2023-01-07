@@ -120,9 +120,8 @@ std::string wex::blame::margin_renamed(const factory::stc* stc)
 {
   std::string revision(stc->MarginGetText(stc->get_margin_text_click()));
 
-  return revision.find(renamed) == std::string::npos ?
-           std::string() :
-           find_after(revision, renamed);
+  return !revision.contains(renamed) ? std::string() :
+                                       find_after(revision, renamed);
 }
 
 bool wex::blame::parse(const path& p, const std::string& text)

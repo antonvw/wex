@@ -158,7 +158,7 @@ bool wex::lexer::add_keywords(const std::string& value, int setno)
     const auto& line(it);
     std::string keyword;
 
-    if (line.find(":") != std::string::npos)
+    if (line.contains(":"))
     {
       keyword = find_before(line, ":");
       const auto& a_l(find_after(line, ":"));
@@ -353,7 +353,7 @@ void wex::lexer::auto_match(const std::string& lexer)
               lexers::get()->theme_macros().end(),
               [&](auto const& e)
               {
-                return it.first.find(e.first) != std::string::npos;
+                return it.first.contains(e.first);
               });
             style != lexers::get()->theme_macros().end())
         {
@@ -432,7 +432,7 @@ const std::string wex::lexer::formatted_text(
   std::string      out;
 
   // Process text between the carriage return line feeds.
-  for (size_t pos = 0; (pos = text.find("\n")) != std::string::npos;)
+  for (size_t pos = 0; (pos = text.contains("\n"));)
   {
     out += align_text(
              text.substr(0, pos),
@@ -509,7 +509,7 @@ const std::string wex::lexer::make_comment(
 {
   std::string out;
 
-  text.find("\n") != std::string::npos ?
+  text.contains("\n") ?
     out += formatted_text(text, std::string(), fill_out_with_space, fill_out) :
     out += align_text(text, std::string(), fill_out_with_space, fill_out);
 
@@ -522,9 +522,8 @@ const std::string wex::lexer::make_comment(
 {
   std::string out;
 
-  text.find("\n") != std::string::npos ?
-    out += formatted_text(text, prefix, true, true) :
-    out += align_text(text, prefix, true, true);
+  text.contains("\n") ? out += formatted_text(text, prefix, true, true) :
+                        out += align_text(text, prefix, true, true);
 
   return out;
 }
@@ -587,8 +586,8 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
   m_previewable = !node->attribute("preview").empty();
 
   if (const std::string exclude(node->attribute("exclude").value());
-      exclude.find(wxPlatformInfo().GetOperatingSystemFamilyName()) !=
-      std::string::npos)
+      exclude.contains(
+        wxPlatformInfo().GetOperatingSystemFamilyName().ToStdString()))
   {
     m_is_ok = false;
     return;

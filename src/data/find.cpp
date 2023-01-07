@@ -68,7 +68,7 @@ bool wex::data::find::find_margin(int& found_line)
     if (const std::string margin(m_stc->MarginGetText(line));
         ((m_flags & wxSTC_FIND_REGEXP) &&
          std::regex_search(margin, m, std::regex(m_text))) ||
-        margin.find(m_text) != std::string::npos)
+        margin.contains(m_text))
     {
       found_line = line;
       found      = true;

@@ -271,7 +271,7 @@ bool wex::address::parse(const command_parser& cp)
       return false;
 
     case 'a':
-      if (cp.text().find('|') != std::string::npos)
+      if (cp.text().contains('|'))
       {
         return append(find_after(cp.text(), "|"));
       }
@@ -281,7 +281,7 @@ bool wex::address::parse(const command_parser& cp)
       }
 
     case 'i':
-      if (cp.text().find('|') != std::string::npos)
+      if (cp.text().contains('|'))
       {
         return insert(find_after(cp.text(), "|"));
       }

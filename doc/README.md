@@ -162,6 +162,15 @@ bool wex::global_env::for_each(const block_lines& match) const
   if (command.starts_with(k_s(WXK_CONTROL_R) + "="))
 ```
 
+```cpp
+  contains (c++23)
+```
+
+  syntax/lexer.cpp:
+```cpp
+    if (line.contains(":"))
+```
+
 - Thread support library (c++17)
 ```cpp
   std::thread

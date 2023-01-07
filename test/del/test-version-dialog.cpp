@@ -46,5 +46,5 @@ TEST_CASE("wex::version_dialog")
 
 TEST_CASE("wex::version_dialog")
 {
-  REQUIRE(wex::external_libraries().str().find("wex") != std::string::npos);
+  REQUIRE(wex::external_libraries().str().contains("wex"));
 }

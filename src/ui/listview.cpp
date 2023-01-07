@@ -134,7 +134,7 @@ int check_match(int index, const std::string& look, const std::string& input)
   }
   else
   {
-    if (text.find(look) != std::string::npos)
+    if (text.contains(look))
     {
       return index;
     }

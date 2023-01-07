@@ -53,7 +53,7 @@ bool wex::stc::link_open(link_t mode, std::string* filename)
 {
   const auto& sel(GetSelectedText().ToStdString());
 
-  if (sel.size() > 200 || (!sel.empty() && sel.find('\n') != std::string::npos))
+  if (sel.size() > 200 || (!sel.empty() && sel.contains('\n')))
   {
     return false;
   }

@@ -209,9 +209,7 @@ int wex::open_files(
 
   for (const auto& it : files)
   {
-    if (
-      it.string().find("*") != std::string::npos ||
-      it.string().find("?") != std::string::npos)
+    if (it.string().contains("*") || it.string().contains("?"))
     {
       count += open_file_dir(
                  path::current(),
@@ -229,7 +227,7 @@ int wex::open_files(
         path           fn(it);
         wex::data::stc data(stc);
 
-        if (!it.file_exists() && it.string().find(":") != std::string::npos)
+        if (!it.file_exists() && it.string().contains(":"))
         {
           if (const path &
                 val(wex::factory::link().get_path(it.string(), data.control()));

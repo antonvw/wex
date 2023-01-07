@@ -1,6 +1,7 @@
 # changes
 
 **v23.04**
+- c++23 standard
 - wex-ctags and wex-syntax library added
 - wxWidgets 3.3
 - ex mode fixes

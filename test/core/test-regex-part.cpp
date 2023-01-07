@@ -27,7 +27,7 @@ TEST_CASE("wex::regex_part")
     wex::regex_part rer("[xyz");
 
     REQUIRE(rer.match('x') == wex::regex_part::MATCH_ERROR);
-    REQUIRE(rer.error().find("mismatched") != std::string::npos);
+    REQUIRE(rer.error().contains("mismatched"));
 
     REQUIRE(wex::regex_part("x").match('y') == wex::regex_part::MATCH_NONE);
     REQUIRE(wex::regex_part("x").match('x') == wex::regex_part::MATCH_COMPLETE);

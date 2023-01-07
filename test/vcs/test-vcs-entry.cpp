@@ -68,7 +68,7 @@ TEST_CASE("wex::vcs_entry")
     REQUIRE(entry.get_flags().empty());
     REQUIRE(!entry.std_out().empty());
     REQUIRE(entry.execute()); // executes just git, shows help
-    REQUIRE(entry.std_out().find("usage: ") != std::string::npos);
+    REQUIRE(entry.std_out().contains("usage: "));
     entry.show_output();
 
     REQUIRE(entry.system(wex::process_data("help")) == 0);

@@ -188,7 +188,7 @@ void wex::log::flush()
 
       case LEVEL_STATUS:
         // this is a wxMSW bug, crash in test -tc=wex::stc -sc=find
-        if (text.find("%") == std::string::npos)
+        if (!text.contains("%"))
         {
           wxLogStatus(text.c_str());
         }

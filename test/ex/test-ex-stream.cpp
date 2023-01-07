@@ -97,7 +97,7 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(exs->is_modified());
     REQUIRE(exs->get_line_count() == 4);
   }
-  
+
   SUBCASE("actions")
   {
     wex::file ifs(open_file());
@@ -144,7 +144,7 @@ TEST_CASE("wex::ex_stream")
         wex::address(&ex, 3),
         "TEXT_AFTER",
         wex::ex_stream::INSERT_AFTER));
-      REQUIRE((*exs.get_work()).find("TEXT_AFTER") != std::string::npos);
+      REQUIRE((*exs.get_work()).contains("TEXT_AFTER"));
 
       REQUIRE(exs.is_modified());
     }

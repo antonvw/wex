@@ -55,9 +55,8 @@ TEST_CASE("wex::lexer")
 
   SUBCASE("align_text")
   {
-    REQUIRE(
-      lexer.align_text("    code improvements", "", true, true)
-        .find("    code") == std::string::npos);
+    REQUIRE(!lexer.align_text("    code improvements", "", true, true)
+               .contains("    code"));
 
     REQUIRE(
       wex::lexer("cpp").align_text("test", "header", true, true).size() ==
@@ -93,8 +92,8 @@ TEST_CASE("wex::lexer")
     REQUIRE(!lexer.keywords_string().empty());
     REQUIRE(!lexer.keywords_string(-1, 0).empty());
     REQUIRE(!lexer.keywords_string(-1, 6).empty());
-    REQUIRE(lexer.keywords_string(-1, 8).find("for_each") != std::string::npos);
-    REQUIRE(lexer.keywords_string(-1, 9).find("for_each") == std::string::npos);
+    REQUIRE(lexer.keywords_string(-1, 8).contains("for_each"));
+    REQUIRE(!lexer.keywords_string(-1, 9).contains("for_each"));
     REQUIRE(lexer.keywords_string(-1, 50).empty());
     REQUIRE(lexer.is_keyword("class"));
     REQUIRE(lexer.is_keyword("const"));
@@ -127,9 +126,8 @@ TEST_CASE("wex::lexer")
 
   SUBCASE("make_comment")
   {
-    REQUIRE(
-      lexer.make_comment("commit xyz\n    code improvements")
-        .find("code code improvements") == std::string::npos);
+    REQUIRE(!lexer.make_comment("commit xyz\n    code improvements")
+               .contains("code code improvements"));
 
     REQUIRE(!lexer.make_comment("test", true).empty());
     REQUIRE(!lexer.make_comment("prefix", "test").empty());

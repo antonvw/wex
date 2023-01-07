@@ -24,7 +24,7 @@ std::string get_range(const std::string& text, int begin, int start)
 
 void wex::expand_macro(wex::process_data& data, stc* stc)
 {
-  if (data.exe().find("%LINES") == std::string::npos)
+  if (!data.exe().contains("%LINES"))
   {
     return;
   }
