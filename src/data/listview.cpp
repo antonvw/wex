@@ -2,7 +2,7 @@
 // Name:      data/listview.cpp
 // Purpose:   Implementation of wex::data::listview
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/listview.h>
@@ -113,7 +113,7 @@ bool wex::data::listview::inject()
                       return false;
                     });
 
-  if (!m_initialized)
+  if (!m_initialized && m_listview != nullptr)
   {
     injected      = true;
     m_initialized = true;

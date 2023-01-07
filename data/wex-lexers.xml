@@ -295,6 +295,7 @@ Copyright: (c) 2009-2022, Anton van Wezenbeek
     </set>
     <set name="cpp-stl">
       <!-- see https://github.com/Mizuchi/STL-Syntax -->
+      contains
       openmode streampos streamsize
       ATOMIC_FLAG_INIT ATOMIC_VAR_INIT ECMAScript FLT_EVAL_METHOD FP_INFINITY FP_NAN
       FP_NORMAL FP_SUBNORMAL FP_ZERO HUGE_VALF HUGE_VALL INFINITY
