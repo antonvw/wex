@@ -83,8 +83,6 @@ bool wex::process::async_system(const process_data& data_in)
 
   m_shell->set_process(this);
 
-  path::current(path(data.start_dir()));
-
   if (
     m_frame->debug_entry() != nullptr &&
     !m_frame->debug_entry()->name().empty() &&

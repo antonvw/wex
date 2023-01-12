@@ -1,14 +1,14 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      data-to-stdin.cpp
-// Purpose:   Implementation of class wex::factory::process
+// Name:      data-to-std-in.cpp
+// Purpose:   Implementation of class wex::data_to_std_in
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/file.h>
 #include <wex/core/temp-filename.h>
 
-#include "data-to-stdin.h"
+#include "data-to-std-in.h"
 
 wex::data_to_std_in::data_to_std_in(const process_data& data)
   : m_data(data)

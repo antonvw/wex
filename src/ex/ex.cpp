@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::ex
 //            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/ex.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -413,10 +413,13 @@ void wex::ex::show_dialog(
 
 void wex::ex::use(mode_t mode)
 {
-  log::trace("ex mode from")
-    << static_cast<int>(m_mode) << "to:" << static_cast<int>(mode);
+  if (mode != m_mode)
+  {
+    log::trace("ex mode from")
+      << static_cast<int>(m_mode) << "to:" << static_cast<int>(mode);
 
-  m_mode = mode;
+    m_mode = mode;
+  }
 }
 
 bool wex::ex::yank(char name) const

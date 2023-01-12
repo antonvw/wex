@@ -109,16 +109,11 @@ const std::vector<item> config_items()
           *wxLIGHT_GREY}}}}}});
 }
 
-std::string ignore_case(const std::string& text)
+const std::string ignore_case(const std::string& text)
 {
-  std::string output(text);
-
-  if (!wex::find_replace_data::get()->match_case())
-  {
-    boost::algorithm::to_upper(output);
-  }
-
-  return output;
+  return !factory::find_replace_data().match_case() ?
+           boost::algorithm::to_upper_copy(text) :
+           text;
 };
 
 int check_match(int index, const std::string& look, const std::string& input)

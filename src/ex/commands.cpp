@@ -2,7 +2,7 @@
 // Name:      comands-ex.cpp
 // Purpose:   Implementation of class wex::ex::commands_ex
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <numeric>
@@ -164,10 +164,16 @@ wex::ex::commands_t wex::ex::commands_ex()
     {":chd(ir)?\\b|:cd\\b",
      [&](const std::string& command)
      {
-       if (!command.find(" "))
-         return true;
-       wex::path::current(path(
-         wex::find_first_of(boost::algorithm::trim_right_copy(command), " ")));
+       if (!command.contains(" "))
+       { 
+         wex::path::current(path(wxGetHomeDir().ToStdString()));
+       }
+       else
+       {
+         wex::path::current(path(
+           wex::find_first_of(boost::algorithm::trim_right_copy(command), " ")));
+       }
+
        return true;
      }},
     {":close\\b",

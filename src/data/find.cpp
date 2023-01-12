@@ -2,7 +2,7 @@
 // Name:      data/find.cpp
 // Purpose:   Implementation of class wex::data::find
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -10,23 +10,12 @@
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/data/find.h>
-#include <wex/factory/frd.h>
 #include <wex/factory/stc.h>
 
 #include <regex>
 
-namespace wex
-{
-const std::string ignore_case(const std::string& text)
-{
-  return !factory::find_replace_data().match_case() ?
-           boost::algorithm::to_upper_copy(text) :
-           text;
-}
-} // namespace wex
-
 wex::data::find::find(const std::string& text, bool forward)
-  : m_text(ignore_case(text))
+  : m_text(text)
   , m_forward(forward)
 {
 }
