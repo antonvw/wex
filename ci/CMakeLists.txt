@@ -1,5 +1,7 @@
 file(GLOB_RECURSE SRCS "../src/*.cpp" "../sample/*.cpp")
 file(GLOB_RECURSE INCLUDES "../include/*.h")
+file(GLOB MDS "../*.md")
+file(GLOB_RECURSE MDSR "../doc/*.md" "../src/*.md" "../test/*.md")
 
 if (NOT WIN32)
   add_custom_target(codespell
@@ -35,6 +37,10 @@ if (NOT WIN32)
       ${SRCS}
     COMMENT "cpplint" VERBATIM)
 
+  add_custom_target(markdownlint
+    COMMAND markdownlint ${MDS} ${MDSR}
+    COMMENT "markdownlint" VERBATIM)
+
   add_custom_target(robocop
     COMMAND robocop
       -e 0201 -e 0202 -e 0308 -e 0309 -e 0505 -e 0704 -e 1003 -e 1004
@@ -42,6 +48,6 @@ if (NOT WIN32)
     COMMENT "robocop" VERBATIM)
     
   add_custom_target(analyse 
-    DEPENDS cppcheck cpplint codespell robocop
+    DEPENDS codespell cppcheck cpplint markdownlint robocop
     COMMENT "running checks" VERBATIM)
 endif()

@@ -34,9 +34,8 @@ wex::find_replace_data* wex::find_replace_data::get(bool createOnDemand)
   return m_self;
 }
 
-bool wex::find_replace_data::match(
-  const std::string& text,
-  const data::find&  f) const
+bool wex::find_replace_data::match(const std::string& text, const data::find& f)
+  const
 {
   if (text.empty() || f.text().empty())
   {
