@@ -2,7 +2,7 @@
 // Name:      path.cpp
 // Purpose:   Implementation of class wex::path
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2017-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -97,6 +97,7 @@ void wex::path::current(const wex::path& p)
   {
     try
     {
+      log::trace("change dir") << p;
       fs::current_path(p.data());
     }
     catch (const std::exception& e)

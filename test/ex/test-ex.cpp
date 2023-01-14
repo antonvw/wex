@@ -2,7 +2,7 @@
 // Name:      test-ex.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -67,6 +67,10 @@ TEST_CASE("wex::ex")
   SUBCASE("cd")
   {
     wex::path keep;
+
+    REQUIRE(ex->command(":chd"));
+    CAPTURE(keep.string());
+    REQUIRE(keep.original() != wex::path::current());
 
     for (const auto& command : std::vector<std::pair<std::string, std::string>>{
            {":chd /usr", "/usr"},

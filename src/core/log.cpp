@@ -2,7 +2,7 @@
 // Name:      log.cpp
 // Purpose:   Implementation of class wex::log
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/log/core.hpp>
@@ -250,6 +250,8 @@ void wex::log::init(level_t loglevel, const std::string& default_logfile)
   logging::add_console_log(
     std::cout,
     logging::keywords::format = "%TimeStamp% [%Severity%] %Message%");
+
+  assert(wxTheApp != nullptr);
 
   const path logfile(
     config::dir(),

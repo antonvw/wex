@@ -77,13 +77,13 @@ export ASAN_OPTIONS=detect_leaks=1,detect_container_overflow=0
 - if you want to use another boost version from current one on your system:
 
 ```bash
-wget https://dl.bintray.com/boostorg/release/<>/source/boost_<>.tar.gz
+wget https://sourceforge.net/projects/boost/files/boost/boost_<>.tar.gz
 tar -xzf boost_<>*
 cd boost_<>*
-./bootstrap.sh --prefix=<path>
+./bootstrap.sh --prefix=<parent-path>
 ./b2
-sudo ./b2 install --prefix=<path> --with=all
-cmake -DBOOST_ROOT=<path>
+sudo ./b2 install --prefix=<parent-path> --with=all
+cmake -DBOOST_ROOT=<parent-path>
 ```
 
 ## ODBC build

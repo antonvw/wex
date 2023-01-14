@@ -2,7 +2,7 @@
 // Name:      regex-part.h
 // Purpose:   Include file for class wex::regex_part
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -129,7 +129,7 @@ inline wex::regex_part::match_t wex::regex_part::match(char c)
 
 inline const std::string wex::regex_part::regex_next()
 {
-  bool bracket, parentheses = false, escape = false;
+  bool bracket = false, parentheses = false, escape = false;
 
   while (m_it != m_regex.end())
   {

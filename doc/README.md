@@ -355,7 +355,7 @@ It benefits from the following boost libraries:
 ## boost c++ libraries
 lib | info
 -----|------
-boost::algorithm lib | uses find_tail, replace_all, to_upper, trim
+boost::algorithm lib | uses find_tail, iequals, replace_all, to_upper, trim
 boost::json lib | to implement wex::config
 boost::log lib | to implement wex::log
 boost::process lib | to implement wex::process

@@ -2,7 +2,7 @@
 // Name:      data/find.h
 // Purpose:   Declaration of class wex::data::find
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -26,8 +26,7 @@ public:
   /// Sets recursive.
   static void recursive(bool rhs) { m_recursive = rhs; }
 
-  /// Default constructor. Sets members only, and
-  /// converts text to uppercase if match case is off.
+  /// Default constructor. Sets members only.
   find(
     /// text to find
     const std::string& text = std::string(),

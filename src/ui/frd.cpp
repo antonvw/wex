@@ -2,11 +2,13 @@
 // Name:      frd.cpp
 // Purpose:   Implementation of wex::find_replace_data class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
+#include <wex/data/find.h>
 #include <wex/factory/ex-command.h>
 #include <wex/ui/frd.h>
 #include <wx/fdrepdlg.h>
@@ -30,6 +32,54 @@ wex::find_replace_data* wex::find_replace_data::get(bool createOnDemand)
   }
 
   return m_self;
+}
+
+bool wex::find_replace_data::match(
+  const std::string& text,
+  const data::find&  f) const
+{
+  if (text.empty() || f.text().empty())
+  {
+    return false;
+  }
+
+  if (!get()->match_word())
+  {
+    if (!get()->match_case())
+    {
+      if (boost::algorithm::to_upper_copy(text).contains(
+            boost::algorithm::to_upper_copy(f.text())))
+      {
+        return true;
+      }
+    }
+    else
+    {
+      if (text.contains(f.text()))
+      {
+        return true;
+      }
+    }
+  }
+  else
+  {
+    if (!get()->match_case())
+    {
+      if (boost::algorithm::iequals(f.text(), text))
+      {
+        return true;
+      }
+    }
+    else
+    {
+      if (f.text() == text)
+      {
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 wex::find_replace_data* wex::find_replace_data::set(find_replace_data* frd)

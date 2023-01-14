@@ -2,7 +2,7 @@
 // Name:      frd.h
 // Purpose:   Declaration of wex::find_replace_data class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ///////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -12,6 +12,11 @@
 
 namespace wex
 {
+namespace data
+{
+class find;
+}; // namespace data
+
 /// Offers a class to hold data for find replace functionality.
 class find_replace_data : public factory::find_replace_data
 {
@@ -39,6 +44,10 @@ public:
   {
     return m_replace_strings.values();
   };
+
+  /// Returns true if specified find text (input) matches with the text,
+  /// using the find replace data flags.
+  bool match(const std::string& text, const data::find& f) const;
 
   /// Sets the find strings.
   /// Also moves the find string to the beginning of the find

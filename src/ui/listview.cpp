@@ -108,40 +108,6 @@ const std::vector<item> config_items()
           item::COLOURPICKERWIDGET,
           *wxLIGHT_GREY}}}}}});
 }
-
-std::string ignore_case(const std::string& text)
-{
-  std::string output(text);
-
-  if (!wex::find_replace_data::get()->match_case())
-  {
-    boost::algorithm::to_upper(output);
-  }
-
-  return output;
-};
-
-int check_match(int index, const std::string& look, const std::string& input)
-{
-  const auto& text(ignore_case(input));
-
-  if (find_replace_data::get()->match_word())
-  {
-    if (text == look)
-    {
-      return index;
-    }
-  }
-  else
-  {
-    if (text.contains(look))
-    {
-      return index;
-    }
-  }
-
-  return -1;
-}
 }; // namespace wex
 
 wex::listview::listview(const data::listview& data)
@@ -604,7 +570,7 @@ bool wex::listview::find_next(const std::string& text, bool forward)
   static long start_item;
   static long end_item;
 
-  data::find find(ignore_case(text), forward);
+  data::find find(text, forward);
 
   if (forward)
   {
@@ -627,7 +593,10 @@ bool wex::listview::find_next(const std::string& text, bool forward)
   {
     for (int col = 0; col < GetColumnCount() && match == -1; col++)
     {
-      match = check_match(index, find.text(), GetItemText(index, col));
+      if (find_replace_data::get()->match(GetItemText(index, col), find))
+      {
+        match = index;
+      }
     }
   }
 
@@ -1292,43 +1261,31 @@ int wxCALLBACK compare_cb(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData)
       const auto& [r2, t2] = wex::chrono().get_time(str2);
       if (!r1 || !r2)
         return 0;
-      if (ascending)
-        return wex::compare((unsigned long)t1, (unsigned long)t2);
-      else
-        return wex::compare((unsigned long)t2, (unsigned long)t1);
+
+      return ascending ? wex::compare((unsigned long)t1, (unsigned long)t2) :
+                         wex::compare((unsigned long)t2, (unsigned long)t1);
     }
-    break;
 
     case wex::column::FLOAT:
-      if (ascending)
-        return wex::compare(std::stof(str1), std::stof(str2));
-      else
-        return wex::compare(std::stof(str2), std::stof(str1));
-      break;
+      return ascending ? wex::compare(std::stof(str1), std::stof(str2)) :
+                         wex::compare(std::stof(str2), std::stof(str1));
 
     case wex::column::INT:
-      if (ascending)
-        return wex::compare(std::stoi(str1), std::stoi(str2));
-      else
-        return wex::compare(std::stoi(str2), std::stoi(str1));
-      break;
+      return ascending ? wex::compare(std::stoi(str1), std::stoi(str2)) :
+                         wex::compare(std::stoi(str2), std::stoi(str1));
 
     case wex::column::STRING:
       if (!wex::find_replace_data::get()->match_case())
       {
-        if (ascending)
-          return wex::ignore_case(str1).compare(wex::ignore_case(str2));
-        else
-          return wex::ignore_case(str2).compare(wex::ignore_case(str1));
+        return ascending ? boost::algorithm::to_upper_copy(str1).compare(
+                             boost::algorithm::to_upper_copy(str2)) :
+                           boost::algorithm::to_upper_copy(str2).compare(
+                             boost::algorithm::to_upper_copy(str1));
       }
       else
       {
-        if (ascending)
-          return str1.compare(str2);
-        else
-          return str2.compare(str1);
+        return ascending ? str1.compare(str2) : str2.compare(str1);
       }
-      break;
 
     default:
       assert(0);
