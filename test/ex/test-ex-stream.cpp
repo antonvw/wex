@@ -2,7 +2,7 @@
 // Name:      test-ex-stream.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -17,6 +17,9 @@
 #include <wex/ex/macros.h>
 
 #include "test.h"
+
+const int lines_test_md               = 12;
+const int line_containing_one_test_md = 4;
 
 // See also stc/test-vi.cpp, for testing a % range
 
@@ -181,10 +184,10 @@ TEST_CASE("wex::ex_stream")
     exs.stream(ifs);
     REQUIRE(exs.find(std::string("one")));
     REQUIRE(!exs.is_modified());
-    REQUIRE(exs.get_current_line() == 3);
+    REQUIRE(exs.get_current_line() == line_containing_one_test_md);
 
     REQUIRE(!exs.find(std::string("xxxone")));
-    REQUIRE(exs.get_current_line() == 3);
+    REQUIRE(exs.get_current_line() == line_containing_one_test_md);
     REQUIRE(!exs.is_block_mode());
 
     ex.command(":set magic");
@@ -198,7 +201,7 @@ TEST_CASE("wex::ex_stream")
 
     exs.goto_line(10);
     REQUIRE(exs.find(std::string("one")));
-    REQUIRE(exs.get_current_line() == 3);
+    REQUIRE(exs.get_current_line() == line_containing_one_test_md);
   }
 
   SUBCASE("find_data")
@@ -213,7 +216,7 @@ TEST_CASE("wex::ex_stream")
     exs.stream(ifs);
     REQUIRE(exs.find_data(f));
     REQUIRE(!exs.is_modified());
-    REQUIRE(exs.get_current_line() == 3);
+    REQUIRE(exs.get_current_line() == line_containing_one_test_md);
   }
 
   SUBCASE("find-noeol")
@@ -224,7 +227,7 @@ TEST_CASE("wex::ex_stream")
 
     REQUIRE(exs.find(std::string("test1")));
     REQUIRE(exs.is_block_mode());
-    REQUIRE(exs.get_current_line() == 4);
+    REQUIRE(exs.get_current_line() == line_containing_one_test_md);
     REQUIRE(exs.find(std::string("test199")));
     REQUIRE(exs.find(std::string("test999")));
     REQUIRE(!exs.is_modified());
@@ -256,9 +259,9 @@ TEST_CASE("wex::ex_stream")
 
     REQUIRE(exs.find(std::string("Markdown document"), -1, false));
     REQUIRE(!exs.is_modified());
-    REQUIRE(exs.get_current_line() == 1);
+    REQUIRE(exs.get_current_line() == 2);
     REQUIRE(exs.find(std::string("one")));
-    REQUIRE(exs.get_current_line() == 3);
+    REQUIRE(exs.get_current_line() == line_containing_one_test_md);
     REQUIRE(!exs.is_block_mode());
   }
 
@@ -283,9 +286,9 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(ifs.is_open());
     exs.stream(ifs);
 
-    REQUIRE(exs.get_line_count_request() == 9);
-    REQUIRE(exs.get_line_count() == 9);
-    REQUIRE(exs.get_line_count_request() == 9);
+    REQUIRE(exs.get_line_count_request() == lines_test_md);
+    REQUIRE(exs.get_line_count() == lines_test_md);
+    REQUIRE(exs.get_line_count_request() == lines_test_md);
   }
 
   SUBCASE("stream")
@@ -302,11 +305,11 @@ TEST_CASE("wex::ex_stream")
 
     exs.goto_line(4);
     REQUIRE(exs.get_current_line() == 4);
-    REQUIRE(exs.get_line_count_request() == 9);
+    REQUIRE(exs.get_line_count_request() == lines_test_md);
 
     exs.goto_line(3);
     REQUIRE(exs.get_current_line() == 3);
-    REQUIRE(exs.get_line_count_request() == 9);
+    REQUIRE(exs.get_line_count_request() == lines_test_md);
   }
 
   SUBCASE("write")

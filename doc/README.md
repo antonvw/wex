@@ -1,10 +1,12 @@
 # wex library
+
 This library is written in the c++ language, and offers classes
 to add vi or ex functionality as specified in
 "The Open Group Base Specifications Issue 7, 2018 edition"
 to your apps.
 
 ## wex c++ libraries
+
 src     | lib         | sub-lib   | info
 --------|-------------|-----------|--
 core    | wex-core    |           | core
@@ -23,6 +25,7 @@ It benefits from the following c++ features:
 ## c++ libraries
 
 - Algorithms library
+
 ```cpp
   std::all_of (c++11)
 ```
@@ -30,6 +33,7 @@ It benefits from the following c++ features:
   E.g. when doing a global command on all of it's subcommands
 
   example:
+
 ```cpp
 bool wex::global_env::for_each(const block_lines& match) const
 {
@@ -48,6 +52,7 @@ bool wex::global_env::for_each(const block_lines& match) const
 ```
 
 - Filesystem library (c++17)
+
 ```cpp
   std::filesystem
   std::filesystem::directory_iterator
@@ -55,20 +60,25 @@ bool wex::global_env::for_each(const block_lines& match) const
 ```
 
 - Input/output library
+
 ```cpp
   std::fstream
 ```
+
   The base of all io uses a std::fstream class.
 
 - Numerics library
+
 ```cpp
   std::accumulate
 ```
+
   The std::accumulate is used e.g. within the vi macros to
   return a string containing all elements of the requested
   register (the find returns a std::vector<std::string>).
 
   example:
+
 ```cpp
   const auto& it = m_macros.find(std::string(1, name));
   return it != m_macros.end() ? std::accumulate(
@@ -79,6 +89,7 @@ bool wex::global_env::for_each(const block_lines& match) const
 ```
 
 - Regular expressions library (c++11)
+
 ```cpp
   std::regex
   std::regex_match
@@ -87,12 +98,15 @@ bool wex::global_env::for_each(const block_lines& match) const
 ```
 
   E.g. here is code to parse a:
+
 ```cpp
   // :set [option[=[value]] ...][nooption ...][option? ...][all]
 ```
+
   that implements the ex :set OpenSource specs.
 
   example:
+  
 ```cpp
   regex r(
     {"all",
@@ -112,6 +126,7 @@ bool wex::global_env::for_each(const block_lines& match) const
 ```
 
   and search:
+
 ```cpp
   int wex::regex::find(const std::string& text, find_t how)
   ...
@@ -145,10 +160,12 @@ bool wex::global_env::for_each(const block_lines& match) const
 ```
 
 - Strings library
+
 ```cpp
   std::stoi (c++11)
   std::to_string (c++11)
 ```
+
   These functions are used heavily, the advice is to be sure that
   you should be aware that a std::exception might be raised.
   And, if performance is an issue prefer using from_chars.
@@ -158,6 +175,7 @@ bool wex::global_env::for_each(const block_lines& match) const
 ```
 
   vi/vi.cpp:
+  
 ```cpp
   if (command.starts_with(k_s(WXK_CONTROL_R) + "="))
 ```
@@ -167,30 +185,37 @@ bool wex::global_env::for_each(const block_lines& match) const
 ```
 
   syntax/lexer.cpp:
+  
 ```cpp
     if (line.contains(":"))
 ```
 
 - Thread support library (c++17)
+
 ```cpp
   std::thread
   std::future (together with boost) (c++11)
 ```
+
   See next.
 
 - Utilities library
+
 ```cpp
   std::any (c++17)
 ```
+
   The std::any container is used as general container for
   gui elements.
 
 ```cpp
   std::function (c++11)
 ```
+
   A lot used for callbacks, e.g.:
 
   example: in lexers:
+  
 ```cpp
     void wex::lexers::apply_default_style(
       std::function<void(const std::string&)> back,
@@ -211,6 +236,7 @@ bool wex::global_env::for_each(const block_lines& match) const
 ```
 
   used in listview
+  
 ```cpp
       lexers::get()->apply_default_style([=, this](const std::string& back) {
         SetBackgroundColour(wxColour(back));
@@ -226,6 +252,7 @@ bool wex::global_env::for_each(const block_lines& match) const
 ```
 
   example:
+
 ```cpp
       std::thread u([debug   = m_debug.load(),
                      io      = m_io,
@@ -285,16 +312,19 @@ bool wex::global_env::for_each(const block_lines& match) const
 
 - init_statement in if, case statements (c++17), and for range (c++20)
   ui/textctrl-input.cpp:
+
 ```cpp
       switch (const int page = 10; key)
 ```
 
   vi/command-ex.cpp:
+  
 ```cpp
       if (const std::string line(it); !line.empty())
 ```
 
   ui/item.cpp
+  
 ```cpp
     for (int item  = 0; const auto& b : std::any_cast<choices_t>(m_data.initial()))
 ```
@@ -326,23 +356,30 @@ wex::regex::regex(
 ```
 
 - nested namespaces (c++17)
+
 ```cpp
   namespace wex::core
   {
     class stc;
   }
+  
 ```
+
   as forward declaration
 
 - override or final specifier (c++11)
+
   vi.h:
+  
 ```cpp
     bool command(const std::string& command) final;
 ```
+
   this ensures that the function is kept in sync with base class
 
 - spaceship operator (c++20)
   see presentation.h or block-lines.h
+  
 ```cpp
   auto operator<=>(const block_lines& r) const
   {
@@ -353,6 +390,7 @@ wex::regex::regex(
 It benefits from the following boost libraries:
 
 ## boost c++ libraries
+
 lib | info
 -----|------
 boost::algorithm lib | uses find_tail, iequals, replace_all, to_upper, trim
@@ -367,6 +405,7 @@ boost::tokenizer lib | to tokenize expressions
 It benefits from the following wxWidgets libraries:
 
 ## wxWidgets libraries
+
 - all gui classes are derived from / use wxWidgets base classes
 lib | info
 -----|------
