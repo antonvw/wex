@@ -384,26 +384,9 @@ bool wex::grid::find_next(const data::find& f)
          i != end_row && !match;
          (f.is_forward() ? i++ : i--))
     {
-      std::string cv = GetCellValue(i, j);
-
-      if (!find_replace_data::get()->match_case())
+      if (find_replace_data::get()->match(GetCellValue(i, j), f))
       {
-        boost::algorithm::to_upper(cv);
-      }
-
-      if (find_replace_data::get()->match_word())
-      {
-        if (cv == f.text())
-        {
-          match = wxGridCellCoords(i, j);
-        }
-      }
-      else
-      {
-        if (cv.contains(f.text()))
-        {
-          match = wxGridCellCoords(i, j);
-        }
+        match = wxGridCellCoords(i, j);
       }
     }
   }
