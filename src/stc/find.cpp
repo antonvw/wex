@@ -104,6 +104,23 @@ bool wex::stc::find(const std::string& text, int find_flags, bool forward)
     return false;
   }
 
+  if (find_flags == -1)
+  {
+    // get flags from find replace data
+
+    find_flags = 0;
+
+    if (find_replace_data::get()->match_case())
+    {
+      find_flags |= wxSTC_FIND_MATCHCASE;
+    }
+
+    if (find_replace_data::get()->match_word())
+    {
+      find_flags |= wxSTC_FIND_WHOLEWORD;
+    }
+  }
+
   wex::data::find f(
     this,
     text,
@@ -136,21 +153,8 @@ bool wex::stc::find(const std::string& text, int find_flags, bool forward)
 
 bool wex::stc::find_next(bool stc_find_string)
 {
-  // get flags from find replace data
-  int flags = 0;
-  
-  if (find_replace_data::get()->match_case())
-  {
-    flags |= wxSTC_FIND_MATCHCASE;
-  }
-
-  if (find_replace_data::get()->match_word())
-  {
-    flags |= wxSTC_FIND_WHOLEWORD;
-  }
-  
   return find(
     stc_find_string ? get_find_string() :
                       find_replace_data::get()->get_find_string(),
-    flags);
+    -1);
 }

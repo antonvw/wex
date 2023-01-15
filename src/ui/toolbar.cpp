@@ -2,7 +2,7 @@
 // Name:      toolbar.cpp
 // Purpose:   Implementation of wex::toolbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -22,8 +22,6 @@
 #include <wex/ui/toolbar.h>
 #include <wx/checkbox.h>
 #include <wx/stockitem.h>
-
-#include <list>
 
 namespace wex
 {
@@ -73,8 +71,8 @@ void find_popup_menu(
 
 wxPoint get_point(wxAuiToolBar* tb, wxAuiToolBarEvent& event)
 {
-  const wxRect  rect = tb->GetToolRect(event.GetId());
-  const wxPoint pt   = tb->ClientToScreen(rect.GetBottomLeft());
+  const auto& rect = tb->GetToolRect(event.GetId());
+  const auto& pt   = tb->ClientToScreen(rect.GetBottomLeft());
   return tb->ScreenToClient(pt);
 }
 
@@ -432,7 +430,7 @@ void wex::find_bar::find(bool find_next, bool restore_position)
       stc->position_restore();
     }
 
-    stc->find(get_text(), 0, find_next);
+    stc->find(get_text(), -1, find_next);
   }
   else if (auto* grid = dynamic_cast<wex::grid*>(get_frame()->get_grid());
            grid != nullptr)
