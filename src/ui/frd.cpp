@@ -42,40 +42,30 @@ bool wex::find_replace_data::match(const std::string& text, const data::find& f)
     return false;
   }
 
-  if (!get()->match_word())
+  if (is_regex())
   {
-    if (!get()->match_case())
+    std::regex::flag_type flags = std::regex::ECMAScript;
+
+    if (match_case())
     {
-      if (boost::algorithm::to_upper_copy(text).contains(
-            boost::algorithm::to_upper_copy(f.text())))
-      {
-        return true;
-      }
+      flags |= std::regex::icase;
     }
-    else
+
+    if (std::smatch m; std::regex_match(text, m, std::regex(f.text(), flags)))
     {
-      if (text.contains(f.text()))
-      {
-        return true;
-      }
+      return true;
     }
+  }
+  else if (!match_word())
+  {
+    return !match_case() ? boost::algorithm::to_upper_copy(text).contains(
+                             boost::algorithm::to_upper_copy(f.text())) :
+                           text.contains(f.text());
   }
   else
   {
-    if (!get()->match_case())
-    {
-      if (boost::algorithm::iequals(f.text(), text))
-      {
-        return true;
-      }
-    }
-    else
-    {
-      if (f.text() == text)
-      {
-        return true;
-      }
-    }
+    return !match_case() ? boost::algorithm::iequals(f.text(), text) :
+                           (f.text() == text);
   }
 
   return false;

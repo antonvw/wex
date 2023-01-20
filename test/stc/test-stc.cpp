@@ -97,46 +97,74 @@ TEST_CASE("wex::stc")
 
   SUBCASE("find")
   {
-    stc->set_text("hello stc and more text");
-    REQUIRE(stc->find(std::string("hello")));
-    REQUIRE(stc->get_word_at_pos(0) == "hello");
+    for (const auto mode : {wex::ex::OFF, wex::ex::VISUAL})
+    {
+      stc->get_vi().use(mode);
+      
+      stc->set_text("hello stc and more text");
+      REQUIRE(stc->find("hello"));
+      REQUIRE(stc->get_word_at_pos(0) == "hello");
 
-    REQUIRE(!stc->find(std::string("%d")));
-    REQUIRE(!stc->find(std::string("%ld")));
-    REQUIRE(!stc->find(std::string("%q")));
+      REQUIRE(!stc->find("%d"));
+      REQUIRE(!stc->find("%ld"));
+      REQUIRE(!stc->find("%q"));
 
-    REQUIRE(stc->find(std::string("hello"), wxSTC_FIND_WHOLEWORD));
-    REQUIRE(!stc->find(std::string("HELLO"), wxSTC_FIND_MATCHCASE));
-    REQUIRE((stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE) > 0);
+      REQUIRE(stc->find("hello", wxSTC_FIND_WHOLEWORD));
+      REQUIRE(!stc->find("hell", wxSTC_FIND_WHOLEWORD));
+      REQUIRE(!stc->find("HELLO", wxSTC_FIND_MATCHCASE));
 
-    wex::find_replace_data::get()->set_regex(false);
-    wex::find_replace_data::get()->set_match_case(false);
-    REQUIRE(stc->find(std::string("HELLO"))); // uses flags from frd
-    REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
+      REQUIRE((stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE) > 0);
+      REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_WHOLEWORD) > 0);
 
-    wex::find_replace_data::get()->set_match_case(false);
-    stc->set_search_flags(-1);
-    REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
+      // uses flags from frd
+      wex::find_replace_data::get()->set_regex(false);
+      wex::find_replace_data::get()->set_match_case(false);
+      REQUIRE(stc->find("HELLO"));
+      wex::find_replace_data::get()->set_match_word(true);
+      REQUIRE(!stc->find("HELL")); 
+      REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
 
-    REQUIRE(stc->CanCut());
-    stc->Copy();
-    REQUIRE(stc->CanPaste());
+      wex::find_replace_data::get()->set_match_case(false);
+      stc->set_search_flags(-1);
+      REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
 
-    stc->DocumentStart();
-    wex::find_replace_data::get()->set_match_word(false);
-    REQUIRE(stc->find(std::string("more text")));
-    REQUIRE(stc->get_find_string() == "more text");
-    REQUIRE(stc->replace_all("more", "less") == 1);
-    REQUIRE(stc->replace_all("more", "less") == 0);
-    REQUIRE(!stc->find(std::string("more text")));
-    stc->SelectNone();
-    REQUIRE(!stc->find_next());
-    REQUIRE(stc->find(std::string("less text")));
-    REQUIRE(stc->replace_next("less text", ""));
-    REQUIRE(!stc->replace_next());
-    REQUIRE(!stc->find(std::string("less text")));
-    REQUIRE(stc->get_find_string() != "less text");
-    REQUIRE(stc->replace_all("%", "percent") == 0);
+      REQUIRE(stc->CanCut());
+      stc->Copy();
+      REQUIRE(stc->CanPaste());
+
+      stc->DocumentStart();
+      wex::find_replace_data::get()->set_match_word(false);
+      REQUIRE(stc->find("more text"));
+      REQUIRE(stc->get_find_string() == "more text");
+      REQUIRE(stc->replace_all("more", "less") == 1);
+      REQUIRE(stc->replace_all("more", "less") == 0);
+      REQUIRE(!stc->find("more text"));
+      stc->SelectNone();
+      REQUIRE(stc->find("less text"));
+      REQUIRE(stc->replace_next("less text", ""));
+      REQUIRE(!stc->replace_next());
+      REQUIRE(!stc->find("less text"));
+      REQUIRE(stc->get_find_string() != "less text");
+      REQUIRE(stc->replace_all("%", "percent") == 0);
+    }
+  }
+  
+  SUBCASE("find_next")
+  {
+    for (const auto mode : {wex::ex::OFF, wex::ex::VISUAL})
+    {
+      stc->get_vi().use(mode);
+      
+      stc->set_text("hello stc and more text");
+      wex::find_replace_data::get()->set_find_string("hello");
+      wex::find_replace_data::get()->set_match_word(true);
+      REQUIRE(stc->find_next(false));
+      
+      wex::find_replace_data::get()->set_find_string("hell");
+      REQUIRE(!stc->find_next(false));
+    }
+    
+    wex::find_replace_data::get()->set_match_word(true);
   }
 
   SUBCASE("hexmode")

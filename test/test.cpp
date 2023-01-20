@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation of general test functions.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #define DOCTEST_CONFIG_IMPLEMENT
@@ -107,7 +107,12 @@ int wex::test::main(int argc, char* argv[], wex::test::app* app)
   try
   {
     wxApp::SetInstance(app);
-    wxEntryStart(argc, argv);
+
+    if (!wxEntryStart(argc, argv))
+    {
+      std::cerr << "wxEntryStart failed, is DISPLAY set properly?\n";
+      return 0;
+    }
 
 #ifdef USE_DOCTEST
     doctest::Context context;
