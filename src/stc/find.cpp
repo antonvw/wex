@@ -119,6 +119,11 @@ bool wex::stc::find(const std::string& text, int find_flags, bool forward)
     {
       find_flags |= wxSTC_FIND_WHOLEWORD;
     }
+
+    if (find_replace_data::get()->is_regex())
+    {
+      find_flags |= wxSTC_FIND_CXX11REGEX | wxSTC_FIND_REGEXP;
+    }
   }
 
   wex::data::find f(

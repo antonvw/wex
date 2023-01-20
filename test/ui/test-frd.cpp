@@ -47,6 +47,14 @@ TEST_CASE("wex::frd")
     REQUIRE(!frd->match(text, wex::data::find("XXX")));
     REQUIRE(!frd->match(text, wex::data::find("xx")));
     REQUIRE(!frd->match(text, wex::data::find("XX")));
+
+    frd->set_regex(true);
+    REQUIRE(frd->match(text, wex::data::find("xxx")));
+    REQUIRE(frd->match(text, wex::data::find("x+")));
+    REQUIRE(frd->match(text, wex::data::find("XXX")));
+    REQUIRE(!frd->match(text, wex::data::find("xx")));
+    REQUIRE(!frd->match(text, wex::data::find("XX")));
+    REQUIRE(frd->match(text, wex::data::find("X+")));
   }
 
   SUBCASE("get-set")
