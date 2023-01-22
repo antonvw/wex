@@ -18,6 +18,11 @@ TEST_CASE("wex::interruptible")
   REQUIRE(interruptible.is_running());
 
   REQUIRE(!interruptible.start());
+  REQUIRE(interruptible.is_running());
+
+  interruptible.end();
+  REQUIRE(!interruptible.is_running());
+
   interruptible.end();
   REQUIRE(!interruptible.is_running());
 }

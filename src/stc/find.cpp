@@ -2,7 +2,7 @@
 // Name:      stc/find.cpp
 // Purpose:   Implementation of class wex::stc find methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2018-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -153,6 +153,7 @@ bool wex::stc::find(const std::string& text, int find_flags, bool forward)
 
     default:
       assert(0);
+      return false;
   }
 }
 
