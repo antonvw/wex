@@ -2,7 +2,7 @@
 // Name:      log.h
 // Purpose:   Declaration of wex::log class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -38,7 +38,7 @@ public:
   /// Initializes logging, and optionally sets logfile.
   /// Should be called before constructing a log object.
   /// The wex::cmdline_imp or wex::app::OnInit takes care of this.
-  static void init(
+  static void on_init(
     /// loglevel
     level_t loglevel = level_t_def(),
     /// logfile, empty string is default logfile

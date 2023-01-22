@@ -2,7 +2,7 @@
 // Name:      vcs.h
 // Purpose:   Declaration of wex::vcs class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -25,20 +25,30 @@ class frame;
 class vcs
 {
 public:
+  typedef std::vector<vcs_entry> store_t;
+
   /// Static interface.
 
   /// Returns true if specified filename (a path) is a vcs directory.
   static bool dir_exists(const path& filename);
 
-  /// Returns vcs is empty.
-  static auto empty() { return m_entries.empty(); }
+  /// Returns true if vcs is empty.
+  static bool empty();
 
   /// Loads all entries (first clears them) from vcs document.
   /// Returns true if document is loaded.
   static bool load_document();
 
+  /// Exits vcs, cleans up store.
+  /// The wex::del::app::OnExit takes care of this.
+  static void on_exit();
+
+  /// Initializes the vcs store and loads document.
+  /// The wex::del::app::OnInit takes care of this.
+  static void on_init();
+
   /// Returns the number of vcs entries.
-  static auto size() { return m_entries.size(); }
+  static size_t size();
 
   /// Other methods.
 
@@ -113,8 +123,8 @@ private:
   std::vector<wex::path> m_files;
   std::string            m_title;
 
-  static inline std::vector<vcs_entry> m_entries;
-  static inline item_dialog*           m_item_dialog = nullptr;
+  static inline item_dialog* m_item_dialog{nullptr};
+  static inline store_t*     m_store{nullptr};
 };
 
 /// Executes VCS command id for specified files

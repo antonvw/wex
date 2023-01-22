@@ -2,7 +2,7 @@
 // Name:      dir.cpp
 // Purpose:   Implementation of class wex::dir
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/dir.h>
@@ -108,7 +108,8 @@ int wex::dir::find_files()
 {
   if (!m_dir.dir_exists())
   {
-    log("traverse invalid path") << m_dir;
+    log("traverse invalid path")
+      << m_dir.string() << "current" << path::current().string();
     return 0;
   }
 
