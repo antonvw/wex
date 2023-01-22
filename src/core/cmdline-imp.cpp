@@ -2,7 +2,7 @@
 // Name:      cmdline-imp.cpp
 // Purpose:   Implementation of wex::cmdline_imp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/cmdline.h>
@@ -147,7 +147,7 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
     return false;
   }
 
-  log::init(
+  log::on_init(
     (log::level_t)loglevel,
     m_vm.count("logfile") ? m_vm["logfile"].as<std::string>() : std::string());
 

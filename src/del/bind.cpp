@@ -5,13 +5,10 @@
 // Copyright: (c) 2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/ctags/ctags.h>
 #include <wex/del/frame.h>
 #include <wex/del/listview-file.h>
 #include <wex/factory/bind.h>
 #include <wex/stc/stc.h>
-#include <wex/syntax/lexers.h>
-#include <wex/syntax/printing.h>
 #include <wex/ui/frd.h>
 #include <wex/vcs/debug.h>
 #include <wex/vcs/vcs.h>
@@ -46,10 +43,6 @@ void wex::del::frame::bind_all()
     [=, this](wxCloseEvent& event)
     {
       m_project_history.save();
-      stc::on_exit();
-      ctags::close();
-      delete lexers::set(nullptr);
-      delete printing::set(nullptr);
 
       config("show.MenuBar")
         .set(GetMenuBar() != nullptr && GetMenuBar()->IsShown());

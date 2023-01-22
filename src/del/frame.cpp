@@ -69,7 +69,6 @@ wex::del::frame::frame(
                 {wxACCEL_CTRL, 'T', ID_VIEW_TITLEBAR}})
     .set(this);
 
-  vcs::load_document();
   ex::get_macros().load_document();
 
   const std::vector<item> f{

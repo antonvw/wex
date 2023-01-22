@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wex sample app class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2022 Anton van Wezenbeek
+// Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "app.h"
@@ -39,7 +39,7 @@ bool app::OnInit()
               });
           }})
          .parse(c) ||
-      !wex::app::OnInit())
+      !wex::del::app::OnInit())
   {
     return false;
   }

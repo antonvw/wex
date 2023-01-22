@@ -2,7 +2,7 @@
 // Name:      blame.cpp
 // Purpose:   Implementation of class wex::blame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2019-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -57,6 +57,7 @@ wex::blame::blame(const pugi::xml_node& node)
   , m_date_format(node.attribute("date-format").value())
   , m_date_print(node.attribute("date-print").as_uint())
   , m_name(node.attribute("name").value())
+  , m_path_original("xxxxx")
 {
 }
 

@@ -2,7 +2,7 @@
 // Name:      vcs.cpp
 // Purpose:   Implementation of wex::vcs class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -25,7 +25,7 @@
     return false;                                                \
   }                                                              \
                                                                  \
-  m_entry = find_entry(m_entries);
+  m_entry = find_entry(*m_store);
 
 #include <map>
 #include <numeric>
@@ -86,37 +86,37 @@ private:
   const path        m_path;
 };
 
-const vcs_entry find_entry(const std::vector<vcs_entry>& entries, const path& p)
+const vcs_entry find_entry(const vcs::store_t& store, const path& p)
 {
   if (const int vcs = config("vcs.VCS").get(VCS_AUTO); vcs == VCS_AUTO)
   {
     if (!p.empty())
     {
       if (const auto& it = std::find_if(
-            entries.begin(),
-            entries.end(),
+            store.begin(),
+            store.end(),
             [p](auto const& i)
             {
               const vcs_admin va(i.admin_dir(), p);
               return va.is_toplevel() || va.exists();
             });
-          it != entries.end())
+          it != store.end())
       {
         return *it;
       }
     }
   }
-  else if (vcs >= VCS_START && vcs < static_cast<int>(entries.size()))
+  else if (vcs >= VCS_START && vcs < static_cast<int>(store.size()))
   {
-    return entries[vcs];
+    return store[vcs];
   }
 
   return vcs_entry();
 }
 
-const vcs_entry find_entry(const std::vector<vcs_entry>& entries)
+const vcs_entry find_entry(const vcs::store_t& store)
 {
-  return find_entry(entries, path(config(_("vcs.Base folder")).get_first_of()));
+  return find_entry(store, path(config(_("vcs.Base folder")).get_first_of()));
 }
 }; // namespace wex
 
@@ -124,7 +124,9 @@ wex::vcs::vcs(const std::vector<wex::path>& files, int command_no)
   : m_files(files)
   , m_title("VCS")
 {
-  m_entry = find_entry(m_entries, current_path());
+  on_init();
+
+  m_entry = find_entry(*m_store, current_path());
 
   if (!m_entry.name().empty())
   {
@@ -149,7 +151,7 @@ wex::vcs::vcs(const std::vector<wex::path>& files, int command_no)
 
 int wex::vcs::config_dialog(const data::window& par) const
 {
-  if (m_entries.empty())
+  if (m_store->empty())
   {
     return wxID_CANCEL;
   }
@@ -157,12 +159,12 @@ int wex::vcs::config_dialog(const data::window& par) const
   item::choices_t choices{{(long)VCS_NONE, _("None")}};
 
   // Using auto vcs is not useful if we only have one vcs.
-  if (m_entries.size() > 1)
+  if (m_store->size() > 1)
   {
     choices.insert({(long)VCS_AUTO, "Auto"});
   }
 
-  for (long i = VCS_START; const auto& it : m_entries)
+  for (long i = VCS_START; const auto& it : *m_store)
   {
     choices.insert({i++, it.name()});
   }
@@ -189,8 +191,8 @@ int wex::vcs::config_dialog(const data::window& par) const
   std::vector<item> v{{"vcs.VCS", choices, true, data::item().columns(cols)}};
 
   std::transform(
-    m_entries.begin(),
-    m_entries.end(),
+    m_store->begin(),
+    m_store->end(),
     std::back_inserter(v),
     [](const auto& t)
     {
@@ -224,7 +226,7 @@ const wex::path wex::vcs::current_path() const
 
 bool wex::vcs::dir_exists(const wex::path& filename)
 {
-  if (const vcs_entry entry(find_entry(m_entries, filename));
+  if (const vcs_entry entry(find_entry(*m_store, filename));
       vcs_admin(entry.admin_dir(), filename).is_toplevel())
   {
     return true;
@@ -233,6 +235,16 @@ bool wex::vcs::dir_exists(const wex::path& filename)
   {
     return vcs_admin(entry.admin_dir(), filename).exists();
   }
+}
+
+bool wex::vcs::empty()
+{
+  return m_store->empty();
+}
+
+size_t wex::vcs::size()
+{
+  return m_store->size();
 }
 
 bool wex::vcs::execute()
@@ -300,14 +312,16 @@ const std::string wex::vcs::get_branch() const
 
 bool wex::vcs::load_document()
 {
-  const auto old_entries = m_entries.size();
+  on_init();
 
-  if (!menus::load("vcs", m_entries))
+  const auto old_store = size();
+
+  if (!menus::load("vcs", *m_store))
     return false;
 
-  log::trace("vcs entries") << m_entries.size();
+  log::trace("vcs store") << size();
 
-  if (old_entries == 0)
+  if (old_store == 0)
   {
     // Add default VCS.
     if (config c("vcs.VCS"); !c.exists())
@@ -315,9 +329,9 @@ bool wex::vcs::load_document()
       c.set(VCS_AUTO);
     }
   }
-  else if (old_entries != m_entries.size())
+  else if (old_store != size())
   {
-    // If current number of entries differs from old one,
+    // If current number of store differs from old one,
     // we added or removed an entry. That might give problems
     // with the vcs id stored in the config, so reset it.
     config("vcs.VCS").set(VCS_AUTO);
@@ -336,6 +350,21 @@ const std::string wex::vcs::name() const
       return "Auto";
     default:
       return m_entry.name();
+  }
+}
+
+void wex::vcs::on_exit()
+{
+  delete m_store;
+}
+
+void wex::vcs::on_init()
+{
+  if (m_store == nullptr)
+  {
+    m_store = new store_t;
+
+    load_document();
   }
 }
 
@@ -379,7 +408,7 @@ bool wex::vcs::set_entry_from_base(wxWindow* parent)
   }
   else
   {
-    m_entry = find_entry(m_entries);
+    m_entry = find_entry(*m_store);
     SET_ENTRY;
   }
 

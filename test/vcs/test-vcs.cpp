@@ -2,7 +2,7 @@
 // Name:      test-vcs.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -29,7 +29,8 @@ TEST_CASE("wex::vcs")
 
   SUBCASE("others")
   {
-    // In wex::app the vcs is loaded, so current vcs is known,
+    REQUIRE(wex::vcs::load_document());
+
     // using this constructor results in command id 3, being add.
     wex::vcs vcs(std::vector<wex::path>{file}, 3);
 

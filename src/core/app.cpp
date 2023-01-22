@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wex::app class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/app.h>
@@ -12,12 +12,9 @@
 #include <wex/core/version.h>
 #include <wx/clipbrd.h>
 
-#include <filesystem>
 #include <iostream>
 
 #include "app-locale.h"
-
-namespace fs = std::filesystem;
 
 const std::string wex::app::get_catalog_dir() const
 {
@@ -48,7 +45,7 @@ int wex::app::OnExit()
 
 bool wex::app::OnInit()
 {
-  log::init();
+  log::on_init();
   log::info("started") << GetAppName().ToStdString()
                        << get_version_info().get();
 
