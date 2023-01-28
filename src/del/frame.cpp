@@ -576,7 +576,7 @@ void wex::del::frame::show_ex_message(const std::string& text)
     show_ex_bar();
   }
 
-  statustext(text, std::string());
+  log::status(text);
 }
 
 int wex::del::frame::show_stc_entry_dialog(bool modal)

@@ -53,7 +53,7 @@ void wex::test::doctester::on_run(wex::app* app)
 
     app->Bind(
       wxEVT_TIMER,
-      [=](wxTimerEvent& event)
+      [=, this](wxTimerEvent& event)
       {
         m_context->run();
 

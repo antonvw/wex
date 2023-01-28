@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of wex::frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -379,6 +379,8 @@ private:
   void     provide_output(const std::string& text) const;
 
   std::string m_perspective;
+
+  std::ofstream* m_ofs{nullptr};
 
   const toggled_panes_t m_toggled_panes;
 

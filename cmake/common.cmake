@@ -210,7 +210,12 @@ function(add_test_libs)
     foreach(arg ${ARGV})
         set(tmp "${tmp} ${arg}")
     endforeach()
-    set_property(GLOBAL PROPERTY "${tmp}" test_libs)
+
+    if (APPLE)
+      set_property(GLOBAL PROPERTY test_libs "${tmp}")
+    else ()
+      set_property(GLOBAL PROPERTY "${tmp}" test_libs)
+    endif()
 endfunction(add_test_libs)
 
 function(wex_test_app libs)
