@@ -2,7 +2,7 @@
 // Name:      version.h
 // Purpose:   Declaration of class wex::version_info
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -26,8 +26,8 @@ public:
   /// Returns description.
   const std::string description() const;
 
-  /// Returns string version.
-  const std::string get() const;
+  /// Returns string name and version.
+  const std::string get(bool include_name = true) const;
 
 private:
   const wxVersionInfo m_version;

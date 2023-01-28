@@ -86,7 +86,7 @@ wex::version_info_dialog::version_info_dialog(
   const about_info&   about)
   : m_about(about)
 {
-  m_about.SetVersion(info.get());
+  m_about.SetVersion(info.get(false));
 
   if (!m_about.HasCopyright())
   {
