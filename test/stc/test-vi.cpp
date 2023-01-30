@@ -2,7 +2,7 @@
 // Name:      test-vi.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -166,7 +166,7 @@ TEST_CASE("wex::vi")
     REQUIRE(wex::log::get_level() == 4);
   }
 
-#ifdef __UNIX__
+#ifndef __WXMSW__
   SUBCASE("source")
   {
     stc->set_text("xx\nxx\nyy\nzz\n");
@@ -176,12 +176,12 @@ TEST_CASE("wex::vi")
       // necesary for the ~ in test-source
       wex::find_replace_data::get()->set_find_string("xx");
 
-      vi->command(":so test-source.txt");
+      REQUIRE(vi->command(":so test-source.txt"));
     }
 
     SUBCASE("full")
     {
-      vi->command(":source test-source.txt");
+      REQUIRE(vi->command(":source test-source.txt"));
     }
 
     SUBCASE("not-existing")
@@ -221,6 +221,13 @@ TEST_CASE("wex::vi")
     REQUIRE(exs->get_line_count() == 1);
 
     stc->visual(true);
+  }
+
+  SUBCASE("substitute")
+  {
+    stc->set_text("xx\nxx\nyy\nzz\n");
+    REQUIRE(vi->command(":%s/$/OK"));
+    REQUIRE(stc->get_text() == "xxOK\nxxOK\nyyOK\nzzOK\n");
   }
 
   SUBCASE("tab")

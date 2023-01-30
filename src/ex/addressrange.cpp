@@ -2,7 +2,7 @@
 // Name:      addressrange.cpp
 // Purpose:   Implementation of class wex::addressrange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2022 Anton van Wezenbeek
+// Copyright: (c) 2015-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -853,9 +853,16 @@ bool wex::addressrange::substitute(const command_parser& cp)
       }
       else
       {
-        (searchFlags & wxSTC_FIND_REGEXP) ?
-          m_stc->ReplaceTargetRE(replacement) :
-          m_stc->ReplaceTarget(replacement);
+        if (data.pattern() == "$")
+        {
+          m_stc->InsertText(m_stc->GetTargetStart(), replacement);
+        }
+        else
+        {
+          (searchFlags & wxSTC_FIND_REGEXP) ?
+            m_stc->ReplaceTargetRE(replacement) :
+            m_stc->ReplaceTarget(replacement);
+        }
       }
 
       nr_replacements++;

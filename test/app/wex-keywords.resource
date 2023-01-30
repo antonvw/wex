@@ -27,6 +27,8 @@ ${file-stdout}	stdout.txt
 Suite Setup
 	Find Appl
 	Variable Should Exist	${APPL}
+	${version} =	Evaluate	robot.__version__
+	Should Be True	${version} >= 6
 
 Suite Teardown
 	IF	${level} > 0
@@ -126,4 +128,4 @@ Std Output Contains
 
 
 *** Comments ***
-Copyright: (c) 2020-2022 Anton van Wezenbeek
+Copyright: (c) 2020-2023 Anton van Wezenbeek
