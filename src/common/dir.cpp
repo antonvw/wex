@@ -9,8 +9,6 @@
 #include <wex/common/stream.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
-#include <wex/factory/frame.h>
-#include <wx/app.h>
 #include <wx/translation.h>
 
 #include <thread>
@@ -160,16 +158,7 @@ bool wex::dir::find_files(const tool& tool)
 
 void wex::dir::find_files_end() const
 {
-  if (auto* frame =
-        dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
-      frame != nullptr)
-  {
-    frame->statustext(m_tool.info(&m_statistics.get_elements()), std::string());
-  }
-  else
-  {
-    log::status(m_tool.info(&m_statistics.get_elements()));
-  }
+  log::status(m_tool.info(&m_statistics.get_elements()));
 
   if (m_eh != nullptr)
   {

@@ -5,6 +5,7 @@
 // Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/core.h>
 #include <wex/core/version.h>
 #include <wx/translation.h>
 
@@ -37,10 +38,9 @@ const std::string wex::version_info::description() const
   return m_version.GetDescription();
 }
 
-const std::string wex::version_info::get() const
+const std::string wex::version_info::get(bool include_name) const
 {
-  std::stringstream ss;
-  ss << m_version.GetMajor() << "." << std::setfill('0') << std::setw(2)
-     << m_version.GetMinor() << "." << m_version.GetMicro();
-  return ss.str();
+  return include_name ?
+           m_version.GetVersionString().ToStdString() :
+           find_after(m_version.GetVersionString().ToStdString(), " ");
 }

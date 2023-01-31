@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
@@ -302,11 +302,31 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
     },
     m_file_history.get_base_id(),
     m_file_history.get_base_id() + m_file_history.get_max_files());
+
+  if (cmdline::is_output())
+  {
+    auto* logger = new wxLogStream(&std::cout);
+    wxLog::SetActiveTarget(logger);
+  }
+  else if (!cmdline::get_output().empty())
+  {
+    m_ofs = new std::ofstream(
+      cmdline::get_output(),
+      std::ios_base::out | std::ios_base::app);
+
+    auto* logger = new wxLogStream(m_ofs);
+    wxLog::SetActiveTarget(logger);
+  }
 }
 
 wex::frame::~frame()
 {
   m_manager.UnInit();
+
+  if (m_ofs != nullptr)
+  {
+    delete m_ofs;
+  }
 }
 
 bool wex::frame::add_toolbar_panes(const panes_t& panes)

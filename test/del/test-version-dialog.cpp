@@ -30,7 +30,7 @@ TEST_CASE("wex::extern_libraries")
   REQUIRE(wex::external_libraries().str().contains("wex"));
 }
 
-TEST_CASE("wex::version_dialog")
+TEST_CASE("wex::version_info_dialog")
 {
   SUBCASE("default-constructor")
   {
@@ -44,6 +44,18 @@ TEST_CASE("wex::version_dialog")
     wex::about_info about;
     about.description("hello");
     const wex::version_info_dialog info(about);
+
+    REQUIRE(info.about().GetDescription().find("hello") != std::string::npos);
+  }
+
+  SUBCASE("constructor-other")
+  {
+    wex::version_info vi;
+
+    wex::about_info about;
+    about.description("hello");
+
+    const wex::version_info_dialog info(vi, about);
 
     REQUIRE(info.about().GetDescription().find("hello") != std::string::npos);
   }

@@ -187,11 +187,7 @@ void wex::log::flush()
         break;
 
       case LEVEL_STATUS:
-        // this is a wxMSW bug, crash in test -tc=wex::stc -sc=find
-        if (!text.contains("%"))
-        {
-          wxLogStatus(text.c_str());
-        }
+        wxLogStatus("%s", text.c_str());
         break;
 
       case LEVEL_TRACE:

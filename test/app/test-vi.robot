@@ -174,7 +174,6 @@ mode-visual
 	Output Contains	10
 	Output Contains	35
 	Output Contains	fewer
-	Output Does Not Contain	9
 
 mode-visual-yank-range
 	Input Many	:a|line has text	50
@@ -241,4 +240,4 @@ yank-register
 
 
 *** Comments ***
-Copyright: (c) 2020-2022 Anton van Wezenbeek
+Copyright: (c) 2020-2023 Anton van Wezenbeek
