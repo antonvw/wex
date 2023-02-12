@@ -2,17 +2,16 @@
 // Name:      test-macros.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2019-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
 #include <wex/ex/ex.h>
 #include <wex/ex/macro-mode.h>
 #include <wex/ex/macros.h>
+#include <wex/ex/util.h>
 
 #include "test.h"
-
-#define ESC "\x1b"
 
 TEST_CASE("wex::macros" * doctest::may_fail())
 {
@@ -134,7 +133,7 @@ TEST_CASE("wex::macros" * doctest::may_fail())
     REQUIRE(macros.mode().get_macro() == "a");
     REQUIRE(macros.record("a"));
     REQUIRE(macros.record("test"));
-    REQUIRE(macros.record(ESC));
+    REQUIRE(macros.record(wex::esc()));
     REQUIRE(macros.mode().transition("q") == 1);
     REQUIRE(!macros.is_modified());
     REQUIRE(!macros.mode().is_recording());

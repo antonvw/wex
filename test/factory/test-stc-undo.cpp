@@ -2,7 +2,7 @@
 // Name:      test-stc-undo.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/stc-undo.h>
@@ -20,9 +20,9 @@ TEST_CASE("wex::stc_undo")
     REQUIRE(stc->CanUndo());
 
     {
-      wex::stc_undo undo(
-        stc,
-        wex::stc_undo::undo_t().set(wex::stc_undo::UNDO_ACTION));
+      wex::stc_undo undo(stc);
+
+      REQUIRE(undo.type().test(wex::stc_undo::UNDO_ACTION));
 
       stc->AppendText("hello1");
       stc->AppendText("hello2");
@@ -40,7 +40,7 @@ TEST_CASE("wex::stc_undo")
     REQUIRE(stc->GetCurrentPos() == 5);
 
     {
-      wex::stc_undo uno(
+      wex::stc_undo undo(
         stc,
         wex::stc_undo::undo_t().set(wex::stc_undo::UNDO_POS));
       stc->SetCurrentPos(25);

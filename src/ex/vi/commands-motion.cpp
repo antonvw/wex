@@ -304,7 +304,7 @@ wex::vi::commands_t wex::vi::commands_motion()
 
        if (brace_match != wxSTC_INVALID_POSITION)
        {
-         if (get_stc()->GetSelectionStart() != -1)
+         if (get_stc()->GetSelectionStart() != -1 && m_mode.is_visual())
          {
            pos = get_stc()->GetAnchor();
          }
@@ -692,14 +692,7 @@ void wex::vi::visual_extend(int begin_pos, int end_pos) const
   switch (m_mode.get())
   {
     case vi_mode::state_t::VISUAL:
-      if (begin_pos < end_pos)
-      {
-        get_stc()->SetSelection(begin_pos, end_pos + 1);
-      }
-      else
-      {
-        get_stc()->SetSelection(begin_pos, end_pos + 1);
-      }
+      get_stc()->SetSelection(begin_pos, end_pos + 1);
       break;
 
     case vi_mode::state_t::VISUAL_LINE:
@@ -737,6 +730,7 @@ void wex::vi::visual_extend(int begin_pos, int end_pos) const
       break;
 
     default:
+      get_stc()->SetCurrentPos(end_pos);
       break;
   }
 }
