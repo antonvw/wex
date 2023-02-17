@@ -2,6 +2,7 @@
 Documentation	Robot framework Keywords for testing wex
 Library	OperatingSystem
 Library	Process
+Library	String
 
 
 *** Variables ***
@@ -28,7 +29,9 @@ Suite Setup
 	Find Appl
 	Variable Should Exist	${APPL}
 	${version} =	Evaluate	robot.__version__
-	Should Be True	${version} >= 6
+	${result} =	Get Substring	${version}	0	1
+	${result} =	Convert To Integer	${result}
+	Should Be True	${result} >= 6
 
 Suite Teardown
 	IF	${level} > 0

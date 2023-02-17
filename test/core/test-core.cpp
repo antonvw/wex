@@ -2,7 +2,7 @@
 // Name:      test-core.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
@@ -96,6 +96,10 @@ TEST_CASE("wex::core")
     std::string spaces("    ");
     REQUIRE(wex::get_word(spaces).empty());
     REQUIRE(spaces.empty());
+
+    std::string with_nl("test\ntest2");
+    REQUIRE(wex::get_word(with_nl) == "test");
+    REQUIRE(wex::get_word(with_nl) == "test2");
   }
 
   SUBCASE("is_brace")
