@@ -2,13 +2,14 @@
 // Name:      test-addressrange.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2015-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex/addressrange.h>
 #include <wex/ex/command-parser.h>
 #include <wex/ex/ex.h>
 #include <wex/ex/macros.h>
+#include <wex/factory/stc-undo.h>
 
 #include "test.h"
 
@@ -245,31 +246,52 @@ TEST_CASE("wex::addressrange")
   SUBCASE("substitute")
   {
     stc->set_text(contents);
-    REQUIRE(ex->command(":%s/tiger//"));
-    REQUIRE(!stc->get_text().contains("tiger"));
+        
+    SUBCASE("empty")
+    {
+      REQUIRE(ex->command(":%s/tiger//"));
+      REQUIRE(!stc->get_text().contains("tiger"));
 
-    stc->set_text(contents);
-    REQUIRE(ex->command(":%s/tiger/\\U&/g"));
-    REQUIRE(stc->get_text().contains("TIGER"));
-    REQUIRE(!stc->get_text().contains("tiger"));
-    REQUIRE(!stc->get_text().contains("\\U"));
+      stc->Undo();
+      CAPTURE(stc->get_text());
+      REQUIRE(stc->get_text() == contents);
+    }
 
-    stc->set_text(contents);
-    REQUIRE(ex->command(":%s/tiger/\\U&&\\L& \\0 \\0 & & \\U&/"));
-    REQUIRE(stc->get_text().contains("TIGER"));
-    REQUIRE(stc->get_text().contains("tiger"));
-    REQUIRE(!stc->get_text().contains("\\U"));
-    REQUIRE(!stc->get_text().contains("\\L"));
-    REQUIRE(!stc->get_text().contains("\\0"));
+    SUBCASE("lower")
+    {
+      REQUIRE(ex->command(":%s/tiger/\\U&&\\L& \\0 \\0 & & \\U&/"));
+      REQUIRE(stc->get_text().contains("TIGER"));
+      REQUIRE(stc->get_text().contains("tiger"));
+      REQUIRE(!stc->get_text().contains("\\U"));
+      REQUIRE(!stc->get_text().contains("\\L"));
+      REQUIRE(!stc->get_text().contains("\\0"));
+    }
 
+    SUBCASE("other")
+    {
+      REQUIRE(ex->command(":%s/tiger/lion/"));
+      REQUIRE(stc->get_text().contains("lion"));
+    }
+
+    SUBCASE("other-repeat")
+    {
+      REQUIRE(ex->command(":%&"));
+      REQUIRE(stc->get_text().contains("lion"));
+    }
+
+    SUBCASE("upper")
+    {
+      REQUIRE(ex->command(":%s/tiger/\\U&/g"));
+      REQUIRE(stc->get_text().contains("TIGER"));
+      REQUIRE(!stc->get_text().contains("tiger"));
+      REQUIRE(!stc->get_text().contains("\\U"));
+    }
+   }
+
+  SUBCASE("substitute-other")
+  {
     stc->set_text(contents);
     REQUIRE(ex->command(":%s/tiger/lion/"));
-    REQUIRE(stc->get_text().contains("lion"));
-
-    stc->set_text(contents);
-    REQUIRE(ex->command(":%&"));
-    REQUIRE(stc->get_text().contains("lion"));
-
     stc->set_text(contents + " MORE");
     REQUIRE(ex->command(":%~"));
     REQUIRE(stc->get_text().contains("lion"));

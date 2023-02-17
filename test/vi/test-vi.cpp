@@ -2,19 +2,18 @@
 // Name:      test-vi.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/ex/macro-mode.h>
 #include <wex/ex/macros.h>
+#include <wex/ex/util.h>
 #include <wex/ui/frd.h>
 #include <wex/vi/vi.h>
 
 #include "../ex/test.h"
-
-#define ESC "\x1b"
 
 // See stc/test-vi.cpp for testing goto and vim
 
@@ -39,7 +38,7 @@ void change_prep(
   REQUIRE(vi->mode().is_insert());
   REQUIRE(vi->command("zzz"));
 
-  change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+  change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
   REQUIRE(stc->get_line_count() == 4);
 }
 
@@ -59,7 +58,7 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command(""));
     REQUIRE(stc->get_text().contains("10"));
 
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     REQUIRE(vi->command("=5+5"));
     REQUIRE(wex::ex::get_macros().get_register('0').contains("10"));
 
@@ -91,7 +90,7 @@ TEST_CASE("wex::vi")
       REQUIRE(vi->command(" "));
       REQUIRE(vi->command("x"));
       REQUIRE(stc->get_text() == "XXXX\nYYYY  \nZZZZ\n");
-      change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+      change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     }
 
     SUBCASE("selection")
@@ -130,7 +129,7 @@ TEST_CASE("wex::vi")
       // REQUIRE(vi->mode().get() == wex::vi_mode::state_t::INSERT_BLOCK);
       // REQUIRE(vi->command("uu"));
       // REQUIRE(stc->get_text() == "uu second third\nuu\nuu\n");
-      change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+      change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     }
 
     SUBCASE("block-select")
@@ -170,9 +169,9 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command("xxxxxxxx"));
     REQUIRE(stc->get_text().contains("xxxxxxxx"));
     REQUIRE(vi->last_command() == "i");
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     REQUIRE(wex::ex::register_insert() == "xxxxxxxx");
-    REQUIRE(vi->last_command() == std::string("ixxxxxxxx") + ESC);
+    REQUIRE(vi->last_command() == "ixxxxxxxx" + wex::esc());
     for (int i = 0; i < 10; i++)
       REQUIRE(vi->command("."));
     REQUIRE(stc->get_text().contains("xxxxxxxxxxxxxxxxxxxxxxxxxxx"));
@@ -188,7 +187,7 @@ TEST_CASE("wex::vi")
           vi,
           std::string(1, it1.first),
           wex::vi_mode::state_t::INSERT);
-        change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+        change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
         commands.push_back(std::string(1, it1.first));
       }
     }
@@ -208,13 +207,13 @@ TEST_CASE("wex::vi")
     // insert command (again)
     stc->SetReadOnly(false);
     change_mode(vi, "i", wex::vi_mode::state_t::INSERT);
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     change_mode(vi, "iyyyyy", wex::vi_mode::state_t::INSERT);
     REQUIRE(stc->get_text().contains("yyyyy"));
     REQUIRE(!stc->get_text().contains("iyyyyy"));
 
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
-    const std::string lastcmd = std::string("iyyyyy") + ESC;
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
+    const auto lastcmd = "iyyyyy" + wex::esc();
     REQUIRE(vi->last_command() == lastcmd);
     REQUIRE(vi->inserted_text() == "yyyyy");
     REQUIRE(vi->command("."));
@@ -226,7 +225,7 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->mode().is_insert());
     REQUIRE(!stc->get_text().contains("izz"));
 
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     REQUIRE(stc->get_text().contains(std::string(100, 'z')));
 
     // Test insert \n.
@@ -234,7 +233,7 @@ TEST_CASE("wex::vi")
     REQUIRE(stc->get_text().contains("\n"));
     REQUIRE(!stc->get_text().contains("i"));
 
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     REQUIRE(vi->inserted_text() == "\n\n\n\n");
     REQUIRE(!vi->mode().is_insert());
   }
@@ -242,7 +241,7 @@ TEST_CASE("wex::vi")
   SUBCASE("invalid command")
   {
     REQUIRE(!vi->command(":xxx"));
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
   }
 
   SUBCASE("is_active")
@@ -300,9 +299,8 @@ TEST_CASE("wex::vi")
   SUBCASE("maps")
   {
     stc->set_text("this text is not needed");
-    vi->command(":map 7 :%d");
-    int ctrl_g = 7;
-    vi->command(std::string(1, ctrl_g));
+    vi->command(":map " + std::to_string(WXK_CONTROL_G) + " :%d");
+    vi->command(wex::k_s(WXK_CONTROL_G));
     REQUIRE(stc->get_text().empty());
   }
 
@@ -337,7 +335,7 @@ TEST_CASE("wex::vi")
         change_mode(vi, "K", wex::vi_mode::state_t::VISUAL_BLOCK);
         REQUIRE(vi->command(nc));
         REQUIRE(vi->mode().is_visual());
-        change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+        change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
         REQUIRE(vi->mode().is_command());
 
         // test yank
@@ -365,7 +363,7 @@ TEST_CASE("wex::vi")
         CAPTURE(mc);
         REQUIRE(vi->command(mc));
         REQUIRE(vi->last_command() == mc);
-        change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+        change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
         REQUIRE(vi->mode().is_command());
       }
     }
@@ -373,36 +371,27 @@ TEST_CASE("wex::vi")
 
   SUBCASE("navigate")
   {
-    // Test % navigate.
     stc->set_text("{a brace and a close brace}");
-    REQUIRE(vi->command("y%"));
-    REQUIRE(stc->GetSelectedText().size() == 27);
 
-    // Test delete navigate.
-    stc->set_text("xyz");
-    REQUIRE(vi->command(std::string(1, WXK_DELETE)));
-    REQUIRE(stc->get_text() == "yz");
+    SUBCASE("brace")
+    {
+      REQUIRE(vi->command("%"));
+      REQUIRE(stc->GetCurrentPos() == 26);
+      REQUIRE(vi->command("%"));
+      REQUIRE(stc->GetCurrentPos() == 0);
+    }
 
-    // Test record find.
-    stc->set_text("abc\nuvw\nxyz\n");
+    SUBCASE("brace-visual")
+    {
+      REQUIRE(vi->command("y%"));
+      REQUIRE(stc->GetSelectedText().size() == 27);
+    }
 
-    // Test recording.
-    REQUIRE(!wex::ex::get_macros().mode().is_recording());
-    vi->command("");
-    REQUIRE(vi->command("qa"));
-    REQUIRE(wex::ex::get_macros().mode().is_recording());
-    REQUIRE(vi->command("/abc"));
-    REQUIRE(vi->command("q"));
-    REQUIRE(!wex::ex::get_macros().mode().is_recording());
-    REQUIRE(vi->command("@a"));
-    REQUIRE(vi->command(" "));
-    REQUIRE(vi->command("qb"));
-    REQUIRE(wex::ex::get_macros().mode().is_recording());
-    REQUIRE(vi->command("?abc"));
-    REQUIRE(vi->command("q"));
-    REQUIRE(!wex::ex::get_macros().mode().is_recording());
-    REQUIRE(vi->command("@b"));
-    REQUIRE(vi->command(" "));
+    SUBCASE("delete")
+    {
+      REQUIRE(vi->command(wex::k_s(WXK_DELETE)));
+      REQUIRE(stc->get_text().starts_with("a brace"));
+    }
   }
 
   // on_char(), on_key_down() : see stc/test-vi.cpp
@@ -412,7 +401,7 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command("qa"));
 
     REQUIRE(vi->command("atest"));
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
 
     REQUIRE(vi->command("q"));
 
@@ -440,9 +429,8 @@ TEST_CASE("wex::vi")
     vi->command("h");
     vi->command("h");
     vi->command("yy");
-    REQUIRE(
-      wex::ex::get_macros().get_register('0').find("the chances of anything") !=
-      std::string::npos);
+    REQUIRE(wex::ex::get_macros().get_register('0').contains(
+      "the chances of anything"));
 
     vi->command("p");
     vi->command("P");
@@ -451,19 +439,41 @@ TEST_CASE("wex::vi")
     REQUIRE(!stc->get_text().contains("mathe"));
   }
 
+  SUBCASE("recording")
+  {
+    stc->set_text("abc\nuvw\nxyz\n");
+
+    REQUIRE(!wex::ex::get_macros().mode().is_recording());
+    vi->command("");
+    REQUIRE(vi->command("qa"));
+    REQUIRE(wex::ex::get_macros().mode().is_recording());
+    REQUIRE(vi->command("/abc"));
+    REQUIRE(vi->command("q"));
+    REQUIRE(!wex::ex::get_macros().mode().is_recording());
+    REQUIRE(vi->command("@a"));
+    REQUIRE(vi->command(" "));
+    REQUIRE(vi->command("qb"));
+    REQUIRE(wex::ex::get_macros().mode().is_recording());
+    REQUIRE(vi->command("?abc"));
+    REQUIRE(vi->command("q"));
+    REQUIRE(!wex::ex::get_macros().mode().is_recording());
+    REQUIRE(vi->command("@b"));
+    REQUIRE(vi->command(" "));
+  }
+
   SUBCASE("registers")
   {
     stc->set_text("");
     const std::string ctrl_r = "\x12";
     REQUIRE(vi->command("i"));
     REQUIRE(vi->command(ctrl_r + "_"));
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
 
     stc->set_text("XXXXX");
     REQUIRE(vi->command("dd"));
     REQUIRE(vi->command("i"));
     REQUIRE(vi->command(ctrl_r + "1"));
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     REQUIRE(stc->get_text() == "XXXXX");
 
     stc->set_text("YYYYY");
@@ -471,7 +481,7 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command("i"));
     REQUIRE(vi->command(ctrl_r + "2"));
     REQUIRE(vi->command("2"));
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     REQUIRE(stc->get_text().contains("XXXXX"));
   }
 
@@ -492,7 +502,7 @@ TEST_CASE("wex::vi")
       REQUIRE(vi->command("j"));
       REQUIRE(vi->command("3rx"));
       REQUIRE(stc->get_text() == "xxxXX\nxxxYY\nxxxZZ\n");
-      change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+      change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     }
   }
 
@@ -503,7 +513,7 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command("i"));
     REQUIRE(vi->mode().is_insert());
     REQUIRE(vi->command("b"));
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     REQUIRE(stc->get_text().contains("b"));
     stc->set_text("xxxxxxxxxx\nxxxxxxxx\naaaaaaaaaa\n");
     REQUIRE(vi->command(":.="));
@@ -597,11 +607,9 @@ TEST_CASE("wex::vi")
     {
       REQUIRE(vi->command(":ab " + abbrev.first + " " + abbrev.second));
       REQUIRE(vi->command("iabbreviation " + abbrev.first + " "));
-      change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+      change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
       REQUIRE(vi->inserted_text() == "abbreviation " + abbrev.first + " ");
-      REQUIRE(
-        stc->get_text().find("abbreviation " + abbrev.second) !=
-        std::string::npos);
+      REQUIRE(stc->get_text().contains("abbreviation " + abbrev.second));
       REQUIRE(!stc->get_text().contains(abbrev.first));
     }
 
@@ -656,7 +664,7 @@ TEST_CASE("wex::vi")
       }
       else
       {
-        const std::string oc(
+        const auto oc(
           other_command.first == "m" || other_command.first == "q" ||
               other_command.first == "r" || other_command.first == "\x12" ||
               other_command.first == "@" ?
@@ -665,8 +673,10 @@ TEST_CASE("wex::vi")
         CAPTURE(oc);
 
         if (oc != "z")
+        {
           REQUIRE(vi->command(oc));
-        else if (oc != "qa")
+        }
+        else
         {
           REQUIRE(!vi->command(oc));
         }

@@ -2,7 +2,7 @@
 // Name:      core/util.cpp
 // Purpose:   Implementation of wex core utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -198,7 +198,7 @@ const std::string wex::get_word(std::string& text)
 {
   boost::tokenizer<boost::char_separator<char>> tok(
     text,
-    boost::char_separator<char>(" \t"));
+    boost::char_separator<char>(" \t\n"));
 
   std::string token;
   boost::algorithm::trim_left(text);

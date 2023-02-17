@@ -2,7 +2,7 @@
 // Name:      test-lexer.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2015-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
@@ -126,14 +126,28 @@ TEST_CASE("wex::lexer")
 
   SUBCASE("make_comment")
   {
-    REQUIRE(!lexer.make_comment("commit xyz\n    code improvements")
-               .contains("code code improvements"));
+    SUBCASE("formatted")
+    {
+      CAPTURE(lexer.make_comment("test", true));
+      REQUIRE(lexer.make_comment("test", true).starts_with("test"));
+      CAPTURE(lexer.make_comment("test\ntest2", true));
+      REQUIRE(lexer.make_comment("test\ntest2", true).starts_with("test"));
+    }
 
-    REQUIRE(!lexer.make_comment("test", true).empty());
-    REQUIRE(!lexer.make_comment("prefix", "test").empty());
-    REQUIRE(!lexer.make_comment("test\ntest2", true).empty());
-    REQUIRE(!lexer.make_comment("prefix", "test\ntest2").empty());
-    REQUIRE(!lexer.make_single_line_comment("test").empty());
+    SUBCASE("prefix")
+    {
+      CAPTURE(lexer.make_comment("commit xyz\n    code improvements"));
+      REQUIRE(lexer.make_comment("commit xyz\n    code improvements")
+                .starts_with("commit xyz\ncode improvements"));
+      REQUIRE(lexer.make_comment("prefix", "test").starts_with("prefix"));
+      REQUIRE(
+        lexer.make_comment("prefix", "test\ntest2").starts_with("prefix"));
+    }
+  }
+
+  SUBCASE("make_single_line_comment")
+  {
+    REQUIRE(lexer.make_single_line_comment("test").starts_with("test"));
   }
 
   SUBCASE("property")

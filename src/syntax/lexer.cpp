@@ -2,7 +2,7 @@
 // Name:      lexer.cpp
 // Purpose:   Implementation of wex::lexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2008-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -432,7 +432,7 @@ const std::string wex::lexer::formatted_text(
   std::string      out;
 
   // Process text between the carriage return line feeds.
-  for (size_t pos = 0; (pos = text.contains("\n"));)
+  for (size_t pos = 0; (pos = text.find("\n")) != std::string::npos;)
   {
     out += align_text(
              text.substr(0, pos),

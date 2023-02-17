@@ -10,12 +10,11 @@
 #include <wex/core/log.h>
 #include <wex/ex/addressrange.h>
 #include <wex/ex/ex-stream.h>
+#include <wex/ex/util.h>
 #include <wex/ui/frd.h>
 #include <wex/vi/vi.h>
 
 #include "test.h"
-
-#define ESC "\x1b"
 
 void change_mode(
   wex::vi*              vi,
@@ -104,7 +103,7 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->on_key_down(event));
     REQUIRE(!vi->on_char(event));
 
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     REQUIRE(vi->inserted_text().contains(vi->get_stc()->eol()));
   }
 
@@ -114,19 +113,19 @@ TEST_CASE("wex::vi")
     const std::string ctrl_r = "\x12";
     REQUIRE(vi->command("i"));
     REQUIRE(vi->command(ctrl_r + "_"));
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
 
     stc->set_text("");
     REQUIRE(vi->command("i"));
     REQUIRE(vi->command(ctrl_r + "%"));
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     REQUIRE(stc->get_text() == "test.h");
 
     REQUIRE(vi->command("yy"));
     stc->set_text("");
     REQUIRE(vi->command("i"));
     REQUIRE(vi->command(ctrl_r + "0"));
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     REQUIRE(stc->get_text() == "test.h");
   }
 
@@ -254,7 +253,7 @@ TEST_CASE("wex::vi")
     REQUIRE(!vi->on_char(event));
     REQUIRE(!stc->get_text().contains("\t"));
 
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
   }
 
   SUBCASE("visual")
@@ -274,12 +273,12 @@ TEST_CASE("wex::vi")
       // enter invalid command
       vi->command("g");
       vi->command("j");
-      change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+      change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
 
       event.m_uniChar = visual.first[0];
       REQUIRE(!vi->on_char(event));
       REQUIRE(vi->mode().get() == visual.second);
-      change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+      change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     }
   }
 
@@ -316,7 +315,7 @@ TEST_CASE("wex::vi")
     }
 
     // Test change number.
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     event.m_uniChar = WXK_CONTROL_J;
     for (const auto& number :
          std::vector<std::string>{"101", "0xf7", "077", "-99"})
@@ -344,7 +343,7 @@ TEST_CASE("wex::vi")
     {
       event.m_keyCode = nav_key;
       CAPTURE(nav_key);
-      change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+      change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     }
 
     event.m_keyCode = WXK_NONE;

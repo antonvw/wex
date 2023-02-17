@@ -345,7 +345,7 @@ bool wex::addressrange::general(
     return false;
   }
 
-  stc_undo ndo(m_stc);
+  stc_undo undo(m_stc);
 
   if (f())
   {
