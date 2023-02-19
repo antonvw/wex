@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex sample class frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2022 Anton van Wezenbeek
+// Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/generic/numdlgg.h>
@@ -44,7 +44,6 @@ frame::frame()
   , m_statistics(
       new wex::grid_statistics<int>({}, wex::data::window().parent(m_notebook)))
   , m_shell(new wex::shell(wex::data::stc(), ">"))
-  , m_stc_lexers(new wex::stc())
 {
   wex::process::prepare_output(this);
   m_statistics->show(false);
@@ -144,16 +143,11 @@ frame::activate(wex::data::listview::type_t type, const wex::lexer* lexer)
 
 bool frame::allow_close(wxWindowID id, wxWindow* page)
 {
-  if (page == file_history_list() || page == get_listview())
-  {
-    // prevent possible crash, if set_recent_file tries
-    // to add listitem to deleted history list.
-    return false;
-  }
-  else
-  {
-    return wex::del::frame::allow_close(id, page);
-  }
+  return page == file_history_list() || page == get_listview() ?
+           // prevent possible crash, if set_recent_file tries
+           // to add listitem to deleted history list.
+           false :
+           wex::del::frame::allow_close(id, page);
 }
 
 void frame::bind_all()
@@ -476,7 +470,6 @@ void frame::on_command_item_dialog(
     if (event.GetId() != wxID_CANCEL && m_stc != nullptr)
     {
       m_stc->config_get();
-      m_stc_lexers->config_get();
     }
   }
   else if (dialogid > ID_SAMPLE_LOWEST && dialogid < ID_SAMPLE_HIGHEST)
@@ -576,12 +569,6 @@ void frame::update(app* a)
 
   m_notebook->add_page(
     wex::data::notebook().page(m_stc).key("wex::stc").select());
-
-  m_notebook->add_page(wex::data::notebook()
-                         .page(m_stc_lexers)
-                         .key(wex::lexers::get()->path().filename()));
-
-  m_stc_lexers->open(wex::lexers::get()->path());
 
   m_notebook->add_page(
     wex::data::notebook().page(m_project).key("wex::project"));

@@ -639,6 +639,11 @@ void wex::stc::file_action(const wxCommandEvent& event)
       log::status(_("Opened")) << path();
       log::info("opened") << path();
       fold();
+
+      // This is to take care that current dir follows page selection.
+      // Which is convenient for git grep, ls etc. and opening from stc window.
+      path::current(path().data().parent_path());
+
       [[fallthrough]];
 
     case stc_file::FILE_LOAD_SYNC:

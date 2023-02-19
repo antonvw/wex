@@ -5,7 +5,7 @@ Name:    wex-lexers.xml
 Purpose: Lexers configuration for wex.
          See scintilla 3.21.1 (https://scintilla.sourceforge.io/ScintillaHistory.html)
 Author:  Anton van Wezenbeek
-Copyright: (c) 2009-2022, Anton van Wezenbeek
+Copyright: (c) 2009-2023, Anton van Wezenbeek
 -->
 
 <lexers>
@@ -468,6 +468,7 @@ Copyright: (c) 2009-2022, Anton van Wezenbeek
       sleep_for sleep_until slice_array snprintf vsnprintf sort sort_heap
       splice splice_after sprintf sqrt srand sscanf
       stable_partition stable_sort stack static_pointer_cast std steady_clock
+      starts_with
       stod stof stoi stol stold stoll
       stoul stoull str strcat strchr strcmp
       strcoll strcpy strcspn stream streambuf strerror
