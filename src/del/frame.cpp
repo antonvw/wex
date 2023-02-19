@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -327,7 +327,9 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
   const wex::tool tool(sed ? ID_TOOL_REPLACE : ID_TOOL_REPORT_FIND);
 
   if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
+  {
     path::current(stc->path().data().parent_path());
+  }
 
   find_replace_data::get()->set_regex(true);
   log::status(find_replace_string(false));
@@ -460,6 +462,10 @@ void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
     set_recent_file(stc->path());
 
     statustext_vcs(stc);
+
+    // This is to take care that current dir follows page selection.
+    // Which is convenient for git grep, ls etc. and opening from stc window.
+    path::current(stc->path().data().parent_path());
   }
 }
 
@@ -473,8 +479,11 @@ void wex::del::frame::open_from_event(
     if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
     {
       wex::path::current(stc->path().data().parent_path());
+
       if (!marker_and_register_expansion(&stc->get_vi(), text))
+      {
         return;
+      }
     }
 
     if (!shell_expansion(text))
