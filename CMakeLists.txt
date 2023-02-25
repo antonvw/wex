@@ -28,6 +28,14 @@ set(user $ENV{USER} CACHE INTERNAL "keep user")
 
 include(cmake/options-wx.cmake)
 
+execute_process(
+  COMMAND git apply ${CMAKE_SOURCE_DIR}/external/wxWidgets.patch
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets)
+
+execute_process(
+  COMMAND git apply ${CMAKE_SOURCE_DIR}/external/lexilla.patch
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/lexilla)
+
 add_subdirectory(external)
 
 include(external/wxWidgets/build/cmake/toolkit.cmake)
