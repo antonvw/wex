@@ -1,3 +1,7 @@
+*** Comments ***
+Copyright: (c) 2020-2023 Anton van Wezenbeek
+
+
 *** Settings ***
 Documentation	Testcases for wex vi
 Test Setup	Test Setup
@@ -237,7 +241,3 @@ yank-register
 	...	
 	Appl
 	Contents Contains	lineline
-
-
-*** Comments ***
-Copyright: (c) 2020-2023 Anton van Wezenbeek

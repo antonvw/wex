@@ -4,7 +4,7 @@
 
 - c++23 standard
 - wex-ctags and wex-syntax library added
-- wxWidgets 3.3
+- wxWidgets 3.3, and lexilla 5.0.1
 - ex mode fixes
 
 **v22.10** *September 18, 2022*

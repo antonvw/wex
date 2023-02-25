@@ -1,0 +1,33 @@
+diff --git a/lexers/LexBash.cxx b/lexers/LexBash.cxx
+index 07dc6c1c..2e9eacdf 100644
+--- a/lexers/LexBash.cxx
++++ b/lexers/LexBash.cxx
+@@ -32,6 +32,8 @@
+ 
+ using namespace Scintilla;
+ 
++#include "../../../../../../src/syntax/wex/lex-rfw.cpp"
++
+ #define HERE_DELIM_MAX			256
+ 
+ // define this if you want 'invalid octals' to be marked as errors
+diff --git a/src/Lexilla.cxx b/src/Lexilla.cxx
+index bd15d392..8ecb9599 100644
+--- a/src/Lexilla.cxx
++++ b/src/Lexilla.cxx
+@@ -128,6 +128,7 @@ extern LexerModule lmR;
+ extern LexerModule lmRaku;
+ extern LexerModule lmREBOL;
+ extern LexerModule lmRegistry;
++extern LexerModule lmRFW;
+ extern LexerModule lmRuby;
+ extern LexerModule lmRust;
+ extern LexerModule lmSAS;
+@@ -273,6 +274,7 @@ void AddEachLexer() {
+ 		&lmRaku,
+ 		&lmREBOL,
+ 		&lmRegistry,
++		&lmRFW,
+ 		&lmRuby,
+ 		&lmRust,
+ 		&lmSAS,

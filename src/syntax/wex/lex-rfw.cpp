@@ -2,16 +2,15 @@
 // Name:      lex-rfw.cpp
 // Purpose:   Implementation of lmRFW
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
 
-using namespace Scintilla;
-
 #include "lex-rfw.h"
 
-#define ADD_SECTION(REGEX, NAME) {regex_part(REGEX, std::regex::icase), NAME},
+#define ADD_SECTION(REGEX, NAME) \
+  {wex::regex_part(REGEX, std::regex::icase), NAME},
 
 const CharacterSet setWord(CharacterSet::setAlphaNum, "._+-]*");
 const CharacterSet setWordStart(CharacterSet::setAlpha, ":_[*");
@@ -20,7 +19,7 @@ int                numBase = 0;
 // We do not use lexicalClasses (see LexCPP), this would require override
 // NameOfStyle, and using NameOfStyle in stc as well. Of course possible, but
 // for what purpose?
-wex::lex_rfw::lex_rfw()
+Scintilla::lex_rfw::lex_rfw()
   : DefaultLexer(name(), language())
   , m_sub_styles(style_subable, 0x80, 0x40, 0)
   /* The recommended header format is *** Settings ***,
@@ -46,13 +45,13 @@ wex::lex_rfw::lex_rfw()
   m_cmd_delimiter.Set("| || |& & && ; ;; ( ) { }");
 }
 
-wex::lex_rfw::~lex_rfw()
+Scintilla::lex_rfw::~lex_rfw()
 {
   delete m_quote;
   delete m_quote_stack;
 }
 
-void wex::lex_rfw::keywords_update()
+void Scintilla::lex_rfw::keywords_update()
 {
   for (int i = 0; i < m_keywords2.Length(); i++)
   {
@@ -70,7 +69,7 @@ void wex::lex_rfw::keywords_update()
   }
 }
 
-void wex::lex_rfw::parse_keyword(
+void Scintilla::lex_rfw::parse_keyword(
   StyleContext& sc,
   int           cmdState,
   int&          cmdStateNew)
@@ -140,7 +139,7 @@ void wex::lex_rfw::parse_keyword(
   }
 }
 
-bool wex::lex_rfw::section_keywords_detect(
+bool Scintilla::lex_rfw::section_keywords_detect(
   const std::string& word,
   StyleContext&      sc,
   int&               cmdStateNew)
@@ -166,35 +165,16 @@ bool wex::lex_rfw::section_keywords_detect(
 
         case wex::regex_part::MATCH_ALL:
           cmdStateNew = RFW_CMD_SKW_PARTIAL;
+          m_section.reset();
+          sc.SetState(SCE_SH_WORD);
           break;
 
         case wex::regex_part::MATCH_COMPLETE:
           sc.Forward();
           sc.SetState(SCE_SH_WORD);
           cmdStateNew = RFW_CMD_START;
-
-          switch (i.second)
-          {
-            case SECTION_COMMENT:
-              m_sp.comments(sc);
-              break;
-
-            case SECTION_KEYWORD:
-              if (m_sp.test_case() != -1 && sc.currentPos > m_sp.test_case())
-              {
-                m_sp.test_case_end(
-                  sc.currentPos -
-                  static_cast<Sci_PositionU>(sc.LengthCurrent()) - word.size());
-              }
-              break;
-
-            case SECTION_TESTCASE:
-              m_sp.test_case(sc);
-              break;
-
-            default:; // do nothing
-          }
-          return true;
+          m_section.start(i.second);
+          break;
 
         default:; // do nothing
       }
@@ -203,7 +183,7 @@ bool wex::lex_rfw::section_keywords_detect(
     });
 }
 
-bool wex::lex_rfw::spaced_keywords_detect(
+bool Scintilla::lex_rfw::spaced_keywords_detect(
   const std::string& word,
   StyleContext&      sc,
   int&               cmdStateNew)
@@ -231,16 +211,12 @@ bool wex::lex_rfw::spaced_keywords_detect(
     });
 }
 
-void wex::lex_rfw::state_check(
+void Scintilla::lex_rfw::state_check(
   StyleContext& sc,
   int           cmdState,
   int&          cmdStateNew,
   LexAccessor&  styler)
 {
-  const CharacterSet setParam(CharacterSet::setAlphaNum, "$@_");
-
-  int digit;
-
   // Determine if the current state should terminate.
   switch (sc.state)
   {
@@ -282,15 +258,14 @@ void wex::lex_rfw::state_check(
       break;
 
     case SCE_SH_NUMBER:
-      digit = wex::lex_rfw_access(styler).translate_digit(sc.ch);
-
-      if (numBase == RFW_BASE_DECIMAL)
+      if (auto digit = Scintilla::lex_rfw_access(styler).translate_digit(sc.ch);
+          numBase == RFW_BASE_DECIMAL)
       {
         if (sc.ch == '#')
         {
           char s[10];
           sc.GetCurrent(s, sizeof(s));
-          numBase = wex::lex_rfw_access(styler).number_base(s);
+          numBase = Scintilla::lex_rfw_access(styler).number_base(s);
           if (numBase != RFW_BASE_ERROR)
             break;
         }
@@ -337,14 +312,15 @@ void wex::lex_rfw::state_check(
     case SCE_SH_COMMENTLINE:
       if (
         m_visual_mode && sc.atLineEnd && sc.chPrev != '\\' &&
-        sc.currentPos < m_sp.comments())
+        m_section.id() != SECTION_COMMENT)
       {
         sc.SetState(SCE_SH_DEFAULT);
       }
       break;
 
     case SCE_SH_SCALAR: // variable names
-      if (!setParam.Contains(sc.ch))
+      if (const CharacterSet setParam(CharacterSet::setAlphaNum, "$@_");
+          !setParam.Contains(sc.ch))
       {
         if (sc.LengthCurrent() == 1)
         {
@@ -470,7 +446,7 @@ void wex::lex_rfw::state_check(
   }
 }
 
-bool wex::lex_rfw::state_check_continue(
+bool Scintilla::lex_rfw::state_check_continue(
   StyleContext& sc,
   int&          cmdState,
   LexAccessor&  styler)
@@ -612,7 +588,7 @@ bool wex::lex_rfw::state_check_continue(
     // globs have no whitespace, do not appear in arithmetic expressions
     if (cmdState != RFW_CMD_ARITH && sc.ch == '(' && sc.chNext != '(')
     {
-      int i = wex::lex_rfw_access(styler).glob_scan(sc);
+      int i = Scintilla::lex_rfw_access(styler).glob_scan(sc);
       if (i > 1)
       {
         sc.SetState(SCE_SH_IDENTIFIER);
@@ -700,7 +676,7 @@ bool wex::lex_rfw::state_check_continue(
   return false;
 }
 
-void SCI_METHOD wex::lex_rfw::Fold(
+void SCI_METHOD Scintilla::lex_rfw::Fold(
   Sci_PositionU startPos,
   Sci_Position  length,
   int,
@@ -723,7 +699,7 @@ void SCI_METHOD wex::lex_rfw::Fold(
 
     const bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
 
-    wex::lex_rfw_access rfw(styler, lineCurrent);
+    Scintilla::lex_rfw_access rfw(styler, lineCurrent);
 
     // Comment folding
     if (m_options.fold_comment() && atEOL && rfw.is_comment_line())
@@ -778,7 +754,7 @@ void SCI_METHOD wex::lex_rfw::Fold(
   styler.SetLevel(lineCurrent, levelPrev | flagsNext);
 }
 
-void SCI_METHOD wex::lex_rfw::Lex(
+void SCI_METHOD Scintilla::lex_rfw::Lex(
   Sci_PositionU startPos,
   Sci_Position  length,
   int           initStyle,
@@ -793,8 +769,10 @@ void SCI_METHOD wex::lex_rfw::Lex(
   int  cmdState = RFW_CMD_START;
 
   Sci_PositionU endPos = startPos + length;
-  Sci_Position  ln     = wex::lex_rfw_access(styler).init(startPos);
+  Sci_Position  ln     = Scintilla::lex_rfw_access(styler).init(startPos);
   initStyle            = SCE_SH_DEFAULT;
+
+  m_section.reset();
 
   std::string words;
 
@@ -883,27 +861,19 @@ void SCI_METHOD wex::lex_rfw::Lex(
     {
       cmdState = cmdStateNew;
     }
-    else if (pipes && sc.ch == '|' && sc.currentPos > m_sp.test_case())
+    else if (pipes && sc.ch == '|' && m_section.id() == SECTION_TESTCASE)
     {
-      if (m_sp.test_case_end() != -1 && sc.currentPos > m_sp.test_case_end())
-      {
-        cmdState = RFW_CMD_START;
-      }
-      else
-      {
-        cmdState = (sc.atLineStart ? RFW_CMD_TESTCASE : RFW_CMD_START);
-      }
+      cmdState = (sc.atLineStart ? RFW_CMD_TESTCASE : RFW_CMD_START);
     }
     else if (
       m_visual_mode && !pipes && sc.ch != '#' && !isspace(sc.ch) &&
-      sc.atLineStart && sc.currentPos > m_sp.test_case())
+      sc.atLineStart)
     {
-      if (m_sp.test_case_end() == -1 || sc.currentPos < m_sp.test_case_end())
+      if (m_section.id() == SECTION_TESTCASE)
       {
         cmdState = RFW_CMD_TESTCASE;
       }
-
-      if (sc.currentPos > m_sp.comments())
+      else if (m_section.id() == SECTION_COMMENT)
       {
         sc.SetState(SCE_SH_COMMENTLINE);
       }
@@ -921,12 +891,12 @@ void SCI_METHOD wex::lex_rfw::Lex(
   sc.Complete();
 }
 
-void SCI_METHOD wex::lex_rfw::Release()
+void SCI_METHOD Scintilla::lex_rfw::Release()
 {
   delete this;
 }
 
-Sci_Position SCI_METHOD wex::lex_rfw::WordListSet(int n, const char* wl)
+Sci_Position SCI_METHOD Scintilla::lex_rfw::WordListSet(int n, const char* wl)
 {
   Sci_Position firstModification = -1;
   WordList*    wordList          = nullptr;
@@ -966,7 +936,7 @@ Sci_Position SCI_METHOD wex::lex_rfw::WordListSet(int n, const char* wl)
 }
 
 LexerModule lmRFW(
-  wex::lex_rfw::language(),
-  wex::lex_rfw::get,
-  wex::lex_rfw::name(),
-  wex::option_set_rfw::keywords());
+  lex_rfw::language(),
+  lex_rfw::get,
+  lex_rfw::name(),
+  option_set_rfw::keywords());

@@ -1,18 +1,17 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      lex-rfw-access.h
-// Purpose:   Declaration of wex::lex_rfw_access class
+// Purpose:   Declaration of Scintilla::lex_rfw_access class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <stack>
 
-#include "LexAccessor.h"
 #include "lex-rfw-defs.h"
 
-namespace wex
+namespace Scintilla
 {
 /// The robotframework lexer acces class.
 /// It is compiled during wxWidgets LexBash compiling,
@@ -132,11 +131,12 @@ private:
 
   std::stack<stack_t> m_stack;
 };
-}; // namespace wex
+}; // namespace Scintilla
 
 // inline implementation lex_rfw_access
 
-inline bool wex::lex_rfw_access::get_line_pos_eol(int offset, char c) const
+inline bool
+Scintilla::lex_rfw_access::get_line_pos_eol(int offset, char c) const
 {
   Sci_Position pos = m_styler.LineStart(m_line + offset);
   Sci_Position eol = m_styler.LineStart(m_line + 1 + offset) - 1;
@@ -153,7 +153,7 @@ inline bool wex::lex_rfw_access::get_line_pos_eol(int offset, char c) const
   return false;
 }
 
-inline int wex::lex_rfw_access::glob_scan(StyleContext& sc) const
+inline int Scintilla::lex_rfw_access::glob_scan(StyleContext& sc) const
 {
   // forward scan for a glob-like (...), no whitespace allowed
   int c, sLen = 0;
@@ -172,7 +172,8 @@ inline int wex::lex_rfw_access::glob_scan(StyleContext& sc) const
   return 0;
 }
 
-inline Sci_Position wex::lex_rfw_access::init(Sci_PositionU startPos) const
+inline Sci_Position
+Scintilla::lex_rfw_access::init(Sci_PositionU startPos) const
 {
   // Always backtracks to the start of a line that is not a continuation
   // of the previous line (i.e. start of a rfw command segment)
@@ -192,22 +193,22 @@ inline Sci_Position wex::lex_rfw_access::init(Sci_PositionU startPos) const
   return ln;
 }
 
-inline bool wex::lex_rfw_access::is_comment_line(int offset) const
+inline bool Scintilla::lex_rfw_access::is_comment_line(int offset) const
 {
   return get_line_pos_eol(offset, '#');
 }
 
-inline bool wex::lex_rfw_access::is_pipe_line(int offset) const
+inline bool Scintilla::lex_rfw_access::is_pipe_line(int offset) const
 {
   return get_line_pos_eol(offset, '|');
 }
 
-inline bool wex::lex_rfw_access::is_tab_line(int offset) const
+inline bool Scintilla::lex_rfw_access::is_tab_line(int offset) const
 {
   return get_line_pos_eol(offset, '\t');
 }
 
-inline int wex::lex_rfw_access::number_base(char* s) const
+inline int Scintilla::lex_rfw_access::number_base(char* s) const
 {
   int i    = 0;
   int base = 0;
@@ -226,7 +227,7 @@ inline int wex::lex_rfw_access::number_base(char* s) const
   return base;
 }
 
-inline int wex::lex_rfw_access::opposite(int ch) const
+inline int Scintilla::lex_rfw_access::opposite(int ch) const
 {
   switch (ch)
   {
@@ -243,7 +244,7 @@ inline int wex::lex_rfw_access::opposite(int ch) const
   }
 }
 
-inline int wex::lex_rfw_access::translate_digit(int ch) const
+inline int Scintilla::lex_rfw_access::translate_digit(int ch) const
 {
   if (ch >= '0' && ch <= '9')
   {
@@ -271,7 +272,7 @@ inline int wex::lex_rfw_access::translate_digit(int ch) const
 
 // inline implementation quote
 
-inline void wex::quote::open(int u)
+inline void Scintilla::quote::open(int u)
 {
   m_count++;
 
@@ -279,7 +280,7 @@ inline void wex::quote::open(int u)
   m_down = opposite(m_up);
 }
 
-inline void wex::quote::start(int u)
+inline void Scintilla::quote::start(int u)
 {
   m_count = 0;
   open(u);
@@ -287,7 +288,7 @@ inline void wex::quote::start(int u)
 
 // inline implementation quote_stack
 
-inline void wex::quote_stack::pop(void)
+inline void Scintilla::quote_stack::pop(void)
 {
   if (m_stack.empty())
     return;
@@ -301,7 +302,7 @@ inline void wex::quote_stack::pop(void)
   m_down = opposite(m_up);
 }
 
-inline void wex::quote_stack::push(int u, int s)
+inline void Scintilla::quote_stack::push(int u, int s)
 {
   m_stack.push({m_count, m_style, m_up});
 
@@ -312,7 +313,7 @@ inline void wex::quote_stack::push(int u, int s)
   m_down = opposite(m_up);
 }
 
-inline void wex::quote_stack::start(int u, int s)
+inline void Scintilla::quote_stack::start(int u, int s)
 {
   m_count = 1;
 

@@ -8,6 +8,7 @@
 #include <sstream>
 
 #include <wx/app.h>
+#include <wx/stc/stc.h>
 #include <wx/utils.h>
 
 #include <boost/version.hpp>
@@ -38,6 +39,9 @@ const std::stringstream wex::external_libraries()
 
      // ctags
      << PROGRAM_NAME << ": " << PROGRAM_VERSION
+     << "\n"
+
+     << wxStyledTextCtrl::GetLexerVersionInfo().GetDescription().c_str()
      << "\n"
 
      // wxWidgets
