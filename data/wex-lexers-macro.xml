@@ -3,9 +3,9 @@
 <!--
 Name:      wex-lexers-macro.xml
 Purpose:   Lexers configuration for wex.
-           See scintilla 3.21.1 (https://scintilla.sourceforge.io/ScintillaHistory.html)
+           See lexilla 5.0.1 (https://www.scintilla.org/LexillaHistory.html)
 Author:    Anton van Wezenbeek
-Copyright: (c) 2009-2022, Anton van Wezenbeek
+Copyright: (c) 2009-2023, Anton van Wezenbeek
 -->
 
 <lexers>
@@ -831,7 +831,30 @@ Copyright: (c) 2009-2022, Anton van Wezenbeek
       <def no ="label"/>
       <def no ="continuation"/>
     </def>
-    
+
+    <def name = "fsharp">
+      <def no ="default"/>
+      <def no ="keyword"/>
+      <def no ="keyword2"/>
+      <def no ="keyword3"/>
+      <def no ="keyword4"/>
+      <def no ="keyword5"/>
+      <def no ="identifier"/>
+      <def no ="quot_identifier"/>
+      <def no ="comment"/>
+      <def no ="commentline"/>
+      <def no ="preprocessor"/>
+      <def no ="linenum"/>
+      <def no ="operator"/>
+      <def no ="number"/>
+      <def no ="character"/>
+      <def no ="string"/>
+      <def no ="verbatim"/>
+      <def no ="quotation"/>
+      <def no ="attribute"/>
+      <def no ="format_spec"/>
+    </def>
+
     <def name = "gap">
       <def no ="default"/>
       <def no ="identifier"/>

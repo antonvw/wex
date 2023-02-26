@@ -1,3 +1,7 @@
+*** Comments ***
+Copyright: (c) 2020-2023 Anton van Wezenbeek
+
+
 *** Settings ***
 Documentation	Testcases for wex ex
 Test Setup	Test Setup
@@ -115,7 +119,3 @@ substitute-global
 	Output Contains	2
 	Output Contains	simon
 	Contents Does Not Contain	simon
-
-
-*** Comments ***
-Copyright: (c) 2020-2023 Anton van Wezenbeek

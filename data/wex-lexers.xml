@@ -3,7 +3,7 @@
 <!--
 Name:    wex-lexers.xml
 Purpose: Lexers configuration for wex.
-         See scintilla 3.21.1 (https://scintilla.sourceforge.io/ScintillaHistory.html)
+         See scintilla 5.0.1 (https://www.scintilla.org/LexillaHistory.html)
 Author:  Anton van Wezenbeek
 Copyright: (c) 2009-2023, Anton van Wezenbeek
 -->
@@ -994,6 +994,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   <lexer name="fortran"/>
   <lexer name="f77" macro="fortran"/>
   <lexer name="freebasic" macro="vb"/>
+  <lexer name="fsharp"/>
   <lexer name="gap"/>
   <lexer display="gdb" name="ada"> 
     <keywords>

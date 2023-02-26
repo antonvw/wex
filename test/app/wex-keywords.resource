@@ -1,3 +1,7 @@
+*** Comments ***
+Copyright: (c) 2020-2023 Anton van Wezenbeek
+
+
 *** Settings ***
 Documentation	Robot framework Keywords for testing wex
 Library	OperatingSystem
@@ -128,7 +132,3 @@ Std Output Contains
 	[Arguments]	${text}
 	${result}=	Get File	${file-stdout}
 	Should Contain	${result}	${text}
-
-
-*** Comments ***
-Copyright: (c) 2020-2023 Anton van Wezenbeek

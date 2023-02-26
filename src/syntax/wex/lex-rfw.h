@@ -1,24 +1,36 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      lex-rfw.h
-// Purpose:   Declaration of wex::lex_rfw class
+// Purpose:   Declaration of Scintilla::lex_rfw class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <list>
 #include <string>
 #include <utility>
 #include <vector>
 
 #include <wex/core/regex-part.h>
 
-#include "DefaultLexer.h"
 #include "lex-rfw-access.h"
 #include "lex-rfw-defs.h"
 
-namespace wex
+namespace Scintilla
 {
+/// The sections known by RFW.
+enum section_t
+{
+  SECTION_UNKNOWN,
+  SECTION_COMMENT,
+  SECTION_KEYWORD,
+  SECTION_SETTING,
+  SECTION_TASK,
+  SECTION_TESTCASE,
+  SECTION_VARIABLE,
+};
+
 /// Collects bool options
 class options_rfw
 {
@@ -66,24 +78,21 @@ private:
     0};
 };
 
-/// Collects section positions
-class rfw_section_pos
+/// Collects section info.
+class rfw_section
 {
 public:
-  /// get or set comments pos
-  auto comments() const { return m_comments; };
-  void comments(const StyleContext& sc) { m_comments = sc.currentPos; };
+  /// Gets current section id.
+  auto id() const { return m_id; };
 
-  /// get or set test_case pos
-  auto test_case() const { return m_test_case; };
-  void test_case(const StyleContext& sc) { m_test_case = sc.currentPos; };
+  /// Resets section.
+  void reset() { m_id = SECTION_UNKNOWN; };
 
-  /// get or set test_case_end pos
-  auto test_case_end() const { return m_test_case_end; };
-  void test_case_end(Sci_PositionU pos) { m_test_case_end = pos; };
+  /// Starts a new section.
+  void start(section_t id) { m_id = id; };
 
 private:
-  Sci_PositionU m_comments = -1, m_test_case = -1, m_test_case_end = -1;
+  section_t m_id{SECTION_UNKNOWN};
 };
 
 /// The robotframework lexer class.
@@ -93,7 +102,7 @@ public:
   /// Static interface.
 
   /// Returns and creates the lexers object.
-  static ILexer* get() { return new lex_rfw(); }
+  static inline ILexer5* get() { return new lex_rfw(); }
 
   /// Returns language.
   static inline int language() { return SCLEX_AUTOMATIC; };
@@ -198,19 +207,17 @@ private:
     return m_sub_styles.Length(styleBase);
   };
 
-  int SCI_METHOD Version() const override { return lvIdentity; };
-
   Sci_Position SCI_METHOD WordListSet(int n, const char* wl) override;
 
   /// Other methods.
 
-  void parse_keyword(StyleContext& sc, int cmdState, int& cmdStateNew);
+  void init(LexAccessor& styler);
 
   void keywords_update();
-  bool section_keywords_detect(
-    const std::string& word,
-    StyleContext&      sc,
-    int&               cmdStateNew);
+
+  void parse_keyword(StyleContext& sc, int cmdState, int& cmdStateNew);
+
+  bool section_keywords_detect(StyleContext& sc, int& cmdStateNew);
   bool spaced_keywords_detect(
     const std::string& word,
     StyleContext&      sc,
@@ -219,33 +226,23 @@ private:
   void state_check(StyleContext& sc, int state, int& state_new, LexAccessor&);
   bool state_check_continue(StyleContext& sc, int& state, LexAccessor&);
 
-  enum section_t
-  {
-    SECTION_COMMENT,
-    SECTION_KEYWORD,
-    SECTION_SETTING,
-    SECTION_TASK,
-    SECTION_TESTCASE,
-    SECTION_VARIABLE,
-  };
-
-  typedef std::vector<std::pair<wex::regex_part, section_t>> keywords_t;
+  typedef std::list<std::pair<wex::regex_part, section_t>> keywords_t;
 
   SubStyles m_sub_styles;
 
   WordList m_keywords1, m_keywords2, m_cmd_delimiter;
 
-  options_rfw     m_options;
-  option_set_rfw  m_option_set;
-  rfw_section_pos m_sp;
+  options_rfw    m_options;
+  option_set_rfw m_option_set;
+  rfw_section    m_section;
 
   bool m_visual_mode{true};
   int  m_style_prev{-1};
 
-  wex::quote*       m_quote{nullptr};
-  wex::quote_stack* m_quote_stack{nullptr};
+  quote*       m_quote{nullptr};
+  quote_stack* m_quote_stack{nullptr};
+  keywords_t*  m_section_keywords{nullptr};
 
-  keywords_t               m_section_keywords;
   std::vector<std::string> m_spaced_keywords;
 };
-} // namespace wex
+} // namespace Scintilla

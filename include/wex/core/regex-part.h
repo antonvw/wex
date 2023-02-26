@@ -67,8 +67,8 @@ public:
 private:
   const std::string regex_next();
 
-  const std::string           m_regex;
-  const std::regex::flag_type m_flags;
+  std::string           m_regex;
+  std::regex::flag_type m_flags;
 
   bool    m_is_matching{false};
   match_t m_match_type{MATCH_NONE};
