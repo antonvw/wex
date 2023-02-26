@@ -5,12 +5,15 @@
 // Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
 #include <iostream>
 
 #include "lex-rfw.h"
 
-#define ADD_SECTION(REGEX, NAME) \
-  {wex::regex_part(REGEX, std::regex::icase), NAME},
+#define MAKE_SECTION(REGEX, ID)                   \
+  {                                               \
+    wex::regex_part(REGEX, std::regex::icase), ID \
+  }
 
 const CharacterSet setWord(CharacterSet::setAlphaNum, "._+-]*");
 const CharacterSet setWordStart(CharacterSet::setAlpha, ":_[*");
@@ -22,25 +25,6 @@ int                numBase = 0;
 Scintilla::lex_rfw::lex_rfw()
   : DefaultLexer(name(), language())
   , m_sub_styles(style_subable, 0x80, 0x40, 0)
-  /* The recommended header format is *** Settings ***,
-     but the header is case-insensitive, surrounding spaces are
-     optional, and the number of asterisk characters can vary as long
-     as there is one asterisk in the beginning.
-     In addition to using the plural format, also singular variants
-     like Setting and Test Case are accepted.
-     In other words, also *setting would be recognized as a section
-     header.
-     -> we require 3 *, regex_part issue
-    */
-  , m_section_keywords(
-      // clang-format off
-      {ADD_SECTION("\\*+ *Settings? *\\*\\*\\*", SECTION_SETTING)
-       ADD_SECTION("\\*+ *Variables? *\\*\\*\\*", SECTION_VARIABLE)
-       ADD_SECTION("\\*+ *Test *Cases? *\\*\\*\\*", SECTION_TESTCASE)
-       ADD_SECTION("\\*+ *Tasks? *\\*\\*\\*", SECTION_TASK)
-       ADD_SECTION("\\*+ *Keywords? *\\*\\*\\*", SECTION_KEYWORD)
-       ADD_SECTION("\\*+ *Comments? *\\*\\*\\*", SECTION_COMMENT)})
-// clang-format on
 {
   m_cmd_delimiter.Set("| || |& & && ; ;; ( ) { }");
 }
@@ -49,6 +33,7 @@ Scintilla::lex_rfw::~lex_rfw()
 {
   delete m_quote;
   delete m_quote_stack;
+  delete m_section_keywords;
 }
 
 void Scintilla::lex_rfw::keywords_update()
@@ -69,6 +54,41 @@ void Scintilla::lex_rfw::keywords_update()
   }
 }
 
+void Scintilla::lex_rfw::init(LexAccessor& styler)
+{
+  if (m_section_keywords != nullptr)
+  {
+    delete m_quote;
+    delete m_quote_stack;
+    delete m_section_keywords;
+  }
+  
+  /* The recommended header format is *** Settings ***,
+     but the header is case-insensitive, surrounding spaces are
+     optional, and the number of asterisk characters can vary as long
+     as there is one asterisk in the beginning.
+     In addition to using the plural format, also singular variants
+     like Setting and Test Case are accepted.
+     In other words, also *setting would be recognized as a section
+     header.
+     -> we require 3 *, regex_part issue
+    */
+  m_section_keywords = new keywords_t(
+    // clang-format off
+      {MAKE_SECTION("\\*+ *Settings? *\\*\\*\\*", SECTION_SETTING),
+       MAKE_SECTION("\\*+ *Variables? *\\*\\*\\*", SECTION_VARIABLE),
+       MAKE_SECTION("\\*+ *Test *Cases? *\\*\\*\\*", SECTION_TESTCASE),
+       MAKE_SECTION("\\*+ *Tasks? *\\*\\*\\*", SECTION_TASK),
+       MAKE_SECTION("\\*+ *Keywords? *\\*\\*\\*", SECTION_KEYWORD),
+     MAKE_SECTION("\\*+ *Comments? *\\*\\*\\*", SECTION_COMMENT)});
+  // clang-format on
+
+  m_quote       = new quote(styler);
+  m_quote_stack = new quote_stack(styler);
+  
+  m_section.reset();
+}
+  
 void Scintilla::lex_rfw::parse_keyword(
   StyleContext& sc,
   int           cmdState,
@@ -140,29 +160,24 @@ void Scintilla::lex_rfw::parse_keyword(
 }
 
 bool Scintilla::lex_rfw::section_keywords_detect(
-  const std::string& word,
-  StyleContext&      sc,
-  int&               cmdStateNew)
+  StyleContext& sc,
+  int&          cmdStateNew)
 {
   std::for_each(
-    m_section_keywords.begin(),
-    m_section_keywords.end(),
+    m_section_keywords->begin(),
+    m_section_keywords->end(),
     [&sc](auto& i)
     {
       i.first.match(sc.ch);
     });
 
   return std::any_of(
-    m_section_keywords.begin(),
-    m_section_keywords.end(),
-    [&word, &sc, &cmdStateNew, this](const auto& i)
+    m_section_keywords->begin(),
+    m_section_keywords->end(),
+    [&sc, &cmdStateNew, this](const auto& i)
     {
       switch (i.first.match_type())
       {
-        case wex::regex_part::MATCH_ERROR:
-          std::cerr << "error: " << i.first.part() << "\n";
-          break;
-
         case wex::regex_part::MATCH_ALL:
           cmdStateNew = RFW_CMD_SKW_PARTIAL;
           m_section.reset();
@@ -174,7 +189,17 @@ bool Scintilla::lex_rfw::section_keywords_detect(
           sc.SetState(SCE_SH_WORD);
           cmdStateNew = RFW_CMD_START;
           m_section.start(i.second);
-          break;
+
+          // this section can re removed, it should not appear twice
+          m_section_keywords->erase(std::remove_if(
+            m_section_keywords->begin(),
+            m_section_keywords->end(),
+            [&](const std::pair<wex::regex_part, section_t>& it)
+            {
+              return it.first.regex() == i.first.regex();
+            }));
+
+          return true;
 
         default:; // do nothing
       }
@@ -258,14 +283,14 @@ void Scintilla::lex_rfw::state_check(
       break;
 
     case SCE_SH_NUMBER:
-      if (auto digit = Scintilla::lex_rfw_access(styler).translate_digit(sc.ch);
+      if (auto digit = lex_rfw_access(styler).translate_digit(sc.ch);
           numBase == RFW_BASE_DECIMAL)
       {
         if (sc.ch == '#')
         {
           char s[10];
           sc.GetCurrent(s, sizeof(s));
-          numBase = Scintilla::lex_rfw_access(styler).number_base(s);
+          numBase = lex_rfw_access(styler).number_base(s);
           if (numBase != RFW_BASE_ERROR)
             break;
         }
@@ -588,7 +613,7 @@ bool Scintilla::lex_rfw::state_check_continue(
     // globs have no whitespace, do not appear in arithmetic expressions
     if (cmdState != RFW_CMD_ARITH && sc.ch == '(' && sc.chNext != '(')
     {
-      int i = Scintilla::lex_rfw_access(styler).glob_scan(sc);
+      int i = lex_rfw_access(styler).glob_scan(sc);
       if (i > 1)
       {
         sc.SetState(SCE_SH_IDENTIFIER);
@@ -699,7 +724,7 @@ void SCI_METHOD Scintilla::lex_rfw::Fold(
 
     const bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
 
-    Scintilla::lex_rfw_access rfw(styler, lineCurrent);
+    lex_rfw_access rfw(styler, lineCurrent);
 
     // Comment folding
     if (m_options.fold_comment() && atEOL && rfw.is_comment_line())
@@ -762,17 +787,14 @@ void SCI_METHOD Scintilla::lex_rfw::Lex(
 {
   LexAccessor styler(pAccess);
 
-  m_quote       = new quote(styler);
-  m_quote_stack = new quote_stack(styler);
+  init(styler);
 
   bool pipes    = false;
   int  cmdState = RFW_CMD_START;
 
   Sci_PositionU endPos = startPos + length;
-  Sci_Position  ln     = Scintilla::lex_rfw_access(styler).init(startPos);
+  Sci_Position  ln     = lex_rfw_access(styler).init(startPos);
   initStyle            = SCE_SH_DEFAULT;
-
-  m_section.reset();
 
   std::string words;
 
@@ -830,15 +852,15 @@ void SCI_METHOD Scintilla::lex_rfw::Lex(
 
     if (!spaced_keywords_detect(words, sc, cmdStateNew))
     {
-      section_keywords_detect(words, sc, cmdStateNew);
+      section_keywords_detect(sc, cmdStateNew);
 
       if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
       {
         words.clear();
 
         std::for_each(
-          m_section_keywords.begin(),
-          m_section_keywords.end(),
+          m_section_keywords->begin(),
+          m_section_keywords->end(),
           [&sc](auto& i)
           {
             i.first.reset();
