@@ -44,16 +44,16 @@ bool wex::test::doctester::on_init(wex::app* app)
 
 void wex::test::doctester::on_run(wex::app* app)
 {
-  if (m_context != nullptr)
-  {
-    const int id_start    = wxWindow::NewControlId();
-    auto*     timer_start = new wxTimer(app, id_start);
+  const int id_start    = wxWindow::NewControlId();
+  auto*     timer_start = new wxTimer(app, id_start);
 
-    timer_start->StartOnce(1000);
+  timer_start->StartOnce(1000);
 
-    app->Bind(
-      wxEVT_TIMER,
-      [=, this](wxTimerEvent& event)
+  app->Bind(
+    wxEVT_TIMER,
+    [=, this](wxTimerEvent& event)
+    {
+      if (m_context != nullptr)
       {
         m_context->run();
 
@@ -64,9 +64,13 @@ void wex::test::doctester::on_run(wex::app* app)
           delete m_context;
           wxExit();
         }
-      },
-      id_start);
-  }
+      }
+      else
+      {
+        std::cerr << "no context to run\n";
+      }
+    },
+    id_start);
 }
 
 bool wex::test::doctester::use_context(wex::app* app, int argc, char* argv[])

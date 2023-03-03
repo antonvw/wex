@@ -352,11 +352,7 @@ bool wex::frame::add_toolbar_panes(const panes_t& panes)
       }
       else
       {
-#ifndef __WXOSX__
         pane.Top().ToolbarPane().MinSize(-1, 30);
-#else
-        pane.Bottom().ToolbarPane().MinSize(-1, 30);
-#endif
       }
 
       // Initially hide special bars.
