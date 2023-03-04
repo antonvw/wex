@@ -35,7 +35,8 @@ public:
   /// Performs doctest activation.
   void on_run(wex::app* app);
 
-  /// Use context when running.
+  /// Use context when running. You should first call this method
+  /// to construct the context.
   bool use_context(wex::app* app, int argc, char* argv[]);
 
 private:

@@ -1,6 +1,6 @@
 # changes
 
-**v23.04** *March, 2023*
+**v23.04** *March 12, 2023*
 
 - c++23 standard
 - wex-ctags and wex-syntax library added
