@@ -2,7 +2,7 @@
 // Name:      config.h
 // Purpose:   Declaration of class wex::config
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2018-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -82,7 +82,7 @@ public:
   /// You can also create a hierarchy using the parent dot child expression:
   /// @code
   /// wex::config("x.y.z").set(8);
-  /// const auto j(config("x.y.z").get(9));
+  /// const auto i(config("x.y.z").get(9));
   /// @endcode
   /// i will be 8.
   /// If you are using children, you can retrieve the value

@@ -308,8 +308,7 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
               (v.size() > i ? config(m_text_in_folder).set_first_of(v[i++]) :
                               config(m_text_in_folder).get_first_of());
           }},
-         false,
-         "grep")
+         false)
          .parse(cmdl))
   {
     statustext(cmdl.help(), std::string());

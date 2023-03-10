@@ -2,7 +2,7 @@
 // Name:      cmdline.h
 // Purpose:   Declaration of wex::cmdline class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2015-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -97,9 +97,7 @@ public:
     /// params
     const cmd_params_t& p = cmd_params_t(),
     /// add standard options
-    bool add_standard_options = true,
-    /// option prefix for all options
-    const std::string& prefix = std::string());
+    bool add_standard_options = true);
 
   /// Destructor.
   ~cmdline();

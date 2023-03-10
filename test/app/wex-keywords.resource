@@ -32,9 +32,9 @@ ${file-stdout}	stdout.txt
 Suite Setup
 	Find Appl
 	Variable Should Exist	${APPL}
-	${version} =	Evaluate	robot.__version__
-	${result} =	Get Substring	${version}	0	1
-	${result} =	Convert To Integer	${result}
+	${version}=	Evaluate	robot.__version__
+	${result}=	Get Substring	${version}	0	1
+	${result}=	Convert To Integer	${result}
 	Should Be True	${result} >= 6
 
 Suite Teardown

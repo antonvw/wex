@@ -123,18 +123,13 @@ wex::cmdline::cmdline(
   const cmd_switches_t& s,
   const cmd_options_t&  o,
   const cmd_params_t&   p,
-  bool                  add_standard_options,
-  const std::string&    prefix)
-  : m_cfg(new config(prefix))
+  bool                  add_standard_options)
+  : m_cfg(new config())
   , m_options(o)
   , m_params(p)
   , m_switches(s)
   , m_add_standard_options(add_standard_options)
 {
-  if (!prefix.empty())
-  {
-    m_cfg->child_start();
-  }
 }
 
 wex::cmdline::~cmdline()
