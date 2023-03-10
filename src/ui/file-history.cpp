@@ -28,12 +28,6 @@ public:
     , m_key(key.empty() ? "recent.Files" : key)
     , m_contents(config(m_key).get(config::strings_t{}))
   {
-    // The order should be inverted, as the last one added is the most recent
-    // used.
-    for (auto it = m_contents.rbegin(); it != m_contents.rend(); ++it)
-    {
-      AddFileToHistory(*it);
-    }
   }
 
   bool append(const path& p)
@@ -50,13 +44,16 @@ public:
     return true;
   }
 
+  const auto& contents() { return m_contents; }
+
   void save() { config(m_key).set(m_contents); }
 
+  /// Override methods.
+
+  void     AddFileToHistory(const wxString& file) override;
   wxString GetHistoryFile(size_t index = 0) const override;
 
 private:
-  void AddFileToHistory(const wxString& file) override;
-
   const std::string         m_key;
   mutable config::strings_t m_contents;
 };
@@ -68,6 +65,14 @@ wex::file_history::file_history(
   const std::string& key)
   : m_history(new file_history_imp(maxFiles, idBase, key))
 {
+  // The order should be inverted, as the last one added is the most recent
+  // used.
+  for (auto it = m_history->contents().rbegin();
+       it != m_history->contents().rend();
+       ++it)
+  {
+    m_history->AddFileToHistory(*it);
+  }
 }
 
 wex::file_history::~file_history()

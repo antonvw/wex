@@ -33,18 +33,18 @@ TEST_CASE("wex::shell")
   shell->prompt("test4");
 
   // Prompting does not add a command to history.
-  REQUIRE(shell->get_history().find("test4") == std::string::npos);
+  REQUIRE(!shell->get_history().contains("test4"));
 
   // Post 3 'a' chars to the shell, and check whether it comes in the history.
   process("aaa\r", shell);
-  REQUIRE(shell->get_history().find("aaa") != std::string::npos);
+  REQUIRE(shell->get_history().contains("aaa"));
   REQUIRE(shell->get_prompt() == ">");
   REQUIRE(shell->get_command() == "aaa");
 
   // Post 3 'b' chars to the shell, and check whether it comes in the history.
   process("bbb\r", shell);
-  REQUIRE(shell->get_history().find("aaa") != std::string::npos);
-  REQUIRE(shell->get_history().find("bbb") != std::string::npos);
+  REQUIRE(shell->get_history().contains("aaa"));
+  REQUIRE(shell->get_history().contains("bbb"));
   REQUIRE(shell->get_prompt() == ">");
   REQUIRE(shell->get_command() == "bbb");
 
@@ -80,18 +80,18 @@ TEST_CASE("wex::shell")
   shell->SetText("");
   shell->Undo(); // to reset command in shell
   process("history\r", shell);
-  REQUIRE(shell->get_text().find("aaa") != std::string::npos);
-  REQUIRE(shell->get_text().find("bbb") != std::string::npos);
+  REQUIRE(shell->get_text().contains("aaa"));
+  REQUIRE(shell->get_text().contains("bbb"));
 
   shell->SetText("");
   process("!1\r", shell);
-  REQUIRE(shell->get_text().find("aaa") != std::string::npos);
-  REQUIRE(shell->get_text().find("bbb") == std::string::npos);
+  REQUIRE(shell->get_text().contains("aaa"));
+  REQUIRE(!shell->get_text().contains("bbb"));
 
   shell->SetText("");
   process("!a\r", shell);
-  REQUIRE(shell->get_text().find("aaa") != std::string::npos);
-  REQUIRE(shell->get_text().find("bbb") == std::string::npos);
+  REQUIRE(shell->get_text().contains("aaa"));
+  REQUIRE(!shell->get_text().contains("bbb"));
 
   shell->set_process(nullptr);
 

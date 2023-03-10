@@ -12,7 +12,7 @@
 
 #include <wex/data/substitute.h>
 #include <wex/ex/address.h>
-#include <wex/factory/indicator.h>
+#include <wex/syntax/indicator.h>
 
 namespace wex
 {
@@ -22,8 +22,12 @@ class command_parser;
 namespace factory
 {
 class process;
-class stc;
 } // namespace factory
+
+namespace syntax
+{
+class stc;
+};
 
 /// Offers an address range for vi (ex).
 /// - The range is derived from a number of lines,
@@ -155,7 +159,7 @@ private:
 
   address m_begin, m_end;
 
-  ex*           m_ex;
-  factory::stc* m_stc; // shortcut for m_ex->get_stc()
+  ex*          m_ex;
+  syntax::stc* m_stc; // shortcut for m_ex->get_stc()
 };
 }; // namespace wex

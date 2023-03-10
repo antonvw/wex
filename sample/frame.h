@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of wex sample class frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -34,13 +34,14 @@ private:
   void open_file_same_page(wxCommandEvent& event) final;
 
   wex::notebook*             m_notebook{nullptr};
-  wex::stc *                 m_stc{nullptr}, *m_stc_lexers{nullptr};
+  wex::stc*                  m_stc{nullptr};
   wex::grid*                 m_grid{nullptr};
   wex::listview*             m_listview{nullptr};
+  wex::del::file*            m_project{nullptr};
   wex::process*              m_process{nullptr};
   wex::shell*                m_shell{nullptr};
   wex::grid_statistics<int>* m_statistics{nullptr};
 
   int  m_browse_index{0};
-  long m_flags_stc = 0;
+  long m_flags_stc{0};
 };

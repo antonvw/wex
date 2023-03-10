@@ -28,7 +28,7 @@ wex::ex_commandline::ex_commandline(
 {
 }
 
-wex::factory::stc* wex::ex_commandline::control()
+wex::syntax::stc* wex::ex_commandline::control()
 {
   return m_imp;
 }
@@ -54,14 +54,14 @@ void wex::ex_commandline::select_all() const
 }
 
 bool wex::ex_commandline::set_stc(
-  wex::factory::stc* stc,
+  wex::syntax::stc*  stc,
   const std::string& command)
 {
   set_stc(stc);
   return m_imp->handle(command);
 }
 
-bool wex::ex_commandline::set_stc(wex::factory::stc* stc, char command)
+bool wex::ex_commandline::set_stc(wex::syntax::stc* stc, char command)
 {
   set_stc(stc);
   return m_imp->handle(command);

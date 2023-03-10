@@ -24,23 +24,21 @@ wex::menu_command::menu_command(const pugi::xml_node& node)
       {
         const std::string text(node.attribute("type").value());
         type_t            id;
-        if (
-          text.empty() || (text.find("popup") == std::string::npos &&
-                           text.find("main") == std::string::npos))
+        if (text.empty() || (!text.contains("popup") && !text.contains("main")))
           id.set(IS_POPUP).set(IS_MAIN);
-        if (text.find("popup") != std::string::npos)
+        if (text.contains("popup"))
           id.set(IS_POPUP);
-        if (text.find("main") != std::string::npos)
+        if (text.contains("main"))
           id.set(IS_MAIN);
-        if (text.find("separator") != std::string::npos)
+        if (text.contains("separator"))
           id.set(SEPARATOR);
-        if (text.find("ellipses") != std::string::npos)
+        if (text.contains("ellipses"))
           id.set(ELLIPSES);
-        if (text.find("is-lines") != std::string::npos)
+        if (text.contains("is-lines"))
           id.set(IS_LINES);
-        if (text.find("is-selected") != std::string::npos)
+        if (text.contains("is-selected"))
           id.set(IS_SELECTED);
-        if (text.find("is-visual") != std::string::npos)
+        if (text.contains("is-visual"))
           id.set(IS_VISUAL);
 
         return id;
@@ -57,7 +55,7 @@ const std::string wex::menu_command::get_command(include_t type) const
     command += " " + m_submenu;
   }
 
-  if (command.find("&") != std::string::npos && !type[INCLUDE_ACCELL])
+  if (command.contains("&") && !type[INCLUDE_ACCELL])
   {
     command.erase(
       std::remove(command.begin(), command.end(), '&'),

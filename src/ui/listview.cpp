@@ -13,13 +13,14 @@
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
 #include <wex/core/tokenize.h>
+#include <wex/data/find.h>
 #include <wex/data/stc.h>
 #include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
-#include <wex/factory/lexers.h>
-#include <wex/factory/printing.h>
-#include <wex/factory/stc.h>
 #include <wex/factory/util.h>
+#include <wex/syntax/lexers.h>
+#include <wex/syntax/printing.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/item-dialog.h>
@@ -106,40 +107,6 @@ const std::vector<item> config_items()
         {{_("list.Readonly colour"),
           item::COLOURPICKERWIDGET,
           *wxLIGHT_GREY}}}}}});
-}
-
-std::string ignore_case(const std::string& text)
-{
-  std::string output(text);
-
-  if (!wex::find_replace_data::get()->match_case())
-  {
-    boost::algorithm::to_upper(output);
-  }
-
-  return output;
-};
-
-int check_match(int index, const std::string& look, const std::string& input)
-{
-  const auto& text(ignore_case(input));
-
-  if (find_replace_data::get()->match_word())
-  {
-    if (text == look)
-    {
-      return index;
-    }
-  }
-  else
-  {
-    if (text.find(look) != std::string::npos)
-    {
-      return index;
-    }
-  }
-
-  return -1;
 }
 }; // namespace wex
 
@@ -599,22 +566,23 @@ bool wex::listview::find_next(const std::string& text, bool forward)
     return false;
   }
 
-  std::string text_use = ignore_case(text);
-
   const auto  firstselected = GetFirstSelected();
-  static bool recursive     = false;
   static long start_item;
   static long end_item;
 
+  data::find find(text, forward);
+
   if (forward)
   {
-    start_item = recursive ? 0 : (firstselected != -1 ? firstselected + 1 : 0);
-    end_item   = GetItemCount();
+    start_item =
+      find.recursive() ? 0 : (firstselected != -1 ? firstselected + 1 : 0);
+    end_item = GetItemCount();
   }
   else
   {
-    start_item = recursive ? GetItemCount() - 1 :
-                             (firstselected != -1 ? firstselected - 1 : 0);
+    start_item = find.recursive() ?
+                   GetItemCount() - 1 :
+                   (firstselected != -1 ? firstselected - 1 : 0);
     end_item   = -1;
   }
 
@@ -625,14 +593,15 @@ bool wex::listview::find_next(const std::string& text, bool forward)
   {
     for (int col = 0; col < GetColumnCount() && match == -1; col++)
     {
-      match = check_match(index, text_use, GetItemText(index, col));
+      if (find_replace_data::get()->match(GetItemText(index, col), find))
+      {
+        match = index;
+      }
     }
   }
 
   if (match != -1)
   {
-    recursive = false;
-
     Select(match);
     EnsureVisible(match);
 
@@ -645,15 +614,13 @@ bool wex::listview::find_next(const std::string& text, bool forward)
   }
   else
   {
-    m_frame->statustext(
-      get_find_result(text, forward, recursive),
-      std::string());
+    find.statustext();
 
-    if (!recursive)
+    if (!find.recursive())
     {
-      recursive = true;
+      data::find::recursive(true);
       find_next(text, forward);
-      recursive = false;
+      data::find::recursive(false);
     }
 
     return false;
@@ -1294,43 +1261,31 @@ int wxCALLBACK compare_cb(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData)
       const auto& [r2, t2] = wex::chrono().get_time(str2);
       if (!r1 || !r2)
         return 0;
-      if (ascending)
-        return wex::compare((unsigned long)t1, (unsigned long)t2);
-      else
-        return wex::compare((unsigned long)t2, (unsigned long)t1);
+
+      return ascending ? wex::compare((unsigned long)t1, (unsigned long)t2) :
+                         wex::compare((unsigned long)t2, (unsigned long)t1);
     }
-    break;
 
     case wex::column::FLOAT:
-      if (ascending)
-        return wex::compare(std::stof(str1), std::stof(str2));
-      else
-        return wex::compare(std::stof(str2), std::stof(str1));
-      break;
+      return ascending ? wex::compare(std::stof(str1), std::stof(str2)) :
+                         wex::compare(std::stof(str2), std::stof(str1));
 
     case wex::column::INT:
-      if (ascending)
-        return wex::compare(std::stoi(str1), std::stoi(str2));
-      else
-        return wex::compare(std::stoi(str2), std::stoi(str1));
-      break;
+      return ascending ? wex::compare(std::stoi(str1), std::stoi(str2)) :
+                         wex::compare(std::stoi(str2), std::stoi(str1));
 
     case wex::column::STRING:
       if (!wex::find_replace_data::get()->match_case())
       {
-        if (ascending)
-          return wex::ignore_case(str1).compare(wex::ignore_case(str2));
-        else
-          return wex::ignore_case(str2).compare(wex::ignore_case(str1));
+        return ascending ? boost::algorithm::to_upper_copy(str1).compare(
+                             boost::algorithm::to_upper_copy(str2)) :
+                           boost::algorithm::to_upper_copy(str2).compare(
+                             boost::algorithm::to_upper_copy(str1));
       }
       else
       {
-        if (ascending)
-          return str1.compare(str2);
-        else
-          return str2.compare(str1);
+        return ascending ? str1.compare(str2) : str2.compare(str1);
       }
-      break;
 
     default:
       assert(0);

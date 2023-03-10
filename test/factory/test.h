@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      factory/test.h
+// Name:      test.h
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2022 Anton van Wezenbeek
@@ -8,7 +8,9 @@
 #pragma once
 
 #include <wex/factory/stc.h>
+#include <wx/app.h>
 
+/// Add general test header.
 #include "../test.h"
 
 namespace wex::test
@@ -19,6 +21,7 @@ namespace wex::test
 class stc : public wex::factory::stc
 {
 public:
+  /// Default constructor.
   stc()
   {
     if (wxTheApp != nullptr)
@@ -31,6 +34,7 @@ public:
     }
   };
 
+  /// Overriden virtual methods.
   bool is_visual() const override { return m_visual; }
   void visual(bool on) override { m_visual = on; }
 

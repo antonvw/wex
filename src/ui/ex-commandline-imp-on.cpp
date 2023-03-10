@@ -216,6 +216,13 @@ void wex::ex_commandline_imp::on_text_enter(wxEvent& event)
     }
 
     m_cl->get_frame()->show_ex_bar();
+
+    if (is_ex_mode())
+    {
+      ClearAll();
+      handle(":");
+      m_cl->get_frame()->show_ex_bar(wex::frame::SHOW_BAR);
+    }
   }
   else if (m_input != 0)
   {

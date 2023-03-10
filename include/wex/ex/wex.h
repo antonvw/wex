@@ -10,8 +10,6 @@
 #include <wex/ex/address.h>
 #include <wex/ex/addressrange.h>
 #include <wex/ex/command-parser.h>
-#include <wex/ex/ctags-entry.h>
-#include <wex/ex/ctags.h>
 #include <wex/ex/ex-stream.h>
 #include <wex/ex/ex.h>
 #include <wex/ex/macro-mode.h>

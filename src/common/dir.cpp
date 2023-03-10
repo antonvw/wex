@@ -2,15 +2,13 @@
 // Name:      dir.cpp
 // Purpose:   Implementation of class wex::dir
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/dir.h>
 #include <wex/common/stream.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
-#include <wex/factory/frame.h>
-#include <wx/app.h>
 #include <wx/translation.h>
 
 #include <thread>
@@ -108,7 +106,8 @@ int wex::dir::find_files()
 {
   if (!m_dir.dir_exists())
   {
-    log("traverse invalid path") << m_dir;
+    log("traverse invalid path")
+      << m_dir.string() << "current" << path::current().string();
     return 0;
   }
 
@@ -159,16 +158,7 @@ bool wex::dir::find_files(const tool& tool)
 
 void wex::dir::find_files_end() const
 {
-  if (auto* frame =
-        dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
-      frame != nullptr)
-  {
-    frame->statustext(m_tool.info(&m_statistics.get_elements()), std::string());
-  }
-  else
-  {
-    log::status(m_tool.info(&m_statistics.get_elements()));
-  }
+  log::status(m_tool.info(&m_statistics.get_elements()));
 
   if (m_eh != nullptr)
   {

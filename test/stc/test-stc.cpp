@@ -6,10 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
-#include <wex/core/log-none.h>
 #include <wex/factory/defs.h>
-#include <wex/factory/indicator.h>
-#include <wex/factory/lexers.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/ui/frd.h>
 
@@ -52,7 +49,7 @@ TEST_CASE("wex::stc")
   SUBCASE("contents_changed")
   {
     stc->SetText("added text");
-    REQUIRE(stc->get_text().find("added text") != std::string::npos);
+    REQUIRE(stc->get_text().contains("added text"));
     REQUIRE(stc->get_file().is_contents_changed());
     stc->get_file().reset_contents_changed();
     REQUIRE(!stc->get_file().is_contents_changed());
@@ -68,9 +65,6 @@ TEST_CASE("wex::stc")
     stc->clear();
     stc->config_get();
     stc->Cut();
-    stc->fold();
-    wex::config(_("stc.Auto fold")).set(3);
-    stc->fold(true);
     stc->Paste();
     stc->process_char(5);
     stc->properties_message();
@@ -103,48 +97,74 @@ TEST_CASE("wex::stc")
 
   SUBCASE("find")
   {
-    stc->set_text("hello stc and more text");
-    REQUIRE(stc->find(std::string("hello")));
-    REQUIRE(stc->get_word_at_pos(0) == "hello");
+    for (const auto mode : {wex::ex::OFF, wex::ex::VISUAL})
+    {
+      stc->get_vi().use(mode);
+      
+      stc->set_text("hello stc and more text");
+      REQUIRE(stc->find("hello"));
+      REQUIRE(stc->get_word_at_pos(0) == "hello");
 
-    REQUIRE(!stc->find(std::string("%d")));
-    REQUIRE(!stc->find(std::string("%ld")));
-    REQUIRE(!stc->find(std::string("%q")));
+      REQUIRE(!stc->find("%d"));
+      REQUIRE(!stc->find("%ld"));
+      REQUIRE(!stc->find("%q"));
 
-    REQUIRE(stc->find(std::string("hello"), wxSTC_FIND_WHOLEWORD));
-    REQUIRE(!stc->find(std::string("HELLO"), wxSTC_FIND_MATCHCASE));
-    REQUIRE((stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE) > 0);
+      REQUIRE(stc->find("hello", wxSTC_FIND_WHOLEWORD));
+      REQUIRE(!stc->find("hell", wxSTC_FIND_WHOLEWORD));
+      REQUIRE(!stc->find("HELLO", wxSTC_FIND_MATCHCASE));
 
-    wex::find_replace_data::get()->set_regex(false);
-    wex::find_replace_data::get()->set_match_case(false);
-    REQUIRE(stc->find(std::string("HELLO"))); // uses flags from frd
-    REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
+      REQUIRE((stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE) > 0);
+      REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_WHOLEWORD) > 0);
 
-    wex::log_none off;
-    REQUIRE(!stc->set_indicator(wex::indicator(4, 5), 100, 200));
-    wex::find_replace_data::get()->set_match_case(false);
-    stc->set_search_flags(-1);
-    REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
+      // uses flags from frd
+      wex::find_replace_data::get()->set_regex(false);
+      wex::find_replace_data::get()->set_match_case(false);
+      REQUIRE(stc->find("HELLO"));
+      wex::find_replace_data::get()->set_match_word(true);
+      REQUIRE(!stc->find("HELL")); 
+      REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
 
-    REQUIRE(stc->CanCut());
-    stc->Copy();
-    REQUIRE(stc->CanPaste());
+      wex::find_replace_data::get()->set_match_case(false);
+      stc->set_search_flags(-1);
+      REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
 
-    stc->DocumentStart();
-    wex::find_replace_data::get()->set_match_word(false);
-    REQUIRE(stc->find(std::string("more text")));
-    REQUIRE(stc->get_find_string() == "more text");
-    REQUIRE(stc->replace_all("more", "less") == 1);
-    REQUIRE(stc->replace_all("more", "less") == 0);
-    REQUIRE(!stc->find(std::string("more text")));
-    stc->SelectNone();
-    REQUIRE(!stc->find_next());
-    REQUIRE(stc->find(std::string("less text")));
-    REQUIRE(stc->replace_next("less text", ""));
-    REQUIRE(!stc->replace_next());
-    REQUIRE(!stc->find(std::string("less text")));
-    REQUIRE(stc->get_find_string() != "less text");
-    REQUIRE(stc->replace_all("%", "percent") == 0);
+      REQUIRE(stc->CanCut());
+      stc->Copy();
+      REQUIRE(stc->CanPaste());
+
+      stc->DocumentStart();
+      wex::find_replace_data::get()->set_match_word(false);
+      REQUIRE(stc->find("more text"));
+      REQUIRE(stc->get_find_string() == "more text");
+      REQUIRE(stc->replace_all("more", "less") == 1);
+      REQUIRE(stc->replace_all("more", "less") == 0);
+      REQUIRE(!stc->find("more text"));
+      stc->SelectNone();
+      REQUIRE(stc->find("less text"));
+      REQUIRE(stc->replace_next("less text", ""));
+      REQUIRE(!stc->replace_next());
+      REQUIRE(!stc->find("less text"));
+      REQUIRE(stc->get_find_string() != "less text");
+      REQUIRE(stc->replace_all("%", "percent") == 0);
+    }
+  }
+  
+  SUBCASE("find_next")
+  {
+    for (const auto mode : {wex::ex::OFF, wex::ex::VISUAL})
+    {
+      stc->get_vi().use(mode);
+      
+      stc->set_text("hello stc and more text");
+      wex::find_replace_data::get()->set_find_string("hello");
+      wex::find_replace_data::get()->set_match_word(true);
+      REQUIRE(stc->find_next(false));
+      
+      wex::find_replace_data::get()->set_find_string("hell");
+      REQUIRE(!stc->find_next(false));
+    }
+    
+    wex::find_replace_data::get()->set_match_word(true);
   }
 
   SUBCASE("hexmode")
@@ -223,36 +243,6 @@ TEST_CASE("wex::stc")
     REQUIRE(lexer_s.scintilla_lexer() == "rust");
   }
 
-  SUBCASE("lexers")
-  {
-    for (const auto& l : wex::lexers::get()->get_lexers())
-    {
-      if (!l.scintilla_lexer().empty())
-      {
-        CAPTURE(l.scintilla_lexer());
-        wex::lexer one(l.scintilla_lexer());
-        REQUIRE(one.is_ok());
-#ifndef __WXMSW__
-        wex::lexer two(stc);
-        REQUIRE(two.set(one));
-        REQUIRE(two.is_ok());
-#endif
-      }
-    }
-
-    REQUIRE(!wex::lexer().is_ok());
-    REQUIRE(!wex::lexer(" cpp").is_ok());
-    REQUIRE(!wex::lexer("cpp ").is_ok());
-    REQUIRE(!wex::lexer("xxx").is_ok());
-
-    stc->get_lexer().set("cpp");
-    stc->open(wex::test::get_path());
-    wex::lexers::get()->apply_global_styles(stc);
-    wex::lexers::get()->apply(stc);
-
-    stc->get_file().reset_contents_changed();
-  }
-
   SUBCASE("link")
   {
     stc->SetText("no link");
@@ -319,7 +309,7 @@ TEST_CASE("wex::stc")
   SUBCASE("open")
   {
     wex::stc stc(wex::test::get_path("test.h"));
-    REQUIRE(stc.path().string().find("test.h") != std::string::npos);
+    REQUIRE(stc.path().string().contains("test.h"));
     REQUIRE(stc.open(wex::test::get_path("test.h")));
     REQUIRE(!stc.open(wex::path("XXX")));
   }
@@ -327,13 +317,6 @@ TEST_CASE("wex::stc")
   SUBCASE("popup")
   {
     REQUIRE(stc->get_lexer().set("cpp"));
-  }
-
-  SUBCASE("position")
-  {
-    stc->position_restore();
-    stc->position_save();
-    REQUIRE(stc->position_restore());
   }
 
   SUBCASE("shift-double-click")
@@ -350,6 +333,19 @@ TEST_CASE("wex::stc")
     REQUIRE(stc->get_text() == "hello stc");
 
     stc->add_text(" added");
-    REQUIRE(stc->get_text().find("added") != std::string::npos);
+    REQUIRE(stc->get_text().contains("added"));
+  }
+
+  SUBCASE("vi")
+  {
+    REQUIRE(stc->vi_command("G"));
+    REQUIRE(stc->vi_command_finish(false));
+    stc->vi_record("xx");
+    REQUIRE(!stc->vi_is_visual());
+    REQUIRE(stc->vi_register('c').empty());
+    REQUIRE((stc->vi_search_flags() & wxSTC_FIND_REGEXP) > 0);
+    REQUIRE(stc->vi_mode().empty());
+
+    REQUIRE(stc->is_visual());
   }
 }

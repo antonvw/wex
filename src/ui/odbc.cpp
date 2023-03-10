@@ -2,13 +2,13 @@
 // Name:      odbc.cpp
 // Purpose:   Implementation of wex::odbc class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2021 Anton van Wezenbeek
+// Copyright: (c) 2008-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/item-dialog.h>
 #include <wex/ui/odbc.h>

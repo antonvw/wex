@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      factory/grid.h
+// Name:      grid.h
 // Purpose:   Declaration of wex::factory::grid class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021 Anton van Wezenbeek

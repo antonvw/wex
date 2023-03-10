@@ -33,7 +33,7 @@ bool wex::test::ex::OnInit()
   }
 
   m_frame = new wex::frame();
-  m_stc   = new ex_stc(m_frame);
+  m_stc   = new test::stc(m_frame);
   m_frame->Show();
   m_frame->pane_add(m_stc);
 
@@ -47,7 +47,7 @@ wex::frame* frame()
   return wex::test::ex::frame();
 }
 
-wex::factory::stc* get_stc()
+wex::syntax::stc* get_stc()
 {
   return wex::test::ex::get_stc();
 }

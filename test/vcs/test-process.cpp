@@ -124,13 +124,13 @@ TEST_CASE("wex::process-macro" * doctest::skip())
     // only success if run as separate subcase?
     REQUIRE(process.system(wex::process_data("echo %LINES")) == 0);
     CAPTURE(process.std_out());
-    REQUIRE(process.std_out().find("%LINES") == std::string::npos);
-    REQUIRE(process.std_out().find("15,15") != std::string::npos);
+    REQUIRE(!process.std_out().contains("%LINES"));
+    REQUIRE(process.std_out().contains("15,15"));
 
     process.get_shell()->SetSelection(1, 5);
     REQUIRE(process.system(wex::process_data("echo %LINES")) == 0);
     CAPTURE(process.std_out());
-    REQUIRE(process.std_out().find("%LINES") == std::string::npos);
-    REQUIRE(process.std_out().find("1,1") != std::string::npos);
+    REQUIRE(!process.std_out().contains("%LINES"));
+    REQUIRE(process.std_out().contains("1,1"));
   }
 }

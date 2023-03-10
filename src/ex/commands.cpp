@@ -2,9 +2,10 @@
 // Name:      comands-ex.cpp
 // Purpose:   Implementation of class wex::ex::commands_ex
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <numeric>
 #include <sstream>
 
 #include <boost/algorithm/string.hpp>
@@ -13,12 +14,12 @@
 #include <wex/core/file.h>
 #include <wex/core/log.h>
 #include <wex/core/version.h>
-#include <wex/ex/ctags.h>
+#include <wex/ctags/ctags.h>
 #include <wex/ex/ex.h>
 #include <wex/ex/macros.h>
 #include <wex/ex/util.h>
-#include <wex/factory/lexers.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/lexers.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 #include <wx/app.h>
 
@@ -26,7 +27,7 @@
   {                                                           \
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID);    \
                                                               \
-    if (command.find(" ") != std::string::npos)               \
+    if (command.contains(" "))                                \
     {                                                         \
       event.SetString(command.substr(command.find(" ") + 1)); \
     }                                                         \
@@ -69,7 +70,7 @@ command_arg_t get_command_arg(const std::string& command)
 
 bool source(ex* ex, const std::string& cmd)
 {
-  if (cmd.find(" ") == std::string::npos)
+  if (!cmd.contains(" "))
   {
     return false;
   }
@@ -163,10 +164,16 @@ wex::ex::commands_t wex::ex::commands_ex()
     {":chd(ir)?\\b|:cd\\b",
      [&](const std::string& command)
      {
-       if (command.find(" ") == std::string::npos)
-         return true;
-       wex::path::current(path(
-         wex::find_first_of(boost::algorithm::trim_right_copy(command), " ")));
+       if (!command.contains(" "))
+       { 
+         wex::path::current(path(wxGetHomeDir().ToStdString()));
+       }
+       else
+       {
+         wex::path::current(path(
+           wex::find_first_of(boost::algorithm::trim_right_copy(command), " ")));
+       }
+
        return true;
      }},
     {":close\\b",
@@ -269,7 +276,7 @@ wex::ex::commands_t wex::ex::commands_ex()
     {":print\\b",
      [&](const std::string& command)
      {
-       get_stc()->print(command.find(" ") == std::string::npos);
+       get_stc()->print(!command.contains(" "));
        return true;
      }},
     {":pwd\\b",
@@ -281,20 +288,21 @@ wex::ex::commands_t wex::ex::commands_ex()
     {":q(uit)?!?\\b",
      [&](const std::string& command)
      {
-       POST_CLOSE(wxEVT_CLOSE_WINDOW, command.find("!") == std::string::npos)
+       POST_CLOSE(wxEVT_CLOSE_WINDOW, !command.contains("!"))
        return true;
      }},
     {":reg\\b",
      [&](const std::string& command)
      {
        const lexer_props l;
-       auto              output(l.make_section("Named buffers"));
-       for (const auto& it : m_macros.get_registers())
-       {
-         output += it;
-       }
-       output += l.make_section("Filename buffer");
-       output += l.make_key("%", m_command.get_stc()->path().filename());
+       const auto&       regs(m_macros.get_registers());
+       const auto        output(
+         std::accumulate(
+           regs.begin(),
+           regs.end(),
+           l.make_section("Named buffers")) +
+         l.make_section("Filename buffer") +
+         l.make_key("%", m_command.get_stc()->path().filename()));
        show_dialog("Registers", output, l.scintilla_lexer());
        return true;
      }},
@@ -344,7 +352,7 @@ wex::ex::commands_t wex::ex::commands_ex()
     {":una(bbrev)?\\b",
      [&](const std::string& command)
      {
-       if (command.find(" ") != std::string::npos)
+       if (command.contains(" "))
        {
          m_macros.set_abbreviation(find_after(command, " "), "");
        }
@@ -353,7 +361,7 @@ wex::ex::commands_t wex::ex::commands_ex()
     {":unm(ap)?\\b",
      [&](const std::string& command)
      {
-       if (command.find(" ") != std::string::npos)
+       if (command.contains(" "))
        {
          switch (get_command_arg(command))
          {

@@ -7,19 +7,8 @@
 
 #include <wex/core/config.h>
 #include <wex/factory/link.h>
-#include <wex/factory/stc.h>
 
-#include "../test.h"
-
-class fstc : public wex::factory::stc
-{
-public:
-  fstc() { Create(wxTheApp->GetTopWindow(), -1); }
-
-private:
-  const wex::path& path() const override { return m_path; };
-  wex::path        m_path;
-};
+#include "test.h"
 
 void link(
   wex::factory::link& link,
@@ -43,7 +32,7 @@ void link(
     CAPTURE(expect);
     const std::string p(link.get_path(path, data).string());
     CAPTURE(p);
-    REQUIRE(p.find(expect) != std::string::npos);
+    REQUIRE(p.contains(expect));
   }
   else
   {
@@ -58,7 +47,7 @@ void link(
 #ifdef __UNIX__
 TEST_CASE("wex::factory::link")
 {
-  auto* stc = new fstc();
+  auto* stc = new wex::test::stc();
 
   SUBCASE("constructor")
   {

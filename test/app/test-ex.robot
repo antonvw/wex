@@ -1,3 +1,7 @@
+*** Comments ***
+Copyright: (c) 2020-2023 Anton van Wezenbeek
+
+
 *** Settings ***
 Documentation	Testcases for wex ex
 Test Setup	Test Setup
@@ -19,7 +23,7 @@ addressing
 	...	:a|line has no match
 	...	:/text/,/u/ya
 	Appl
-	Output Contains	8
+	Output Contains	15
 
 empty
 	Input	:1000
@@ -96,6 +100,16 @@ substitute
 	Output Contains	1
 	Output Contains	simon
 
+substitute-eol
+	Input	:a|line has text
+	...	:a|line has a tiger
+	...	:a|line has simon and simon and garfunkel
+	...	:%s/$/EOL/
+	Appl
+	Contents Contains	textEOL
+	Contents Contains	tigerEOL
+	Contents Contains	garfunkelEOL
+
 substitute-global
 	Input	:a|line has text
 	...	:a|line has a tiger
@@ -105,7 +119,3 @@ substitute-global
 	Output Contains	2
 	Output Contains	simon
 	Contents Does Not Contain	simon
-
-
-*** Comments ***
-Copyright: (c) 2020-2022 Anton van Wezenbeek

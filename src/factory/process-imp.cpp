@@ -100,9 +100,9 @@ bool wex::factory::process_imp::stop(wxEvtHandler* e)
       return true;
     }
   }
-  catch (std::exception& e)
+  catch (std::exception& ex)
   {
-    log(e) << "stop" << m_data.exe();
+    log(ex) << "stop" << m_data.exe();
   }
 
   return false;

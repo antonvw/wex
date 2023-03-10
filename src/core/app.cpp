@@ -2,22 +2,18 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wex::app class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2009-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/app.h>
 #include <wex/core/config.h>
-#include <wex/core/interruptible.h>
 #include <wex/core/log.h>
 #include <wex/core/version.h>
 #include <wx/clipbrd.h>
 
-#include <filesystem>
 #include <iostream>
 
 #include "app-locale.h"
-
-namespace fs = std::filesystem;
 
 const std::string wex::app::get_catalog_dir() const
 {
@@ -33,7 +29,6 @@ int wex::app::OnExit()
 {
   try
   {
-    interruptible::on_exit();
     config::on_exit();
 
     log::info("exit");
@@ -48,12 +43,11 @@ int wex::app::OnExit()
 
 bool wex::app::OnInit()
 {
-  log::init();
+  log::on_init();
   log::info("started") << GetAppName().ToStdString()
                        << get_version_info().get();
 
   config::on_init();
-  interruptible::on_init();
 
   // Construct translation, from now on things will be translated.
   set_language();

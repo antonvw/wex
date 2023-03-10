@@ -31,7 +31,7 @@ bool wex::vcs_command::is_commit() const
 
 bool wex::vcs_command::is_diff() const
 {
-  return get_command(0).find("diff") != std::string::npos;
+  return get_command(0).contains("diff");
 }
 
 bool wex::vcs_command::is_history() const

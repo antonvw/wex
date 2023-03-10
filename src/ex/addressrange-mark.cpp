@@ -2,12 +2,12 @@
 // Name:      addressrange-mark.cpp
 // Purpose:   Implementation of class wex::addressrange_mark
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex/addressrange.h>
 #include <wex/ex/ex.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 
 #include "addressrange-mark.h"
 #include "block-lines.h"
@@ -73,8 +73,28 @@ wex::addressrange_mark::get_type(const data::substitute& data) const
 
 bool wex::addressrange_mark::search(const data::substitute& data)
 {
-  return m_stc->SearchInTarget(data.pattern()) != -1 &&
-         m_ex->marker_add('T', m_stc->LineFromPosition(m_stc->GetTargetEnd()));
+  if (data.pattern() == "$")
+  {
+    if (m_ex->marker_line('T') == m_ex->marker_line('$'))
+    {
+      return false;
+    }
+
+    m_stc->SetTargetRange(
+      m_stc->GetLineEndPosition(m_ex->marker_line('T')),
+      m_stc->GetLineEndPosition(m_ex->marker_line('T')));
+
+    return m_ex->marker_add(
+      'T',
+      m_stc->LineFromPosition(m_stc->GetTargetEnd()) + 1);
+  }
+  else
+  {
+    return m_stc->SearchInTarget(data.pattern()) != -1 &&
+           m_ex->marker_add(
+             'T',
+             m_stc->LineFromPosition(m_stc->GetTargetEnd()));
+  }
 }
 
 bool wex::addressrange_mark::set()
@@ -91,6 +111,7 @@ bool wex::addressrange_mark::set()
 
   if (
     !m_ex->marker_add('#', m_ar.begin().get_line() - 1) ||
+    !m_ex->marker_add('T', m_ar.begin().get_line() - 1) ||
     !m_ex->marker_add('$', end_line))
   {
     return false;

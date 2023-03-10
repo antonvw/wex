@@ -11,14 +11,14 @@
 #include <wex/core/log.h>
 #include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
-#include <wex/factory/lexer-props.h>
-#include <wex/factory/lexers.h>
-#include <wex/factory/path-lexer.h>
 #include <wex/factory/sort.h>
 #include <wex/stc/beautify.h>
 #include <wex/stc/bind.h>
 #include <wex/stc/entry-dialog.h>
 #include <wex/stc/stc.h>
+#include <wex/syntax/lexer-props.h>
+#include <wex/syntax/lexers.h>
+#include <wex/syntax/path-lexer.h>
 #include <wex/ui/debug-entry.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
@@ -96,6 +96,21 @@ void edit_control_char(stc* stc)
   }
 
   value = new_value;
+}
+
+const std::string get_properties(
+  const lexer_props&           l,
+  const std::vector<property>& props,
+  wxStyledTextCtrl*            stc)
+{
+  return std::accumulate(
+    props.begin(),
+    props.end(),
+    std::string(),
+    [stc, l](const std::string& a, const property& b)
+    {
+      return a + l.make_key(b.name(), stc->GetProperty(b.name()));
+    });
 }
 
 } // namespace wex
@@ -234,7 +249,7 @@ void wex::stc::bind_all()
       id::stc::uppercase},
      {[=, this](wxCommandEvent& event)
       {
-        fold_all();
+        fold(true);
       },
       id::stc::fold_all},
 
@@ -264,6 +279,7 @@ void wex::stc::bind_all()
      {[=, this](wxCommandEvent& event)
       {
         config("blame.author").toggle(true);
+        m_frame->vcs_blame(this);
       },
       id::stc::margin_text_author},
 
@@ -282,12 +298,14 @@ void wex::stc::bind_all()
      {[=, this](wxCommandEvent& event)
       {
         config("blame.date").toggle(true);
+        m_frame->vcs_blame(this);
       },
       id::stc::margin_text_date},
 
      {[=, this](wxCommandEvent& event)
       {
         config("blame.id").toggle(false);
+        m_frame->vcs_blame(this);
       },
       id::stc::margin_text_id},
 
@@ -621,6 +639,11 @@ void wex::stc::file_action(const wxCommandEvent& event)
       log::status(_("Opened")) << path();
       log::info("opened") << path();
       fold();
+
+      // This is to take care that current dir follows page selection.
+      // Which is convenient for git grep, ls etc. and opening from stc window.
+      path::current(path().data().parent_path());
+
       [[fallthrough]];
 
     case stc_file::FILE_LOAD_SYNC:
@@ -780,22 +803,8 @@ void wex::stc::show_properties()
   auto properties = (!propnames.empty() ? l.make_section("Current properties") :
                                           std::string()) +
                     // Add current (global and lexer) properties.
-                    std::accumulate(
-                      lexers::get()->properties().begin(),
-                      lexers::get()->properties().end(),
-                      std::string(),
-                      [this, l](const std::string& a, const property& b)
-                      {
-                        return a + l.make_key(b.name(), GetProperty(b.name()));
-                      }) +
-                    std::accumulate(
-                      get_lexer().properties().begin(),
-                      get_lexer().properties().end(),
-                      std::string(),
-                      [this, l](const std::string& a, const property& b)
-                      {
-                        return a + l.make_key(b.name(), GetProperty(b.name()));
-                      });
+                    get_properties(l, lexers::get()->properties(), this) +
+                    get_properties(l, get_lexer().properties(), this);
 
   // Add available properties.
   if (!propnames.empty())

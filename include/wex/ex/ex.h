@@ -10,8 +10,8 @@
 #include <wex/core/regex.h>
 #include <wex/core/type-to-value.h>
 #include <wex/factory/ex-command.h>
-#include <wex/factory/lexer-props.h>
-#include <wex/factory/marker.h>
+#include <wex/syntax/lexer-props.h>
+#include <wex/syntax/marker.h>
 
 #include <functional>
 #include <map>
@@ -26,17 +26,23 @@ class macros;
 class macro_mode;
 class frame;
 
-enum class info_message_t
+namespace syntax
 {
-  ADD,
-  COPY,
-  DEL,
-  MOVE,
-  NONE,
-  YANK,
+class stc;
 };
 
-/// Offers a class that adds ex editor to wex::factory::stc.
+/// The message shown for some action.
+enum class info_message_t
+{
+  ADD,  ///< adding lines
+  COPY, ///< copying lines
+  DEL,  ///< erasing lines
+  MOVE, ///< moving lines
+  NONE, ///< no action shown
+  YANK, ///< yanking lines
+};
+
+/// Offers a class that adds ex editor to wex::syntax::stc.
 class ex
 {
   friend class macro_mode;
@@ -64,14 +70,14 @@ public:
   /// The visual modes.
   enum mode_t
   {
-    OFF,    // off, not using ex or vi mode
-    EX,     // ex mode, without vi keys, for reading large files
-    VISUAL, // vi mode
+    OFF,    ///< not using ex or vi mode
+    EX,     ///< ex mode, without vi keys, for reading large files
+    VISUAL, ///< normal vi mode
   };
 
   /// Constructor.
   /// Provide stc cpomponent and ex mode.
-  explicit ex(factory::stc* stc, mode_t mode = VISUAL);
+  explicit ex(syntax::stc* stc, mode_t mode = VISUAL);
 
   /// Destructor.
   virtual ~ex();
@@ -109,7 +115,7 @@ public:
   const auto& get_command() const { return m_command; }
 
   /// Returns stc component.
-  factory::stc* get_stc() const;
+  syntax::stc* get_stc() const;
 
   /// Shows info message.
   void info_message(const std::string& text, info_message_t type) const;
@@ -149,6 +155,9 @@ public:
 
   /// Returns search flags.
   auto search_flags() const { return m_search_flags; }
+
+  /// Sets the whole word flag in search flags.
+  void search_whole_word();
 
   /// Set mode.
   void use(mode_t mode);
@@ -208,7 +217,8 @@ private:
 
   bool m_auto_write{false}, m_copy{false}; // this is a copy, result of split
 
-  int m_search_flags;
+  const int m_search_flags_regex;
+  int       m_search_flags;
 
   char m_register{0};
 

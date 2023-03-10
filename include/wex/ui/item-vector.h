@@ -103,7 +103,7 @@ bool wex::item_vector::find(
       {
         if (find_before(choice, ",") == label)
         {
-          value = std::any_cast<T>(choice.find(",") != std::string::npos);
+          value = std::any_cast<T>(choice.contains(","));
           return true;
         }
       }

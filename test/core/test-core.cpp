@@ -2,7 +2,7 @@
 // Name:      test-core.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
@@ -22,7 +22,7 @@ TEST_CASE("wex::core")
 
   SUBCASE("ellipsed")
   {
-    REQUIRE(wex::ellipsed("xxx").find("...") != std::string::npos);
+    REQUIRE(wex::ellipsed("xxx").contains("..."));
   }
 
   SUBCASE("find_after")
@@ -54,36 +54,6 @@ TEST_CASE("wex::core")
     REQUIRE(wex::find_tail("testtest", 9) == std::string("testtest"));
   }
 
-  SUBCASE("get_find_result")
-  {
-    REQUIRE(
-      wex::get_find_result("test", true, true).find("test") !=
-      std::string::npos);
-    REQUIRE(
-      wex::get_find_result("test", true, false).find("test") !=
-      std::string::npos);
-    REQUIRE(
-      wex::get_find_result("test", false, true).find("test") !=
-      std::string::npos);
-    REQUIRE(
-      wex::get_find_result("test", false, false).find("test") !=
-      std::string::npos);
-
-    REQUIRE(
-      wex::get_find_result("%d", true, true).find("%d") != std::string::npos);
-    REQUIRE(
-      wex::get_find_result("%d", true, false).find("%d") != std::string::npos);
-    REQUIRE(
-      wex::get_find_result("%d", false, true).find("%d") != std::string::npos);
-    REQUIRE(
-      wex::get_find_result("%d", false, false).find("%d") != std::string::npos);
-  }
-
-  SUBCASE("get_iconid")
-  {
-    REQUIRE(wex::get_iconid(wex::test::get_path("test.h")) != -1);
-  }
-
   SUBCASE("get_number_of_lines")
   {
     REQUIRE(wex::get_number_of_lines("test") == 1);
@@ -93,6 +63,13 @@ TEST_CASE("wex::core")
     REQUIRE(wex::get_number_of_lines("test\rtest\r") == 3);
     REQUIRE(wex::get_number_of_lines("test\r\ntest\n") == 3);
 
+    // A DOS file.
+    REQUIRE(wex::get_number_of_lines("test\rtest\n\n\r\r\r\n\n\n") == 6);
+
+    // No DOS file.
+    REQUIRE(wex::get_number_of_lines("test\rtest\n\n\r\r\rx\n\n\n") == 10);
+
+    // trimmed
     REQUIRE(wex::get_number_of_lines("test\r\ntest\n\n\n", true) == 2);
     REQUIRE(wex::get_number_of_lines("test\r\ntest\n\n", true) == 2);
     REQUIRE(wex::get_number_of_lines("test\r\ntest\n\n", true) == 2);
@@ -119,6 +96,10 @@ TEST_CASE("wex::core")
     std::string spaces("    ");
     REQUIRE(wex::get_word(spaces).empty());
     REQUIRE(spaces.empty());
+
+    std::string with_nl("test\ntest2");
+    REQUIRE(wex::get_word(with_nl) == "test");
+    REQUIRE(wex::get_word(with_nl) == "test2");
   }
 
   SUBCASE("is_brace")

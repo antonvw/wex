@@ -2,11 +2,12 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
+#include <wex/common/dir.h>
 #include <wex/common/tostring.h>
 #include <wex/common/util.h>
 #include <wex/core/cmdline.h>
@@ -16,9 +17,9 @@
 #include <wex/del/wex.h>
 #include <wex/ex/command-parser.h>
 #include <wex/ex/macros.h>
-#include <wex/factory/blame.h>
-#include <wex/factory/lexers.h>
 #include <wex/stc/wex.h>
+#include <wex/syntax/blame.h>
+#include <wex/syntax/lexers.h>
 #include <wex/ui/wex.h>
 #include <wex/vcs/wex.h>
 
@@ -26,6 +27,9 @@
 
 namespace wex::del
 {
+/// The lowest number of projects to be supported.
+const int ID_RECENT_PROJECT_LOWEST = wxID_FILE1 + NUMBER_RECENT_FILES + 1;
+
 const std::string find_replace_string(bool replace)
 {
   return std::string(_("Searching for") + ": ") +
@@ -65,7 +69,6 @@ wex::del::frame::frame(
                 {wxACCEL_CTRL, 'T', ID_VIEW_TITLEBAR}})
     .set(this);
 
-  vcs::load_document();
   ex::get_macros().load_document();
 
   const std::vector<item> f{
@@ -190,12 +193,12 @@ void wex::del::frame::debug_add_menu(menu& m, bool b)
   m_debug->add_menu(&m, b);
 }
 
-void wex::del::frame::debug_exe(int id, factory::stc* stc)
+void wex::del::frame::debug_exe(int id, syntax::stc* stc)
 {
   m_debug->execute(id, dynamic_cast<wex::stc*>(stc));
 }
 
-void wex::del::frame::debug_exe(const std::string& exe, factory::stc* stc)
+void wex::del::frame::debug_exe(const std::string& exe, syntax::stc* stc)
 {
   m_debug->execute(exe, dynamic_cast<wex::stc*>(stc));
 }
@@ -215,7 +218,7 @@ bool wex::del::frame::debug_print(const std::string& text)
   return m_debug->print(text);
 }
 
-bool wex::del::frame::debug_toggle_breakpoint(int line, factory::stc* stc)
+bool wex::del::frame::debug_toggle_breakpoint(int line, syntax::stc* stc)
 {
   return m_debug->toggle_breakpoint(line, dynamic_cast<wex::stc*>(stc));
 }
@@ -324,7 +327,9 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
   const wex::tool tool(sed ? ID_TOOL_REPLACE : ID_TOOL_REPORT_FIND);
 
   if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
+  {
     path::current(stc->path().data().parent_path());
+  }
 
   find_replace_data::get()->set_regex(true);
   log::status(find_replace_string(false));
@@ -340,7 +345,7 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
   return true;
 }
 
-bool wex::del::frame::is_address(factory::stc* stc, const std::string& text)
+bool wex::del::frame::is_address(syntax::stc* stc, const std::string& text)
 {
   if (auto* wexstc = dynamic_cast<wex::stc*>(stc); wexstc != nullptr)
   {
@@ -393,7 +398,7 @@ void wex::del::frame::on_command_item_dialog(
 
         case id_find_in_files:
         case id_replace_in_files:
-          find_in_files((window_id)dialogid);
+          find_in_files((wex::window_id)dialogid);
           break;
 
         default:
@@ -457,6 +462,10 @@ void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
     set_recent_file(stc->path());
 
     statustext_vcs(stc);
+
+    // This is to take care that current dir follows page selection.
+    // Which is convenient for git grep, ls etc. and opening from stc window.
+    path::current(stc->path().data().parent_path());
   }
 }
 
@@ -470,8 +479,11 @@ void wex::del::frame::open_from_event(
     if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
     {
       wex::path::current(stc->path().data().parent_path());
+
       if (!marker_and_register_expansion(&stc->get_vi(), text))
+      {
         return;
+      }
     }
 
     if (!shell_expansion(text))
@@ -533,7 +545,7 @@ void wex::del::frame::set_recent_file(const wex::path& path)
   }
 }
 
-void wex::del::frame::show_ex_bar(int action, factory::stc* stc)
+void wex::del::frame::show_ex_bar(int action, syntax::stc* stc)
 {
   if (action == SHOW_BAR || stc != nullptr)
   {
@@ -573,7 +585,7 @@ void wex::del::frame::show_ex_message(const std::string& text)
     show_ex_bar();
   }
 
-  statustext(text, std::string());
+  log::status(text);
 }
 
 int wex::del::frame::show_stc_entry_dialog(bool modal)
@@ -699,7 +711,7 @@ void wex::del::frame::statustext_vcs(factory::stc* stc)
   }
 }
 
-wex::factory::stc* wex::del::frame::stc_entry_dialog_component()
+wex::syntax::stc* wex::del::frame::stc_entry_dialog_component()
 {
   return entry_dialog()->get_stc();
 }
@@ -753,16 +765,16 @@ void wex::del::frame::vcs_add_path(factory::link* l)
 }
 
 void wex::del::frame::vcs_annotate_commit(
-  factory::stc*      stc,
+  syntax::stc*       stc,
   int                line,
   const std::string& commit_id)
 {
   wex::vcs vcs{
     {!stc->get_data()->head_path().empty() ? stc->get_data()->head_path() :
-                                             path()}};
+                                             stc->path()}};
 
   if (const auto& revision(commit_id);
-      !revision.empty() && vcs.entry().log(path(), revision))
+      !revision.empty() && vcs.entry().log(stc->path(), revision))
   {
     stc->AnnotationSetText(
       line,
@@ -774,14 +786,22 @@ void wex::del::frame::vcs_annotate_commit(
   }
 }
 
-void wex::del::frame::vcs_blame_revison(
-  factory::stc*      stc,
+void wex::del::frame::vcs_blame(syntax::stc* stc)
+{
+  if (wex::vcs vcs{{stc->path()}}; vcs.execute("blame " + stc->path().string()))
+  {
+    vcs_blame_show(&vcs.entry(), stc);
+  }
+}
+
+void wex::del::frame::vcs_blame_revision(
+  syntax::stc*       stc,
   const std::string& renamed,
   const std::string& offset)
 {
   blaming bl(stc, offset);
 
-  if (!bl.execute(path()))
+  if (!bl.execute(stc->path()))
   {
     return;
   }
@@ -794,13 +814,13 @@ void wex::del::frame::vcs_blame_revison(
 
   if (data.head_path().empty())
   {
-    data.head_path(path());
+    data.head_path(stc->path());
   }
 
-  factory::frame::open_file(wex::path(bl.renamed()), bl.vcs().entry(), data);
+  open_file_vcs(wex::path(path(bl.renamed())), bl.vcs().entry(), data);
 }
 
-bool wex::del::frame::vcs_blame_show(vcs_entry* vcs, stc* stc)
+bool wex::del::frame::vcs_blame_show(vcs_entry* vcs, syntax::stc* stc)
 {
   if (!vcs->get_blame().use() || vcs->std_out().empty())
   {
@@ -823,7 +843,7 @@ bool wex::del::frame::vcs_blame_show(vcs_entry* vcs, stc* stc)
          vcs->std_out(),
          boost::char_separator<char>("\r\n")))
   {
-    blame->parse(path(), it);
+    blame->parse(stc->path(), it);
 
     if (first)
     {

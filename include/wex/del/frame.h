@@ -20,7 +20,6 @@ namespace wex
 class debug;
 class item_dialog;
 class process;
-class stc;
 class stc_entry_dialog;
 }; // namespace wex
 
@@ -58,10 +57,6 @@ public:
   /// Default it returns nullptr.
   virtual file* get_project() { return nullptr; }
 
-  /// Shows blame info for vcs in the text margin.
-  /// Returns true if info was added.
-  virtual bool vcs_blame_show(vcs_entry* vcs, stc*);
-
   /// Other methods
 
   /// Returns a list with default file extensions.
@@ -88,7 +83,7 @@ public:
     bool add_in_files = false);
 
   /// Returns caption for find_in_files_dialog.
-  const std::string find_in_files_title(window_id id) const;
+  const std::string find_in_files_title(wex::window_id id) const;
 
   /// Debugging interface.
   auto* get_debug() { return m_debug; }
@@ -131,6 +126,10 @@ public:
   /// to the list.
   void use_file_history_list(listview* list);
 
+  /// Shows blame info for vcs in the text margin.
+  /// Returns true if info was added.
+  bool vcs_blame_show(vcs_entry* vcs, syntax::stc*);
+
   /// Overridden methods.
 
   void append_vcs(menu*, const menu_item* i) const override;
@@ -139,14 +138,14 @@ public:
     const std::vector<wxAcceleratorEntry>& v,
     bool                                   debug = false) override;
   void          debug_add_menu(menu& m, bool b) override;
-  void          debug_exe(int id, factory::stc* stc) override;
-  void          debug_exe(const std::string& exe, factory::stc* stc) override;
+  void          debug_exe(int id, syntax::stc* stc) override;
+  void          debug_exe(const std::string& exe, syntax::stc* stc) override;
   wxEvtHandler* debug_handler() override;
   bool          debug_is_active() const override;
   bool          debug_print(const std::string& text) override;
-  bool          debug_toggle_breakpoint(int line, factory::stc* stc) override;
+  bool          debug_toggle_breakpoint(int line, syntax::stc* stc) override;
 
-  bool is_address(factory::stc* stc, const std::string& text) override;
+  bool is_address(syntax::stc* stc, const std::string& text) override;
 
   void on_command_item_dialog(wxWindowID dialogid, const wxCommandEvent& event)
     override;
@@ -156,25 +155,24 @@ public:
 
   void set_recent_file(const path& path) override;
 
-  void show_ex_bar(int action = HIDE_BAR_FOCUS_STC, factory::stc* stc = nullptr)
+  void show_ex_bar(int action = HIDE_BAR_FOCUS_STC, syntax::stc* stc = nullptr)
     override;
   void show_ex_message(const std::string& text) override;
   void statusbar_clicked(const std::string&) override;
   void statusbar_clicked_right(const std::string&) override;
 
-  int           show_stc_entry_dialog(bool modal = false) override;
-  factory::stc* stc_entry_dialog_component() override;
-  std::string   stc_entry_dialog_title() const override;
-  void          stc_entry_dialog_title(const std::string& title) override;
-  void          stc_entry_dialog_validator(const std::string& regex) override;
+  int          show_stc_entry_dialog(bool modal = false) override;
+  syntax::stc* stc_entry_dialog_component() override;
+  std::string  stc_entry_dialog_title() const override;
+  void         stc_entry_dialog_title(const std::string& title) override;
+  void         stc_entry_dialog_validator(const std::string& regex) override;
 
   void vcs_add_path(factory::link*) override;
-  void vcs_annotate_commit(
-    factory::stc*,
-    int                line,
-    const std::string& commit_id) override;
-  void vcs_blame_revison(
-    factory::stc*,
+  void vcs_annotate_commit(syntax::stc*, int line, const std::string& commit_id)
+    override;
+  void vcs_blame(syntax::stc*) override;
+  void vcs_blame_revision(
+    syntax::stc*,
     const std::string& renamed,
     const std::string& offset) override;
   bool vcs_dir_exists(const path& p) const override;
@@ -199,7 +197,7 @@ private:
     const std::string& title = std::string(),
     const std::string& text  = std::string());
 
-  void find_in_files(window_id id);
+  void find_in_files(wex::window_id id);
   void on_idle(wxIdleEvent& event);
 
   item_dialog *     m_fif_dialog{nullptr}, *m_rif_dialog{nullptr};

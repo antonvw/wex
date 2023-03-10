@@ -1,3 +1,7 @@
+*** Comments ***
+Copyright: (c) 2020-2023 Anton van Wezenbeek
+
+
 *** Settings ***
 Documentation	Testcases for wex vi
 Test Setup	Test Setup
@@ -54,7 +58,7 @@ escape
 	...	:!wc -l
 	...	
 	Appl
-	Contents Contains	10
+	Contents Contains	5
 
 find-not
 	Input	:a|x
@@ -63,7 +67,7 @@ find-not
 	...	/zz
 	...	:.=
 	Appl
-	Output Contains	4
+	Output Contains	7
 
 find-ok
 	Input	:a|x
@@ -72,7 +76,7 @@ find-ok
 	...	/z
 	...	:.=
 	Appl
-	Output Contains	3
+	Output Contains	5
 
 info
 	Input	:a|line has text
@@ -174,7 +178,6 @@ mode-visual
 	Output Contains	10
 	Output Contains	35
 	Output Contains	fewer
-	Output Does Not Contain	9
 
 mode-visual-yank-range
 	Input Many	:a|line has text	50
@@ -183,7 +186,7 @@ mode-visual-yank-range
 	...	G
 	...	y
 	Appl
-	Output Contains	50
+	Output Contains	100
 	Output Contains	yanked
 
 navigate
@@ -193,6 +196,16 @@ navigate
 	...	:.=
 	Appl
 	Output Contains	8
+
+substitute-undo
+	Input	:a|line has text
+	...	:a|line has a tiger
+	...	:a|line has simon and simon and garfunkel
+	...	:%s/simon/nick/g
+	...	u
+	Appl
+	Output Contains	2
+	Output Contains	simon
 
 undo
 	Input Many	:a|line	10
@@ -214,7 +227,7 @@ yank-range
 	Input	:1
 	...	yG
 	Appl
-	Output Contains	100
+	Output Contains	200
 	Output Contains	yanked
 
 yank-register
@@ -228,7 +241,3 @@ yank-register
 	...	
 	Appl
 	Contents Contains	lineline
-
-
-*** Comments ***
-Copyright: (c) 2020-2022 Anton van Wezenbeek

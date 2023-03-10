@@ -2,9 +2,10 @@
 // Name:      version.cpp
 // Purpose:   Implementation of wex::version_info
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/core.h>
 #include <wex/core/version.h>
 #include <wx/translation.h>
 
@@ -15,11 +16,11 @@ const wex::version_info wex::get_version_info()
 {
   return version_info(
     {"wex",
-     22,
-     10,
+     23,
+     04,
      0,
      _("wex library (a library that offers windows ex and vi components)"),
-     "(c) 1998-2022, Anton van Wezenbeek." + _("All rights reserved.")});
+     "(c) 1998-2023, Anton van Wezenbeek." + _("All rights reserved.")});
 }
 
 wex::version_info::version_info(const wxVersionInfo& info)
@@ -37,10 +38,9 @@ const std::string wex::version_info::description() const
   return m_version.GetDescription();
 }
 
-const std::string wex::version_info::get() const
+const std::string wex::version_info::get(bool include_name) const
 {
-  std::stringstream ss;
-  ss << m_version.GetMajor() << "." << std::setfill('0') << std::setw(2)
-     << m_version.GetMinor() << "." << m_version.GetMicro();
-  return ss.str();
+  return include_name ?
+           m_version.GetVersionString().ToStdString() :
+           find_after(m_version.GetVersionString().ToStdString(), " ");
 }

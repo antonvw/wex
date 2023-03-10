@@ -5,6 +5,7 @@
 // Copyright: (c) 2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <numeric>
 #include <sstream>
 
 #include "item.h"
@@ -23,17 +24,16 @@ const std::any get_value_prim(const wex::item* item)
     case item::CHECKLISTBOX_BIT:
     case item::RADIOBOX:
     {
-      long value = 0;
-      for (const auto& b :
-           std::any_cast<wex::item::choices_t>(item->data().initial()))
-      {
-        if (b.second.find(",") != std::string::npos)
+      const auto& choices(
+        std::any_cast<wex::item::choices_t>(item->data().initial()));
+      return std::any(std::accumulate(
+        choices.begin(),
+        choices.end(),
+        0L,
+        [](long a, const auto& b)
         {
-          value |= b.first;
-        }
-      }
-
-      return std::any(value);
+          return (b.second.contains(",")) ? a |= b.first : a;
+        }));
     }
 
     default:
@@ -144,6 +144,6 @@ const std::string str(const std::string& name, const std::any& any)
 
 const item::type_t use_type(const std::string& label, item::type_t t)
 {
-  return label.find(':') != std::string::npos ? item::STATICTEXT : t;
+  return label.contains(':') ? item::STATICTEXT : t;
 }
 } // namespace wex

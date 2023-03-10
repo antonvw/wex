@@ -31,6 +31,18 @@
     }                                                        \
   }
 
+#define PICKER_HANDLE(COMPONENT)                              \
+  if (auto* pc = reinterpret_cast<COMPONENT*>(item.window()); \
+      item.data().control().is_required())                    \
+  {                                                           \
+    if (pc->GetPath().empty())                                \
+    {                                                         \
+      event.Enable(false);                                    \
+      return true;                                            \
+    }                                                         \
+  }                                                           \
+  return false;
+
 #include <vector>
 
 namespace wex
@@ -417,17 +429,7 @@ bool wex::item_template_dialog<T>::process_dirpickerctrl(
   const T&         item,
   wxUpdateUIEvent& event)
 {
-  if (auto* pc = reinterpret_cast<wxDirPickerCtrl*>(item.window());
-      item.data().control().is_required())
-  {
-    if (pc->GetPath().empty())
-    {
-      event.Enable(false);
-      return true;
-    }
-  }
-
-  return false;
+  PICKER_HANDLE(wxDirPickerCtrl)
 }
 
 template <class T>
@@ -435,17 +437,7 @@ bool wex::item_template_dialog<T>::process_filepickerctrl(
   const T&         item,
   wxUpdateUIEvent& event)
 {
-  if (auto* pc = reinterpret_cast<wxFilePickerCtrl*>(item.window());
-      item.data().control().is_required())
-  {
-    if (pc->GetPath().empty())
-    {
-      event.Enable(false);
-      return true;
-    }
-  }
-
-  return false;
+  PICKER_HANDLE(wxFilePickerCtrl)
 }
 
 template <class T>

@@ -59,7 +59,7 @@ TEST_CASE("wex::listview")
     REQUIRE(!lv->find_next("another new item"));
     REQUIRE(lv->item_from_text("999"));
 
-    REQUIRE(lv->item_to_text(0).find("95") != std::string::npos);
+    REQUIRE(lv->item_to_text(0).contains("95"));
     REQUIRE(!lv->item_to_text(-1).empty());
 
     REQUIRE(lv->set_item(0, 3, "new"));

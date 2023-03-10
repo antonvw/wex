@@ -1,5 +1,5 @@
 project(wex-test-vcs)
 
-file(GLOB SRCS ${SRCS} "*.cpp" "../*.cpp")
+file(GLOB SRCS ${SRCS} "*.cpp" "../*.cpp" "../stc/test.cpp")
     
-wex_test_app("wex-vcs wex-stc wex-vi wex-ex wex-ui wex-common wex-data wex-factory wex-core")
+wex_test_app("wex-vcs")

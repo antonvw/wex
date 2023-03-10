@@ -5,8 +5,8 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/factory/path-lexer.h>
 #include <wex/factory/process.h>
+#include <wex/syntax/path-lexer.h>
 #include <wex/stc/beautify.h>
 
 bool wex::beautify::file(const path& p) const

@@ -10,19 +10,8 @@
 #include <boost/algorithm/string.hpp>
 #include <wex/core/log-none.h>
 #include <wex/factory/sort.h>
-#include <wex/factory/stc.h>
 
-#include "../test.h"
-
-class stc : public wex::factory::stc
-{
-public:
-  stc() { Create(wxTheApp->GetTopWindow(), -1); }
-
-private:
-  const wex::path& path() const override { return m_path; };
-  wex::path        m_path;
-};
+#include "test.h"
 
 TEST_CASE("wex::sort")
 {
@@ -64,7 +53,7 @@ TEST_CASE("wex::sort")
     frame->Show();
   }
 
-  auto* s = new stc();
+  auto* s = new wex::test::stc();
 
   SUBCASE("selection")
   {

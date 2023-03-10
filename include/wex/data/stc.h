@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      data/stc.h
+// Name:      stc.h
 // Purpose:   Declaration of wex::data::stc
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2017-2022 Anton van Wezenbeek
@@ -14,7 +14,7 @@
 
 namespace wex
 {
-namespace factory
+namespace syntax
 {
 class stc;
 };
@@ -35,6 +35,7 @@ public:
     MENU_DEBUG,       ///< for adding debug menu
   };
 
+  /// A typedef containing menu flags.
   typedef std::bitset<5> menu_t;
 
   /// Window flags.
@@ -48,13 +49,15 @@ public:
     WIN_EX             ///< window in ex mode, instead of vi
   };
 
+  /// A typedef containing window flags.
   typedef std::bitset<5> window_t;
 
+  /// Indicator type.
   enum indicator_t
   {
-    IND_LINE = 0,
-    IND_ERR,
-    IND_DEBUG
+    IND_LINE = 0, ///< line indicatr
+    IND_ERR,      ///< error indicatr
+    IND_DEBUG     ///< debug indicatr
   };
 
   /// Support class for client data stored at the event.
@@ -69,7 +72,7 @@ public:
     bool is_synced_log() const { return m_synced_log; }
 
     /// Fill the members.
-    void set(factory::stc* s, bool synced);
+    void set(syntax::stc* s, bool synced);
 
   private:
     bool m_pos_at_end{false}, m_synced{false}, m_synced_log{false};
@@ -78,16 +81,16 @@ public:
   };
 
   /// Default constructor.
-  stc(factory::stc* stc = nullptr);
+  stc(syntax::stc* stc = nullptr);
 
   /// Constructor from control data.
-  stc(const data::control& data, factory::stc* stc = nullptr);
+  stc(const data::control& data, syntax::stc* stc = nullptr);
 
   /// Constructor from window data.
-  stc(const data::window& data, factory::stc* stc = nullptr);
+  stc(const data::window& data, syntax::stc* stc = nullptr);
 
   /// Copy constructor.
-  stc(factory::stc* stc, const data::stc& r);
+  stc(syntax::stc* stc, const data::stc& r);
 
   /// Assignment operator.
   stc& operator=(const data::stc& r);
@@ -173,7 +176,7 @@ private:
   bool inject_find() const;
   bool inject_line() const;
 
-  factory::stc* m_stc{nullptr};
+  syntax::stc* m_stc{nullptr};
 
   path m_head_path;
 

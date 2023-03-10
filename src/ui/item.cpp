@@ -165,7 +165,7 @@ void wex::item::add_items(group_t& page, bool readonly)
     m_page      = page.first;
     int imageId = wxWithImages::NO_IMAGE;
 
-    if (const auto col = m_page.find(":"); col != std::string::npos)
+    if (const auto col = m_page.contains(":"))
     {
       use_cols = std::stoi(m_page.substr(col + 1));
       m_page   = m_page.substr(0, col);
@@ -696,7 +696,7 @@ bool wex::item::validate(const std::string& regex) const
   {
     return std::regex_match(get_value_as_string(), std::regex(regex));
   }
-  catch (std::exception& e)
+  catch (const std::exception& e)
   {
     return false;
   }

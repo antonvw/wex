@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wex sample app class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2022 Anton van Wezenbeek
+// Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "app.h"
@@ -29,11 +29,17 @@ bool app::OnInit()
          {{"files", "input file[:line number][:column number]"},
           [&](const std::vector<std::string>& v)
           {
-            for (const auto& f : v)
-              m_files.emplace_back(f);
+            std::transform(
+              v.begin(),
+              v.end(),
+              std::back_inserter(m_files),
+              [](const auto& v)
+              {
+                return wex::path(v);
+              });
           }})
          .parse(c) ||
-      !wex::app::OnInit())
+      !wex::del::app::OnInit())
   {
     return false;
   }

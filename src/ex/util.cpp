@@ -11,7 +11,7 @@
 #include <wex/ex/ex.h>
 #include <wex/ex/macros.h>
 #include <wex/ex/util.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 
 const std::string wex::esc()
 {
@@ -34,7 +34,7 @@ wex::get_lines(factory::stc* stc, int start, int end, const std::string& flags)
 
   for (auto i = start; i < end; i++)
   {
-    if (flags.find("#") != std::string::npos)
+    if (flags.contains("#"))
     {
       char buffer[8];
       snprintf(buffer, sizeof(buffer), "%6d ", i + 1);
@@ -42,7 +42,7 @@ wex::get_lines(factory::stc* stc, int start, int end, const std::string& flags)
       text += buffer;
     }
 
-    if (flags.find("l") != std::string::npos)
+    if (flags.contains("l"))
     {
       text += stc->GetTextRange(
                 stc->PositionFromLine(i),
@@ -85,7 +85,11 @@ bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
       {
         // Replace marker.
         case '\'':
-          if (const auto line = ex->marker_line(*(std::next(it))); line >= 0)
+          if (auto next = std::next(it); next == text.end())
+          {
+            output += *it;
+          }
+          else if (const auto line = ex->marker_line(*(next)); line >= 0)
           {
             output += std::to_string(line + 1);
             ++it;

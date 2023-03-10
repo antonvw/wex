@@ -43,7 +43,7 @@ TEST_CASE("wex::path")
     REQUIRE(path.extension() == ".h");
     REQUIRE(path.filename() == "test.h");
     REQUIRE(!path.empty());
-    REQUIRE(path.log().str().find("test.h") != std::string::npos);
+    REQUIRE(path.log().str().contains("test.h"));
     REQUIRE(path.name() == "test");
     REQUIRE(!path.parent_path().empty());
     REQUIRE(!path.paths().empty());

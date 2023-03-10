@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      factory/frame.h
+// Name:      frame.h
 // Purpose:   Declaration of wex::factory::frame class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
@@ -84,7 +84,7 @@ public:
   /// Allows you to open a filename with info from vcs.
   /// Returns stc component opened, or nullptr.
   virtual factory::stc*
-  open_file(const path& filename, vcs_entry& vcs, const data::stc& data)
+  open_file_vcs(const path& filename, vcs_entry& vcs, const data::stc& data)
   {
     return nullptr;
   };
@@ -110,6 +110,9 @@ public:
   };
 
   /// Other methods
+
+  /// Returns the find focus.
+  wxWindow* get_find_focus() { return m_find_focus; }
 
   /// Are we closing?
   bool is_closing() const { return m_is_closing; }

@@ -11,13 +11,12 @@
 #include <wex/ex/address.h>
 #include <wex/ex/ex-stream.h>
 #include <wex/ex/macros.h>
-#include <wex/factory/indicator.h>
-#include <wex/factory/lexers.h>
-#include <wex/factory/printing.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/auto-indent.h>
 #include <wex/stc/entry-dialog.h>
 #include <wex/stc/stc.h>
+#include <wex/syntax/lexers.h>
+#include <wex/syntax/printing.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/item-vector.h>
@@ -167,39 +166,26 @@ bool wex::stc::auto_indentation(int c)
 
 bool wex::stc::CanCut() const
 {
-  return factory::stc::CanCut() && !GetReadOnly() && !is_hexmode();
+  return syntax::stc::CanCut() && !GetReadOnly() && !is_hexmode();
 }
 
 bool wex::stc::CanPaste() const
 {
-  return factory::stc::CanPaste() && !GetReadOnly() && !is_hexmode();
+  return syntax::stc::CanPaste() && !GetReadOnly() && !is_hexmode();
 }
 
 void wex::stc::Clear()
 {
   m_vi->is_active() && GetSelectedText().empty() ?
     (void)m_vi->command(std::string(1, WXK_DELETE)) :
-    factory::stc::Clear();
-}
-
-void wex::stc::clear(bool set_savepoint)
-{
-  SetReadOnly(false);
-
-  ClearAll();
-
-  if (set_savepoint)
-  {
-    EmptyUndoBuffer();
-    SetSavePoint();
-  }
+    syntax::stc::Clear();
 }
 
 void wex::stc::Copy()
 {
   if (CanCopy())
   {
-    factory::stc::Copy();
+    syntax::stc::Copy();
   }
 }
 
@@ -213,7 +199,7 @@ void wex::stc::Cut()
       ex::set_register_yank(get_selected_text());
     }
 
-    factory::stc::Cut();
+    syntax::stc::Cut();
   }
 }
 
@@ -225,52 +211,6 @@ bool wex::stc::file_readonly_attribute_changed()
   return true;
 }
 
-void wex::stc::fold(bool all)
-{
-  if (const item_vector iv(m_config_items);
-      all || get_line_count() > iv.find<int>(_("stc.Auto fold")))
-  {
-    fold_all();
-  }
-}
-
-void wex::stc::fold_all()
-{
-  if (GetProperty("fold") != "1")
-    return;
-
-  const auto current_line = get_current_line();
-  const bool json         = (get_lexer().scintilla_lexer() == "json");
-  const bool xml          = (get_lexer().language() == "xml");
-
-  int line = (json ? 1 : 0);
-
-  while (line < get_line_count())
-  {
-    if (const auto level = GetFoldLevel(line);
-        xml && (level == wxSTC_FOLDLEVELBASE + wxSTC_FOLDLEVELHEADERFLAG))
-    {
-      line++;
-    }
-    else if (const auto last_child_line = GetLastChild(line, level);
-             last_child_line > line + 1)
-    {
-      if (GetFoldExpanded(line))
-      {
-        ToggleFold(line);
-      }
-
-      line = last_child_line + 1;
-    }
-    else
-    {
-      line++;
-    }
-  }
-
-  goto_line(current_line);
-}
-
 int wex::stc::get_current_line() const
 {
   if (m_vi->visual() == ex::EX)
@@ -279,7 +219,7 @@ int wex::stc::get_current_line() const
   }
   else
   {
-    return factory::stc::get_current_line();
+    return syntax::stc::get_current_line();
   }
 }
 
@@ -355,7 +295,7 @@ int wex::stc::get_line_count() const
   }
   else
   {
-    return factory::stc::get_line_count();
+    return syntax::stc::get_line_count();
   }
 }
 
@@ -367,7 +307,7 @@ int wex::stc::get_line_count_request()
   }
   else
   {
-    return factory::stc::get_line_count_request();
+    return syntax::stc::get_line_count_request();
   }
 }
 
@@ -381,27 +321,6 @@ wex::vi& wex::stc::get_vi()
   return *m_vi;
 }
 
-const std::string wex::stc::get_word_at_pos(int pos) const
-{
-  const auto word_start = const_cast<stc*>(this)->WordStartPosition(pos, true);
-  const auto word_end   = const_cast<stc*>(this)->WordEndPosition(pos, true);
-
-  if (word_start == word_end && word_start < GetTextLength())
-  {
-    const std::string word = const_cast<stc*>(this)
-                               ->GetTextRange(word_start, word_start + 1)
-                               .ToStdString();
-
-    return !isspace(word[0]) ? word : std::string();
-  }
-  else
-  {
-    return const_cast<stc*>(this)
-      ->GetTextRange(word_start, word_end)
-      .ToStdString();
-  }
-}
-
 void wex::stc::goto_line(int line)
 {
   if (m_vi->visual() == ex::EX)
@@ -410,7 +329,7 @@ void wex::stc::goto_line(int line)
   }
   else
   {
-    factory::stc::goto_line(line);
+    syntax::stc::goto_line(line);
   }
 }
 
@@ -440,11 +359,11 @@ void wex::stc::guess_type_and_modeline()
     }
   }
 
-  if (head.find("\r\n") != std::string::npos)
+  if (head.contains("\r\n"))
     SetEOLMode(wxSTC_EOL_CRLF);
-  else if (head.find("\n") != std::string::npos)
+  else if (head.contains("\n"))
     SetEOLMode(wxSTC_EOL_LF);
-  else if (head.find("\r") != std::string::npos)
+  else if (head.contains("\r"))
     SetEOLMode(wxSTC_EOL_CR);
   else
     return; // do nothing
@@ -593,40 +512,7 @@ void wex::stc::Paste()
 {
   if (CanPaste())
   {
-    factory::stc::Paste();
-  }
-}
-
-bool wex::stc::position_restore()
-{
-  if (m_saved_selection_start != -1 && m_saved_selection_end != -1)
-  {
-    SetSelection(m_saved_selection_start, m_saved_selection_end);
-    SetCurrentPos(m_saved_selection_start);
-  }
-  else if (m_saved_pos != -1)
-  {
-    SetSelection(m_saved_pos, m_saved_pos);
-    SetCurrentPos(m_saved_pos);
-  }
-  else
-  {
-    return false;
-  }
-
-  EnsureCaretVisible();
-
-  return true;
-}
-
-void wex::stc::position_save()
-{
-  m_saved_pos = GetCurrentPos();
-
-  if (m_vi->mode().is_visual())
-  {
-    m_saved_selection_start = GetSelectionStart();
-    m_saved_selection_end   = GetSelectionEnd();
+    syntax::stc::Paste();
   }
 }
 
@@ -693,49 +579,10 @@ void wex::stc::properties_message(path::log_t flags)
   }
 }
 
-void wex::stc::reset_margins(margin_t type)
-{
-  if (type[MARGIN_FOLDING])
-    SetMarginWidth(m_margin_folding_number, 0);
-  if (type[MARGIN_DIVIDER])
-    SetMarginWidth(m_margin_divider_number, 0);
-  if (type[MARGIN_LINENUMBER])
-    SetMarginWidth(m_margin_line_number, 0);
-  if (type[MARGIN_TEXT])
-    SetMarginWidth(m_margin_text_number, 0);
-}
-
 void wex::stc::SelectNone()
 {
   // The base styledtextctrl version uses scintilla, sets caret at 0.
   wxTextEntryBase::SelectNone();
-}
-
-bool wex::stc::set_indicator(const indicator& indicator, int start, int end)
-{
-  if (start == -1)
-    start = GetTargetStart();
-  if (end == -1)
-    end = GetTargetEnd();
-
-  if (const bool loaded(lexers::get()->indicator_is_loaded(indicator));
-      !loaded || start == -1 || end == -1)
-  {
-    log("indicator") << indicator.number() << loaded << start << end;
-    return false;
-  }
-
-  if (end == start)
-  {
-    return true;
-  }
-
-  SetIndicatorCurrent(indicator.number());
-  IndicatorFillRange(start, end - start);
-
-  log::trace("indicator") << start << end << GetIndicatorCurrent();
-
-  return true;
 }
 
 void wex::stc::set_search_flags(int flags)
@@ -791,7 +638,7 @@ void wex::stc::sync(bool start)
 
 void wex::stc::Undo()
 {
-  factory::stc::Undo();
+  syntax::stc::Undo();
   m_hexmode.undo();
 }
 
@@ -809,6 +656,11 @@ bool wex::stc::vi_command(const std::string& command)
 bool wex::stc::vi_command_finish(bool user_input)
 {
   return m_vi->command_finish(user_input);
+}
+
+bool wex::stc::vi_is_visual() const
+{
+  return m_vi->mode().is_visual();
 }
 
 const std::string wex::stc::vi_mode() const

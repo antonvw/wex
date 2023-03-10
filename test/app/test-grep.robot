@@ -1,3 +1,7 @@
+*** Comments ***
+Copyright: (c) 2020-2023 Anton van Wezenbeek
+
+
 *** Settings ***
 Documentation	Testcases for wex grep (and set)
 Test Setup	Test Setup
@@ -28,6 +32,3 @@ sed	[Documentation]	sed (without quit), and quit after some time
 	Appl	2000
 	Sleep	1s
 	Output Contains	Replaced 2 matches in ${result.stdout} file(s)
-
-*** Comments ***
-Copyright: (c) 2020-2022 Anton van Wezenbeek

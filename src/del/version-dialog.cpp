@@ -2,12 +2,13 @@
 // Name:      version-dialog.cpp
 // Purpose:   Implementation of wex::version_info_dialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
 
 #include <wx/app.h>
+#include <wx/stc/stc.h>
 #include <wx/utils.h>
 
 #include <boost/version.hpp>
@@ -38,6 +39,9 @@ const std::stringstream wex::external_libraries()
 
      // ctags
      << PROGRAM_NAME << ": " << PROGRAM_VERSION
+     << "\n"
+
+     << wxStyledTextCtrl::GetLexerVersionInfo().GetDescription().c_str()
      << "\n"
 
      // wxWidgets
@@ -86,7 +90,7 @@ wex::version_info_dialog::version_info_dialog(
   const about_info&   about)
   : m_about(about)
 {
-  m_about.SetVersion(info.get());
+  m_about.SetVersion(info.get(false));
 
   if (!m_about.HasCopyright())
   {
@@ -95,7 +99,14 @@ wex::version_info_dialog::version_info_dialog(
 
   if (!m_about.HasDescription())
   {
-    m_about.SetDescription(wxString(external_libraries().str()));
+    if (!info.description().empty())
+    {
+      m_about.SetDescription(info.description());
+    }
+    else
+    {
+      m_about.SetDescription(wxString(external_libraries().str()));
+    }
   }
 }
 

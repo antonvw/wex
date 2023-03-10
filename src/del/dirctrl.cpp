@@ -13,8 +13,8 @@
 #include <wex/del/dirctrl.h>
 #include <wex/del/frame.h>
 #include <wex/factory/bind.h>
-#include <wex/factory/lexers.h>
-#include <wex/factory/path-lexer.h>
+#include <wex/syntax/lexers.h>
+#include <wex/syntax/path-lexer.h>
 #include <wex/vcs/vcs.h>
 #include <wx/stockitem.h> // for wxGetStockLabel
 
@@ -100,14 +100,14 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
       {
         frame->find_in_files(
           to_vector_path(*this).get(),
-          tool((window_id)event.GetId()));
+          tool((wex::window_id)event.GetId()));
       },
       ID_TOOL_REPORT_FIND},
      {[=, this](wxCommandEvent& event)
       {
         frame->find_in_files(
           to_vector_path(*this).get(),
-          tool((window_id)event.GetId()));
+          tool((wex::window_id)event.GetId()));
       },
       ID_TOOL_REPLACE},
      {[=, this](wxCommandEvent& event)

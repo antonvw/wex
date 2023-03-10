@@ -2,9 +2,12 @@
 // Name:      main.cpp
 // Purpose:   main for wex del unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/del/app.h>
+
+#include "../doctest.h"
 #include "test.h"
 
 namespace wex
@@ -38,12 +41,14 @@ private:
   del::listview* m_lv{nullptr};
 };
 
-class del : public app
+class del
+  : public wex::del::app
+  , public doctester
 {
 public:
-  bool OnInit() override
+  bool OnInit() final
   {
-    if (!test::app::OnInit())
+    if (!wex::del::app::OnInit() || !on_init(this))
     {
       return false;
     }
@@ -57,6 +62,13 @@ public:
     m_frame->Show();
 
     return true;
+  }
+
+  int OnRun() final
+  {
+    on_run(this);
+
+    return wex::del::app::OnRun();
   }
 
   static auto* frame() { return m_frame; }
@@ -83,7 +95,11 @@ const wex::path get_project()
 
 int main(int argc, char* argv[])
 {
-  return wex::test::main(argc, argv, new wex::test::del());
+  auto* app = new wex::test::del();
+
+  return app->use_context(app, argc, argv) && app->OnInit() && app->OnRun() ?
+           1 :
+           0;
 }
 
 wex::stc* get_stc()

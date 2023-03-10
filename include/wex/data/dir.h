@@ -2,7 +2,7 @@
 // Name:      data/dir.h
 // Purpose:   Declaration of class wex::data::dir
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -18,15 +18,16 @@ namespace wex::data
 class dir
 {
 public:
-  /// dir flags.
+  /// Dir flags.
   enum
   {
-    FILES     = 0, // include files
-    DIRS      = 1, // include directories
-    RECURSIVE = 2, // recursive
-    HIDDEN    = 3, // include hidden files
+    FILES     = 0, ///< include files
+    DIRS      = 1, ///< include directories
+    RECURSIVE = 2, ///< recursive
+    HIDDEN    = 3, ///< include hidden files
   };
 
+  /// A typedef containing dir flags.
   typedef std::bitset<4> type_t;
 
   /// Returns default type flags.

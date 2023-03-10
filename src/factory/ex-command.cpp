@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      ex/command.cpp
+// Name:      ex-command.cpp
 // Purpose:   Implementation of class wex::ex_command
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021-2022 Anton van Wezenbeek

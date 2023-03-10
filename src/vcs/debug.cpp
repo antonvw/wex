@@ -501,7 +501,7 @@ void wex::debug::process_stdout(const std::string& text)
     }
     m_stdout.clear();
   }
-  else if (m_stdout.find("{") == std::string::npos)
+  else if (!m_stdout.contains("{"))
   {
     m_stdout.clear();
   }

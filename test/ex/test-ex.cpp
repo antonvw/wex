@@ -2,16 +2,17 @@
 // Name:      test-ex.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
+#include <wex/ctags/ctags.h>
 #include <wex/ex/ex.h>
 #include <wex/ex/macros.h>
 
 #include "test.h"
 
-// See stc/test-vi.cpp for testing goto and :set
+// See stc/test-vi.cpp and test-ex-mode for testing goto and :set
 
 TEST_CASE("wex::ex")
 {
@@ -67,6 +68,10 @@ TEST_CASE("wex::ex")
   {
     wex::path keep;
 
+    REQUIRE(ex->command(":chd"));
+    CAPTURE(keep.string());
+    REQUIRE(keep.original() != wex::path::current());
+
     for (const auto& command : std::vector<std::pair<std::string, std::string>>{
            {":chd /usr", "/usr"},
            {":chd .", "/usr"},
@@ -100,6 +105,8 @@ TEST_CASE("wex::ex")
   SUBCASE("ctags")
   {
     REQUIRE(ex->ctags() != nullptr);
+    REQUIRE(wex::ctags::find("test_app"));
+    REQUIRE(!wex::ctags::find("xest_app"));
   }
 
   SUBCASE("general")
@@ -123,13 +130,13 @@ TEST_CASE("wex::ex")
     stc->AppendText("line xxxx 6 added\n");
     stc->AppendText("line xxxx 7 added\n");
     REQUIRE(ex->command(":g/xxxx/s//yyyy"));
-    REQUIRE(stc->get_text().find("yyyy") != std::string::npos);
+    REQUIRE(stc->get_text().contains("yyyy"));
     REQUIRE(ex->command(":g//"));
 
     // Test global move.
     stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
     REQUIRE(ex->command(":g/d/m$")); // possible infinite loop
-    REQUIRE(stc->get_text().find("d") != std::string::npos);
+    REQUIRE(stc->get_text().contains("d"));
 
     stc->set_text("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n");
     REQUIRE(ex->command(":g/d/p"));
@@ -140,14 +147,19 @@ TEST_CASE("wex::ex")
 
   SUBCASE("input-mode")
   {
+    const std::string eol(ex->get_stc()->eol());
     REQUIRE(ex->command(":a|added"));
-    REQUIRE(stc->get_text().find("added") != std::string::npos);
+    CAPTURE(stc->get_text());
+    REQUIRE(stc->get_text().contains("xx\nadded" + eol + "xx"));
 
     REQUIRE(ex->command(":i|inserted"));
-    REQUIRE(stc->get_text().find("inserted") != std::string::npos);
+    CAPTURE(stc->get_text());
+    REQUIRE(
+      stc->get_text().find("inserted" + eol + "added" + eol + "xx") !=
+      std::string::npos);
 
     REQUIRE(ex->command(":c|changed"));
-    REQUIRE(stc->get_text().find("changed") != std::string::npos);
+    REQUIRE(stc->get_text().contains("changed"));
 
     const int lines = stc->get_line_count();
 
@@ -216,8 +228,8 @@ TEST_CASE("wex::ex")
 
       REQUIRE(ex->command(":v/yy/d"));
       REQUIRE(stc->get_line_count() == 10);
-      REQUIRE(stc->get_text().find("xx") == std::string::npos);
-      REQUIRE(stc->get_text().find("pp") == std::string::npos);
+      REQUIRE(!stc->get_text().contains("xx"));
+      REQUIRE(!stc->get_text().contains("pp"));
     }
 
     SUBCASE("extra")
@@ -233,7 +245,7 @@ TEST_CASE("wex::ex")
 
       REQUIRE(ex->command(":v/xxxx/d"));
       REQUIRE(stc->get_line_count() == max + 1);
-      REQUIRE(stc->get_text().find("yy") == std::string::npos);
+      REQUIRE(!stc->get_text().contains("yy"));
     }
   }
 
@@ -244,6 +256,7 @@ TEST_CASE("wex::ex")
     REQUIRE(!ex->is_active());
     ex->use(wex::ex::VISUAL);
     REQUIRE(ex->is_active());
+    REQUIRE(ex->visual() == wex::ex::VISUAL);
   }
 
   SUBCASE("map")
@@ -348,7 +361,7 @@ TEST_CASE("wex::ex")
   {
 #ifdef __UNIX__
     REQUIRE(ex->command(":r !echo qwerty"));
-    REQUIRE(stc->get_text().find("qwerty") != std::string::npos);
+    REQUIRE(stc->get_text().contains("qwerty"));
 #endif
   }
 
@@ -430,11 +443,12 @@ TEST_CASE("wex::ex")
 
   SUBCASE("text-input")
   {
+    const std::string eol(ex->get_stc()->eol());
     stc->set_text("xyz\n");
     REQUIRE(ex->command(":append|extra"));
-    REQUIRE(stc->get_text() == "xyz\nextra");
+    REQUIRE(stc->get_text() == "xyz\nextra" + eol);
     REQUIRE(ex->command(":insert|before\n"));
-    REQUIRE(stc->get_text() == "xyz\nbefore\nextra");
+    REQUIRE(stc->get_text() == "xyz\nbefore\n" + eol + "extra" + eol);
     stc->set_text("xyz\n");
     REQUIRE(ex->command(":c|new\n"));
     REQUIRE(stc->get_text() == "new\n");
@@ -446,8 +460,7 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->command(":1,5ya"));
     REQUIRE(ex->command(":1,5yank"));
     REQUIRE(ex->command(":1,5yank c"));
-    REQUIRE(
-      wex::ex::get_macros().get_register('c').find("xyz") != std::string::npos);
+    REQUIRE(wex::ex::get_macros().get_register('c').contains("xyz"));
 
     REQUIRE(!ex->command(":1,5yb"));
     REQUIRE(!ex->command(":1,5yankc"));

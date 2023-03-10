@@ -2,12 +2,12 @@
 // Name:      data/listview.cpp
 // Purpose:   Implementation of wex::data::listview
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/listview.h>
-#include <wex/factory/lexer.h>
 #include <wex/factory/listview.h>
+#include <wex/syntax/lexer.h>
 
 wex::data::listview::listview(factory::listview* lv)
   : m_listview(lv)
@@ -113,7 +113,7 @@ bool wex::data::listview::inject()
                       return false;
                     });
 
-  if (!m_initialized)
+  if (!m_initialized && m_listview != nullptr)
   {
     injected      = true;
     m_initialized = true;

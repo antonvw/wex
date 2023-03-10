@@ -15,5 +15,5 @@ void wex::stc::blame_revision(const std::string& offset)
     m_renamed = renamed;
   }
 
-  m_frame->vcs_blame_revison(this, m_renamed, offset);
+  m_frame->vcs_blame_revision(this, m_renamed, offset);
 }

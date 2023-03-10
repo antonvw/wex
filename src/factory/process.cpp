@@ -2,13 +2,13 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wex::factory::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
 #include <wex/factory/process.h>
 
-#include "data-to-stdin.h"
+#include "data-to-std-in.h"
 #include "process-imp.h"
 
 wex::factory::process::process()

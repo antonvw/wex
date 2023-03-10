@@ -35,9 +35,9 @@ private:
   /// Virtual interface
   bool OnInit() override;
 
-  inline static wex::frame*   m_frame     = nullptr;
-  inline static statusbar*    m_statusbar = nullptr;
-  inline static factory::stc* m_stc       = nullptr;
+  inline static wex::frame*  m_frame     = nullptr;
+  inline static statusbar*   m_statusbar = nullptr;
+  inline static syntax::stc* m_stc       = nullptr;
 };
 }; // namespace test
 }; // namespace wex
@@ -89,7 +89,7 @@ wex::statusbar* get_statusbar()
   return wex::test::ui::get_statusbar();
 }
 
-wex::factory::stc* get_stc()
+wex::syntax::stc* get_stc()
 {
   return wex::test::ui::get_stc();
 }

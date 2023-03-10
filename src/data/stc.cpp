@@ -8,28 +8,28 @@
 #include <wex/core/config.h>
 #include <wex/core/path.h>
 #include <wex/data/stc.h>
-#include <wex/factory/indicator.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/indicator.h>
+#include <wex/syntax/stc.h>
 
-wex::data::stc::stc(wex::factory::stc* stc)
+wex::data::stc::stc(wex::syntax::stc* stc)
   : m_stc(stc)
 {
 }
 
-wex::data::stc::stc(wex::factory::stc* stc, const data::stc& r)
+wex::data::stc::stc(wex::syntax::stc* stc, const data::stc& r)
   : m_stc(stc)
 {
   *this = r;
   m_stc = stc;
 }
 
-wex::data::stc::stc(const data::control& data, wex::factory::stc* stc)
+wex::data::stc::stc(const data::control& data, wex::syntax::stc* stc)
   : m_data(data)
   , m_stc(stc)
 {
 }
 
-wex::data::stc::stc(const data::window& data, wex::factory::stc* stc)
+wex::data::stc::stc(const data::window& data, wex::syntax::stc* stc)
   : m_data(data::control().window(data))
   , m_stc(stc)
 {
@@ -139,9 +139,10 @@ bool wex::data::stc::inject() const
 
   if (injected)
   {
-    m_stc->properties_message(
-      m_event_data.is_synced() ? path::log_t().set(path::LOG_SYNC) :
-                                 path::log_t());
+    if (m_event_data.is_synced())
+    {
+      m_stc->properties_message(path::log_t().set(path::LOG_SYNC));
+    }
 
     if (!m_event_data.is_synced() && m_stc->is_visual())
     {
@@ -246,7 +247,7 @@ wex::data::stc::menu(menu_t flags, data::control::action_t action)
   return *this;
 }
 
-void wex::data::stc::event_data::set(factory::stc* s, bool synced)
+void wex::data::stc::event_data::set(syntax::stc* s, bool synced)
 {
   if (s == nullptr)
   {

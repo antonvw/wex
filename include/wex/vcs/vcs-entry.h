@@ -9,8 +9,8 @@
 
 #include <pugixml.hpp>
 #include <wex/core/vcs-command.h>
-#include <wex/factory/blame.h>
-#include <wex/factory/lexer.h>
+#include <wex/syntax/blame.h>
+#include <wex/syntax/lexer.h>
 #include <wex/ui/menu-commands.h>
 #include <wex/vcs/process.h>
 

@@ -14,7 +14,7 @@
 #include <wex/core/path.h>
 #include <wex/core/type-to-value.h>
 #include <wex/ex/macros.h>
-#include <wex/factory/lexer-props.h>
+#include <wex/syntax/lexer-props.h>
 #include <wex/ui/frame.h>
 
 #include <algorithm>
@@ -42,16 +42,13 @@ const std::vector<std::string> wex::macros::find(const std::string& macro) const
   {
     return it->second;
   }
+  else if (const auto& it = m_variables.find(macro); it != m_variables.end())
+  {
+    return {it->second.get_value()};
+  }
   else
   {
-    if (const auto& it = m_variables.find(macro); it != m_variables.end())
-    {
-      return {it->second.get_value()};
-    }
-    else
-    {
-      return {};
-    }
+    return {};
   }
 }
 
@@ -163,29 +160,10 @@ bool wex::macros::is_recorded_macro(const std::string& macro) const
 
 bool wex::macros::load_document()
 {
-  if (!path().file_exists())
+  if (!load_document_init())
   {
     return false;
   }
-
-  if (const auto result = m_doc.load_file(
-        path().string().c_str(),
-        pugi::parse_default | pugi::parse_comments);
-      !result)
-  {
-    xml_error(path(), &result);
-    return false;
-  }
-
-  m_is_modified = false;
-
-  m_abbreviations.clear();
-  m_macros.clear();
-  m_map.clear();
-  m_map_alt_keys.clear();
-  m_map_control_keys.clear();
-  m_map_keys.clear();
-  m_variables.clear();
 
   for (const auto& child : m_doc.document_element().children())
   {
@@ -227,6 +205,35 @@ bool wex::macros::load_document()
     << "macros:" << m_macros.size() << "variables:" << m_variables.size();
 
   m_is_loaded = true;
+
+  return true;
+}
+
+bool wex::macros::load_document_init()
+{
+  if (!path().file_exists())
+  {
+    return false;
+  }
+
+  if (const auto result = m_doc.load_file(
+        path().string().c_str(),
+        pugi::parse_default | pugi::parse_comments);
+      !result)
+  {
+    xml_error(path(), &result);
+    return false;
+  }
+
+  m_is_modified = false;
+
+  m_abbreviations.clear();
+  m_macros.clear();
+  m_map.clear();
+  m_map_alt_keys.clear();
+  m_map_control_keys.clear();
+  m_map_keys.clear();
+  m_variables.clear();
 
   return true;
 }

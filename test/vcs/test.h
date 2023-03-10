@@ -9,6 +9,7 @@
 
 #include <wex/stc/stc.h>
 #include <wex/ui/frame.h>
+#include <wex/vcs/vcs-entry.h>
 
 #include "../test.h"
 
@@ -17,3 +18,6 @@ wex::frame* frame();
 
 /// Returns an stc.
 wex::stc* get_stc();
+
+/// Returns a git vcs entry from a sample doc.
+wex::vcs_entry* load_git_entry();

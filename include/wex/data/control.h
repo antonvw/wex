@@ -26,11 +26,11 @@ public:
   /// Determine how flags value are set.
   enum action_t
   {
-    INV, /// sets value and flips result
-    NOT, /// remove this flag
-    OR,  /// add this flag
-    SET, /// set value
-    XOR, /// xor this flag
+    INV, ///< sets value and flips result
+    NOT, ///< remove this flag
+    OR,  ///< add this flag
+    SET, ///< set value
+    XOR, ///< xor this flag
   };
 
   /// Returns col.

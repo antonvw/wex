@@ -21,11 +21,7 @@ function(wex_config)
   set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-v${CPACK_PACKAGE_VERSION}")
 
   if (MSVC)
-    if (${MSVC_TOOLSET_VERSION} LESS 142)
-      # Visual studio 2017:
-      file(GLOB_RECURSE dlls 
-        "C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/redist/x86/*.dll")
-    elseif(${MSVC_TOOLSET_VERSION} LESS 143)
+    if(${MSVC_TOOLSET_VERSION} LESS 143)
       # Visual studio 2019:
       file(GLOB_RECURSE dlls 
         "C:/Program Files (x86)/Microsoft Visual Studio/2019/vcruntime14*.dll")
@@ -57,6 +53,7 @@ function(wex_config)
 endfunction()  
 
 function(wex_install)
+  set(WEX_INSTALL_DIR "include/wex/${WEX_VERSION_INCLUDE}")
   set(MODULE_INSTALL_DIR ${CMAKE_ROOT}/Modules)
 
   # install FindWEX.cmake
@@ -70,43 +67,43 @@ function(wex_install)
   # install include files
   # this should be the same dir as in FindWEX.cmake
   install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/wex 
-    DESTINATION "include/wex")
+    DESTINATION ${WEX_INSTALL_DIR})
 
   install(DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets/include/wx 
-    DESTINATION "include/wex")
+    DESTINATION ${WEX_INSTALL_DIR})
 
   install(FILES ${CMAKE_SOURCE_DIR}/external/pugixml/src/pugiconfig.hpp 
-    DESTINATION "include/wex")
+    DESTINATION ${WEX_INSTALL_DIR})
 
   install(FILES ${CMAKE_SOURCE_DIR}/external/pugixml/src/pugixml.hpp 
-    DESTINATION "include/wex")
+    DESTINATION ${WEX_INSTALL_DIR})
 
   install(FILES ${CMAKE_SOURCE_DIR}/external/ctags/libreadtags/readtags.h
-    DESTINATION "include/wex")
+    DESTINATION ${WEX_INSTALL_DIR})
 
   if (ODBC_FOUND)
     install(FILES ${CMAKE_SOURCE_DIR}/external/otl/otlv4.h
-      DESTINATION "include/wex")
+      DESTINATION ${WEX_INSTALL_DIR})
   endif ()
   
   install(FILES ${wexSETUP_H} 
-    DESTINATION "include/wex/wx")
+    DESTINATION ${WEX_INSTALL_DIR}/wx)
   
   # install libraries
   # this should be the same dir as in FindWEX.cmake
   if (MSVC)
-    file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.lib)
+    file(GLOB_RECURSE wex_own_LIBRARIES ${CMAKE_BINARY_DIR}/*.lib)
   else ()
     if (wexBUILD_SHARED)
       if (APPLE)
-        file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.dylib
+        file(GLOB_RECURSE wex_own_LIBRARIES ${CMAKE_BINARY_DIR}/*.dylib
           ${CMAKE_BINARY_DIR}/*.a)
       else ()
-        file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.so*
+        file(GLOB_RECURSE wex_own_LIBRARIES ${CMAKE_BINARY_DIR}/*.so*
           ${CMAKE_BINARY_DIR}/*.a)
       endif ()
     else ()
-      file(GLOB_RECURSE wex_LIBS ${CMAKE_BINARY_DIR}/*.a)
+      file(GLOB_RECURSE wex_own_LIBRARIES ${CMAKE_BINARY_DIR}/*.a)
     endif ()
   endif ()
   
@@ -116,7 +113,7 @@ function(wex_install)
       DESTINATION "lib")
   endif ()
 
-  install(FILES ${wex_LIBS} 
+  install(FILES ${wex_own_LIBRARIES} 
     DESTINATION "lib")
 endfunction()
 
@@ -157,7 +154,13 @@ function(wex_process_po_files)
 endfunction()  
 
 function(wex_target_link_all)
-  set (use_libs ${ARGN})
+  if (${ARGC} STREQUAL "0")
+    set (wex_use_LIBRARIES ${wex_own_LIBRARIES} ${ODBC_LIBRARIES})
+  else ()
+    set (wex_use_LIBRARIES ${ARGN})
+  endif ()  
+          
+  separate_arguments(wex_use_LIBRARIES)
 
   if (CENTOS)
     set (cpp_std_LIBRARIES 
@@ -172,25 +175,18 @@ function(wex_target_link_all)
   endif ()
 
   set (wxWidgets_LIBRARIES wxaui wxstc wxhtml wxcore wxnet wxbase wxscintilla)
-  
-  if (${ARGC} STREQUAL "0")
-    set (wex_LIBRARIES wex-del wex-vcs wex-stc wex-vi wex-ex wex-ui wex-common wex-data wex-factory wex-core)
-  else ()
-    set (wex_LIBRARIES ${use_libs})
-    separate_arguments(wex_LIBRARIES)
-  endif ()  
-          
+
   if (WIN32)
     target_link_libraries(
       ${PROJECT_NAME}
-      ${wex_LIBRARIES}
+      ${wex_use_LIBRARIES}
       ${wxWidgets_LIBRARIES}
       ${Boost_LIBRARIES}
       )
   elseif (APPLE)
     target_link_libraries(
       ${PROJECT_NAME}
-      ${wex_LIBRARIES}
+      ${wex_use_LIBRARIES}
       ${wxWidgets_LIBRARIES} 
       ${Boost_LIBRARIES}
       stdc++
@@ -198,7 +194,7 @@ function(wex_target_link_all)
   else ()
     target_link_libraries(
       ${PROJECT_NAME}
-      ${wex_LIBRARIES}
+      ${wex_use_LIBRARIES}
       ${wxWidgets_LIBRARIES} 
       ${Boost_LIBRARIES}
       ${cpp_std_LIBRARIES}
@@ -207,15 +203,33 @@ function(wex_target_link_all)
   endif ()
 endfunction()
 
+set_property(GLOBAL PROPERTY test_libs)
+
+function(add_test_libs)
+    get_property(tmp GLOBAL PROPERTY test_libs)
+    foreach(arg ${ARGV})
+        set(tmp "${tmp} ${arg}")
+    endforeach()
+
+    if (APPLE)
+      set_property(GLOBAL PROPERTY test_libs "${tmp}")
+    else ()
+      set_property(GLOBAL PROPERTY "${tmp}" test_libs)
+    endif()
+endfunction(add_test_libs)
+
 function(wex_test_app libs)
+  add_test_libs(${libs})
   add_executable(
     ${PROJECT_NAME} 
     ${SRCS})
 
+  get_property(tmp GLOBAL PROPERTY test_libs)
+  
   if (ODBC_FOUND)
-    wex_target_link_all(${libs} ${ODBC_LIBRARIES})
+    wex_target_link_all(${tmp} ${ODBC_LIBRARIES})
   else ()
-    wex_target_link_all(${libs})
+    wex_target_link_all(${tmp})
   endif()
   
   add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME}
@@ -255,15 +269,9 @@ else ()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
   endif ()
   
-  if (APPLE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
-      -std=c++20 -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings \
-      -Wno-deprecated-declarations -Wno-unused-result -fmodules")
-  else ()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
-      -std=c++20 -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings \
-      -Wno-deprecated-declarations -Wno-unused-result")
-  endif ()
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+    -Wno-overloaded-virtual -Wno-reorder -Wno-write-strings \
+    -Wno-deprecated-declarations -Wno-unused-result")
 endif ()
 
 get_filename_component(wexSETUP_DIR_H ${wexSETUP_H} DIRECTORY)

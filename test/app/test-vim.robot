@@ -1,3 +1,7 @@
+*** Comments ***
+Copyright: (c) 2022-2023 Anton van Wezenbeek
+
+
 *** Settings ***
 Documentation	Testcases for wex vim
 Test Setup	Test Setup
@@ -27,6 +31,3 @@ g-toggle
 	Input	g~w
 	Appl
 	Contents Contains	TOggLE
-
-*** Comments ***
-Copyright: (c) 2022 Anton van Wezenbeek

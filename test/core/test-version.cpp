@@ -2,7 +2,7 @@
 // Name:      test-version.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
@@ -23,7 +23,8 @@ TEST_CASE("wex::version")
 
     REQUIRE(info.copyright() == "wex-copyright");
     REQUIRE(info.description() == "test-version");
-    REQUIRE(info.get() == "5.06.7");
+    REQUIRE(info.get() == "hello 5.6.7");
+    REQUIRE(info.get(false) == "5.6.7");
   }
 
   SUBCASE("get_version_info")

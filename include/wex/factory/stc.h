@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      factory/stc.h
+// Name:      stc.h
 // Purpose:   Declaration of class wex::factory::stc
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020-2022 Anton van Wezenbeek
@@ -9,7 +9,6 @@
 
 #include <wex/core/path.h>
 #include <wex/factory/ex-command.h>
-#include <wex/factory/lexer.h>
 #include <wex/factory/text-window.h>
 #include <wx/print.h>
 #include <wx/stc/stc.h>
@@ -18,7 +17,6 @@
 
 namespace wex
 {
-class indicator;
 
 namespace data
 {
@@ -28,8 +26,7 @@ class stc;
 
 namespace factory
 {
-/// Offers a styled text ctrl with:
-/// - lexer support (syntax colouring, folding)
+/// Offers a basic styled text ctrl
 class stc
   : public wxStyledTextCtrl
   , public text_window
@@ -44,6 +41,7 @@ public:
     MARGIN_TEXT       = 3, ///< text margin
   };
 
+  /// A typedef containing margin flags.
   typedef std::bitset<4> margin_t;
 
   /// Virtual interface.
@@ -57,22 +55,6 @@ public:
   /// After pressing enter, starts new line at same place
   /// as previous line.
   virtual bool auto_indentation(int c) { return false; }
-
-  // Clears the component: all text is cleared and all styles are reset.
-  // Invoked by Open and do_file_new.
-  // (Clear is used by scintilla to clear the selection).
-  virtual void clear(bool set_savepoint = true) { ; }
-
-  /// Enables or disables folding depending on fold property
-  /// (default not implemented).
-  virtual void fold(
-    /// if document contains more than 'Auto fold' lines,
-    /// or if fold_all (and fold property is on) is specified,
-    /// always all lines are folded.
-    bool fold_all = false)
-  {
-    ;
-  };
 
   /// Returns stc data.
   virtual wex::data::stc* get_data() { return nullptr; }
@@ -113,16 +95,6 @@ public:
   /// Hex sync.
   virtual bool get_hexmode_sync() { return false; }
 
-  /// Returns line on which text margin was clicked,
-  /// or -1 if not.
-  int get_margin_text_click() const { return m_margin_text_click; }
-
-  /// Returns word at position.
-  virtual const std::string get_word_at_pos(int pos) const
-  {
-    return std::string();
-  };
-
   /// Injects data.
   virtual bool inject(const data::control& data) { return false; }
 
@@ -135,8 +107,14 @@ public:
   /// Returns true if we are in hex mode (default false).
   virtual bool is_hexmode() const { return false; }
 
-  /// Returns true if we are in visual mode (default true).
+  /// Returns true if we are in visual mode (not ex mode) (default true).
   virtual bool is_visual() const { return true; }
+
+  /// Returns the name of the lexer.
+  virtual std::string lexer_name() const { return std::string(); }
+
+  /// Returns whether lexer is previewable.
+  virtual bool lexer_is_previewable() const { return false; }
 
   /// If selected text is a link, opens the link.
   virtual bool link_open() { return false; }
@@ -151,13 +129,6 @@ public:
   /// Returns the path, as used by the file.
   /// Pure virtual, must be overridden.
   virtual const wex::path& path() const = 0;
-
-  /// Restores saved position.
-  /// Returns true if position was saved before.
-  virtual bool position_restore() { return false; }
-
-  /// Saves position.
-  virtual void position_save() { ; }
 
   /// Prints the document.
   virtual void print(bool prompt = true) { ; }
@@ -177,25 +148,8 @@ public:
     ;
   }
 
-  /// Resets (all) margins.
-  /// Default just resets all margins.
-  virtual void reset_margins(margin_t type = margin_t().set());
-
   /// Sets hex mode (default false).
   virtual bool set_hexmode(bool on) { return false; }
-
-  /// Sets an indicator at specified start and end pos.
-  /// Default false, not implemented.
-  virtual bool set_indicator(
-    /// indicator to use
-    const indicator& indicator,
-    /// start pos, if -1 GetTargetStart is used
-    int start = -1,
-    /// end pos, if -1 GetTargetEnd is used
-    int end = -1)
-  {
-    return false;
-  };
 
   /// Sets search flags, default invokes SetSearchFlags.
   /// search flags to be used:
@@ -229,6 +183,9 @@ public:
   /// Finish last vi command (default false).
   virtual bool vi_command_finish(bool user_input) { return false; }
 
+  /// Returns true if we are in vi visual mode (default false).
+  virtual bool vi_is_visual() const { return false; }
+
   /// Returns vi mode as a string.
   virtual const std::string vi_mode() const { return std::string(); }
 
@@ -249,6 +206,10 @@ public:
   /// Binds wx methods.
   void bind_wx();
 
+  /// Clears the component: all text is cleared and all styles are reset.
+  /// (Clear is used by scintilla to clear the selection).
+  void clear(bool set_savepoint = true);
+
   /// Returns EOL string.
   /// If you only want to insert a newline, use NewLine()
   /// (from wxStyledTextCtrl).
@@ -257,11 +218,9 @@ public:
   /// Returns current line fold level.
   size_t get_fold_level() const;
 
-  /// Returns the lexer.
-  const auto& get_lexer() const { return m_lexer; }
-
-  /// Returns the lexer.
-  auto& get_lexer() { return m_lexer; }
+  /// Returns line on which text margin was clicked,
+  /// or -1 if not.
+  int get_margin_text_click() const { return m_margin_text_click; }
 
   /// Returns selected text as a string.
   const std::string get_selected_text() const;
@@ -273,7 +232,29 @@ public:
     return std::string(b.data(), b.length());
   }
 
+  /// Returns word at position.
+  const std::string get_word_at_pos(int pos) const;
+
+  /// When clicked on a line with a text margin,
+  /// returns revision id on the text margin, otherwise returns empty string.
   std::string margin_get_revision_id() const;
+
+  /// Returns true if margin text is shown.
+  bool margin_text_is_shown() const { return m_margin_text_is_shown; };
+
+  /// Shows text margin.
+  void margin_text_show() { m_margin_text_is_shown = true; };
+
+  /// Restores saved position.
+  /// Returns true if position was saved before.
+  bool position_restore();
+
+  /// Saves position.
+  void position_save();
+
+  /// Resets (all) margins.
+  /// Default just resets all margins.
+  void reset_margins(margin_t type = margin_t().set());
 
   /// Returns renamed.
   auto& vcs_renamed() const { return m_renamed; }
@@ -323,12 +304,15 @@ public:
 protected:
   ex_command m_command;
 
-  int m_margin_text_click{-1};
+  int  m_margin_text_click{-1};
+  bool m_margin_text_is_shown{false};
+
+  const int m_margin_divider_number{1}, m_margin_folding_number{2},
+    m_margin_line_number{0}, m_margin_text_number{3};
+
+  int m_saved_pos{-1}, m_saved_selection_start{-1}, m_saved_selection_end{-1};
 
   std::string m_renamed;
-
-private:
-  lexer m_lexer;
 };
 }; // namespace factory
 }; // namespace wex

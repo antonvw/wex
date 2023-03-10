@@ -89,8 +89,7 @@ TEST_CASE("wex::auto_complete")
     event(stc, 'y');
     event(stc, '.');
     event(stc, WXK_RETURN);
-    REQUIRE(
-      stc->get_text().find("test_app xx.method_one") != std::string::npos);
+    REQUIRE(stc->get_text().contains("test_app xx.method_one"));
     REQUIRE(stc->auto_complete()->variable("xx") == "test_app");
     REQUIRE(stc->auto_complete()->variable("yy") == "test_app");
 

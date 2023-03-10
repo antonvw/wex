@@ -13,7 +13,7 @@ class wxControl;
 
 namespace wex
 {
-namespace factory
+namespace syntax
 {
 class stc;
 };
@@ -21,7 +21,7 @@ class stc;
 class frame;
 class ex_commandline_imp;
 
-/// Offers a ex commandline control related to a factory::stc object,
+/// Offers a ex commandline control related to a syntax::stc object,
 /// allowing you to enter ex commands for that stc object in the
 /// commandline.
 class ex_commandline
@@ -40,7 +40,7 @@ public:
     const data::window& data  = data::window());
 
   /// Returns the stc control window for the component.
-  factory::stc* control();
+  syntax::stc* control();
 
   /// Returns frame.
   auto* get_frame() { return m_frame; }
@@ -58,15 +58,15 @@ public:
   void select_all() const;
 
   /// Sets stc component.
-  void set_stc(wex::factory::stc* stc) { m_stc = stc; }
+  void set_stc(wex::syntax::stc* stc) { m_stc = stc; }
 
   /// Sets stc component and handles string command.
   /// Returns false if command not supported.
-  bool set_stc(wex::factory::stc* stc, const std::string& command);
+  bool set_stc(wex::syntax::stc* stc, const std::string& command);
 
   /// Sets stc component and handles char command.
   /// Returns false if command not supported.
-  bool set_stc(wex::factory::stc* stc, char command);
+  bool set_stc(wex::syntax::stc* stc, char command);
 
   /// Sets text.
   void set_text(const std::string& text);
@@ -75,7 +75,7 @@ public:
   auto* stc() { return m_stc; }
 
 private:
-  wex::factory::stc*  m_stc{nullptr};
+  wex::syntax::stc*   m_stc{nullptr};
   frame*              m_frame;
   ex_commandline_imp* m_imp;
 };

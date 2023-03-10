@@ -8,15 +8,17 @@
 #include <thread>
 
 #include <wex/core/log-none.h>
+#include <wex/core/path.h>
 #include <wex/del/defs.h>
-#include <wex/factory/blame.h>
 #include <wex/stc/link.h>
+#include <wex/syntax/blame.h>
+#include <wex/syntax/lexers.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/menu.h>
 #include <wex/vcs/process.h>
-#include <wex/vcs/vcs-entry.h>
 #include <wex/vcs/vcs.h>
 
+#include "../vcs/test.h"
 #include "test.h"
 
 TEST_CASE("wex::del::frame")
@@ -153,13 +155,19 @@ TEST_CASE("wex::del::frame")
     del_frame()->vcs_annotate_commit(stc, 5, commit_id);
   }
 
-  SUBCASE("vcs_blame_revison")
+  SUBCASE("vcs_blame")
+  {
+    auto* stc = get_stc();
+    del_frame()->vcs_blame(stc);
+  }
+
+  SUBCASE("vcs_blame_revision")
   {
     auto*             stc = get_stc();
     const std::string renamed;
     const std::string offset;
 
-    del_frame()->vcs_blame_revison(stc, renamed, offset);
+    del_frame()->vcs_blame_revision(stc, renamed, offset);
   }
 
   SUBCASE("vcs_blame_show")
@@ -167,22 +175,15 @@ TEST_CASE("wex::del::frame")
     auto*      stc = get_stc();
     wex::blame blame;
     wex::lexers::get()->apply_margin_text_style(stc, &blame);
+    auto* entry(load_git_entry());
 
-    pugi::xml_document doc;
-    REQUIRE(doc.load_string("<vcs name=\"git\" admin-dir=\"./\" log-flags=\"-n "
-                            "1\" blame-format=\"(^[a-zA-Z0-9^]+) "
-                            "(.*?)\\((.+)\\s+([0-9]{2,4}.[0-9]{2}.[0-9]{2}.[0-"
-                            "9:]{8}) .[0-9]+\\s+([0-9]+)\\) (.*)\">"
-                            "</vcs>"));
-    wex::vcs_entry entry(doc.document_element());
-    REQUIRE(entry.name() == "git");
-    REQUIRE(!del_frame()->vcs_blame_show(&entry, stc));
+    REQUIRE(!del_frame()->vcs_blame_show(entry, stc));
 
 #ifndef __WXMSW__
     REQUIRE(
-      entry.system(wex::process_data().args(
+      entry->system(wex::process_data().args(
         "blame " + wex::test::get_path("test.h").string())) == 0);
-    REQUIRE(del_frame()->vcs_blame_show(&entry, stc));
+    REQUIRE(del_frame()->vcs_blame_show(entry, stc));
 #endif
 
     stc->get_file().reset_contents_changed();

@@ -124,7 +124,7 @@ void wex::config_imp::set(const std::string& item, const T& v)
 {
   try
   {
-    if (item.find('.') == std::string::npos)
+    if (!item.contains('.'))
     {
       m_json[item] = json::value_from(v);
     }
@@ -162,7 +162,7 @@ const T wex::config_imp::value(const std::string& item, const T& def)
 
   try
   {
-    if (item.find('.') == std::string::npos)
+    if (!item.contains('.'))
     {
       if (!exists(item))
       {

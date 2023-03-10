@@ -2,42 +2,38 @@
 // Name:      test-util.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
+#include <thread>
+#include <wex/factory/frame.h>
 #include <wex/factory/util.h>
+
+#include "test.h"
+
+class f_frame : public wex::factory::frame
+{
+public:
+  f_frame()
+  {
+    Create(nullptr, -1, "frame");
+    Show();
+  }
+};
 
 TEST_CASE("wex::factory::utils")
 {
-  SUBCASE("node_properties")
-  {
-    std::vector<wex::property> properties;
-    pugi::xml_document         doc;
+  auto* stc   = new wex::test::stc();
+  auto* frame = new f_frame;
+  wxTheApp->SetTopWindow(frame);
 
-    REQUIRE(doc.load_string("<properties>"
-                            "  <property name = \"fold.comment\">2</property>"
-                            "</properties>"));
-    auto node = doc.document_element();
+  REQUIRE(!stc->HasFocus());
+  REQUIRE(frame->get_find_focus() == nullptr);
 
-    wex::node_properties(&node, properties);
+  wex::bind_set_focus(stc);
+  REQUIRE(!stc->HasFocus());
 
-    REQUIRE(properties.size() == 1);
-  }
-
-  SUBCASE("node_styles")
-  {
-    std::vector<wex::style> styles;
-    pugi::xml_document      doc;
-
-    REQUIRE(doc.load_string("<styles>"
-                            "  <style no = \"2\">string</style>"
-                            "</styles>"));
-
-    auto node = doc.document_element();
-
-    wex::node_styles(&node, "cpp", styles);
-
-    REQUIRE(styles.size() == 1);
-  }
+  stc->SetFocus();
+  std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  REQUIRE(frame->get_find_focus() == stc);
 }

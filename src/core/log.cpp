@@ -2,7 +2,7 @@
 // Name:      log.cpp
 // Purpose:   Implementation of class wex::log
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/log/core.hpp>
@@ -187,11 +187,7 @@ void wex::log::flush()
         break;
 
       case LEVEL_STATUS:
-        // this is a wxMSW bug, crash in test -tc=wex::stc -sc=find
-        if (text.find("%") == std::string::npos)
-        {
-          wxLogStatus(text.c_str());
-        }
+        wxLogStatus("%s", text.c_str());
         break;
 
       case LEVEL_TRACE:
@@ -236,7 +232,12 @@ wex::log wex::log::info(const std::string& topic)
   return log(topic, LEVEL_INFO);
 }
 
-void wex::log::init(level_t loglevel, const std::string& default_logfile)
+wex::log::level_t wex::log::level_t_def()
+{
+  return LEVEL_ERROR;
+}
+
+void wex::log::on_init(level_t loglevel, const std::string& default_logfile)
 {
   if (m_initialized)
   {
@@ -251,6 +252,8 @@ void wex::log::init(level_t loglevel, const std::string& default_logfile)
     std::cout,
     logging::keywords::format = "%TimeStamp% [%Severity%] %Message%");
 
+  assert(wxTheApp != nullptr);
+
   const path logfile(
     config::dir(),
     wxTheApp->GetAppName().ToStdString() + ".log");
@@ -262,11 +265,6 @@ void wex::log::init(level_t loglevel, const std::string& default_logfile)
     logging::keywords::format    = "%TimeStamp% [%Severity%] %Message%");
 
   m_initialized = true;
-}
-
-wex::log::level_t wex::log::level_t_def()
-{
-  return LEVEL_ERROR;
 }
 
 void wex::log::set_level(level_t loglevel)

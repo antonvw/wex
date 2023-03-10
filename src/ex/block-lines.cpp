@@ -7,7 +7,7 @@
 
 #include <wex/core/log.h>
 #include <wex/ex/ex.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 
 #include "block-lines.h"
 
@@ -64,8 +64,8 @@ void wex::block_lines::log() const
 
 wex::block_lines wex::block_lines::single() const
 {
-  const int start(m_stc->LineFromPosition(m_stc->GetTargetStart()));
-  return {m_ex, start, start};
+  const auto target_start(m_stc->LineFromPosition(m_stc->GetTargetStart()));
+  return {m_ex, target_start, target_start};
 }
 
 size_t wex::block_lines::size() const

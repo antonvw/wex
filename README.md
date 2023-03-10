@@ -9,7 +9,7 @@ shows a usage of this library, offering a full featured source code text editor.
 
 - [cmake](http://www.cmake.org/)
 - [boost](https://www.boost.org)
-- a `c++20` standard supporting compiler
+- a `c++23` standard supporting compiler
 
 ## Building
 
@@ -30,10 +30,12 @@ To use wex lib in your own application do `make install`
 (on windows as administrator `cmake.exe -P cmake_install.cmake`)
 and do `find_package(WEX)` in your CMakeLists.txt. This will provide the
 `wex_FOUND`, `wex_INCLUDE_DIR`, `wex_LIB_DIR` and `wex_LIBRARIES` variables.
+An example is the [syncped editor](https://gitlab.kitware.com/antonvw/syncped).
 
 ## Build process
 
   [![Appveyor](https://ci.appveyor.com/api/projects/status/a346d8537whyrjev?svg=true)](https://ci.appveyor.com/project/antonvw/wex)
+  [![Codiga](https://api.codiga.io/project/30476/score/svg)](https://www.codiga.io)
 
 ## Uses
 

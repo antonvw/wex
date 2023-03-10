@@ -95,13 +95,14 @@
 :%s/x/y
 :%s/z/z
 :.s/$/\n
+:1
 :.S
-:.S10
+:.S1
 :.Sr
 :.Su
 :.Sru
-:.S10r
-:.S10u
+:.S1r
+:.S1u
 :.S1,5u
 :1,$s/this/ok
 :1,$s/ok/\U&

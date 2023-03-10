@@ -2,7 +2,7 @@
 // Name:      stc-undo.h
 // Purpose:   Declaration of class wex::stc_undo
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -24,6 +24,7 @@ public:
     UNDO_SEL_NONE,   ///< enforce if no selection at cons, also at destruct
   };
 
+  /// A typedef containing undo flags.
   typedef std::bitset<3> undo_t;
 
   /// Constructor, depending on the type will start an action.
@@ -31,10 +32,13 @@ public:
     /// the stc component
     wex::factory::stc* stc,
     ///  the kind of undo
-    undo_t type = UNDO_ACTION);
+    undo_t type = undo_t().set(UNDO_ACTION));
 
   /// Destructor, will restore the actions taken.
   ~stc_undo();
+
+  /// Returns type.
+  undo_t type() const { return m_type; };
 
 private:
   wex::factory::stc* m_stc;

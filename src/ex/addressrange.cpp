@@ -2,7 +2,7 @@
 // Name:      addressrange.cpp
 // Purpose:   Implementation of class wex::addressrange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2022 Anton van Wezenbeek
+// Copyright: (c) 2015-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -20,9 +20,8 @@
 #include <wex/factory/process.h>
 #include <wex/factory/sort.h>
 #include <wex/factory/stc-undo.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
-#include <wex/ui/frd.h>
 #include <wx/app.h>
 #include <wx/msgdlg.h>
 
@@ -112,8 +111,7 @@ wex::addressrange::addressrange(ex* ex, const std::string& range)
 const std::string
 wex::addressrange::build_replacement(const std::string& text) const
 {
-  if (
-    text.find("&") == std::string::npos && text.find("\0") == std::string::npos)
+  if (!text.contains("&") && !text.contains("\0"))
   {
     return text;
   }
@@ -207,7 +205,7 @@ bool wex::addressrange::copy(const command_parser& cp)
 {
   if (cp.command() != "co" && cp.command() != "copy")
   {
-    if (cp.text().find('|') != std::string::npos)
+    if (cp.text().contains('|'))
     {
       return change(find_after(cp.text(), "|"));
     }
@@ -222,12 +220,13 @@ bool wex::addressrange::copy(const command_parser& cp)
 
 bool wex::addressrange::copy(const address& destination) const
 {
-  return general(
-    destination,
-    [=, this]()
-    {
-      return yank();
-    });
+  return !m_stc->is_visual() ? m_ex->ex_stream()->copy(*this, destination) :
+                               general(
+                                 destination,
+                                 [=, this]()
+                                 {
+                                   return yank();
+                                 });
 }
 
 bool wex::addressrange::erase() const
@@ -346,7 +345,7 @@ bool wex::addressrange::general(
     return false;
   }
 
-  stc_undo ndo(m_stc);
+  stc_undo undo(m_stc);
 
   if (f())
   {
@@ -470,9 +469,7 @@ const wex::addressrange::commands_t wex::addressrange::init_commands()
        const bool result = write(cp);
        if (cp.command() == "wq")
        {
-         POST_CLOSE(
-           wxEVT_CLOSE_WINDOW,
-           cp.text().find("!") == std::string::npos)
+         POST_CLOSE(wxEVT_CLOSE_WINDOW, !cp.text().contains("!"))
        }
        return result;
      }},
@@ -480,7 +477,7 @@ const wex::addressrange::commands_t wex::addressrange::init_commands()
      [&](const command_parser& cp, info_message_t& msg)
      {
        write(cp);
-       POST_CLOSE(wxEVT_CLOSE_WINDOW, cp.text().find("!") == std::string::npos)
+       POST_CLOSE(wxEVT_CLOSE_WINDOW, !cp.text().contains("!"))
        return true;
      }},
     {"y",
@@ -547,12 +544,13 @@ bool wex::addressrange::join() const
 
 bool wex::addressrange::move(const address& destination) const
 {
-  return general(
-    destination,
-    [=, this]()
-    {
-      return erase();
-    });
+  return !m_stc->is_visual() ? m_ex->ex_stream()->move(*this, destination) :
+                               general(
+                                 destination,
+                                 [=, this]()
+                                 {
+                                   return erase();
+                                 });
 }
 
 bool wex::addressrange::parse(const command_parser& cp, info_message_t& im)
@@ -749,9 +747,9 @@ bool wex::addressrange::sort(const std::string& parameters) const
       return false;
     }
 
-    if (parameters.find("r") != std::string::npos)
+    if (parameters.contains("r"))
       sort_t.set(factory::sort::SORT_DESCENDING);
-    if (parameters.find("u") != std::string::npos)
+    if (parameters.contains("u"))
       sort_t.set(factory::sort::SORT_UNIQUE);
 
     if (isdigit(parameters[0]))
@@ -760,7 +758,7 @@ bool wex::addressrange::sort(const std::string& parameters) const
       {
         pos = (std::stoi(parameters) > 0 ? std::stoi(parameters) - 1 : 0);
 
-        if (parameters.find(",") != std::string::npos)
+        if (parameters.contains(","))
         {
           len =
             std::stoi(parameters.substr(parameters.find(',') + 1)) - pos + 1;
@@ -855,9 +853,16 @@ bool wex::addressrange::substitute(const command_parser& cp)
       }
       else
       {
-        (searchFlags & wxSTC_FIND_REGEXP) ?
-          m_stc->ReplaceTargetRE(replacement) :
-          m_stc->ReplaceTarget(replacement);
+        if (data.pattern() == "$")
+        {
+          m_stc->InsertText(m_stc->GetTargetStart(), replacement);
+        }
+        else
+        {
+          (searchFlags & wxSTC_FIND_REGEXP) ?
+            m_stc->ReplaceTargetRE(replacement) :
+            m_stc->ReplaceTarget(replacement);
+        }
       }
 
       nr_replacements++;
@@ -887,6 +892,10 @@ bool wex::addressrange::write(const command_parser& cp)
       stc_undo::undo_t().set(stc_undo::UNDO_POS).set(stc_undo::UNDO_SEL_NONE));
     return write(cp.text());
   }
+  else if (!m_stc->is_visual())
+  {
+    return m_ex->ex_stream()->write();
+  }
   else
   {
     wxCommandEvent event(
@@ -906,10 +915,10 @@ bool wex::addressrange::write(const std::string& text) const
   }
 
   auto filename(boost::algorithm::trim_left_copy(
-    text.find(">>") != std::string::npos ? rfind_after(text, ">") : text));
+    text.contains(">>") ? rfind_after(text, ">") : text));
 
 #ifdef __UNIX__
-  if (filename.find("~") != std::string::npos)
+  if (filename.contains("~"))
   {
     filename.replace(filename.find("~"), 1, wxGetHomeDir());
   }
@@ -917,18 +926,14 @@ bool wex::addressrange::write(const std::string& text) const
 
   if (!m_stc->is_visual())
   {
-    return m_ex->ex_stream()->write(
-      *this,
-      filename,
-      text.find(">>") != std::string::npos);
+    return m_ex->ex_stream()->write(*this, filename, text.contains(">>"));
   }
   else
   {
     return file(
              path(filename),
-             text.find(">>") != std::string::npos ?
-               std::ios::out | std::ios_base::app :
-               std::ios::out)
+             text.contains(">>") ? std::ios::out | std::ios_base::app :
+                                   std::ios::out)
       .write(m_stc->get_selected_text());
   }
 }

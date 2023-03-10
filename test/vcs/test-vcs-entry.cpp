@@ -6,7 +6,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
+#include <wex/core/path.h>
 #include <wex/factory/defs.h>
+#include <wex/syntax/lexers.h>
 #include <wex/vcs/vcs-entry.h>
 
 #include "test.h"
@@ -66,7 +68,7 @@ TEST_CASE("wex::vcs_entry")
     REQUIRE(entry.get_flags().empty());
     REQUIRE(!entry.std_out().empty());
     REQUIRE(entry.execute()); // executes just git, shows help
-    REQUIRE(entry.std_out().find("usage: ") != std::string::npos);
+    REQUIRE(entry.std_out().contains("usage: "));
     entry.show_output();
 
     REQUIRE(entry.system(wex::process_data("help")) == 0);
@@ -82,19 +84,11 @@ TEST_CASE("wex::vcs_entry")
     auto*      stc = get_stc();
     wex::blame blame;
     wex::lexers::get()->apply_margin_text_style(stc, &blame);
-
-    pugi::xml_document doc;
-    REQUIRE(doc.load_string("<vcs name=\"git\" admin-dir=\"./\" log-flags=\"-n "
-                            "1\" blame-format=\"(^[a-zA-Z0-9^]+) "
-                            "(.*?)\\((.+)\\s+([0-9]{2,4}.[0-9]{2}.[0-9]{2}.[0-"
-                            "9:]{8}) .[0-9]+\\s+([0-9]+)\\) (.*)\">"
-                            "</vcs>"));
-    wex::vcs_entry entry(doc.document_element());
-    REQUIRE(entry.name() == "git");
+    auto* entry = load_git_entry();
 
 #ifndef __WXMSW__
     REQUIRE(
-      entry.system(wex::process_data().args(
+      entry->system(wex::process_data().args(
         "blame " + wex::test::get_path("test.h").string())) == 0);
 #endif
 

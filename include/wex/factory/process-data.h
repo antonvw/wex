@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      factory/process-data.h
+// Name:      process-data.h
 // Purpose:   Declaration of class wex::process_data
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2022 Anton van Wezenbeek

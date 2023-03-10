@@ -2,7 +2,7 @@
 // Name:      core/util.cpp
 // Purpose:   Implementation of wex core utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -156,40 +156,6 @@ const std::string wex::find_tail(const std::string& text, size_t max_chars)
   }
 }
 
-const std::string wex::get_find_result(
-  const std::string& find_text,
-  bool               find_next,
-  bool               recursive)
-{
-  if (!recursive)
-  {
-    const auto where =
-      (find_next) ? _("bottom").ToStdString() : _("top").ToStdString();
-
-    return _("Searching for").ToStdString() + " " +
-           quoted(boost::algorithm::trim_copy(find_text)) + " " +
-           _("hit").ToStdString() + " " + where;
-  }
-  else
-  {
-    if (config(_("Error bells")).get(true))
-    {
-      wxBell();
-    }
-
-    return quoted(boost::algorithm::trim_copy(find_text)) + " " +
-           _("not found").ToStdString();
-  }
-}
-
-int wex::get_iconid(const path& filename)
-{
-  return filename.file_exists() ?
-           wxFileIconsTable::file :
-           (filename.dir_exists() ? wxFileIconsTable::folder :
-                                    wxFileIconsTable::computer);
-}
-
 int wex::get_number_of_lines(const std::string& text, bool trim)
 {
   if (text.empty())
@@ -199,13 +165,18 @@ int wex::get_number_of_lines(const std::string& text, bool trim)
 
   const auto& trimmed = (trim ? boost::algorithm::trim_copy(text) : text);
 
-  if (const int c = std::count(trimmed.begin(), trimmed.end(), '\n') + 1;
-      c != 1)
-  {
-    return c;
-  }
-
-  return std::count(trimmed.begin(), trimmed.end(), '\r') + 1;
+  // If text contains \r\n, assume a DOS file, count only \n.
+  // Otherwise count all endings.
+  return ((trimmed.contains("\r\n")) ?
+            std::count(trimmed.begin(), trimmed.end(), '\n') :
+            std::count_if(
+              trimmed.begin(),
+              trimmed.end(),
+              [](auto i)
+              {
+                return i == '\n' || i == '\r';
+              })) +
+         1;
 }
 
 const std::string wex::get_string_set(
@@ -227,7 +198,7 @@ const std::string wex::get_word(std::string& text)
 {
   boost::tokenizer<boost::char_separator<char>> tok(
     text,
-    boost::char_separator<char>(" \t"));
+    boost::char_separator<char>(" \t\n"));
 
   std::string token;
   boost::algorithm::trim_left(text);
@@ -293,7 +264,7 @@ const std::string wex::quoted(const std::string& text)
 
 const std::string wex::quoted_find(const std::string& text, char c)
 {
-  return text.find(c) != std::string::npos ? "\"" + text + "\"" : text;
+  return text.contains(c) ? "\"" + text + "\"" : text;
 }
 
 const std::string

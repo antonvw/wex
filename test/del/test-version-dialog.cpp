@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-version.cpp
+// Name:      test-version-dialog.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../test.h"
@@ -25,7 +25,12 @@ TEST_CASE("wex::about_info")
   REQUIRE(about.website("www.xyz").GetWebSiteURL() == "www.xyz");
 }
 
-TEST_CASE("wex::version_dialog")
+TEST_CASE("wex::extern_libraries")
+{
+  REQUIRE(wex::external_libraries().str().contains("wex"));
+}
+
+TEST_CASE("wex::version_info_dialog")
 {
   SUBCASE("default-constructor")
   {
@@ -42,9 +47,16 @@ TEST_CASE("wex::version_dialog")
 
     REQUIRE(info.about().GetDescription().find("hello") != std::string::npos);
   }
-}
 
-TEST_CASE("wex::version_dialog")
-{
-  REQUIRE(wex::external_libraries().str().find("wex") != std::string::npos);
+  SUBCASE("constructor-other")
+  {
+    wex::version_info vi;
+
+    wex::about_info about;
+    about.description("hello");
+
+    const wex::version_info_dialog info(vi, about);
+
+    REQUIRE(info.about().GetDescription().find("hello") != std::string::npos);
+  }
 }

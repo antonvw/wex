@@ -1,7 +1,12 @@
+*** Comments ***
+Copyright: (c) 2020-2023 Anton van Wezenbeek
+
+
 *** Settings ***
 Documentation	Robot framework Keywords for testing wex
 Library	OperatingSystem
 Library	Process
+Library	String
 
 
 *** Variables ***
@@ -27,6 +32,10 @@ ${file-stdout}	stdout.txt
 Suite Setup
 	Find Appl
 	Variable Should Exist	${APPL}
+	${version} =	Evaluate	robot.__version__
+	${result} =	Get Substring	${version}	0	1
+	${result} =	Convert To Integer	${result}
+	Should Be True	${result} >= 6
 
 Suite Teardown
 	IF	${level} > 0
@@ -53,16 +62,20 @@ Appl
 	...	stdout=${file-stdout}
 
 Contents Contains
+	[Documentation]	Verifies that contents should contain text
 	[Arguments]	${text}
 	${result}=	Get File	${file-contents}
 	Should Contain	${result}	${text}
 
 Contents Does Not Contain
+	[Documentation]	Verifies that contents does not contain text
 	[Arguments]	${text}
 	${result}=	Get File	${file-contents}
 	Should Not Contain	${result}	${text}
 
 Find Appl
+	[Documentation]	Appends text to input
+	[Tags]	:private
 	${result}=	Run Process
 	...	find	../../
 	...	-name	wex-sample
@@ -70,6 +83,7 @@ Find Appl
 	Set Suite Variable	${APPL}	${result.stdout}
 
 Input
+	[Documentation]	Appends text to input
 	[Arguments]	@{text}
 	FOR	${cmd}	IN	@{text}
 		Append To File	${file-input}	${cmd}
@@ -92,6 +106,7 @@ Input Many
 	END
 
 Input No Write
+	[Documentation]	As Input, but does not write the file
 	[Arguments]	@{text}
 	FOR	${cmd}	IN	@{text}
 		Append To File	${file-input}	${cmd}
@@ -101,20 +116,19 @@ Input No Write
 	IF	${quit} == 1	Append To File	${file-input}	:q!
 
 Output Contains
+	[Documentation]	Verifies output contains text
 	[Arguments]	${text}
 	${result}=	Get File	${file-output}
 	Should Contain	${result}	${text}
 
 Output Does Not Contain
+	[Documentation]	Verifies output does not contain text
 	[Arguments]	${text}
 	${result}=	Get File	${file-output}
 	Should Not Contain	${result}	${text}
 
 Std Output Contains
+	[Documentation]	Verifies stdout does not contain text
 	[Arguments]	${text}
 	${result}=	Get File	${file-stdout}
 	Should Contain	${result}	${text}
-
-
-*** Comments ***
-Copyright: (c) 2020-2022 Anton van Wezenbeek

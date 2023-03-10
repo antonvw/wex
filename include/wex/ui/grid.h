@@ -13,6 +13,12 @@
 
 namespace wex
 {
+
+namespace data
+{
+class find;
+}; // namespace data
+
 /// Offers popup menu with copy/paste, printing.
 /// It also offers drag/drop functionality.
 class grid : public factory::grid
@@ -32,7 +38,7 @@ public:
   void empty_selection();
 
   /// Finds next.
-  bool find_next(const std::string& text, bool forward = true);
+  bool find_next(const data::find& f);
 
   /// Get text from all cells.
   const std::string get_cells_value() const;

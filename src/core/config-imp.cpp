@@ -63,7 +63,7 @@ void wex::config_imp::elements(const json::object& o, size_t& total) const
 
 bool wex::config_imp::exists(const std::string& item) const
 {
-  if (item.find('.') == std::string::npos)
+  if (!item.contains('.'))
   {
     return m_json.contains(item);
   }

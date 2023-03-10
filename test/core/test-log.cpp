@@ -40,9 +40,9 @@ TEST_CASE("wex::log")
     log << std::stringstream("is hungry") << "eats" << 25 << "fish";
 
     REQUIRE(log.get().starts_with("debug"));
-    REQUIRE(log.get().find("is hungry") != std::string::npos);
-    REQUIRE(log.get().find(" eats ") != std::string::npos);
-    REQUIRE(log.get().find("25") != std::string::npos);
+    REQUIRE(log.get().contains("is hungry"));
+    REQUIRE(log.get().contains(" eats "));
+    REQUIRE(log.get().contains("25"));
   }
 
   SUBCASE("info")

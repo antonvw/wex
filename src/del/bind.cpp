@@ -7,10 +7,7 @@
 
 #include <wex/del/frame.h>
 #include <wex/del/listview-file.h>
-#include <wex/ex/ctags.h>
 #include <wex/factory/bind.h>
-#include <wex/factory/lexers.h>
-#include <wex/factory/printing.h>
 #include <wex/stc/stc.h>
 #include <wex/ui/frd.h>
 #include <wex/vcs/debug.h>
@@ -46,10 +43,6 @@ void wex::del::frame::bind_all()
     [=, this](wxCloseEvent& event)
     {
       m_project_history.save();
-      stc::on_exit();
-      ctags::close();
-      delete lexers::set(nullptr);
-      delete printing::set(nullptr);
 
       config("show.MenuBar")
         .set(GetMenuBar() != nullptr && GetMenuBar()->IsShown());
@@ -112,7 +105,7 @@ void wex::del::frame::bind_all()
         {
           auto it = find_replace_data::get()->get_find_strings().begin();
           std::advance(it, event.GetId() - ID_FIND_FIRST);
-          if (const std::string text(*it); stc->find(
+          if (const auto& text(*it); stc->find(
                 text,
                 stc->get_vi().is_active() ? stc->get_vi().search_flags() : -1))
           {

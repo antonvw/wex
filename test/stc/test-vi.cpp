@@ -2,7 +2,7 @@
 // Name:      test-vi.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -10,12 +10,11 @@
 #include <wex/core/log.h>
 #include <wex/ex/addressrange.h>
 #include <wex/ex/ex-stream.h>
+#include <wex/ex/util.h>
 #include <wex/ui/frd.h>
 #include <wex/vi/vi.h>
 
 #include "test.h"
-
-#define ESC "\x1b"
 
 void change_mode(
   wex::vi*              vi,
@@ -48,19 +47,28 @@ TEST_CASE("wex::vi")
   auto* vi  = &get_stc()->get_vi();
   stc->set_text("");
 
+  SUBCASE("find")
+  {
+    stc->set_text("find findnottext to another find");
+    REQUIRE(vi->command("l"));
+    REQUIRE(vi->command("*"));
+    REQUIRE(stc->GetCurrentPos() == 32);
+  }
+
   SUBCASE("goto") // goto, /, ?, n and N.
   {
     stc->set_text("aaaaa\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");
+    vi->reset_search_flags();
     REQUIRE(stc->get_line_count() == 12);
     stc->GotoLine(2);
     for (const auto& go : std::vector<std::pair<std::string, int>>{
-           {"gg", 0},      {"G", 11},     {":-5", 6},   {":+5", 11},
-           {":-", 10},     {":+", 11},    {"1G", 0},    {"10G", 9},
-           {"10000G", 11}, {":$", 11},    {":100", 11}, {"/bbbbb", 1},
-           {":-10", 0},    {":10", 9},    {":/c/", 2},  {":10000", 11},
-           {":2", 1},      {"/d", 1},     {"/a", 3},    {"n", 3},
-           {"N", 3},       {"?bbbbb", 1}, {"?d", 1},    {"?a", 0},
-           {"n", 0},       {"N", 0}})
+           {"gg", 0},      {"G", 11},      {":-5", 6},   {":+5", 11},
+           {":-", 10},     {":+", 11},     {"1G", 0},    {"10G", 9},
+           {"10000G", 11}, {":$", 11},     {":100", 11}, {"/bbbbb", 1},
+           {":-10", 0},    {":10", 9},     {":/c/", 2},  {":/aaaaa/", 3},
+           {"://", 0},     {":10000", 11}, {":2", 1},    {"/d", 1},
+           {"/a", 3},      {"n", 3},       {"N", 3},     {"?bbbbb", 1},
+           {"?d", 1},      {"?a", 0},      {"n", 0},     {"N", 0}})
     {
       CAPTURE(go.first);
 
@@ -95,9 +103,8 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->on_key_down(event));
     REQUIRE(!vi->on_char(event));
 
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
-    REQUIRE(
-      vi->inserted_text().find(vi->get_stc()->eol()) != std::string::npos);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
+    REQUIRE(vi->inserted_text().contains(vi->get_stc()->eol()));
   }
 
   SUBCASE("registers")
@@ -106,19 +113,19 @@ TEST_CASE("wex::vi")
     const std::string ctrl_r = "\x12";
     REQUIRE(vi->command("i"));
     REQUIRE(vi->command(ctrl_r + "_"));
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
 
     stc->set_text("");
     REQUIRE(vi->command("i"));
     REQUIRE(vi->command(ctrl_r + "%"));
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     REQUIRE(stc->get_text() == "test.h");
 
     REQUIRE(vi->command("yy"));
     stc->set_text("");
     REQUIRE(vi->command("i"));
     REQUIRE(vi->command(ctrl_r + "0"));
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     REQUIRE(stc->get_text() == "test.h");
   }
 
@@ -131,6 +138,17 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command(":set noreadonly"));
     REQUIRE(vi->command(":set nosws"));
     REQUIRE(vi->command(":set dir=./"));
+
+    // Default setting.
+    REQUIRE(bool(vi->search_flags() & wxSTC_FIND_REGEXP));
+
+    // Test nomagic.
+    REQUIRE(vi->command(":set nomagic"));
+    REQUIRE(bool(!(vi->search_flags() & wxSTC_FIND_REGEXP)));
+
+    // Back to default.
+    REQUIRE(vi->command(":set magic"));
+    REQUIRE(bool(vi->search_flags() & wxSTC_FIND_REGEXP));
 
     REQUIRE(vi->command(":set noexpandtab"));
     REQUIRE(stc->GetUseTabs());
@@ -147,7 +165,7 @@ TEST_CASE("wex::vi")
     REQUIRE(wex::log::get_level() == 4);
   }
 
-#ifdef __UNIX__
+#ifndef __WXMSW__
   SUBCASE("source")
   {
     stc->set_text("xx\nxx\nyy\nzz\n");
@@ -157,12 +175,12 @@ TEST_CASE("wex::vi")
       // necesary for the ~ in test-source
       wex::find_replace_data::get()->set_find_string("xx");
 
-      vi->command(":so test-source.txt");
+      REQUIRE(vi->command(":so test-source.txt"));
     }
 
     SUBCASE("full")
     {
-      vi->command(":source test-source.txt");
+      REQUIRE(vi->command(":source test-source.txt"));
     }
 
     SUBCASE("not-existing")
@@ -204,6 +222,13 @@ TEST_CASE("wex::vi")
     stc->visual(true);
   }
 
+  SUBCASE("substitute")
+  {
+    stc->set_text("xx\nxx\nyy\nzz\n");
+    REQUIRE(vi->command(":%s/$/OK"));
+    REQUIRE(stc->get_text() == "xxOK\nxxOK\nyyOK\nzzOK\n");
+  }
+
   SUBCASE("tab")
   {
     stc->clear();
@@ -226,9 +251,9 @@ TEST_CASE("wex::vi")
     REQUIRE(!stc->GetUseTabs());
     REQUIRE(vi->on_key_down(event));
     REQUIRE(!vi->on_char(event));
-    REQUIRE(stc->get_text().find("\t") == std::string::npos);
+    REQUIRE(!stc->get_text().contains("\t"));
 
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
   }
 
   SUBCASE("visual")
@@ -248,12 +273,12 @@ TEST_CASE("wex::vi")
       // enter invalid command
       vi->command("g");
       vi->command("j");
-      change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+      change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
 
       event.m_uniChar = visual.first[0];
       REQUIRE(!vi->on_char(event));
       REQUIRE(vi->mode().get() == visual.second);
-      change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+      change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     }
   }
 
@@ -290,7 +315,7 @@ TEST_CASE("wex::vi")
     }
 
     // Test change number.
-    change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     event.m_uniChar = WXK_CONTROL_J;
     for (const auto& number :
          std::vector<std::string>{"101", "0xf7", "077", "-99"})
@@ -301,7 +326,7 @@ TEST_CASE("wex::vi")
       REQUIRE(vi->on_key_down(event));
       REQUIRE(!vi->on_char(event));
       CAPTURE(number);
-      REQUIRE(stc->get_text().find(number) == std::string::npos);
+      REQUIRE(!stc->get_text().contains(number));
     }
 
     // Test navigate command keys.
@@ -318,7 +343,7 @@ TEST_CASE("wex::vi")
     {
       event.m_keyCode = nav_key;
       CAPTURE(nav_key);
-      change_mode(vi, ESC, wex::vi_mode::state_t::COMMAND);
+      change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     }
 
     event.m_keyCode = WXK_NONE;

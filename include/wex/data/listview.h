@@ -53,6 +53,7 @@ public:
     MENU_TOOL        = 1, ///< for adding tool menu
   };
 
+  /// A typedef containing menu flags.
   typedef std::bitset<2> menu_t;
 
   /// Default constructor.

@@ -10,7 +10,7 @@
 #include <wex/core/config.h>
 #include <wex/core/log.h>
 #include <wex/ex/ex.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/statusbar.h>
@@ -51,6 +51,14 @@ bool wex::ex::command_set(const std::string& command)
         else
           m_search_flags &= ~wxSTC_FIND_MATCHCASE;
         wex::find_replace_data::get()->set_match_case(!on);
+      }},
+     {{"magic", "ex-set.magic,1"},
+      [&](bool on)
+      {
+        if (on)
+          m_search_flags |= m_search_flags_regex;
+        else
+          m_search_flags &= ~m_search_flags_regex;
       }},
      {{"mw", "ex-set.matchwords"},
       [&](bool on)

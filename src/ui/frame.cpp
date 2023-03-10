@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
@@ -12,11 +12,10 @@
 #include <wex/core/file.h>
 #include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
-#include <wex/factory/lexers.h>
-#include <wex/factory/link.h>
 #include <wex/factory/listview.h>
-#include <wex/factory/printing.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/lexers.h>
+#include <wex/syntax/printing.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/ex-commandline.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
@@ -37,7 +36,7 @@
                                                                          \
     auto* win = wxWindow::FindFocus();                                   \
                                                                          \
-    if (auto* cl = dynamic_cast<wex::factory::stc*>(win); cl != nullptr) \
+    if (auto* cl = dynamic_cast<wex::syntax::stc*>(win); cl != nullptr)  \
     {                                                                    \
       m_find_focus = cl;                                                 \
     }                                                                    \
@@ -139,28 +138,36 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
     [=, this](wxFindDialogEvent& event)
     {
       if (m_find_focus != nullptr)
+      {
         wxPostEvent(m_find_focus, event);
+      }
     });
   Bind(
     wxEVT_FIND_NEXT,
     [=, this](wxFindDialogEvent& event)
     {
       if (m_find_focus != nullptr)
+      {
         wxPostEvent(m_find_focus, event);
+      }
     });
   Bind(
     wxEVT_FIND_REPLACE,
     [=, this](wxFindDialogEvent& event)
     {
       if (m_find_focus != nullptr)
+      {
         wxPostEvent(m_find_focus, event);
+      }
     });
   Bind(
     wxEVT_FIND_REPLACE_ALL,
     [=, this](wxFindDialogEvent& event)
     {
       if (m_find_focus != nullptr)
+      {
         wxPostEvent(m_find_focus, event);
+      }
     });
 
   Bind(
@@ -295,11 +302,31 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
     },
     m_file_history.get_base_id(),
     m_file_history.get_base_id() + m_file_history.get_max_files());
+
+  if (cmdline::is_output())
+  {
+    auto* logger = new wxLogStream(&std::cout);
+    wxLog::SetActiveTarget(logger);
+  }
+  else if (!cmdline::get_output().empty())
+  {
+    m_ofs = new std::ofstream(
+      cmdline::get_output(),
+      std::ios_base::out | std::ios_base::app);
+
+    auto* logger = new wxLogStream(m_ofs);
+    wxLog::SetActiveTarget(logger);
+  }
 }
 
 wex::frame::~frame()
 {
   m_manager.UnInit();
+
+  if (m_ofs != nullptr)
+  {
+    delete m_ofs;
+  }
 }
 
 bool wex::frame::add_toolbar_panes(const panes_t& panes)
@@ -325,11 +352,7 @@ bool wex::frame::add_toolbar_panes(const panes_t& panes)
       }
       else
       {
-#ifndef __WXOSX__
         pane.Top().ToolbarPane().MinSize(-1, 30);
-#else
-        pane.Bottom().ToolbarPane().MinSize(-1, 30);
-#endif
       }
 
       // Initially hide special bars.
@@ -375,9 +398,10 @@ wxPanel* wex::frame::create_ex_panel()
   m_ex_commandline =
     new ex_commandline(this, text, data::window().parent(panel));
 
-  auto* sizer = new wxFlexGridSizer(2);
-  sizer->AddGrowableCol(1);
-  sizer->Add(text, wxSizerFlags().Center());
+  auto* sizer = new wxFlexGridSizer(3);
+  sizer->AddGrowableCol(2);
+  sizer->Add(text, wxSizerFlags().Top()); // similar to ex_commandline->control
+  sizer->AddSpacer(2);
   sizer->Add(m_ex_commandline->control(), wxSizerFlags().Expand());
 
   panel->SetSizerAndFit(sizer);
@@ -622,12 +646,12 @@ bool wex::frame::statustext(const std::string& text, const std::string& pane)
       m_statusbar->set_statustext(text, pane));
 }
 
-bool wex::frame::show_ex_command(factory::stc* stc, const std::string& command)
+bool wex::frame::show_ex_command(syntax::stc* stc, const std::string& command)
 {
   return pane_show("VIBAR") && m_ex_commandline->set_stc(stc, command);
 }
 
-bool wex::frame::show_ex_input(factory::stc* stc, char cmd)
+bool wex::frame::show_ex_input(syntax::stc* stc, char cmd)
 {
   return pane_show("VIBAR") && m_ex_commandline->set_stc(stc, cmd);
 }
@@ -640,7 +664,7 @@ void wex::frame::statusbar_clicked_right(const std::string& pane)
 
     if (pane == "PaneLexer")
     {
-      if (auto* stc = get_stc(); stc != nullptr)
+      if (auto* stc = dynamic_cast<syntax::stc*>(get_stc()); stc != nullptr)
       {
         if (
           !stc->get_lexer().scintilla_lexer().empty() &&

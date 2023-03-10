@@ -2,14 +2,23 @@
 // Name:      data/find.cpp
 // Purpose:   Implementation of class wex::data::find
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
 #include <wex/core/config.h>
+#include <wex/core/core.h>
+#include <wex/core/log.h>
 #include <wex/data/find.h>
 #include <wex/factory/stc.h>
 
 #include <regex>
+
+wex::data::find::find(const std::string& text, bool forward)
+  : m_text(text)
+  , m_forward(forward)
+{
+}
 
 wex::data::find::find(
   wex::factory::stc* stc,
@@ -22,14 +31,18 @@ wex::data::find::find(
   set_pos();
 }
 
-wex::data::find& wex::data::find::flags(int rhs)
+wex::data::find::find(const std::string& text, int line, int pos, bool forward)
+  : m_text(text)
+  , m_line_no(line)
+  , m_pos(pos)
+  , m_forward(forward)
 {
-  m_flags = rhs;
-  return *this;
 }
 
 bool wex::data::find::find_margin(int& found_line)
 {
+  assert(m_stc != nullptr);
+
   const bool wrapscan(config(_("stc.Wrap scan")).get(true));
   std::match_results<std::string::const_iterator> m;
 
@@ -44,7 +57,7 @@ bool wex::data::find::find_margin(int& found_line)
     if (const std::string margin(m_stc->MarginGetText(line));
         ((m_flags & wxSTC_FIND_REGEXP) &&
          std::regex_search(margin, m, std::regex(m_text))) ||
-        margin.find(m_text) != std::string::npos)
+        margin.contains(m_text))
     {
       found_line = line;
       found      = true;
@@ -59,6 +72,8 @@ bool wex::data::find::find_margin(int& found_line)
 
   if (!found && !m_recursive && wrapscan)
   {
+    statustext();
+
     m_recursive = true;
 
     set_pos();
@@ -68,6 +83,10 @@ bool wex::data::find::find_margin(int& found_line)
     {
       found_line = line;
     }
+    else
+    {
+      statustext();
+    }
 
     m_recursive = false;
   }
@@ -75,8 +94,16 @@ bool wex::data::find::find_margin(int& found_line)
   return found;
 }
 
+wex::data::find& wex::data::find::flags(int rhs)
+{
+  m_flags = rhs;
+  return *this;
+}
+
 void wex::data::find::set_pos()
 {
+  assert(m_stc != nullptr);
+
   if (m_forward)
   {
     if (m_recursive)
@@ -110,4 +137,32 @@ void wex::data::find::set_pos()
       m_end_pos = 0;
     }
   }
+}
+
+const std::string wex::data::find::get_find_result() const
+{
+  if (!recursive())
+  {
+    const auto where =
+      (is_forward()) ? _("bottom").ToStdString() : _("top").ToStdString();
+
+    return _("Searching for").ToStdString() + " " +
+           quoted(boost::algorithm::trim_copy(text())) + " " +
+           _("hit").ToStdString() + " " + where;
+  }
+  else
+  {
+    if (config(_("Error bells")).get(true))
+    {
+      wxBell();
+    }
+
+    return quoted(boost::algorithm::trim_copy(text())) + " " +
+           _("not found").ToStdString();
+  }
+}
+
+void wex::data::find::statustext() const
+{
+  log::status(get_find_result());
 }

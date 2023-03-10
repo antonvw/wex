@@ -16,8 +16,9 @@
 #include <wex/ex/macros.h>
 #include <wex/ex/util.h>
 #include <wex/factory/process.h>
-#include <wex/factory/stc.h>
+#include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
 
 #define SEARCH_TARGET                                                         \
   if (ex->get_stc()->SearchInTarget(text) != -1)                              \
@@ -86,6 +87,39 @@ wex::address::address(ex* ex, const std::string& address)
 {
 }
 
+bool wex::address::add(add_t type, const std::string& text) const
+{
+  if (const auto line = get_line(); line <= 0)
+  {
+    return false;
+  }
+  else if (!m_ex->get_stc()->is_visual())
+  {
+    m_ex->ex_stream()->insert_text(
+      *this,
+      text + m_ex->get_stc()->eol(),
+      type == ADD_APPEND ? ex_stream::INSERT_AFTER : ex_stream::INSERT_BEFORE);
+    return true;
+  }
+  else if (m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode())
+  {
+    return false;
+  }
+  else
+  {
+    m_ex->get_stc()->insert_text(
+      m_ex->get_stc()->PositionFromLine(type == ADD_APPEND ? line : line - 1),
+      text + m_ex->get_stc()->eol());
+
+    if (type == ADD_APPEND)
+    {
+      m_ex->get_stc()->goto_line(line + get_number_of_lines(text) - 1);
+    }
+
+    return true;
+  }
+}
+
 bool wex::address::adjust_window(const std::string& text) const
 {
   regex v("([-+=.^]*)([0-9]+)?(.*)");
@@ -145,29 +179,6 @@ bool wex::address::adjust_window(const std::string& text) const
   return true;
 }
 
-bool wex::address::append(const std::string& text) const
-{
-  if (const auto line = get_line(); line <= 0)
-  {
-    return false;
-  }
-  else if (!m_ex->get_stc()->is_visual())
-  {
-    m_ex->ex_stream()->insert_text(*this, text, ex_stream::INSERT_AFTER);
-    return true;
-  }
-  else if (m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode())
-  {
-    return false;
-  }
-  else
-  {
-    m_ex->get_stc()->insert_text(m_ex->get_stc()->PositionFromLine(line), text);
-    m_ex->get_stc()->goto_line(line + get_number_of_lines(text) - 1);
-    return true;
-  }
-}
-
 bool wex::address::flags_supported(const std::string& flags)
 {
   if (flags.empty())
@@ -207,11 +218,20 @@ int wex::address::get_line(int start_pos) const
       v.match(m_address) > 0)
   {
     const auto use_pos =
-      start_pos == -1 ? m_ex->get_stc()->GetCurrentPos() : start_pos;
+      start_pos == -1 ? m_ex->get_stc()->GetCurrentPos() + 1 : start_pos;
+    const auto& text(
+      !v[0].empty() ? v[0] : find_replace_data::get()->get_find_string());
 
-    return !m_ex->get_stc()->is_visual() ?
-             find_stream(m_ex, v[0], m_address[0] == '/') :
-             find_stc(m_ex, v[0], use_pos, m_address[0] == '/');
+    const auto result = !m_ex->get_stc()->is_visual() ?
+                          find_stream(m_ex, text, m_address[0] == '/') :
+                          find_stc(m_ex, text, use_pos, m_address[0] == '/');
+
+    if (result > 0)
+    {
+      find_replace_data::get()->set_find_string(text);
+    }
+
+    return result;
   }
   // Try address calculation.
   else if (const auto sum = m_ex->calculator(m_address); sum < 0)
@@ -227,30 +247,6 @@ int wex::address::get_line(int start_pos) const
   else
   {
     return sum;
-  }
-}
-
-bool wex::address::insert(const std::string& text) const
-{
-  if (const auto line = get_line(); line <= 0)
-  {
-    return false;
-  }
-  else if (!m_ex->get_stc()->is_visual())
-  {
-    m_ex->ex_stream()->insert_text(*this, text);
-    return true;
-  }
-  else if (m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode())
-  {
-    return false;
-  }
-  else
-  {
-    m_ex->get_stc()->insert_text(
-      m_ex->get_stc()->PositionFromLine(line - 1),
-      text);
-    return true;
   }
 }
 
@@ -275,7 +271,7 @@ bool wex::address::parse(const command_parser& cp)
       return false;
 
     case 'a':
-      if (cp.text().find('|') != std::string::npos)
+      if (cp.text().contains('|'))
       {
         return append(find_after(cp.text(), "|"));
       }
@@ -285,7 +281,7 @@ bool wex::address::parse(const command_parser& cp)
       }
 
     case 'i':
-      if (cp.text().find('|') != std::string::npos)
+      if (cp.text().contains('|'))
       {
         return insert(find_after(cp.text(), "|"));
       }

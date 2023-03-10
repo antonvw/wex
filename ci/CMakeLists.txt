@@ -1,5 +1,7 @@
-file(GLOB_RECURSE SRCS "../src/*.cpp")
+file(GLOB_RECURSE SRCS "../src/*.cpp" "../sample/*.cpp")
 file(GLOB_RECURSE INCLUDES "../include/*.h")
+file(GLOB MDS "../*.md")
+file(GLOB_RECURSE MDSR "../doc/*.md" "../src/*.md" "../test/*.md")
 
 if (NOT WIN32)
   add_custom_target(codespell
@@ -9,31 +11,35 @@ if (NOT WIN32)
 
   add_custom_target(cppcheck
     COMMAND cppcheck
-      --std=c++20
+      --std=c++${WEX_CXX_STANDARD}20
       --quiet --enable=all
-      --suppress=constStatement 
-      --suppress=missingIncludeSystem 
+      --suppress=missingInclude
       --suppress=cppcheckError 
       --suppress=cstyleCast 
       --suppress=internalAstError 
-      --suppress=noCopyConstructor 
+      --suppress=invalidFunctionArg
       --suppress=noExplicitConstructor 
       --suppress=noOperatorEq 
       --suppress=ignoredReturnValue 
       --suppress=unknownMacro 
+      --suppress=unmatchedSuppression 
       --suppress=unusedScopedObject 
       --suppress=unusedFunction 
       --suppress=shadowArgument 
       --suppress=shadowVariable 
-      --suppress=virtualCallInConstructor
-      ${SRCS} -i LexAda.cxx -i odbc.cpp
+      ${SRCS} -i odbc.cpp
     COMMENT "cppcheck" VERBATIM)
 
   add_custom_target(cpplint
     COMMAND cpplint 
-      --quiet --exclude=../src/lexers --filter=-build,-readability/casting,-readability/fn_size,-readability/multiline_string,-runtime/explicit,-runtime/indentation_namespace,-runtime/int,-runtime/references,-whitespace 
+      --quiet 
+      --filter=-build,-readability/casting,-readability/fn_size,-readability/multiline_string,-runtime/explicit,-runtime/indentation_namespace,-runtime/int,-runtime/references,-whitespace 
       ${SRCS}
     COMMENT "cpplint" VERBATIM)
+
+  add_custom_target(markdownlint
+    COMMAND markdownlint ${MDS} ${MDSR}
+    COMMENT "markdownlint" VERBATIM)
 
   add_custom_target(robocop
     COMMAND robocop
@@ -42,6 +48,6 @@ if (NOT WIN32)
     COMMENT "robocop" VERBATIM)
     
   add_custom_target(analyse 
-    DEPENDS cppcheck cpplint codespell robocop
+    DEPENDS codespell cppcheck cpplint markdownlint robocop
     COMMENT "running checks" VERBATIM)
 endif()

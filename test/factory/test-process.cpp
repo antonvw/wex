@@ -76,7 +76,7 @@ TEST_CASE("wex::factory::process")
       REQUIRE(process.system(wex::process_data("wc -c").std_in("xxxxxx")) == 0);
       CAPTURE(process.std_out());
       REQUIRE(process.std_err().empty());
-      REQUIRE(process.std_out().find("6") != std::string::npos);
+      REQUIRE(process.std_out().contains("6"));
     }
 
     SUBCASE("start_dir")

@@ -236,7 +236,7 @@ void wex::del::listview::on_compare()
 
 void wex::del::listview::on_tool(const wxCommandEvent& event)
 {
-  const wex::tool tool((window_id)event.GetId());
+  const wex::tool tool((wex::window_id)event.GetId());
 
   if (tool.is_find_type() && m_frame->find_in_files_dialog(tool) == wxID_CANCEL)
   {

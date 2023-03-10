@@ -80,7 +80,10 @@ const std::string wex::ex_commandline_input::get() const
 
 void wex::ex_commandline_input::set(const std::string& value)
 {
-  assert(!value.empty());
+  if (value.empty())
+  {
+    return;
+  }
 
   m_values.remove(value);
   m_values.push_front(value);
