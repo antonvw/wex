@@ -2,7 +2,7 @@
 // Name:      app-locale.cpp
 // Purpose:   Implementation of wex::file_translations_loader class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -16,8 +16,6 @@
 #include "app-locale.h"
 
 namespace fs = std::filesystem;
-
-wex::file_translations_loader::file_translations_loader() {}
 
 void wex::file_translations_loader::add_catalogs(wxLanguage language)
 {
