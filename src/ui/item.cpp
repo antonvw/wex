@@ -2,7 +2,7 @@
 // Name:      item.cpp
 // Purpose:   Implementation of wex::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
@@ -104,7 +104,13 @@ wxFlexGridSizer* wex::item::add(wxSizer* sizer, wxFlexGridSizer* current) const
   {
     current = new wxFlexGridSizer(
       m_data.label_type() == data::item::LABEL_LEFT ? 2 : 1);
-    current->AddGrowableCol(current->GetCols() - 1); // make last col growable
+
+    // depending on type, make the last col growable
+    if (m_type != TEXTCTRL_FLOAT && m_type != TEXTCTRL_INT)
+    {
+      current->AddGrowableCol(current->GetCols() - 1);
+    }
+
     sizer->Add(current, wxSizerFlags().Expand());
   }
 
@@ -372,9 +378,9 @@ const std::any wex::item::get_value() const
           break;
 
         case TEXTCTRL_FLOAT:
-          if (const auto v = (reinterpret_cast<wxTextCtrl*>(m_window))
-                               ->GetValue()
-                               .ToStdString();
+          if (const auto& v = (reinterpret_cast<wxTextCtrl*>(m_window))
+                                ->GetValue()
+                                .ToStdString();
               !v.empty())
           {
             any = std::stod(v);
@@ -386,9 +392,9 @@ const std::any wex::item::get_value() const
           break;
 
         case TEXTCTRL_INT:
-          if (const auto v = (reinterpret_cast<wxTextCtrl*>(m_window))
-                               ->GetValue()
-                               .ToStdString();
+          if (const auto& v = (reinterpret_cast<wxTextCtrl*>(m_window))
+                                ->GetValue()
+                                .ToStdString();
               !v.empty())
           {
             any = std::stol(v);

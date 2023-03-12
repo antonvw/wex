@@ -2,7 +2,7 @@
 // Name:      beautify.h
 // Purpose:   Declaration of wex::beautify class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -20,7 +20,8 @@ namespace wex
 class beautify
 {
 public:
-  /// Beautifies the specified file.
+  /// Beautifies the specified file
+  /// (the auto beautifier should explicitly be enabled).
   /// Return false if it did not succeed.
   bool file(const path& p) const;
 
@@ -36,7 +37,7 @@ public:
   /// Returns default beautifiers.
   config::strings_t list() const;
 
-  /// Beautifies the specified stc component.
+  /// Beautifies the specified stc component
   /// Return false if it did not succeed.
   bool stc(wex::stc& s) const;
 

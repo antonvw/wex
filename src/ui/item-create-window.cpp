@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      item.cpp
-// Purpose:   Implementation of wex::item::create_window
+// Purpose:   Implementation of wex::item::create_window and wex::item::creators
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "item.h"
@@ -46,7 +46,7 @@ void handle(const std::string& s, wxCheckListBox* clb, size_t& item_no)
   item_no++;
 }
 
-wxArrayString
+auto
 initial(const data::item& data, std::function<void(wxArrayString& as)> f)
 {
   wxArrayString as;
@@ -59,7 +59,7 @@ initial(const data::item& data, std::function<void(wxArrayString& as)> f)
   return as;
 }
 
-wxCheckListBox* create_checklistbox(
+auto* create_checklistbox(
   wxWindow*                              parent,
   const wex::item&                       item,
   std::function<void(wxArrayString& as)> f)
@@ -433,8 +433,36 @@ void set_validator(wex::item* item)
 }
 } // namespace wex
 
+bool wex::item::create_window(wxWindow* parent, bool readonly)
+{
+  if (m_type != USER && m_window != nullptr)
+  {
+    return false;
+  }
+
+  if (m_creators.empty())
+  {
+    m_creators = creators();
+  }
+
+  assert(m_type < m_creators.size());
+
+  m_data.is_readonly(readonly);
+
+  m_creators[m_type](parent, m_window, *this);
+
+  assert(
+    m_type == EMPTY || m_type == SPACER ? m_window == nullptr :
+                                          m_window != nullptr);
+
+  set_validator(this);
+
+  return true;
+}
+
 wex::item::create_t wex::item::creators()
 {
+  // these creators should exactly follow the item_t enum
   // clang-format off
   return {
     CREATE_CTRL(create_button) 
@@ -514,31 +542,4 @@ wex::item::create_t wex::item::creators()
         }
       }}};
   // clang-format on
-}
-
-bool wex::item::create_window(wxWindow* parent, bool readonly)
-{
-  if (m_type != USER && m_window != nullptr)
-  {
-    return false;
-  }
-
-  if (m_creators.empty())
-  {
-    m_creators = creators();
-  }
-
-  assert(m_type < m_creators.size());
-
-  m_data.is_readonly(readonly);
-
-  m_creators[m_type](parent, m_window, *this);
-
-  assert(
-    m_type == EMPTY || m_type == SPACER ? m_window == nullptr :
-                                          m_window != nullptr);
-
-  set_validator(this);
-
-  return true;
 }
