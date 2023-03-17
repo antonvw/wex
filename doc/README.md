@@ -391,13 +391,14 @@ It benefits from the following boost libraries:
 
 ## boost c++ libraries
 
-lib | info
+lib  | info
 -----|------
 boost::algorithm lib | uses find_tail, iequals, replace_all, to_upper, trim
 boost::json lib | to implement wex::config
 boost::log lib | to implement wex::log
 boost::process lib | to implement wex::process
 boost::program_options lib | to implement wex::cmdline
+boost::regex lib | to implement the wex::regex_part
 boost::spirit lib | to implement the wex::evaluator
 boost::statechart lib | to implement the statemachine for vi mode and macro mode
 boost::tokenizer lib | to tokenize expressions
@@ -407,7 +408,7 @@ It benefits from the following wxWidgets libraries:
 ## wxWidgets libraries
 
 - all gui classes are derived from / use wxWidgets base classes
-lib | info
+lib  | info
 -----|------
 wxbase | base
 wxcore | core

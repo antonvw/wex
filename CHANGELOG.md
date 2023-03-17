@@ -2,6 +2,8 @@
 
 **v23.10** *September, 2023*
 
+- boost::regex lib used
+
 **v23.04** *March 12, 2023*
 
 - c++23 standard
