@@ -398,7 +398,7 @@ boost::json lib | to implement wex::config
 boost::log lib | to implement wex::log
 boost::process lib | to implement wex::process
 boost::program_options lib | to implement wex::cmdline
-boost::regex lib | to implement the wex::regex_part
+boost::regular expression lib | to implement the wex::regex_part
 boost::spirit lib | to implement the wex::evaluator
 boost::statechart lib | to implement the statemachine for vi mode and macro mode
 boost::tokenizer lib | to tokenize expressions
