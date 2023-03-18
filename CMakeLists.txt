@@ -37,6 +37,7 @@ execute_process(
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/lexilla)
 
 include_directories(${Boost_INCLUDE_DIRS})
+include_directories(external/doctest/doctest)
 
 add_subdirectory(external)
 
@@ -81,7 +82,7 @@ endif ()
 # See also FindWEX
 set(wex_own_LIBRARIES
   wex-del wex-vcs wex-stc wex-vi wex-ex wex-ctags
-  wex-ui wex-common wex-data wex-syntax wex-factory wex-core)
+  wex-ui wex-common wex-data wex-syntax wex-factory wex-test wex-core)
 
 separate_arguments(wex_own_LIBRARIES)
 

@@ -5,7 +5,7 @@
 // Copyright: (c) 2019 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
+#include <wex/test/test.h>
 #include <wex/ui/debug-entry.h>
 
 TEST_SUITE_BEGIN("wex::process");

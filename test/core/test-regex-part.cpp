@@ -6,8 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/regex-part.h>
-
-#include "../test.h"
+#include <wex/test/test.h>
 
 TEST_CASE("wex::regex_part")
 {

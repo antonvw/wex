@@ -8,7 +8,7 @@
 #include <wex/core/log-none.h>
 #include <wex/factory/process.h>
 
-#include "../test.h"
+#include <wex/test/test.h>
 
 TEST_CASE("wex::factory::process")
 {

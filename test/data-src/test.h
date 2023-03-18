@@ -10,7 +10,7 @@
 #include <wex/factory/listview.h>
 #include <wex/syntax/stc.h>
 
-#include "../test.h"
+#include <wex/test/test.h>
 
 wex::factory::listview* get_listview();
 wex::syntax::stc*       get_stc();

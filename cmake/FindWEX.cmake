@@ -174,6 +174,7 @@ set(wex_LIBRARIES
   wex-data${USE_DEBUG}
   wex-syntax${USE_DEBUG}
   wex-factory${USE_DEBUG}
+  wex-test${USE_DEBUG}
   wex-core${USE_DEBUG}
   ${wx_LIBRARIES}
   ${apple_LIBRARIES}

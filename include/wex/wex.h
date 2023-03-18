@@ -2,7 +2,7 @@
 // Name:      wex.h
 // Purpose:   General wex include file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -16,6 +16,7 @@
 #include <wex/factory/wex.h>
 #include <wex/stc/wex.h>
 #include <wex/syntax/wex.h>
+#include <wex/test/wex.h>
 #include <wex/ui/wex.h>
 #include <wex/vcs/wex.h>
 #include <wex/vi/wex.h>

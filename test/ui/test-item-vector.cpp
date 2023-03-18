@@ -5,7 +5,7 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
+#include <wex/test/test.h>
 #include <wex/ui/item-vector.h>
 #include <wex/ui/item.h>
 

@@ -2,7 +2,7 @@
 // Name:      test.h
 // Purpose:   Declaration of classes for unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,8 +10,7 @@
 #include <wex/factory/frame.h>
 #include <wex/factory/listview.h>
 #include <wex/syntax/stc.h>
-
-#include "../test.h"
+#include <wex/test/test.h>
 
 wex::factory::frame*    get_frame();
 wex::factory::listview* get_listview();

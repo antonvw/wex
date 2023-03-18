@@ -7,7 +7,7 @@
 
 #include <wex/data/item.h>
 
-#include "../test.h"
+#include <wex/test/test.h>
 
 TEST_CASE("wex::data::item")
 {

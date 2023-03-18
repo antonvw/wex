@@ -5,7 +5,7 @@
 // Copyright: (c) 2019-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
+#include <wex/test/test.h>
 #include <wex/core/log-none.h>
 #include <wex/ex/macro-mode.h>
 #include <wex/ex/macros.h>

@@ -2,12 +2,11 @@
 // Name:      test-process-data.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/process-data.h>
-
-#include "../test.h"
+#include <wex/test/test.h>
 
 TEST_CASE("wex::process_data")
 {

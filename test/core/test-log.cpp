@@ -2,12 +2,11 @@
 // Name:      test-log.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2022 Anton van Wezenbeek
+// Copyright: (c) 2019-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
-
-#include "../test.h"
+#include <wex/test/test.h>
 
 TEST_CASE("wex::log")
 {

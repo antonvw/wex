@@ -5,7 +5,7 @@
 // Copyright: (c) 2020-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
+#include <wex/test/test.h>
 #include <wex/core/menu-command.h>
 #include <wex/ui/menu-commands.h>
 #include <wex/ui/menus.h>

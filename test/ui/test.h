@@ -12,7 +12,7 @@
 #include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 
-#include "../test.h"
+#include <wex/test/test.h>
 
 namespace wex
 {

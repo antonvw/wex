@@ -8,9 +8,9 @@
 #include <iostream>
 
 #include <wex/core/log.h>
-#include <wx/frame.h>
+#include <wex/test/test.h>
 
-#include "test.h"
+#include <wx/frame.h>
 
 const wex::path wex::test::get_path(const std::string& file, path::log_t t)
 {

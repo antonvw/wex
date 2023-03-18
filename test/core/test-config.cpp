@@ -2,13 +2,13 @@
 // Name:      test-config.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
 #include <wx/font.h>
 
-#include "../test.h"
+#include <wex/test/test.h>
 
 TEST_CASE("wex::config")
 {

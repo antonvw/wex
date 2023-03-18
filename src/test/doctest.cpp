@@ -10,10 +10,9 @@
 #include <wex/core/cmdline.h>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
+#include <wex/test/doctest.h>
 #include <wx/timer.h>
 #include <wx/window.h>
-
-#include "doctest.h"
 
 wex::path wex::test::doctester::get_path(const std::string& file, path::log_t t)
 {

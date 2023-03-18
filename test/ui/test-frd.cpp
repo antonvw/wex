@@ -8,7 +8,7 @@
 #include <wex/data/find.h>
 #include <wex/ui/frd.h>
 
-#include "../test.h"
+#include <wex/test/test.h>
 
 TEST_CASE("wex::frd")
 {

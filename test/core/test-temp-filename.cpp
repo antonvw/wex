@@ -2,11 +2,11 @@
 // Name:      test-temp-filename.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/core/temp-filename.h>
+#include <wex/test/test.h>
 
 TEST_CASE("wex::temp_filename")
 {
