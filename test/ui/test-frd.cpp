@@ -6,9 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/find.h>
-#include <wex/ui/frd.h>
-
 #include <wex/test/test.h>
+#include <wex/ui/frd.h>
 
 TEST_CASE("wex::frd")
 {
