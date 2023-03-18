@@ -10,9 +10,9 @@
 
 #include "lex-rfw.h"
 
-#define MAKE_SECTION(REGEX, ID)                   \
-  {                                               \
-    wex::regex_part(REGEX, std::regex::icase), ID \
+#define MAKE_SECTION(REGEX, ID)                     \
+  {                                                 \
+    wex::regex_part(REGEX, boost::regex::icase), ID \
   }
 
 const CharacterSet setWord(CharacterSet::setAlphaNum, "._+-]*");
@@ -62,7 +62,7 @@ void Scintilla::lex_rfw::init(LexAccessor& styler)
     delete m_quote_stack;
     delete m_section_keywords;
   }
-  
+
   /* The recommended header format is *** Settings ***,
      but the header is case-insensitive, surrounding spaces are
      optional, and the number of asterisk characters can vary as long
@@ -85,10 +85,10 @@ void Scintilla::lex_rfw::init(LexAccessor& styler)
 
   m_quote       = new quote(styler);
   m_quote_stack = new quote_stack(styler);
-  
+
   m_section.reset();
 }
-  
+
 void Scintilla::lex_rfw::parse_keyword(
   StyleContext& sc,
   int           cmdState,
@@ -178,13 +178,13 @@ bool Scintilla::lex_rfw::section_keywords_detect(
     {
       switch (i.first.match_type())
       {
-        case wex::regex_part::MATCH_ALL:
+        case wex::regex_part::MATCH_PART:
           cmdStateNew = RFW_CMD_SKW_PARTIAL;
           m_section.reset();
           sc.SetState(SCE_SH_WORD);
           break;
 
-        case wex::regex_part::MATCH_COMPLETE:
+        case wex::regex_part::MATCH_FULL:
           sc.Forward();
           sc.SetState(SCE_SH_WORD);
           cmdStateNew = RFW_CMD_START;

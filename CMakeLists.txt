@@ -36,6 +36,8 @@ execute_process(
   COMMAND git apply ${CMAKE_SOURCE_DIR}/external/lexilla.patch
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/lexilla)
 
+include_directories(${Boost_INCLUDE_DIRS})
+
 add_subdirectory(external)
 
 include(external/wxWidgets/build/cmake/toolkit.cmake)
@@ -67,8 +69,6 @@ endif ()
 enable_testing()
 
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/wxWidgets/build/cmake/modules")
-
-include_directories(${Boost_INCLUDE_DIRS})
 
 include(cmake/options.cmake)
 include(cmake/common.cmake)
