@@ -206,7 +206,11 @@ function(wex_target_link_all)
   endif ()
 endfunction()
 
-set_property(GLOBAL PROPERTY test_libs wex-test)
+if (APPLE)
+  set_property(GLOBAL PROPERTY test_libs wex-test)
+else ()
+  set_property(GLOBAL PROPERTY wex-test test_libs)
+endif()
 
 function(add_test_libs)
     get_property(tmp GLOBAL PROPERTY test_libs)
