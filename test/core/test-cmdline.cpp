@@ -7,8 +7,7 @@
 
 #include <wex/core/cmdline.h>
 #include <wex/core/log-none.h>
-
-#include "../test.h"
+#include <wex/test/test.h>
 
 TEST_CASE("wex::cmdline")
 {

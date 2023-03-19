@@ -5,7 +5,7 @@
 // Copyright: (c) 2018 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
+#include <wex/test/test.h>
 #include <wex/ui/art.h>
 
 TEST_CASE("wex::art")

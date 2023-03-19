@@ -1,7 +1,6 @@
 project(wex-test)
 
 include_directories(../include/)
-include_directories(../external/doctest/doctest)
   
 if (wexBUILD_SAMPLES)
   add_subdirectory(app)

@@ -2,14 +2,13 @@
 // Name:      test-style.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
 #include <wex/syntax/style.h>
+#include <wex/test/test.h>
 #include <wx/stc/stc.h>
-
-#include "../test.h"
 
 #include <numeric>
 

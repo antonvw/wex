@@ -2,6 +2,7 @@
 
 **v23.10** *September, 2023*
 
+- wex-test lib added
 - boost::regular expression lib used
 
 **v23.04** *March 12, 2023*

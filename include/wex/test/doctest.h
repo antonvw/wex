@@ -7,9 +7,10 @@
 
 #pragma once
 
-#include <doctest.h>
 #include <wex/core/app.h>
 #include <wex/core/path.h>
+
+#include <doctest.h>
 
 namespace wex
 {

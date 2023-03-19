@@ -53,6 +53,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
 endif ()
 
 add_subdirectory(core)
+add_subdirectory(test)
 add_subdirectory(factory)
 add_subdirectory(syntax)
 add_subdirectory(data)

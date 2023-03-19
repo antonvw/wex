@@ -5,9 +5,10 @@
 // Copyright: (c) 2022-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/core/regex-part.h>
+#ifndef __WXMSW__
 
-#include "../test.h"
+#include <wex/core/regex-part.h>
+#include <wex/test/test.h>
 
 TEST_CASE("wex::regex_part")
 {
@@ -89,3 +90,4 @@ TEST_CASE("wex::regex_part")
     REQUIRE(re.match_type() == wex::regex_part::MATCH_NONE);
   }
 }
+#endif

@@ -5,9 +5,9 @@
 // Copyright: (c) 2021-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
+#include <wex/test/test.h>
 
 TEST_CASE("wex::regex")
 {

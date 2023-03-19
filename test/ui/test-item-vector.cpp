@@ -2,10 +2,10 @@
 // Name:      test-item-vector.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
+#include <wex/test/test.h>
 #include <wex/ui/item-vector.h>
 #include <wex/ui/item.h>
 

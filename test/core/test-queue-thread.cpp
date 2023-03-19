@@ -2,11 +2,11 @@
 // Name:      test-queue-thread.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2021 Anton van Wezenbeek
+// Copyright: (c) 2018-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/core/queue-thread.h>
+#include <wex/test/test.h>
 
 #include <chrono>
 

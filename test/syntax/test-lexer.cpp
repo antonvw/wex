@@ -5,8 +5,8 @@
 // Copyright: (c) 2015-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/syntax/lexer.h>
+#include <wex/test/test.h>
 
 #include <regex>
 

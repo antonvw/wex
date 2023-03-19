@@ -2,7 +2,7 @@
 // Name:      test.h
 // Purpose:   Declaration of classes for unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,9 +10,8 @@
 #include <wex/core/file.h>
 #include <wex/core/path.h>
 #include <wex/syntax/stc.h>
+#include <wex/test/test.h>
 #include <wex/ui/frame.h>
-
-#include "../test.h"
 
 namespace wex
 {

@@ -5,7 +5,7 @@
 // Copyright: (c) 2021
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
+#include <wex/test/test.h>
 
 IMPLEMENT_APP_NO_MAIN(wex::test::app);
 

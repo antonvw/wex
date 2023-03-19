@@ -2,11 +2,11 @@
 // Name:      test-vcs-command.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/core/vcs-command.h>
+#include <wex/test/test.h>
 
 TEST_SUITE_BEGIN("wex::vcs");
 

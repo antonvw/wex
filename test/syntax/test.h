@@ -2,16 +2,14 @@
 // Name:      test.h
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/syntax/stc.h>
+#include <wex/test/test.h>
 #include <wx/app.h>
-
-/// Add general test header.
-#include "../test.h"
 
 namespace wex::test
 {

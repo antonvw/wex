@@ -2,11 +2,11 @@
 // Name:      test-interruptible.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/core/interruptible.h>
+#include <wex/test/test.h>
 
 TEST_CASE("wex::interruptible")
 {

@@ -9,16 +9,17 @@ to your apps.
 
 src     | lib         | sub-lib   | info
 --------|-------------|-----------|--
-core    | wex-core    |           | core
-factory | wex-factory |           | virtual base
-syntax  | wex-syntax  |           | syntax highlighting
-data    | wex-data    |           | data
-common  | wex-common  |           | common
-ui      | wex-ui      | wex-ctags | user interface
+core    | wex-core    |           | core classes
+test    | wex-test    |           | test classes
+factory | wex-factory |           | virtual base classes
+syntax  | wex-syntax  |           | syntax highlighting classes
+data    | wex-data    |           | data classes
+common  | wex-common  |           | common classes
+ui      | wex-ui      | wex-ctags | user interface classes
 ex      | wex-ex      | wex-vi    | ex and vi classes
-stc     | wex-stc     |           | stc
-vcs     | wex-vcs     |           | version control
-del     | wex-del     |           | delivered
+stc     | wex-stc     |           | stc classes
+vcs     | wex-vcs     |           | version control system classes
+del     | wex-del     |           | delivered classes
 
 It benefits from the following c++ features:
 

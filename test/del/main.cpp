@@ -6,8 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/del/app.h>
+#include <wex/test/doctest.h>
 
-#include "../doctest.h"
 #include "test.h"
 
 namespace wex

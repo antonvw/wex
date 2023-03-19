@@ -5,7 +5,7 @@
 // Copyright: (c) 2018-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
+#include <wex/test/test.h>
 #include <wex/common/statistics.h>
 #include <wex/common/tool.h>
 
