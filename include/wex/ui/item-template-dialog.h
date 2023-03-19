@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <wex/core/log.h>
 #include <wex/core/path.h>
 #include <wex/factory/frame.h>
 #include <wex/ui/dialog.h>
@@ -19,18 +18,6 @@
 #include <wx/filepicker.h>
 #include <wx/textctrl.h>
 #include <wx/tglbtn.h> // for wxEVT_TOGGLEBUTTON
-
-#define DO_DIALOG                                            \
-  {                                                          \
-    /* NOLINTNEXTLINE */                                     \
-    if (dlg.ShowModal() == wxID_OK)                          \
-    {                                                        \
-      const auto value = dlg.GetPath();                      \
-      const int  item  = browse->FindString(value);          \
-      browse->SetSelection(                                  \
-        item == wxNOT_FOUND ? browse->Append(value) : item); \
-    }                                                        \
-  }
 
 #define PICKER_HANDLE(COMPONENT)                              \
   if (auto* pc = reinterpret_cast<COMPONENT*>(item.window()); \
@@ -160,55 +147,6 @@ template <class T> bool wex::item_template_dialog<T>::bind_button(const T& item)
         {
           if (!item.apply())
             click(event);
-        },
-        item.window()->GetId());
-      break;
-
-    case item::COMBOBOX_DIR:
-      Bind(
-        wxEVT_BUTTON,
-        [&, this](const wxCommandEvent& event)
-        {
-          if (auto* browse = reinterpret_cast<wxComboBox*>(item.window());
-              browse == nullptr)
-          {
-            log("browse dir failed") << item.label();
-          }
-          else
-          {
-            wxDirDialog dlg(
-              this,
-              _(wxDirSelectorPromptStr),
-              browse->GetValue(),
-              wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-            DO_DIALOG;
-          }
-        },
-        item.window()->GetId());
-      break;
-
-    case item::COMBOBOX_FILE:
-      Bind(
-        wxEVT_BUTTON,
-        [&, this](const wxCommandEvent& event)
-        {
-          if (auto* browse = reinterpret_cast<wxComboBox*>(item.window());
-              browse != nullptr)
-          {
-            const path   path(browse->GetValue());
-            wxFileDialog dlg(
-              this,
-              _(wxFileSelectorPromptStr),
-              path.parent_path(),
-              path.filename(),
-              wxFileSelectorDefaultWildcardStr,
-              wxFD_DEFAULT_STYLE | wxFD_FILE_MUST_EXIST);
-            DO_DIALOG;
-          }
-          else
-          {
-            log("browse file failed") << item.label();
-          }
         },
         item.window()->GetId());
       break;
