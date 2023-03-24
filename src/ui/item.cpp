@@ -2,7 +2,7 @@
 // Name:      item.cpp
 // Purpose:   Implementation of wex::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
@@ -14,6 +14,17 @@
 
 #include "item.h"
 #include "ui.h"
+
+#define DO_DIALOG                                                       \
+  {                                                                     \
+    /* NOLINTNEXTLINE */                                                \
+    if (dlg.ShowModal() == wxID_OK)                                     \
+    {                                                                   \
+      const auto value = dlg.GetPath();                                 \
+      const int  item  = cb->FindString(value);                         \
+      cb->SetSelection(item == wxNOT_FOUND ? cb->Append(value) : item); \
+    }                                                                   \
+  }
 
 // When using a wxGridBagSizer instead of a wxFlexGridSizer:
 // wxWidgets/src/common/gbsizer.cpp(781):
@@ -146,7 +157,6 @@ wxFlexGridSizer* wex::item::add_browse_button(wxSizer* sizer) const
   // Tried to use a wxDirPickerCtrl here, is nice,
   // but does not use a combobox for keeping old values, so this is better.
   // And the text box that is used is not resizable as well.
-  // In item_template_dialog the button click is bound to browse dialog.
   auto* browse = new wxButton(
     m_window->GetParent(),
     m_window->GetId(),
@@ -155,6 +165,58 @@ wxFlexGridSizer* wex::item::add_browse_button(wxSizer* sizer) const
   fgz->Add(browse, wxSizerFlags().Center().Border());
 
   sizer->Add(fgz, wxSizerFlags().Left().Expand()); // no border
+
+  switch (m_type)
+  {
+    case COMBOBOX_DIR:
+      browse->Bind(
+        wxEVT_BUTTON,
+        [&, window = this->m_window, label = this->m_label](
+          const wxCommandEvent& event)
+        {
+          if (auto* cb = reinterpret_cast<wxComboBox*>(window); cb != nullptr)
+          {
+            wxDirDialog dlg(
+              window,
+              _(wxDirSelectorPromptStr),
+              cb->GetValue(),
+              wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+            DO_DIALOG;
+          }
+          else
+          {
+            wex::log("browse dir failed") << label;
+          }
+        },
+        m_window->GetId());
+      break;
+
+    case COMBOBOX_FILE:
+      browse->Bind(
+        wxEVT_BUTTON,
+        [&, window = this->m_window, label = this->m_label](
+          const wxCommandEvent& event)
+        {
+          if (auto* cb = reinterpret_cast<wxComboBox*>(window); cb != nullptr)
+          {
+            const path   path(cb->GetValue());
+            wxFileDialog dlg(
+              window,
+              _(wxFileSelectorPromptStr),
+              path.parent_path(),
+              path.filename(),
+              wxFileSelectorDefaultWildcardStr,
+              wxFD_DEFAULT_STYLE | wxFD_FILE_MUST_EXIST);
+            DO_DIALOG;
+          }
+          else
+          {
+            wex::log("browse file failed") << label;
+          }
+        },
+        window()->GetId());
+      break;
+  }
 
   return fgz;
 }
