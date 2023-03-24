@@ -71,6 +71,7 @@ void Scintilla::lex_rfw::init(LexAccessor& styler)
      like Setting and Test Case are accepted.
      In other words, also *setting would be recognized as a section
      header.
+     And it is an error to have both test cases and tasks in the same file.
      -> we require 3 *, regex_part issue
     */
   m_section_keywords = new keywords_t(
@@ -198,6 +199,22 @@ bool Scintilla::lex_rfw::section_keywords_detect(
             {
               return it.first.regex() == i.first.regex();
             }));
+
+          if (m_section.is_case())
+          {
+            // and remove the other section as well
+            const auto other_section =
+              (m_section.id() == SECTION_TESTCASE ? SECTION_TASK :
+                                                    SECTION_TESTCASE);
+
+            m_section_keywords->erase(std::remove_if(
+              m_section_keywords->begin(),
+              m_section_keywords->end(),
+              [&](const std::pair<wex::regex_part, section_t>& it)
+              {
+                return it.second == other_section;
+              }));
+          }
 
           return true;
 
@@ -883,7 +900,7 @@ void SCI_METHOD Scintilla::lex_rfw::Lex(
     {
       cmdState = cmdStateNew;
     }
-    else if (pipes && sc.ch == '|' && m_section.id() == SECTION_TESTCASE)
+    else if (pipes && sc.ch == '|' && m_section.is_case())
     {
       cmdState = (sc.atLineStart ? RFW_CMD_TESTCASE : RFW_CMD_START);
     }
@@ -891,7 +908,7 @@ void SCI_METHOD Scintilla::lex_rfw::Lex(
       m_visual_mode && !pipes && sc.ch != '#' && !isspace(sc.ch) &&
       sc.atLineStart)
     {
-      if (m_section.id() == SECTION_TESTCASE)
+      if (m_section.is_case())
       {
         cmdState = RFW_CMD_TESTCASE;
       }

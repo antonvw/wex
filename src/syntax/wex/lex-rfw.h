@@ -85,6 +85,12 @@ public:
   /// Gets current section id.
   auto id() const { return m_id; };
 
+  /// Returns true if id is testcase or task.
+  bool is_case() const
+  {
+    return m_id == SECTION_TESTCASE || m_id == SECTION_TASK;
+  };
+
   /// Resets section.
   void reset() { m_id = SECTION_UNKNOWN; };
 
