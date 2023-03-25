@@ -2,8 +2,10 @@
 // Name:      core/regex.cpp
 // Purpose:   Implementation of class wex::regex
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
+
+#include <algorithm>
 
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
