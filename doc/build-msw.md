@@ -16,7 +16,7 @@
 
 ## build wex
 
-- the easiest way is using the commandline tool devenv
+- the easiest way is using the command-line tool devenv
 
 ```bash
 cmake -DBOOST_ROOT=c:\local\boost_1_80_0 -DCMAKE_BUILD_TYPE=Release
