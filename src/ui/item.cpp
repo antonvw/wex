@@ -216,6 +216,9 @@ wxFlexGridSizer* wex::item::add_browse_button(wxSizer* sizer) const
         },
         window()->GetId());
       break;
+
+    default:
+      assert(0);
   }
 
   return fgz;

@@ -2,7 +2,7 @@
 // Name:      lexers.h
 // Purpose:   Declaration of wex::lexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2008-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -180,7 +180,7 @@ private:
   std::set<marker>    m_markers;
 
   std::vector<property> m_global_properties;
-  std::vector<lexer>    m_lexers;
+  std::vector<lexer>    m_lexers{lexer()}; // ensure we have a lexer
   std::vector<style>    m_styles, m_styles_hex;
 
   std::vector<std::pair<std::string, std::string>> m_texts;
