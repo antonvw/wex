@@ -24,8 +24,6 @@ wex::lexers::lexers()
   , m_path_macro(wex::path(config::dir(), "wex-lexers-macro.xml"))
   , m_theme(config("theme").get())
 {
-  // we should always have at least one lexer
-  m_lexers.push_back(lexer());
 }
 
 void wex::lexers::apply(factory::stc* stc) const
