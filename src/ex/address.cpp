@@ -2,7 +2,7 @@
 // Name:      address.cpp
 // Purpose:   Implementation of class wex::address
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2013-2022 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -214,7 +214,7 @@ int wex::address::get_line(int start_pos) const
   // shall address the first line found by searching backward.
   // In addition, the second <question-mark> can be omitted at the end of a
   // command line.
-  if (regex v({std::string("/(.*)/$"), "/(.*)$", "\\?(.*)\\?$", "\\?(.*)$"});
+  if (regex v({"/(.*)/$", "/(.*)$", "\\?(.*)\\?$", "\\?(.*)$"});
       v.match(m_address) > 0)
   {
     const auto use_pos =
