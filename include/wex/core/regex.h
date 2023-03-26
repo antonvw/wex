@@ -2,7 +2,7 @@
 // Name:      regex.h
 // Purpose:   Include file for class wex::regex
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -38,9 +38,10 @@ public:
   {
   public:
     /// Default constructor.
-    data(
-      const regex_c_t&      regex = {std::string(), nullptr},
-      std::regex::flag_type flags = std::regex::ECMAScript);
+    data();
+
+    /// Constructor.
+    data(const regex_c_t& regex, std::regex::flag_type flags);
 
     /// Returns function.
     const auto& function() const { return m_function; };
@@ -52,10 +53,15 @@ public:
     const auto& text() const { return m_text; };
 
   private:
-    std::string m_text;
-    std::regex  m_regex;
-    function_t  m_function;
+    void init(const regex_c_t& regex, std::regex::flag_type flags);
+
+    const std::string m_text;
+    std::regex        m_regex;
+    function_t        m_function{nullptr};
   };
+
+  /// Constructor, provide regular expression data.
+  regex(const data&);
 
   /// Constructor, provide regular expression string and regex flags.
   regex(
@@ -98,10 +104,10 @@ public:
   int match(const std::string& text);
 
   /// Returns the data element that matched.
-  const auto& match_data() const { return m_data; }
+  const data match_data() const;
 
   /// Returns the data regex index that matched, or -1 if no match was found.
-  auto match_no() const { return m_match_no; }
+  int match_no() const;
 
   /// After match or search, replace text with replacement.
   /// Returns true if a regex is available, and regex_replace was invoked.
@@ -129,10 +135,9 @@ private:
 
   int find(const std::string& text, find_t);
 
-  const regex_t m_datas;
+  regex_t                 m_datas;
+  regex_t::const_iterator m_it;
 
-  data    m_data;
   match_t m_matches;
-  int     m_match_no{-1};
 };
 } // namespace wex
