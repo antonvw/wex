@@ -70,7 +70,7 @@ TEST_CASE("wex::ex")
 
     REQUIRE(ex->command(":chd"));
     CAPTURE(keep.string());
-    REQUIRE(keep.original() != wex::path::current());
+    REQUIRE(keep.original() != wex::path::current().data());
 
     for (const auto& command : std::vector<std::pair<std::string, std::string>>{
            {":chd /usr", "/usr"},
