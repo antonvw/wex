@@ -83,6 +83,7 @@ TEST_CASE("wex::regex")
 
     std::string text("99xx88");
     REQUIRE(!r.replace(text, "zz"));
+    REQUIRE(r.match_no() == -1);
     REQUIRE(r.match(text) == 3);
     REQUIRE(r.replace(text, "zz"));
     REQUIRE(text == "zz");
