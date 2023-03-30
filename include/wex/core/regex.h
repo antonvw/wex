@@ -110,7 +110,8 @@ public:
   int match_no() const;
 
   /// After match or search, replace text with replacement.
-  /// Returns true if a regex is available, and regex_replace was invoked.
+  /// Returns true if the regex iterator is available, because of successful
+  /// match or search.
   bool replace(
     std::string&       text,
     const std::string& replacement,

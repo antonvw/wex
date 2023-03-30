@@ -116,7 +116,7 @@ bool wex::regex::replace(
   const std::string&                    replacement,
   std::regex_constants::match_flag_type flag_type) const
 {
-  if (m_it->text().empty())
+  if (m_it == m_datas.end())
   {
     return false;
   }
