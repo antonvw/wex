@@ -82,9 +82,7 @@ frame::frame()
              {wex::ID_TOOL_REPLACE, "Replace In Files"}}),
           _("&Find And Replace")}}),
       "&Edit"},
-#ifndef __WXMSW__
-     {new wex::menu({{this}, {ID_STATISTICS_SHOW, "Statistics"}}), "&View"},
-#endif
+     {new wex::menu({{}, {this}, {ID_STATISTICS_SHOW, "Statistics"}}), "&View"},
      {new wex::menu(
         {{ID_DLG_ITEM, wex::ellipsed("Item Dialog")},
          {},
@@ -319,8 +317,6 @@ void frame::bind_all()
       {
         if (m_notebook->set_selection("Statistics") == nullptr)
         {
-          wex::data::window data;
-          data.parent(m_notebook);
           m_notebook->add_page(wex::data::notebook()
                                  .page(m_statistics->show())
                                  .caption("Statistics")
@@ -331,7 +327,7 @@ void frame::bind_all()
       ID_STATISTICS_SHOW},
      {[=, this](wxCommandEvent& event)
       {
-        const long value = wxGetNumberFromUser(
+        const auto value = wxGetNumberFromUser(
           "Input:",
           wxEmptyString,
           "STC Open Flag",
