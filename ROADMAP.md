@@ -19,5 +19,5 @@
   extend wxWidgets classes with vi / ex classes, using
   c++ standard and boost c++ libraries
 - offering a develop branch that builds and runs all tests
-  on MacOS, MSW, Linux without errors and contains new
+  on macOS, MSW, Linux without errors and contains new
   functionality
