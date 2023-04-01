@@ -2,9 +2,10 @@
 // Name:      util.cpp
 // Purpose:   Implementation of wex ex utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <format>
 #include <regex>
 
 #include <wex/core/log.h>
@@ -32,14 +33,18 @@ wex::get_lines(factory::stc* stc, int start, int end, const std::string& flags)
 {
   std::string text;
 
-  for (auto i = start; i < end; i++)
+  for (auto i = start; i < end && i < stc->get_line_count(); i++)
   {
     if (flags.contains("#"))
     {
+#ifndef __WXOSX__
+      text += std::format("{:6} ", i + 1);
+#else
       char buffer[8];
       snprintf(buffer, sizeof(buffer), "%6d ", i + 1);
 
       text += buffer;
+#endif
     }
 
     if (flags.contains("l"))

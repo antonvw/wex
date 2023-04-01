@@ -2,7 +2,7 @@
 // Name:      comands-other.cpp
 // Purpose:   Implementation of wex::vi::commands_other
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -21,6 +21,14 @@
 #include <wex/ui/frd.h>
 #include <wex/vi/vi.h>
 #include <wx/app.h>
+
+#include "util.h"
+
+#define REPEAT_WITH_UNDO(TEXT) \
+  {                            \
+    stc_undo undo(get_stc());  \
+    REPEAT(TEXT);              \
+  }
 
 namespace wex
 {
