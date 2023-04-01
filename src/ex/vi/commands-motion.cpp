@@ -2,7 +2,7 @@
 // Name:      commands-motion.cpp
 // Purpose:   Implementation of wex::vi::commands_motion
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -15,6 +15,7 @@
 #include <wex/ui/frd.h>
 #include <wex/vi/vi.h>
 
+#include "util.h"
 #include "vim.h"
 
 namespace wex
@@ -294,7 +295,7 @@ wex::vi::commands_t wex::vi::commands_motion()
     {"%",
      [&](const std::string& command)
      {
-       int pos = get_stc()->GetCurrentPos();
+       int  pos         = get_stc()->GetCurrentPos();
        auto brace_match = get_stc()->BraceMatch(pos);
 
        if (brace_match == wxSTC_INVALID_POSITION)

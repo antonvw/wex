@@ -2,11 +2,12 @@
 // Name:      util.h
 // Purpose:   Methods to be used by ex lib
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <string>
 #include <wx/defs.h>
 
 #define POST_CLOSE(ID, VETO)                      \
@@ -15,20 +16,6 @@
     event.SetCanVeto(VETO);                       \
     wxPostEvent(wxTheApp->GetTopWindow(), event); \
   };
-
-#define REPEAT(TEXT)                   \
-  {                                    \
-    for (auto i = 0; i < m_count; i++) \
-    {                                  \
-      TEXT;                            \
-    }                                  \
-  }
-
-#define REPEAT_WITH_UNDO(TEXT) \
-  {                            \
-    stc_undo undo(get_stc());  \
-    REPEAT(TEXT);              \
-  }
 
 namespace wex
 {
@@ -66,7 +53,7 @@ std::string get_lines(
   ///   The end of each line shall be marked with a '$',
   ///   and literal '$' characters within the line shall be written with a
   ///   preceding <backslash>.
-  const std::string& flags);
+  const std::string& flags = "");
 
 /// Returns a string for specified key.
 const std::string k_s(wxKeyCode key);

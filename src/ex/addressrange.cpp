@@ -588,8 +588,16 @@ bool wex::addressrange::parse(const command_parser& cp, info_message_t& im)
 
 bool wex::addressrange::print(const command_parser& cp)
 {
-  const std::string arg(
-    cp.command()[0] == '#' || cp.command()[0] == 'n' ? "#" : std::string());
+  std::string arg;
+
+  if (cp.command()[0] == '#' || cp.command()[0] == 'n')
+  {
+    arg = "#";
+  }
+  else if (cp.command()[0] == 'l')
+  {
+    arg = "l";
+  }
 
   return (m_stc->GetName() != "Print" ? print(arg + cp.text()) : false);
 }
