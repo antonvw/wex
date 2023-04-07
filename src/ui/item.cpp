@@ -5,6 +5,7 @@
 // Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <charconv>
 #include <sstream>
 
 #include <wex/common/tocontainer.h>
@@ -237,10 +238,13 @@ void wex::item::add_items(group_t& page, bool readonly)
     m_page      = page.first;
     int imageId = wxWithImages::NO_IMAGE;
 
-    if (const auto col = m_page.contains(":"))
+    if (const auto col = m_page.find(":"); col != std::string::npos)
     {
-      use_cols = std::stoi(m_page.substr(col + 1));
-      m_page   = m_page.substr(0, col);
+      std::from_chars(
+        m_page.data() + col + 1,
+        m_page.data() + m_page.size(),
+        use_cols);
+      m_page = m_page.substr(0, col);
     }
 
     auto* fgz = new wxFlexGridSizer(use_cols);
@@ -463,7 +467,9 @@ const std::any wex::item::get_value() const
                                 .ToStdString();
               !v.empty())
           {
-            any = std::stol(v);
+            long val = 0; // value if from_chars has ec
+            std::from_chars(v.data(), v.data() + v.size(), val);
+            any = val;
           }
           else
           {

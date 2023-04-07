@@ -2,7 +2,7 @@
 // Name:      test-item.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -85,18 +85,7 @@ TEST_CASE("wex::item")
     REQUIRE(item_int2.type() == wex::item::TEXTCTRL_INT);
     REQUIRE(item_int2.layout(panel, sizer) != nullptr);
     REQUIRE(item_int2.window() != nullptr);
-
-    try
-    {
-      // an excption should be raised as xxx cannot be converted to
-      // a long.
-      auto val = std::any_cast<long>(item_int2.get_value());
-      // therefore, we should not come here
-      REQUIRE(1 == 0);
-    }
-    catch (std::exception&)
-    {
-    }
+    REQUIRE(std::any_cast<long>(item_int2.get_value()) == 0);
 
     wex::item item_float(
       "float",
@@ -257,7 +246,7 @@ TEST_CASE("wex::item")
       ci_grid,
       ci_user};
 
-    const auto more(test_config_items(0, 1));
+    const auto& more(test_config_items(0, 1));
     items.insert(items.end(), more.begin(), more.end());
 
     // Check members are initialized.

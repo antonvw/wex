@@ -2,8 +2,10 @@
 // Name:      address.cpp
 // Purpose:   Implementation of class wex::address
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013-2022 Anton van Wezenbeek
+// Copyright: (c) 2013-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
+
+#include <charconv>
 
 #include <wex/core/core.h>
 #include <wex/core/file.h>
@@ -129,7 +131,9 @@ bool wex::address::adjust_window(const std::string& text) const
     return false;
   }
 
-  const auto  count = (v[1].empty() ? 2 : std::stoi(v[1]));
+  int count = 2;
+  std::from_chars(v[1].data(), v[1].data() + v[1].size(), count);
+
   const auto& flags(v[2]);
 
   if (!flags_supported(flags))

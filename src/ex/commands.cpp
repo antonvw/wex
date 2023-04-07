@@ -5,6 +5,7 @@
 // Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <charconv>
 #include <numeric>
 #include <sstream>
 
@@ -50,19 +51,15 @@ command_arg_t get_command_arg(const std::string& command)
   {
     return command_arg_t::NONE;
   }
+  else if (int val;
+           std::from_chars(post.data(), post.data() + post.size(), val).ec ==
+           std::errc())
+  {
+    return command_arg_t::INT;
+  }
   else
   {
-    try
-    {
-      if (std::stoi(post) > 0)
-      {
-        return command_arg_t::INT;
-      }
-    }
-    catch (std::exception&)
-    {
-      return command_arg_t::OTHER;
-    }
+    return command_arg_t::OTHER;
   }
 
   return command_arg_t::OTHER;
@@ -165,13 +162,14 @@ wex::ex::commands_t wex::ex::commands_ex()
      [&](const std::string& command)
      {
        if (!command.contains(" "))
-       { 
+       {
          wex::path::current(path(wxGetHomeDir().ToStdString()));
        }
        else
        {
-         wex::path::current(path(
-           wex::find_first_of(boost::algorithm::trim_right_copy(command), " ")));
+         wex::path::current(path(wex::find_first_of(
+           boost::algorithm::trim_right_copy(command),
+           " ")));
        }
 
        return true;

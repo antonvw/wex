@@ -6,6 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
+#include <charconv>
+
 #include <wex/core/chrono.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
@@ -174,7 +176,7 @@ bool wex::blame::parse_compact(const std::string& line, const regex& r)
   m_skip_info = false;
   m_path.clear(); // not present in svn blame
   m_style = get_style(r[2]);
-  m_line_no++; // not present in svn blame
+  m_line_no++;    // not present in svn blame
   m_line_text = r[3];
 
   if (m_line_no < 5)
@@ -205,7 +207,8 @@ bool wex::blame::parse_full(const std::string& line, const regex& r)
   m_skip_info = false;
   m_path      = boost::algorithm::trim_copy(r[1]);
   m_style     = get_style(r[3]);
-  m_line_no   = std::stoi(r[4]) - 1;
+  std::from_chars(r[4].data(), r[4].data() + r[4].size(), m_line_no);
+  m_line_no--;
   m_line_text = r[5];
 
   if (m_line_no < 5)
