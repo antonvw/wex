@@ -41,7 +41,8 @@ wex::item::item(
   , m_data(data, value)
   , m_label(label)
   , m_label_window(rfind_after(label, "."))
-  , m_sizer_flags(wxSizerFlags().Border().Left())
+  , m_sizer_flags(
+      m_type == GROUP ? wxSizerFlags().Left() : wxSizerFlags().Border().Left())
 {
   if (is_notebook())
   {

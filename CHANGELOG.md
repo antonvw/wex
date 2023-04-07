@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - boost::regular expression lib used by wex::regex_part
 
-## 23.04 - 2023-04-12
+## 23.04 - 2023-03-12
 
 ### Added
 

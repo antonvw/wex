@@ -2,26 +2,12 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2009-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
-#include <wex/common/dir.h>
-#include <wex/common/tostring.h>
-#include <wex/common/util.h>
-#include <wex/core/cmdline.h>
-#include <wex/core/log.h>
-#include <wex/core/path.h>
-#include <wex/core/regex.h>
-#include <wex/del/wex.h>
-#include <wex/ex/command-parser.h>
-#include <wex/ex/macros.h>
-#include <wex/stc/wex.h>
-#include <wex/syntax/blame.h>
-#include <wex/syntax/lexers.h>
-#include <wex/ui/wex.h>
-#include <wex/vcs/wex.h>
+#include <wex/wex.h>
 
 #include "blaming.h"
 
@@ -110,7 +96,7 @@ wex::del::frame::frame(
       .id(id_replace_in_files)
       .title(_("Replace In Files"))
 #ifdef __WXOSX__
-      .size({375, 400})
+      .size({410, 400})
 #endif
       .style(wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP));
 
