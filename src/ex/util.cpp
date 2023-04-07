@@ -5,7 +5,9 @@
 // Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#ifdef __WXMSW__
 #include <format>
+#endif
 #include <regex>
 
 #include <wex/core/log.h>
@@ -37,7 +39,8 @@ wex::get_lines(factory::stc* stc, int start, int end, const std::string& flags)
   {
     if (flags.contains("#"))
     {
-#ifndef __WXOSX__
+#ifdef __WXMSW__
+      // not yet for gcc 12, clang 16
       text += std::format("{:6} ", i + 1);
 #else
       char buffer[8];
