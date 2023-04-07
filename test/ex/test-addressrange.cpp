@@ -236,17 +236,21 @@ TEST_CASE("wex::addressrange")
 
   SUBCASE("sort")
   {
-    REQUIRE(ex->command(":1,2S"));
     REQUIRE(!ex->command(":1,2Sx"));
+
+    REQUIRE(ex->command(":1,2S"));
     REQUIRE(ex->command(":1,2Su"));
     REQUIRE(ex->command(":1,2Sr"));
     REQUIRE(ex->command(":1,2Sur"));
+    REQUIRE(ex->command(":1,2Sr"));
+    REQUIRE(ex->command(":1,2S8,9"));
+    REQUIRE(ex->command(":1,2Sr8,9"));
   }
 
   SUBCASE("substitute")
   {
     stc->set_text(contents);
-        
+
     SUBCASE("empty")
     {
       REQUIRE(ex->command(":%s/tiger//"));
@@ -286,7 +290,7 @@ TEST_CASE("wex::addressrange")
       REQUIRE(!stc->get_text().contains("tiger"));
       REQUIRE(!stc->get_text().contains("\\U"));
     }
-   }
+  }
 
   SUBCASE("substitute-other")
   {

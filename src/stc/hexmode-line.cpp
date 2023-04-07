@@ -2,10 +2,12 @@
 // Name:      stc/hexmode-line.cpp
 // Purpose:   Implementation of class hexmode_line
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2016-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/hex.hpp>
+#include <charconv>
+
 #include <wex/factory/stc.h>
 
 #include "hexmode-line.h"
@@ -103,13 +105,14 @@ const std::string wex::hexmode_line::info() const
 {
   if (is_hex_field())
   {
-    const std::string word =
-      m_hex->get_stc()->get_word_at_pos(m_hex->get_stc()->GetCurrentPos());
-
-    if (!word.empty())
+    if (const auto& word =
+          m_hex->get_stc()->get_word_at_pos(m_hex->get_stc()->GetCurrentPos());
+        !word.empty())
     {
+      long val;
+      std::from_chars(word.data(), word.data() + word.size(), val, 16);
       return std::string("index: ") + std::to_string(buffer_index()) +
-             std::string(" ") + std::to_string(std::stol(word, 0, 16));
+             std::string(" ") + std::to_string(val);
     }
   }
   else if (is_ascii_field())
@@ -155,7 +158,10 @@ bool wex::hexmode_line::insert(const std::string& text)
     if (text.size() != 2 || (!isxdigit(text[0]) && !isxdigit(text[1])))
       return false;
 
-    m_hex->m_buffer.insert(index, 1, std::stoi(text.substr(0, 2), nullptr, 16));
+    int val = 0;
+    std::from_chars(text.data(), text.data() + 2, val, 16);
+
+    m_hex->m_buffer.insert(index, 1, val);
     m_hex->set_text(m_hex->m_buffer);
   }
 
@@ -214,7 +220,8 @@ bool wex::hexmode_line::replace(char c)
       hex += m_line[m_column_no];
     }
 
-    const auto code = std::stoi(hex, nullptr, 16);
+    int code;
+    std::from_chars(hex.data(), hex.data() + hex.size(), code, 16);
 
     m_hex->get_stc()->wxStyledTextCtrl::Replace(
       pos + other_field(),
@@ -240,7 +247,9 @@ void wex::hexmode_line::replace(const std::string& hex, bool settext)
   if (is_readonly() || index == wxSTC_INVALID_POSITION)
     return;
 
-  m_hex->m_buffer[index] = std::stoi(hex, nullptr, 16);
+  int code;
+  std::from_chars(hex.data(), hex.data() + hex.size(), code, 16);
+  m_hex->m_buffer[index] = code;
 
   if (settext)
   {

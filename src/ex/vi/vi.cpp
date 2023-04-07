@@ -7,6 +7,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
+#include <charconv>
+
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/ex/macros.h>
@@ -363,20 +365,20 @@ void wex::vi::filter_count(std::string& command)
    */
   if (regex v("^([1-9][0-9]*)(.*)"); v.match(command) == 2)
   {
-    try
+    if (int count;
+        std::from_chars(v[0].data(), v[0].data() + v[0].size(), count).ec ==
+        std::errc())
     {
-      m_count_present  = true;
-      const auto count = std::stoi(v[0]);
+      m_count_present = true;
       m_count *= count;
       append_insert_command(v[0]);
-      command = v[1];
     }
-    catch (std::exception& e)
+    else
     {
       m_count_present = false;
-      log(e) << command;
-      command = v[1];
     }
+
+    command = v[1];
   }
 }
 

@@ -2,7 +2,7 @@
 // Name:      stc/bind.cpp
 // Purpose:   Implementation of class wex::stc method bind_all
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -28,6 +28,7 @@
 #include <wx/msgdlg.h>
 #include <wx/numdlg.h>
 
+#include <charconv>
 #include <numeric>
 
 namespace wex
@@ -756,26 +757,20 @@ void wex::stc::show_ascii_value()
   else
   {
     long base10_val, base16_val;
-    bool base10_ok = true;
-    bool base16_ok = true;
+    bool base10_ok = false, base16_ok = false;
 
-    try
+    if (
+      std::from_chars(word.data(), word.data() + word.size(), base10_val).ec ==
+      std::errc())
     {
-      base10_val = std::stol(word);
-      base10_ok  = (base10_val != 0);
-    }
-    catch (std::exception&)
-    {
-      base10_ok = false;
+      base10_ok = true;
     }
 
-    try
+    if (
+      std::from_chars(word.data(), word.data() + word.size(), base16_val, 16)
+        .ec == std::errc())
     {
-      base16_val = std::stol(word, nullptr, 16);
-    }
-    catch (std::exception&)
-    {
-      base16_ok = false;
+      base16_ok = true;
     }
 
     if (base10_ok || base16_ok)

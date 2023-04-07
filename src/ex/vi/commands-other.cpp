@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <charconv>
 #include <sstream>
 
 #include <boost/algorithm/string.hpp>
@@ -457,7 +458,8 @@ size_t wex::vi::inc_or_dec(const std::string& command)
       const auto end =
         get_stc()->WordEndPosition(get_stc()->GetCurrentPos() + sign, true);
       const std::string word(get_stc()->GetTextRange(start, end).ToStdString());
-      auto              number = std::stoi(word, nullptr, 0);
+      int number;
+      std::from_chars(word.data(), word.data() + word.size(), number);
       const auto next = (command == k_s(WXK_CONTROL_J) ? ++number : --number);
 
       std::ostringstream format;

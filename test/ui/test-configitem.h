@@ -25,7 +25,7 @@ const auto test_config_items(int rows = 0, int cols = 0)
 
   return std::vector<wex::item>{
     {"notebook",
-     {{"buttons",
+     {{"buttons:3",
        {{"<span size='x-large' color='blue'>Big</span> <b>bold</b> button",
          wex::item::BUTTON},
         {"lambda",
@@ -44,7 +44,7 @@ const auto test_config_items(int rows = 0, int cols = 0)
         {"group checkbox1", wex::item::CHECKBOX},
         {"group checkbox2", wex::item::CHECKBOX}}},
 
-      {"checkbox lists",
+      {"checkbox lists:x",
        {{"bin choices",
          {{1, "bit one"}, {2, "bit two"}, {4, "bit three"}, {8, "bit four"}},
          false},
