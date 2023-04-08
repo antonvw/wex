@@ -43,7 +43,9 @@ frame::frame()
   , m_process(new wex::process())
   , m_statistics(
       new wex::grid_statistics<int>({}, wex::data::window().parent(m_notebook)))
-  , m_shell(new wex::shell(wex::data::stc(), ">"))
+  , m_shell(new wex::shell(
+      wex::data::stc().window(wex::data::window().parent(m_notebook)),
+      ">"))
 {
   wex::process::prepare_output(this);
   m_statistics->show(false);
@@ -568,6 +570,9 @@ void frame::update(app* a)
 
   m_notebook->add_page(
     wex::data::notebook().page(m_project).key("wex::project"));
+
+  m_notebook->add_page(
+    wex::data::notebook().page(m_statistics).key("wex::statistics"));
 
   m_notebook->add_page(
     wex::data::notebook().page(m_listview).key("wex::listview"));
