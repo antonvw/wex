@@ -11,6 +11,11 @@
 #include <wex/core/version.h>
 #include <wx/clipbrd.h>
 
+#ifdef __WXGTK__
+#include <X11/Xlib.h>
+#include <thread>
+#endif
+
 #include <iostream>
 
 #include "app-locale.h"
