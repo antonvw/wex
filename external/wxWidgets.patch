@@ -36,15 +36,3 @@ index 49a21c1fc8..5e10a1a3c8 100644
      list(APPEND wxTOOLKIT_INCLUDE_DIRS ${${gtk_lib}_INCLUDE_DIRS})
      list(APPEND wxTOOLKIT_LIBRARIES ${${gtk_lib}_LIBRARIES})
      list(APPEND wxTOOLKIT_DEFINITIONS ${${gtk_lib}_DEFINITIONS})
-diff --git a/src/gtk/app.cpp b/src/gtk/app.cpp
-index 1d19fbce0e..df151f4f81 100644
---- a/src/gtk/app.cpp
-+++ b/src/gtk/app.cpp
-@@ -306,6 +306,7 @@ wxIMPLEMENT_DYNAMIC_CLASS(wxApp,wxEvtHandler);
- 
- wxApp::wxApp()
- {
-+    XInitThreads();
-     m_isInAssert = false;
-     m_idleSourceId = 0;
-
