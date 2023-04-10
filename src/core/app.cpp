@@ -11,9 +11,30 @@
 #include <wex/core/version.h>
 #include <wx/clipbrd.h>
 
+#ifdef __WXGTK__
+#include <X11/Xlib.h>
+#include <thread>
+#endif
+
 #include <iostream>
 
 #include "app-locale.h"
+
+namespace wex
+{
+// This routine performs first init of  a wex::app,
+// it runs before OnInit.
+int first_init()
+{
+#ifdef __WXGTK__
+  XInitThreads();
+#endif
+
+  return 1;
+}
+} // namespace wex
+
+int wex::app::m_first_init = first_init();
 
 const std::string wex::app::get_catalog_dir() const
 {
