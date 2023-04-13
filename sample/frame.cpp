@@ -181,7 +181,7 @@ void frame::bind_all()
         if (val >= 0)
         {
           wex::item_dialog(
-            test_config_items(0, val),
+            wex::test_config_item().vector(0, val),
             wex::data::window()
               .title("Config Dialog Columns")
               .size(wxSize(600, 400)),
@@ -194,7 +194,7 @@ void frame::bind_all()
      {[=, this](wxCommandEvent& event)
       {
         auto* dlg = new wex::item_dialog(
-          test_config_items(0, 1),
+          wex::test_config_item().vector(0, 1),
           wex::data::window()
             .title("Config Dialog")
             .id(ID_DLG_CONFIG_ITEM)
@@ -210,7 +210,7 @@ void frame::bind_all()
      {[=, this](wxCommandEvent& event)
       {
         wex::item_dialog(
-          test_config_items(0, 1),
+          wex::test_config_item().vector(0, 1),
           wex::data::window()
             .button(wxCANCEL)
             .title("Config Dialog Readonly")
@@ -222,7 +222,7 @@ void frame::bind_all()
       ID_DLG_CONFIG_ITEM_READONLY},
      {[=, this](wxCommandEvent& event)
       {
-        wex::item_dialog(test_items()).ShowModal();
+        wex::item_dialog(wex::test_item().vector()).ShowModal();
       },
       ID_DLG_ITEM},
      {[=, this](wxCommandEvent& event)
