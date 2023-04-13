@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-config_item.h
-// Purpose:   Declaration and implementation of test_config_items
+// Name:      test-configitem.h
+// Purpose:   Declaration and implementation of class test_config_item
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -15,10 +15,20 @@
 #include <wx/textctrl.h>
 #include <wx/valtext.h>
 
-/// Returns a vector with all config items available.
-/// The first item is a notebook, containing the other items,
-/// the arguments are arguments for the notebook item.
-const auto test_config_items(int rows = 0, int cols = 0)
+namespace wex
+{
+class test_config_item
+{
+public:
+  /// Returns a vector with all config items available.
+  /// The first item is a notebook, containing the other items,
+  /// the arguments are arguments for the notebook item.
+  const std::vector<wex::item> vector(int rows = 0, int cols = 0);
+};
+
+// inline implementation
+
+inline const std::vector<wex::item> test_config_item::vector(int rows, int cols)
 {
   auto* validator = new wxTextValidator(wxFILTER_INCLUDE_CHAR_LIST);
   validator->SetCharIncludes("0123");
@@ -157,3 +167,4 @@ const auto test_config_items(int rows = 0, int cols = 0)
      wex::item::NOTEBOOK_LIST,
      wex::data::item().columns(cols)}};
 }
+} // namespace wex

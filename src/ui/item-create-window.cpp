@@ -14,6 +14,18 @@
      CONTROL(parent, window, item);                                \
    }},
 
+#define DET_TEXT()                                       \
+  std::string text;                                      \
+                                                         \
+  if constexpr (std::is_same_v<T, wex::item::choices_t>) \
+  {                                                      \
+    text = it.second;                                    \
+  }                                                      \
+  else                                                   \
+  {                                                      \
+    text = it;                                           \
+  }
+
 #define IPS                                              \
   item.data().window().id(), item.data().window().pos(), \
     item.data().window().size()
@@ -46,8 +58,7 @@ void handle(const std::string& s, wxCheckListBox* clb, size_t& item_no)
   item_no++;
 }
 
-auto
-initial(const data::item& data, std::function<void(wxArrayString& as)> f)
+auto initial(const data::item& data, std::function<void(wxArrayString& as)> f)
 {
   wxArrayString as;
 
@@ -57,18 +68,6 @@ initial(const data::item& data, std::function<void(wxArrayString& as)> f)
   }
 
   return as;
-}
-
-auto* create_checklistbox(
-  wxWindow*                              parent,
-  const wex::item&                       item,
-  std::function<void(wxArrayString& as)> f)
-{
-  return new wxCheckListBox(
-    parent,
-    IPS,
-    initial(item.data(), f),
-    item.data().window().style());
 }
 
 void create_button(wxWindow* parent, wxWindow*& window, const wex::item& item)
@@ -91,7 +90,20 @@ void create_checkbox(wxWindow* parent, wxWindow*& window, const wex::item& item)
   }
 }
 
-void create_checklistbox_bit(
+auto* create_checklistbox(
+  wxWindow*                              parent,
+  const wex::item&                       item,
+  std::function<void(wxArrayString& as)> f)
+{
+  return new wxCheckListBox(
+    parent,
+    IPS,
+    initial(item.data(), f),
+    item.data().window().style());
+}
+
+template <typename T>
+void create_checklistbox_as(
   wxWindow*        parent,
   wxWindow*&       window,
   const wex::item& item)
@@ -101,20 +113,29 @@ void create_checklistbox_bit(
     item,
     [&](wxArrayString& as)
     {
-      for (const auto& it :
-           std::any_cast<item::choices_t>(item.data().initial()))
+      for (const auto& it : std::any_cast<T>(item.data().initial()))
       {
-        as.Add(rfind_after(find_before(it.second, ","), "."));
+        DET_TEXT()
+        as.Add(rfind_after(find_before(text, ","), "."));
       }
     });
 
   for (size_t      item_no = 0;
-       const auto& it : std::any_cast<item::choices_t>(item.data().initial()))
+       const auto& it : std::any_cast<T>(item.data().initial()))
   {
-    handle(it.second, clb, item_no);
+    DET_TEXT()
+    handle(text, clb, item_no);
   }
 
   window = clb;
+}
+
+void create_checklistbox_bit(
+  wxWindow*        parent,
+  wxWindow*&       window,
+  const wex::item& item)
+{
+  create_checklistbox_as<wex::item::choices_t>(parent, window, item);
 }
 
 void create_checklistbox_bool(
@@ -122,25 +143,7 @@ void create_checklistbox_bool(
   wxWindow*&       window,
   const wex::item& item)
 {
-  auto* clb = create_checklistbox(
-    parent,
-    item,
-    [&](wxArrayString& as)
-    {
-      for (const auto& it :
-           std::any_cast<item::choices_bool_t>(item.data().initial()))
-      {
-        as.Add(rfind_after(find_before(it, ","), "."));
-      }
-    });
-
-  for (size_t item_no = 0; const auto& c : std::any_cast<item::choices_bool_t>(
-                             item.data().initial()))
-  {
-    handle(c, clb, item_no);
-  }
-
-  window = clb;
+  create_checklistbox_as<wex::item::choices_bool_t>(parent, window, item);
 }
 
 void create_combobox(wxWindow* parent, wxWindow*& window, const wex::item& item)

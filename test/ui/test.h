@@ -13,6 +13,13 @@
 #include <wex/test/test.h>
 #include <wex/ui/frame.h>
 
+#define ITEM_START()                           \
+  auto* panel = new wxScrolledWindow(frame()); \
+  frame()->pane_add(panel);                    \
+  auto* sizer = new wxFlexGridSizer(4);        \
+  panel->SetSizer(sizer);                      \
+  panel->SetScrollbars(20, 20, 50, 50);
+
 namespace wex
 {
 class file;
