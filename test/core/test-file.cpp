@@ -75,6 +75,7 @@ TEST_CASE("wex::file")
 
     REQUIRE(!file.file_save());
     REQUIRE(file.file_save(wex::path("test-save")));
+    REQUIRE(file.file_save(wex::path("test-save")));
 
     REQUIRE(remove("test-save") == 0);
   }
