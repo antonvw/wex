@@ -2,8 +2,10 @@
 // Name:      ex-commandline-imp.cpp
 // Purpose:   Implementation of wex::ex_commandline_imp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
+
+#include <utility>
 
 #include <wex/core/config.h>
 #include <wex/factory/bind.h>
@@ -107,10 +109,10 @@ void wex::ex_commandline_imp::bind()
 
 wex::ex_commandline_input* wex::ex_commandline_imp::cli()
 {
-  return static_cast<int>(m_command.type()) >=
-             static_cast<int>(ex_command::type_t::NONE) ?
-           m_clis[static_cast<int>(ex_command::type_t::COMMAND)] :
-           m_clis[static_cast<int>(m_command.type())];
+  return std::to_underlying(m_command.type()) >=
+             std::to_underlying(ex_command::type_t::NONE) ?
+           m_clis[std::to_underlying(ex_command::type_t::COMMAND)] :
+           m_clis[std::to_underlying(m_command.type())];
 }
 
 bool wex::ex_commandline_imp::Destroy()

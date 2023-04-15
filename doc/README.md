@@ -328,6 +328,18 @@ bool wex::global_env::for_each(const block_lines& match) const
     }
 ```
 
+```cpp
+  std::to_underlying (c++23)
+```
+
+  Converts an enumeration to its underlying type.
+  example in ex.cpp:
+
+```cpp
+    log::trace("ex mode from")
+      << std::to_underlying(m_mode) << "to:" << std::to_underlying(mode);
+```
+
 ## c++ language
 
 - init_statement in if, case statements (c++17), and for range (c++20)
