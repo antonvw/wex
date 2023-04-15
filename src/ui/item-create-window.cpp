@@ -30,6 +30,14 @@
   item.data().window().id(), item.data().window().pos(), \
     item.data().window().size()
 
+#define PII                              \
+  parent, item.data().window().id(),     \
+    !item.data().initial().has_value() ? \
+      std::string() :                    \
+      std::any_cast<std::string>(item.data().initial())
+
+#define PIL parent, item.data().window().id(), item.label_window()
+
 #define PSS                                                \
   item.data().window().pos(), item.data().window().size(), \
     item.data().window().style()
@@ -80,8 +88,7 @@ void create_button(wxWindow* parent, wxWindow*& window, const wex::item& item)
 
 void create_checkbox(wxWindow* parent, wxWindow*& window, const wex::item& item)
 {
-  window =
-    new wxCheckBox(parent, item.data().window().id(), item.label_window(), PSS);
+  window = new wxCheckBox(PIL, PSS);
 
   if (item.data().initial().has_value())
   {
@@ -201,11 +208,7 @@ void create_dir_picker_control(
   const wex::item& item)
 {
   auto* pc = new wxDirPickerCtrl(
-    parent,
-    item.data().window().id(),
-    !item.data().initial().has_value() ?
-      std::string() :
-      std::any_cast<std::string>(item.data().initial()),
+    PII,
     wxDirSelectorPromptStr,
     PSS == data::NUMBER_NOT_SET ? wxDIRP_DEFAULT_STYLE :
                                   item.data().window().style());
@@ -233,11 +236,7 @@ void create_file_picker_control(
 #endif
 
   auto* pc = new wxFilePickerCtrl(
-    parent,
-    item.data().window().id(),
-    !item.data().initial().has_value() ?
-      std::string() :
-      std::any_cast<std::string>(item.data().initial()),
+    PII,
     wxFileSelectorPromptStr,
     wc,
     PSS == data::NUMBER_NOT_SET ? wxFLP_DEFAULT_STYLE :
@@ -282,9 +281,7 @@ void create_hyperlink_control(
   const wex::item& item)
 {
   window = new wxHyperlinkCtrl(
-    parent,
-    item.data().window().id(),
-    item.label_window(),
+    PIL,
     std::any_cast<std::string>(item.data().initial()),
     PSS == data::NUMBER_NOT_SET ? wxHL_DEFAULT_STYLE :
                                   item.data().window().style());
@@ -298,9 +295,7 @@ void create_panel(wxWindow* parent, wxWindow*& window, const wex::item& item)
 void create_radiobox(wxWindow* parent, wxWindow*& window, const wex::item& item)
 {
   auto* rb = new wxRadioBox(
-    parent,
-    item.data().window().id(),
-    item.label_window(),
+    PIL,
     item.data().window().pos(),
     item.data().window().size(),
     initial(
@@ -368,8 +363,7 @@ void create_staticbox(
   wxWindow*&       window,
   const wex::item& item)
 {
-  window =
-    new wxStaticBox(parent, item.data().window().id(), item.label_window());
+  window = new wxStaticBox(PIL);
 }
 
 void create_staticline(
@@ -395,11 +389,7 @@ void create_statictext(
 void create_textctrl(wxWindow* parent, wxWindow*& window, const wex::item& item)
 {
   window = new wxTextCtrl(
-    parent,
-    item.data().window().id(),
-    !item.data().initial().has_value() ?
-      std::string() :
-      std::any_cast<std::string>(item.data().initial()),
+    PII,
     PSS | (item.data().is_readonly() ? wxTE_READONLY : 0) |
       (item.type() == item::TEXTCTRL_FLOAT ||
            item.type() == item::TEXTCTRL_INT ?
@@ -412,11 +402,7 @@ void create_togglebutton(
   wxWindow*&       window,
   const wex::item& item)
 {
-  window = new wxToggleButton(
-    parent,
-    item.data().window().id(),
-    item.label_window(),
-    PSS);
+  window = new wxToggleButton(PIL, PSS);
 }
 
 void set_validator(wex::item* item)

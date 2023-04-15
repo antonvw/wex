@@ -2,15 +2,14 @@
 // Name:      test-mode.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/vi/mode.h>
 #include <wex/vi/vi.h>
 
 #include "../ex/test.h"
-
-TEST_SUITE_BEGIN("wex::vi");
+#include "test.h"
 
 TEST_CASE("wex::vi_mode")
 {
@@ -54,11 +53,7 @@ TEST_CASE("wex::vi_mode")
   REQUIRE(mode.is_command());
   get_stc()->SetReadOnly(false);
 
-  for (const auto& visual :
-       std::vector<std::pair<std::string, wex::vi_mode::state_t>>{
-         {"v", wex::vi_mode::state_t::VISUAL},
-         {"V", wex::vi_mode::state_t::VISUAL_LINE},
-         {"K", wex::vi_mode::state_t::VISUAL_BLOCK}})
+  for (const auto& visual : visuals())
   {
     std::string command(visual.first);
     REQUIRE(mode.transition(command));
@@ -70,5 +65,3 @@ TEST_CASE("wex::vi_mode")
     REQUIRE(mode.is_command());
   }
 }
-
-TEST_SUITE_END();
