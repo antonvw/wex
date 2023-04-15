@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-vi.cpp
+// Name:      stc/test-vi.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021-2023 Anton van Wezenbeek
@@ -12,18 +12,9 @@
 #include <wex/ex/ex-stream.h>
 #include <wex/ex/util.h>
 #include <wex/ui/frd.h>
-#include <wex/vi/vi.h>
 
+#include "../vi/test.h"
 #include "test.h"
-
-void change_mode(
-  wex::vi*              vi,
-  const std::string&    command,
-  wex::vi_mode::state_t mode)
-{
-  REQUIRE(vi->command(command));
-  REQUIRE(vi->mode().get() == mode);
-}
 
 void create_file()
 {
@@ -260,11 +251,7 @@ TEST_CASE("wex::vi")
   {
     stc->set_text("this text contains xx");
 
-    for (const auto& visual :
-         std::vector<std::pair<std::string, wex::vi_mode::state_t>>{
-           {"v", wex::vi_mode::state_t::VISUAL},
-           {"V", wex::vi_mode::state_t::VISUAL_LINE},
-           {"K", wex::vi_mode::state_t::VISUAL_BLOCK}})
+    for (const auto& visual : visuals())
     {
       wxKeyEvent event(wxEVT_CHAR);
       change_mode(vi, visual.first, visual.second);

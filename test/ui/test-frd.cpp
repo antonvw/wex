@@ -9,6 +9,15 @@
 #include <wex/test/test.h>
 #include <wex/ui/frd.h>
 
+void check(const std::string& text, bool one, bool two, bool three, bool four)
+{
+  auto* frd = wex::find_replace_data::get();
+  REQUIRE(frd->match(text, wex::data::find("xxx")) == one);
+  REQUIRE(frd->match(text, wex::data::find("XXX")) == two);
+  REQUIRE(frd->match(text, wex::data::find("xx")) == three);
+  REQUIRE(frd->match(text, wex::data::find("XX")) == four);
+}
+
 TEST_CASE("wex::frd")
 {
   auto* frd = wex::find_replace_data::get();
@@ -21,38 +30,24 @@ TEST_CASE("wex::frd")
 
     frd->set_match_case(false);
     frd->set_match_word(false);
-    REQUIRE(frd->match(text, wex::data::find("xxx")));
-    REQUIRE(frd->match(text, wex::data::find("XXX")));
-    REQUIRE(frd->match(text, wex::data::find("xx")));
-    REQUIRE(frd->match(text, wex::data::find("XX")));
+    check(text, true, true, true, true);
 
     frd->set_match_case(false);
     frd->set_match_word(true);
-    REQUIRE(frd->match(text, wex::data::find("xxx")));
-    REQUIRE(frd->match(text, wex::data::find("XXX")));
-    REQUIRE(!frd->match(text, wex::data::find("xx")));
-    REQUIRE(!frd->match(text, wex::data::find("XX")));
+    check(text, true, true, false, false);
 
     frd->set_match_case(true);
     frd->set_match_word(false);
-    REQUIRE(frd->match(text, wex::data::find("xxx")));
-    REQUIRE(!frd->match(text, wex::data::find("XXX")));
-    REQUIRE(frd->match(text, wex::data::find("xx")));
-    REQUIRE(!frd->match(text, wex::data::find("XX")));
+    check(text, true, false, true, false);
 
     frd->set_match_case(true);
     frd->set_match_word(true);
-    REQUIRE(frd->match(text, wex::data::find("xxx")));
-    REQUIRE(!frd->match(text, wex::data::find("XXX")));
-    REQUIRE(!frd->match(text, wex::data::find("xx")));
-    REQUIRE(!frd->match(text, wex::data::find("XX")));
+    check(text, true, false, false, false);
 
     frd->set_regex(true);
-    REQUIRE(frd->match(text, wex::data::find("xxx")));
+    check(text, true, true, false, false);
+
     REQUIRE(frd->match(text, wex::data::find("x+")));
-    REQUIRE(frd->match(text, wex::data::find("XXX")));
-    REQUIRE(!frd->match(text, wex::data::find("xx")));
-    REQUIRE(!frd->match(text, wex::data::find("XX")));
     REQUIRE(frd->match(text, wex::data::find("X+")));
   }
 

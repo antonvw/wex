@@ -97,7 +97,7 @@ void wex::path::current(const wex::path& p)
   {
     try
     {
-      log::trace("change dir") << p;
+      log::trace("change dir") << p.string();
       fs::current_path(p.data());
     }
     catch (const std::exception& e)

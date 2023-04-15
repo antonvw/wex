@@ -79,6 +79,28 @@ TEST_CASE("wex::vi-other")
     REQUIRE(stc->get_text() == "test");
   }
 
+  // this subcase should be before the 'recording', otherwise it fails?
+  SUBCASE("replace")
+  {
+    stc->set_text("XXXXX\nYYYYY\nZZZZZ\n");
+
+    SUBCASE("normal")
+    {
+      REQUIRE(vi->command("3rx"));
+      REQUIRE(stc->get_text() == "xxxXX\nYYYYY\nZZZZZ\n");
+    }
+
+    SUBCASE("block")
+    {
+      REQUIRE(vi->command("K"));
+      REQUIRE(vi->command("j"));
+      REQUIRE(vi->command("j"));
+      REQUIRE(vi->command("3rx"));
+      REQUIRE(stc->get_text() == "xxxXX\nxxxYY\nxxxZZ\n");
+      change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
+    }
+  }
+
   SUBCASE("recording")
   {
     stc->set_text("abc\nuvw\nxyz\n");
@@ -99,27 +121,6 @@ TEST_CASE("wex::vi-other")
     REQUIRE(!wex::ex::get_macros().mode().is_recording());
     REQUIRE(vi->command("@b"));
     REQUIRE(vi->command(" "));
-  }
-
-  SUBCASE("replace")
-  {
-    stc->set_text("XXXXX\nYYYYY\nZZZZZ\n");
-
-    SUBCASE("normal")
-    {
-      REQUIRE(vi->command("3rx"));
-      REQUIRE(stc->get_text() == "xxxXX\nYYYYY\nZZZZZ\n");
-    }
-
-    SUBCASE("block")
-    {
-      REQUIRE(vi->command("K"));
-      REQUIRE(vi->command("j"));
-      REQUIRE(vi->command("j"));
-      REQUIRE(vi->command("3rx"));
-      REQUIRE(stc->get_text() == "xxxXX\nxxxYY\nxxxZZ\n");
-      change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
-    }
   }
 
   SUBCASE("variable")
