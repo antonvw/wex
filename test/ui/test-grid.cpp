@@ -2,7 +2,7 @@
 // Name:      test-grid.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/find.h>
@@ -27,10 +27,9 @@ TEST_CASE("wex::grid")
   REQUIRE(grid->GetCellValue(0, 0) == "test1");
   REQUIRE(grid->get_cells_value().contains("test1"));
   REQUIRE(!grid->get_selected_cells_value().contains("test1"));
-  
+
   grid->SelectAll();
-  
-  REQUIRE(!grid->get_selected_cells_value().empty());
+  REQUIRE(grid->get_selected_cells_value().contains("test1"));
 
   grid->ClearSelection();
   grid->empty_selection();
