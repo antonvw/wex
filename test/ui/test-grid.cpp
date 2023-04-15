@@ -25,6 +25,12 @@ TEST_CASE("wex::grid")
 
   grid->set_cells_value(wxGridCellCoords(0, 0), "test1\ttest2\ntest3\ttest4\n");
   REQUIRE(grid->GetCellValue(0, 0) == "test1");
+  REQUIRE(grid->get_cells_value().contains("test1"));
+  REQUIRE(!grid->get_selected_cells_value().contains("test1"));
+  
+  grid->SelectAll();
+  
+  REQUIRE(!grid->get_selected_cells_value().empty());
 
   grid->ClearSelection();
   grid->empty_selection();
