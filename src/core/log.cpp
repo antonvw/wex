@@ -2,7 +2,7 @@
 // Name:      log.cpp
 // Purpose:   Implementation of class wex::log
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2017-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/log/core.hpp>
@@ -72,6 +72,12 @@ wex::log& wex::log::operator<<(bool r)
 }
 
 wex::log& wex::log::operator<<(int r)
+{
+  m_ss << S() << r;
+  return *this;
+}
+
+wex::log& wex::log::operator<<(unsigned int r)
 {
   m_ss << S() << r;
   return *this;

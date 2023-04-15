@@ -2,7 +2,7 @@
 // Name:      log.h
 // Purpose:   Declaration of wex::log class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2017-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -96,6 +96,9 @@ public:
 
   /// Logs int according to level.
   log& operator<<(int);
+
+  /// Logs unsigned int according to level.
+  log& operator<<(unsigned int);
 
   /// Logs size_t according to level.
   log& operator<<(size_t);

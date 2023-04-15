@@ -6,6 +6,8 @@
 // Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <utility>
+
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
@@ -416,7 +418,7 @@ void wex::ex::use(mode_t mode)
   if (mode != m_mode)
   {
     log::trace("ex mode from")
-      << static_cast<int>(m_mode) << "to:" << static_cast<int>(mode);
+      << std::to_underlying(m_mode) << "to:" << std::to_underlying(mode);
 
     m_mode = mode;
   }
