@@ -782,11 +782,19 @@ bool wex::addressrange::sort(const std::string& parameters) const
 
       if (const auto co = filter.find(","); co != std::string::npos)
       {
-        std::from_chars(
-          filter.data() + pos + 1,
-          filter.data() + filter.size(),
-          len);
-        len = len - pos;
+        if (size_t end; std::from_chars(
+                          filter.data() + co + 1,
+                          filter.data() + filter.size(),
+                          end)
+                            .ec != std::errc() ||
+                        end <= pos)
+        {
+          return false;
+        }
+        else
+        {
+          len = end - pos;
+        }
       }
     }
   }

@@ -64,6 +64,11 @@ TEST_CASE("wex::addressrange")
     REQUIRE(stc->get_text().contains("changed"));
   }
 
+  SUBCASE("data")
+  {
+    REQUIRE(!wex::addressrange::data().is_global());
+  }
+
   SUBCASE("copy")
   {
     stc->set_text(contents);
@@ -238,11 +243,35 @@ TEST_CASE("wex::addressrange")
   {
     REQUIRE(!ex->command(":1,2Sx"));
 
+    const std::string org("hello\nhello\nhello11\nhello11\nhello22\ntest\ngcc\n"
+                          "blame\nthis\nyank\ncopy");
+    stc->set_text(org);
     REQUIRE(ex->command(":1,2S"));
+
+    // MSW fails, EOL?
+#ifndef __WXMSW__
+    REQUIRE(stc->get_text() == org);
+
     REQUIRE(ex->command(":1,2Su"));
-    REQUIRE(ex->command(":1,2Sr"));
-    REQUIRE(ex->command(":1,2Sur"));
-    REQUIRE(ex->command(":1,2Sr"));
+    REQUIRE(
+      stc->get_text() ==
+      "hello\nhello11\nhello11\nhello22\ntest\ngcc\nblame\nthis\nyank\ncopy");
+
+    stc->set_text(org);
+    REQUIRE(ex->command(":4,5Sr"));
+    REQUIRE(
+      stc->get_text() == "hello\nhello\nhello11\nhello22\nhello11\ntest\ngcc\nb"
+                         "lame\nthis\nyank\ncopy");
+
+    stc->set_text(org);
+    REQUIRE(ex->command(":1,4Sur"));
+    REQUIRE(
+      stc->get_text() ==
+      "hello11\nhello\nhello22\ntest\ngcc\nblame\nthis\nyank\ncopy");
+#endif
+
+    REQUIRE(!ex->command(":1,2S8,7"));
+
     REQUIRE(ex->command(":1,2S8,9"));
     REQUIRE(ex->command(":1,2Sr8,9"));
   }

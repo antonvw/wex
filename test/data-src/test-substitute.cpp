@@ -17,6 +17,7 @@ TEST_CASE("wex::data::substitute")
 
     REQUIRE(sub.pattern().empty());
     REQUIRE(sub.replacement().empty());
+    REQUIRE(!sub.is_clear());
     REQUIRE(!sub.is_confirmed());
     REQUIRE(!sub.is_global());
     REQUIRE(!sub.is_ignore_case());
