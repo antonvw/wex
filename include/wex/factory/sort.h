@@ -2,7 +2,7 @@
 // Name:      sort.h
 // Purpose:   Declaration of wex::sort class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -32,7 +32,7 @@ public:
   /// Default constructor.
   sort(
     /// sort type
-    sort_t sort_t = 0,
+    sort_t t = sort_t(),
     /// position of the first character to be sorted
     size_t pos = 0,
     /// number of characters to sort
@@ -57,7 +57,7 @@ private:
   bool selection_block(factory::stc* stc);
   bool selection_other(factory::stc* stc);
 
-  const sort_t m_sort_t{0};
+  const sort_t m_sort_t;
   size_t       m_len, m_pos;
 };
 } // namespace factory
