@@ -2,13 +2,14 @@
 // Name:      stream.cpp
 // Purpose:   Implementation of wex::stream class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2008-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
 #include <wex/common/stream.h>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
+#include <wex/factory/beautify.h>
 #include <wex/factory/frd.h>
 #include <wx/msgdlg.h>
 
@@ -230,6 +231,13 @@ bool wex::stream::run_tool()
       if (!fs.is_open())
         return false;
       fs.write(s.c_str(), s.size());
+
+      if (factory::beautify b;
+          b.is_active() && b.is_auto() && b.is_supported(m_path))
+      {
+        fs.close();
+        b.file(m_path);
+      }
     }
 
     return true;
