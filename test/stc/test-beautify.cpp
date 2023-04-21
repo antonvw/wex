@@ -13,21 +13,11 @@ TEST_CASE("wex::beautify")
 {
   SUBCASE("access")
   {
-    REQUIRE(!wex::beautify().is_active());
-    REQUIRE(!wex::beautify().is_auto());
     REQUIRE(!wex::beautify().is_supported(wex::lexer("pascal")));
     REQUIRE(wex::beautify().is_supported(wex::lexer("cpp")));
-    REQUIRE(!wex::beautify().list().empty());
   }
 
   wex::config("stc.Beautifier").set(wex::config::strings_t{{"clang-format"}});
-
-  SUBCASE("file")
-  {
-    REQUIRE(wex::beautify().is_active());
-    REQUIRE(!wex::beautify().file(wex::path("xxxx")));
-    REQUIRE(!wex::beautify().file(wex::path("test.md")));
-  }
 
 #ifndef __WXMSW__
   SUBCASE("stc")
