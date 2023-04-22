@@ -16,7 +16,10 @@ TEST_CASE("wex::factory::beautify")
     REQUIRE(!wex::factory::beautify().is_active());
     REQUIRE(!wex::factory::beautify().is_auto());
     REQUIRE(!wex::factory::beautify().is_supported(wex::path("xxx.pas")));
+    REQUIRE(wex::factory::beautify().is_supported(wex::path("xxx.c")));
     REQUIRE(wex::factory::beautify().is_supported(wex::path("xxx.cpp")));
+    REQUIRE(wex::factory::beautify().is_supported(wex::path("xxx.h")));
+    REQUIRE(wex::factory::beautify().is_supported(wex::path("xxx.hpp")));
     REQUIRE(!wex::factory::beautify().list().empty());
     REQUIRE(wex::factory::beautify().name().empty());
   }

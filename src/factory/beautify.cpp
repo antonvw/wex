@@ -29,8 +29,9 @@ bool wex::factory::beautify::is_auto() const
 
 bool wex::factory::beautify::is_supported(const path& p) const
 {
-  return p.extension() == ".cpp" || p.extension() == ".java" ||
-         p.extension() == ".javascript";
+  return p.extension() == ".c" || p.extension() == ".cpp" ||
+         p.extension() == ".h" || p.extension() == ".hpp" ||
+         p.extension() == ".java" || p.extension() == ".javascript";
 }
 
 wex::config::strings_t wex::factory::beautify::list() const
