@@ -2,7 +2,7 @@
 // Name:      ex.h
 // Purpose:   Declaration of class wex::ex
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -14,7 +14,7 @@
 #include <wex/syntax/marker.h>
 
 #include <functional>
-#include <map>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -229,7 +229,7 @@ private:
 
   mode_t m_mode;
 
-  std::map<char, int>
+  std::unordered_map<char, int>
     // relate a marker to identifier
     m_marker_identifiers,
     // relate a marker to mark number

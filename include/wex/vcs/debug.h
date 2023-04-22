@@ -2,7 +2,7 @@
 // Name:      debug.h
 // Purpose:   Declaration of class wex::debug
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2016-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -11,9 +11,9 @@
 #include <wex/syntax/marker.h>
 #include <wex/ui/debug-entry.h>
 
-#include <map>
 #include <string>
 #include <tuple>
+#include <unordered_map>
 
 namespace wex
 {
@@ -93,7 +93,7 @@ private:
 
   /// The breakpoints, relating debugging breakpoint no to
   /// tuple of filename, marker identifier, and line no.
-  std::map<std::string, std::tuple<path, int, int>> m_breakpoints;
+  std::unordered_map<std::string, std::tuple<path, int, int>> m_breakpoints;
 
   static inline item_dialog* m_dialog = nullptr;
 

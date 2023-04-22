@@ -14,7 +14,7 @@
 #include <wx/artprov.h> // for wxArtID
 
 #include <list>
-#include <map>
+#include <unordered_map>
 
 namespace wex
 {
@@ -184,8 +184,8 @@ private:
   int m_col_event_id     = -1;
   int m_sorted_column_no = -1, m_to_be_sorted_column_no = -1;
 
-  std::map<wxArtID, unsigned int> m_art_ids;
-  std::vector<column>             m_columns;
+  std::unordered_map<wxArtID, unsigned int> m_art_ids;
+  std::vector<column>                       m_columns;
 
   frame* m_frame;
 

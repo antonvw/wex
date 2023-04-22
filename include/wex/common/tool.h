@@ -2,15 +2,15 @@
 // Name:      tool.h
 // Purpose:   Declaration of wex::tool classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2008-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/factory/defs.h>
 
-#include <map>
 #include <string>
+#include <unordered_map>
 
 namespace wex
 {
@@ -92,8 +92,9 @@ public:
   }
 
 private:
-  window_id m_id;
+  typedef std::unordered_map<window_id, tool_info> tool_info_t;
+  window_id                                        m_id;
 
-  static std::map<window_id, tool_info> m_tool_info;
+  static tool_info_t m_tool_info;
 };
 }; // namespace wex

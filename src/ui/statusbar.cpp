@@ -2,10 +2,11 @@
 // Name:      statusbar.cpp
 // Purpose:   Implementation of wex::statusbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <map>
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>

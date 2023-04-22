@@ -2,7 +2,7 @@
 // Name:      lexer.h
 // Purpose:   Declaration of wex::lexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2008-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,9 +10,9 @@
 #include <wex/syntax/property.h>
 #include <wex/syntax/style.h>
 
-#include <map>
 #include <set>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace pugi
@@ -199,8 +199,8 @@ private:
     m_display_lexer, m_extensions, m_language, m_scintilla_lexer;
 
   // each keyword set in a separate keyword set
-  std::map<int, std::set<std::string>> m_keywords_set;
-  std::set<std::string>                m_keywords;
+  std::unordered_map<int, std::set<std::string>> m_keywords_set;
+  std::set<std::string>                          m_keywords;
   std::vector<size_t>   m_edge_columns; // last one is used for line size
   std::vector<property> m_properties;
   std::vector<style>    m_styles;

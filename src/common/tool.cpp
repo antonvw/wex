@@ -2,7 +2,7 @@
 // Name:      tool.cpp
 // Purpose:   Implementation of wex::tool class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2008-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -11,7 +11,7 @@
 #include <wex/core/log.h>
 #include <wx/translation.h>
 
-std::map<wex::window_id, wex::tool_info> wex::tool::m_tool_info{
+wex::tool::tool_info_t wex::tool::m_tool_info{
   {ID_TOOL_ADD, {_("Added")}},
   {ID_TOOL_REPORT_FIND, {_("Found %d matches in")}},
   {ID_TOOL_REPLACE, {_("Replaced %d matches in")}}};

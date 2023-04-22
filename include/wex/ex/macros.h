@@ -2,7 +2,7 @@
 // Name:      macros.h
 // Purpose:   Declaration of class wex::macros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2022 Anton van Wezenbeek
+// Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -12,7 +12,7 @@
 #include <wex/ex/macro-mode.h>
 #include <wex/ex/variable.h>
 
-#include <map>
+#include <unordered_map>
 #include <vector>
 
 namespace wex
@@ -45,10 +45,17 @@ public:
   };
 
   /// Maps key to command.
-  typedef std::map<int, std::string>                      keys_map_t;
-  typedef std::map<std::string, std::string>              strings_map_t;
-  typedef std::map<std::string, std::vector<std::string>> macros_map_t;
-  typedef std::map<std::string, variable>                 variables_map_t;
+  typedef std::unordered_map<int, std::string> keys_map_t;
+
+  /// Maps string to command.
+  typedef std::unordered_map<std::string, std::string> strings_map_t;
+
+  /// Maps macro (register) to vector of command.
+  typedef std::unordered_map<std::string, std::vector<std::string>>
+    macros_map_t;
+
+  /// Maps string to variable.
+  typedef std::unordered_map<std::string, variable> variables_map_t;
 
   /// Default constructor.
   macros();
