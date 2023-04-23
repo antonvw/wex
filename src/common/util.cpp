@@ -122,9 +122,9 @@ wex::auto_complete_filename(const std::string& text)
   }
 }
 
-void wex::combobox_from_list(wxComboBox* cb, const std::list<std::string>& text)
+void wex::combobox_from_list(wxComboBox* cb, const strings_t& text)
 {
-  combobox_as<const std::list<std::string>>(cb, text);
+  combobox_as<const strings_t>(cb, text);
 }
 
 bool wex::compare_file(const path& file1, const path& file2)

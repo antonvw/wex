@@ -152,8 +152,8 @@ TEST_CASE("wex::config")
     REQUIRE(wex::config("number.v").exists());
     REQUIRE(wex::config("number.v").get(9) == 8);
 
-    wex::config("vector.v").set(std::vector<int>{1, 2, 3});
-    REQUIRE(wex::config("vector.v").get(std::vector<int>{}).size() == 3);
+    wex::config("vector.v").set(wex::config::ints_t{1, 2, 3});
+    REQUIRE(wex::config("vector.v").get(wex::config::ints_t{}).size() == 3);
   }
 
   SUBCASE("hierarchy")

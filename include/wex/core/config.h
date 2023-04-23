@@ -8,11 +8,11 @@
 #pragma once
 
 #include <wex/core/path.h>
+#include <wex/core/types.h>
 
 class wxColour;
 class wxFont;
 
-#include <list>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -25,11 +25,11 @@ class config_imp;
 class config
 {
 public:
-  /// Type for keeping the string values.
-  typedef std::list<std::string> strings_t;
+  /// Type for keeping the string values. We use the same as core types.
+  typedef wex::strings_t strings_t;
 
-  /// Type for keeping the int values.
-  typedef std::vector<int> ints_t;
+  /// Type for keeping the int values. We use the same as core types.
+  typedef wex::ints_t ints_t;
 
   /// Type to hold statusbar panes setup
   /// as a vector of tuples:
