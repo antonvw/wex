@@ -2,17 +2,17 @@
 // Name:      printing.h
 // Purpose:   Include file for wex::printing class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <wex/core/types.h>
 #include <wex/syntax/path-lexer.h>
 #include <wx/html/htmprint.h>
 #include <wx/print.h>
 
 #include <memory>
-#include <vector>
 
 class wxStyledTextCtrl;
 
@@ -83,7 +83,7 @@ private:
 
   wxRect m_page_rect, m_print_rect;
 
-  std::vector<int>  m_page_breaks;
+  ints_t            m_page_breaks;
   wxStyledTextCtrl* m_owner;
 };
 }; // namespace wex

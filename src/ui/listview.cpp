@@ -31,7 +31,7 @@
 #include <wx/dnd.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/imaglist.h>
-#include <wx/numdlg.h> // for wxGetNumberFromUser
+#include <wx/numdlg.h>           // for wxGetNumberFromUser
 #include <wx/settings.h>
 
 #include <algorithm>
@@ -950,7 +950,7 @@ void wex::listview::items_update()
   }
 }
 
-bool wex::listview::load(const std::list<std::string>& l)
+bool wex::listview::load(const strings_t& l)
 {
   clear();
 
@@ -1216,9 +1216,9 @@ bool wex::listview::report_view(const std::string& text)
   return true;
 }
 
-const std::list<std::string> wex::listview::save() const
+const wex::strings_t wex::listview::save() const
 {
-  std::list<std::string> l;
+  strings_t l;
 
   for (auto i = 0; i < GetItemCount(); i++)
   {

@@ -29,7 +29,7 @@ wex::del::file::file(const wex::path& p, const data::listview& data)
         data::control().is_required(true)},
        {m_text_in_folder,
         item::COMBOBOX_DIR,
-        std::list<std::string>{wxGetHomeDir().ToStdString()},
+        config::strings_t{wxGetHomeDir().ToStdString()},
         data::control().is_required(true)},
        {item::choices_bool_t{
          m_text_add_files,

@@ -2,15 +2,13 @@
 // Name:      shell.h
 // Purpose:   Declaration of class wex::shell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <wex/core/types.h>
 #include <wex/stc/stc.h>
-
-#include <list>
-#include <vector>
 
 namespace wex
 {
@@ -128,9 +126,9 @@ private:
   // We use a list, as each command appears only once,
   // and when selecting an element already present,
   // it is moved to the end of the list.
-  std::list<std::string>                 m_commands;
-  std::list<std::string>::const_iterator m_commands_iterator;
-  std::vector<std::string>               m_auto_complete_list;
+  strings_t                 m_commands;
+  strings_t::const_iterator m_commands_iterator;
+  std::vector<std::string>  m_auto_complete_list;
 
   std::string m_command, m_prompt;
 

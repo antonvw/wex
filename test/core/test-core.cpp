@@ -6,13 +6,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
+#include <wex/core/types.h>
 #include <wex/test/test.h>
 
 #include <vector>
 
 TEST_CASE("wex::core")
 {
-  std::vector<int> cs{'(', ')', '{', '<', '>'};
+  wex::ints_t cs{'(', ')', '{', '<', '>'};
 
   SUBCASE("clipboard")
   {

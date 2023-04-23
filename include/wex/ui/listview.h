@@ -2,12 +2,13 @@
 // Name:      listview.h
 // Purpose:   Declaration of wex::listview and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/common/path-match.h>
+#include <wex/core/types.h>
 #include <wex/data/listview.h>
 #include <wex/factory/listview.h>
 
@@ -88,10 +89,10 @@ public:
     long index = -1);
 
   /// Loads listview from list.
-  bool load(const std::list<std::string>& l);
+  bool load(const strings_t& l);
 
   /// Saves listview to list.
-  const std::list<std::string> save() const;
+  const strings_t save() const;
 
   /// Sets an item string field at a particular column.
   /// Returns false if an error occurred.
