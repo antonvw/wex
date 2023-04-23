@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::ctags
 //            https://github.com/universal-ctags/ctags
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -78,8 +78,8 @@ private:
 };
 }; // namespace wex
 
-std::map<std::string, wex::ctags_info>           wex::ctags::m_matches;
-std::map<std::string, wex::ctags_info>::iterator wex::ctags::m_iterator;
+wex::ctags::ctags_t           wex::ctags::m_matches;
+wex::ctags::ctags_t::iterator wex::ctags::m_iterator;
 
 wex::ctags::ctags(wex::factory::stc* stc, bool open_file)
   : m_stc(stc)

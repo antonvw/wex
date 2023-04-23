@@ -9,15 +9,16 @@
 
 #include <pugixml.hpp>
 
+#include <array>
+#include <map>
+#include <set>
+#include <unordered_map>
+#include <vector>
+
 #include <wex/core/path.h>
 #include <wex/syntax/indicator.h>
 #include <wex/syntax/lexer.h>
 #include <wex/syntax/marker.h>
-
-#include <array>
-#include <map>
-#include <set>
-#include <vector>
 
 class wxWindow;
 
@@ -37,7 +38,7 @@ class lexers
 {
 public:
   /// Name values type for macros.
-  typedef std::map<std::string, std::string> name_values_t;
+  typedef std::unordered_map<std::string, std::string> name_values_t;
 
   /// static interface
 
@@ -173,11 +174,13 @@ private:
   // styles, with max wxSTC_STYLE_MAX.
   std::array<char, 4> m_buffer;
 
-  std::map<std::string, name_values_t> m_macros, m_theme_colours,
-    m_theme_macros;
+  // This a a map, so the theme dialog is ordered.
+  std::map<std::string, name_values_t> m_theme_macros;
 
   std::set<indicator> m_indicators;
   std::set<marker>    m_markers;
+
+  std::unordered_map<std::string, name_values_t> m_macros, m_theme_colours;
 
   std::vector<property> m_global_properties;
   std::vector<lexer>    m_lexers{lexer()}; // ensure we have a lexer

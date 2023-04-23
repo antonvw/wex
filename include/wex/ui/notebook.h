@@ -2,7 +2,7 @@
 // Name:      notebook.h
 // Purpose:   Declaration of class wex::notebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -17,7 +17,7 @@
 #include <wx/aui/auibook.h>
 #include <wx/wupdlock.h>
 
-#include <map>
+#include <unordered_map>
 
 namespace wex
 {
@@ -118,8 +118,8 @@ public:
 private:
   frame* m_frame;
   // In bookctrl.h: m_pages
-  std::map<std::string, wxWindow*> m_keys;
-  std::map<wxWindow*, std::string> m_windows;
+  std::unordered_map<std::string, wxWindow*> m_keys;
+  std::unordered_map<wxWindow*, std::string> m_windows;
 
   static inline item_dialog* m_config_dialog = nullptr;
 };

@@ -392,6 +392,8 @@ bool wex::lexers::load_document_init()
     m_texts.clear();
     m_theme_colours.clear();
     m_theme_macros.clear();
+
+    m_lexers.push_back(lexer());
   }
   else
   {
@@ -416,7 +418,6 @@ bool wex::lexers::load_document_init()
 
   m_indicators.insert(indicator());
   m_keywords[std::string()] = std::string();
-  m_lexers.push_back(lexer());
   m_macros[std::string()] = name_values_t{};
   m_markers.insert(marker());
   m_theme_colours[std::string()] = m_default_colours;

@@ -2,7 +2,7 @@
 // Name:      debug-entry.h
 // Purpose:   Declaration of wex::debug_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2019-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -11,7 +11,7 @@
 #include <wex/core/menu-command.h>
 #include <wex/ui/menu-commands.h>
 
-#include <map>
+#include <unordered_map>
 
 namespace wex
 {
@@ -51,6 +51,6 @@ public:
 
 private:
   std::string m_break_del, m_break_set, m_extensions, m_flags;
-  std::map<regex_t, std::string> m_regex_stdouts;
+  std::unordered_map<regex_t, std::string> m_regex_stdouts;
 };
 }; // namespace wex

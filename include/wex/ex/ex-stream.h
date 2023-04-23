@@ -2,7 +2,7 @@
 // Name:      ex-stream.h
 // Purpose:   Declaration of class wex::ex_stream
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,7 +10,7 @@
 #include <wex/factory/text-window.h>
 
 #include <fstream>
-#include <map>
+#include <unordered_map>
 
 namespace wex
 {
@@ -156,7 +156,7 @@ private:
     m_line_no{LINE_COUNT_UNKNOWN},
     m_last_line_no{LINE_COUNT_UNKNOWN};
 
-  std::map<char, int> m_markers;
+  std::unordered_map<char, int> m_markers;
 
   char* m_buffer;
   char* m_current_line;

@@ -2,13 +2,11 @@
 // Name:      art.cpp
 // Purpose:   Implementation of wex::stockart class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2021 Anton van Wezenbeek
+// Copyright: (c) 2009-2021 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ui/art.h>
 #include <wx/stockitem.h>
-
-std::map<wxWindowID, wxArtID> wex::stockart::m_art_ids;
 
 wex::stockart::stockart(wxWindowID id)
   : m_id(id)
@@ -62,7 +60,10 @@ const wxBitmapBundle wex::stockart::get_bitmap(
 
     if (art_it != m_art_ids.end())
     {
-      return wxArtProvider::GetBitmapBundle(art_it->second, client, bitmap_size);
+      return wxArtProvider::GetBitmapBundle(
+        art_it->second,
+        client,
+        bitmap_size);
     }
   }
 

@@ -2,7 +2,7 @@
 // Name:      item.h
 // Purpose:   Declaration of wex::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2022 Anton van Wezenbeek
+// Copyright: (c) 2015-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -13,8 +13,8 @@
 #include <wx/slider.h>
 
 #include <any>
-#include <map>
-#include <set>
+#include <unordered_map>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -158,7 +158,7 @@ public:
   };
 
   /// Choices for radioboxes.
-  typedef std::map<
+  typedef std::unordered_map<
     /// value
     long,
     /// name, default the value is not set,
@@ -167,7 +167,7 @@ public:
     choices_t;
 
   /// Choices for listboxes with toggle options.
-  typedef std::set<std::string> choices_bool_t;
+  typedef std::unordered_set<std::string> choices_bool_t;
 
   /// A group is a pair of text with a vector of items.
   /// If the text is empty, a group is used, otherwise a static box,
