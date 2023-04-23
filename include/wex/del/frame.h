@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Include file for wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2009-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -12,6 +12,7 @@
 #include <wex/del/listview.h>
 #include <wex/ui/file-history.h>
 #include <wex/ui/frame.h>
+#include <wex/ui/item.h>
 
 #include <set>
 
@@ -218,7 +219,7 @@ private:
 
   // This set determines what fields are placed on the find_in_files dialogs
   // as a list of checkboxes.
-  const std::set<std::string> m_info;
+  const item::choices_bool_t m_info;
 };
 
 const std::string find_replace_string(bool replace);

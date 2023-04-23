@@ -13,8 +13,8 @@
 #include <wx/slider.h>
 
 #include <any>
-#include <set>
 #include <unordered_map>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -167,7 +167,7 @@ public:
     choices_t;
 
   /// Choices for listboxes with toggle options.
-  typedef std::set<std::string> choices_bool_t;
+  typedef std::unordered_set<std::string> choices_bool_t;
 
   /// A group is a pair of text with a vector of items.
   /// If the text is empty, a group is used, otherwise a static box,
