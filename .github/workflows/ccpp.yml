@@ -21,7 +21,7 @@ jobs:
           # https://github.com/actions/boost-versions/blob/main/versions-manifest.json
           boost_version: 1.81.0
           # OPTIONAL: Specify a platform version
-          platform_version: 22.04
+          platform_version: 20.04
 
           # NOTE: If a boost version matching all requirements cannot be found,
           # this build step will fail
