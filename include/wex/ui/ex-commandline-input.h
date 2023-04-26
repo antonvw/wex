@@ -2,14 +2,13 @@
 // Name:      ex-commandline-input.h
 // Purpose:   Declaration of wex::ex_commandline_input class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <wex/core/types.h>
 #include <wex/factory/ex-command.h>
-
-#include <list>
 
 class wxTextEntryBase;
 
@@ -22,7 +21,7 @@ class ex_commandline_input
 {
 public:
   /// Type for keeping the values.
-  typedef std::list<std::string> values_t;
+  typedef wex::strings_t values_t;
 
   /// Constructor, fills values from config.
   /// The specified type determines which key to use

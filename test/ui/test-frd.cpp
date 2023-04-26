@@ -59,7 +59,7 @@ TEST_CASE("wex::frd")
     REQUIRE(!frd->get_find_strings().empty());
     REQUIRE(frd->get_find_string() == "find[0-9]");
 
-    const std::list<std::string> l{"find3", "find4", "find5"};
+    const wex::ex_commandline_input::values_t l{"find3", "find4", "find5"};
     frd->set_find_strings(l);
     REQUIRE(frd->get_find_string() == "find3");
 
@@ -73,7 +73,7 @@ TEST_CASE("wex::frd")
     REQUIRE(frd->get_find_string() == "find3");
     REQUIRE(frd->get_replace_string() == "find3");
 
-    const std::list<std::string> e;
+    const wex::ex_commandline_input::values_t e;
     frd->set_find_strings(e);
     frd->set_replace_strings(e);
     REQUIRE(frd->get_find_strings().empty());

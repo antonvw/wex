@@ -52,7 +52,7 @@ TEST_CASE("wex::factory::link")
   SUBCASE("constructor")
   {
     wex::config(_("stc.link.Include directory"))
-      .set(std::list<std::string>{{"/usr/bin"}});
+      .set(wex::config::strings_t{{"/usr/bin"}});
     wex::factory::link lnk;
 
     // Test empty, or invalid paths.
@@ -112,7 +112,7 @@ TEST_CASE("wex::factory::link")
   {
     wex::factory::link lnk;
     wex::config(_("stc.link.Include directory"))
-      .set(std::list<std::string>{{"/usr/bin"}});
+      .set(wex::config::strings_t{{"/usr/bin"}});
     lnk.config_get();
 
     wex::line_data data;

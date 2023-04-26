@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <wex/core/types.h>
 #include <wex/ui/item.h>
 
 namespace wex
@@ -65,6 +66,6 @@ inline const std::vector<wex::item> wex::test_item::vector()
     {"button2", wex::item::BUTTON},
     {"combobox",
      wex::item::COMBOBOX,
-     std::list<std::string>{"test1", "test2", "test3"}}};
+     wex::strings_t{"test1", "test2", "test3"}}};
 }
 } // namespace wex
