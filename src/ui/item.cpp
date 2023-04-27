@@ -90,6 +90,121 @@ wex::item::item(
   }
 }
 
+wex::item::item()
+  : item(EMPTY)
+{
+}
+
+wex::item::item(int size)
+  : item(SPACER)
+{
+  m_data.window(data::window().style(size));
+}
+
+wex::item::item(wxOrientation orientation)
+  : item(STATICLINE)
+{
+  m_data.window(data::window().style(orientation));
+}
+
+wex::item::item(
+  const std::string& label,
+  int                min,
+  int                max,
+  const std::any&    value,
+  type_t             type,
+  const data::item&  data)
+  : item(
+      type,
+      label,
+      value,
+      data::item(data)
+        .window(data::window().style(wxSP_ARROW_KEYS))
+        .min(min)
+        .max(max))
+{
+}
+
+wex::item::item(
+  const std::string& label,
+  double             min,
+  double             max,
+  const std::any&    value,
+  const data::item&  data)
+  : item(SPINCTRLDOUBLE, label, value, data::item(data).min(min).max(max))
+{
+}
+
+wex::item::item(const choices_bool_t& choices, const data::item& data)
+  : item(CHECKLISTBOX_BOOL, "checklistbox_bool", choices, data)
+{
+}
+
+wex::item::item(
+  const std::string& label,
+  const notebook_t&  v,
+  type_t             type,
+  const data::item&  data)
+  : item(type, label, v, data)
+{
+}
+
+wex::item::item(const group_t& g, const data::item& data)
+  : item(g.first.empty() ? GROUP : STATICBOX, g.first, g, data)
+{
+}
+
+wex::item::item(
+  const std::string& label,
+  const choices_t&   choices,
+  bool               use_radiobox,
+  const data::item&  data)
+  : item(
+      use_radiobox ? RADIOBOX : CHECKLISTBOX_BIT,
+      label,
+      choices,
+      data::item(data)
+        .window(data::window().style(wxRA_SPECIFY_COLS))
+        .label_type(data::item::LABEL_NONE))
+{
+}
+
+wex::item::item(
+  const std::string& label,
+  wxWindow*          window,
+  const data::item&  data)
+  : item(USER, label, std::string(), data)
+{
+  m_window = window;
+}
+
+wex::item::item(
+  const std::string&    label,
+  const data::listview& data,
+  const std::any&       value,
+  const data::item&     d)
+  : item(LISTVIEW, label, value, d)
+{
+  m_data_listview = data;
+}
+
+wex::item::item(
+  const std::string& label,
+  type_t             type,
+  const std::any&    value,
+  const data::item&  data)
+  : item(
+      type,
+      label,
+      value,
+      data::item(data).label_type(
+        type == BUTTON || type == CHECKBOX || type == COMMANDLINKBUTTON ||
+            type == TOGGLEBUTTON ?
+          data::item::LABEL_NONE :
+          data.label_type()))
+{
+}
+
 wex::item::item(const std::string& label, type_t type, const data::item& data)
   : item(label, type, data.initial(), data)
 {

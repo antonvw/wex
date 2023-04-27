@@ -57,7 +57,7 @@ TEST_CASE("wex::vcs")
     REQUIRE(!vcs.entry().get_command().is_open());
 
     wex::config(_("vcs.Base folder"))
-      .set(std::list<std::string>{wxGetCwd().ToStdString()});
+      .set(wex::config::strings_t{wxGetCwd().ToStdString()});
 
     REQUIRE(vcs.set_entry_from_base());
 

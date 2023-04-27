@@ -2,7 +2,7 @@
 // Name:      config_item.cpp
 // Purpose:   Implementation of wex::item class config methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
