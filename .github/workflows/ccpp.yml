@@ -46,7 +46,8 @@ jobs:
 
       - name: Headless Test
         uses: coactions/setup-xvfb@v1
-        run: cd build &&
-          make lcov-prep &&
-          ctest -VV &&
-          make lcov
+        with:
+          run: cd build &&
+            make lcov-prep &&
+            ctest -VV &&
+            make lcov
