@@ -30,7 +30,7 @@ jobs:
         run: sudo apt-get install -yq gcc-12 g++-12
 
       - name: Configure
-        run: export CC=gcc-12 && export CXX=g++-12 && mkdir build && cd build
+        run: export CC=gcc-12 && export CXX=g++-12 && mkdir build && cd build &&
           cmake
             -DCMAKE_BUILD_TYPE=Coverage
             -DwexBUILD_TESTS=ON
@@ -44,7 +44,7 @@ jobs:
         run: cd build && make
 
       - name: Test
-        run: cd build
-          make lcov-prep
-          ctest -VV
+        run: cd build &&
+          make lcov-prep &&
+          ctest -VV &&
           make lcov
