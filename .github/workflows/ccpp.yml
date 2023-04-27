@@ -44,7 +44,8 @@ jobs:
       - name: Make
         run: cd build && make
 
-      - name: Test
+      - name: Headless Test
+        uses: coactions/setup-xvfb@v1
         run: cd build &&
           make lcov-prep &&
           ctest -VV &&
