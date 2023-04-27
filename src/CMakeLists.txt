@@ -41,7 +41,10 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
     # remove output that we are not interested in
     COMMAND lcov
       --gcov-tool ${wexGCOV_USE}
-      --remove app.run "*/usr/*" "*sample*" "*external/*" "*/test/*" "*factory/grid*" "include/wex/factory/text-window.h"
+      --remove app.run
+        "*boost/*" "*/usr/*"
+        "*sample*" "*external/*" "*/test/*"
+        "*factory/grid*" "include/wex/factory/text-window.h"
       --output-file app.run
 
     # generate local files
