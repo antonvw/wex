@@ -13,7 +13,7 @@ jobs:
           submodules: recursive
 
       - name: Install boost
-        uses:  MarkusJx/install-boost@v2.4.1
+        uses: MarkusJx/install-boost@v2.4.1
         id: install-boost
         with:
           # REQUIRED: Specify the required boost version
@@ -23,9 +23,6 @@ jobs:
           # OPTIONAL: Specify a platform version
           platform_version: 20.04
 
-          # NOTE: If a boost version matching all requirements cannot be found,
-          # this build step will fail
-
       - name: Install gtk
         run: sudo apt-get update && sudo apt-get install liblzma5 libjbig0 libgtk-3-dev
 
@@ -33,7 +30,13 @@ jobs:
         run: sudo apt-get install -yq gcc-12 g++-12
 
       - name: Configure
-        run: export CC=gcc-12 && export CXX=g++-12 && mkdir build && cd build && cmake -DBoost_INCLUDE_DIR=${{steps.install-boost.outputs.BOOST_ROOT}}/include -DBoost_LIBRARY_DIRS=${{steps.install-boost.outputs.BOOST_ROOT}}/lib ..
+        run: export CC=gcc-12 && export CXX=g++-12 && mkdir build && cd build
+          cmake
+            -DCMAKE_BUILD_TYPE=Coverage
+            -DwexBUILD_TESTS=ON
+            -DBoost_INCLUDE_DIR=${{steps.install-boost.outputs.BOOST_ROOT}}/include
+            -DBoost_LIBRARY_DIRS=${{steps.install-boost.outputs.BOOST_ROOT}}/lib
+            ..
         env:
           BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
 
@@ -41,4 +44,7 @@ jobs:
         run: cd build && make
 
       - name: Test
-        run: cd build && ctest -VV
+        run: cd build
+          make lcov-prep
+          ctest -VV
+          make lcov
