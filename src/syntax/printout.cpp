@@ -59,7 +59,7 @@ void wex::printout::GetPageInfo(
 
 void wex::printout::OnPreparePrinting()
 {
-  const double factor = 22.4;
+  const double factor = 21.4;
   const auto   ppiScr = [&]
   {
     wxSize s;
@@ -121,47 +121,9 @@ bool wex::printout::OnPrintPage(int pageNum)
     m_print_rect,
     m_page_rect);
 
-  wxFont font = *wxNORMAL_FONT;
-  font.SetWeight(wxFONTWEIGHT_BOLD);
-  GetDC()->SetFont(font);
-  GetDC()->SetTextForeground(*wxBLACK);
-  GetDC()->SetTextBackground(*wxWHITE);
-  GetDC()->SetPen(*wxBLACK_PEN);
-
-  // Print a header (line and text above).
-  if (const auto& header(
-        print_header(path_lexer(m_stc->GetName().ToStdString())));
-      !header.empty())
-  {
-    const int line_above_top = 3;
-    const int text_above_top = font.GetPixelSize().GetHeight() + line_above_top;
-
-    GetDC()->DrawText(
-      translate(header, pageNum, m_page_breaks.size() - 1),
-      m_print_rect.GetTopLeft().x,
-      m_print_rect.GetTopLeft().y - text_above_top);
-
-    GetDC()->DrawLine(
-      m_print_rect.GetTopLeft().x,
-      m_print_rect.GetTopLeft().y - line_above_top,
-      m_print_rect.GetBottomRight().x,
-      m_print_rect.GetTopLeft().y - line_above_top);
-  }
-
-  // Print a footer (line and text below)
-  if (const auto& footer(print_footer()); !footer.empty())
-  {
-    GetDC()->DrawLine(
-      m_print_rect.GetTopLeft().x,
-      m_print_rect.GetBottomRight().y,
-      m_print_rect.GetBottomRight().x,
-      m_print_rect.GetBottomRight().y);
-
-    GetDC()->DrawText(
-      translate(footer, pageNum, m_page_breaks.size() - 1),
-      m_print_rect.GetBottomRight().x / 2,
-      m_print_rect.GetBottomRight().y);
-  }
+  // Currently no header and footer, rects are not OK.
+  // See git a6a2d53c085170a10af036ece4bcca226aa032d2 for old code.
+  // Wait until wxWidgets adds support.
 
   return true;
 }
