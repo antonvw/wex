@@ -29,6 +29,9 @@ jobs:
       - name: Install gcc and lcov
         run: sudo apt-get install -yq gcc-12 g++-12 lcov
 
+      - name: Install xvfb to allow headless tests
+        run: sudo apt-get install xvfb
+
       - name: Configure
         run: export CC=gcc-12 && export CXX=g++-12 && mkdir build && cd build &&
           cmake
@@ -45,9 +48,7 @@ jobs:
         run: cd build && make
 
       - name: Headless Test
-        uses: coactions/setup-xvfb@v1
-        with:
-          run: cd build &&
-            make lcov-prep &&
-            ctest -VV &&
-            make lcov
+        run: cd build &&
+          make lcov-prep &&
+          xvfb-run --auto-servernum ctest -VV &&
+          make lcov
