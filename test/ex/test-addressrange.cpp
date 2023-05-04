@@ -290,6 +290,26 @@ TEST_CASE("wex::addressrange")
       REQUIRE(stc->get_text() == contents);
     }
 
+    SUBCASE("eol-all")
+    {
+      REQUIRE(ex->command(":%s/$/xxxxx/"));
+      REQUIRE(stc->get_text().contains("TIGERxxxxx"));
+      REQUIRE(stc->get_text().contains("tigerxxxxx"));
+    }
+
+    SUBCASE("eol-part")
+    {
+      REQUIRE(ex->command(":%s/TIGER$/xxxxx/"));
+      REQUIRE(!stc->get_text().contains("TIGER"));
+      REQUIRE(stc->get_text().contains("xxxxx"));
+      REQUIRE(!stc->get_text().contains("tigerxxxxx"));
+
+      stc->set_text(contents);
+      REQUIRE(ex->command(":%s/tig.*$/yyyyy/"));
+      REQUIRE(!stc->get_text().contains("tiger"));
+      REQUIRE(stc->get_text().contains("yyyyy"));
+    }
+
     SUBCASE("lower")
     {
       REQUIRE(ex->command(":%s/tiger/\\U&&\\L& \\0 \\0 & & \\U&/"));
