@@ -38,8 +38,7 @@ const std::stringstream wex::external_libraries()
      << "\n"
 
      // ctags
-     << PROGRAM_NAME << ": " << PROGRAM_VERSION
-     << "\n"
+     << PROGRAM_NAME << ": " << PROGRAM_VERSION << "\n"
 
      << wxStyledTextCtrl::GetLexerVersionInfo().GetDescription().c_str()
      << "\n"
@@ -105,7 +104,7 @@ wex::version_info_dialog::version_info_dialog(
     }
     else
     {
-      m_about.SetDescription(wxString(external_libraries().str()));
+      m_about.SetDescription(external_libraries().str());
     }
   }
 }

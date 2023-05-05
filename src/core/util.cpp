@@ -219,6 +219,17 @@ const std::string wex::get_word(std::string& text)
   return token;
 }
 
+int wex::icompare(const std::string& text1, const std::string& text2)
+{
+  return boost::algorithm::to_upper_copy(text1).compare(
+    boost::algorithm::to_upper_copy(text2));
+}
+
+bool wex::icontains(const std::string& text, const std::string& sequence)
+{
+  return boost::algorithm::icontains(text, sequence);
+}
+
 bool wex::is_brace(int c)
 {
   return c == '[' || c == ']' || c == '(' || c == ')' || c == '{' || c == '}' ||
@@ -236,7 +247,7 @@ bool wex::matches_one_of(
   const std::string& pattern)
 {
   if (pattern == "*")
-    return true; // asterix matches always
+    return true;  // asterix matches always
   if (filename.empty())
     return false; // empty string never matches
 

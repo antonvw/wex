@@ -38,7 +38,7 @@ void edit_control_char(stc* stc)
   if (stc->GetSelectedText().length() > 2)
     return;
 
-  const wxString& caption = _("Enter Control Character");
+  const std::string& caption = _("Enter Control Character");
   if (stc->is_hexmode())
     return stc->get_hexmode().control_char_dialog(caption);
 
@@ -46,10 +46,10 @@ void edit_control_char(stc* stc)
   {
     if (stc->GetSelectedText().length() == 1)
     {
-      const char value = stc->GetSelectedText().GetChar(0);
-      wxMessageBox(
-        wxString::Format("hex: %x dec: %d", value, value),
-        _("Control Character"));
+      const char        value = stc->GetSelectedText().GetChar(0);
+      std::stringstream stream;
+      stream << "hex: " << std::hex << value << " dec: " << value;
+      wxMessageBox(stream.str(), _("Control Character"));
     }
     return;
   }

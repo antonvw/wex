@@ -2,7 +2,7 @@
 // Name:      stc/config.cpp
 // Purpose:   Implementation of config related methods of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -18,7 +18,7 @@
 
 namespace wex
 {
-const std::string def(const wxString& v)
+const std::string def(const std::string& v)
 {
   return std::string(v) + ",1";
 }

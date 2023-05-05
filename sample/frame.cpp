@@ -238,13 +238,13 @@ void frame::bind_all()
       wxID_PREFERENCES},
      {[=, this](wxCommandEvent& event)
       {
-        std::string text;
+        std::stringstream text;
         for (auto i = 0; i < 100; i++)
         {
-          text += wxString::Format("Hello from line: %d\n", i);
+          text << "Hello from line: " << i << "\n";
         }
         wex::stc_entry_dialog(
-          text,
+          text.str(),
           "Greetings from " + std::string(wxTheApp->GetAppDisplayName()),
           wex::data::window().title("Hello world"))
           .ShowModal();

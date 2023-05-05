@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of wex::listview and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -1277,10 +1277,8 @@ int wxCALLBACK compare_cb(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData)
     case wex::column::STRING:
       if (!wex::find_replace_data::get()->match_case())
       {
-        return ascending ? boost::algorithm::to_upper_copy(str1).compare(
-                             boost::algorithm::to_upper_copy(str2)) :
-                           boost::algorithm::to_upper_copy(str2).compare(
-                             boost::algorithm::to_upper_copy(str1));
+        return ascending ? wex::icompare(str1, str2) :
+                           wex::icompare(str2, str1);
       }
       else
       {
