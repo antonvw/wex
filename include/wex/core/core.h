@@ -79,6 +79,12 @@ const std::string get_string_set(
 /// Returns a word from a string.
 const std::string get_word(std::string& text);
 
+/// Returns 0 if both texts are equal, ignoring case.
+int icompare(const std::string& text1, const std::string& text2);
+
+/// Returns true if text contains sequence, ignoring case.
+bool icontains(const std::string& text, const std::string& sequence);
+
 /// Returns true if char is a brace open or close character.
 bool is_brace(int c);
 

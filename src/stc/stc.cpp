@@ -565,8 +565,7 @@ void wex::stc::properties_message(path::log_t flags)
       GetName().empty() ? path().string() : GetName().ToStdString());
 
     const auto readonly(
-      GetReadOnly() ? wxString(" [" + _("Readonly") + "]").ToStdString() :
-                      std::string());
+      GetReadOnly() ? std::string(" [" + _("Readonly") + "]") : std::string());
 
     std::string title = name + readonly;
 

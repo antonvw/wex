@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <wex/core/core.h>
 #include <wex/core/path.h>
 #include <wex/factory/frame.h>
 #include <wex/ui/dialog.h>
@@ -107,7 +108,7 @@ private:
 
   bool m_force_checkbox_checked{false}, m_one_checkbox_checked{false};
 
-  wxString m_contains, m_page;
+  std::string m_contains, m_page;
 };
 
 // implementation
@@ -330,8 +331,8 @@ void wex::item_template_dialog<T>::process_checkbox(const T& item)
   if (m_force_checkbox_checked)
   {
     if (auto* cb = reinterpret_cast<wxCheckBox*>(item.window());
-        wxString(item.label()).Lower().Contains(m_contains.Lower()) &&
-        cb->IsChecked() && item.page() == m_page)
+        icontains(item.label(), m_contains) && cb->IsChecked() &&
+        item.page() == m_page)
     {
       m_one_checkbox_checked = true;
     }
@@ -347,8 +348,8 @@ void wex::item_template_dialog<T>::process_checklistbox(const T& item)
     for (size_t i = 0; i < clb->GetCount(); i++)
     {
       if (
-        clb->GetString(i).Lower().Contains(m_contains.Lower()) &&
-        clb->IsChecked(i) && item.page() == m_page)
+        icontains(clb->GetString(i), m_contains) && clb->IsChecked(i) &&
+        item.page() == m_page)
       {
         m_one_checkbox_checked = true;
       }

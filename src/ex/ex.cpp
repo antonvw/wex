@@ -6,6 +6,7 @@
 // Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <sstream>
 #include <utility>
 
 #include <wex/core/config.h>
@@ -147,30 +148,31 @@ void wex::ex::info_message(const std::string& text, wex::info_message_t type)
   if (const auto lines = get_number_of_lines(text);
       lines > config("stc.Reported lines").get(5))
   {
-    wxString msg;
+    std::stringstream msg;
+    msg << lines - 1 << " ";
 
     switch (type)
     {
       case wex::info_message_t::ADD:
-        msg = _("%d lines added");
+        msg << _("lines added");
         break;
       case wex::info_message_t::COPY:
-        msg = _("%d lines copied");
+        msg << _("lines copied");
         break;
       case wex::info_message_t::DEL:
-        msg = _("%d fewer lines");
+        msg << _("fewer lines");
         break;
       case wex::info_message_t::MOVE:
-        msg = _("%d lines moved");
+        msg << _("lines moved");
         break;
       case wex::info_message_t::YANK:
-        msg = _("%d lines yanked");
+        msg << _("lines yanked");
         break;
       default:
         return;
     }
 
-    m_frame->show_ex_message(wxString::Format(msg, lines - 1));
+    m_frame->show_ex_message(msg.str());
   }
 }
 
