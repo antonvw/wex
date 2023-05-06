@@ -316,17 +316,3 @@ bool wex::single_choice_dialog(
 
   return true;
 }
-
-const std::string
-wex::translate(const std::string& text, int pageNum, int numPages)
-{
-  const auto& translation(boost::algorithm::replace_all_copy(
-    text,
-    "@PAGENUM@",
-    std::to_string(pageNum)));
-
-  return boost::algorithm::replace_all_copy(
-    translation,
-    "@PAGESCNT@",
-    std::to_string(numPages));
-}

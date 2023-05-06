@@ -2,7 +2,7 @@
 // Name:      core.h
 // Purpose:   Include file for wex core utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -118,7 +118,4 @@ bool single_choice_dialog(
   const std::string&              title,
   const std::vector<std::string>& v,
   std::string&                    selection);
-
-/// This takes care of the translation.
-const std::string translate(const std::string& text, int pageNum, int numPages);
 } // namespace wex
