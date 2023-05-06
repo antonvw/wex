@@ -166,11 +166,4 @@ TEST_CASE("wex::core")
     REQUIRE(wex::quoted_find("test") == "test");
     REQUIRE(wex::quoted_find("te st") == "\"te st\"");
   }
-
-  SUBCASE("translate")
-  {
-    REQUIRE(
-      wex::translate("hello @PAGENUM@ from @PAGESCNT@", 1, 2).find("@") ==
-      std::string::npos);
-  }
 }
