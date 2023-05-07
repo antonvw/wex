@@ -121,7 +121,10 @@ wex::log& wex::log::operator<<(const wchar_t* r)
 
 wex::log& wex::log::operator<<(const std::string& r)
 {
-  m_ss << S() << "\"";
+  if (m_level != LEVEL_STATUS)
+  {
+    m_ss << S() << "\"";
+  }
 
   for (const auto& c : r)
   {
@@ -139,7 +142,10 @@ wex::log& wex::log::operator<<(const std::string& r)
     }
   }
 
-  m_ss << "\"";
+  if (m_level != LEVEL_STATUS)
+  {
+    m_ss << "\"";
+  }
 
   return *this;
 }
