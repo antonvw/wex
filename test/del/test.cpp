@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation for wex del unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/dir.h>
@@ -25,7 +25,7 @@ TEST_CASE("wex::del")
 
   del_frame()->pane_add(lv);
 
-  const auto files = wex::get_all_files(
+  const auto& files = wex::get_all_files(
     wex::path("../../test/del"),
     wex::data::dir().file_spec("*.cpp"));
 
