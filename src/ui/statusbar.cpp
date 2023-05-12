@@ -382,6 +382,7 @@ wex::statusbar* wex::statusbar::setup(
   if (m_panes.size() > 1)
   {
     m_panes.clear();
+    m_panes.push_back({});
   }
 
   m_panes.insert(std::end(m_panes), std::begin(panes), std::end(panes));

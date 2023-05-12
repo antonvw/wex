@@ -500,44 +500,11 @@ wex::stc* frame::open_file(const wex::path& file, const wex::data::stc& data)
   }
 }
 
-void frame::open_file_same_page(wxCommandEvent& event)
+void frame::open_file_same_page(const wex::path& p)
 {
-  if (file_history().size() > 1)
-  {
-    if (event.GetId() == wxID_FORWARD)
-    {
-      if (m_browse_index < file_history().size() - 1)
-      {
-        m_browse_index++;
-      }
-      else if (m_browse_index > file_history().size() - 1)
-      {
-        m_browse_index = file_history().size() - 1;
-        return;
-      }
-      else
-      {
-        return;
-      }
-    }
-    else
-    {
-      if (m_browse_index > 0)
-      {
-        m_browse_index--;
-      }
-      else
-      {
-        return;
-      }
-    }
-
-    const auto& p(file_history()[m_browse_index]);
-
-    m_stc->open(p, wex::data::stc().recent(false));
-    m_stc->get_lexer().set(wex::path_lexer(p).lexer().display_lexer(), true);
-    m_stc->properties_message();
-  }
+  m_stc->open(p, wex::data::stc().recent(false));
+  m_stc->get_lexer().set(wex::path_lexer(p).lexer().display_lexer(), true);
+  m_stc->properties_message();
 }
 
 void frame::update(app* a)

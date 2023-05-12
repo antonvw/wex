@@ -120,7 +120,7 @@ wex::auto_complete_filename(const std::string& text)
 
     log::status() << std::accumulate(
       v.begin(),
-      v.size() <= 5 ? v.end(): v.begin() + 5,
+      v.size() <= 5 ? v.end() : v.begin() + 5,
       std::string(),
       [&](const std::string& a, const std::string& b)
       {

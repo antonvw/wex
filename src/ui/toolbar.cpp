@@ -297,7 +297,7 @@ void wex::toolbar::add_standard(bool realize)
   bind(this).command(
     {{[=, this](wxCommandEvent& event)
       {
-        m_frame->open_file_same_page(event);
+        m_frame->browse(event);
       },
       wxID_FORWARD,
       wxID_BACKWARD}});
