@@ -380,11 +380,73 @@ bool wex::frame::add_toolbar_panes(const panes_t& panes)
   return pane_add(pns);
 }
 
+bool wex::frame::allow_browse_backward() const
+{
+  return m_browse_index < m_file_history.size() && m_file_history.size() > 1 &&
+         m_browse_index != 0;
+}
+
+bool wex::frame::allow_browse_forward() const
+{
+  return m_browse_index < m_file_history.size() - 1 &&
+         m_file_history.size() > 1;
+}
+
 bool wex::frame::allow_close(wxWindowID id, wxWindow* page)
 {
   // The page will be closed, so do not update find focus now.
   set_find_focus(nullptr);
   m_ex_commandline->set_stc(nullptr, std::string());
+
+  return true;
+}
+
+bool wex::frame::browse(wxCommandEvent& event)
+{
+  if (m_file_history.size() <= 1)
+  {
+    return false;
+  }
+
+  switch (event.GetId())
+  {
+    case wxID_BACKWARD:
+      if (m_browse_index > 0)
+      {
+        m_browse_index--;
+      }
+      else
+      {
+        if (m_browse_index > m_file_history.size() - 1)
+        {
+          m_browse_index = m_file_history.size() - 1;
+        }
+
+        return false;
+      }
+      break;
+
+    case wxID_FORWARD:
+      if (m_browse_index < m_file_history.size() - 1)
+      {
+        m_browse_index++;
+      }
+      else
+      {
+        if (m_browse_index > m_file_history.size() - 1)
+        {
+          m_browse_index = m_file_history.size() - 1;
+        }
+
+        return false;
+      }
+      break;
+
+    default:
+      assert(0);
+  }
+
+  open_file_same_page(m_file_history[m_browse_index]);
 
   return true;
 }

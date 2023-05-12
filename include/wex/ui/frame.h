@@ -144,7 +144,7 @@ public:
   virtual void on_notebook(wxWindowID id, wxWindow* page) { ; }
 
   /// Called on browse forward, backward.
-  virtual void open_file_same_page(wxCommandEvent& event) { ; }
+  virtual void open_file_same_page(const wex::path& p) { ; }
 
   /// Allows you to override print ex.
   virtual bool print_ex(syntax::stc* stc, const std::string& text)
@@ -239,6 +239,15 @@ public:
   }
 
   /// Other methods
+
+  /// Can we browse backward?
+  bool allow_browse_backward() const;
+
+  /// Can we browse forward?
+  bool allow_browse_forward() const;
+
+  /// Handles forward and backward click.
+  bool browse(wxCommandEvent& event);
 
   /// Returns current debugger.
   const auto* debug_entry() const { return m_debug_entry; }
@@ -390,5 +399,7 @@ private:
 
   wxAuiManager       m_manager;
   class file_history m_file_history;
+
+  size_t m_browse_index{0};
 };
 }; // namespace wex
