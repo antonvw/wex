@@ -6,12 +6,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
+#include <boost/url.hpp>
+
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/core/path.h>
 #include <wx/mimetype.h>
 #include <wx/translation.h>
-#include <wx/url.h>
+#include <wx/utils.h>
 
 namespace fs = std::filesystem;
 
@@ -174,7 +176,7 @@ bool wex::path::open_mime() const
 {
   if (extension().empty())
   {
-    if (wxURL(m_path.string()).IsOk() || m_path.string().substr(0, 4) == "http")
+    if (boost::urls::url_view view(m_path.string()); view.has_scheme())
     {
       return browser(m_path.string());
     }
