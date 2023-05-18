@@ -266,7 +266,7 @@ bool wex::stc::get_hexmode_insert(const std::string& command, int pos)
   return m_hexmode.insert(command, pos);
 }
 
-std::string wex::stc::get_hexmode_lines(const std::string& text)
+std::string wex::stc::get_hexmode_lines(const std::string& text) const
 {
   return m_hexmode.lines(text);
 }

@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wex::factory::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -77,7 +77,7 @@ public:
   };
 
   /// Hex lines.
-  virtual std::string get_hexmode_lines(const std::string& text)
+  virtual std::string get_hexmode_lines(const std::string& text) const
   {
     return std::string();
   };
