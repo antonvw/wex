@@ -2,7 +2,7 @@
 // Name:      test-stc.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -30,6 +30,11 @@ TEST_CASE("wex::stc")
 
     stc->auto_complete()->use(false);
     REQUIRE(!stc->auto_complete()->use());
+  }
+
+  SUBCASE("auto_indentation")
+  {
+    REQUIRE(!stc->auto_indentation('x'));
   }
 
   SUBCASE("binary")
@@ -60,6 +65,8 @@ TEST_CASE("wex::stc")
 
   SUBCASE("coverage")
   {
+    REQUIRE(!stc->process_char(WXK_BACK));
+
     stc->get_lexer().set("cpp");
     stc->Clear();
     stc->clear();
@@ -191,6 +198,7 @@ TEST_CASE("wex::stc")
 
     REQUIRE(stc->get_hexmode_insert("55", 0));
     REQUIRE(stc->get_hexmode_replace('a'));
+    REQUIRE(!stc->get_hexmode_lines("AA").empty());
     REQUIRE(stc->get_hexmode_erase(0, 1));
     REQUIRE(stc->get_hexmode_replace_target("44", false));
     REQUIRE(stc->get_hexmode_sync());
