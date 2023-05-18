@@ -35,7 +35,12 @@ jobs:
       - name: Install coveralls
         run: sudo curl -L https://coveralls.io/coveralls-linux.tar.gz | tar -xz -C /usr/local/bin
 
+      - name: Install robotframework
+        run: sudo pip install robotframework
+
       - name: Configure
+        # adding -DwexBUILD_SAMPLES=ON should result in app running,
+        # but then the headless test keeps on running
         run: export CC=gcc-12 && export CXX=g++-12 && mkdir build && cd build &&
           cmake
             -DCMAKE_BUILD_TYPE=Coverage

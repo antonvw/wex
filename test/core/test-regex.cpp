@@ -5,6 +5,7 @@
 // Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log-none.h>
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
 #include <wex/test/test.h>
@@ -39,6 +40,8 @@ TEST_CASE("wex::regex")
     REQUIRE(wex::regex(" ([\\d\\w]+)").match(" 19999ok245nice ") == -1);
     REQUIRE(
       wex::regex("([?/].*[?/])(,[?/].*[?/])([msy])").match("/xx/,/yy/y") == 3);
+
+    wex::log_none of;
     REQUIRE(wex::regex("[a-9").match("9") == -1);
   }
 

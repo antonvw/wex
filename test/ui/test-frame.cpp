@@ -161,7 +161,7 @@ TEST_CASE("wex::frame")
 
     frame()->vcs_execute(55, std::vector<wex::path>{wex::test::get_path()});
 
-    auto* stc = new ui_stc();
+    auto* stc = new wex::test::ui_stc();
     REQUIRE(!frame()->pane_add(stc).empty());
 
     REQUIRE(frame()->pane_add(panes));

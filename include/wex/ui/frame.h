@@ -32,6 +32,11 @@ class menu_item;
 class process_data;
 class toolbar;
 
+namespace factory
+{
+class link;
+};
+
 namespace syntax
 {
 class stc;

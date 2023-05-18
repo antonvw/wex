@@ -44,7 +44,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
       --remove app.run
         "*boost/*" "*/usr/*"
         "*sample*" "*external/*" "*/test/*"
-        "*factory/grid*" "include/wex/factory/text-window.h"
+        "*factory/grid*" "*include/wex/factory/text-window.h"
       --output-file app.run
 
     # generate local files

@@ -35,8 +35,7 @@ An example is the [syncped editor](https://gitlab.kitware.com/antonvw/syncped).
 ## Build process
 
   [![Appveyor](https://ci.appveyor.com/api/projects/status/a346d8537whyrjev?svg=true)](https://ci.appveyor.com/project/antonvw/wex)
-  [![Codiga](https://api.codiga.io/project/30476/score/svg)](https://www.codiga.io)
-  [![Coverage Status](https://coveralls.io/repos/github/antonvw/wex/badge.svg)](https://coveralls.io/github/antonvw/wex)
+  [![Coverage Status](https://coveralls.io/repos/github/antonvw/wex/badge.svg?branch=develop)](https://coveralls.io/github/antonvw/wex?branch=develop)
 
 ## Uses
 

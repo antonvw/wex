@@ -204,7 +204,7 @@ public:
 
   bool        get_hexmode_erase(int begin, int end) override;
   bool        get_hexmode_insert(const std::string& command, int pos) override;
-  std::string get_hexmode_lines(const std::string& text) override;
+  std::string get_hexmode_lines(const std::string& text) const override;
   bool        get_hexmode_replace(char) override;
   bool get_hexmode_replace_target(const std::string& replacement, bool set_text)
     override;
