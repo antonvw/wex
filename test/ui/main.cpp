@@ -7,13 +7,13 @@
 
 #include "test.h"
 
-ui_stc::ui_stc(const wex::data::stc& data)
+wex::test::ui_stc::ui_stc(const wex::data::stc& data)
 {
   Create(data.window().parent(), -1);
   Show();
 }
 
-wex::file& ui_stc::get_file()
+wex::file& wex::test::ui_stc::get_file()
 {
   return m_file;
 }

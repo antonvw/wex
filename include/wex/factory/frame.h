@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of wex::factory::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -24,7 +24,6 @@ class stc;
 namespace factory
 {
 class grid;
-class link;
 class listview;
 class process;
 class stc;
@@ -36,8 +35,11 @@ class stc;
 class frame : public wxFrame
 {
 public:
-  /// Destructor.
-  virtual ~frame() = default;
+  /// Default constructor.
+  frame();
+
+  /// Constructor for wxFrame.
+  frame(wxWindow* parent, wxWindowID winid, const std::string& title);
 
   /// Virtual interface
 

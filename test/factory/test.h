@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <wex/factory/frame.h>
 #include <wex/factory/stc.h>
 #include <wex/test/test.h>
 #include <wx/app.h>
@@ -43,3 +44,6 @@ private:
   bool m_visual{true};
 };
 }; // namespace wex::test
+
+/// Returns the frame.
+wex::factory::frame* frame();

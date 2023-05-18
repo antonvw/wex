@@ -25,6 +25,8 @@ namespace wex
 class file;
 };
 
+namespace wex::test
+{
 class ui_stc : public wex::syntax::stc
 {
 public:
@@ -40,6 +42,7 @@ private:
   wex::path m_path;
   wex::file m_file;
 };
+}; // namespace wex::test
 
 /// Returns the frame.
 wex::frame* frame();
