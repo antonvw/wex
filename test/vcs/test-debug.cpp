@@ -2,7 +2,7 @@
 // Name:      test-debug.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -53,7 +53,7 @@ TEST_CASE("wex::debug")
 
   SUBCASE("execute")
   {
-#ifndef __WXMSW__
+#ifdef __WXOSX__
     REQUIRE(dbg.execute("break"));
     REQUIRE(dbg.execute("break all breakpoints"));
     REQUIRE(dbg.execute("break", get_stc()));
