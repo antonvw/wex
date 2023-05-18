@@ -39,12 +39,13 @@ jobs:
         run: sudo pip install robotframework
 
       - name: Configure
+        # adding -DwexBUILD_SAMPLES=ON should result in app running,
+        # but then the headless test keeps on running
         run: export CC=gcc-12 && export CXX=g++-12 && mkdir build && cd build &&
           cmake
             -DCMAKE_BUILD_TYPE=Coverage
             -DwexGCOV=gcov-12
             -DwexBUILD_TESTS=ON
-            -DwexBUILD_SAMPLES=ON
             -DBoost_INCLUDE_DIR=${{steps.install-boost.outputs.BOOST_ROOT}}/include
             -DBoost_LIBRARY_DIRS=${{steps.install-boost.outputs.BOOST_ROOT}}/lib
             ..
