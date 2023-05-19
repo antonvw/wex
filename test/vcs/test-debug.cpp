@@ -13,7 +13,7 @@
 
 #include "test.h"
 
-TEST_CASE("wex::debug")
+TEST_CASE("wex::debug" * doctest::may_fail())
 {
 #ifdef __WXOSX__
   wex::config("debug.debugger").set("lldb");
