@@ -9,8 +9,6 @@
 #include <wex/data/layout.h>
 #include <wx/sizer.h>
 
-#include <iostream>
-
 wex::data::layout::layout(wxWindow* parent, int cols, int rows)
   : m_parent(parent)
   , m_sizer(rows > 0 ? new sizer_t(rows, cols, 0, 0) : new sizer_t(cols))

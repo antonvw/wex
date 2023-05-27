@@ -357,6 +357,9 @@ void wex::item::add_items(group_t& page, bool readonly)
         m_page.data() + col + 1,
         m_page.data() + m_page.size(),
         use_cols);
+
+      log::trace("found page cols") << use_cols;
+
       m_page = m_page.substr(0, col);
     }
 
