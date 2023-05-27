@@ -48,8 +48,9 @@ TEST_CASE("wex::data::layout")
   {
     wex::data::layout layout(get_listview(), 4, 3);
 
-    REQUIRE(layout.sizer_layout_create(new wxFlexGridSizer(5)));
-    REQUIRE(layout.sizer_layout_create(new wxFlexGridSizer(5, 4, 0, 0)));
+    REQUIRE(layout.sizer_layout_create(new wex::data::layout::sizer_t(5)));
+    REQUIRE(
+      layout.sizer_layout_create(new wex::data::layout::sizer_t(5, 4, 0, 0)));
 
     REQUIRE(layout.sizer_layout() != nullptr);
     REQUIRE(layout.sizer_layout() != layout.sizer());

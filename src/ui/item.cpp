@@ -226,11 +226,11 @@ wex::item::item(
 {
 }
 
-wxFlexGridSizer* wex::item::add(data::layout& layout) const
+wex::data::layout::sizer_t* wex::item::add(data::layout& layout) const
 {
   if (layout.sizer_layout() == nullptr)
   {
-    layout.sizer_layout_create(new wxFlexGridSizer(
+    layout.sizer_layout_create(new wex::data::layout::sizer_t(
       m_data.label_type() == data::item::LABEL_LEFT ? 2 : 1));
 
     // depending on type, make the last col growable
@@ -416,7 +416,7 @@ void wex::item::add_items(group_t& page, bool readonly)
 
 void wex::item::add_items(data::layout& layout, std::vector<item>& v)
 {
-  wxFlexGridSizer* previous_item_sizer = nullptr;
+  wex::data::layout::sizer_t* previous_item_sizer = nullptr;
 
   for (int previous_type = -1; auto& item : v)
   {
@@ -629,7 +629,7 @@ bool wex::item::is_notebook() const
   return m_type >= NOTEBOOK && m_type <= NOTEBOOK_WEX;
 }
 
-wxFlexGridSizer* wex::item::layout(data::layout& layout)
+wex::data::layout::sizer_t* wex::item::layout(data::layout& layout)
 {
   assert(layout.sizer() != nullptr);
 
@@ -640,7 +640,7 @@ wxFlexGridSizer* wex::item::layout(data::layout& layout)
       return nullptr;
     }
 
-    wxFlexGridSizer* return_sizer = nullptr;
+    wex::data::layout::sizer_t* return_sizer = nullptr;
 
     switch (m_type)
     {

@@ -211,7 +211,7 @@ void wex::item_template_dialog<T>::force_checkbox_checked(
 
 template <class T> void wex::item_template_dialog<T>::layout(int rows, int cols)
 {
-  wxFlexGridSizer* previous_item_sizer = nullptr;
+  data::layout::sizer_t* previous_item_sizer = nullptr;
 
   data::layout layout(this, cols, rows);
 

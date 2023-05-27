@@ -13,9 +13,7 @@
 
 wex::data::layout::layout(wxWindow* parent, int cols, int rows)
   : m_parent(parent)
-  , m_sizer(
-      rows > 0 ? new wxFlexGridSizer(rows, cols, 0, 0) :
-                 new wxFlexGridSizer(cols))
+  , m_sizer(rows > 0 ? new sizer_t(rows, cols, 0, 0) : new sizer_t(cols))
 {
   log::trace("layout") << cols << "," << rows;
 }
@@ -50,7 +48,7 @@ bool wex::data::layout::sizer_layout_can_grow_row() const
          !m_fgz->IsRowGrowable(m_fgz->GetEffectiveRowsCount() - 1);
 }
 
-bool wex::data::layout::sizer_layout_create(wxFlexGridSizer* rhs)
+bool wex::data::layout::sizer_layout_create(sizer_t* rhs)
 {
   m_fgz = rhs;
 
