@@ -1,8 +1,10 @@
 # How to contribute
 
+- make an issue
+
 - fork the repository on GitHub
 
-- create a feature branch from the develop branch to base your work
+- create a feature branch for that issue from the develop branch to base your work
 
 ## Adding functionality
 
@@ -40,6 +42,9 @@ make analyse
 
 ## Test it
 
+- when updating one of the github workflows yml files, use e.g
+  [yamlchecker](https://yamlchecker.com) to check the chaged file
+
 - add a test (and update sample)
 
 ```bash
@@ -53,6 +58,8 @@ make test
   This requires `lcov` and `genhtml` tools (part of lcov).
   It implicitly builds tests and samples, no need to specify it separately.
   You can also set the gcov version to use by setting the wexGCOV variable.
+  When pushing commits, test coverage is done automatically using 
+  the github workflow ccpp.yml.
 
 ```bash
 mkdir coverage && cd coverage

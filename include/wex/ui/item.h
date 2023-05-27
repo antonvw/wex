@@ -8,6 +8,7 @@
 #pragma once
 
 #include <wex/data/item.h>
+#include <wex/data/layout.h>
 #include <wex/data/listview.h>
 #include <wx/sizer.h> // for wxSizer, and wxSizerFlags
 
@@ -410,20 +411,10 @@ public:
   /// Returns the label window.
   const auto& label_window() const { return m_label_window; }
 
-  /// layouts this item (creates the window) on the specified sizer.
+  /// layouts this item (creates the window) using the specified layout.
   /// It returns the flex grid sizer that was used for creating the item
   /// sizer. Or it returns nullptr if no flex grid sizer was used.
-  wxFlexGridSizer* layout(
-    /// the parent
-    wxWindow* parent,
-    /// the sizer
-    wxSizer* sizer,
-    /// specify the item will be readonly, it will not be changeable
-    /// if underlying control supports this
-    bool readonly = false,
-    /// specify the sizer for creating the item, or nullptr,
-    /// than a new one is created
-    wxFlexGridSizer* fgz = nullptr);
+  wxFlexGridSizer* layout(data::layout& layout);
 
   /// Logs info about this item.
   std::stringstream log() const;
@@ -471,16 +462,12 @@ private:
     const std::any&    value = std::string(),
     const data::item&        = data::item());
 
-  wxFlexGridSizer* add(wxSizer* sizer, wxFlexGridSizer* current) const;
+  wxFlexGridSizer* add(data::layout& layout) const;
   wxFlexGridSizer* add_browse_button(wxSizer* sizer) const;
   wxFlexGridSizer* add_static_text(wxSizer* sizer) const;
 
   void add_items(group_t& page, bool readonly);
-  void add_items(
-    wxWindow*          parent,
-    wxFlexGridSizer*   sizer,
-    std::vector<item>& v,
-    bool               readonly);
+  void add_items(data::layout& layout, std::vector<item>& v);
 
   bool     create_window(wxWindow* parent, bool readonly);
   create_t creators();

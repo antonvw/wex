@@ -143,7 +143,7 @@ TEST_CASE("wex::item-config")
     {
       // Testing on not nullptr not possible,
       // not all items need a sizer.
-      it.layout(panel, sizer);
+      it.layout(layout);
 
       if (it.type() != wex::item::EMPTY && it.type() != wex::item::SPACER)
       {
@@ -171,8 +171,8 @@ TEST_CASE("wex::item-config")
 
     // Now check to_config (after layout).
     // These are copies, the window() is nullptr!
-    REQUIRE(ci_str.layout(panel, sizer) != nullptr);
-    REQUIRE(ci_st.layout(panel, sizer) != nullptr);
+    REQUIRE(ci_str.layout(layout) != nullptr);
+    REQUIRE(ci_st.layout(layout) != nullptr);
     REQUIRE(ci_str.to_config(true));
     REQUIRE(ci_str.to_config(false));
     REQUIRE(!ci_st.to_config(true));

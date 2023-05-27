@@ -33,7 +33,7 @@ TEST_CASE("wex::item")
     wex::item::use_config(true);
     wex::item item("item-parent.child", "karmeliet");
 
-    REQUIRE(item.layout(panel, sizer) != nullptr);
+    REQUIRE(item.layout(layout) != nullptr);
     REQUIRE(item.label() == "item-parent.child");
     REQUIRE(std::any_cast<std::string>(item.get_value()) == "karmeliet");
     REQUIRE(item.to_config(true));

@@ -212,13 +212,12 @@ void wex::item_template_dialog<T>::force_checkbox_checked(
 template <class T> void wex::item_template_dialog<T>::layout(int rows, int cols)
 {
   wxFlexGridSizer* previous_item_sizer = nullptr;
-  wxFlexGridSizer* sizer =
-    (rows > 0 ? new wxFlexGridSizer(rows, cols, 0, 0) :
-                new wxFlexGridSizer(cols));
+
+  data::layout layout(this, cols, rows);
 
   for (int i = 0; i < cols; i++)
   {
-    sizer->AddGrowableCol(i);
+    layout.sizer()->AddGrowableCol(i);
   }
 
   int previous_type = -1;
@@ -230,26 +229,25 @@ template <class T> void wex::item_template_dialog<T>::layout(int rows, int cols)
 
     // If this item has same type as previous type use previous sizer,
     // otherwise use no sizer (layout will create a new one).
-    wxFlexGridSizer* current_item_sizer =
-      (item.type() == previous_type && cols == 1 ? previous_item_sizer :
-                                                   nullptr);
+    layout.sizer_layout_create(
+      item.type() == previous_type && cols == 1 ? previous_item_sizer :
+                                                  nullptr);
+
+    layout.is_readonly(data().button() == wxCANCEL);
 
     // layout the item.
-    previous_item_sizer =
-      item.layout(this, sizer, data().button() == wxCANCEL, current_item_sizer);
-    previous_type = item.type();
+    previous_item_sizer = item.layout(layout);
+    previous_type       = item.type();
 
-    if (
-      sizer->GetEffectiveRowsCount() >= 1 &&
-      !sizer->IsRowGrowable(sizer->GetEffectiveRowsCount() - 1) &&
-      item.is_row_growable())
+    if (item.is_row_growable())
     {
-      sizer->AddGrowableRow(sizer->GetEffectiveRowsCount() - 1);
+      layout.sizer_grow_row();
     }
+
     bind_button(item);
   }
 
-  add_user_sizer(sizer);
+  add_user_sizer(layout.sizer());
   layout_sizers();
 
   m_items.insert(m_items.end(), m_items_tmp.begin(), m_items_tmp.end());

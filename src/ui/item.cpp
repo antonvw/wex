@@ -226,38 +226,38 @@ wex::item::item(
 {
 }
 
-wxFlexGridSizer* wex::item::add(wxSizer* sizer, wxFlexGridSizer* current) const
+wxFlexGridSizer* wex::item::add(data::layout& layout) const
 {
-  if (current == nullptr)
+  if (layout.sizer_layout() == nullptr)
   {
-    current = new wxFlexGridSizer(
-      m_data.label_type() == data::item::LABEL_LEFT ? 2 : 1);
+    layout.sizer_layout_create(new wxFlexGridSizer(
+      m_data.label_type() == data::item::LABEL_LEFT ? 2 : 1));
 
     // depending on type, make the last col growable
     if (m_type != TEXTCTRL_FLOAT && m_type != TEXTCTRL_INT)
     {
-      current->AddGrowableCol(current->GetCols() - 1);
+      layout.sizer_layout_grow_col();
     }
 
-    sizer->Add(current, wxSizerFlags().Expand());
+    layout.sizer()->Add(layout.sizer_layout(), wxSizerFlags().Expand());
   }
 
   if (m_data.label_type() != data::item::LABEL_NONE && !m_label.empty())
   {
-    add_static_text(current);
+    add_static_text(layout.sizer_layout());
   }
 
   if (m_window != nullptr)
   {
-    current->Add(m_window, m_sizer_flags);
+    layout.sizer_layout()->Add(m_window, m_sizer_flags);
   }
 
-  if (m_is_row_growable && current->GetEffectiveRowsCount() >= 1)
+  if (m_is_row_growable)
   {
-    current->AddGrowableRow(current->GetEffectiveRowsCount() - 1);
+    layout.sizer_layout_grow_row();
   }
 
-  return current;
+  return layout.sizer_layout();
 }
 
 wxFlexGridSizer* wex::item::add_browse_button(wxSizer* sizer) const
@@ -343,9 +343,7 @@ wxFlexGridSizer* wex::item::add_browse_button(wxSizer* sizer) const
 
 void wex::item::add_items(group_t& page, bool readonly)
 {
-  int use_cols = 1;
-  if (m_data.columns() != -1)
-    use_cols = m_data.columns();
+  int use_cols = (m_data.columns() != -1 ? m_data.columns() : 1);
 
   if (auto* bookctrl = dynamic_cast<wxBookCtrlBase*>(m_window);
       bookctrl != nullptr)
@@ -361,8 +359,6 @@ void wex::item::add_items(group_t& page, bool readonly)
         use_cols);
       m_page = m_page.substr(0, col);
     }
-
-    auto* fgz = new wxFlexGridSizer(use_cols);
 
     if (m_data.image_list() != nullptr)
     {
@@ -384,28 +380,33 @@ void wex::item::add_items(group_t& page, bool readonly)
       true, // select
       imageId);
 
-    bookctrl->GetCurrentPage()->SetSizer(fgz);
+    data::layout layout(bookctrl->GetCurrentPage(), use_cols);
+    layout.is_readonly(readonly);
+
+    bookctrl->GetCurrentPage()->SetSizer(layout.sizer());
 
     for (int i = 0; i < use_cols; i++)
     {
-      fgz->AddGrowableCol(i);
+      layout.sizer()->AddGrowableCol(i);
     }
 
-    add_items(bookctrl->GetCurrentPage(), fgz, page.second, readonly);
+    add_items(layout, page.second);
   }
   else if (auto* sb = dynamic_cast<wxStaticBox*>(m_window); sb != nullptr)
   {
-    auto* fgz = new wxFlexGridSizer(use_cols);
-    add_items(sb, fgz, page.second, readonly);
-    sb->SetSizerAndFit(fgz);
+    data::layout layout(sb, use_cols);
+    layout.is_readonly(readonly);
+    add_items(layout, page.second);
+    sb->SetSizerAndFit(layout.sizer());
   }
   else if (m_type == GROUP)
   {
-    auto* panel = dynamic_cast<wxPanel*>(m_window);
-    auto* fgz   = new wxFlexGridSizer(page.second.size());
-    fgz->AddGrowableCol(0);
-    add_items(panel, fgz, page.second, readonly);
-    panel->SetSizerAndFit(fgz);
+    auto*        panel = dynamic_cast<wxPanel*>(m_window);
+    data::layout layout(panel, page.second.size());
+    layout.sizer()->AddGrowableCol(0);
+    layout.is_readonly(readonly);
+    add_items(layout, page.second);
+    panel->SetSizerAndFit(layout.sizer());
   }
   else
   {
@@ -413,11 +414,7 @@ void wex::item::add_items(group_t& page, bool readonly)
   }
 }
 
-void wex::item::add_items(
-  wxWindow*          parent,
-  wxFlexGridSizer*   fgz,
-  std::vector<item>& v,
-  bool               readonly)
+void wex::item::add_items(data::layout& layout, std::vector<item>& v)
 {
   wxFlexGridSizer* previous_item_sizer = nullptr;
 
@@ -425,11 +422,10 @@ void wex::item::add_items(
   {
     // If this item has same type as previous type use previous sizer,
     // otherwise use no sizer (layout will create a new one).
-    wxFlexGridSizer* current_item_sizer =
-      (item.type() == previous_type ? previous_item_sizer : nullptr);
+    layout.sizer_layout_create(
+      item.type() == previous_type ? previous_item_sizer : nullptr);
 
-    previous_item_sizer =
-      item.layout(parent, fgz, readonly, current_item_sizer);
+    previous_item_sizer = item.layout(layout);
 
     previous_type = item.type();
 
@@ -440,12 +436,9 @@ void wex::item::add_items(
       m_dialog->bind_button(item);
     }
 
-    if (
-      fgz->GetEffectiveRowsCount() >= 1 &&
-      !fgz->IsRowGrowable(fgz->GetEffectiveRowsCount() - 1) &&
-      item.is_row_growable())
+    if (item.is_row_growable())
     {
-      fgz->AddGrowableRow(fgz->GetEffectiveRowsCount() - 1);
+      layout.sizer_grow_row();
     }
   }
 }
@@ -636,17 +629,13 @@ bool wex::item::is_notebook() const
   return m_type >= NOTEBOOK && m_type <= NOTEBOOK_WEX;
 }
 
-wxFlexGridSizer* wex::item::layout(
-  wxWindow*        parent,
-  wxSizer*         sizer,
-  bool             readonly,
-  wxFlexGridSizer* fgz)
+wxFlexGridSizer* wex::item::layout(data::layout& layout)
 {
-  assert(sizer != nullptr);
+  assert(layout.sizer() != nullptr);
 
   try
   {
-    if (!create_window(parent, readonly))
+    if (!create_window(layout.parent(), layout.is_readonly()))
     {
       return nullptr;
     }
@@ -657,22 +646,22 @@ wxFlexGridSizer* wex::item::layout(
     {
       case COMBOBOX_DIR:
       case COMBOBOX_FILE:
-        return_sizer = add_browse_button(sizer);
+        return_sizer = add_browse_button(layout.sizer());
         break;
 
       case EMPTY:
-        return fgz;
+        return layout.sizer_layout();
 
       case SPACER:
-        sizer->AddSpacer(m_data.window().style());
-        return fgz;
+        layout.sizer()->AddSpacer(m_data.window().style());
+        return layout.sizer_layout();
 
       case GROUP:
       case STATICBOX:
       {
         auto group(std::any_cast<group_t>(m_data.initial()));
-        return_sizer = add(sizer, fgz);
-        add_items(group, readonly);
+        return_sizer = add(layout);
+        add_items(group, layout.is_readonly());
       }
       break;
 
@@ -688,12 +677,12 @@ wxFlexGridSizer* wex::item::layout(
           auto* bookctrl = reinterpret_cast<wxBookCtrlBase*>(m_window);
           bookctrl->SetName("book-" + m_label_window);
 
-          return_sizer = add(sizer, fgz);
+          return_sizer = add(layout);
 
           // Add all pages and recursive layout the subitems.
           for (auto& page : std::any_cast<notebook_t>(m_data.initial()))
           {
-            add_items(page, readonly);
+            add_items(page, layout.is_readonly());
           }
 
           if (!wxPersistenceManager::Get().RegisterAndRestore(bookctrl))
@@ -707,7 +696,7 @@ wxFlexGridSizer* wex::item::layout(
         }
         else
         {
-          return_sizer = add(sizer, fgz);
+          return_sizer = add(layout);
         }
     }
 

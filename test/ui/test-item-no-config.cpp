@@ -48,7 +48,7 @@ TEST_CASE("wex::item-no-config")
     REQUIRE(!item.set_value("test"));
     REQUIRE(item.get_value().has_value());
 
-    REQUIRE(item.layout(panel, sizer) != nullptr);
+    REQUIRE(item.layout(layout) != nullptr);
     REQUIRE(item.window() != nullptr);
     REQUIRE(std::any_cast<std::string>(item.get_value()) == "hello string");
     REQUIRE(item.set_value(std::string("value changed")));
@@ -62,7 +62,7 @@ TEST_CASE("wex::item-no-config")
     wex::item item_int("int", wex::item::TEXTCTRL_INT, std::string("100"));
 
     REQUIRE(item_int.type() == wex::item::TEXTCTRL_INT);
-    REQUIRE(item_int.layout(panel, sizer) != nullptr);
+    REQUIRE(item_int.layout(layout) != nullptr);
     REQUIRE(item_int.window() != nullptr);
     REQUIRE(std::any_cast<long>(item_int.get_value()) == 100);
     REQUIRE(std::any_cast<std::string>(item_int.data().initial()) == "100");
@@ -72,7 +72,7 @@ TEST_CASE("wex::item-no-config")
 
     wex::item item_int2("int", wex::item::TEXTCTRL_INT, std::string("xxx"));
     REQUIRE(item_int2.type() == wex::item::TEXTCTRL_INT);
-    REQUIRE(item_int2.layout(panel, sizer) != nullptr);
+    REQUIRE(item_int2.layout(layout) != nullptr);
     REQUIRE(item_int2.window() != nullptr);
     REQUIRE(std::any_cast<long>(item_int2.get_value()) == 0);
 
@@ -84,7 +84,7 @@ TEST_CASE("wex::item-no-config")
         std::string("001"));
 
     REQUIRE(item_float.type() == wex::item::TEXTCTRL_FLOAT);
-    item_float.layout(panel, sizer);
+    item_float.layout(layout);
     // wxTextCtrl does not yet respect the locale?
     REQUIRE(std::any_cast<double>(item_float.get_value()) <= 100.001);
 
@@ -100,7 +100,7 @@ TEST_CASE("wex::item-no-config")
 #endif
 
 #ifdef __UNIX__
-    REQUIRE(item_picker.layout(panel, sizer) != nullptr);
+    REQUIRE(item_picker.layout(layout) != nullptr);
     REQUIRE(
       std::any_cast<std::string>(item_picker.get_value()) == "/usr/bin/git");
 #endif
@@ -126,7 +126,7 @@ TEST_CASE("wex::item-no-config")
       {
         // Testing on not nullptr not possible,
         // not all items need a sizer.
-        it.layout(panel, sizer);
+        it.layout(layout);
       }
 
       if (it.type() != wex::item::EMPTY && it.type() != wex::item::SPACER)
