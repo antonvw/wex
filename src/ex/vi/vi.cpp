@@ -21,7 +21,7 @@
 #include "vim.h"
 
 // without this code adding tab in block insert mode fails, it only
-// add one tab instead of a line of tabs
+// adds one tab instead of a line of tabs
 namespace wex
 {
 bool is_block_insert(vi* vi)

@@ -121,7 +121,7 @@ bool wex::printout::OnPrintPage(int pageNum)
     m_print_rect,
     m_page_rect);
 
-  // Currently no header and footer, rects are not OK.
+  // Currently, no header and footer, rects are not OK.
   // See git a6a2d53c085170a10af036ece4bcca226aa032d2 for old code.
   // Wait until wxWidgets adds support.
 

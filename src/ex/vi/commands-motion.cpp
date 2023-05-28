@@ -491,7 +491,7 @@ size_t wex::vi::find_command(const std::string& command)
       return command.size();
     }
 
-    // This is a previous entered command.
+    // This is a previously entered command.
     // The trim is to enable find after -E option in
     // syncped.
     const auto text(

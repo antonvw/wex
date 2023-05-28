@@ -2,7 +2,7 @@
 // Name:      data/stc.cpp
 // Purpose:   Implementation of wex::data::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2022 Anton van Wezenbeek
+// Copyright: (c) 2017-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -269,7 +269,7 @@ void wex::data::stc::event_data::set(syntax::stc* s, bool synced)
   // Synchronizing by appending only new data only works for log files.
   // Other kind of files might get new data anywhere inside the file,
   // we cannot sync that by keeping pos.
-  // Also only do it for reasonably large files.
+  // Also, only do it for reasonably large files.
   const bool is_log = (s->path().extension().starts_with(".log"));
   m_synced          = synced;
   m_synced_log      = synced && is_log && s->GetTextLength() > 1024;

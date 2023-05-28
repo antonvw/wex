@@ -2,7 +2,7 @@
 // Name:      style.cpp
 // Purpose:   Implementation of wex::style class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -18,7 +18,7 @@
 
 void wex::style::apply(wxStyledTextCtrl* stc) const
 {
-  // Currently the default style is constructed using
+  // Currently, the default style is constructed using
   // default constructor.
   // If this is the only style, reset stc.
   if (stc->GetParent() != nullptr)

@@ -417,8 +417,9 @@ void wex::item::add_items(data::layout& layout, std::vector<item>& v)
 
   for (int previous_type = -1; auto& item : v)
   {
-    // If this item has same type as previous type use previous sizer,
-    // otherwise use no sizer (layout will create a new one).
+    // If this item has the same type as previous type use previous sizer,
+    // otherwise use no sizer (layout will create a new one)
+    // (see also item_template_dialog::layout).
     layout.sizer_layout_create(
       item.type() == previous_type ? previous_item_sizer : nullptr);
 

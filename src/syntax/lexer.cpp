@@ -365,7 +365,7 @@ void wex::lexer::auto_match(const std::string& lexer)
   else
   {
     // Copy styles and properties, and not keywords,
-    // so your derived display lexer can have it's own keywords.
+    // so your derived display lexer can have its own keywords.
     m_styles     = l.m_styles;
     m_properties = l.m_properties;
 

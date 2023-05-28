@@ -2,7 +2,7 @@
 // Name:      debug.cpp
 // Purpose:   Implementation of class wex::debug
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -589,7 +589,7 @@ bool wex::debug::toggle_breakpoint(int line, stc* stc)
     }
   }
 
-  // Otherwise set it.
+  // Otherwise, set it.
   m_path = stc->path();
 
   log::trace("debug toggle breakpoint") << m_path;

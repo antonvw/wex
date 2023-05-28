@@ -361,7 +361,7 @@ bool wex::frame::add_toolbar_panes(const panes_t& panes)
         pane.Hide();
       }
     }
-    // otherwise (vi) fixed at the bottom and initially hidden.
+    // Otherwise, (vi) fixed at the bottom and initially hidden.
     else
     {
       pane.Bottom()
