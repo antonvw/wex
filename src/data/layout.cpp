@@ -9,6 +9,16 @@
 #include <wex/data/layout.h>
 #include <wx/sizer.h>
 
+// before using layout:
+// When using a wxGridBagSizer instead of a wxFlexGridSizer:
+// wxWidgets/src/common/gbsizer.cpp(781):
+// assert ""Assert failure"" failed in Insert():
+// Insert should not be used with wxGridBagSizer.
+// during sizer->Add, and all item dialogs are incorrect
+// when using layout:
+// constructor for wxGridBagSizer is not ok
+// see also wex::item::add_items and 'page cols', not yet working
+
 wex::data::layout::layout(wxWindow* parent, int cols, int rows)
   : m_parent(parent)
   , m_sizer(rows > 0 ? new sizer_t(rows, cols, 0, 0) : new sizer_t(cols))

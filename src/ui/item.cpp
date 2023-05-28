@@ -27,12 +27,6 @@
     }                                                                   \
   }
 
-// When using a wxGridBagSizer instead of a wxFlexGridSizer:
-// wxWidgets/src/common/gbsizer.cpp(781):
-// assert ""Assert failure"" failed in Insert():
-// Insert should not be used with wxGridBagSizer.
-// during sizer->Add, and all item dialogs are incorrect
-
 wex::item::item(
   type_t             type,
   const std::string& label,
