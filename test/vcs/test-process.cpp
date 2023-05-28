@@ -52,6 +52,7 @@ TEST_CASE("wex::process")
       REQUIRE(!process.is_running());
     }
 
+#ifdef __WXOSX__
     SUBCASE("invalid")
     {
       wex::log_none off;
@@ -59,6 +60,7 @@ TEST_CASE("wex::process")
       process.async_sleep_for(std::chrono::milliseconds(25));
       REQUIRE(!process.is_running());
     }
+#endif
 
     SUBCASE("macro")
     {

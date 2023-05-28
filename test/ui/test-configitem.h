@@ -114,7 +114,7 @@ inline const std::vector<wex::item> test_config_item::vector(int rows, int cols)
 
       {"static line", {{wxHORIZONTAL}, {wxVERTICAL}}},
 
-      {"strings",
+      {"strings:3",
        {{"string"},
         {"string validator",
          std::string(),

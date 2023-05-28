@@ -13,7 +13,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - boost::regular expression lib used by wex::regex_part
-- open_file_same_page: argument now takes wex::path
+- frame::open_file_same_page: argument now takes wex::path
+- item::layout: argument now takes wex::data::layout
 
 ## 23.04 - 2023-03-12
 

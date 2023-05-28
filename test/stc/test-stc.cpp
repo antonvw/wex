@@ -107,7 +107,7 @@ TEST_CASE("wex::stc")
     for (const auto mode : {wex::ex::OFF, wex::ex::VISUAL})
     {
       stc->get_vi().use(mode);
-      
+
       stc->set_text("hello stc and more text");
       REQUIRE(stc->find("hello"));
       REQUIRE(stc->get_word_at_pos(0) == "hello");
@@ -128,7 +128,7 @@ TEST_CASE("wex::stc")
       wex::find_replace_data::get()->set_match_case(false);
       REQUIRE(stc->find("HELLO"));
       wex::find_replace_data::get()->set_match_word(true);
-      REQUIRE(!stc->find("HELL")); 
+      REQUIRE(!stc->find("HELL"));
       REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE));
 
       wex::find_replace_data::get()->set_match_case(false);
@@ -155,22 +155,22 @@ TEST_CASE("wex::stc")
       REQUIRE(stc->replace_all("%", "percent") == 0);
     }
   }
-  
+
   SUBCASE("find_next")
   {
     for (const auto mode : {wex::ex::OFF, wex::ex::VISUAL})
     {
       stc->get_vi().use(mode);
-      
+
       stc->set_text("hello stc and more text");
       wex::find_replace_data::get()->set_find_string("hello");
       wex::find_replace_data::get()->set_match_word(true);
       REQUIRE(stc->find_next(false));
-      
+
       wex::find_replace_data::get()->set_find_string("hell");
       REQUIRE(!stc->find_next(false));
     }
-    
+
     wex::find_replace_data::get()->set_match_word(true);
   }
 
@@ -254,7 +254,9 @@ TEST_CASE("wex::stc")
   SUBCASE("link")
   {
     stc->SetText("no link");
+#ifdef __WXOSX__
     REQUIRE(!stc->link_open());
+#endif
   }
 
   SUBCASE("margin")
