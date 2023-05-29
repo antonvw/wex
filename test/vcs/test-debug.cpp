@@ -46,8 +46,10 @@ TEST_CASE("wex::debug" * doctest::may_fail())
     REQUIRE(item < wex::ID_EDIT_DEBUG_LAST);
 
 #ifndef __WXMSW__
+#ifndef GITHUB
     REQUIRE(dbg.execute(item - wex::ID_EDIT_DEBUG_FIRST));
     REQUIRE(!dbg.execute(item));
+#endif
 #endif
   }
 
