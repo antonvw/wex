@@ -346,7 +346,7 @@ long wex::odbc::query(
         {
           otl_long_string var;
           i >> var;
-          line += var.v;
+          line.append((const char* )var.v);
         }
         else
         {
