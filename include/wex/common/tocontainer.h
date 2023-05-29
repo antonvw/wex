@@ -2,7 +2,7 @@
 // Name:      to_container.h
 // Purpose:   Declaration of wex::to_container class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -79,7 +79,7 @@ public:
     // wxArrayString has no emplace_back.
     m_container.push_back(cb->GetValue().ToStdString());
 
-    switch (cb->FindString(cb->GetValue(), true)) // case sensitive
+    switch (cb->FindString(cb->GetValue(), true)) // case-sensitive
     {
       case 0:
         // The string is already present as the first one, add

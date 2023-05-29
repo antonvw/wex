@@ -150,7 +150,7 @@ void wex::shell::bind_other()
       {
         event.Skip();
       }
-      // Currently no drag/drop, though we might be able to
+      // Currently, no drag/drop, though we might be able to
       // drag/drop copy to command line.
       event.SetDragAllowMove(false);
       event.Skip();

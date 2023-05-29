@@ -174,7 +174,7 @@ private:
   // styles, with max wxSTC_STYLE_MAX.
   std::array<char, 4> m_buffer;
 
-  // This a a map, so the theme dialog is ordered.
+  // This a map, so the theme dialog is ordered.
   std::map<std::string, name_values_t> m_theme_macros;
 
   std::set<indicator> m_indicators;

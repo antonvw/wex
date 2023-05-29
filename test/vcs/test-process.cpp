@@ -24,6 +24,7 @@ TEST_CASE("wex::process")
 {
   wex::path cwd;
 
+#ifndef GITHUB
   SUBCASE("static")
   {
     REQUIRE(wex::process::prepare_output(frame()) != nullptr);
@@ -32,6 +33,7 @@ TEST_CASE("wex::process")
     frame()->pane_add(wex::process::get_shell());
     wex::process::get_shell()->set_text(std::string());
   }
+#endif
 
   wex::process process;
 

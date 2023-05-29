@@ -961,7 +961,7 @@ bool wex::listview::load(const strings_t& l)
 
   if (m_data.type() == data::listview::TSV && GetColumnCount() == 0)
   {
-    // Use front item to setup the columns, so we assume each
+    // Use front item to set up the columns, so we assume each
     // item in the vector has the same columns.
     boost::tokenizer<boost::char_separator<char>> tok(
       l.front(),

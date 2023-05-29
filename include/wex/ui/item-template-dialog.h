@@ -214,6 +214,7 @@ template <class T> void wex::item_template_dialog<T>::layout(int rows, int cols)
   data::layout::sizer_t* previous_item_sizer = nullptr;
 
   data::layout layout(this, cols, rows);
+  layout.is_readonly(data().button() == wxCANCEL);
 
   for (int i = 0; i < cols; i++)
   {
@@ -227,13 +228,11 @@ template <class T> void wex::item_template_dialog<T>::layout(int rows, int cols)
     if (item.empty())
       continue;
 
-    // If this item has same type as previous type use previous sizer,
+    // If this item has the same type as previous type use previous sizer,
     // otherwise use no sizer (layout will create a new one).
     layout.sizer_layout_create(
       item.type() == previous_type && cols == 1 ? previous_item_sizer :
                                                   nullptr);
-
-    layout.is_readonly(data().button() == wxCANCEL);
 
     // layout the item.
     previous_item_sizer = item.layout(layout);

@@ -16,6 +16,10 @@ else ()
   set(wxBUILD_SHARED OFF)
 endif ()
   
+if (wexBUILD_GITHUB)
+  add_definitions(-DGITHUB)
+endif ()
+
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 

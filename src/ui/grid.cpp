@@ -508,7 +508,7 @@ bool wex::grid::is_allowed_drop_selection(
          ++tt)
     {
       // If readonly, or this cell is part of the current selection, or outside
-      // grid do not allow. Otherwise when dropping and clearing old selection
+      // grid do not allow. Otherwise, when dropping and clearing old selection
       // afterwards, we also cleared the new cells. If moving is really
       // supported by wxGrid, this might be changed.
       if (

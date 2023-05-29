@@ -14,7 +14,7 @@ class wxStyledTextCtrl;
 
 namespace wex
 {
-// Offers a print out to be used by wxStyledTextCtrl.
+// Offers a printout to be used by wxStyledTextCtrl.
 class printout : public wxPrintout
 {
 public:

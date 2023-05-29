@@ -407,7 +407,7 @@ wex::find_bar::find_bar(wex::frame* frame, const data::window& data)
       }
       else
       {
-        // using a the bind in ex_commandline did not work
+        // using bind in ex_commandline did not work
         on_key_down(event);
       }
     });

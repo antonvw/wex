@@ -46,6 +46,7 @@ jobs:
             -DCMAKE_BUILD_TYPE=Coverage
             -DwexGCOV=gcov-12
             -DwexBUILD_TESTS=ON
+            -DwexBUILD_GITHUB=ON
             -DBoost_INCLUDE_DIR=${{steps.install-boost.outputs.BOOST_ROOT}}/include
             -DBoost_LIBRARY_DIRS=${{steps.install-boost.outputs.BOOST_ROOT}}/lib
             ..

@@ -2,7 +2,7 @@
 // Name:      cmdline.cpp
 // Purpose:   Implementation of wex::cmdline class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -293,7 +293,7 @@ bool wex::cmdline::parse_set(data::cmdline& data) const
   /*
     When no arguments are specified, write the value of the term edit
     option and those options whose values have been changed from the default
-    settings; when the argument all is specified, write all of the option
+    settings; when the argument all is specified, write all the option
     values.
 
     Giving an option name followed by the character '?' shall cause the

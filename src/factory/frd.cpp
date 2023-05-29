@@ -2,7 +2,7 @@
 // Name:      frd.cpp
 // Purpose:   Implementation of wex::factory::find_replace_data class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -76,7 +76,7 @@ int wex::factory::find_replace_data::regex_replace(std::string& text) const
     text,
     m_regex,
     get_replace_string(),
-    // Otherwise \2 \1 in replacement does not work,
+    // Otherwise, \2 \1 in replacement does not work,
     // though that actually is ECMAScript??
     std::regex_constants::format_sed);
 
