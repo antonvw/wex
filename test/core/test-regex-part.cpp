@@ -5,8 +5,8 @@
 // Copyright: (c) 2022-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/core/regex-part.h>
 #include <wex/test/test.h>
+#include <wex/core/regex-part.h>
 
 TEST_CASE("wex::regex_part")
 {
