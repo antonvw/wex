@@ -15,7 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - boost::regular expression lib used by wex::regex_part
 - frame::open_file_same_page: argument now takes wex::path
 - item::layout: argument now takes wex::data::layout
-- stc::vi_command: argument now takes wex::line_data 
+- stc::vi_command: argument now takes wex::line_data
 
 ### Fixed
 - ctags::find and empty tag finds next tag
