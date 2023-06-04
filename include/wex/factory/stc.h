@@ -17,6 +17,7 @@
 
 namespace wex
 {
+class line_data;
 
 namespace data
 {
@@ -178,7 +179,7 @@ public:
   virtual void use_modification_markers(bool use) { ; }
 
   /// Runs a vi command on this stc (default false).
-  virtual bool vi_command(const std::string& command) { return false; }
+  virtual bool vi_command(const line_data& data) { return false; }
 
   /// Finish last vi command (default false).
   virtual bool vi_command_finish(bool user_input) { return false; }

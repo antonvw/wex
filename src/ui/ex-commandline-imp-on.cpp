@@ -2,7 +2,7 @@
 // Name:      ex-commandline-imp-on.cpp
 // Purpose:   Implementation of wex::ex_commandline_imp class on.. methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/util.h>
@@ -211,8 +211,8 @@ void wex::ex_commandline_imp::on_text_enter(wxEvent& event)
     if (const auto& text(get_text().substr(0, get_text().size() - 2));
         text != ":." && !text.empty())
     {
-      m_cl->stc()->vi_command(
-        ":" + std::string(1, m_input) + "|" + text + m_cl->stc()->eol());
+      m_cl->stc()->vi_command(line_data().command(
+        ":" + std::string(1, m_input) + "|" + text + m_cl->stc()->eol()));
     }
 
     m_cl->get_frame()->show_ex_bar();
@@ -295,7 +295,7 @@ bool wex::ex_commandline_imp::on_text_enter_prep()
     if (is_ex_mode())
     {
       m_command.reset();
-      m_cl->stc()->vi_command(":.+1");
+      m_cl->stc()->vi_command(line_data().command(":.+1"));
       SetFocus();
     }
     else

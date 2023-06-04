@@ -348,7 +348,7 @@ TEST_CASE("wex::stc")
 
   SUBCASE("vi")
   {
-    REQUIRE(stc->vi_command("G"));
+    REQUIRE(stc->vi_command(wex::line_data().command("G")));
     REQUIRE(stc->vi_command_finish(false));
     stc->vi_record("xx");
     REQUIRE(!stc->vi_is_visual());

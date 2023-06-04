@@ -2,7 +2,7 @@
 // Name:      data/test-control.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/control.h>
@@ -14,21 +14,8 @@ TEST_CASE("wex::data::control")
   SUBCASE("constructor")
   {
     REQUIRE(wex::data::control().col() == wex::data::NUMBER_NOT_SET);
-    REQUIRE(wex::data::control().col(3).col() == 3);
-    REQUIRE(wex::data::control().command("xx").command() == "xx");
-    REQUIRE(wex::data::control().find("xx").find() == "xx");
-    REQUIRE(wex::data::control().find("xx").find_flags() == 0);
-    REQUIRE(wex::data::control().find("xx", 1).find_flags() == 1);
     REQUIRE(wex::data::control().line() == wex::data::NUMBER_NOT_SET);
-    REQUIRE(wex::data::control().line(-1).line() == -1);
-    REQUIRE(wex::data::control().line(3).line() == 3);
     REQUIRE(!wex::data::control().is_required());
-    REQUIRE(wex::data::control().is_required(true).is_required());
-
-    wex::data::control data(wex::data::control().line(3));
-    data.reset();
-    REQUIRE(data.line() == wex::data::NUMBER_NOT_SET);
-    REQUIRE(wex::data::control().validator() == nullptr);
   }
 
   SUBCASE("inject")
@@ -54,5 +41,27 @@ TEST_CASE("wex::data::control")
 
     data.flags(std::bitset<3>(std::string("001")), bs, wex::data::control::NOT);
     REQUIRE(bs.to_string() == "100");
+  }
+
+  SUBCASE("reset")
+  {
+    wex::data::control data(wex::data::control().line(3));
+    data.reset();
+    REQUIRE(data.line() == wex::data::NUMBER_NOT_SET);
+    REQUIRE(wex::data::control().validator() == nullptr);
+  }
+
+  SUBCASE("set")
+  {
+    REQUIRE(wex::data::control().col(3).col() == 3);
+    REQUIRE(wex::data::control().command("xx").command() == "xx");
+    wex::data::control control;
+    control.is_ctag(true);
+    REQUIRE(wex::data::control().is_required(true).is_required());
+    REQUIRE(wex::data::control().find("xx").find() == "xx");
+    REQUIRE(wex::data::control().find("xx").find_flags() == 0);
+    REQUIRE(wex::data::control().find("xx", 1).find_flags() == 1);
+    REQUIRE(wex::data::control().line(-1).line() == -1);
+    REQUIRE(wex::data::control().line(3).line() == 3);
   }
 }

@@ -166,7 +166,7 @@ bool wex::data::stc::inject_col() const
 
 bool wex::data::stc::inject_command() const
 {
-  return m_stc->vi_command(m_data.command());
+  return m_stc->vi_command(m_data);
 }
 
 bool wex::data::stc::inject_find() const
