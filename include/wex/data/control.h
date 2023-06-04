@@ -2,7 +2,7 @@
 // Name:      data/control.h
 // Purpose:   Declaration of wex::data::control
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -44,11 +44,23 @@ public:
   };
 
   /// Returns command.
-  const auto& command() const { return m_command; }
+  const auto& command() const { return line_data::command(); }
 
   /// Sets command.
-  /// This is a vi command to execute.
-  control& command(const std::string& command);
+  // This is necessary for code ui/ctags.cpp.
+  control& command(const std::string& rhs)
+  {
+    line_data::command(rhs);
+    return *this;
+  }
+
+  /// Sets is_ctag.
+  // This is necessary for code ui/ctags.cpp.
+  control& is_ctag(bool rhs)
+  {
+    line_data::is_ctag(rhs);
+    return *this;
+  }
 
   /// Returns find.
   const auto& find() const { return m_find; }
@@ -129,6 +141,7 @@ public:
   };
 
   /// Returns line.
+  // This is necessary for code wxID_JUMP_TO in ui/listview.cpp.
   const auto line() const { return line_data::line(); }
 
   /// Sets line number.
@@ -166,7 +179,7 @@ private:
 
   int m_find_flags{NUMBER_NOT_SET};
 
-  std::string m_find, m_command;
+  std::string m_find;
 
   wxValidator* m_validator{nullptr};
 };

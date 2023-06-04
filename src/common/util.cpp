@@ -336,7 +336,7 @@ void wex::xml_error(
 
   if (stc != nullptr && result->offset != 0)
   {
-    stc->vi_command("gg");
-    stc->vi_command(std::to_string(result->offset) + "|");
+    stc->vi_command(line_data().command("gg"));
+    stc->vi_command(line_data().command(std::to_string(result->offset) + "|"));
   }
 }

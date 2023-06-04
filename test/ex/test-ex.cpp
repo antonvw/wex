@@ -259,6 +259,16 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->visual() == wex::ex::VISUAL);
   }
 
+  SUBCASE("line-data")
+  {
+    REQUIRE(!ex->line_data().is_ctag());
+    
+    wex::line_data data;
+    data.is_ctag(true);
+    ex->set_line_data(data);
+    REQUIRE(ex->line_data().is_ctag());
+  }
+
   SUBCASE("map")
   {
     REQUIRE(ex->command(":map :xx :%d"));

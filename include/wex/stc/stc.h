@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2022 Anton van Wezenbeek
+// Copyright: (c) 2008-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -237,7 +237,7 @@ public:
   void sync(bool start = true) override;
   void use_modification_markers(bool use) override;
 
-  bool        vi_command(const std::string& command) override;
+  bool        vi_command(const line_data& data) override;
   bool        vi_command_finish(bool user_input) override;
   void        vi_record(const std::string& command) override;
   bool        vi_is_visual() const override;

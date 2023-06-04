@@ -2,10 +2,11 @@
 // Name:      ex-command.cpp
 // Purpose:   Implementation of class wex::ex_command
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/ex-command.h>
+#include <wex/factory/line-data.h>
 #include <wex/factory/stc.h>
 
 wex::ex_command::ex_command() {}
@@ -55,7 +56,7 @@ bool wex::ex_command::append_exec(char c)
 
 bool wex::ex_command::exec() const
 {
-  return m_stc != nullptr && m_stc->vi_command(command());
+  return m_stc != nullptr && m_stc->vi_command(line_data().command(m_text));
 }
 
 bool wex::ex_command::exec_finish(bool user_input) const

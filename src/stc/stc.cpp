@@ -648,9 +648,15 @@ void wex::stc::use_modification_markers(bool use)
         (void)Unbind(wxEVT_STC_MODIFIED, &stc::on_styled_text, this);
 }
 
-bool wex::stc::vi_command(const std::string& command)
+bool wex::stc::vi_command(const line_data& data)
 {
-  return m_vi->command(command);
+  m_vi->set_line_data(data);
+
+  const bool r(m_vi->command(data.command()));
+
+  m_vi->set_line_data(line_data());
+
+  return r;
 }
 
 bool wex::stc::vi_command_finish(bool user_input)

@@ -230,7 +230,7 @@ int wex::address::get_line(int start_pos) const
                           find_stream(m_ex, text, m_address[0] == '/') :
                           find_stc(m_ex, text, use_pos, m_address[0] == '/');
 
-    if (result > 0)
+    if (result > 0 && !m_ex->line_data().is_ctag())
     {
       find_replace_data::get()->set_find_string(text);
     }
