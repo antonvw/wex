@@ -25,7 +25,7 @@
 #include <wx/settings.h>
 
 wex::stc::stc(const wex::path& p, const data::stc& data)
-  : m_data(this, data)
+  : m_data(data)
   , m_auto_complete(new wex::auto_complete(this))
   , m_vi(
       new vi(this, data.flags().test(data::stc::WIN_EX) ? ex::EX : ex::VISUAL))
@@ -33,6 +33,8 @@ wex::stc::stc(const wex::path& p, const data::stc& data)
   , m_hexmode(hexmode(this))
   , m_frame(dynamic_cast<frame*>(wxTheApp->GetTopWindow()))
 {
+  m_data.set_stc(this);
+
   assert(m_frame != nullptr);
 
   Create(
@@ -488,6 +490,7 @@ void wex::stc::on_styled_text(wxStyledTextEvent& event)
 bool wex::stc::open(const wex::path& p, const data::stc& data)
 {
   m_data = data::stc(data).window(data::window().name(p.string()));
+  m_data.set_stc(this);
 
   if (path() != p)
   {

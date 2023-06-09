@@ -20,6 +20,25 @@ TEST_CASE("wex::item")
 {
   ITEM_START()
 
+  SUBCASE("button")
+  {
+    wex::item button("button", wex::item::BUTTON);
+    wex::item link("button", wex::item::COMMANDLINKBUTTON);
+    wex::item toggle("button", wex::item::TOGGLEBUTTON);
+      
+    REQUIRE(!button.get_value().has_value());
+    REQUIRE(!link.get_value().has_value());
+    REQUIRE(!toggle.get_value().has_value());
+    
+    REQUIRE(button.layout(layout) != nullptr);
+    REQUIRE(link.layout(layout) != nullptr);
+    REQUIRE(toggle.layout(layout) != nullptr);
+    
+    REQUIRE(!button.get_value().has_value());
+    REQUIRE(!link.get_value().has_value());
+    REQUIRE(toggle.get_value().has_value());
+  }
+
   SUBCASE("group")
   {
     auto* dlg = new wex::item_dialog(

@@ -50,14 +50,8 @@ public:
   /// Default constructor from control data.
   item(const data::control& data = data::control());
 
-  /// Copy constructor, with initial value.
-  item(const item& data, const std::any& initial = std::any());
-
-  /// Assignment operator.
-  item& operator=(const item& rhs);
-
   /// Returns apply.
-  const auto apply() const { return m_apply; }
+  const auto& apply() const { return m_apply; }
 
   /// Sets apply.
   item& apply(const user_apply_t rhs);
@@ -88,6 +82,9 @@ public:
 
   /// Returns the initial value.
   const auto& initial() const { return m_initial; }
+
+  /// Sets initial.
+  item& initial(const std::any& rhs);
 
   /// Returns is_readonly.
   const bool is_readonly() const { return m_is_readonly; }

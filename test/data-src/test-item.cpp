@@ -2,9 +2,10 @@
 // Name:      data/test-item.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log.h>
 #include <wex/data/item.h>
 
 #include <wex/test/test.h>
@@ -16,6 +17,7 @@ TEST_CASE("wex::data::item")
     REQUIRE(wex::data::item().apply() == nullptr);
     REQUIRE(wex::data::item().columns() == 1);
     REQUIRE(wex::data::item().image_list() == nullptr);
+    REQUIRE(!wex::data::item().is_readonly());
     REQUIRE(!wex::data::item().is_regex());
     REQUIRE(std::any_cast<int>(wex::data::item().inc()) == 1);
     REQUIRE(wex::data::item().label_type() == wex::data::item::LABEL_LEFT);
@@ -26,6 +28,21 @@ TEST_CASE("wex::data::item")
     REQUIRE(wex::data::item(wex::data::control().is_required(true))
               .control()
               .is_required());
+  }
+
+  SUBCASE("operator")
+  {
+    wex::data::item item;
+    item.is_readonly(true).is_regex(true).apply(
+      [=](wxWindow* user, const std::any& value, bool save)
+      {
+        wex::log::status("lambda") << "this is a lambda\n";
+      });
+
+    const wex::data::item copy(item);
+    REQUIRE(copy.apply() != nullptr);
+    REQUIRE(copy.is_readonly());
+    REQUIRE(copy.is_regex());
   }
 
   SUBCASE("set")

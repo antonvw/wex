@@ -129,6 +129,8 @@ TEST_CASE("wex::item-no-config")
         it.layout(layout);
       }
 
+      item.get_value();
+
       if (it.type() != wex::item::EMPTY && it.type() != wex::item::SPACER)
       {
         CAPTURE(it.type());

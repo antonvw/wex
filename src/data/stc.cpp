@@ -11,49 +11,16 @@
 #include <wex/syntax/indicator.h>
 #include <wex/syntax/stc.h>
 
-wex::data::stc::stc(wex::syntax::stc* stc)
-  : m_stc(stc)
-{
-}
+wex::data::stc::stc() {}
 
-wex::data::stc::stc(wex::syntax::stc* stc, const data::stc& r)
-  : m_stc(stc)
-{
-  *this = r;
-  m_stc = stc;
-}
-
-wex::data::stc::stc(const data::control& data, wex::syntax::stc* stc)
+wex::data::stc::stc(const data::control& data)
   : m_data(data)
-  , m_stc(stc)
 {
 }
 
-wex::data::stc::stc(const data::window& data, wex::syntax::stc* stc)
+wex::data::stc::stc(const data::window& data)
   : m_data(data::control().window(data))
-  , m_stc(stc)
 {
-}
-
-wex::data::stc& wex::data::stc::operator=(const data::stc& r)
-{
-  if (this != &r)
-  {
-    m_data         = r.m_data;
-    m_event_data   = r.m_event_data;
-    m_indicator_no = r.m_indicator_no;
-    m_head_path    = r.m_head_path;
-    m_menu_flags   = r.m_menu_flags;
-    m_recent       = r.m_recent;
-    m_win_flags    = r.m_win_flags;
-
-    if (m_stc != nullptr && r.m_stc != nullptr)
-    {
-      m_stc = r.m_stc;
-    }
-  }
-
-  return *this;
 }
 
 wex::data::stc&
