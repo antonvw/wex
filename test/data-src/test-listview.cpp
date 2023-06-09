@@ -13,11 +13,14 @@ TEST_CASE("wex::data::listview")
 {
   SUBCASE("constructor")
   {
-    REQUIRE(wex::data::listview().image() == wex::data::listview::IMAGE_ART);
-    REQUIRE(wex::data::listview().type() == wex::data::listview::NONE);
-    REQUIRE(!wex::data::listview().type_description().empty());
+    wex::data::listview data;
+
+    REQUIRE(data.image() == wex::data::listview::IMAGE_ART);
+    REQUIRE(data.type() == wex::data::listview::NONE);
+    REQUIRE(data.get_listview() == nullptr);
+    REQUIRE(!data.type_description().empty());
     REQUIRE(
-      wex::data::listview().image(wex::data::listview::IMAGE_NONE).image() ==
+      data.image(wex::data::listview::IMAGE_NONE).image() ==
       wex::data::listview::IMAGE_NONE);
     REQUIRE(
       wex::data::listview(wex::data::control().col(3)).control().col() == 3);
@@ -28,9 +31,12 @@ TEST_CASE("wex::data::listview")
 
   SUBCASE("inject")
   {
-    auto* lv = get_listview();
-    REQUIRE(wex::data::listview(lv).inject());
-    REQUIRE(wex::data::listview(lv, wex::data::control().line(2)).inject());
+    wex::data::listview data;
+    data.set_listview(get_listview());
+
+    REQUIRE(data.inject());
+    REQUIRE(data.get_listview() == get_listview());
+    REQUIRE(!data.control(wex::data::control().line(2)).inject());
 
     REQUIRE(!wex::data::listview().inject());
   }

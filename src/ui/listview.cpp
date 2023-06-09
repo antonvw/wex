@@ -114,13 +114,13 @@ wex::listview::listview(const data::listview& data)
   : m_image_height(16) // not used if IMAGE_FILE_ICON is used, then 16 is fixed
   , m_image_width(16)
   , m_col_event_id(1000)
-  , m_data(
-      this,
-      data::listview(data).image(
-        data.type() == data::listview::NONE ||
-            data.type() == data::listview::TSV ?
-          data.image() :
-          data::listview::IMAGE_FILE_ICON))
+  , m_data(data::listview(data)
+             .image(
+               data.type() == data::listview::NONE ||
+                   data.type() == data::listview::TSV ?
+                 data.image() :
+                 data::listview::IMAGE_FILE_ICON)
+             .set_listview(this))
   , m_frame(dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()))
 {
   Create(
@@ -382,7 +382,7 @@ void wex::listview::bind_other()
               GetItemCount()));
             val > 0)
         {
-          data::listview(data::control().line(val), this).inject();
+          data::listview(data::control().line(val)).set_listview(this).inject();
         }
       },
       wxID_JUMP_TO}});

@@ -46,7 +46,7 @@ inline const std::vector<wex::item> test_config_item::vector(int rows, int cols)
            .apply(
              [=](wxWindow* user, const std::any& value, bool save)
              {
-               wex::log::status("Click on lambda");
+               // wex::log::status("Click on lambda");
              })}}},
 
       {"checkboxes",
@@ -146,7 +146,7 @@ inline const std::vector<wex::item> test_config_item::vector(int rows, int cols)
              [=](wxWindow* user, wxWindow* parent)
              {
                (reinterpret_cast<wxTextCtrl*>(user))
-                 ->Create(parent, 100, "Hello world");
+                 ->Create(parent, 101, "Hello world");
              })
            .label_type(wex::data::item::LABEL_LEFT)
            .user_window_to_config(

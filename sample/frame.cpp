@@ -213,6 +213,7 @@ void frame::bind_all()
           wex::test_config_item().vector(0, 1),
           wex::data::window()
             .button(wxCANCEL)
+            .id(ID_DLG_CONFIG_ITEM_READONLY)
             .title("Config Dialog Readonly")
             .size(wxSize(600, 400)),
           0,
@@ -222,7 +223,10 @@ void frame::bind_all()
       ID_DLG_CONFIG_ITEM_READONLY},
      {[=, this](wxCommandEvent& event)
       {
-        wex::item_dialog(wex::test_item().vector()).ShowModal();
+        wex::item_dialog(
+          wex::test_item().vector(),
+          wex::data::window().id(ID_DLG_ITEM))
+          .ShowModal();
       },
       ID_DLG_ITEM},
      {[=, this](wxCommandEvent& event)

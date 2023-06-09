@@ -2,7 +2,7 @@
 // Name:      util.cpp
 // Purpose:   Implementation of wex::ui utils
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <numeric>
@@ -77,6 +77,7 @@ bool no_value(wex::item::type_t t)
   switch (t)
   {
     case item::BUTTON:
+    case item::COMMANDLINKBUTTON:
     case item::GROUP:
     case item::STATICBOX:
     case item::STATICLINE:

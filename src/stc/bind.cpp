@@ -722,7 +722,7 @@ void wex::stc::jump_action()
               this)) > 0)
   {
     m_data.control().line(val);
-    data::stc(data::control().line(val), this).inject();
+    data::stc(data::control().line(val)).set_stc(this).inject();
   }
 }
 

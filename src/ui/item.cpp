@@ -33,12 +33,14 @@ wex::item::item(
   const std::any&    value,
   const data::item&  data)
   : m_type(type)
-  , m_data(data, value)
+  , m_data(data)
   , m_label(label)
   , m_label_window(rfind_after(label, "."))
   , m_sizer_flags(
       m_type == GROUP ? wxSizerFlags().Left() : wxSizerFlags().Border().Left())
 {
+  m_data.initial(value);
+
   if (is_notebook())
   {
     m_is_row_growable = true;
