@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - frame::open_file_same_page: argument now takes wex::path
 - item::layout: argument now takes wex::data::layout
 - stc::vi_command: argument now takes wex::line_data
+- removed some not necessary copy constructors
 
 ### Fixed
 - ctags::find and empty tag finds next tag

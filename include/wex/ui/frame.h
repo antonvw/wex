@@ -238,7 +238,13 @@ public:
   virtual bool vcs_dir_exists(const path& p) const { return false; };
 
   /// Executes vcs.
-  virtual void vcs_execute(int event_id, const std::vector<wex::path>& paths)
+  virtual void vcs_execute(
+    /// the vcs id
+    int event_id,
+    /// the paths
+    const std::vector<wex::path>& paths,
+    /// window data
+    const data::window& arg = data::window())
   {
     ;
   }

@@ -12,7 +12,7 @@
 #include "process-imp.h"
 
 wex::factory::process::process()
-  : m_imp(std::make_unique<process_imp>())
+  : m_imp(std::make_shared<process_imp>())
 {
 }
 

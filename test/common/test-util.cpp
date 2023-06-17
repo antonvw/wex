@@ -116,12 +116,6 @@ TEST_CASE("wex::util" * doctest::may_fail())
     wex::vcs_command_stc(command, wex::lexer(), get_stc());
   }
 
-  SUBCASE("vcs_execute")
-  {
-    // wex::vcs_execute(get_frame(), 0, std::vector< std::string > {}); // calls
-    // dialog
-  }
-
   SUBCASE("xml_error")
   {
     wex::path              fn("xml-err.xml");

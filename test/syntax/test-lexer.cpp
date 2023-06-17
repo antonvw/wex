@@ -6,9 +6,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/syntax/lexer.h>
-#include <wex/test/test.h>
 
 #include <regex>
+
+#include "test.h"
 
 TEST_CASE("wex::lexer")
 {
@@ -18,6 +19,7 @@ TEST_CASE("wex::lexer")
   {
     REQUIRE(!lexer.is_ok());
     REQUIRE(!lexer.apply());
+    REQUIRE(lexer.get_stc() == nullptr);
     REQUIRE(!lexer.is_previewable());
     REQUIRE(lexer.styles().empty());
     REQUIRE(lexer.display_lexer().empty());
@@ -31,6 +33,13 @@ TEST_CASE("wex::lexer")
     REQUIRE(wex::lexer("pascal").is_ok());
     REQUIRE(!wex::lexer("xxx").is_ok());
     REQUIRE(!wex::lexer().set("xxx"));
+  }
+
+  SUBCASE("constructor-stc")
+  {
+    auto*      stc = new wex::test::stc();
+    wex::lexer l(stc);
+    REQUIRE(l.get_stc() == stc);
   }
 
   SUBCASE("constructor-xml")
@@ -165,8 +174,11 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.language() == "xml");
 
     REQUIRE(lexer.set("pascal"));
-    wex::lexer lexer2;
+    auto*      stc = new wex::test::stc();
+    wex::lexer l(stc);
+    wex::lexer lexer2(stc);
     REQUIRE(lexer2.set(lexer));
+    REQUIRE(lexer2.get_stc() == stc);
     REQUIRE(lexer2.set(lexer, true));
     REQUIRE(lexer2.display_lexer() == "pascal");
     REQUIRE(lexer2.scintilla_lexer() == "pascal");
@@ -188,6 +200,9 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.display_lexer() == "rfw");
     REQUIRE(lexer.is_keyword("Documentation"));
     REQUIRE(lexer.is_keyword("Test_Setup")); // a special keyword
+
+    REQUIRE(lexer.set(lexer2));
+    REQUIRE(lexer.get_stc() == stc);
   }
 
   SUBCASE("several methods")

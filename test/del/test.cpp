@@ -7,6 +7,7 @@
 
 #include <wex/common/dir.h>
 #include <wex/ui/frd.h>
+#include <wex/vcs/vcs.h>
 
 #include "test.h"
 
@@ -46,6 +47,8 @@ TEST_CASE("wex::del")
 #endif
 
   frd->set_find_string("Author:");
+
+  wex::vcs::destroy_dialog();
 
   const auto start = std::chrono::system_clock::now();
 

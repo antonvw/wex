@@ -131,6 +131,9 @@ public:
   /// Returns true if info was added.
   bool vcs_blame_show(vcs_entry* vcs, syntax::stc*);
 
+  /// If vcs dialog was open, destroy it;
+  void vcs_destroy_dialog();
+
   /// Overridden methods.
 
   void append_vcs(menu*, const menu_item* i) const override;
@@ -177,7 +180,10 @@ public:
     const std::string& renamed,
     const std::string& offset) override;
   bool vcs_dir_exists(const path& p) const override;
-  void vcs_execute(int event_id, const std::vector<wex::path>& paths) override;
+  void vcs_execute(
+    int                           event_id,
+    const std::vector<wex::path>& paths,
+    const data::window&           arg = data::window()) override;
 
 protected:
   /// Access to file history list,

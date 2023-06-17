@@ -861,6 +861,11 @@ bool wex::del::frame::vcs_blame_show(vcs_entry* vcs, syntax::stc* stc)
   return true;
 }
 
+void wex::del::frame::vcs_destroy_dialog()
+{
+  vcs::destroy_dialog();
+}
+
 bool wex::del::frame::vcs_dir_exists(const path& p) const
 {
   return vcs::dir_exists(p);
@@ -868,7 +873,9 @@ bool wex::del::frame::vcs_dir_exists(const path& p) const
 
 void wex::del::frame::vcs_execute(
   int                           event_id,
-  const std::vector<wex::path>& paths)
+  const std::vector<wex::path>& paths,
+  const data::window&           data)
+
 {
-  wex::vcs_execute(this, event_id, paths);
+  wex::vcs_execute(this, event_id, paths, data);
 }
