@@ -2,7 +2,7 @@
 // Name:      vcs.cpp
 // Purpose:   Implementation of wex::vcs class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -25,7 +25,7 @@
     return false;                                                \
   }                                                              \
                                                                  \
-  m_entry = find_entry(*m_store);
+  m_entry = find_entry(m_store);
 
 #include <map>
 #include <numeric>
@@ -38,7 +38,7 @@ enum
 {
   VCS_NONE  = -2, // no version control
   VCS_AUTO  = -1, // uses the VCS appropriate for current file
-  VCS_START = 0   // no where fixed VCS start (index in vector)
+  VCS_START = 0   // number where fixed VCS start (index in vector)
 };
 
 /// Offers several vcs admin support methods.
@@ -86,35 +86,37 @@ private:
   const path        m_path;
 };
 
-const vcs_entry find_entry(const vcs::store_t& store, const path& p)
+vcs::store_t::iterator find_entry(vcs::store_t* store, const path& p)
 {
-  if (const int vcs = config("vcs.VCS").get(VCS_AUTO); vcs == VCS_AUTO)
+  if (auto vcs = config("vcs.VCS").get(VCS_AUTO); vcs == VCS_AUTO)
   {
     if (!p.empty())
     {
-      if (const auto& it = std::find_if(
-            store.begin(),
-            store.end(),
-            [p](auto const& i)
+      if (auto it = std::find_if(
+            store->begin(),
+            store->end(),
+            [p](const auto& i)
             {
               const vcs_admin va(i.admin_dir(), p);
               return va.is_toplevel() || va.exists();
             });
-          it != store.end())
+          it != store->end())
       {
-        return *it;
+        return it;
       }
     }
   }
-  else if (vcs >= VCS_START && vcs < static_cast<int>(store.size()))
+  else if (vcs >= VCS_START && vcs < static_cast<int>(store->size()))
   {
-    return store[vcs];
+    auto it = store->begin();
+    std::advance(it, vcs);
+    return it;
   }
 
-  return vcs_entry();
+  return store->begin(); // the empty vcs
 }
 
-const vcs_entry find_entry(const vcs::store_t& store)
+vcs::store_t::iterator find_entry(vcs::store_t* store)
 {
   return find_entry(store, path(config(_("vcs.Base folder")).get_first_of()));
 }
@@ -126,22 +128,29 @@ wex::vcs::vcs(const std::vector<wex::path>& files, int command_no)
 {
   on_init();
 
-  m_entry = find_entry(*m_store, current_path());
+  m_entry = find_entry(m_store, current_path());
 
-  if (!m_entry.name().empty())
+  log::trace("vcs constructor") << m_entry->name() << command_no;
+
+  if (!m_entry->name().empty())
   {
+    if (!m_files.empty())
+    {
+      log::trace("vcs constructor files") << m_files[0];
+    }
+
     if (m_files.size() == 1 && !m_files[0].file_exists())
     {
       config(_("vcs.Base folder"))
         .set_first_of(
-          vcs_admin(m_entry.admin_dir(), m_files[0]).toplevel().string());
+          vcs_admin(m_entry->admin_dir(), m_files[0]).toplevel().string());
     }
 
-    if (m_entry.set_command(command_no))
+    if (m_entry->set_command(command_no))
     {
-      m_title = m_entry.name() + " " + m_entry.get_command().get_command();
+      m_title = m_entry->name() + " " + m_entry->get_command().get_command();
 
-      if (!m_entry.get_command().is_help() && m_files.size() == 1)
+      if (!m_entry->get_command().is_help() && m_files.size() == 1)
       {
         m_title += " " + wex::path(m_files[0]).filename();
       }
@@ -224,16 +233,25 @@ const wex::path wex::vcs::current_path() const
   }
 }
 
+void wex::vcs::destroy_dialog()
+{
+  if (m_item_dialog != nullptr)
+  {
+    m_item_dialog->Destroy();
+    m_item_dialog = nullptr;
+  }
+}
+
 bool wex::vcs::dir_exists(const wex::path& filename)
 {
-  if (const vcs_entry entry(find_entry(*m_store, filename));
-      vcs_admin(entry.admin_dir(), filename).is_toplevel())
+  if (const auto entry(find_entry(m_store, filename));
+      vcs_admin(entry->admin_dir(), filename).is_toplevel())
   {
     return true;
   }
   else
   {
-    return vcs_admin(entry.admin_dir(), filename).exists();
+    return vcs_admin(entry->admin_dir(), filename).exists();
   }
 }
 
@@ -251,9 +269,9 @@ bool wex::vcs::execute()
 {
   if (current_path().empty())
   {
-    return m_entry.execute(
-      m_entry.get_command().is_add() ? config(_("vcs.Path")).get_first_of() :
-                                       std::string(),
+    return m_entry->execute(
+      m_entry->get_command().is_add() ? config(_("vcs.Path")).get_first_of() :
+                                        std::string(),
       lexer(),
       config(_("vcs.Base folder")).get_first_of());
   }
@@ -274,7 +292,7 @@ bool wex::vcs::execute()
           return a + quoted_find(b.string()) + " ";
         }));
     }
-    else if (m_entry.name() == "git")
+    else if (m_entry->name() == "git")
     {
       if (filename.file_exists() && !filename.filename().empty())
       {
@@ -291,13 +309,13 @@ bool wex::vcs::execute()
       args = quoted_find(filename.string());
     }
 
-    return m_entry.execute(args, filename.lexer(), wd.string());
+    return m_entry->execute(args, filename.lexer(), wd.string());
   }
 }
 
 bool wex::vcs::execute(const std::string& command)
 {
-  return m_entry.system(
+  return m_entry->system(
            process_data(command).start_dir(current_path().parent_path())) == 0;
 }
 
@@ -305,7 +323,7 @@ const std::string wex::vcs::get_branch() const
 {
   return config("vcs.VCS").get(VCS_AUTO) == VCS_NONE ?
            std::string() :
-           m_entry.get_branch(
+           m_entry->get_branch(
              current_path().file_exists() ? current_path().parent_path() :
                                             current_path().string());
 }
@@ -349,13 +367,16 @@ const std::string wex::vcs::name() const
     case VCS_AUTO:
       return "Auto";
     default:
-      return m_entry.name();
+      return m_entry->name();
   }
 }
 
 void wex::vcs::on_exit()
 {
   delete m_store;
+  m_store = nullptr;
+
+  destroy_dialog();
 }
 
 void wex::vcs::on_init()
@@ -363,6 +384,7 @@ void wex::vcs::on_init()
   if (m_store == nullptr)
   {
     m_store = new store_t;
+    m_store->emplace_back(vcs_entry());
 
     load_document();
   }
@@ -380,7 +402,7 @@ wxStandardID wex::vcs::request(const data::window& data)
     return wxID_CANCEL;
   }
 
-  m_entry.show_output(m_title);
+  m_entry->show_output(m_title);
 
   return wxID_OK;
 }
@@ -408,16 +430,18 @@ bool wex::vcs::set_entry_from_base(wxWindow* parent)
   }
   else
   {
-    m_entry = find_entry(*m_store);
+    m_entry = find_entry(m_store);
     SET_ENTRY;
   }
 
-  return !m_entry.name().empty();
+  return !m_entry->name().empty();
 }
 
 int wex::vcs::show_dialog(const data::window& arg)
 {
-  if (m_entry.get_command().get_command().empty())
+  assert(!m_entry->name().empty());
+
+  if (m_entry->get_command().get_command().empty())
   {
     return wxID_CANCEL;
   }
@@ -425,9 +449,9 @@ int wex::vcs::show_dialog(const data::window& arg)
   data::window data(data::window(arg).title(m_title));
   const bool   add_folder(m_files.empty());
 
-  if (m_entry.get_command().ask_flags())
+  if (m_entry->get_command().ask_flags())
   {
-    config(_("vcs.Flags")).set(config(m_entry.flags_key()).get());
+    config(_("vcs.Flags")).set(config(m_entry->flags_key()).get());
   }
 
   if (m_item_dialog != nullptr)
@@ -439,28 +463,28 @@ int wex::vcs::show_dialog(const data::window& arg)
   }
 
   const std::vector<item> v(
-    {m_entry.get_command().is_commit() ? item(
-                                           _("vcs.Revision comment"),
-                                           item::COMBOBOX,
-                                           std::any(),
-                                           data::control().is_required(true)) :
-                                         item(),
-     add_folder && !m_entry.get_command().is_help() ?
+    {m_entry->get_command().is_commit() ? item(
+                                            _("vcs.Revision comment"),
+                                            item::COMBOBOX,
+                                            std::any(),
+                                            data::control().is_required(true)) :
+                                          item(),
+     add_folder && !m_entry->get_command().is_help() ?
        item(
          _("vcs.Base folder"),
          item::COMBOBOX_DIR,
          std::any(),
          data::control().is_required(true)) :
        item(),
-     add_folder && !m_entry.get_command().is_help() &&
-         m_entry.get_command().is_add() ?
+     add_folder && !m_entry->get_command().is_help() &&
+         m_entry->get_command().is_add() ?
        item(
          _("vcs.Path"),
          item::COMBOBOX,
          std::any(),
          data::control().is_required(true)) :
        item(),
-     m_entry.get_command().ask_flags() ?
+     m_entry->get_command().ask_flags() ?
        item(
          _("vcs.Flags"),
          std::string(),
@@ -470,14 +494,14 @@ int wex::vcs::show_dialog(const data::window& arg)
            .apply(
              [=, this](wxWindow* user, const std::any& value, bool save)
              {
-               config(m_entry.flags_key()).set(m_entry.get_flags());
+               config(m_entry->flags_key()).set(m_entry->get_flags());
              })) :
        item(),
-     m_entry.flags_location() == vcs_entry::FLAGS_LOCATION_PREFIX &&
-         m_entry.get_command().ask_flags() ?
+     m_entry->flags_location() == vcs_entry::FLAGS_LOCATION_PREFIX &&
+         m_entry->get_command().ask_flags() ?
        item(_("vcs.Prefix flags"), std::string()) :
        item(),
-     m_entry.get_command().use_subcommand() ?
+     m_entry->get_command().use_subcommand() ?
        item(_("vcs.Subcommand"), std::string()) :
        item()});
 
@@ -492,6 +516,8 @@ int wex::vcs::show_dialog(const data::window& arg)
     return wxID_OK;
   }
 
+  log::trace("vcs dialog") << m_entry->name() << data.button() << m_title;
+
   m_item_dialog = new item_dialog(v, data);
 
   return (data.button() & wxAPPLY) ? m_item_dialog->Show() :
@@ -501,7 +527,7 @@ int wex::vcs::show_dialog(const data::window& arg)
 wex::path wex::vcs::toplevel() const
 {
   return vcs_admin(
-           m_entry.admin_dir(),
+           m_entry->admin_dir(),
            m_files.empty() ? current_path() : m_files[0])
     .toplevel();
 }
@@ -514,14 +540,15 @@ bool wex::vcs::use() const
 void wex::vcs_execute(
   factory::frame*          frame,
   int                      id,
-  const std::vector<path>& files)
+  const std::vector<path>& files,
+  const data::window&      data)
 {
   if (files.empty())
     return;
 
   if (vcs vcs(files, id); vcs.entry().get_command().is_open())
   {
-    if (vcs.show_dialog() == wxID_OK)
+    if (vcs.show_dialog(data) == wxID_OK)
     {
       std::for_each(
         files.begin(),

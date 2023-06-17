@@ -108,37 +108,6 @@ wex::lexer::lexer(const pugi::xml_node* node)
   }
 }
 
-wex::lexer& wex::lexer::operator=(const wex::lexer& l)
-{
-  if (this != &l)
-  {
-    m_comment_begin   = l.m_comment_begin;
-    m_comment_begin2  = l.m_comment_begin2;
-    m_command_end     = l.m_command_end;
-    m_command_end2    = l.m_command_end2;
-    m_display_lexer   = l.m_display_lexer;
-    m_edge_columns    = l.m_edge_columns;
-    m_extensions      = l.m_extensions;
-    m_is_ok           = l.m_is_ok;
-    m_keywords        = l.m_keywords;
-    m_keywords_set    = l.m_keywords_set;
-    m_language        = l.m_language;
-    m_previewable     = l.m_previewable;
-    m_properties      = l.m_properties;
-    m_scintilla_lexer = l.m_scintilla_lexer;
-    m_styles          = l.m_styles;
-
-    m_attribs = l.m_attribs;
-
-    if (m_stc == nullptr && l.m_stc != nullptr)
-    {
-      m_stc = l.m_stc;
-    }
-  }
-
-  return *this;
-}
-
 // Adds the specified keywords to the keywords map and the keywords set.
 // The text might contain the keyword set after a ':'.
 // Returns false if specified set is invalid or value is empty.
@@ -792,11 +761,19 @@ bool wex::lexer::set(const std::string& lexer, bool fold)
 
 bool wex::lexer::set(const lexer& lexer, bool fold)
 {
+  syntax::stc* keep =
+    (m_stc != nullptr && lexer.m_stc == nullptr ? m_stc : nullptr);
+
   (*this) =
     (lexer.m_scintilla_lexer.empty() && m_stc != nullptr &&
          !lexers::get()->get_lexers().empty() ?
        lexers::get()->find_by_text(m_stc->GetLine(0)) :
        lexer);
+
+  if (keep)
+  {
+    m_stc = keep;
+  }
 
   if (m_stc == nullptr)
   {

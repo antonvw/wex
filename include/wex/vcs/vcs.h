@@ -2,7 +2,7 @@
 // Name:      vcs.h
 // Purpose:   Declaration of wex::vcs class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -25,9 +25,13 @@ class frame;
 class vcs
 {
 public:
+  /// The store is a vector of vcs entries.
   typedef std::vector<vcs_entry> store_t;
 
   /// Static interface.
+
+  /// Destroys dialog.
+  static void destroy_dialog();
 
   /// Returns true if specified filename (a path) is a vcs directory.
   static bool dir_exists(const path& filename);
@@ -67,11 +71,11 @@ public:
   /// Returns dialog return code.
   int config_dialog(const data::window& data = data::window()) const;
 
-  /// Returns the current vcs entry.
-  auto& entry() { return m_entry; }
+  /// Returns the current writeable vcs entry.
+  auto& entry() { return *m_entry; }
 
-  /// Returns the current vcs entry.
-  const auto& entry() const { return m_entry; }
+  /// Returns the current readonly vcs entry.
+  const auto& entry() const { return *m_entry; }
 
   /// Executes the current vcs command for the current
   /// vcs entry, and collects the output.
@@ -118,7 +122,7 @@ public:
 private:
   const wex::path current_path() const;
 
-  vcs_entry m_entry;
+  store_t::iterator m_entry;
 
   std::vector<wex::path> m_files;
   std::string            m_title;
@@ -135,5 +139,7 @@ void vcs_execute(
   /// VCS menu id to execute
   int id,
   /// files on which to operate
-  const std::vector<path>& files);
+  const std::vector<path>& files,
+  /// the window data
+  const data::window& data = data::window());
 }; // namespace wex

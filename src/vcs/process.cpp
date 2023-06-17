@@ -2,7 +2,7 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wex::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -27,30 +27,9 @@ wex::process::process()
 {
 }
 
-wex::process::~process() {}
-
-wex::process::process(const process& process)
-{
-  *this = process;
-}
-
-wex::process& wex::process::operator=(const process& p)
-{
-  if (this != &p)
-  {
-    m_frame = p.m_frame;
-
-    if (m_frame == nullptr)
-    {
-      m_frame = dynamic_cast<frame*>(wxTheApp->GetTopWindow());
-    }
-  }
-
-  return *this;
-}
-
 bool wex::process::async_system(const process_data& data_in)
 {
+  set_frame();
   process_data data(data_in);
 
   if (data.exe().empty())
@@ -139,9 +118,19 @@ wex::shell* wex::process::prepare_output(wxWindow* parent)
   return m_shell;
 }
 
+void wex::process::set_frame()
+{
+  if (m_frame == nullptr)
+  {
+    m_frame = dynamic_cast<frame*>(wxTheApp->GetTopWindow());
+  }
+}
+
 void wex::process::show_output(const std::string& caption) const
 {
-  if ((!std_out().empty() || !std_err().empty()) && m_shell != nullptr)
+  if (
+    (!std_out().empty() || !std_err().empty()) && m_shell != nullptr &&
+    m_frame != nullptr)
   {
     m_frame->show_process(true);
     m_shell->AppendText(!std_out().empty() ? std_out() : std_err());
@@ -151,6 +140,7 @@ void wex::process::show_output(const std::string& caption) const
 int wex::process::system(const process_data& data_in)
 {
   process_data data(data_in);
+  set_frame();
 
   if (auto* stc = dynamic_cast<wex::stc*>(m_frame->get_stc()); stc != nullptr)
   {
@@ -162,7 +152,7 @@ int wex::process::system(const process_data& data_in)
 
 bool wex::process::write(const std::string& text)
 {
-  if (!is_debug())
+  if (!is_debug() && m_frame != nullptr)
   {
     m_frame->show_process(true);
   }

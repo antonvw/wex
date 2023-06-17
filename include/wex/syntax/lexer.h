@@ -43,10 +43,6 @@ public:
   /// Constructor using xml node.
   explicit lexer(const pugi::xml_node* node);
 
-  /// Assignment operator.
-  /// The stc component is assigned only if it is nullptr.
-  lexer& operator=(const lexer& l);
-
   /// Adds keywords (public for testing only).
   bool add_keywords(const std::string& text, int setno = 0);
 
@@ -102,6 +98,9 @@ public:
 
   /// Returns the extensions.
   const auto& extensions() const { return m_extensions; }
+
+  /// Returns the stc.
+  auto* get_stc() { return m_stc; };
 
   /// Is this word a keyword (always all keywords), case sensitive.
   bool is_keyword(const std::string& word) const;
