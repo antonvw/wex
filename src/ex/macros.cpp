@@ -36,7 +36,7 @@ bool wex::macros::erase()
   return true;
 }
 
-const std::vector<std::string> wex::macros::find(const std::string& macro) const
+const wex::macros::commands_t wex::macros::find(const std::string& macro) const
 {
   if (const auto& it = m_macros.find(macro); it != m_macros.end())
   {
@@ -52,9 +52,9 @@ const std::vector<std::string> wex::macros::find(const std::string& macro) const
   }
 }
 
-const std::vector<std::string> wex::macros::get() const
+const wex::macros::commands_t wex::macros::get() const
 {
-  std::vector<std::string> v;
+  commands_t v;
 
   for (const auto& it : m_macros)
   {
@@ -96,11 +96,11 @@ const wex::macros::keys_map_t& wex::macros::get_keys_map(key_t type) const
   }
 }
 
-const std::vector<std::string>
+const wex::macros::commands_t
 wex::macros::get_macro_commands(const std::string& macro) const
 {
   const auto& it = m_macros.find(macro);
-  return (it != m_macros.end()) ? it->second : std::vector<std::string>();
+  return (it != m_macros.end()) ? it->second : commands_t();
 }
 
 const std::string wex::macros::get_register(char name) const
@@ -123,10 +123,10 @@ const std::string wex::macros::get_register(char name) const
   }
 }
 
-const std::vector<std::string> wex::macros::get_registers() const
+const wex::macros::commands_t wex::macros::get_registers() const
 {
-  std::vector<std::string> r;
-  lexer_props              l;
+  commands_t  r;
+  lexer_props l;
 
   for (const auto& it : m_macros)
   {
@@ -269,7 +269,7 @@ void wex::macros::parse_node_macro(const pugi::xml_node& node)
   }
   else
   {
-    std::vector<std::string> v;
+    commands_t v;
 
     std::transform(
       node.children().begin(),
@@ -482,7 +482,7 @@ bool wex::macros::set_register(char name, const std::string& value)
     return true;
   }
 
-  std::vector<std::string> v;
+  commands_t v;
 
   // The black hole register, everything written to it is discarded.
   if (name != '_')

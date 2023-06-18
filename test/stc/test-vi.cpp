@@ -38,6 +38,36 @@ TEST_CASE("wex::vi")
   auto* vi  = &get_stc()->get_vi();
   stc->set_text("");
 
+  SUBCASE("change")
+  {
+    stc->set_text("aaaaa\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");
+    auto* vi = &stc->get_vi();
+
+    SUBCASE("normal")
+    {
+      vi->command("ce");
+      vi->command("OK");
+      REQUIRE(
+        stc->get_text() == "OK\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");
+    }
+
+    SUBCASE("selection")
+    {
+      vi->command("v");
+      vi->command("w");
+      change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
+      REQUIRE(stc->get_selected_text() == "aaaaa");
+
+      vi->command("c");
+      REQUIRE(vi->mode().get() == wex::vi_mode::INSERT);
+      vi->command("OK");
+      REQUIRE(
+        stc->get_text() == "OK\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");
+    }
+
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
+  }
+
   SUBCASE("find")
   {
     stc->set_text("find findnottext to another find");

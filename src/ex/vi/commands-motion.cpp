@@ -551,7 +551,16 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
     }
     else if (type == motion_t::DEL || type == motion_t::CHANGE)
     {
-      return addressrange(this, m_count).erase();
+      const auto result(addressrange(this, m_count).erase());
+
+      if (result && type == motion_t::CHANGE)
+      {
+        std::string insert("i");
+        m_mode.transition(insert);
+      }
+
+      command.clear();
+      return result;
     }
   }
 
