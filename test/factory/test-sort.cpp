@@ -2,7 +2,7 @@
 // Name:      test-sort.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -44,14 +44,6 @@ TEST_CASE("wex::sort")
     REQUIRE(wex::factory::sort(0, 3, 5).string(rect, "\n") == sorted);
   }
 #endif
-
-  static wxFrame* frame = nullptr;
-
-  if (frame == nullptr)
-  {
-    frame = new wxFrame(nullptr, -1, "sort test");
-    frame->Show();
-  }
 
   auto* s = new wex::test::stc();
 

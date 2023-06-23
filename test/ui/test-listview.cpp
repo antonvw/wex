@@ -2,7 +2,7 @@
 // Name:      test-listview.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2015-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -74,18 +74,22 @@ TEST_CASE("wex::listview")
 
   SUBCASE("events")
   {
+    wex::column intcol(wex::column("Int", wex::column::INT));
+    REQUIRE(lv->append_columns({{intcol}}));
+    REQUIRE(lv->insert_item({"95"}));
+
     for (auto id : std::vector<int>{0})
     {
-      auto* event        = new wxListEvent(wxEVT_LIST_ITEM_ACTIVATED);
-      event->m_itemIndex = id; // for wxWidgets 3.0 compatibility
-      wxQueueEvent(lv, event);
+      wxListEvent event(wxEVT_LIST_ITEM_ACTIVATED);
+      event.m_itemIndex = id; // for wxWidgets 3.0 compatibility
+      wxPostEvent(lv, event);
     }
 
     for (auto id :
          std::vector<int>{wex::ID_EDIT_SELECT_INVERT, wex::ID_EDIT_SELECT_NONE})
     {
-      auto* event = new wxCommandEvent(wxEVT_MENU, id);
-      wxQueueEvent(lv, event);
+      wxCommandEvent event(wxEVT_MENU, id);
+      wxPostEvent(lv, event);
     }
   }
 

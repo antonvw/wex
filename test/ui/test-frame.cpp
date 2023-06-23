@@ -219,9 +219,9 @@ TEST_CASE("wex::frame")
            wex::ID_VIEW_STATUSBAR,
            wex::ID_VIEW_TITLEBAR})
     {
-      auto* event = new wxCommandEvent(wxEVT_MENU, id);
-      wxQueueEvent(frame(), event);
-      wxQueueEvent(frame(), event);
+      wxCommandEvent event(wxEVT_MENU, id);
+      wxPostEvent(frame(), event);
+      wxPostEvent(frame(), event);
     }
 #endif
   }

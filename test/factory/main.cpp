@@ -36,12 +36,12 @@ int main(int argc, char* argv[])
 
 bool wex::test::factory::OnInit()
 {
-  if (!test::app::OnInit())
+  if (!wex::app::OnInit() || !on_init(this))
   {
     return false;
   }
 
-  m_frame = new wex::factory::frame(nullptr, -1, "test");
+  m_frame = new wex::factory::frame(nullptr, -1, "factory test");
 
   m_frame->Show();
 
