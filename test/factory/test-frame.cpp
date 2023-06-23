@@ -7,8 +7,6 @@
 
 #include <wx/menu.h>
 
-#include <wex/factory/frame.h>
-
 #include "test.h"
 
 TEST_CASE("wex::factory::frame")

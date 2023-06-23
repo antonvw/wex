@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
 
 bool wex::test::ui::OnInit()
 {
-  if (!test::app::OnInit())
+  if (!wex::app::OnInit() || !on_init(this))
   {
     return false;
   }
