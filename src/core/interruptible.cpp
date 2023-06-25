@@ -7,9 +7,16 @@
 
 #include <wex/core/interruptible.h>
 
-void wex::interruptible::end()
+bool wex::interruptible::end()
 {
+  if (!m_running)
+  {
+    return false;
+  }
+
   m_running.store(false);
+
+  return true;
 }
 
 bool wex::interruptible::is_running()

@@ -38,7 +38,7 @@ public:
     boost::regex::flag_type flags = boost::regex::ECMAScript);
 
   /// Returns the error (in case MATCH_ERROR).
-  const auto& error() const { return m_error; };
+  const std::string& error() const { return m_error; };
 
   /// Regular expression match using a single char at a time,
   /// possibly continuing a previous match.
@@ -51,16 +51,16 @@ public:
   match_t match(char c);
 
   /// Returns the match type.
-  auto match_type() const { return m_match_type; };
+  match_t match_type() const { return m_match_type; };
 
   /// Returns the regex.
-  const auto& regex() const { return m_regex; };
+  const std::string& regex() const { return m_regex; };
 
   /// Resets matching to start again.
   void reset();
 
   /// Returns the current text (all chars offered to match).
-  const auto& text() const { return m_text; };
+  const std::string& text() const { return m_text; };
 
 private:
   boost::regex::flag_type m_flags;

@@ -2,14 +2,14 @@
 // Name:      chrono.h
 // Purpose:   Declaration of wex::chrono class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <chrono>
 #include <string>
-#include <tuple>
+#include <utility>
 
 namespace wex
 {
@@ -45,7 +45,7 @@ public:
   get_time(const std::chrono::time_point<std::chrono::system_clock>& tp) const;
 
   /// Returns time_t for a time string.
-  std::tuple<
+  std::pair<
     /// true if time string could be converted into time_t
     bool,
     /// the converted time

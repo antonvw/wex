@@ -86,6 +86,10 @@ separate_arguments(wex_own_LIBRARIES)
 add_subdirectory(ci)
 add_subdirectory(src)
 
+if (wexBUILD_BINDINGS)
+  add_subdirectory(bindings)
+endif ()
+
 if (wexBUILD_SAMPLES)
   add_subdirectory(sample)
 endif ()

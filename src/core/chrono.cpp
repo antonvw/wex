@@ -2,7 +2,7 @@
 // Name:      chrono.cpp
 // Purpose:   Implementation of wex::chrono class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
@@ -113,7 +113,7 @@ std::string wex::chrono::get_time(
   return get_time(time_point_to_timespec(tp));
 }
 
-std::tuple<bool, time_t> wex::chrono::get_time(const std::string& text) const
+std::pair<bool, time_t> wex::chrono::get_time(const std::string& text) const
 {
   std::tm           tm = {0};
   std::stringstream ss(text);
