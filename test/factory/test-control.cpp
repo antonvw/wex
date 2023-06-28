@@ -5,7 +5,7 @@
 // Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/data/control.h>
+#include <wex/factory/control.h>
 
 #include <wex/test/test.h>
 

@@ -8,8 +8,8 @@
 #include "test.h"
 
 wex::test::ui_stc::ui_stc(const wex::data::stc& data)
+  : wex::syntax::stc(data.window())
 {
-  Create(data.window().parent(), -1);
   Show();
 }
 

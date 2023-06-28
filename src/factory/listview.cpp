@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of wex core listview methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -77,4 +77,19 @@ void wex::column::set_is_sorted_ascending(sort_t type)
       assert(0);
       break;
   }
+}
+
+wex::factory::listview::listview(
+  const data::window&  window,
+  const data::control& control)
+  : wxListView(
+      window.parent(),
+      window.id(),
+      window.pos(),
+      window.size(),
+      window.style() == data::NUMBER_NOT_SET ? wxLC_REPORT : window.style(),
+      control.validator() != nullptr ? *control.validator() :
+                                       wxDefaultValidator,
+      window.name())
+{
 }

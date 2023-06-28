@@ -20,7 +20,8 @@ wex::ex_commandline_imp::ex_commandline_imp(
   ex_commandline*     cl,
   wxControl*          prefix,
   const data::window& data)
-  : m_id_register(NewControlId())
+  : syntax::stc(data)
+  , m_id_register(NewControlId())
   , m_prefix(prefix)
   , m_cl(cl)
   , m_clis{
@@ -40,7 +41,7 @@ wex::ex_commandline_imp::ex_commandline_imp(
         ex_command::type_t::FIND_MARGIN,
         "ex-cmd.margin")}
 {
-  init(data);
+  init();
   bind();
 }
 
@@ -48,10 +49,11 @@ wex::ex_commandline_imp::ex_commandline_imp(
   ex_commandline*     cl,
   const std::string&  value,
   const data::window& data)
-  : m_id_register(0)
+  : syntax::stc(data)
+  , m_id_register(0)
   , m_cl(cl)
 {
-  init(data);
+  init();
 
   set_text(value);
 
@@ -247,10 +249,8 @@ bool wex::ex_commandline_imp::handle_type(
   return true;
 }
 
-void wex::ex_commandline_imp::init(const data::window& data)
+void wex::ex_commandline_imp::init()
 {
-  Create(data.parent(), data.id(), data.pos(), data.size(), data.style());
-
   SetUseHorizontalScrollBar(false);
   SetUseVerticalScrollBar(false);
   SetFont(config(_("stc.Text font"))

@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <wex/data/control.h>
+#include <wex/factory/control.h>
 
 #include <bitset>
 

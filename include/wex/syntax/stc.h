@@ -22,6 +22,13 @@ namespace syntax
 class stc : public factory::stc
 {
 public:
+  /// Default constructor.
+  stc(const data::window& data = data::window())
+    : factory::stc(data)
+  {
+    ;
+  };
+
   /// Virtual interface
 
   virtual bool lexer_is_previewable() const final

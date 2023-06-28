@@ -33,11 +33,10 @@ bool wex::test::ex::OnInit()
   }
 
   m_frame = new wex::frame();
-  m_stc   = new test::stc(m_frame);
+  SetTopWindow(m_frame);
+  m_stc = new test::stc();
   m_frame->Show();
   m_frame->pane_add(m_stc);
-
-  SetTopWindow(m_frame);
 
   return true;
 }

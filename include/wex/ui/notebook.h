@@ -2,15 +2,15 @@
 // Name:      notebook.h
 // Purpose:   Declaration of class wex::notebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/core/config.h>
 #include <wex/data/notebook.h>
-#include <wex/data/window.h>
 #include <wex/factory/defs.h>
+#include <wex/factory/window.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/file-dialog.h>
 #include <wex/ui/frame.h>

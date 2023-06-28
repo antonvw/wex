@@ -20,20 +20,10 @@ namespace wex::test
 class stc : public wex::syntax::stc
 {
 public:
-  stc(wxFrame* parent = nullptr)
+  stc(const data::window& data = data::window())
+    : syntax::stc(data)
   {
-    if (parent != nullptr)
-    {
-      Create(parent, -1);
-    }
-    else if (wxTheApp != nullptr)
-    {
-      Create(wxTheApp->GetTopWindow(), -1);
-    }
-    else
-    {
-      std::cout << "no parent available\n";
-    }
+    ;
   };
 
 private:

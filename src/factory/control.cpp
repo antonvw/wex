@@ -5,7 +5,7 @@
 // Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/data/control.h>
+#include <wex/factory/control.h>
 
 wex::data::control& wex::data::control::find(const std::string& text, int flags)
 {

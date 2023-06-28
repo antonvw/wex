@@ -2,7 +2,7 @@
 // Name:      odbc.h
 // Purpose:   Declaration of wex::odbc class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,7 +10,7 @@
 #if wexUSE_ODBC
 
 #include <wex/core/version.h>
-#include <wex/data/window.h>
+#include <wex/factory/window.h>
 
 #include <memory>
 

@@ -9,8 +9,8 @@
 
 #include <wex/core/path.h>
 #include <wex/data/stc.h>
-#include <wex/data/window.h>
 #include <wex/factory/frame.h>
+#include <wex/factory/window.h>
 #include <wex/ui/file-history.h>
 #include <wex/ui/statusbar-pane.h>
 #include <wex/ui/statusbar.h>
