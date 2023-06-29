@@ -10,7 +10,6 @@
 #include <wex/factory/frame.h>
 #include <wex/factory/stc.h>
 #include <wex/test/test.h>
-#include <wx/app.h>
 
 namespace wex::test
 {
@@ -22,15 +21,9 @@ class stc : public wex::factory::stc
 public:
   /// Default constructor.
   stc()
+    : wex::factory::stc()
   {
-    if (wxTheApp != nullptr)
-    {
-      Create(wxTheApp->GetTopWindow(), -1);
-    }
-    else
-    {
-      std::cout << "no parent available\n";
-    }
+    ;
   };
 
   /// Overriden virtual methods.

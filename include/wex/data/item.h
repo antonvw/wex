@@ -2,12 +2,12 @@
 // Name:      data/item.h
 // Purpose:   Declaration of wex::data::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wex/data/control.h>
+#include <wex/factory/control.h>
 #include <wx/imaglist.h>
 
 #include <any>

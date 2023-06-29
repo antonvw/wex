@@ -2,14 +2,14 @@
 // Name:      command-parser.cpp
 // Purpose:   Implementation of class wex::command_parser
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
 #include <wex/core/log.h>
-#include <wex/data/control.h>
 #include <wex/ex/addressrange.h>
 #include <wex/ex/command-parser.h>
+#include <wex/factory/control.h>
 #include <wex/syntax/stc.h>
 
 wex::command_parser::command_parser(

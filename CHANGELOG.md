@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - item::layout: argument now takes wex::data::layout
 - stc::vi_command: argument now takes wex::line_data
 - removed some not necessary copy constructors
+- moved window.h and control.h to factory
 
 ### Fixed
 - ctags::find and empty tag finds next tag

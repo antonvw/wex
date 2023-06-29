@@ -2,7 +2,7 @@
 // Name:      main.cpp
 // Purpose:   main for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021
+// Copyright: (c) 2021-2023
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "test.h"
@@ -32,34 +32,10 @@ int main(int argc, char* argv[])
   return wex::test::main(argc, argv, new wex::test::common());
 }
 
-class common_frame : public wex::factory::frame
-{
-public:
-  common_frame()
-  {
-    Create(nullptr, -1, "common");
-    Show();
-  }
-};
-
-class common_listview : public wex::factory::listview
-{
-public:
-  explicit common_listview(wxFrame* parent)
-  {
-    Create(parent, -1);
-    Show();
-  }
-};
-
 class common_stc : public wex::syntax::stc
 {
 public:
-  explicit common_stc(wxFrame* parent)
-  {
-    Create(parent, -1);
-    Show();
-  };
+  explicit common_stc(wxFrame* parent) { Show(); };
 
 private:
   const wex::path& path() const override { return m_path; };
@@ -68,13 +44,17 @@ private:
 
 bool wex::test::common::OnInit()
 {
-  wex::test::app::OnInit();
+  if (!wex::app::OnInit() || !on_init(this))
+  {
+    return false;
+  }
 
-  m_frame = new common_frame;
+  m_frame = new wex::factory::frame(nullptr, -1, "common test");
   m_frame->Show();
 
-  m_listview = new common_listview(m_frame);
+  m_listview = new factory::listview(data::window().parent(m_frame));
   m_stc      = new common_stc(m_frame);
+  m_listview->Show();
 
   return true;
 }

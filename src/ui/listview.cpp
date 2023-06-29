@@ -111,7 +111,8 @@ const std::vector<item> config_items()
 }; // namespace wex
 
 wex::listview::listview(const data::listview& data)
-  : m_image_height(16) // not used if IMAGE_FILE_ICON is used, then 16 is fixed
+  : factory::listview(data.window(), data.control())
+  , m_image_height(16) // not used if IMAGE_FILE_ICON is used, then 16 is fixed
   , m_image_width(16)
   , m_col_event_id(1000)
   , m_data(data::listview(data)
@@ -123,17 +124,6 @@ wex::listview::listview(const data::listview& data)
              .set_listview(this))
   , m_frame(dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()))
 {
-  Create(
-    data.window().parent(),
-    data.window().id(),
-    data.window().pos(),
-    data.window().size(),
-    data.window().style() == data::NUMBER_NOT_SET ? wxLC_REPORT :
-                                                    data.window().style(),
-    data.control().validator() != nullptr ? *data.control().validator() :
-                                            wxDefaultValidator,
-    data.window().name());
-
   config_get();
 
   m_data.inject();

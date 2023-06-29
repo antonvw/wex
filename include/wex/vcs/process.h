@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <wex/data/window.h>
 #include <wex/factory/process.h>
+#include <wex/factory/window.h>
 
 namespace wex
 {

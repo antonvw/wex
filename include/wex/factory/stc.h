@@ -10,6 +10,7 @@
 #include <wex/core/path.h>
 #include <wex/factory/ex-command.h>
 #include <wex/factory/text-window.h>
+#include <wex/factory/window.h>
 #include <wx/print.h>
 #include <wx/stc/stc.h>
 
@@ -44,6 +45,9 @@ public:
 
   /// A typedef containing margin flags.
   typedef std::bitset<4> margin_t;
+
+  /// Default constructor.
+  stc(const data::window& data = data::window());
 
   /// Virtual interface.
 

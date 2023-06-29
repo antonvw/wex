@@ -2,13 +2,13 @@
 // Name:      dirctrl.h
 // Purpose:   Declaration of class wex::del::dirctrl
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2015-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/core/path.h>
-#include <wex/data/window.h>
+#include <wex/factory/window.h>
 #include <wx/generic/dirctrlg.h>
 
 namespace wex::del

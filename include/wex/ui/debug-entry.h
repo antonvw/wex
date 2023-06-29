@@ -24,8 +24,8 @@ public:
   {
     AT_LINE,                 /// at a line number
     AT_PATH_LINE,            /// at a path and a line number
-    EXIT,                    /// an 'exit program'
     BREAKPOINT_NO_FILE_LINE, /// a breakpoint no, file and line number
+    EXIT,                    /// an 'exit program'
     PATH,                    /// a path
     VARIABLE,                /// a variable e.g. to show in a tooltip
     VARIABLE_MULTI,          /// a variable split over several lines
@@ -35,16 +35,16 @@ public:
   debug_entry(const pugi::xml_node& node = pugi::xml_node());
 
   /// Returns the delete breakpoint command.
-  const auto& break_del() const { return m_break_del; }
+  const std::string& break_del() const { return m_break_del; }
 
   /// Returns the set breakpoint command.
-  const auto& break_set() const { return m_break_set; }
+  const std::string& break_set() const { return m_break_set; }
 
   /// Returns the extensions.
-  const auto& extensions() const { return m_extensions; }
+  const std::string& extensions() const { return m_extensions; }
 
   /// Returns the flags.
-  const auto& flags() const { return m_flags; }
+  const std::string& flags() const { return m_flags; }
 
   /// Returns the regex for interpreting debug stdout.
   std::string regex_stdout(regex_t r) const;

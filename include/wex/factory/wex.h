@@ -2,12 +2,13 @@
 // Name:      factory/wex.h
 // Purpose:   General wex include file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/factory/bind.h>
+#include <wex/factory/control.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/ex-command.h>
 #include <wex/factory/frame.h>
@@ -23,3 +24,4 @@
 #include <wex/factory/stc.h>
 #include <wex/factory/text-window.h>
 #include <wex/factory/util.h>
+#include <wex/factory/window.h>

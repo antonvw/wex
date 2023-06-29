@@ -25,7 +25,8 @@
 #include <wx/settings.h>
 
 wex::stc::stc(const wex::path& p, const data::stc& data)
-  : m_data(data)
+  : syntax::stc(data.window())
+  , m_data(data)
   , m_auto_complete(new wex::auto_complete(this))
   , m_vi(
       new vi(this, data.flags().test(data::stc::WIN_EX) ? ex::EX : ex::VISUAL))
@@ -36,14 +37,6 @@ wex::stc::stc(const wex::path& p, const data::stc& data)
   m_data.set_stc(this);
 
   assert(m_frame != nullptr);
-
-  Create(
-    data.window().parent(),
-    data.window().id(),
-    data.window().pos(),
-    data.window().size(),
-    data.window().style(),
-    data.window().name());
 
   if (m_config_items == nullptr)
   {

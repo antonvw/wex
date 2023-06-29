@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <wex/data/window.h>
 #include <wex/factory/line-data.h>
+#include <wex/factory/window.h>
 #include <wx/validate.h>
 
 #include <bitset>

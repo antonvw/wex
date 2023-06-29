@@ -2,13 +2,13 @@
 // Name:      toolbar.h
 // Purpose:   Declaration of wex::toolbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2010-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/data/toolbar-item.h>
-#include <wex/data/window.h>
+#include <wex/factory/window.h>
 #include <wx/aui/auibar.h>
 
 #include <tuple>

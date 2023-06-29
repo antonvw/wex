@@ -2,11 +2,13 @@
 // Name:      listview.h
 // Purpose:   Declaration of wex::factory::listview and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <wex/factory/control.h>
+#include <wex/factory/window.h>
 #include <wx/listctrl.h>
 
 #include <string>
@@ -72,8 +74,10 @@ namespace factory
 class listview : public wxListView
 {
 public:
-  /// Destructor.
-  ~listview() override { ; }
+  /// Default constructor.
+  explicit listview(
+    const data::window&  w = data::window(),
+    const data::control& c = data::control());
 
   /// Virtual interface.
 
