@@ -19,8 +19,7 @@
 - the easiest way is using the command-line tool devenv
 
 ```bash
-cmake -DBOOST_ROOT=c:\local\boost_1_80_0 -DCMAKE_BUILD_TYPE=Release
-  -DwexBUILD_TESTS=ON ..
+cmake -DBOOST_ROOT=c:\local\boost_1_80_0 -DCMAKE_BUILD_TYPE=Release ..
 devenv wex.sln /build Release
 ```
 
