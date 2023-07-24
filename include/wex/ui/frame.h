@@ -145,6 +145,9 @@ public:
     return false;
   };
 
+  /// Moves to next page. If none or only one page present, returns false.
+  virtual bool next_page() { return false; }
+
   /// Called if the notebook changed page.
   virtual void on_notebook(wxWindowID id, wxWindow* page) { ; }
 

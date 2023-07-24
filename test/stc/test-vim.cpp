@@ -2,7 +2,7 @@
 // Name:      test-vim.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/vi/vi.h>
@@ -38,7 +38,7 @@ TEST_CASE("wex::vim")
     REQUIRE(vi->get_stc()->get_text() == "XXXXXXXXXX SECOND\nXXXXXXXX");
   }
 
-  SUBCASE("other")
+  SUBCASE("special")
   {
     REQUIRE(vi->command("ga"));
     REQUIRE(vi->command("gd"));
@@ -46,5 +46,7 @@ TEST_CASE("wex::vim")
 
     REQUIRE(vi->command("g*"));
     REQUIRE(vi->command("g#"));
+
+    REQUIRE(vi->command("gt"));
   }
 }
