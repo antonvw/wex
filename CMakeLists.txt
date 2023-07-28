@@ -22,6 +22,7 @@ endif ()
 
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
+set(CMAKE_DISABLE_PRECOMPILE_HEADERS ON)
 
 find_package(Boost 1.75.0 COMPONENTS 
   log_setup log filesystem program_options date_time regex json REQUIRED)

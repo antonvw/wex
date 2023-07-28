@@ -228,13 +228,7 @@ wex::data::layout::sizer_t* wex::item::add(data::layout& layout) const
   {
     layout.sizer_layout_create(new wex::data::layout::sizer_t(
       m_data.label_type() == data::item::LABEL_LEFT ? 2 : 1));
-
-    // depending on type, make the last col growable
-    if (m_type != TEXTCTRL_FLOAT && m_type != TEXTCTRL_INT)
-    {
-      layout.sizer_layout_grow_col();
-    }
-
+    layout.sizer_layout_grow_col();
     layout.sizer()->Add(layout.sizer_layout(), wxSizerFlags().Expand());
   }
 
