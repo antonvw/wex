@@ -30,7 +30,7 @@ public:
   const std::string get(bool include_name = true) const;
 
 private:
-  const wxVersionInfo m_version;
+  wxVersionInfo m_version;
 };
 
 /// Returns instantiation of version info class.

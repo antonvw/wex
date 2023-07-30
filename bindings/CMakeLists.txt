@@ -13,17 +13,14 @@ endif()
 
 include_directories(${CMAKE_SOURCE_DIR}/bindings ${Python_INCLUDE_DIRS})
 
-# see wex.i
-set(CORE-SRCS 
-  ${CMAKE_SOURCE_DIR}/src/core/chrono.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/interruptible.cpp)
-
 set_property(SOURCE wex.i PROPERTY CPLUSPLUS ON)
 
 swig_add_library(${PROJECT_NAME} 
   TYPE SHARED 
   LANGUAGE python 
-  SOURCES wex.i ${CORE-SRCS})
+  SOURCES wex.i)
+  
+wex_target_link_all()
   
 if (APPLE)
   set(SWIG_FILES

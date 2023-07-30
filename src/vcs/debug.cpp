@@ -311,8 +311,7 @@ wex::debug::get_args(const std::string& command, stc* stc)
     args += " " + stc->path().string() + ":" +
             std::to_string(stc->get_current_line() + 1);
   }
-  else if (regex r("^(d|del|delete) (br|breakpoint)");
-           r.search(command) > 0)
+  else if (regex r("^(d|del|delete) (br|breakpoint)"); r.search(command) > 0)
   {
     if (stc == nullptr)
     {
