@@ -87,7 +87,7 @@ public:
     const ctags_entry& filter = ctags_entry());
 
   /// Separator used by auto_complete.
-  auto separator() const { return m_separator; }
+  int separator() const { return m_separator; }
 
 private:
   /// Type for ctags, cannot be unordered, as we have a previous.
