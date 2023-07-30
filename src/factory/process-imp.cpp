@@ -2,7 +2,7 @@
 // Name:      process-imp.cpp
 // Purpose:   Implementation of class wex::factory::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -111,7 +111,10 @@ bool wex::factory::process_imp::stop(wxEvtHandler* e)
 void wex::factory::process_imp::thread_error(process* p)
 {
   std::thread v(
-    [out = p->m_eh_out, &es = m_es]
+    [debug = m_debug.load(),
+     &dbg  = p->m_eh_debug,
+     out   = p->m_eh_out,
+     &es   = m_es]
     {
       std::string text;
 
@@ -122,6 +125,12 @@ void wex::factory::process_imp::thread_error(process* p)
         if (text.back() == '\n')
         {
           WEX_POST(ID_SHELL_APPEND_ERROR, text, out)
+
+          if (debug)
+          {
+            WEX_POST(ID_DEBUG_STDOUT, text, dbg)
+          }
+
           text.clear();
         }
       }
