@@ -2,7 +2,7 @@
 // Name:      test-debug.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2016-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -36,6 +36,23 @@ TEST_CASE("wex::debug" * doctest::may_fail())
     REQUIRE(dbg.breakpoints().empty());
   }
 
+  SUBCASE("execute")
+  {
+#ifdef __WXOSX__
+    REQUIRE(dbg.execute("detach"));
+    REQUIRE(!dbg.execute("attach xxx"));
+    REQUIRE(!dbg.execute("break"));
+    REQUIRE(!dbg.execute("break all breakpoints"));
+    REQUIRE(dbg.execute("break", get_stc()));
+    REQUIRE(dbg.is_active());
+#endif
+    REQUIRE(dbg.breakpoints().empty()); // no file loaded
+
+    process.stop();
+
+    REQUIRE(!dbg.is_active());
+  }
+
   SUBCASE("menu")
   {
     REQUIRE(dbg.add_menu(&menu) > 0);
@@ -51,21 +68,6 @@ TEST_CASE("wex::debug" * doctest::may_fail())
     REQUIRE(!dbg.execute(item));
 #endif
 #endif
-  }
-
-  SUBCASE("execute")
-  {
-#ifdef __WXOSX__
-    REQUIRE(dbg.execute("break"));
-    REQUIRE(dbg.execute("break all breakpoints"));
-    REQUIRE(dbg.execute("break", get_stc()));
-    REQUIRE(dbg.is_active());
-#endif
-    REQUIRE(dbg.breakpoints().empty()); // no file loaded
-
-    process.stop();
-
-    REQUIRE(!dbg.is_active());
   }
 
 #ifndef __WXMSW__
@@ -93,8 +95,8 @@ TEST_CASE("wex::debug" * doctest::may_fail())
 
     REQUIRE(!dbg.debug_entry().name().empty());
 
-    REQUIRE(dbg.print("i"));
     REQUIRE(dbg.is_active());
+    REQUIRE(dbg.print("main"));
     REQUIRE(!dbg.toggle_breakpoint(1, nullptr));
     REQUIRE(dbg.toggle_breakpoint(1, stc));
     REQUIRE(!dbg.apply_breakpoints(stc));
