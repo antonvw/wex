@@ -2,7 +2,7 @@
 // Name:      ex-command.h
 // Purpose:   Declaration of class wex::ex_command
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2022 Anton van Wezenbeek
+// Copyright: (c) 2018-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -111,17 +111,10 @@ public:
     // a full resets also reset stc components
     bool full = false);
 
-  /// Restores values, if possible from original stc.
-  void restore(const ex_command& c);
-
   /// Sets command text.
   /// The text should start with a command prefix,
   /// like ':' to return the command type.
   ex_command& set(const std::string& text);
-
-  /// Sets new command, except original stc.
-  /// This can be used in combination with restore.
-  void set(const ex_command& c);
 
   /// Returns size of command.
   auto size() const { return m_text.size(); }

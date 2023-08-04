@@ -2,7 +2,7 @@
 // Name:      file.h
 // Purpose:   Declaration of class wex::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2010-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -87,9 +87,6 @@ public:
 
   /// Returns the path.
   auto& path() { return m_path; }
-
-  /// Writes char.
-  void put(char c) { m_fs.put(c); }
 
   /// Reads this file into a buffer.
   const std::string* read(std::streampos seek_position = 0);

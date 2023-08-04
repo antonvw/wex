@@ -2,7 +2,7 @@
 // Name:      test-ex-command.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/ex-command.h>
@@ -60,10 +60,11 @@ TEST_CASE("wex::ex_command")
     command.pop_back();
     REQUIRE(command.size() == 1);
 
-    command.set(wex::ex_command("dd"));
+    command = wex::ex_command("dd");
     REQUIRE(command.command() == "dd");
     REQUIRE(command.get_stc() == stc);
-    command.restore(wex::ex_command("ww"));
+
+    command = wex::ex_command("ww");
     REQUIRE(command.command() == "ww");
     command.append("ww");
     REQUIRE(command.command() == "wwww");

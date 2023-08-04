@@ -24,6 +24,7 @@ TEST_CASE("wex::file")
     REQUIRE(!file.is_written());
     REQUIRE(!file.is_contents_changed());
     REQUIRE(file.is_open());
+    REQUIRE(file.stream().is_open());
 
     file.reset_contents_changed();
 

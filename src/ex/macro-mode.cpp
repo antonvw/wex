@@ -2,7 +2,7 @@
 // Name:      macro-mode.cpp
 // Purpose:   Implementation of class wex::macro_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2017-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -128,7 +128,9 @@ int wex::macro_mode::transition(
   }
 
   if (ex != nullptr)
-    ex->m_command.restore(cmd);
+  {
+    ex->m_command = cmd;
+  }
 
   return command.size();
 }
