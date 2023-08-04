@@ -18,6 +18,11 @@ bool log_contains(const wex::path::log_t& flags, const std::string& text)
 
 TEST_CASE("wex::path")
 {
+  SUBCASE("static")
+  {
+    REQUIRE(!wex::path::current().empty());
+  }
+    
   SUBCASE("constructor")
   {
     REQUIRE(wex::path().empty());
@@ -29,8 +34,8 @@ TEST_CASE("wex::path")
     REQUIRE(!wex::path("..").is_absolute());
     REQUIRE(wex::path("xx") == wex::path("xx"));
     REQUIRE(wex::path("xx") != wex::path("xy"));
+    REQUIRE(wex::path(std::string("~")).data().string() != "~");
     REQUIRE(!wex::path().original().empty());
-    REQUIRE(!wex::path().current().empty());
   }
 
   SUBCASE("basic")

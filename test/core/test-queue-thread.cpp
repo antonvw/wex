@@ -15,8 +15,6 @@ namespace wex
 class event_handler : public queue_thread<std::string>::event_handler
 {
 public:
-  event_handler() {}
-
   const std::vector<std::string>& events() const { return m_events; }
 
 private:
