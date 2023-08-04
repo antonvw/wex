@@ -140,7 +140,7 @@ bool wex::ex_commandline_imp::handle(const std::string& command)
   }
   else
   {
-    m_command.reset(command, true);
+    m_command.reset(command);
     get_lexer().set(std::string());
   }
 

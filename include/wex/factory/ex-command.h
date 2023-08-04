@@ -105,11 +105,7 @@ public:
   void pop_back() { m_text.pop_back(); }
 
   /// Resets command to text (but keeps type).
-  ex_command& reset(
-    // new text
-    const std::string& text = std::string(),
-    // a full resets also reset stc components
-    bool full = false);
+  ex_command& reset(const std::string& text = std::string());
 
   /// Sets command text.
   /// The text should start with a command prefix,
