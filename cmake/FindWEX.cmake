@@ -27,8 +27,8 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 
 set(CMAKE_CXX_STANDARD 23)
 
-find_package(Boost 1.75.0 COMPONENTS
-  log_setup log filesystem program_options date_time regex json REQUIRED)
+find_package(Boost 1.81.0 COMPONENTS
+  log_setup log filesystem program_options date_time regex json url REQUIRED)
 
 find_package(ODBC QUIET)
 

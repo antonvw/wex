@@ -2,7 +2,7 @@
 // Name:      test-link.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -108,7 +108,19 @@ TEST_CASE("wex::factory::link")
     link(lnk, "test-special.h:10:2", special, 10, 2);
   }
 
-  SUBCASE("http")
+  SUBCASE("mime")
+  {
+    wex::factory::link lnk;
+
+    wex::line_data data;
+    data.line(wex::factory::link::LINE_OPEN_MIME);
+    REQUIRE(lnk.get_path("www.wxwidgets.org", data).data().empty());
+
+    data.line(-99);
+    REQUIRE(lnk.get_path("xx", data, stc).empty());
+  }
+
+  SUBCASE("url")
   {
     wex::factory::link lnk;
     wex::config(_("stc.link.Include directory"))
@@ -136,19 +148,10 @@ TEST_CASE("wex::factory::link")
     REQUIRE(
       lnk.get_path("some text [https://github.com/wxWidgets]", data).data() ==
       "https://github.com/wxWidgets");
+    REQUIRE(
+      lnk.get_path("some text [ftp://github.com/wxWidgets]", data).data() ==
+      "ftp://github.com/wxWidgets");
     REQUIRE(lnk.get_path("httpd = new httpd", data).empty());
-  }
-
-  SUBCASE("mime")
-  {
-    wex::factory::link lnk;
-
-    wex::line_data data;
-    data.line(wex::factory::link::LINE_OPEN_MIME);
-    REQUIRE(lnk.get_path("www.wxwidgets.org", data).data().empty());
-
-    data.line(-99);
-    REQUIRE(lnk.get_path("xx", data, stc).empty());
   }
 }
 #endif

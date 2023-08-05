@@ -6,6 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
+#include <boost/url.hpp>
+
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/path.h>
@@ -191,9 +193,18 @@ const wex::path wex::factory::link::find_url_or_mime(
 {
   if (!text.empty())
   {
+    regex::regex_v_t schemes;
+
+    for (auto t = boost::urls::scheme::ftp; t <= boost::urls::scheme::wss;
+         t      = static_cast<boost::urls::scheme>((size_t)t + 1))
+    {
+      schemes.push_back("(" + std::string(boost::urls::to_string(t)) + ":.*)");
+    }
+
+    schemes.emplace_back("(www.*)");
+
     // hypertext link
-    if (regex v({{"(https?:.*)"}, {"(www.*)"}});
-        data.line() == LINE_OPEN_URL && v.search(text) > 0)
+    if (regex v(schemes); data.line() == LINE_OPEN_URL && v.search(text) > 0)
     {
       // with a possible delimiter
       const auto        match(v[0]);

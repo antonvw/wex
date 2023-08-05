@@ -435,6 +435,7 @@ boost::regular expression lib | to implement the wex::regex_part
 boost::spirit lib | to implement the wex::evaluator
 boost::statechart lib | to implement the statemachine for vi mode and macro mode
 boost::tokenizer lib | to tokenize expressions
+boost::URL lib | to handle URLs
 
 It benefits from the following wxWidgets libraries:
 

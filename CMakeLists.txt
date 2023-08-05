@@ -24,8 +24,8 @@ set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 set(CMAKE_DISABLE_PRECOMPILE_HEADERS ON)
 
-find_package(Boost 1.75.0 COMPONENTS 
-  log_setup log filesystem program_options date_time regex json REQUIRED)
+find_package(Boost 1.81.0 COMPONENTS 
+  log_setup log filesystem program_options date_time regex json url REQUIRED)
   
 set(WEX_CXX_STANDARD 23) # see also FindWEX.cmake, c_cpp_properties.json
 set(CMAKE_CXX_STANDARD ${WEX_CXX_STANDARD})
