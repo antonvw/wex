@@ -442,6 +442,7 @@ It benefits from the following wxWidgets libraries:
 ## wxWidgets libraries
 
 - all gui classes are derived from / use wxWidgets base classes
+
 lib  | info
 -----|------
 wxbase | base
