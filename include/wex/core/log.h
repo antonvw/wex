@@ -155,11 +155,10 @@ private:
   void              flush();
   const std::string S(); // separator
 
-  const std::string  m_topic;
-  std::stringstream  m_ss;
-  std::wstringstream m_wss;
-  bool               m_separator{true};
-  level_t            m_level;
+  const std::string m_topic;
+  std::stringstream m_ss;
+  bool              m_separator{true};
+  level_t           m_level;
 
   static inline bool    m_initialized{false};
   static inline level_t m_level_filter;
