@@ -16,17 +16,19 @@ shows a usage of this library, offering a full featured source code text editor.
 ```bash
 git clone --recursive https://github.com/antonvw/wex.git
 mkdir build && cd build
-cmake .. && make && make install
 ```
 
-For Visual Studio do
+and for Linux, osx do
+  `cmake -G Ninja .. && ninja && ninja install` or
+  `cmake .. && make && make install`,
+for Visual Studio do
   `devenv wex.sln /build Release`,
-for mingw add `-G "MinGW Makefiles"` and do `mingw32-make`.
+and for mingw add `-G "MinGW Makefiles"` and do `mingw32-make`.
 
 If you would like to use shared libs for Boost, wxWidgets and wex add
 `-DwexBUILD_SHARED=ON`.
 
-To use wex lib in your own application do `make install`
+To use wex lib in your own application do `ninja install` or `make install`
 (on windows as administrator `cmake.exe -P cmake_install.cmake`)
 and do `find_package(WEX)` in your CMakeLists.txt. This will provide the
 `wex_FOUND`, `wex_INCLUDE_DIR`, `wex_LIB_DIR` and `wex_LIBRARIES` variables.

@@ -17,9 +17,18 @@
 #include <wx/app.h>
 #include <wx/log.h>
 
+#include <codecvt>
 #include <iomanip>
 
 namespace logging = boost::log;
+
+std::string ws2s(const std::wstring& wstr)
+{
+  using convert_typeX = std::codecvt_utf8<wchar_t>;
+  std::wstring_convert<convert_typeX, wchar_t> converterX;
+
+  return converterX.to_bytes(wstr);
+}
 
 wex::log::log(const std::string& topic)
   : log(topic, LEVEL_ERROR)
@@ -115,7 +124,7 @@ wex::log& wex::log::operator<<(const char* r)
 
 wex::log& wex::log::operator<<(const wchar_t* r)
 {
-  m_wss << S() << r;
+  m_ss << S() << ws2s(r);
   return *this;
 }
 
@@ -218,10 +227,8 @@ void wex::log::flush()
 
 const std::string wex::log::get() const
 {
-  return (!m_topic.empty() && (!m_ss.str().empty() || !m_wss.str().empty()) ?
-            m_topic + ":" :
-            m_topic) +
-         m_ss.str() + m_wss.str();
+  return (!m_topic.empty() && !m_ss.str().empty() ? m_topic + ":" : m_topic) +
+         m_ss.str();
 }
 
 std::string wex::log::get_level_info()
