@@ -21,11 +21,11 @@ public:
   /// Adds catalogs.
   void add_catalogs(wxLanguage language);
 
+private:
   /// Loads catalog.
   wxMsgCatalog*
   LoadCatalog(const wxString& domain, const wxString& lang) override;
 
-private:
   static inline std::string m_catalog_dir;
   std::string               m_catalog_file;
 };

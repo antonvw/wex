@@ -7,19 +7,19 @@ to your apps.
 
 ## wex c++ libraries
 
-src     | lib         | sub-lib   | info
---------|-------------|-----------|--
-core    | wex-core    |           | core classes
-test    | wex-test    |           | test classes
-factory | wex-factory |           | virtual base classes
-syntax  | wex-syntax  |           | syntax highlighting classes
-data    | wex-data    |           | data classes
-common  | wex-common  |           | common classes
-ui      | wex-ui      | wex-ctags | user interface classes
-ex      | wex-ex      | wex-vi    | ex and vi classes
-stc     | wex-stc     |           | stc classes
-vcs     | wex-vcs     |           | version control system classes
-del     | wex-del     |           | delivered classes
+lib         | sub-lib   | src     | info
+------------|-----------|---------|------
+wex-core    |           | core    | core classes
+wex-test    |           | test    | test classes
+wex-factory |           | factory | virtual base classes
+wex-syntax  |           | syntax  | syntax highlighting classes
+wex-data    |           | data    | data classes
+wex-common  |           | common  | common classes
+wex-ui      | wex-ctags | ui      | user interface classes
+wex-ex      | wex-vi    | ex      | ex and vi classes
+wex-stc     |           | stc     | stc classes
+wex-vcs     |           | vcs     | version control system classes
+wex-del     |           | del     | delivered classes
 
 It benefits from the following c++ features:
 
