@@ -376,7 +376,8 @@ void wex::vcs::on_exit()
   delete m_store;
   m_store = nullptr;
 
-  destroy_dialog();
+  // the m_item_dialog is owned by frame, no need to destroy it
+  m_item_dialog = nullptr;
 }
 
 void wex::vcs::on_init()
