@@ -73,6 +73,7 @@ bool wex::data::stc::inject() const
     (m_stc->path().file_exists() && m_stc->path().is_readonly()))
   {
     m_stc->SetReadOnly(true);
+    m_stc->properties_message();
     injected = true;
   }
 

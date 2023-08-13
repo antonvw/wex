@@ -27,5 +27,7 @@ TEST_CASE("wex::file_status")
 
 #ifdef __UNIX__
   REQUIRE(wex::file_status("/etc/hosts").is_readonly());
+  REQUIRE(!wex::file_status(".odbc.ini").is_readonly());
+  REQUIRE(!wex::file_status("xxxxx").is_readonly());
 #endif
 }

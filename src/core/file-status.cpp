@@ -2,7 +2,7 @@
 // Name:      file-status.cpp
 // Purpose:   Implementation of wex::file_status class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/chrono.h>
@@ -59,7 +59,9 @@ bool wex::file_status::is_readonly() const
 #ifdef _MSC_VER
   return (m_is_ok && ((m_file_status.st_mode & wxS_IWUSR) == 0));
 #else
-  return (m_is_ok && access(m_fullpath.c_str(), W_OK) == -1);
+  const auto err = access(m_fullpath.c_str(), W_OK);
+
+  return (m_is_ok && err == -1 && errno != ENOENT);
 #endif
 }
 

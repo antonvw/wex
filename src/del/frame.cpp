@@ -472,7 +472,9 @@ void wex::del::frame::open_from_event(
     }
 
     if (!shell_expansion(text))
+    {
       return;
+    }
 
     std::string cmd;
     if (regex v("\\+([^ \t]+)* *(.*)"); v.match(text) > 1)
