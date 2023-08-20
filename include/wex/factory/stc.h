@@ -54,6 +54,9 @@ public:
   /// Adds text.
   virtual void add_text(const std::string& text) { AddText(text); }
 
+  /// Adds text block mode.
+  virtual void add_text_block(const std::string& text) { AddText(text); }
+
   /// Appends text (to end).
   virtual void append_text(const std::string& text) { AppendText(text); }
 

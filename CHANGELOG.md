@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 - ctags::find and empty tag finds next tag
+- rectangular paste
 
 ## 23.04 - 2023-03-12
 

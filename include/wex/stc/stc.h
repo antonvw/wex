@@ -186,6 +186,8 @@ public:
 
   void add_text(const std::string& text) override;
 
+  void add_text_block(const std::string& text) override;
+
   void append_text(const std::string& text) override;
 
   bool auto_indentation(int c) override;
@@ -291,6 +293,8 @@ private:
 
   data::stc m_data;
   stc_file  m_file;
+
+  int m_selection_mode_copy{wxSTC_SEL_STREAM};
 
   // The ex or vi component.
   vi* m_vi{nullptr};

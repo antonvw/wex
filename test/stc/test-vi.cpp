@@ -128,6 +128,23 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->inserted_text().contains(vi->get_stc()->eol()));
   }
 
+  SUBCASE("put-block")
+  {
+    stc->set_text("XXXXX\nYYYYY  \nZZZZZ\n");
+
+    REQUIRE(vi->command("K"));
+    REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL_BLOCK);
+    REQUIRE(vi->command("j"));
+    REQUIRE(vi->command("j"));
+    REQUIRE(vi->command(" "));
+    REQUIRE(vi->command("y"));
+    REQUIRE(vi->mode().get() == wex::vi_mode::state_t::COMMAND);
+    REQUIRE(vi->command("h"));
+    REQUIRE(vi->command("p"));
+
+    REQUIRE(stc->get_text() == "XXXXXX\nYYYYYY  \nZZZZZZ\n");
+  }
+
   SUBCASE("registers")
   {
     stc->get_file().file_new(wex::path("test.h"));
