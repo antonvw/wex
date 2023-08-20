@@ -344,12 +344,18 @@ TEST_CASE("wex::stc")
 
     stc->add_text(" added");
     REQUIRE(stc->get_text().contains("added"));
+
+    stc->set_text("hello stc\nhello stc");
+    stc->DocumentStart();
+    stc->add_text_block("first\nfirst");
+    REQUIRE(stc->get_text().contains("firsthello stc\nfirsthello stc"));
   }
 
   SUBCASE("vi")
   {
     REQUIRE(stc->vi_command(wex::line_data().command("G")));
     REQUIRE(stc->vi_command_finish(false));
+
     stc->vi_record("xx");
     REQUIRE(!stc->vi_is_visual());
     REQUIRE(stc->vi_register('c').empty());

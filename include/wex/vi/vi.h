@@ -2,7 +2,7 @@
 // Name:      vi.h
 // Purpose:   Declaration of class wex::vi
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2009-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -133,7 +133,8 @@ private:
 
   std::string m_insert_command, m_insert_text;
 
-  vi_mode m_mode;
+  vi_mode          m_mode;
+  vi_mode::state_t m_mode_yank{vi_mode::COMMAND};
 
   const commands_t m_motion_commands, m_other_commands;
 

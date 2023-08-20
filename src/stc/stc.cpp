@@ -11,6 +11,7 @@
 #include <wex/ex/address.h>
 #include <wex/ex/ex-stream.h>
 #include <wex/ex/macros.h>
+#include <wex/factory/stc-undo.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/auto-indent.h>
 #include <wex/stc/entry-dialog.h>
@@ -23,6 +24,8 @@
 #include <wex/ui/item-vector.h>
 #include <wx/app.h>
 #include <wx/settings.h>
+
+#include <algorithm>
 
 wex::stc::stc(const wex::path& p, const data::stc& data)
   : syntax::stc(data.window())
@@ -149,6 +152,26 @@ void wex::stc::add_text(const std::string& text)
   }
 }
 
+void wex::stc::add_text_block(const std::string& text)
+{
+  stc_undo undo(this);
+
+  std::for_each(
+    text.begin(),
+    text.end(),
+    [this](const auto& it)
+    {
+      if (it != '\n' && it != '\r')
+      {
+        AddText(it);
+      }
+      else
+      {
+        LineDown();
+      }
+    });
+}
+
 void wex::stc::append_text(const std::string& text)
 {
   Allocate(GetTextLength() + text.size());
@@ -182,6 +205,8 @@ void wex::stc::Copy()
   if (CanCopy())
   {
     syntax::stc::Copy();
+
+    m_selection_mode_copy = GetSelectionMode();
   }
 }
 
@@ -509,7 +534,14 @@ void wex::stc::Paste()
 {
   if (CanPaste())
   {
-    syntax::stc::Paste();
+    if (m_selection_mode_copy == wxSTC_SEL_RECTANGLE)
+    {
+      add_text_block(clipboard_get());
+    }
+    else
+    {
+      syntax::stc::Paste();
+    }
   }
 }
 

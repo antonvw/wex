@@ -816,7 +816,8 @@ bool wex::vi::put(bool after)
   }
 
   // do not trim
-  const bool yanked_lines = (get_number_of_lines(register_text(), false) > 1);
+  const bool yanked_lines = (get_number_of_lines(register_text(), false) > 1) &&
+                            m_mode_yank != vi_mode::VISUAL_BLOCK;
 
   if (yanked_lines)
   {
@@ -833,7 +834,9 @@ bool wex::vi::put(bool after)
     get_stc()->Home();
   }
 
-  get_stc()->add_text(register_text());
+  m_mode_yank == vi_mode::VISUAL_BLOCK ?
+    get_stc()->add_text_block(register_text()) :
+    get_stc()->add_text(register_text());
 
   if (yanked_lines && after)
   {
@@ -868,6 +871,8 @@ void wex::vi::set_last_command(const std::string& command)
 
 void wex::vi::yank_range(int start)
 {
+  m_mode_yank = m_mode.get();
+
   if (auto end = get_stc()->GetCurrentPos(); end - start > 0)
   {
     get_stc()->CopyRange(start, end - start);

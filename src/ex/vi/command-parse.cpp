@@ -120,6 +120,7 @@ bool wex::vi::parse_command_handle_single(
     else
     {
       command.erase(0, 1);
+      m_mode_yank = m_mode.get();
       m_mode.escape();
     }
   }

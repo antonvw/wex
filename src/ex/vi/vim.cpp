@@ -49,7 +49,6 @@ bool wex::vim::command_motion(int start_pos)
     return false;
   }
 
-  bool     ok = true;
   stc_undo undo(
     m_vi->get_stc(),
     stc_undo::undo_t().set(stc_undo::UNDO_ACTION).set(stc_undo::UNDO_POS));
@@ -85,7 +84,7 @@ bool wex::vim::command_motion(int start_pos)
 
   m_vi->get_stc()->SelectNone();
 
-  return ok;
+  return true;
 }
 
 bool wex::vim::command_special()
