@@ -42,20 +42,11 @@ public:
   /// Returns string used to retrieve addressrange for selection.
   static const std::string selection_range();
 
-  /// Default constructor.
-  ex_command();
-
-  /// Constructor, sets stc component.
-  explicit ex_command(factory::stc* stc);
+  /// Default constructor, sets stc component.
+  explicit ex_command(factory::stc* stc = nullptr);
 
   /// Constructor, sets command text.
   explicit ex_command(const std::string& text);
-
-  /// Copy constructor.
-  ex_command(const ex_command& c);
-
-  /// Assignment operator.
-  ex_command& operator=(const ex_command& c);
 
   /// Appends a char.
   ex_command& append(char c)
@@ -112,6 +103,9 @@ public:
   /// like ':' to return the command type.
   ex_command& set(const std::string& text);
 
+  /// Sets stc component.
+  void set_stc(wex::factory::stc* stc) { m_stc = stc; }
+
   /// Returns size of command.
   auto size() const { return m_text.size(); }
 
@@ -126,6 +120,6 @@ private:
 
   bool m_has_type{true};
 
-  wex::factory::stc *m_stc{nullptr}, *m_stc_original{nullptr};
+  wex::factory::stc* m_stc{nullptr};
 };
 } // namespace wex
