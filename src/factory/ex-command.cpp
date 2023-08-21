@@ -9,8 +9,6 @@
 #include <wex/factory/line-data.h>
 #include <wex/factory/stc.h>
 
-wex::ex_command::ex_command() {}
-
 wex::ex_command::ex_command(const std::string& command)
   : m_text(command)
 {
@@ -18,34 +16,7 @@ wex::ex_command::ex_command(const std::string& command)
 
 wex::ex_command::ex_command(wex::factory::stc* stc)
   : m_stc(stc)
-  , m_stc_original(stc)
 {
-}
-
-wex::ex_command::ex_command(const ex_command& c)
-{
-  *this = c;
-}
-
-wex::ex_command& wex::ex_command::operator=(const ex_command& c)
-{
-  if (this != &c)
-  {
-    m_has_type = c.m_has_type;
-    m_text     = c.m_text;
-
-    if (c.m_stc != nullptr)
-    {
-      m_stc = c.m_stc;
-    }
-
-    if (c.m_stc_original != nullptr)
-    {
-      m_stc_original = c.m_stc_original;
-    }
-  }
-
-  return *this;
 }
 
 bool wex::ex_command::append_exec(char c)

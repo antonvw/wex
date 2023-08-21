@@ -136,6 +136,7 @@ bool wex::ex_commandline_imp::handle(const std::string& command)
   if (m_cl->stc() != nullptr)
   {
     m_command = ex_command(m_cl->stc()->get_ex_command()).set(command);
+    m_command.set_stc(m_cl->stc());
     get_lexer().set(m_cl->stc()->get_lexer().display_lexer());
   }
   else
