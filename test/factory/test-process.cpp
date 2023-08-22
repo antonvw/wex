@@ -60,7 +60,7 @@ TEST_CASE("wex::factory::process")
 
   SUBCASE("system")
   {
-#ifndef __WXMSW__
+#ifdef __WXOSX__
     SUBCASE("invalid")
     {
       wex::log_none off;

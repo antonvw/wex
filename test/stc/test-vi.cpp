@@ -68,6 +68,14 @@ TEST_CASE("wex::vi")
     change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
   }
 
+  SUBCASE("enter")
+  {
+    stc->set_text("aaaaa\nbbbbb\nccccc\n");
+
+    REQUIRE(vi->command("j\n"));
+    REQUIRE(stc->get_text() == "aaaaa\nbbbbb\nccccc\n");
+  }
+
   SUBCASE("find")
   {
     stc->set_text("find findnottext to another find");
@@ -105,6 +113,27 @@ TEST_CASE("wex::vi")
       }
 
       REQUIRE(stc->get_current_line() == go.second);
+    }
+  }
+
+  SUBCASE("number")
+  {
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
+    wxKeyEvent event(wxEVT_CHAR);
+    event.m_keyCode = WXK_CONTROL_J;
+    event.m_uniChar = WXK_CONTROL_J;
+    event.SetRawControlDown(true);
+
+    for (const auto& number :
+         std::vector<std::string>{"101", "0xf7", "077", "-99"})
+    {
+      stc->set_text("number: " + number);
+      vi->command("gg");
+      vi->command("2w");
+      REQUIRE(vi->on_key_down(event));
+      REQUIRE(!vi->on_char(event));
+      CAPTURE(number);
+      REQUIRE(!stc->get_text().contains(number));
     }
   }
 
@@ -346,21 +375,6 @@ TEST_CASE("wex::vi")
       event.m_uniChar = control_key;
       REQUIRE(vi->on_key_down(event));
       REQUIRE(!vi->on_char(event));
-    }
-
-    // Test change number.
-    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
-    event.m_uniChar = WXK_CONTROL_J;
-    for (const auto& number :
-         std::vector<std::string>{"101", "0xf7", "077", "-99"})
-    {
-      stc->set_text("number: " + number);
-      vi->command("gg");
-      vi->command("2w");
-      REQUIRE(vi->on_key_down(event));
-      REQUIRE(!vi->on_char(event));
-      CAPTURE(number);
-      REQUIRE(!stc->get_text().contains(number));
     }
 
     // Test navigate command keys.

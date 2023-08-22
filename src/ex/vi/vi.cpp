@@ -698,9 +698,12 @@ bool wex::vi::on_char(const wxKeyEvent& event)
         }
         else
         {
+          m_control_down = (event.GetModifiers() & wxMOD_RAW_CONTROL);
+
 #ifdef __WXOSX__
           if (event.GetModifiers() & wxMOD_RAW_CONTROL)
           {
+
             if (m_command.append_exec(event.GetKeyCode()))
             {
               m_command.clear();
