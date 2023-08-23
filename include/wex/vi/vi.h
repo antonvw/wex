@@ -127,7 +127,8 @@ private:
   static inline std::string m_last_command;
   static inline std::string m_last_find_char_command;
 
-  bool m_count_present{false}, m_dot{false}, m_search_forward{true};
+  bool m_control_down{false}, m_count_present{false}, m_dot{false},
+    m_search_forward{true};
 
   int m_count{1};
 

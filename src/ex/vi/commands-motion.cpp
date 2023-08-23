@@ -347,9 +347,14 @@ wex::vi::commands_t wex::vi::commands_motion()
          return (size_t)1;
        }
      }},
-    {"\r_",
+    {"\n\r_",
      [&](const std::string& command)
      {
+       if (command.front() == '\n' && m_control_down)
+       {
+         return 0;
+       }
+
        get_stc()->Home();
        if (command.front() == '_')
          m_count--;
