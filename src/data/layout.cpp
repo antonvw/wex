@@ -5,7 +5,6 @@
 // Copyright: (c) 2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/core/log.h>
 #include <wex/data/layout.h>
 #include <wx/sizer.h>
 
@@ -23,7 +22,6 @@ wex::data::layout::layout(wxWindow* parent, int cols, int rows)
   : m_parent(parent)
   , m_sizer(rows > 0 ? new sizer_t(rows, cols, 0, 0) : new sizer_t(cols))
 {
-  log::trace("layout") << cols << "," << rows;
 }
 
 wex::data::layout& wex::data::layout::is_readonly(bool rhs)
@@ -64,8 +62,6 @@ bool wex::data::layout::sizer_layout_create(sizer_t* rhs)
   {
     return false;
   }
-
-  log::trace("layout other") << m_fgz->GetCols() << "," << m_fgz->GetRows();
 
   return true;
 }

@@ -30,7 +30,7 @@
 wex::macros wex::ex::m_macros;
 
 wex::ex::ex(wex::syntax::stc* stc, mode_t mode)
-  : m_command(ex_command(stc))
+  : m_command(stc)
   , m_frame(dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()))
   , m_ex_stream(new wex::ex_stream(this))
   , m_mode(mode)
@@ -419,8 +419,13 @@ void wex::ex::use(mode_t mode)
 {
   if (mode != m_mode)
   {
-    log::trace("ex mode from")
-      << std::to_underlying(m_mode) << "to:" << std::to_underlying(mode);
+    // e.g. shell and dialog disable vi mode: do not trace
+    if (!get_stc()->path().empty())
+    {
+      log::trace("ex mode")
+        << get_stc()->path().filename() << "from" << std::to_underlying(m_mode)
+        << "to:" << std::to_underlying(mode);
+    }
 
     m_mode = mode;
   }

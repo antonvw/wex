@@ -2,11 +2,14 @@
 // Name:      test-log.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2023 Anton van Wezenbeek
+// Copyright: (c) 2018-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/file.h>
 #include <wex/core/log.h>
 #include <wex/test/test.h>
+
+#include <iostream>
 
 TEST_CASE("wex::log")
 {
@@ -45,13 +48,37 @@ TEST_CASE("wex::log")
 
   SUBCASE("level")
   {
-    REQUIRE(wex::log::get_level() == wex::log::LEVEL_ERROR);
+    const auto current = wex::log::LEVEL_ERROR;
 
     wex::log::set_level(wex::log::LEVEL_TRACE);
     REQUIRE(wex::log::get_level() == wex::log::LEVEL_TRACE);
 
-    wex::log::set_level(wex::log::level_t_def());
-    REQUIRE(wex::log::get_level() == wex::log::LEVEL_ERROR);
+    wex::log::set_level(current);
+    REQUIRE(wex::log::get_level() == current);
+  }
+
+  SUBCASE("off")
+  {
+    const auto current = wex::log::LEVEL_ERROR;
+
+    {
+      wex::log log("off");
+      wex::log::set_level(wex::log::LEVEL_OFF);
+      REQUIRE(wex::log::get_level() == wex::log::LEVEL_OFF);
+      log << wex::test::get_path("test.h");
+
+      REQUIRE(!log.get().empty());
+    }
+
+    wex::log::set_level(current);
+
+    wex::file logfile(wex::log::path().c_str(), std::ios_base::in);
+    CAPTURE(wex::log::path());
+    REQUIRE(logfile.is_open());
+
+    auto* text = logfile.read();
+    auto  pos(text->substr(0, text->size() - 2).find_last_of('\n'));
+    REQUIRE(!text->substr(pos).contains("off:"));
   }
 
   SUBCASE("status")

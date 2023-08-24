@@ -22,6 +22,24 @@
 
 namespace logging = boost::log;
 
+namespace wex
+{
+std::string get_logfile(const std::string& default_logfile)
+{
+  if (!default_logfile.empty())
+  {
+    return default_logfile;
+  }
+
+  assert(wxTheApp != nullptr);
+
+  const wex::path p(
+    config::dir(),
+    wxTheApp->GetAppName().ToStdString() + ".log");
+
+  return p.string();
+}
+
 std::string ws2s(const std::wstring& wstr)
 {
   using convert_typeX = std::codecvt_utf8<wchar_t>;
@@ -29,6 +47,7 @@ std::string ws2s(const std::wstring& wstr)
 
   return converterX.to_bytes(wstr);
 }
+} // namespace wex
 
 wex::log::log(const std::string& topic)
   : log(topic, LEVEL_ERROR)
@@ -132,28 +151,35 @@ wex::log& wex::log::operator<<(const std::string& r)
 {
   if (m_level != LEVEL_STATUS)
   {
-    m_ss << S() << "\"";
+    m_ss << S() << (r.contains(" ") ? "\"" : "");
   }
 
-  for (const auto& c : r)
+  if (r.empty())
   {
-    if (isprint(c))
+    m_ss << "<empty>";
+  }
+  else
+  {
+    for (const auto& c : r)
     {
-      m_ss << c;
-    }
-    else
-    {
-      const char f(m_ss.fill());
-      const auto w(m_ss.width());
+      if (isprint(c))
+      {
+        m_ss << c;
+      }
+      else
+      {
+        const char f(m_ss.fill());
+        const auto w(m_ss.width());
 
-      m_ss << "\\x" << std::setfill('0') << std::setw(2) << std::hex
-           << static_cast<int>(c) << std::setfill(f) << std::setw(w);
+        m_ss << "\\x" << std::setfill('0') << std::setw(2) << std::hex
+             << static_cast<int>(c) << std::setfill(f) << std::setw(w);
+      }
     }
   }
 
   if (m_level != LEVEL_STATUS)
   {
-    m_ss << "\"";
+    m_ss << (r.contains(" ") ? "\"" : "");
   }
 
   return *this;
@@ -207,6 +233,9 @@ void wex::log::flush()
         BOOST_LOG_TRIVIAL(info) << text;
         break;
 
+      case LEVEL_OFF:
+        break;
+
       case LEVEL_STATUS:
         wxLogStatus("%s", text.c_str());
         break;
@@ -234,7 +263,7 @@ const std::string wex::log::get() const
 std::string wex::log::get_level_info()
 {
   std::stringstream help;
-  help << "valid ranges: " << LEVEL_TRACE << "-" << LEVEL_FATAL;
+  help << "valid ranges: " << LEVEL_TRACE << "-" << LEVEL_OFF;
 
   for (int i = LEVEL_TRACE; i <= LEVEL_FATAL; i++)
   {
@@ -242,6 +271,13 @@ std::string wex::log::get_level_info()
          << i << " "
          << logging::trivial::to_string((logging::trivial::severity_level)i);
   }
+
+  help << "\n"
+       << LEVEL_STATUS << " "
+       << "status";
+  help << "\n"
+       << LEVEL_OFF << " "
+       << "none";
 
   return help.str();
 }
@@ -264,6 +300,7 @@ void wex::log::on_init(level_t loglevel, const std::string& default_logfile)
   }
 
   set_level(loglevel);
+  m_logfile = get_logfile(default_logfile);
 
   logging::add_common_attributes();
 
@@ -271,19 +308,17 @@ void wex::log::on_init(level_t loglevel, const std::string& default_logfile)
     std::cout,
     logging::keywords::format = "%TimeStamp% [%Severity%] %Message%");
 
-  assert(wxTheApp != nullptr);
-
-  const path logfile(
-    config::dir(),
-    wxTheApp->GetAppName().ToStdString() + ".log");
-
   logging::add_file_log(
-    logging::keywords::file_name =
-      default_logfile.empty() ? logfile.string() : default_logfile,
+    logging::keywords::file_name = m_logfile,
     logging::keywords::open_mode = std::ios_base::app,
     logging::keywords::format    = "%TimeStamp% [%Severity%] %Message%");
 
   m_initialized = true;
+}
+
+const std::string wex::log::path()
+{
+  return m_logfile;
 }
 
 void wex::log::set_level(level_t loglevel)
@@ -311,6 +346,7 @@ void wex::log::set_level(level_t loglevel)
       break;
 
     case LEVEL_OFF:
+    case LEVEL_STATUS:
       logging::core::get()->set_filter(
         logging::trivial::severity > logging::trivial::fatal);
       break;
