@@ -66,7 +66,7 @@ bool wex::app::OnInit()
 {
   log::on_init();
   log::info("started") << GetAppName().ToStdString()
-                       << get_version_info().get();
+                       << get_version_info().get(false);
 
   config::on_init();
 

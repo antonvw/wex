@@ -18,6 +18,7 @@ wex::factory::stc::stc(const wex::data::window& data)
       data.size(),
       data.style(),
       data.name())
+  , m_command(this)
 {
 }
 

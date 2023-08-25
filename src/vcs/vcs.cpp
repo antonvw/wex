@@ -130,15 +130,8 @@ wex::vcs::vcs(const std::vector<wex::path>& files, int command_no)
 
   m_entry = find_entry(m_store, current_path());
 
-  log::trace("vcs constructor") << m_entry->name() << command_no;
-
   if (!m_entry->name().empty())
   {
-    if (!m_files.empty())
-    {
-      log::trace("vcs constructor files") << m_files[0];
-    }
-
     if (m_files.size() == 1 && !m_files[0].file_exists())
     {
       config(_("vcs.Base folder"))
@@ -516,8 +509,6 @@ int wex::vcs::show_dialog(const data::window& arg)
   {
     return wxID_OK;
   }
-
-  log::trace("vcs dialog") << m_entry->name() << data.button() << m_title;
 
   m_item_dialog = new item_dialog(v, data);
 

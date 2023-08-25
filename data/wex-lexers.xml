@@ -1185,7 +1185,6 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     </keywords>
   </lexer>
   <lexer name="ihex"/>
-  <lexer name="indent"/>
   <lexer name="inno"/>
   <lexer display="java" name="cpp" extensions="*.java">
     <keywords>
@@ -1224,7 +1223,6 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <property name="fold.comment"> 1 </property>
     </properties>
   </lexer>
-  <lexer name="lpeg"/>
   <lexer display="lilypond" name="latex" extensions="*.ly">
   </lexer>
   <lexer name="lisp">

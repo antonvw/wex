@@ -41,7 +41,7 @@ public:
   static void on_init(
     /// loglevel
     level_t loglevel = level_t_def(),
-    /// logfile, empty string is default logfile
+    /// logfile, empty string uses a default logfile
     const std::string& logfile = std::string());
 
   /// Return current filter log level.
@@ -52,6 +52,9 @@ public:
 
   /// Returns default log level.
   static level_t level_t_def();
+
+  /// Returns path for actual logfile used.
+  static const std::string path();
 
   /// Sets filter log level.
   static void set_level(level_t loglevel);
@@ -160,7 +163,8 @@ private:
   bool              m_separator{true};
   level_t           m_level;
 
-  static inline bool    m_initialized{false};
-  static inline level_t m_level_filter;
+  static inline bool        m_initialized{false};
+  static inline level_t     m_level_filter;
+  static inline std::string m_logfile;
 };
 }; // namespace wex

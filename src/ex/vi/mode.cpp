@@ -2,7 +2,7 @@
 // Name:      mode.cpp
 // Purpose:   Implementation of class wex::vi_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2017-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/mpl/list.hpp>
@@ -79,6 +79,7 @@ public:
     {
       case vi_mode::state_t::INSERT:
         return m_stc != nullptr && m_stc->GetOvertype() ? "replace" : "insert";
+
       case vi_mode::state_t::INSERT_BLOCK:
         return m_stc != nullptr && m_stc->GetOvertype() ? "replace block" :
                                                           "insert block";
@@ -148,7 +149,6 @@ struct ssvCOMMAND : sc::state<ssvCOMMAND, ssvACTIVE>
   explicit ssvCOMMAND(my_context ctx)
     : my_base(ctx)
   {
-    log::trace("vi mode") << "command";
     context<vi_fsm>().state(vi_mode::COMMAND);
   };
 
@@ -166,7 +166,6 @@ struct ssvTEXTINPUT : sc::state<ssvTEXTINPUT, ssvACTIVE>
   explicit ssvTEXTINPUT(my_context ctx)
     : my_base(ctx)
   {
-    log::trace("vi mode") << "insert";
     context<vi_fsm>().state(vi_mode::INSERT);
     context<vi_fsm>().insert_mode();
   };
@@ -193,7 +192,6 @@ struct ssvVISUAL : sc::state<ssvVISUAL, ssvVISUAL_MODE>
   explicit ssvVISUAL(my_context ctx)
     : my_base(ctx)
   {
-    log::trace("vi mode") << "visual";
     context<vi_fsm>().state(vi_mode::VISUAL);
   };
 };
@@ -203,7 +201,6 @@ struct ssvVISUAL_LINE : sc::state<ssvVISUAL_LINE, ssvVISUAL_MODE>
   explicit ssvVISUAL_LINE(my_context ctx)
     : my_base(ctx)
   {
-    log::trace("vi mode") << "visual line";
     context<vi_fsm>().state(vi_mode::VISUAL_LINE);
   };
 };
@@ -215,7 +212,6 @@ struct ssvVISUAL_BLOCK : sc::state<ssvVISUAL_BLOCK, ssvVISUAL_MODE>
   explicit ssvVISUAL_BLOCK(my_context ctx)
     : my_base(ctx)
   {
-    log::trace("vi mode") << "visual block";
     context<vi_fsm>().state(vi_mode::VISUAL_BLOCK);
   };
 };
@@ -228,7 +224,6 @@ struct ssvVISUAL_BLOCK_TEXTINPUT
   explicit ssvVISUAL_BLOCK_TEXTINPUT(my_context ctx)
     : my_base(ctx)
   {
-    log::trace("vi mode") << "visual block insert";
     context<vi_fsm>().state(vi_mode::INSERT_BLOCK);
     context<vi_fsm>().insert_mode();
   };
@@ -434,6 +429,8 @@ bool wex::vi_mode::transition(std::string& command)
     default:
       break;
   }
+
+  log::trace("vi mode") << str();
 
   m_vi->frame()->get_statusbar()->pane_show(
     "PaneMode",
