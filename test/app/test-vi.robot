@@ -197,6 +197,12 @@ navigate
 	Appl
 	Output Contains	8
 
+rfw
+	Input	:a|* Test Cases *
+	Input Many	:a|testcase	1000
+	Input	:set sy=rfw
+	Appl
+
 substitute-eol
 	Input	:a|line has text
 	...	:a|line has a tiger

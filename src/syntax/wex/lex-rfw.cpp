@@ -10,11 +10,6 @@
 
 #include "lex-rfw.h"
 
-#define MAKE_SECTION(REGEX, ID)                     \
-  {                                                 \
-    wex::regex_part(REGEX, boost::regex::icase), ID \
-  }
-
 const CharacterSet setWord(CharacterSet::setAlphaNum, "._+-]*");
 const CharacterSet setWordStart(CharacterSet::setAlpha, ":_[*");
 int                numBase = 0;
@@ -33,6 +28,8 @@ Scintilla::lex_rfw::~lex_rfw()
 {
   delete m_quote;
   delete m_quote_stack;
+  delete m_section_begin;
+  delete m_section_end;
   delete m_section_keywords;
 }
 
@@ -60,6 +57,8 @@ void Scintilla::lex_rfw::init(LexAccessor& styler)
   {
     delete m_quote;
     delete m_quote_stack;
+    delete m_section_begin;
+    delete m_section_end;
     delete m_section_keywords;
   }
 
@@ -72,16 +71,17 @@ void Scintilla::lex_rfw::init(LexAccessor& styler)
      In other words, also *setting would be recognized as a section
      header.
      And it is an error to have both test cases and tasks in the same file.
-     -> we require 3 *, regex_part issue
     */
+  m_section_begin    = new wex::regex_part("\\*+ *");
+  m_section_end      = new wex::regex_part(" *\\**");
   m_section_keywords = new keywords_t(
     // clang-format off
-      {MAKE_SECTION("\\*+ *Settings? *\\*\\*\\*", SECTION_SETTING),
-       MAKE_SECTION("\\*+ *Variables? *\\*\\*\\*", SECTION_VARIABLE),
-       MAKE_SECTION("\\*+ *Test *Cases? *\\*\\*\\*", SECTION_TESTCASE),
-       MAKE_SECTION("\\*+ *Tasks? *\\*\\*\\*", SECTION_TASK),
-       MAKE_SECTION("\\*+ *Keywords? *\\*\\*\\*", SECTION_KEYWORD),
-     MAKE_SECTION("\\*+ *Comments? *\\*\\*\\*", SECTION_COMMENT)});
+      {{"Settings", SECTION_SETTING},
+       {"Variables", SECTION_VARIABLE},
+       {"Test Cases", SECTION_TESTCASE},
+       {"Tasks", SECTION_TASK},
+       {"Keywords", SECTION_KEYWORD},
+       {"Comments", SECTION_COMMENT}});
   // clang-format on
 
   m_quote       = new quote(styler);
@@ -161,43 +161,31 @@ void Scintilla::lex_rfw::parse_keyword(
 }
 
 bool Scintilla::lex_rfw::section_keywords_detect(
-  StyleContext& sc,
-  int&          cmdStateNew)
+  const std::string& word,
+  StyleContext&      sc,
+  int&               cmdStateNew)
 {
-  std::for_each(
-    m_section_keywords->begin(),
-    m_section_keywords->end(),
-    [&sc](auto& i)
-    {
-      i.first.match(sc.ch);
-    });
-
   return std::any_of(
     m_section_keywords->begin(),
     m_section_keywords->end(),
-    [&sc, &cmdStateNew, this](const auto& i)
+    [&sc, &word, &cmdStateNew, this](const auto& i)
     {
-      switch (i.first.match_type())
+      if (std::equal(word.begin(), word.end(), i.first.begin()))
       {
-        case wex::regex_part::MATCH_PART:
-          cmdStateNew = RFW_CMD_SKW_PARTIAL;
-          m_section.reset();
-          sc.SetState(SCE_SH_WORD);
-          break;
-
-        case wex::regex_part::MATCH_FULL:
+        if (word.size() == i.first.size())
+        {
           sc.Forward();
           sc.SetState(SCE_SH_WORD);
-          cmdStateNew = RFW_CMD_START;
           m_section.start(i.second);
+          cmdStateNew = RFW_CMD_START;
 
-          // this section can re removed, it should not appear twice
+          // this section can be removed, it should not appear twice
           m_section_keywords->erase(std::remove_if(
             m_section_keywords->begin(),
             m_section_keywords->end(),
-            [&](const std::pair<wex::regex_part, section_t>& it)
+            [&](const std::pair<std::string, section_t>& it)
             {
-              return it.first.regex() == i.first.regex();
+              return it.first == i.first;
             }));
 
           if (m_section.is_case())
@@ -215,12 +203,13 @@ bool Scintilla::lex_rfw::section_keywords_detect(
                 return it.second == other_section;
               }));
           }
-
           return true;
-
-        default:; // do nothing
+        }
+        else
+        {
+          cmdStateNew = RFW_CMD_SKW_PARTIAL;
+        }
       }
-
       return false;
     });
 }
@@ -869,20 +858,21 @@ void SCI_METHOD Scintilla::lex_rfw::Lex(
 
     if (!spaced_keywords_detect(words, sc, cmdStateNew))
     {
-      section_keywords_detect(sc, cmdStateNew);
+      if (
+        m_section_begin->match_type() == wex::regex_part::MATCH_HISTORY ||
+        m_section_begin->match(sc.ch) >= wex::regex_part::MATCH_PART)
+      {
+        section_keywords_detect(
+          words.substr(m_section_begin->text().size()),
+          sc,
+          cmdStateNew);
+      }
 
       if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
       {
         words.clear();
-
-        std::for_each(
-          m_section_keywords->begin(),
-          m_section_keywords->end(),
-          [&sc](auto& i)
-          {
-            i.first.reset();
-            i.first.match(sc.ch);
-          });
+        m_section_end->reset();
+        m_section_begin->reset();
       }
     }
 

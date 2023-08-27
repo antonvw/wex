@@ -223,7 +223,10 @@ private:
 
   void parse_keyword(StyleContext& sc, int cmdState, int& cmdStateNew);
 
-  bool section_keywords_detect(StyleContext& sc, int& cmdStateNew);
+  bool section_keywords_detect(
+    const std::string& word,
+    StyleContext&      sc,
+    int&               cmdStateNew);
   bool spaced_keywords_detect(
     const std::string& word,
     StyleContext&      sc,
@@ -232,7 +235,7 @@ private:
   void state_check(StyleContext& sc, int state, int& state_new, LexAccessor&);
   bool state_check_continue(StyleContext& sc, int& state, LexAccessor&);
 
-  typedef std::list<std::pair<wex::regex_part, section_t>> keywords_t;
+  typedef std::list<std::pair<std::string, section_t>> keywords_t;
 
   SubStyles m_sub_styles;
 
@@ -245,9 +248,10 @@ private:
   bool m_visual_mode{true};
   int  m_style_prev{-1};
 
-  quote*       m_quote{nullptr};
-  quote_stack* m_quote_stack{nullptr};
-  keywords_t*  m_section_keywords{nullptr};
+  quote*           m_quote{nullptr};
+  quote_stack*     m_quote_stack{nullptr};
+  wex::regex_part *m_section_begin{nullptr}, *m_section_end{nullptr};
+  keywords_t*      m_section_keywords{nullptr};
 
   std::vector<std::string> m_spaced_keywords;
 };
