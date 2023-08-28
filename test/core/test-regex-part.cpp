@@ -5,8 +5,8 @@
 // Copyright: (c) 2022-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/test/test.h>
 #include <wex/core/regex-part.h>
+#include <wex/test/test.h>
 
 TEST_CASE("wex::regex_part")
 {
@@ -50,12 +50,12 @@ TEST_CASE("wex::regex_part")
     REQUIRE(re.match(' ') == wex::regex_part::MATCH_FULL);
     REQUIRE(re.text() == "**** ");
 
-    REQUIRE(re.match('x') == wex::regex_part::MATCH_NONE);
-    REQUIRE(re.text() == "**** x");
+    REQUIRE(re.match('x') == wex::regex_part::MATCH_HISTORY);
+    REQUIRE(re.text() == "**** ");
 
-    REQUIRE(re.match('y') == wex::regex_part::MATCH_NONE);
-    REQUIRE(re.match_type() == wex::regex_part::MATCH_NONE);
-    REQUIRE(re.text() == "**** xy");
+    REQUIRE(re.match('y') == wex::regex_part::MATCH_HISTORY);
+    REQUIRE(re.match_type() == wex::regex_part::MATCH_HISTORY);
+    REQUIRE(re.text() == "**** ");
 
     wex::regex_part rfw("\\*+ *Settings? *\\*");
     REQUIRE(rfw.match('*') == wex::regex_part::MATCH_PART);

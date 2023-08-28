@@ -24,10 +24,12 @@ public:
   /// The match types.
   enum match_t
   {
-    MATCH_NONE,  ///< the current text does not match at all, even partly
-    MATCH_ERROR, ///< the regex part gives a regex error during parsing
-    MATCH_PART,  ///< the current text matches part of regex part
-    MATCH_FULL,  ///< the current text matches all regex part
+    MATCH_NONE,    ///< the current text does not match at all, even partly
+    MATCH_ERROR,   ///< the regex part gives a regex error during parsing
+    MATCH_PART,    ///< the current text matches part of regex part
+    MATCH_HISTORY, ///< the current text matches part of regex part, last char
+                   ///< not
+    MATCH_FULL,    ///< the current text matches all regex part
   };
 
   /// Constructor.
@@ -59,7 +61,7 @@ public:
   /// Resets matching to start again.
   void reset();
 
-  /// Returns the current text (all chars offered to match).
+  /// Returns the current text (all chars that matched).
   const std::string& text() const { return m_text; };
 
 private:
@@ -87,21 +89,23 @@ inline wex::regex_part::match_t wex::regex_part::match(char c)
     return m_match_type;
   }
 
-  m_text.push_back(c);
+  auto text(m_text);
+  text.push_back(c);
 
   try
   {
     if (boost::match_results<std::string::const_iterator> m;
         !boost::regex_match(
-          m_text,
+          text,
           m,
           boost::regex(m_regex, m_flags),
           boost::match_default | boost::match_partial))
     {
-      m_match_type = MATCH_NONE;
+      m_match_type = m_text.empty() ? MATCH_NONE : MATCH_HISTORY;
     }
     else
     {
+      m_text       = text;
       m_match_type = m[0].matched ? MATCH_FULL : MATCH_PART;
     }
   }

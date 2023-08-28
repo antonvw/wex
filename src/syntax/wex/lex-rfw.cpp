@@ -10,11 +10,6 @@
 
 #include "lex-rfw.h"
 
-#define MAKE_SECTION(REGEX, ID)                     \
-  {                                                 \
-    wex::regex_part(REGEX, boost::regex::icase), ID \
-  }
-
 const CharacterSet setWord(CharacterSet::setAlphaNum, "._+-]*");
 const CharacterSet setWordStart(CharacterSet::setAlpha, ":_[*");
 int                numBase = 0;
@@ -33,6 +28,8 @@ Scintilla::lex_rfw::~lex_rfw()
 {
   delete m_quote;
   delete m_quote_stack;
+  delete m_section_begin;
+  delete m_section_end;
   delete m_section_keywords;
 }
 
@@ -60,6 +57,8 @@ void Scintilla::lex_rfw::init(LexAccessor& styler)
   {
     delete m_quote;
     delete m_quote_stack;
+    delete m_section_begin;
+    delete m_section_end;
     delete m_section_keywords;
   }
 
@@ -72,17 +71,17 @@ void Scintilla::lex_rfw::init(LexAccessor& styler)
      In other words, also *setting would be recognized as a section
      header.
      And it is an error to have both test cases and tasks in the same file.
-     -> we require 3 *, regex_part issue
+     -> our compare is not yet case insensitive
     */
-  m_section_keywords = new keywords_t(
-    // clang-format off
-      {MAKE_SECTION("\\*+ *Settings? *\\*\\*\\*", SECTION_SETTING),
-       MAKE_SECTION("\\*+ *Variables? *\\*\\*\\*", SECTION_VARIABLE),
-       MAKE_SECTION("\\*+ *Test *Cases? *\\*\\*\\*", SECTION_TESTCASE),
-       MAKE_SECTION("\\*+ *Tasks? *\\*\\*\\*", SECTION_TASK),
-       MAKE_SECTION("\\*+ *Keywords? *\\*\\*\\*", SECTION_KEYWORD),
-     MAKE_SECTION("\\*+ *Comments? *\\*\\*\\*", SECTION_COMMENT)});
-  // clang-format on
+  m_section_begin    = new wex::regex_part("\\*+ *");
+  m_section_end      = new wex::regex_part("s? *\\**");
+  m_section_keywords = new section_keywords_t(
+    {{"Setting", SECTION_SETTING},
+     {"Variable", SECTION_VARIABLE},
+     {"Test Case", SECTION_TESTCASE},
+     {"Task", SECTION_TASK},
+     {"Keyword", SECTION_KEYWORD},
+     {"Comment", SECTION_COMMENT}});
 
   m_quote       = new quote(styler);
   m_quote_stack = new quote_stack(styler);
@@ -92,8 +91,8 @@ void Scintilla::lex_rfw::init(LexAccessor& styler)
 
 void Scintilla::lex_rfw::parse_keyword(
   StyleContext& sc,
-  int           cmdState,
-  int&          cmdStateNew)
+  int           cmd_state,
+  int&          cmd_state_new)
 {
   WordList rfwStruct;
   rfwStruct.Set("");
@@ -114,10 +113,10 @@ void Scintilla::lex_rfw::parse_keyword(
     const bool keywordEnds = IsASpace(sc.ch) || m_cmd_delimiter.InList(s2);
 
     // 'IN' may be construct keywords
-    if (cmdState == RFW_CMD_WORD && cmdStateNew != RFW_CMD_SKW_PARTIAL)
+    if (cmd_state == RFW_CMD_WORD && cmd_state_new != RFW_CMD_SKW_PARTIAL)
     {
       if (strcmp(s, "IN") == 0 && keywordEnds)
-        cmdStateNew = RFW_CMD_BODY;
+        cmd_state_new = RFW_CMD_BODY;
       else
         sc.ChangeState(SCE_SH_IDENTIFIER);
 
@@ -128,112 +127,109 @@ void Scintilla::lex_rfw::parse_keyword(
     // detect rfw construct keywords
     if (rfwStruct.InList(s))
     {
-      if (cmdState == RFW_CMD_START && keywordEnds)
-        cmdStateNew = RFW_CMD_START;
-      else if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
+      if (cmd_state == RFW_CMD_START && keywordEnds)
+        cmd_state_new = RFW_CMD_START;
+      else if (cmd_state_new != RFW_CMD_SKW_PARTIAL)
         sc.ChangeState(SCE_SH_IDENTIFIER);
     }
     // ':FOR' needs 'IN' to be highlighted later
     else if (rfwStruct_in.InList(s))
     {
-      if (cmdState == RFW_CMD_START && keywordEnds)
-        cmdStateNew = RFW_CMD_WORD;
-      else if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
+      if (cmd_state == RFW_CMD_START && keywordEnds)
+        cmd_state_new = RFW_CMD_WORD;
+      else if (cmd_state_new != RFW_CMD_SKW_PARTIAL)
         sc.ChangeState(SCE_SH_IDENTIFIER);
     }
     // disambiguate option items and file test operators
     else if (s[0] == '-')
     {
-      if (cmdState != RFW_CMD_TEST && cmdStateNew != RFW_CMD_SKW_PARTIAL)
+      if (cmd_state != RFW_CMD_TEST && cmd_state_new != RFW_CMD_SKW_PARTIAL)
         sc.ChangeState(SCE_SH_IDENTIFIER);
     }
     // disambiguate keywords and identifiers
     else if (
-      cmdState != RFW_CMD_START || !(m_keywords1.InList(s) && keywordEnds))
+      cmd_state != RFW_CMD_START || !(m_keywords1.InList(s) && keywordEnds))
     {
-      if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
+      if (cmd_state_new != RFW_CMD_SKW_PARTIAL)
         sc.ChangeState(SCE_SH_IDENTIFIER);
     }
 
-    if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
+    if (cmd_state_new != RFW_CMD_SKW_PARTIAL)
       sc.SetState(SCE_SH_DEFAULT);
   }
 }
 
 bool Scintilla::lex_rfw::section_keywords_detect(
-  StyleContext& sc,
-  int&          cmdStateNew)
+  const std::string& word,
+  StyleContext&      sc,
+  int&               cmd_state_new)
 {
-  std::for_each(
-    m_section_keywords->begin(),
-    m_section_keywords->end(),
-    [&sc](auto& i)
-    {
-      i.first.match(sc.ch);
-    });
-
   return std::any_of(
     m_section_keywords->begin(),
     m_section_keywords->end(),
-    [&sc, &cmdStateNew, this](const auto& i)
+    [&sc, &word, &cmd_state_new, this](const auto& i)
     {
-      switch (i.first.match_type())
+      if (std::equal(word.begin(), word.end(), i.first.begin()))
       {
-        case wex::regex_part::MATCH_PART:
-          cmdStateNew = RFW_CMD_SKW_PARTIAL;
-          m_section.reset();
-          sc.SetState(SCE_SH_WORD);
-          break;
-
-        case wex::regex_part::MATCH_FULL:
-          sc.Forward();
-          sc.SetState(SCE_SH_WORD);
-          cmdStateNew = RFW_CMD_START;
-          m_section.start(i.second);
-
-          // this section can re removed, it should not appear twice
-          m_section_keywords->erase(std::remove_if(
-            m_section_keywords->begin(),
-            m_section_keywords->end(),
-            [&](const std::pair<wex::regex_part, section_t>& it)
-            {
-              return it.first.regex() == i.first.regex();
-            }));
-
-          if (m_section.is_case())
-          {
-            // and remove the other section as well
-            const auto other_section =
-              (m_section.id() == SECTION_TESTCASE ? SECTION_TASK :
-                                                    SECTION_TESTCASE);
-
-            m_section_keywords->erase(std::remove_if(
-              m_section_keywords->begin(),
-              m_section_keywords->end(),
-              [&](const std::pair<wex::regex_part, section_t>& it)
-              {
-                return it.second == other_section;
-              }));
-          }
-
+        if (word.size() == i.first.size())
+        {
+          section_start(i, sc, cmd_state_new);
           return true;
-
-        default:; // do nothing
+        }
+        else
+        {
+          cmd_state_new = RFW_CMD_SKW_PARTIAL;
+        }
       }
 
       return false;
     });
 }
 
+void Scintilla::lex_rfw::section_start(
+  const section_keyword_t& section,
+  StyleContext&            sc,
+  int&                     cmd_state_new)
+{
+  do
+  {
+    sc.Forward();
+  } while (m_section_end->match(sc.ch) == wex::regex_part::MATCH_FULL);
+
+  sc.SetState(SCE_SH_WORD);
+  m_section.start(section.second);
+
+  cmd_state_new = RFW_CMD_START;
+
+  if (m_section.is_case())
+  {
+    // remove the other testcase like section as there can be only one of them
+    const auto other_section =
+      (m_section.id() == SECTION_TESTCASE ? SECTION_TASK : SECTION_TESTCASE);
+
+    m_section_keywords->erase(std::remove_if(
+      m_section_keywords->begin(),
+      m_section_keywords->end(),
+      [&](const std::pair<wex::regex_part, section_t>& it)
+      {
+        return it.second == other_section;
+      }));
+  }
+  else if (m_section.id() == SECTION_COMMENT)
+  {
+    sc.SetState(SCE_SH_COMMENTLINE);
+  }
+}
+
 bool Scintilla::lex_rfw::spaced_keywords_detect(
   const std::string& word,
   StyleContext&      sc,
-  int&               cmdStateNew)
+  int&               cmd_state_new)
 {
   return std::any_of(
     m_spaced_keywords.begin(),
     m_spaced_keywords.end(),
-    [&sc, &word, &cmdStateNew](const auto& i)
+    [&sc, &word, &cmd_state_new](const auto& i)
     {
       if (std::equal(word.begin(), word.end(), i.begin()))
       {
@@ -241,12 +237,12 @@ bool Scintilla::lex_rfw::spaced_keywords_detect(
         {
           sc.Forward();
           sc.SetState(SCE_SH_WORD);
-          cmdStateNew = RFW_CMD_START;
+          cmd_state_new = RFW_CMD_START;
           return true;
         }
         else
         {
-          cmdStateNew = RFW_CMD_SKW_PARTIAL;
+          cmd_state_new = RFW_CMD_SKW_PARTIAL;
         }
       }
       return false;
@@ -255,8 +251,8 @@ bool Scintilla::lex_rfw::spaced_keywords_detect(
 
 void Scintilla::lex_rfw::state_check(
   StyleContext& sc,
-  int           cmdState,
-  int&          cmdStateNew,
+  int           cmd_state,
+  int&          cmd_state_new,
   LexAccessor&  styler)
 {
   // Determine if the current state should terminate.
@@ -264,24 +260,24 @@ void Scintilla::lex_rfw::state_check(
   {
     case SCE_SH_OPERATOR:
       sc.SetState(SCE_SH_DEFAULT);
-      if (cmdState == RFW_CMD_DELIM) // if command delimiter, start new
-                                     // command
-        cmdStateNew = RFW_CMD_START;
+      if (cmd_state == RFW_CMD_DELIM) // if command delimiter, start new
+                                      // command
+        cmd_state_new = RFW_CMD_START;
       else if (sc.chPrev == '\\') // propagate command state if line continued
-        cmdStateNew = cmdState;
+        cmd_state_new = cmd_state;
       break;
 
     case SCE_SH_TESTCASE:
       if (!setWord.Contains(sc.ch))
       {
-        cmdStateNew = RFW_CMD_START;
+        cmd_state_new = RFW_CMD_START;
         sc.SetState(SCE_SH_DEFAULT);
       }
       break;
 
     case SCE_SH_WORD:
     case SCE_SH_WORD2:
-      parse_keyword(sc, cmdState, cmdStateNew);
+      parse_keyword(sc, cmd_state, cmd_state_new);
       break;
 
     case SCE_SH_IDENTIFIER:
@@ -293,7 +289,7 @@ void Scintilla::lex_rfw::state_check(
       {
         sc.SetState(SCE_SH_DEFAULT);
       }
-      else if (cmdState == RFW_CMD_ARITH && !setWordStart.Contains(sc.ch))
+      else if (cmd_state == RFW_CMD_ARITH && !setWordStart.Contains(sc.ch))
       {
         sc.SetState(SCE_SH_DEFAULT);
       }
@@ -352,10 +348,14 @@ void Scintilla::lex_rfw::state_check(
       break;
 
     case SCE_SH_COMMENTLINE:
-      if (
-        m_visual_mode && sc.atLineEnd && sc.chPrev != '\\' &&
-        m_section.id() != SECTION_COMMENT)
+      if (m_visual_mode && sc.atLineEnd && sc.chPrev != '\\')
       {
+        if (m_section.id() == SECTION_COMMENT)
+        {
+          if (sc.chPrev != '\n' && sc.GetRelative(-2) != '\n')
+            return;
+        }
+
         sc.SetState(SCE_SH_DEFAULT);
       }
       break;
@@ -490,7 +490,7 @@ void Scintilla::lex_rfw::state_check(
 
 bool Scintilla::lex_rfw::state_check_continue(
   StyleContext& sc,
-  int&          cmdState,
+  int&          cmd_state,
   LexAccessor&  styler)
 {
   const CharacterSet setMetaCharacter(CharacterSet::setNone, "|&;()<> \t\r\n");
@@ -514,7 +514,7 @@ bool Scintilla::lex_rfw::state_check_continue(
   else if (setWordStartTSV.Contains(sc.ch))
   {
     // README: or set to SCE_SH_WORD2
-    sc.SetState(cmdState == RFW_CMD_TESTCASE ? SCE_SH_TESTCASE : SCE_SH_WORD);
+    sc.SetState(cmd_state == RFW_CMD_TESTCASE ? SCE_SH_TESTCASE : SCE_SH_WORD);
   }
   else if (IsADigit(sc.ch))
   {
@@ -547,7 +547,7 @@ bool Scintilla::lex_rfw::state_check_continue(
       sc.SetState(SCE_SH_WORD);
     }
     // handle some zsh features within arithmetic expressions only
-    if (cmdState == RFW_CMD_ARITH)
+    if (cmd_state == RFW_CMD_ARITH)
     {
       if (sc.chPrev == '[')
       { // [#8] [##8] output digit setting
@@ -628,7 +628,7 @@ bool Scintilla::lex_rfw::state_check_continue(
   {
     sc.SetState(SCE_SH_OPERATOR);
     // globs have no whitespace, do not appear in arithmetic expressions
-    if (cmdState != RFW_CMD_ARITH && sc.ch == '(' && sc.chNext != '(')
+    if (cmd_state != RFW_CMD_ARITH && sc.ch == '(' && sc.chNext != '(')
     {
       int i = lex_rfw_access(styler).glob_scan(sc);
       if (i > 1)
@@ -639,38 +639,38 @@ bool Scintilla::lex_rfw::state_check_continue(
       }
     }
     // handle opening delimiters for test/arithmetic expressions - ((,[[,[
-    if (cmdState == RFW_CMD_START || cmdState == RFW_CMD_BODY)
+    if (cmd_state == RFW_CMD_START || cmd_state == RFW_CMD_BODY)
     {
       if (sc.Match('(', '('))
       {
-        cmdState = RFW_CMD_ARITH;
+        cmd_state = RFW_CMD_ARITH;
         sc.Forward();
       }
       else if (sc.Match('[', '[') && IsASpace(sc.GetRelative(2)))
       {
-        cmdState     = RFW_CMD_TEST;
+        cmd_state    = RFW_CMD_TEST;
         testExprType = 1;
         sc.Forward();
       }
       else if (sc.ch == '[' && IsASpace(sc.chNext))
       {
-        cmdState     = RFW_CMD_TEST;
+        cmd_state    = RFW_CMD_TEST;
         testExprType = 2;
       }
     }
     // section state -- for ((x;y;z)) in ... looping
-    if (cmdState == RFW_CMD_WORD && sc.Match('(', '('))
+    if (cmd_state == RFW_CMD_WORD && sc.Match('(', '('))
     {
-      cmdState = RFW_CMD_ARITH;
+      cmd_state = RFW_CMD_ARITH;
       sc.Forward();
       return true;
     }
     // handle command delimiters in command START|BODY|WORD state, also TEST
     // if 'test'
     if (
-      cmdState == RFW_CMD_START || cmdState == RFW_CMD_BODY ||
-      cmdState == RFW_CMD_WORD ||
-      (cmdState == RFW_CMD_TEST && testExprType == 0))
+      cmd_state == RFW_CMD_START || cmd_state == RFW_CMD_BODY ||
+      cmd_state == RFW_CMD_WORD ||
+      (cmd_state == RFW_CMD_TEST && testExprType == 0))
     {
       char s[10];
       bool isCmdDelim = false;
@@ -691,26 +691,26 @@ bool Scintilla::lex_rfw::state_check_continue(
       }
       if (isCmdDelim)
       {
-        cmdState = RFW_CMD_DELIM;
+        cmd_state = RFW_CMD_DELIM;
         return true;
       }
     }
     // handle closing delimiters for test/arithmetic expressions - )),]],]
-    if (cmdState == RFW_CMD_ARITH && sc.Match(')', ')'))
+    if (cmd_state == RFW_CMD_ARITH && sc.Match(')', ')'))
     {
-      cmdState = RFW_CMD_BODY;
+      cmd_state = RFW_CMD_BODY;
       sc.Forward();
     }
-    else if (cmdState == RFW_CMD_TEST && IsASpace(sc.chPrev))
+    else if (cmd_state == RFW_CMD_TEST && IsASpace(sc.chPrev))
     {
       if (sc.Match(']', ']') && testExprType == 1)
       {
         sc.Forward();
-        cmdState = RFW_CMD_BODY;
+        cmd_state = RFW_CMD_BODY;
       }
       else if (sc.ch == ']' && testExprType == 2)
       {
-        cmdState = RFW_CMD_BODY;
+        cmd_state = RFW_CMD_BODY;
       }
     }
   }
@@ -790,8 +790,8 @@ void SCI_METHOD Scintilla::lex_rfw::Fold(
       visibleChars++;
   }
 
-  // Fill in the real level of the next line, keeping the current flags as they
-  // will be filled in later
+  // Fill in the real level of the next line, keeping the current flags as
+  // they will be filled in later
   int flagsNext = styler.LevelAt(lineCurrent) & ~SC_FOLDLEVELNUMBERMASK;
   styler.SetLevel(lineCurrent, levelPrev | flagsNext);
 }
@@ -806,8 +806,8 @@ void SCI_METHOD Scintilla::lex_rfw::Lex(
 
   init(styler);
 
-  bool pipes    = false;
-  int  cmdState = RFW_CMD_START;
+  bool pipes     = false;
+  int  cmd_state = RFW_CMD_START;
 
   Sci_PositionU endPos = startPos + length;
   Sci_Position  ln     = lex_rfw_access(styler).init(startPos);
@@ -833,7 +833,7 @@ void SCI_METHOD Scintilla::lex_rfw::Lex(
         sc.state == SCE_SH_CHARACTER || sc.state == SCE_SH_COMMENTLINE ||
         sc.state == SCE_SH_PARAM)
       {
-        // force backtrack while retaining cmdState
+        // force backtrack while retaining cmd_state
         styler.SetLineState(ln, RFW_CMD_BODY);
       }
       else
@@ -848,61 +848,62 @@ void SCI_METHOD Scintilla::lex_rfw::Lex(
             // retain last line's state
           }
           else
-            cmdState = RFW_CMD_START;
+            cmd_state = RFW_CMD_START;
         }
-        styler.SetLineState(ln, cmdState);
+        styler.SetLineState(ln, cmd_state);
       }
     }
 
-    // controls change of cmdState at the end of a non-whitespace element
+    // controls change of cmd_state at the end of a non-whitespace element
     // states BODY|TEST|ARITH persist until the end of a command segment
     // state WORD persist, but ends with 'in' or 'do' construct keywords
-    int cmdStateNew = RFW_CMD_BODY;
+    int cmd_state_new = RFW_CMD_BODY;
     if (
-      cmdState == RFW_CMD_TEST || cmdState == RFW_CMD_ARITH ||
-      cmdState == RFW_CMD_WORD)
-      cmdStateNew = cmdState;
+      cmd_state == RFW_CMD_TEST || cmd_state == RFW_CMD_ARITH ||
+      cmd_state == RFW_CMD_WORD)
+      cmd_state_new = cmd_state;
 
     m_style_prev = sc.state;
 
     words.append(1, sc.ch);
 
-    if (!spaced_keywords_detect(words, sc, cmdStateNew))
+    if (!spaced_keywords_detect(words, sc, cmd_state_new))
     {
-      section_keywords_detect(sc, cmdStateNew);
+      if (
+        m_section_begin->match_type() == wex::regex_part::MATCH_HISTORY ||
+        m_section_begin->match(sc.ch) >= wex::regex_part::MATCH_PART)
+      {
+        section_keywords_detect(
+          words.substr(m_section_begin->text().size()),
+          sc,
+          cmd_state_new);
+      }
 
-      if (cmdStateNew != RFW_CMD_SKW_PARTIAL)
+      if (cmd_state_new != RFW_CMD_SKW_PARTIAL)
       {
         words.clear();
-
-        std::for_each(
-          m_section_keywords->begin(),
-          m_section_keywords->end(),
-          [&sc](auto& i)
-          {
-            i.first.reset();
-            i.first.match(sc.ch);
-          });
+        m_section_end->reset();
+        m_section_begin->reset();
       }
     }
 
     if (
-      (sc.chPrev == '|' && sc.ch == ' ') && cmdState != RFW_CMD_TESTCASE &&
-      cmdState != RFW_CMD_WORD)
+      (sc.chPrev == '|' && sc.ch == ' ') && cmd_state != RFW_CMD_TESTCASE &&
+      cmd_state != RFW_CMD_WORD)
     {
-      cmdState = RFW_CMD_START;
+      cmd_state = RFW_CMD_START;
     }
 
-    state_check(sc, cmdState, cmdStateNew, styler);
+    state_check(sc, cmd_state, cmd_state_new, styler);
 
-    // update cmdState about the current command segment
+    // update cmd_state about the current command segment
     if (m_style_prev != SCE_SH_DEFAULT && sc.state == SCE_SH_DEFAULT)
     {
-      cmdState = cmdStateNew;
+      cmd_state = cmd_state_new;
     }
     else if (pipes && sc.ch == '|' && m_section.is_case())
     {
-      cmdState = (sc.atLineStart ? RFW_CMD_TESTCASE : RFW_CMD_START);
+      cmd_state = (sc.atLineStart ? RFW_CMD_TESTCASE : RFW_CMD_START);
     }
     else if (
       m_visual_mode && !pipes && sc.ch != '#' && !isspace(sc.ch) &&
@@ -910,17 +911,13 @@ void SCI_METHOD Scintilla::lex_rfw::Lex(
     {
       if (m_section.is_case())
       {
-        cmdState = RFW_CMD_TESTCASE;
-      }
-      else if (m_section.id() == SECTION_COMMENT)
-      {
-        sc.SetState(SCE_SH_COMMENTLINE);
+        cmd_state = RFW_CMD_TESTCASE;
       }
     }
 
     if (sc.state == SCE_SH_DEFAULT)
     {
-      if (state_check_continue(sc, cmdState, styler))
+      if (state_check_continue(sc, cmd_state, styler))
       {
         continue;
       }
