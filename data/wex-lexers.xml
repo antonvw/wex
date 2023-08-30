@@ -1216,14 +1216,19 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   <lexer name="kix"/>
   <lexer name="kvirc"/>
-  <lexer name="latex" extensions="*.tex">
+  <lexer name="latex" extensions="*.latex">
     <properties>
       <property name="fold"> 1 </property>
       <property name="fold.compact"> 1 </property>
       <property name="fold.comment"> 1 </property>
     </properties>
   </lexer>
-  <lexer display="lilypond" name="latex" extensions="*.ly">
+  <lexer name="lilypond" extensions="*.ly">
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+    </properties>
   </lexer>
   <lexer name="lisp">
     <properties>
@@ -1326,6 +1331,11 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   <lexer name="nim"/>
   <lexer name="nimrod" macro="python"/>
+  <lexer display="ninja" extensions="*.ninja" edgemode="none" spacevisible="invisible" name="bash">
+    <keywords> 
+      build default include
+    </keywords>
+  </lexer>
   <lexer name="nncrontab"/>
   <lexer name="nsis"/>
   <lexer name="octave" macro="matlab"/>
@@ -1568,7 +1578,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     </keywords>
   </lexer>
   <lexer name="tehex" macro="ihex"/>
-  <lexer name="tex"/>
+  <lexer name="tex" extensions="*.tex"/>
   <lexer name="txt2tags"/>
   <lexer name="vb">
     <keywords set ="vb"/>

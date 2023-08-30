@@ -196,6 +196,9 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.display_lexer() == "cpp");
     REQUIRE(lexer.scintilla_lexer() == "cpp");
 
+    REQUIRE(lexer.set("lilypond"));
+    REQUIRE(lexer.display_lexer() == "lilypond");
+
     REQUIRE(lexer.set("rfw"));
     REQUIRE(lexer.display_lexer() == "rfw");
     REQUIRE(lexer.is_keyword("Documentation"));
