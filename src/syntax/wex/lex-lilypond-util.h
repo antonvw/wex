@@ -98,16 +98,11 @@ inline bool lilypond::is_tag_valid(Sci_Position& i, Sci_Position l) const
 
 inline bool lilypond::next_not_blank_is(Sci_Position i, char needle) const
 {
-  char ch;
   while (i < m_styler.Length())
   {
-    ch = m_styler.SafeGetCharAt(i);
-    if (!isspace(ch) && ch != '*')
+    if (char ch = m_styler.SafeGetCharAt(i); !isspace(ch) && ch != '*')
     {
-      if (ch == needle)
-        return true;
-      else
-        return false;
+      return ch == needle;
     }
     i++;
   }
@@ -129,13 +124,24 @@ inline bool lilypond::last_word_check(
 
     if (is_tag_valid(match, lengthDoc))
     {
-      for (const auto& w : checks)
+      if (checks.empty())
       {
-        if (last_word_is(match, std::string("{" + w + "}").c_str()))
+        if (last_word_is_match_env(match))
         {
-          m_styler.ColourTo(start - 1, state);
           state = SCE_L_COMMAND;
           return true;
+        }
+      }
+      else
+      {
+        for (const auto& w : checks)
+        {
+          if (last_word_is(match, std::string("{" + w + "}").c_str()))
+          {
+            m_styler.ColourTo(start - 1, state);
+            state = SCE_L_COMMAND;
+            return true;
+          }
         }
       }
     }
@@ -167,16 +173,6 @@ inline bool lilypond::last_word_is_match_env(Sci_Position pos) const
   Sci_Position i, j;
   char         s[32];
 
-  const char* mathEnvs[] = {
-    "align",
-    "alignat",
-    "flalign",
-    "gather",
-    "multiline",
-    "displaymath",
-    "eqnarray",
-    "equation"};
-
   if (m_styler.SafeGetCharAt(pos) != '}')
     return false;
 
@@ -202,9 +198,21 @@ inline bool lilypond::last_word_is_match_env(Sci_Position pos) const
   if (s[j - 1] == '*')
     s[--j] = '\0';
 
-  for (i = 0; i < static_cast<int>(sizeof(mathEnvs) / sizeof(const char*)); ++i)
-    if (strcmp(s, mathEnvs[i]) == 0)
+  for (const auto& word : std::vector<std::string>{
+         "align",
+         "alignat",
+         "flalign",
+         "gather",
+         "multiline",
+         "displaymath",
+         "eqnarray",
+         "equation"})
+  {
+    if (word == s)
+    {
       return true;
+    }
+  }
 
   return false;
 }

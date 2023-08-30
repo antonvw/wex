@@ -62,7 +62,7 @@ void SCI_METHOD lex_lilypond::Fold(
   int,
   IDocument* pAccess)
 {
-  const char* structWords[7] = {
+  const std::vector<std::string> structWords{
     "part",
     "chapter",
     "section",
@@ -119,10 +119,10 @@ void SCI_METHOD lex_lilypond::Fold(
       }
       else
       {
-        for (j = 0; j < 7; ++j)
-          if (strcmp(buf, structWords[j]) == 0)
+        for (j = 0; j < structWords.size(); ++j)
+          if (strcmp(buf, structWords[j].c_str()) == 0)
             break;
-        if (j >= 7)
+        if (j >= structWords.size())
           continue;
         save.m_level = j; // level before the command
         for (j = save.m_level + 1; j < save.m_open_begins.size(); ++j)
@@ -347,15 +347,10 @@ void SCI_METHOD lex_lilypond::Lex(
             styler.ColourTo(i - 1, state);
             if (lilypond::is_letter(chNext))
             {
-              Sci_Position match = i + 3;
-              if (lilypond lp(styler); lp.last_word_is(match, "\\end"))
+              if (lilypond lp(styler);
+                  lp.last_word_check(i, "\\end", {"math"}, lengthDoc, state))
               {
-                match++;
-                if (lp.is_tag_valid(match, lengthDoc))
-                {
-                  if (lp.last_word_is(match, "{math}"))
-                    mode = 0;
-                }
+                mode = 0;
               }
               state = SCE_L_COMMAND;
             }
@@ -397,15 +392,10 @@ void SCI_METHOD lex_lilypond::Lex(
             styler.ColourTo(i - 1, state);
             if (lilypond::is_letter(chNext))
             {
-              Sci_Position match = i + 3;
-              if (lilypond lp(styler); lp.last_word_is(match, "\\end"))
+              if (lilypond lp(styler);
+                  lp.last_word_check(i, "\\end", {}, lengthDoc, state))
               {
-                match++;
-                if (lp.is_tag_valid(match, lengthDoc))
-                {
-                  if (lp.last_word_is_match_env(match))
-                    mode = 0;
-                }
+                mode = 0;
               }
               state = SCE_L_COMMAND;
             }
