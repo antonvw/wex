@@ -8,9 +8,37 @@
 #include "lex-lilypond.h"
 #include "lex-lilypond-util.h"
 
+#define STATE_ERROR()              \
+  styler.ColourTo(i, SCE_L_ERROR); \
+  state = mode_to_state(mode);     \
+  ch    = styler.SafeGetCharAt(i); \
+  if (ch == '\r' || ch == '\n')    \
+    set_modes(styler.GetLine(i), mode);
+
 lex_lilypond::lex_lilypond()
   : DefaultLexer(name(), language())
 {
+}
+
+void lex_lilypond::fold_dec(int& lev, fold_save& save) const
+{
+  while (save.m_level > 0 && save.m_open_begins[save.m_level] == 0)
+    --save.m_level;
+
+  if (lev < 0)
+    lev = save.to_int();
+
+  if (save.m_open_begins[save.m_level] > 0)
+    --save.m_open_begins[save.m_level];
+}
+
+void lex_lilypond::fold_inc(int& lev, fold_save& save, bool& need) const
+{
+  if (lev < 0)
+    lev = save.to_int();
+
+  ++save.m_open_begins[save.m_level];
+  need = true;
 }
 
 int lex_lilypond::mode_to_state(int mode) const
@@ -65,19 +93,11 @@ void SCI_METHOD lex_lilypond::Fold(
         break;
       if (ch == '{')
       {
-        if (lev < 0)
-          lev = save.save_to_int();
-        ++save.m_open_begins[save.m_level];
-        needFold = true;
+        fold_inc(lev, save, needFold);
       }
       else if (ch == '}')
       {
-        while (save.m_level > 0 && save.m_open_begins[save.m_level] == 0)
-          --save.m_level;
-        if (lev < 0)
-          lev = save.save_to_int();
-        if (save.m_open_begins[save.m_level] > 0)
-          --save.m_open_begins[save.m_level];
+        fold_dec(lev, save);
       }
       else if (ch != '\\' || styler.StyleAt(i) != SCE_L_COMMAND)
         continue;
@@ -91,19 +111,11 @@ void SCI_METHOD lex_lilypond::Fold(
       buf[j] = '\0';
       if (strcmp(buf, "begin") == 0)
       {
-        if (lev < 0)
-          lev = save.save_to_int();
-        ++save.m_open_begins[save.m_level];
-        needFold = true;
+        fold_inc(lev, save, needFold);
       }
       else if (strcmp(buf, "end") == 0)
       {
-        while (save.m_level > 0 && save.m_open_begins[save.m_level] == 0)
-          --save.m_level;
-        if (lev < 0)
-          lev = save.save_to_int();
-        if (save.m_open_begins[save.m_level] > 0)
-          --save.m_open_begins[save.m_level];
+        fold_dec(lev, save);
       }
       else
       {
@@ -119,13 +131,13 @@ void SCI_METHOD lex_lilypond::Fold(
           save.m_open_begins[j] = 0;
         }
         if (lev < 0)
-          lev = save.save_to_int();
+          lev = save.to_int();
         ++save.m_level; // level after the command
         needFold = true;
       }
     }
     if (lev < 0)
-      lev = save.save_to_int();
+      lev = save.to_int();
     if (needFold)
       lev |= SC_FOLDLEVELHEADERFLAG;
     styler.SetLevel(curLine, lev);
@@ -135,7 +147,7 @@ void SCI_METHOD lex_lilypond::Fold(
 
     if (static_cast<Sci_Position>(startPos) == styler.Length())
     {
-      lev = save.save_to_int();
+      lev = save.to_int();
       styler.SetLevel(curLine, lev);
       set_saves(curLine, save);
       resize_saves(curLine);
@@ -194,11 +206,8 @@ void SCI_METHOD lex_lilypond::Lex(
             {
               state = SCE_L_COMMAND;
             }
-            else if (lilypond::is_special(chNext))
+            else if (lilypond(styler).is_special(chNext, i))
             {
-              styler.ColourTo(i + 1, SCE_L_SPECIAL);
-              i++;
-              chNext = styler.SafeGetCharAt(i + 1);
             }
             else if (chNext == '\r' || chNext == '\n')
             {
@@ -315,11 +324,7 @@ void SCI_METHOD lex_lilypond::Lex(
         }
         else
         {
-          styler.ColourTo(i, SCE_L_ERROR);
-          state = mode_to_state(mode);
-          ch    = styler.SafeGetCharAt(i);
-          if (ch == '\r' || ch == '\n')
-            set_modes(styler.GetLine(i), mode);
+          STATE_ERROR();
         }
         chNext = styler.SafeGetCharAt(i + 1);
         break;
@@ -331,11 +336,7 @@ void SCI_METHOD lex_lilypond::Lex(
         }
         else
         {
-          styler.ColourTo(i, SCE_L_ERROR);
-          state = mode_to_state(mode);
-          ch    = styler.SafeGetCharAt(i);
-          if (ch == '\r' || ch == '\n')
-            set_modes(styler.GetLine(i), mode);
+          STATE_ERROR();
         }
         chNext = styler.SafeGetCharAt(i + 1);
         break;
@@ -358,11 +359,8 @@ void SCI_METHOD lex_lilypond::Lex(
               }
               state = SCE_L_COMMAND;
             }
-            else if (lilypond::is_special(chNext))
+            else if (lilypond(styler).is_special(chNext, i))
             {
-              styler.ColourTo(i + 1, SCE_L_SPECIAL);
-              i++;
-              chNext = styler.SafeGetCharAt(i + 1);
             }
             else if (chNext == '\r' || chNext == '\n')
             {
@@ -411,11 +409,8 @@ void SCI_METHOD lex_lilypond::Lex(
               }
               state = SCE_L_COMMAND;
             }
-            else if (lilypond::is_special(chNext))
+            else if (lilypond(styler).is_special(chNext, i))
             {
-              styler.ColourTo(i + 1, SCE_L_SPECIAL);
-              i++;
-              chNext = styler.SafeGetCharAt(i + 1);
             }
             else if (chNext == '\r' || chNext == '\n')
             {
@@ -465,42 +460,19 @@ void SCI_METHOD lex_lilypond::Lex(
       case SCE_L_COMMENT2:
         if (ch == '\\')
         {
-          Sci_Position match = i + 3;
-          if (lilypond lp(styler); lp.last_word_is(match, "\\end"))
-          {
-            match++;
-            if (lp.is_tag_valid(match, lengthDoc))
-            {
-              if (lp.last_word_is(match, "{comment}"))
-              {
-                styler.ColourTo(i - 1, state);
-                state = SCE_L_COMMAND;
-              }
-            }
-          }
+          lilypond(styler)
+            .last_word_check(i, "\\end", {"comment"}, lengthDoc, state);
         }
         break;
       case SCE_L_VERBATIM:
         if (ch == '\\')
         {
-          Sci_Position match = i + 3;
-          if (lilypond lp(styler); lp.last_word_is(match, "\\end"))
-          {
-            match++;
-            if (lp.is_tag_valid(match, lengthDoc))
-            {
-              if (lp.last_word_is(match, "{verbatim}"))
-              {
-                styler.ColourTo(i - 1, state);
-                state = SCE_L_COMMAND;
-              }
-              else if (lp.last_word_is(match, "{lstlisting}"))
-              {
-                styler.ColourTo(i - 1, state);
-                state = SCE_L_COMMAND;
-              }
-            }
-          }
+          lilypond(styler).last_word_check(
+            i,
+            "\\end",
+            {"verbatim", "lstlisting"},
+            lengthDoc,
+            state);
         }
         else if (chNext == chVerbatimDelim)
         {

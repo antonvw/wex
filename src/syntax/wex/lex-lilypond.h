@@ -61,7 +61,7 @@ private:
       ;
     };
 
-    int save_to_int() const
+    int to_int() const
     {
       int sum = 0;
       for (int i = 0; i <= m_level; ++i)
@@ -116,6 +116,9 @@ private:
   };
 
   /// Other methods.
+
+  void fold_dec(int& lev, fold_save& save) const;
+  void fold_inc(int& lev, fold_save& save, bool& need) const;
 
   int get_mode(Sci_Position line) const
   {
