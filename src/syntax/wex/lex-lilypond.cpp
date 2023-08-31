@@ -15,6 +15,53 @@
   if (ch == '\r' || ch == '\n')    \
     set_modes(styler.GetLine(i), mode);
 
+void handle_math(
+  int           lengthDoc,
+  int&          mode,
+  Sci_Position& i,
+  LexAccessor&  styler,
+  int&          state,
+  char&         chNext)
+{
+  styler.ColourTo(i - 1, state);
+
+  if (lilypond::is_letter(chNext))
+  {
+    if (lilypond lp(styler); lp.last_word_check(
+          i,
+          "\\end",
+          state == SCE_L_MATH2 ? std::vector<std::string>{"math"} :
+                                 std::vector<std::string>{},
+          lengthDoc,
+          state))
+    {
+      mode = 0;
+    }
+    state = SCE_L_COMMAND;
+  }
+  else if (lilypond(styler).is_special(chNext, i))
+  {
+  }
+  else if (chNext == '\r' || chNext == '\n')
+  {
+    styler.ColourTo(i, SCE_L_ERROR);
+  }
+  else if (IsASCII(chNext))
+  {
+    if (
+      (state == SCE_L_MATH && chNext == ')') ||
+      (state == SCE_L_MATH2 && chNext == ']'))
+    {
+      mode  = 0;
+      state = SCE_L_DEFAULT;
+    }
+
+    styler.ColourTo(i + 1, SCE_L_SHORTCMD);
+    i++;
+    chNext = styler.SafeGetCharAt(i + 1);
+  }
+}
+
 lex_lilypond::lex_lilypond()
   : DefaultLexer(name(), language())
 {
@@ -344,34 +391,7 @@ void SCI_METHOD lex_lilypond::Lex(
         switch (ch)
         {
           case '\\':
-            styler.ColourTo(i - 1, state);
-            if (lilypond::is_letter(chNext))
-            {
-              if (lilypond lp(styler);
-                  lp.last_word_check(i, "\\end", {"math"}, lengthDoc, state))
-              {
-                mode = 0;
-              }
-              state = SCE_L_COMMAND;
-            }
-            else if (lilypond(styler).is_special(chNext, i))
-            {
-            }
-            else if (chNext == '\r' || chNext == '\n')
-            {
-              styler.ColourTo(i, SCE_L_ERROR);
-            }
-            else if (IsASCII(chNext))
-            {
-              if (chNext == ')')
-              {
-                mode  = 0;
-                state = SCE_L_DEFAULT;
-              }
-              styler.ColourTo(i + 1, SCE_L_SHORTCMD);
-              i++;
-              chNext = styler.SafeGetCharAt(i + 1);
-            }
+            handle_math(lengthDoc, mode, i, styler, state, chNext);
             break;
           case '$':
             styler.ColourTo(i - 1, state);
@@ -389,34 +409,7 @@ void SCI_METHOD lex_lilypond::Lex(
         switch (ch)
         {
           case '\\':
-            styler.ColourTo(i - 1, state);
-            if (lilypond::is_letter(chNext))
-            {
-              if (lilypond lp(styler);
-                  lp.last_word_check(i, "\\end", {}, lengthDoc, state))
-              {
-                mode = 0;
-              }
-              state = SCE_L_COMMAND;
-            }
-            else if (lilypond(styler).is_special(chNext, i))
-            {
-            }
-            else if (chNext == '\r' || chNext == '\n')
-            {
-              styler.ColourTo(i, SCE_L_ERROR);
-            }
-            else if (IsASCII(chNext))
-            {
-              if (chNext == ']')
-              {
-                mode  = 0;
-                state = SCE_L_DEFAULT;
-              }
-              styler.ColourTo(i + 1, SCE_L_SHORTCMD);
-              i++;
-              chNext = styler.SafeGetCharAt(i + 1);
-            }
+            handle_math(lengthDoc, mode, i, styler, state, chNext);
             break;
           case '$':
             styler.ColourTo(i - 1, state);
