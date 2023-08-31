@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - stc::vi_command: argument now takes wex::line_data
 - removed some not necessary copy constructors
 - moved window.h and control.h to factory
+- lilypond lexer improved
 
 ### Fixed
 - ctags::find and empty tag finds next tag

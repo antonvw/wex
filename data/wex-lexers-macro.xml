@@ -1151,6 +1151,22 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="error"/>
     </def>
     
+    <def name = "lilypond">
+      <def no ="default"/>
+      <def no ="command"/>
+      <def no ="tag"/>
+      <def no ="math"/>
+      <def no ="comment"/>
+      <def no ="tag2"/>
+      <def no ="math2"/>
+      <def no ="comment2"/>
+      <def no ="verbatim"/>
+      <def no ="shortcmd"/>
+      <def no ="special"/>
+      <def no ="cmdopt"/>
+      <def no ="error"/>
+    </def>
+    
     <def name = "lisp">
       <def no ="default"/>
       <def no ="comment"/>

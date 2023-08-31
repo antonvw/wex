@@ -7,6 +7,7 @@ index 07dc6c1c..2e9eacdf 100644
  using namespace Scintilla;
  
 +#include "../../../../../../src/syntax/wex/lex-rfw.cpp"
++#include "../../../../../../src/syntax/wex/lex-lilypond.cpp"
 +
  #define HERE_DELIM_MAX			256
  
@@ -19,6 +20,7 @@ index bd15d392..8ecb9599 100644
  extern LexerModule lmRaku;
  extern LexerModule lmREBOL;
  extern LexerModule lmRegistry;
++extern LexerModule lmLilyPond;
 +extern LexerModule lmRFW;
  extern LexerModule lmRuby;
  extern LexerModule lmRust;
@@ -27,6 +29,7 @@ index bd15d392..8ecb9599 100644
  		&lmRaku,
  		&lmREBOL,
  		&lmRegistry,
++		&lmLilyPond,
 +		&lmRFW,
  		&lmRuby,
  		&lmRust,
