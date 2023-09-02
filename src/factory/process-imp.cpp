@@ -57,6 +57,11 @@ void wex::factory::process_imp::boost_async_system(
     {
       m_is_running.store(false);
 
+      if (error.value() != 0 && p->m_eh_out != nullptr)
+      {
+        WEX_POST(ID_SHELL_APPEND_ERROR, error.message(), p->m_eh_out)
+      }
+
       log::debug("async_system") << "exit" << data.exe();
 
       if (m_debug.load())

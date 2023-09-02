@@ -97,6 +97,13 @@ int wex::factory::process::system(const process_data& data)
       m_stderr = ef.get();
     }
 
+    if (data.std_in().empty())
+    {
+      boost::process::std_in
+        .close(); // e.g. for svn a password is required, not yet ok
+      log::trace("closing stdin");
+    }
+
     if (!ec)
     {
       log::debug("system") << data.log();
