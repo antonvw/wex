@@ -46,14 +46,15 @@ TEST_CASE("wex::factory::process")
       process.stop();
       process.async_sleep_for(std::chrono::milliseconds(10));
       REQUIRE(!process.write("xx"));
+      process.set_handler_dbg(&out); // if directly after out: crash
     }
 
     SUBCASE("invalid")
     {
       REQUIRE(process.async_system(wex::process_data("xxxx")));
+      process.set_handler_out(nullptr);
       process.stop();
       REQUIRE(!process.is_running());
-      process.set_handler_dbg(&out); // if directly after out: crash
     }
   }
 #endif
