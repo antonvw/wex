@@ -2,7 +2,7 @@
 // Name:      scope.h
 // Purpose:   Implementation of class wex::scope
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -62,7 +62,7 @@ private:
 
   typedef std::bitset<2> check_t;
 
-  void check_levels(check_t type = check_t().set());
+  void check_levels(const check_t& type = check_t().set());
 
   /// Finds text in scope (from current down), returns iterator.
   map_t::const_iterator iterator(const std::string& text) const;

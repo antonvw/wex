@@ -113,7 +113,7 @@ bool wex::factory::process_imp::stop(wxEvtHandler* e)
   return false;
 }
 
-void wex::factory::process_imp::thread_error(process* p)
+void wex::factory::process_imp::thread_error(const process* p)
 {
   std::thread v(
     [debug = m_debug.load(),
@@ -144,7 +144,7 @@ void wex::factory::process_imp::thread_error(process* p)
   v.detach();
 }
 
-void wex::factory::process_imp::thread_input(process* p)
+void wex::factory::process_imp::thread_input(const process* p)
 {
   std::thread t(
     [debug = m_debug.load(),
@@ -196,7 +196,7 @@ void wex::factory::process_imp::thread_input(process* p)
   t.detach();
 }
 
-void wex::factory::process_imp::thread_output(process* p)
+void wex::factory::process_imp::thread_output(const process* p)
 {
   std::thread u(
     [debug = m_debug.load(),

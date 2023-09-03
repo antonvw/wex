@@ -2,7 +2,7 @@
 // Name:      scope.cpp
 // Purpose:   Implementation of class wex::scope
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
@@ -17,7 +17,7 @@ wex::scope::scope(stc* s)
 {
 }
 
-void wex::scope::check_levels(check_t type)
+void wex::scope::check_levels(const check_t& type)
 {
   bool       changed = false;
   const auto level(m_stc->get_fold_level());

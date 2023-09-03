@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <algorithm>
+
 namespace Scintilla
 {
 /// Offers some general methods.
@@ -22,6 +24,15 @@ public:
   /// Constructor.
   lilypond(LexAccessor& s)
     : m_styler(s)
+    , m_words{
+        "align",
+        "alignat",
+        "flalign",
+        "gather",
+        "multiline",
+        "displaymath",
+        "eqnarray",
+        "equation"}
   {
     ;
   }
@@ -41,7 +52,8 @@ public:
   bool next_not_blank_is(Sci_Position i, char needle) const;
 
 private:
-  LexAccessor& m_styler;
+  LexAccessor&                   m_styler;
+  const std::vector<std::string> m_words;
 };
 
 // inline implementation lex_rfw_access
@@ -134,15 +146,19 @@ inline bool lilypond::last_word_check(
       }
       else
       {
-        for (const auto& w : checks)
-        {
-          if (last_word_is(match, std::string("{" + w + "}").c_str()))
+        return std::any_of(
+          checks.begin(),
+          checks.end(),
+          [this, &match, &state, &start](const auto& w)
           {
-            m_styler.ColourTo(start - 1, state);
-            state = SCE_L_COMMAND;
-            return true;
-          }
-        }
+            if (last_word_is(match, std::string("{" + w + "}").c_str()))
+            {
+              m_styler.ColourTo(start - 1, state);
+              state = SCE_L_COMMAND;
+              return true;
+            }
+            return false;
+          });
       }
     }
   }
@@ -198,21 +214,13 @@ inline bool lilypond::last_word_is_match_env(Sci_Position pos) const
   if (s[j - 1] == '*')
     s[--j] = '\0';
 
-  for (const auto& word : std::vector<std::string>{
-         "align",
-         "alignat",
-         "flalign",
-         "gather",
-         "multiline",
-         "displaymath",
-         "eqnarray",
-         "equation"})
-  {
-    if (word == s)
+  return std::any_of(
+    m_words.begin(),
+    m_words.end(),
+    [&s](const auto& w)
     {
-      return true;
-    }
-  }
+      return w == s;
+    });
 
   return false;
 }

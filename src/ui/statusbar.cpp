@@ -234,10 +234,9 @@ void wex::statusbar::pane_dialog()
 std::tuple<bool, int, int>
 wex::statusbar::pane_info(const std::string& pane) const
 {
-  const std::string use_pane      = pane.empty() ? "PaneText" : pane;
-  int               shown_pane_no = 0;
+  const std::string use_pane = pane.empty() ? "PaneText" : pane;
 
-  for (int pane_no = 0; const auto& it : m_panes)
+  for (int pane_no = 0, shown_pane_no = 0; const auto& it : m_panes)
   {
     if (it.is_shown())
     {
