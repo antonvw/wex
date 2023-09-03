@@ -13,8 +13,13 @@
 class frame : public wex::del::frame
 {
 public:
+  /// Default constructor.
   frame();
 
+  /// Destructor.
+  ~frame();
+
+  /// Update from app.
   void update(app* a);
 
 private:
