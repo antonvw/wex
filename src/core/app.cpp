@@ -59,6 +59,9 @@ int wex::app::OnExit()
     std::cout << e.what() << "\n";
   }
 
+  delete wxTranslations::Get();
+  delete m_loader;
+
   return wxApp::OnExit();
 }
 
@@ -75,13 +78,13 @@ bool wex::app::OnInit()
 
   if (m_language != wxLANGUAGE_UNKNOWN && m_language != wxLANGUAGE_DEFAULT)
   {
-    auto* loader = new file_translations_loader();
+    m_loader = new file_translations_loader();
     wxUILocale::FromTag(wxUILocale::GetLanguageCanonicalName(m_language));
     wxTranslations::Set(new wxTranslations());
     wxTranslations::Get()->SetLanguage(m_language);
-    wxTranslations::Get()->SetLoader(loader);
+    wxTranslations::Get()->SetLoader(m_loader);
 
-    loader->add_catalogs(m_language);
+    m_loader->add_catalogs(m_language);
   }
 
   // Necessary for auto_complete images.

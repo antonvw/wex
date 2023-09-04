@@ -747,7 +747,7 @@ void wex::vi::visual_extend(int begin_pos, int end_pos) const
     default:
       get_stc()->SetCurrentPos(end_pos);
       get_stc()
-        ->SelectNone(); // appearently previous call selects to the new pos ..
+        ->SelectNone(); // apparently previous call selects to the new pos ..
       break;
   }
 }

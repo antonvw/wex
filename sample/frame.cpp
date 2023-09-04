@@ -125,6 +125,11 @@ frame::frame()
      {"PaneMacro", 50}});
 }
 
+frame::~frame()
+{
+  delete m_process;
+}
+
 wex::del::listview*
 frame::activate(wex::data::listview::type_t type, const wex::lexer* lexer)
 {

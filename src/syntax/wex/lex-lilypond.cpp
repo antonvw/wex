@@ -127,7 +127,7 @@ void SCI_METHOD lex_lilypond::Fold(
 
   do
   {
-    char         ch, buf[16];
+    char         buf[16];
     Sci_Position i, j;
     int          lev      = -1;
     bool         needFold = false;
@@ -135,7 +135,7 @@ void SCI_METHOD lex_lilypond::Fold(
          i < static_cast<Sci_Position>(endPos);
          ++i)
     {
-      ch = styler.SafeGetCharAt(i);
+      const char ch = styler.SafeGetCharAt(i);
       if (ch == '\r' || ch == '\n')
         break;
       if (ch == '{')

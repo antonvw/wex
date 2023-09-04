@@ -286,15 +286,15 @@ bool wex::lexer::apply() const
 
 int wex::lexer::attrib(const std::string& name) const
 {
-  for (const auto& a : m_attribs)
-  {
-    if (std::get<0>(a) == name)
+  const auto& a = std::find_if(
+    m_attribs.begin(),
+    m_attribs.end(),
+    [&](auto const& i)
     {
-      return std::get<1>(a);
-    }
-  }
+      return std::get<0>(i) == name;
+    });
 
-  return -1;
+  return a != m_attribs.end() ? std::get<1>(*a) : -1;
 }
 
 void wex::lexer::auto_match(const std::string& lexer)

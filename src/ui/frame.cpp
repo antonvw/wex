@@ -327,6 +327,8 @@ wex::frame::~frame()
   {
     delete m_ofs;
   }
+
+  delete m_ex_commandline;
 }
 
 bool wex::frame::add_toolbar_panes(const panes_t& panes)

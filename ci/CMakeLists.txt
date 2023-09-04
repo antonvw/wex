@@ -11,11 +11,12 @@ if (NOT WIN32)
 
   add_custom_target(cppcheck
     COMMAND cppcheck
-      --std=c++${WEX_CXX_STANDARD}20
+      --std=c++${WEX_CXX_STANDARD}
       --quiet --enable=all
       --suppress=missingInclude
       --suppress=cppcheckError 
       --suppress=cstyleCast 
+      --suppress=missingIncludeSystem
       --suppress=internalAstError 
       --suppress=invalidFunctionArg
       --suppress=noExplicitConstructor 
