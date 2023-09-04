@@ -2,9 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## 23.10 - 2023-10-01 [Unreleased]
+## 24.04 - 2024-04-01 [Unreleased]
+
+## 23.10 - 2023-10-08
 
 ### Added
 
@@ -23,6 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - lilypond lexer improved
 
 ### Fixed
+- possible crash in lisview sorting
 - ctags::find and empty tag finds next tag
 - rectangular paste
 
