@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of wex::listview and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -31,7 +31,7 @@
 #include <wx/dnd.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/imaglist.h>
-#include <wx/numdlg.h>           // for wxGetNumberFromUser
+#include <wx/numdlg.h> // for wxGetNumberFromUser
 #include <wx/settings.h>
 
 #include <algorithm>
@@ -91,9 +91,10 @@ const std::vector<item> config_items()
          {_("list.Single selection"), item::CHECKBOX},
          {_("list.Comparator"), item::FILEPICKERCTRL},
          {_("list.Sort method"),
-          {{SORT_ASCENDING, _("Sort ascending")},
-           {SORT_DESCENDING, _("Sort descending")},
-           {SORT_TOGGLE, _("Sort toggle")}}},
+          {{SORT_TOGGLE, _("Sort toggle")},
+           {SORT_KEEP, _("Sort keep order")},
+           {SORT_ASCENDING, _("Sort ascending")},
+           {SORT_DESCENDING, _("Sort descending")}}},
          {_("list.Context size"), 0, 80, 10},
          {_("list.Rulers"),
           {{wxLC_HRULES, _("Horizontal rulers")},

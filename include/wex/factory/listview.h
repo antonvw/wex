@@ -20,10 +20,10 @@ namespace wex
 /// Sort types.
 enum sort_t
 {
-  SORT_KEEP = 1,   ///< keep current order, just resort
+  SORT_TOGGLE = 0, ///< toggle sort order
+  SORT_KEEP,       ///< keep current order, just resort
   SORT_ASCENDING,  ///< sort ascending
   SORT_DESCENDING, ///< sort descending
-  SORT_TOGGLE      ///< toggle sort order
 };
 
 /// Offers a column to be used in a wxListCtrl. Facilitates sorting.
