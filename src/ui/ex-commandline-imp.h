@@ -55,6 +55,7 @@ private:
 
   ex_commandline_input* cli();
 
+  void ex_mode();
   void init();
   bool input_mode_finish() const;
   bool is_ex_mode() const;
