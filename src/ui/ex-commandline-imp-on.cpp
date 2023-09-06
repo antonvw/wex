@@ -16,6 +16,15 @@
 
 #include "ex-commandline-imp.h"
 
+void wex::ex_commandline_imp::ex_mode()
+{
+  ClearAll();
+
+  m_command.set(":");
+
+  SetFocus();
+}
+
 void wex::ex_commandline_imp::on_char(wxKeyEvent& event)
 {
   if (event.GetUnicodeKey() == WXK_NONE)
@@ -122,8 +131,7 @@ void wex::ex_commandline_imp::on_key_down_escape()
 {
   if (is_ex_mode())
   {
-    ClearAll();
-    m_command = ex_command(":");
+    ex_mode();
   }
   else if (m_cl->stc() != nullptr)
   {
@@ -271,9 +279,7 @@ void wex::ex_commandline_imp::on_text_enter_do()
 
   if (is_ex_mode())
   {
-    ClearAll();
-    m_command = ex_command(":");
-    SetFocus();
+    ex_mode();
   }
 
   if (m_input == 0 && !is_ex_mode())
