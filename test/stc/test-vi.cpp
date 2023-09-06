@@ -34,8 +34,9 @@ wex::file open_file()
 
 TEST_CASE("wex::vi")
 {
-  auto* stc = get_stc();
-  auto* vi  = &get_stc()->get_vi();
+  auto* stc = new wex::stc();
+  frame()->pane_add(stc);
+  auto* vi = &stc->get_vi();
   stc->set_text("");
 
   SUBCASE("change")

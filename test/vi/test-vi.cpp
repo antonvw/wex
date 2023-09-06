@@ -34,7 +34,7 @@ void change_prep(
 TEST_CASE("wex::vi")
 {
   auto* stc = get_stc();
-  auto* vi  = new wex::vi(get_stc());
+  auto* vi  = new wex::vi(stc);
 
   // First load macros.
   REQUIRE(wex::ex::get_macros().load_document());
