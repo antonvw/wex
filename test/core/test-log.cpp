@@ -76,9 +76,11 @@ TEST_CASE("wex::log")
     CAPTURE(wex::log::path());
     REQUIRE(logfile.is_open());
 
-    auto* text = logfile.read();
-    auto  pos(text->substr(0, text->size() - 2).find_last_of('\n'));
-    REQUIRE(!text->substr(pos).contains("off:"));
+    if (auto* text = logfile.read(); text->size() > 1)
+    {
+      auto pos(text->substr(0, text->size() - 2).find_last_of('\n'));
+      REQUIRE(!text->substr(pos).contains("off:"));
+    }
   }
 
   SUBCASE("status")

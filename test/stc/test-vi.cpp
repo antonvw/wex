@@ -116,6 +116,31 @@ TEST_CASE("wex::vi")
     }
   }
 
+  SUBCASE("navigate")
+  {
+    stc->set_text("{a brace and a close brace}");
+
+    SUBCASE("brace")
+    {
+      REQUIRE(vi->command("%"));
+      REQUIRE(stc->GetCurrentPos() == 26);
+      REQUIRE(vi->command("%"));
+      REQUIRE(stc->GetCurrentPos() == 0);
+    }
+
+    SUBCASE("brace-visual")
+    {
+      REQUIRE(vi->command("y%"));
+      REQUIRE(stc->GetSelectedText().size() == 27);
+    }
+
+    SUBCASE("delete")
+    {
+      REQUIRE(vi->command(wex::k_s(WXK_DELETE)));
+      REQUIRE(stc->get_text().starts_with("a brace"));
+    }
+  }
+
   SUBCASE("number")
   {
     change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
