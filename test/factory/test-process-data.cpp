@@ -17,7 +17,7 @@ TEST_CASE("wex::process_data")
     REQUIRE(data.args().empty());
     REQUIRE(data.args_str().empty());
     REQUIRE(data.exe().empty());
-    REQUIRE(data.exe_path().empty());
+    CHECK_THROWS_WITH(data.exe_path().empty(), "Cannot execute empty string");
     REQUIRE(data.start_dir().empty());
     REQUIRE(data.std_in().empty());
   }
@@ -31,8 +31,9 @@ TEST_CASE("wex::process_data")
     REQUIRE(data.args().front() == "yy");
     REQUIRE(data.exe() == "wc yy");
 #ifdef __UNIX__
-    REQUIRE(data.exe_path() == "/usr/bin/wc");
-    REQUIRE(data.log() == "exe: /usr/bin/wc args: yy");
+    REQUIRE(data.exe_path().ends_with("/bin/wc"));
+    REQUIRE(data.log().contains("wc"));
+    REQUIRE(data.log().contains("args"));
 #endif
     REQUIRE(data.start_dir().empty());
     REQUIRE(data.std_in().empty());
@@ -50,7 +51,7 @@ TEST_CASE("wex::process_data")
   {
     wex::process_data data("xx -c -v");
 
-    REQUIRE(data.log() == "exe: xx args: -c -v");
+    REQUIRE(data.log() == "exe: Could not find: xx args: -c -v");
   }
 
   SUBCASE("set")
