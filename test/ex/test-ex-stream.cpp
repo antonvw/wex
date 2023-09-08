@@ -214,7 +214,7 @@ TEST_CASE("wex::ex_stream")
   {
     wex::file ifs(open_file(false));
     REQUIRE(ifs.open());
-    exs.stream(ifs);
+    exs.stream(ifs, 1000);
 
     REQUIRE(exs.find(std::string("test1")));
     REQUIRE(exs.is_block_mode());
@@ -260,7 +260,7 @@ TEST_CASE("wex::ex_stream")
   {
     wex::file ifs(open_file(false));
     REQUIRE(ifs.open());
-    exs.stream(ifs);
+    exs.stream(ifs, 1000);
     exs.goto_line(100);
 
 #ifndef __WXMSW__

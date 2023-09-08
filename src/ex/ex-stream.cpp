@@ -63,14 +63,10 @@
 
 #include <regex>
 
-const int default_line_size = 1000;
-
 wex::ex_stream::ex_stream(wex::ex* ex)
   : m_context_lines(50)
   , m_buffer_size(1000000)
   , m_buffer(new char[m_buffer_size])
-  , m_current_line_size(default_line_size)
-  , m_current_line(new char[m_current_line_size])
   , m_ex(ex)
   , m_stc(ex->get_stc())
 {
@@ -274,7 +270,7 @@ bool wex::ex_stream::find_finish(data::find& f, bool& found)
     log::trace("ex stream found") << f.text() << "current" << m_line_no;
   }
 
-  m_current_line_size = default_line_size;
+  m_current_line_size = m_default_line_size;
 
   return found;
 }
@@ -325,7 +321,7 @@ int wex::ex_stream::get_line_count_request()
 
     if (m_block_mode)
     {
-      line_no += m_buffer_size / default_line_size;
+      line_no += m_buffer_size / m_default_line_size;
     }
   }
 
@@ -410,7 +406,7 @@ bool wex::ex_stream::get_previous_line()
     }
 
     // There was no newline, this implies block mode.
-    if (m_current_line_size == default_line_size)
+    if (m_current_line_size == m_default_line_size)
     {
       m_block_mode = true;
       return static_cast<int>(m_stream->gcount()) > m_current_line_size - 1;
@@ -600,13 +596,17 @@ void wex::ex_stream::set_text()
     m_stc->GetLineEndPosition(m_stc->GetLineCount() - 1));
 }
 
-void wex::ex_stream::stream(file& f)
+void wex::ex_stream::stream(file& f, size_t default_line_size)
 {
   if (!f.is_open())
   {
     log("file is not open") << f.path();
     return;
   }
+
+  m_default_line_size = default_line_size;
+  m_current_line_size = default_line_size;
+  m_current_line      = new char[m_current_line_size];
 
   m_file   = &f;
   m_stream = &f.stream();
