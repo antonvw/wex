@@ -26,8 +26,8 @@ jobs:
       - name: Install gtk
         run: sudo apt-get update && sudo apt-get install liblzma5 libjbig0 libgtk-3-dev
 
-      - name: Install gcc and lcov
-        run: sudo apt-get install -yq gcc-12 g++-12 lcov
+      - name: Install gcc, lcov, gdb
+        run: sudo apt-get install -yq gcc-12 g++-12 lcov gdb
 
       - name: Install xvfb to allow headless tests
         run: sudo apt-get install xvfb
