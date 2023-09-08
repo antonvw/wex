@@ -19,7 +19,8 @@ void modeline_from_file(const std::string& name)
 
 TEST_CASE("wex::stc")
 {
-  auto* stc = get_stc();
+  auto* stc = new wex::stc();
+  frame()->pane_add(stc);
   stc->get_vi().command("\x1b");
   wex::config(_("stc.Wrap scan")).set(true);
 

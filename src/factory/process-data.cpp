@@ -55,11 +55,19 @@ const std::string wex::process_data::exe_path() const
 {
   const auto& p(path(find_before(m_exe, " ")));
 
-  if (!p.file_exists())
+  if (p.string().empty())
+  {
+    throw std::invalid_argument("Cannot execute empty string");
+  }
+  else if (!p.file_exists())
   {
     if (const auto& bop(bp::search_path(p.string())); !bop.empty())
     {
       return bop.string();
+    }
+    else
+    {
+      throw std::invalid_argument("Could not find: " + p.string());
     }
   }
 
@@ -69,8 +77,18 @@ const std::string wex::process_data::exe_path() const
 const std::string wex::process_data::log() const
 {
   const auto& arg_v(args());
+  std::string exe("exe: ");
 
-  return "exe: " + exe_path() +
+  try
+  {
+    exe += exe_path();
+  }
+  catch (std::exception& e)
+  {
+    exe += e.what();
+  }
+
+  return exe +
          (!arg_v.empty() ?
             " args:" + std::accumulate(
                          arg_v.begin(),

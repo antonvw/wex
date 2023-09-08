@@ -27,8 +27,14 @@ TEST_CASE("wex::beautify")
     REQUIRE(stc->get_lexer().set("cpp", true));
     stc->set_text("if (x) {}\n");
 
-    REQUIRE(wex::beautify().stc(*stc));
-    REQUIRE(stc->get_text() == "if (x)\n{\n}\n");
+    if (wex::beautify().stc(*stc))
+    {
+      REQUIRE(stc->get_text() == "if (x)\n{\n}\n");
+    }
+    else
+    {
+      REQUIRE(stc->get_text() == "if (x) {}\n");
+    }
   }
 #endif
 

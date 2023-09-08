@@ -14,10 +14,13 @@
 
 #include "process-imp.h"
 
-#define WEX_POST(ID, TEXT, DEST)                         \
-  wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID); \
-  event.SetString(TEXT);                                 \
-  wxPostEvent(DEST, event);
+#define WEX_POST(ID, TEXT, DEST)                           \
+  if (DEST != nullptr)                                     \
+  {                                                        \
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID); \
+    event.SetString(TEXT);                                 \
+    wxPostEvent(DEST, event);                              \
+  }
 
 wex::factory::process_imp::process_imp()
   : m_io(std::make_shared<boost::asio::io_context>())
@@ -38,13 +41,21 @@ void wex::factory::process_imp::async_system(
   m_debug.store(p->m_eh_debug != nullptr);
   m_data = data;
 
-  boost_async_system(p, data);
+  try
+  {
+    boost_async_system(p, data);
 
-  m_is_running.store(true);
+    m_is_running.store(true);
 
-  thread_input(p);
-  thread_output(p);
-  thread_error(p);
+    thread_input(p);
+    thread_output(p);
+    thread_error(p);
+  }
+  catch (std::exception& e)
+  {
+    log::status("async_system") << e.what();
+    log("async_system") << e.what();
+  }
 }
 
 void wex::factory::process_imp::boost_async_system(
@@ -211,9 +222,7 @@ void wex::factory::process_imp::thread_output(const process* p)
 
         if (!queue->empty())
         {
-          const auto& text(queue->front());
-
-          if (os.good() && !io->stopped())
+          if (const auto& text(queue->front()); os.good() && !io->stopped())
           {
             log::debug("async_system") << "write:" << text;
 
