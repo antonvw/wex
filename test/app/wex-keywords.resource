@@ -74,7 +74,7 @@ Contents Does Not Contain
 	Should Not Contain	${result}	${text}
 
 Find Appl
-	[Documentation]	Appends text to input
+	[Documentation]	Set the APPL variable to correct binary
 	[Tags]	:private
 	${result}=	Run Process
 	...	find	../../

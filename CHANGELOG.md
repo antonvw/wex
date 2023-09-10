@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - removed some not necessary copy constructors
 - moved window.h and control.h to factory
 - lilypond lexer improved
+- added wex::ex_stream::stream argument line size and increased default value
 
 ### Fixed
 - possible crash in lisview sorting
