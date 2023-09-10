@@ -66,7 +66,7 @@ int find_stc(ex* ex, const std::string& text, int start_pos, bool forward)
 
 int find_stream(ex* ex, const std::string& text, bool forward)
 {
-  if (ex->ex_stream()->find(text, -1, forward))
+  if (ex->ex_stream()->find(text, 0, forward))
   {
     return ex->ex_stream()->get_current_line() + 1;
   }

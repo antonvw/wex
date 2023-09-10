@@ -138,9 +138,8 @@ bool wex::ex_stream::erase(const addressrange& range)
 
 void wex::ex_stream::filter_line(int start, int end, std::streampos spos)
 {
-  // m_buffer , now from end of m_buffer search
-  // backwards for newline, this is the m_current_line to handle, and set the
-  // stream pointer to position before that newline.
+  // copy from start of m_buffer to the current line
+  // and set the stream pointer
   const size_t sz(end - start);
 
   strncpy(m_current_line, m_buffer + start + 1, sz);
@@ -149,7 +148,7 @@ void wex::ex_stream::filter_line(int start, int end, std::streampos spos)
 
   if (spos == 0)
   {
-    m_current_line_size = start - 1;
+    m_current_line_size = start;
     m_stream->clear();
     m_stream->seekg(0);
   }
@@ -214,6 +213,8 @@ bool wex::ex_stream::find_data(data::find& f)
 
   m_stream->clear();
 
+  m_pos_to_bol = true;
+
   // Notice we start get..line, and not searching in the current line.
   while (!found && ((f.is_forward() && get_next_line()) ||
                     (!f.is_forward() && get_previous_line())))
@@ -223,6 +224,10 @@ bool wex::ex_stream::find_data(data::find& f)
       (use_regex && std::regex_search(m_current_line, r)))
     {
       found = true;
+    }
+    else
+    {
+      m_pos_to_bol = false;
     }
   }
 
@@ -374,24 +379,35 @@ bool wex::ex_stream::get_previous_line()
     m_stream->seekg((size_t)pos - m_current_line_size);
     pos = m_stream->tellg();
   }
-  else
+  else if (pos > 0)
   {
-    pos = 0;
     m_stream->seekg(0);
+    m_current_line_size = pos;
+    m_current_line_size--;
+    pos = 0;
   }
 
   m_stream->read(m_buffer, m_current_line_size);
 
   if (m_stream->gcount() > 0)
   {
-    const int end = m_stream->gcount() - 1;
+    int  end    = m_stream->gcount() - 1;
+    bool second = !m_pos_to_bol;
 
     for (int i = end; i >= 0; i--)
     {
       if (m_buffer[i] == '\n')
       {
-        filter_line(i, end, pos);
-        return true;
+        if (!second)
+        {
+          end    = i;
+          second = true;
+        }
+        else
+        {
+          filter_line(i, end, pos);
+          return true;
+        }
       }
     }
 

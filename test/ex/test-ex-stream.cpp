@@ -165,6 +165,7 @@ TEST_CASE("wex::ex_stream")
     }
   }
 
+  // See also stc/test-ex-mocde.cpp
   SUBCASE("find")
   {
     wex::file ifs("test.md", std::ios_base::in);
@@ -193,6 +194,11 @@ TEST_CASE("wex::ex_stream")
     exs.goto_line(10);
     REQUIRE(exs.find(std::string("one")));
     REQUIRE(exs.get_current_line() == line_containing_one_test_md);
+
+    REQUIRE(exs.find(std::string("w")));
+    REQUIRE(exs.get_current_line() == 9);
+    REQUIRE(exs.find(std::string("w"), 0, false));
+    REQUIRE(exs.get_current_line() == 2);
   }
 
   SUBCASE("find_data")

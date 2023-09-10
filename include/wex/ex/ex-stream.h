@@ -142,7 +142,7 @@ private:
   bool get_previous_line();
   void set_text();
 
-  bool m_block_mode{false}, m_is_modified{false};
+  bool m_block_mode{false}, m_is_modified{false}, m_pos_to_bol{false};
 
   const size_t m_buffer_size, m_context_lines;
 
