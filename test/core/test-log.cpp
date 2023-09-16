@@ -86,14 +86,24 @@ TEST_CASE("wex::log")
   SUBCASE("status")
   {
     wex::log log(wex::log::status("status"));
-    log << wex::test::get_path("test.h");
-    log << "hello world";
 
-    REQUIRE(log.get().starts_with("status"));
-    REQUIRE(!log.get().contains("\""));
+    SUBCASE("path")
+    {
+      log << wex::test::get_path("test.h");
+      log << "hello world";
 
-    log << std::string("a string");
-    REQUIRE(!log.get().contains("\""));
+      REQUIRE(log.get().starts_with("status: "));
+      REQUIRE(!log.get().contains("\""));
+
+      log << std::string("a string");
+      REQUIRE(!log.get().contains("\""));
+    }
+
+    SUBCASE("string")
+    {
+      log << std::string("one");
+      REQUIRE(log.get().starts_with("status: "));
+    }
   }
 
   SUBCASE("trace")

@@ -19,18 +19,18 @@ int                numBase = 0;
 Scintilla::lex_rfw::lex_rfw()
   : DefaultLexer(name(), language())
   , m_sub_styles(style_subable, 0x80, 0x40, 0)
+  , m_section_keywords(
+      {{"Setting", SECTION_SETTING},
+       {"Variable", SECTION_VARIABLE},
+       {"Test Case", SECTION_TESTCASE},
+       {"Task", SECTION_TASK},
+       {"Keyword", SECTION_KEYWORD},
+       {"Comment", SECTION_COMMENT}})
 {
   m_cmd_delimiter.Set("| || |& & && ; ;; ( ) { }");
 }
 
-Scintilla::lex_rfw::~lex_rfw()
-{
-  delete m_quote;
-  delete m_quote_stack;
-  delete m_section_begin;
-  delete m_section_end;
-  delete m_section_keywords;
-}
+Scintilla::lex_rfw::~lex_rfw() {}
 
 void Scintilla::lex_rfw::keywords_update()
 {
@@ -52,15 +52,6 @@ void Scintilla::lex_rfw::keywords_update()
 
 void Scintilla::lex_rfw::init(LexAccessor& styler)
 {
-  if (m_section_keywords != nullptr)
-  {
-    delete m_quote;
-    delete m_quote_stack;
-    delete m_section_begin;
-    delete m_section_end;
-    delete m_section_keywords;
-  }
-
   /* The recommended header format is *** Settings ***,
      but the header is case-insensitive, surrounding spaces are
      optional, and the number of asterisk characters can vary as long
@@ -72,18 +63,11 @@ void Scintilla::lex_rfw::init(LexAccessor& styler)
      And it is an error to have both test cases and tasks in the same file.
      -> our compare is not yet case insensitive
     */
-  m_section_begin    = new wex::regex_part("\\*+ *");
-  m_section_end      = new wex::regex_part("s? *\\**");
-  m_section_keywords = new section_keywords_t(
-    {{"Setting", SECTION_SETTING},
-     {"Variable", SECTION_VARIABLE},
-     {"Test Case", SECTION_TESTCASE},
-     {"Task", SECTION_TASK},
-     {"Keyword", SECTION_KEYWORD},
-     {"Comment", SECTION_COMMENT}});
+  m_section_begin = std::make_unique<wex::regex_part>("\\*+ *");
+  m_section_end   = std::make_unique<wex::regex_part>("s? *\\**");
 
-  m_quote       = new quote(styler);
-  m_quote_stack = new quote_stack(styler);
+  m_quote       = std::make_unique<quote>(styler);
+  m_quote_stack = std::make_unique<quote_stack>(styler);
 
   m_section.reset();
 }
@@ -164,8 +148,8 @@ bool Scintilla::lex_rfw::section_keywords_detect(
   int&               cmd_state_new)
 {
   return std::any_of(
-    m_section_keywords->begin(),
-    m_section_keywords->end(),
+    m_section_keywords.begin(),
+    m_section_keywords.end(),
     [&sc, &word, &cmd_state_new, this](const auto& i)
     {
       if (std::equal(word.begin(), word.end(), i.first.begin()))
@@ -200,21 +184,7 @@ void Scintilla::lex_rfw::section_start(
 
   cmd_state_new = RFW_CMD_START;
 
-  if (m_section.is_case())
-  {
-    // remove the other testcase like section as there can be only one of them
-    const auto other_section =
-      (m_section.id() == SECTION_TESTCASE ? SECTION_TASK : SECTION_TESTCASE);
-
-    m_section_keywords->erase(std::remove_if(
-      m_section_keywords->begin(),
-      m_section_keywords->end(),
-      [&](const std::pair<wex::regex_part, section_t>& it)
-      {
-        return it.second == other_section;
-      }));
-  }
-  else if (m_section.id() == SECTION_COMMENT)
+  if (m_section.id() == SECTION_COMMENT)
   {
     sc.SetState(SCE_SH_COMMENTLINE);
   }
@@ -872,10 +842,31 @@ void SCI_METHOD Scintilla::lex_rfw::Lex(
         m_section_begin->match_type() == wex::regex_part::MATCH_HISTORY ||
         m_section_begin->match(sc.ch) >= wex::regex_part::MATCH_PART)
       {
-        section_keywords_detect(
-          words.substr(m_section_begin->text().size()),
-          sc,
-          cmd_state_new);
+        if (
+          section_keywords_detect(
+            words.substr(m_section_begin->text().size()),
+            sc,
+            cmd_state_new) &&
+          m_section.is_case())
+        {
+          // remove the other testcase like section as there can be only one of
+          // them
+          const auto other_section =
+            (m_section.id() == SECTION_TESTCASE ? SECTION_TASK :
+                                                  SECTION_TESTCASE);
+
+          if (const auto& removed(std::remove_if(
+                m_section_keywords.begin(),
+                m_section_keywords.end(),
+                [&](const auto& it)
+                {
+                  return it.second == other_section;
+                }));
+              removed != m_section_keywords.end())
+          {
+            m_section_keywords.erase(removed);
+          }
+        }
       }
 
       if (cmd_state_new != RFW_CMD_SKW_PARTIAL)

@@ -124,12 +124,12 @@ bool wex::ex_commandline_input::set(int key, wxTextEntryBase* te)
       break;
 
     case WXK_END:
-      m_iterator = m_values.cend();
-      --m_iterator;
+      m_iterator = m_values.cbegin();
       break;
 
     case WXK_HOME:
-      m_iterator = m_values.cbegin();
+      m_iterator = m_values.cend();
+      --m_iterator;
       break;
 
     case WXK_PAGEDOWN:

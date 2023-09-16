@@ -98,10 +98,6 @@ void wex::ex_commandline_imp::on_key_down(wxKeyEvent& event)
       break;
 
     default:
-      if (isascii(event.GetKeyCode()))
-      {
-        Cut();
-      }
       event.Skip();
   }
 }

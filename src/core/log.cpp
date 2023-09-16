@@ -24,7 +24,7 @@ namespace logging = boost::log;
 
 namespace wex
 {
-std::string get_logfile(const std::string& default_logfile)
+constexpr std::string get_logfile(const std::string& default_logfile)
 {
   if (!default_logfile.empty())
   {
@@ -38,6 +38,18 @@ std::string get_logfile(const std::string& default_logfile)
     wxTheApp->GetAppName().ToStdString() + ".log");
 
   return p.string();
+}
+
+constexpr std::string quote(const std::string& r, log::level_t level)
+{
+  if (level == log::LEVEL_STATUS)
+  {
+    return "";
+  }
+  else
+  {
+    return r.contains(" ") ? "\"" : "";
+  }
 }
 
 std::string ws2s(const std::wstring& wstr)
@@ -149,10 +161,7 @@ wex::log& wex::log::operator<<(const wchar_t* r)
 
 wex::log& wex::log::operator<<(const std::string& r)
 {
-  if (m_level != LEVEL_STATUS)
-  {
-    m_ss << S() << (r.contains(" ") ? "\"" : "");
-  }
+  m_ss << S() << quote(r, m_level);
 
   if (r.empty())
   {
@@ -177,10 +186,7 @@ wex::log& wex::log::operator<<(const std::string& r)
     }
   }
 
-  if (m_level != LEVEL_STATUS)
-  {
-    m_ss << (r.contains(" ") ? "\"" : "");
-  }
+  m_ss << quote(r, m_level);
 
   return *this;
 }
@@ -237,7 +243,10 @@ void wex::log::flush()
         break;
 
       case LEVEL_STATUS:
-        wxLogStatus("%s", text.c_str());
+        if (m_level_filter != LEVEL_OFF)
+        {
+          wxLogStatus("%s", text.c_str());
+        }
         break;
 
       case LEVEL_TRACE:

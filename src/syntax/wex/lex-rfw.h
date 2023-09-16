@@ -8,6 +8,7 @@
 #pragma once
 
 #include <list>
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -228,7 +229,7 @@ private:
   void parse_keyword(StyleContext& sc, int cmdState, int& cmd_state_new);
 
   typedef std::pair<std::string, section_t> section_keyword_t;
-  typedef std::list<section_keyword_t>      section_keywords_t;
+  typedef std::vector<section_keyword_t>    section_keywords_t;
 
   bool section_keywords_detect(
     const std::string& word,
@@ -257,10 +258,11 @@ private:
   bool m_visual_mode{true};
   int  m_style_prev{-1};
 
-  quote*              m_quote{nullptr};
-  quote_stack*        m_quote_stack{nullptr};
-  wex::regex_part *   m_section_begin{nullptr}, *m_section_end{nullptr};
-  section_keywords_t* m_section_keywords{nullptr};
+  std::unique_ptr<quote>           m_quote;
+  std::unique_ptr<quote_stack>     m_quote_stack;
+  std::unique_ptr<wex::regex_part> m_section_begin, m_section_end;
+
+  section_keywords_t m_section_keywords;
 
   std::vector<std::string> m_spaced_keywords;
 };
