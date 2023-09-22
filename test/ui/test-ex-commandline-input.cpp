@@ -55,14 +55,23 @@ TEST_CASE("wex::ex_commandline_input")
     cli.set(
       wex::ex_commandline_input::values_t{"hello", "find3", "find4", "find5"});
 
-    REQUIRE(cli.set(WXK_END));
-    REQUIRE(cli.get() == "hello");
     REQUIRE(cli.set(WXK_HOME));
     REQUIRE(cli.get() == "find5");
+    REQUIRE(cli.set(WXK_HOME));
+    REQUIRE(cli.get() == "find5");
+    REQUIRE(cli.set(WXK_UP));
+    REQUIRE(cli.get() == "find5");
+    REQUIRE(cli.set(WXK_DOWN));
+    REQUIRE(cli.get() == "find4");
+
+    REQUIRE(cli.set(WXK_END));
+    REQUIRE(cli.get() == "hello");
     REQUIRE(cli.set(WXK_END));
     REQUIRE(cli.get() == "hello");
     REQUIRE(cli.set(WXK_DOWN));
     REQUIRE(cli.get() == "hello");
+    REQUIRE(cli.set(WXK_UP));
+    REQUIRE(cli.get() == "find3");
     REQUIRE(cli.set(WXK_PAGEDOWN));
     REQUIRE(cli.get() == "hello");
 
