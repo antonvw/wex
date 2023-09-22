@@ -24,7 +24,7 @@ namespace logging = boost::log;
 
 namespace wex
 {
-constexpr std::string get_logfile(const std::string& default_logfile)
+std::string get_logfile(const std::string& default_logfile)
 {
   if (!default_logfile.empty())
   {
@@ -40,7 +40,7 @@ constexpr std::string get_logfile(const std::string& default_logfile)
   return p.string();
 }
 
-constexpr std::string quote(const std::string& r, log::level_t level)
+std::string quote(const std::string& r, log::level_t level)
 {
   if (level == log::LEVEL_STATUS)
   {
