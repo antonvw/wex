@@ -2,7 +2,7 @@
 // Name:      stc/bind.cpp
 // Purpose:   Implementation of class wex::stc method bind_all
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2018-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -150,6 +150,12 @@ void wex::stc::bind_all()
         m_vi->command(event.GetString());
       },
       id::stc::vi_command},
+
+     {[=, this](wxCommandEvent& event)
+      {
+        clear(false);
+      },
+      wxID_CLEAR},
 
      {[=, this](wxCommandEvent& event)
       {
