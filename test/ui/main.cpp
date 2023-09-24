@@ -2,18 +2,18 @@
 // Name:      main.cpp
 // Purpose:   main for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "test.h"
 
-ui_stc::ui_stc(const wex::data::stc& data)
+wex::test::ui_stc::ui_stc(const wex::data::stc& data)
+  : wex::syntax::stc(data.window())
 {
-  Create(data.window().parent(), -1);
   Show();
 }
 
-wex::file& ui_stc::get_file()
+wex::file& wex::test::ui_stc::get_file()
 {
   return m_file;
 }
@@ -51,23 +51,14 @@ int main(int argc, char* argv[])
 
 bool wex::test::ui::OnInit()
 {
-  if (!test::app::OnInit())
+  if (!wex::app::OnInit() || !on_init(this))
   {
     return false;
   }
 
   m_frame     = new wex::frame();
-  m_statusbar = m_frame->setup_statusbar(
-    {{"Pane0"}, // the order of panes is tested
-     {"Pane1"},
-     {"Pane2"},
-     {"Pane3"},
-     {"Pane4"},
-     {"PaneInfo"},
-     {"PaneLexer"},
-     {"PaneMode"},
-     {"PaneFileType"},
-     {"LastPane"}});
+  m_statusbar = m_frame->setup_statusbar({{}});
+
   wex::data::window data;
   data.parent(m_frame);
   m_stc = new ui_stc(data);

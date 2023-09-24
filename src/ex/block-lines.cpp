@@ -2,7 +2,7 @@
 // Name:      block-lines.cpp
 // Purpose:   Implementation of class wex::block_lines
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
@@ -18,20 +18,6 @@ wex::block_lines::block_lines(ex* ex, int start, int end)
   , m_end(end)
   , m_name(start == -1 ? "ib" : "mb")
 {
-}
-
-wex::block_lines& wex::block_lines::operator=(const wex::block_lines& r)
-{
-  if (this != &r)
-  {
-    m_end   = r.m_end;
-    m_ex    = r.m_ex;
-    m_name  = r.m_name;
-    m_start = r.m_start;
-    m_stc   = r.m_ex->get_stc();
-  }
-
-  return *this;
 }
 
 void wex::block_lines::end(int line)

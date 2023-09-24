@@ -2,7 +2,7 @@
 // Name:      ex-commandline-imp.h
 // Purpose:   Declaration of wex::ex-commandline-imp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -55,7 +55,8 @@ private:
 
   ex_commandline_input* cli();
 
-  void init(const data::window& data);
+  void ex_mode();
+  void init();
   bool input_mode_finish() const;
   bool is_ex_mode() const;
 

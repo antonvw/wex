@@ -2,20 +2,10 @@
 // Name:      data/control.cpp
 // Purpose:   Implementation of wex::data::control
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/data/control.h>
-
-wex::data::control& wex::data::control::command(const std::string& command)
-{
-  if (!command.empty())
-  {
-    m_command = command;
-  }
-
-  return *this;
-}
+#include <wex/factory/control.h>
 
 wex::data::control& wex::data::control::find(const std::string& text, int flags)
 {
@@ -57,7 +47,7 @@ bool wex::data::control::inject(
     }
   }
 
-  if (!m_command.empty() && f_command != nullptr)
+  if (!command().empty() && f_command != nullptr)
   {
     if (f_command())
     {
@@ -70,7 +60,6 @@ bool wex::data::control::inject(
 
 void wex::data::control::reset()
 {
-  m_command.clear();
   m_find.clear();
   m_is_required = false;
   m_validator   = nullptr;

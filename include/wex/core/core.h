@@ -2,7 +2,7 @@
 // Name:      core.h
 // Purpose:   Include file for wex core utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -79,6 +79,12 @@ const std::string get_string_set(
 /// Returns a word from a string.
 const std::string get_word(std::string& text);
 
+/// Returns 0 if both texts are equal, ignoring case.
+int icompare(const std::string& text1, const std::string& text2);
+
+/// Returns true if text contains sequence, ignoring case.
+bool icontains(const std::string& text, const std::string& sequence);
+
 /// Returns true if char is a brace open or close character.
 bool is_brace(int c);
 
@@ -112,7 +118,4 @@ bool single_choice_dialog(
   const std::string&              title,
   const std::vector<std::string>& v,
   std::string&                    selection);
-
-/// This takes care of the translation.
-const std::string translate(const std::string& text, int pageNum, int numPages);
 } // namespace wex

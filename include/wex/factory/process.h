@@ -86,7 +86,7 @@ private:
 
   process_data m_data;
 
-  std::unique_ptr<process_imp> m_imp;
+  std::shared_ptr<process_imp> m_imp;
 };
 } // namespace factory
 } // namespace wex

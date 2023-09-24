@@ -2,11 +2,12 @@
 // Name:      util.h
 // Purpose:   Include file for wex utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <wex/core/types.h>
 #include <wex/data/dir.h>
 #include <wex/data/stc.h>
 #include <wx/combobox.h>
@@ -72,7 +73,7 @@ template <typename T> void combobox_as(wxComboBox* cb, const T& t)
 }
 
 /// Adds entries to a combobox from a list with strings.
-void combobox_from_list(wxComboBox* cb, const std::list<std::string>& text);
+void combobox_from_list(wxComboBox* cb, const strings_t& text);
 
 /// Compares the files, using comparator set in the config.
 bool compare_file(const path& file1, const path& file2);

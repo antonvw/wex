@@ -2,7 +2,7 @@
 // Name:      stc/bind.cpp
 // Purpose:   Implementation of class wex::stc method bind_all
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2018-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -28,6 +28,7 @@
 #include <wx/msgdlg.h>
 #include <wx/numdlg.h>
 
+#include <charconv>
 #include <numeric>
 
 namespace wex
@@ -37,7 +38,7 @@ void edit_control_char(stc* stc)
   if (stc->GetSelectedText().length() > 2)
     return;
 
-  const wxString& caption = _("Enter Control Character");
+  const std::string& caption = _("Enter Control Character");
   if (stc->is_hexmode())
     return stc->get_hexmode().control_char_dialog(caption);
 
@@ -45,10 +46,10 @@ void edit_control_char(stc* stc)
   {
     if (stc->GetSelectedText().length() == 1)
     {
-      const char value = stc->GetSelectedText().GetChar(0);
-      wxMessageBox(
-        wxString::Format("hex: %x dec: %d", value, value),
-        _("Control Character"));
+      const char        value = stc->GetSelectedText().GetChar(0);
+      std::stringstream stream;
+      stream << "hex: " << std::hex << value << " dec: " << value;
+      wxMessageBox(stream.str(), _("Control Character"));
     }
     return;
   }
@@ -149,6 +150,12 @@ void wex::stc::bind_all()
         m_vi->command(event.GetString());
       },
       id::stc::vi_command},
+
+     {[=, this](wxCommandEvent& event)
+      {
+        clear(false);
+      },
+      wxID_CLEAR},
 
      {[=, this](wxCommandEvent& event)
       {
@@ -721,7 +728,7 @@ void wex::stc::jump_action()
               this)) > 0)
   {
     m_data.control().line(val);
-    data::stc(data::control().line(val), this).inject();
+    data::stc(data::control().line(val)).set_stc(this).inject();
   }
 }
 
@@ -756,26 +763,20 @@ void wex::stc::show_ascii_value()
   else
   {
     long base10_val, base16_val;
-    bool base10_ok = true;
-    bool base16_ok = true;
+    bool base10_ok = false, base16_ok = false;
 
-    try
+    if (
+      std::from_chars(word.data(), word.data() + word.size(), base10_val).ec ==
+      std::errc())
     {
-      base10_val = std::stol(word);
-      base10_ok  = (base10_val != 0);
-    }
-    catch (std::exception&)
-    {
-      base10_ok = false;
+      base10_ok = true;
     }
 
-    try
+    if (
+      std::from_chars(word.data(), word.data() + word.size(), base16_val, 16)
+        .ec == std::errc())
     {
-      base16_val = std::stol(word, nullptr, 16);
-    }
-    catch (std::exception&)
-    {
-      base16_ok = false;
+      base16_ok = true;
     }
 
     if (base10_ok || base16_ok)

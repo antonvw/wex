@@ -2,7 +2,7 @@
 // Name:      ex.h
 // Purpose:   Declaration of class wex::ex
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,11 +10,12 @@
 #include <wex/core/regex.h>
 #include <wex/core/type-to-value.h>
 #include <wex/factory/ex-command.h>
+#include <wex/factory/line-data.h>
 #include <wex/syntax/lexer-props.h>
 #include <wex/syntax/marker.h>
 
 #include <functional>
-#include <map>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -123,6 +124,9 @@ public:
   /// Returns whether ex is active.
   auto is_active() const { return m_mode != OFF; }
 
+  /// Returns line data.
+  const auto& line_data() const { return m_data; }
+
   /// Adds marker at the specified line.
   /// Returns true if marker could be added.
   bool marker_add(
@@ -158,6 +162,9 @@ public:
 
   /// Sets the whole word flag in search flags.
   void search_whole_word();
+
+  /// Sets data.
+  void set_line_data(const wex::line_data& data) { m_data = data; }
 
   /// Set mode.
   void use(mode_t mode);
@@ -222,14 +229,15 @@ private:
 
   char m_register{0};
 
-  wex::ctags* m_ctags;
-  wex::frame* m_frame;
+  wex::ctags*    m_ctags;
+  wex::frame*    m_frame;
+  wex::line_data m_data;
 
   class ex_stream* m_ex_stream{nullptr};
 
   mode_t m_mode;
 
-  std::map<char, int>
+  std::unordered_map<char, int>
     // relate a marker to identifier
     m_marker_identifiers,
     // relate a marker to mark number

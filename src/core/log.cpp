@@ -2,7 +2,7 @@
 // Name:      log.cpp
 // Purpose:   Implementation of class wex::log
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2017-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/log/core.hpp>
@@ -17,9 +17,49 @@
 #include <wx/app.h>
 #include <wx/log.h>
 
+#include <codecvt>
 #include <iomanip>
 
 namespace logging = boost::log;
+
+namespace wex
+{
+std::string get_logfile(const std::string& default_logfile)
+{
+  if (!default_logfile.empty())
+  {
+    return default_logfile;
+  }
+
+  assert(wxTheApp != nullptr);
+
+  const wex::path p(
+    config::dir(),
+    wxTheApp->GetAppName().ToStdString() + ".log");
+
+  return p.string();
+}
+
+std::string quote(const std::string& r, log::level_t level)
+{
+  if (level == log::LEVEL_STATUS)
+  {
+    return "";
+  }
+  else
+  {
+    return r.contains(" ") ? "\"" : "";
+  }
+}
+
+std::string ws2s(const std::wstring& wstr)
+{
+  using convert_typeX = std::codecvt_utf8<wchar_t>;
+  std::wstring_convert<convert_typeX, wchar_t> converterX;
+
+  return converterX.to_bytes(wstr);
+}
+} // namespace wex
 
 wex::log::log(const std::string& topic)
   : log(topic, LEVEL_ERROR)
@@ -77,6 +117,12 @@ wex::log& wex::log::operator<<(int r)
   return *this;
 }
 
+wex::log& wex::log::operator<<(unsigned int r)
+{
+  m_ss << S() << r;
+  return *this;
+}
+
 wex::log& wex::log::operator<<(size_t r)
 {
   m_ss << S() << r;
@@ -109,31 +155,38 @@ wex::log& wex::log::operator<<(const char* r)
 
 wex::log& wex::log::operator<<(const wchar_t* r)
 {
-  m_wss << S() << r;
+  m_ss << S() << ws2s(r);
   return *this;
 }
 
 wex::log& wex::log::operator<<(const std::string& r)
 {
-  m_ss << S() << "\"";
+  m_ss << S() << quote(r, m_level);
 
-  for (const auto& c : r)
+  if (r.empty())
   {
-    if (isprint(c))
+    m_ss << "<empty>";
+  }
+  else
+  {
+    for (const auto& c : r)
     {
-      m_ss << c;
-    }
-    else
-    {
-      const char f(m_ss.fill());
-      const auto w(m_ss.width());
+      if (isprint(c))
+      {
+        m_ss << c;
+      }
+      else
+      {
+        const char f(m_ss.fill());
+        const auto w(m_ss.width());
 
-      m_ss << "\\x" << std::setfill('0') << std::setw(2) << std::hex
-           << static_cast<int>(c) << std::setfill(f) << std::setw(w);
+        m_ss << "\\x" << std::setfill('0') << std::setw(2) << std::hex
+             << static_cast<int>(c) << std::setfill(f) << std::setw(w);
+      }
     }
   }
 
-  m_ss << "\"";
+  m_ss << quote(r, m_level);
 
   return *this;
 }
@@ -186,8 +239,14 @@ void wex::log::flush()
         BOOST_LOG_TRIVIAL(info) << text;
         break;
 
+      case LEVEL_OFF:
+        break;
+
       case LEVEL_STATUS:
-        wxLogStatus("%s", text.c_str());
+        if (m_level_filter != LEVEL_OFF)
+        {
+          wxLogStatus("%s", text.c_str());
+        }
         break;
 
       case LEVEL_TRACE:
@@ -206,16 +265,14 @@ void wex::log::flush()
 
 const std::string wex::log::get() const
 {
-  return (!m_topic.empty() && (!m_ss.str().empty() || !m_wss.str().empty()) ?
-            m_topic + ":" :
-            m_topic) +
-         m_ss.str() + m_wss.str();
+  return (!m_topic.empty() && !m_ss.str().empty() ? m_topic + ":" : m_topic) +
+         m_ss.str();
 }
 
 std::string wex::log::get_level_info()
 {
   std::stringstream help;
-  help << "valid ranges: " << LEVEL_TRACE << "-" << LEVEL_FATAL;
+  help << "valid ranges: " << LEVEL_TRACE << "-" << LEVEL_OFF;
 
   for (int i = LEVEL_TRACE; i <= LEVEL_FATAL; i++)
   {
@@ -223,6 +280,13 @@ std::string wex::log::get_level_info()
          << i << " "
          << logging::trivial::to_string((logging::trivial::severity_level)i);
   }
+
+  help << "\n"
+       << LEVEL_STATUS << " "
+       << "status";
+  help << "\n"
+       << LEVEL_OFF << " "
+       << "none";
 
   return help.str();
 }
@@ -245,6 +309,7 @@ void wex::log::on_init(level_t loglevel, const std::string& default_logfile)
   }
 
   set_level(loglevel);
+  m_logfile = get_logfile(default_logfile);
 
   logging::add_common_attributes();
 
@@ -252,19 +317,17 @@ void wex::log::on_init(level_t loglevel, const std::string& default_logfile)
     std::cout,
     logging::keywords::format = "%TimeStamp% [%Severity%] %Message%");
 
-  assert(wxTheApp != nullptr);
-
-  const path logfile(
-    config::dir(),
-    wxTheApp->GetAppName().ToStdString() + ".log");
-
   logging::add_file_log(
-    logging::keywords::file_name =
-      default_logfile.empty() ? logfile.string() : default_logfile,
+    logging::keywords::file_name = m_logfile,
     logging::keywords::open_mode = std::ios_base::app,
     logging::keywords::format    = "%TimeStamp% [%Severity%] %Message%");
 
   m_initialized = true;
+}
+
+const std::string wex::log::path()
+{
+  return m_logfile;
 }
 
 void wex::log::set_level(level_t loglevel)
@@ -292,6 +355,7 @@ void wex::log::set_level(level_t loglevel)
       break;
 
     case LEVEL_OFF:
+    case LEVEL_STATUS:
       logging::core::get()->set_filter(
         logging::trivial::severity > logging::trivial::fatal);
       break;

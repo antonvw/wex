@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2022 Anton van Wezenbeek
+// Copyright: (c) 2008-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -186,6 +186,8 @@ public:
 
   void add_text(const std::string& text) override;
 
+  void add_text_block(const std::string& text) override;
+
   void append_text(const std::string& text) override;
 
   bool auto_indentation(int c) override;
@@ -204,7 +206,7 @@ public:
 
   bool        get_hexmode_erase(int begin, int end) override;
   bool        get_hexmode_insert(const std::string& command, int pos) override;
-  std::string get_hexmode_lines(const std::string& text) override;
+  std::string get_hexmode_lines(const std::string& text) const override;
   bool        get_hexmode_replace(char) override;
   bool get_hexmode_replace_target(const std::string& replacement, bool set_text)
     override;
@@ -237,7 +239,7 @@ public:
   void sync(bool start = true) override;
   void use_modification_markers(bool use) override;
 
-  bool        vi_command(const std::string& command) override;
+  bool        vi_command(const line_data& data) override;
   bool        vi_command_finish(bool user_input) override;
   void        vi_record(const std::string& command) override;
   bool        vi_is_visual() const override;
@@ -291,6 +293,8 @@ private:
 
   data::stc m_data;
   stc_file  m_file;
+
+  int m_selection_mode_copy{wxSTC_SEL_STREAM};
 
   // The ex or vi component.
   vi* m_vi{nullptr};

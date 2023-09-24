@@ -2,17 +2,17 @@
 // Name:      config.h
 // Purpose:   Declaration of class wex::config
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2018-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/core/path.h>
+#include <wex/core/types.h>
 
 class wxColour;
 class wxFont;
 
-#include <list>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -25,11 +25,11 @@ class config_imp;
 class config
 {
 public:
-  /// Type for keeping the string values.
-  typedef std::list<std::string> strings_t;
+  /// Type for keeping the string values. We use the same as core types.
+  typedef wex::strings_t strings_t;
 
-  /// Type for keeping the int values.
-  typedef std::vector<int> ints_t;
+  /// Type for keeping the int values. We use the same as core types.
+  typedef wex::ints_t ints_t;
 
   /// Type to hold statusbar panes setup
   /// as a vector of tuples:
@@ -82,7 +82,7 @@ public:
   /// You can also create a hierarchy using the parent dot child expression:
   /// @code
   /// wex::config("x.y.z").set(8);
-  /// const auto j(config("x.y.z").get(9));
+  /// const auto i(config("x.y.z").get(9));
   /// @endcode
   /// i will be 8.
   /// If you are using children, you can retrieve the value

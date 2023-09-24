@@ -6,6 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
+#include <charconv>
+
 #include <wex/common/util.h>
 #include <wex/core/cmdline.h>
 #include <wex/core/core.h>
@@ -588,8 +590,16 @@ bool wex::addressrange::parse(const command_parser& cp, info_message_t& im)
 
 bool wex::addressrange::print(const command_parser& cp)
 {
-  const std::string arg(
-    cp.command()[0] == '#' || cp.command()[0] == 'n' ? "#" : std::string());
+  std::string arg;
+
+  if (cp.command()[0] == '#' || cp.command()[0] == 'n')
+  {
+    arg = "#";
+  }
+  else if (cp.command()[0] == 'l')
+  {
+    arg = "l";
+  }
 
   return (m_stc->GetName() != "Print" ? print(arg + cp.text()) : false);
 }
@@ -723,7 +733,7 @@ bool wex::addressrange::sort(const std::string& parameters) const
   /// Sorts range, with optional parameters:
   /// -u to sort unique lines
   /// -r to sort reversed (descending)
-  ///  - x,y sorts rectangle within range: x start col, y end col (exclusive).
+  /// -x,y sorts rectangle within range: x start col, y end col (exclusive).
 
   factory::sort::sort_t sort_t = 0;
 
@@ -752,20 +762,39 @@ bool wex::addressrange::sort(const std::string& parameters) const
     if (parameters.contains("u"))
       sort_t.set(factory::sort::SORT_UNIQUE);
 
-    if (isdigit(parameters[0]))
-    {
-      try
+    std::string filter; // filter r, u
+    std::copy_if(
+      parameters.begin(),
+      parameters.end(),
+      std::back_inserter(filter),
+      [](char c)
       {
-        pos = (std::stoi(parameters) > 0 ? std::stoi(parameters) - 1 : 0);
+        return c != 'r' && c != 'u';
+      });
 
-        if (parameters.contains(","))
-        {
-          len =
-            std::stoi(parameters.substr(parameters.find(',') + 1)) - pos + 1;
-        }
-      }
-      catch (...)
+    /// -x,y sorts rectangle within range: x start col, y end col (exclusive).
+    if (
+      !filter.empty() &&
+      std::from_chars(filter.data(), filter.data() + filter.size(), pos).ec ==
+        std::errc())
+    {
+      pos--;
+
+      if (const auto co = filter.find(","); co != std::string::npos)
       {
+        if (size_t end; std::from_chars(
+                          filter.data() + co + 1,
+                          filter.data() + filter.size(),
+                          end)
+                            .ec != std::errc() ||
+                        end <= pos)
+        {
+          return false;
+        }
+        else
+        {
+          len = end - pos;
+        }
       }
     }
   }

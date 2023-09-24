@@ -2,7 +2,7 @@
 // Name:      test-odbc.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -11,42 +11,52 @@
 
 #include "test.h"
 
+#if wexUSE_ODBC
 TEST_CASE("wex::odbc")
 {
-#if wexUSE_ODBC
-  // Ensure we have a database and a table.
-  if (system("mysql test < odbc-create.sql") != 0)
+  SUBCASE("static")
   {
-    // if no mysql or error just quit
-    return;
+    REQUIRE(!wex::odbc::get_version_info().get().empty());
   }
 
-  wex::config(_("Datasource")).set_first_of("Test");
-  wex::config(_("User")).set();
-  wex::config(_("Password")).set();
-
-  wex::odbc odbc;
-
-  REQUIRE(!odbc.get_version_info().get().empty());
-  REQUIRE(!odbc.datasource().empty());
-
-  odbc.logon(wex::data::window().button(0));
-
-  auto* grid = new wex::grid();
-  frame()->pane_add(grid);
-
-  if (!odbc.is_connected())
+  SUBCASE("prep")
   {
-    bool stopped = false;
-    REQUIRE(odbc.query("select * from one") == 0);
-    REQUIRE(odbc.query("select * from one", get_stc(), stopped) == 0);
-    REQUIRE(odbc.query("select * from one", grid, stopped) == 0);
-    REQUIRE(!odbc.logoff());
+    // Ensure we have a database and a table.
+    if (system("mysql test < odbc-create.sql") != 0)
+    {
+      // if no mysql or error just quit
+      return;
+    }
   }
-  else
+
+  SUBCASE("rest")
   {
-    REQUIRE(odbc.query("select * from one") == 9);
-    REQUIRE(odbc.logoff());
+    wex::config(_("Datasource")).set_first_of("Test");
+    wex::config(_("User")).set();
+    wex::config(_("Password")).set();
+
+    wex::odbc odbc;
+
+    REQUIRE(!odbc.datasource().empty());
+
+    odbc.logon(wex::data::window().button(0));
+
+    auto* grid = new wex::grid();
+    frame()->pane_add(grid);
+
+    if (!odbc.is_connected())
+    {
+      bool stopped = false;
+      REQUIRE(odbc.query("select * from one") == 0);
+      REQUIRE(odbc.query("select * from one", get_stc(), stopped) == 0);
+      REQUIRE(odbc.query("select * from one", grid, stopped) == 0);
+      REQUIRE(!odbc.logoff());
+    }
+    else
+    {
+      REQUIRE(odbc.query("select * from one") == 9);
+      REQUIRE(odbc.logoff());
+    }
   }
-#endif
 }
+#endif

@@ -2,10 +2,11 @@
 // Name:      test-ctags.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2016-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ctags/ctags.h>
+#include <wex/ui/frd.h>
 
 #include "test.h"
 
@@ -35,12 +36,20 @@ TEST_CASE("wex::ctags")
   {
     wex::ctags::open("test-ctags");
 
+    auto* frd = wex::find_replace_data::get();
+    frd->set_find_string("find-from-frd");
+    REQUIRE(frd->get_find_string() == "find-from-frd");
+
     REQUIRE(!wex::ctags::find(""));
     REQUIRE(!wex::ctags::next());
     REQUIRE(!wex::ctags::previous());
     REQUIRE(!wex::ctags::find("xxxx"));
     REQUIRE(wex::ctags::find("test_app"));
+    REQUIRE(wex::ctags::find("test_app", get_stc()));
     REQUIRE(!wex::ctags::next());
+    REQUIRE(!wex::ctags::previous()); // there is only 1 match?
+
+    REQUIRE(frd->get_find_string() == "find-from-frd");
 
     REQUIRE(wex::ctags::close());
     REQUIRE(!wex::ctags::close());

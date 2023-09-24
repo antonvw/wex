@@ -2,7 +2,7 @@
 // Name:      item.h
 // Purpose:   Several item include files
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -19,6 +19,7 @@
 #include <wx/hyperlink.h>
 #include <wx/imaglist.h>
 #include <wx/radiobox.h>
+#include <wx/slider.h>
 #include <wx/spinctrl.h>
 #include <wx/statbox.h>
 #include <wx/statline.h>

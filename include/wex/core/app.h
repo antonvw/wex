@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Include file for wex::app class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2022 Anton van Wezenbeek
+// Copyright: (c) 2009-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -12,6 +12,8 @@
 
 namespace wex
 {
+class file_translations_loader;
+
 /// Offers the application, with lib specific init and exit,
 /// and provides access to the locale and the catalog dir.
 /// Your application should be derived from this class.
@@ -47,5 +49,9 @@ private:
   void set_language();
 
   wxLanguage m_language;
+
+  file_translations_loader* m_loader{nullptr};
+
+  static int m_first_init;
 };
 }; // namespace wex

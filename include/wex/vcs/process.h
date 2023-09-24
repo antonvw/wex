@@ -2,13 +2,13 @@
 // Name:      process.h
 // Purpose:   Declaration of class wex::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wex/data/window.h>
 #include <wex/factory/process.h>
+#include <wex/factory/window.h>
 
 namespace wex
 {
@@ -36,15 +36,6 @@ public:
 
   /// Default constructor.
   process();
-
-  /// Destructor.
-  ~process() override;
-
-  /// Copy constructor.
-  process(const process& process);
-
-  /// Assignment operator.
-  process& operator=(const process& p);
 
   /// Virtual interface
 
@@ -76,6 +67,8 @@ public:
 private:
   static inline shell* m_shell = nullptr;
   static std::string   m_working_dir_key;
+
+  void set_frame();
 
   frame* m_frame;
 };

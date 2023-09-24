@@ -2,7 +2,7 @@
 // Name:      test-menu.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -13,7 +13,7 @@
 TEST_CASE("wex::menu")
 {
   wex::config(_("vcs.Base folder"))
-    .set(std::list<std::string>{wxGetCwd().ToStdString()});
+    .set(wex::config::strings_t{wxGetCwd().ToStdString()});
 
   SUBCASE("default constructor")
   {

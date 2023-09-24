@@ -9,8 +9,8 @@
 
 #include <wex/core/path.h>
 #include <wex/data/stc.h>
-#include <wex/data/window.h>
 #include <wex/factory/frame.h>
+#include <wex/factory/window.h>
 #include <wex/ui/file-history.h>
 #include <wex/ui/statusbar-pane.h>
 #include <wex/ui/statusbar.h>
@@ -31,6 +31,11 @@ class line_data;
 class menu_item;
 class process_data;
 class toolbar;
+
+namespace factory
+{
+class link;
+};
 
 namespace syntax
 {
@@ -140,11 +145,14 @@ public:
     return false;
   };
 
+  /// Moves to next page. If none or only one page present, returns false.
+  virtual bool next_page() { return false; }
+
   /// Called if the notebook changed page.
   virtual void on_notebook(wxWindowID id, wxWindow* page) { ; }
 
   /// Called on browse forward, backward.
-  virtual void open_file_same_page(wxCommandEvent& event) { ; }
+  virtual void open_file_same_page(const wex::path& p) { ; }
 
   /// Allows you to override print ex.
   virtual bool print_ex(syntax::stc* stc, const std::string& text)
@@ -233,12 +241,27 @@ public:
   virtual bool vcs_dir_exists(const path& p) const { return false; };
 
   /// Executes vcs.
-  virtual void vcs_execute(int event_id, const std::vector<wex::path>& paths)
+  virtual void vcs_execute(
+    /// the vcs id
+    int event_id,
+    /// the paths
+    const std::vector<wex::path>& paths,
+    /// window data
+    const data::window& arg = data::window())
   {
     ;
   }
 
   /// Other methods
+
+  /// Can we browse backward?
+  bool allow_browse_backward() const;
+
+  /// Can we browse forward?
+  bool allow_browse_forward() const;
+
+  /// Handles forward and backward click.
+  bool browse(wxCommandEvent& event);
 
   /// Returns current debugger.
   const auto* debug_entry() const { return m_debug_entry; }
@@ -390,5 +413,7 @@ private:
 
   wxAuiManager       m_manager;
   class file_history m_file_history;
+
+  size_t m_browse_index{0};
 };
 }; // namespace wex

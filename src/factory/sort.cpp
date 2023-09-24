@@ -2,7 +2,7 @@
 // Name:      sort.cpp
 // Purpose:   Implementation of wex::sort class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -171,7 +171,7 @@ wex::factory::sort::string(const std::string& input, const std::string& sep)
   {
     const std::string line = it + sep;
 
-    // Use an empty key if line is to short.
+    // Use an empty key if line is too short.
     std::string key;
 
     if (m_pos < line.length())

@@ -2,12 +2,12 @@
 // Name:      stc-entry-dialog.h
 // Purpose:   Declaration of class wex::stc_entry_dialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2009-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wex/data/window.h>
+#include <wex/factory/window.h>
 #include <wex/ui/dialog.h>
 
 #include <regex>

@@ -3,13 +3,16 @@
 // Purpose:   Implementation of wex::vim
 //            http://www.viemu.com/vi-vim-cheat-sheet.gif
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ctags/ctags.h>
 #include <wex/factory/stc-undo.h>
 #include <wex/syntax/stc.h>
+#include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
+
+#include <wx/app.h>
 
 #include <algorithm>
 
@@ -46,7 +49,6 @@ bool wex::vim::command_motion(int start_pos)
     return false;
   }
 
-  bool     ok = true;
   stc_undo undo(
     m_vi->get_stc(),
     stc_undo::undo_t().set(stc_undo::UNDO_ACTION).set(stc_undo::UNDO_POS));
@@ -82,7 +84,7 @@ bool wex::vim::command_motion(int start_pos)
 
   m_vi->get_stc()->SelectNone();
 
-  return ok;
+  return true;
 }
 
 bool wex::vim::command_special()
@@ -112,6 +114,14 @@ bool wex::vim::command_special()
         find_replace_data::get()->get_find_string(),
         m_vi->search_flags(),
         m_motion == vi::motion_t::G_star);
+      break;
+
+    case vi::motion_t::G_t:
+      if (auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+          frame != nullptr)
+      {
+        frame->next_page();
+      }
       break;
 
     default:
@@ -148,6 +158,9 @@ wex::vi::motion_t wex::vim::get_motion(const std::string& command)
       case '#':
         return wex::vi::motion_t::G_hash;
 
+      case 't':
+        return wex::vi::motion_t::G_t;
+
       case 'U':
         return wex::vi::motion_t::G_U;
 
@@ -165,12 +178,14 @@ wex::vi::motion_t wex::vim::get_motion(const std::string& command)
 
 bool wex::vim::is_motion() const
 {
-  return m_motion >= vi::motion_t::G_tilde && m_motion <= vi::motion_t::G_U;
+  return m_motion > vi::motion_t::G_motion_start &&
+         m_motion < vi::motion_t::G_motion_end;
 }
 
 bool wex::vim::is_special() const
 {
-  return m_motion >= vi::motion_t::G_a && m_motion <= vi::motion_t::G_star;
+  return m_motion > vi::motion_t::G_special_start &&
+         m_motion < vi::motion_t::G_special_end;
 }
 
 bool wex::vim::motion(int start_pos, size_t& parsed, vi::function_t f)

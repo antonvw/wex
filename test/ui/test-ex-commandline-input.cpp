@@ -2,7 +2,7 @@
 // Name:      test-ex-commandline-input.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ui/ex-commandline-input.h>
@@ -52,14 +52,26 @@ TEST_CASE("wex::ex_commandline_input")
   SUBCASE("keys")
   {
     wex::ex_commandline_input cli(wex::ex_command::type_t::FIND);
+    cli.set(
+      wex::ex_commandline_input::values_t{"hello", "find3", "find4", "find5"});
+
     REQUIRE(cli.set(WXK_HOME));
-    REQUIRE(cli.get() == "hello");
-    REQUIRE(cli.set(WXK_END));
     REQUIRE(cli.get() == "find5");
     REQUIRE(cli.set(WXK_HOME));
+    REQUIRE(cli.get() == "find5");
+    REQUIRE(cli.set(WXK_UP));
+    REQUIRE(cli.get() == "find5");
+    REQUIRE(cli.set(WXK_DOWN));
+    REQUIRE(cli.get() == "find4");
+
+    REQUIRE(cli.set(WXK_END));
+    REQUIRE(cli.get() == "hello");
+    REQUIRE(cli.set(WXK_END));
     REQUIRE(cli.get() == "hello");
     REQUIRE(cli.set(WXK_DOWN));
     REQUIRE(cli.get() == "hello");
+    REQUIRE(cli.set(WXK_UP));
+    REQUIRE(cli.get() == "find3");
     REQUIRE(cli.set(WXK_PAGEDOWN));
     REQUIRE(cli.get() == "hello");
 

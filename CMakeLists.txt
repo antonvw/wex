@@ -16,11 +16,16 @@ else ()
   set(wxBUILD_SHARED OFF)
 endif ()
   
+if (wexBUILD_GITHUB)
+  add_definitions(-DGITHUB)
+endif ()
+
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
+set(CMAKE_DISABLE_PRECOMPILE_HEADERS ON)
 
-find_package(Boost 1.75.0 COMPONENTS 
-  log_setup log filesystem program_options date_time regex json REQUIRED)
+find_package(Boost 1.81.0 COMPONENTS 
+  log_setup log filesystem program_options date_time regex json url REQUIRED)
   
 set(WEX_CXX_STANDARD 23) # see also FindWEX.cmake, c_cpp_properties.json
 set(CMAKE_CXX_STANDARD ${WEX_CXX_STANDARD})
@@ -35,6 +40,9 @@ execute_process(
 execute_process(
   COMMAND git apply ${CMAKE_SOURCE_DIR}/external/lexilla.patch
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/lexilla)
+
+include_directories(${Boost_INCLUDE_DIRS})
+include_directories(external/doctest/doctest)
 
 add_subdirectory(external)
 
@@ -55,20 +63,11 @@ endif ()
 
 if (wexENABLE_ODBC)
   find_package(ODBC)
-
-  if (ODBC_FOUND AND NOT MSVC)
-    add_definitions(-DwexUSE_ODBC)
-    
-    include_directories(${ODBC_INCLUDE_DIR})
-    include_directories(external/otl)
-  endif ()
 endif ()
 
 enable_testing()
 
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/wxWidgets/build/cmake/modules")
-
-include_directories(${Boost_INCLUDE_DIRS})
 
 include(cmake/options.cmake)
 include(cmake/common.cmake)
@@ -81,12 +80,16 @@ endif ()
 # See also FindWEX
 set(wex_own_LIBRARIES
   wex-del wex-vcs wex-stc wex-vi wex-ex wex-ctags
-  wex-ui wex-common wex-data wex-syntax wex-factory wex-core)
+  wex-ui wex-common wex-data wex-syntax wex-factory wex-test wex-core)
 
 separate_arguments(wex_own_LIBRARIES)
 
 add_subdirectory(ci)
 add_subdirectory(src)
+
+if (wexBUILD_BINDINGS)
+  add_subdirectory(bindings)
+endif ()
 
 if (wexBUILD_SAMPLES)
   add_subdirectory(sample)

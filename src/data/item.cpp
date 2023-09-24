@@ -2,7 +2,7 @@
 // Name:      data/item.cpp
 // Purpose:   Implementation of wex::data::item
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/item.h>
@@ -10,39 +10,6 @@
 wex::data::item::item(const data::control& data)
   : m_data(data)
 {
-}
-
-wex::data::item::item(const item& r, const std::any& initial)
-  : m_initial(initial)
-{
-  *this = r;
-}
-
-wex::data::item& wex::data::item::operator=(const data::item& r)
-{
-  if (this != &r)
-  {
-    m_apply                   = r.m_apply;
-    m_data                    = r.m_data;
-    m_image_list              = r.m_image_list;
-    m_inc                     = r.m_inc;
-    m_is_regex                = r.m_is_regex;
-    m_label_type              = r.m_label_type;
-    m_min                     = r.m_min;
-    m_major_dimension         = r.m_major_dimension;
-    m_max                     = r.m_max;
-    m_user_window_create_t    = r.m_user_window_create_t;
-    m_user_window_to_config_t = r.m_user_window_to_config_t;
-    m_validate                = r.m_validate;
-    m_validate_re             = r.m_validate_re;
-
-    if (r.m_initial.has_value())
-    {
-      m_initial = r.m_initial;
-    }
-  }
-
-  return *this;
 }
 
 wex::data::item& wex::data::item::apply(const user_apply_t rhs)
@@ -66,6 +33,12 @@ wex::data::item& wex::data::item::control(const data::control& rhs)
 wex::data::item& wex::data::item::inc(const std::any& rhs)
 {
   m_inc = rhs;
+  return *this;
+}
+
+wex::data::item& wex::data::item::initial(const std::any& rhs)
+{
+  m_initial = rhs;
   return *this;
 }
 

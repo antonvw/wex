@@ -2,10 +2,11 @@
 // Name:      comands-other.cpp
 // Purpose:   Implementation of wex::vi::commands_other
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <charconv>
 #include <sstream>
 
 #include <boost/algorithm/string.hpp>
@@ -21,6 +22,14 @@
 #include <wex/ui/frd.h>
 #include <wex/vi/vi.h>
 #include <wx/app.h>
+
+#include "util.h"
+
+#define REPEAT_WITH_UNDO(TEXT) \
+  {                            \
+    stc_undo undo(get_stc());  \
+    REPEAT(TEXT);              \
+  }
 
 namespace wex
 {
@@ -449,7 +458,8 @@ size_t wex::vi::inc_or_dec(const std::string& command)
       const auto end =
         get_stc()->WordEndPosition(get_stc()->GetCurrentPos() + sign, true);
       const std::string word(get_stc()->GetTextRange(start, end).ToStdString());
-      auto              number = std::stoi(word, nullptr, 0);
+      int number;
+      std::from_chars(word.data(), word.data() + word.size(), number);
       const auto next = (command == k_s(WXK_CONTROL_J) ? ++number : --number);
 
       std::ostringstream format;

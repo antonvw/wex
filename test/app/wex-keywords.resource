@@ -32,9 +32,9 @@ ${file-stdout}	stdout.txt
 Suite Setup
 	Find Appl
 	Variable Should Exist	${APPL}
-	${version} =	Evaluate	robot.__version__
-	${result} =	Get Substring	${version}	0	1
-	${result} =	Convert To Integer	${result}
+	${version}=	Evaluate	robot.__version__
+	${result}=	Get Substring	${version}	0	1
+	${result}=	Convert To Integer	${result}
 	Should Be True	${result} >= 6
 
 Suite Teardown
@@ -74,7 +74,7 @@ Contents Does Not Contain
 	Should Not Contain	${result}	${text}
 
 Find Appl
-	[Documentation]	Appends text to input
+	[Documentation]	Set the APPL variable to correct binary
 	[Tags]	:private
 	${result}=	Run Process
 	...	find	../../

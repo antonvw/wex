@@ -2,10 +2,11 @@
 // Name:      statusbar.cpp
 // Purpose:   Implementation of wex::statusbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <map>
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
@@ -233,10 +234,9 @@ void wex::statusbar::pane_dialog()
 std::tuple<bool, int, int>
 wex::statusbar::pane_info(const std::string& pane) const
 {
-  const std::string use_pane      = pane.empty() ? "PaneText" : pane;
-  int               shown_pane_no = 0;
+  const std::string use_pane = pane.empty() ? "PaneText" : pane;
 
-  for (int pane_no = 0; const auto& it : m_panes)
+  for (int pane_no = 0, shown_pane_no = 0; const auto& it : m_panes)
   {
     if (it.is_shown())
     {
@@ -381,6 +381,7 @@ wex::statusbar* wex::statusbar::setup(
   if (m_panes.size() > 1)
   {
     m_panes.clear();
+    m_panes.push_back({});
   }
 
   m_panes.insert(std::end(m_panes), std::begin(panes), std::end(panes));

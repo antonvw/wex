@@ -8,6 +8,7 @@
 #pragma once
 
 #include <list>
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -85,11 +86,21 @@ public:
   /// Gets current section id.
   auto id() const { return m_id; };
 
+  /// Returns true if id is testcase or task.
+  bool is_case() const
+  {
+    return m_id == SECTION_TESTCASE || m_id == SECTION_TASK;
+  };
+
   /// Resets section.
   void reset() { m_id = SECTION_UNKNOWN; };
 
   /// Starts a new section.
-  void start(section_t id) { m_id = id; };
+  void start(section_t id)
+  {
+    m_id = id;
+    ;
+  }
 
 private:
   section_t m_id{SECTION_UNKNOWN};
@@ -215,18 +226,26 @@ private:
 
   void keywords_update();
 
-  void parse_keyword(StyleContext& sc, int cmdState, int& cmdStateNew);
+  void parse_keyword(StyleContext& sc, int cmdState, int& cmd_state_new);
 
-  bool section_keywords_detect(StyleContext& sc, int& cmdStateNew);
+  typedef std::pair<std::string, section_t> section_keyword_t;
+  typedef std::vector<section_keyword_t>    section_keywords_t;
+
+  bool section_keywords_detect(
+    const std::string& word,
+    StyleContext&      sc,
+    int&               cmd_state_new);
+  void section_start(
+    const section_keyword_t& section,
+    StyleContext&            sc,
+    int&                     cmd_state_new);
   bool spaced_keywords_detect(
     const std::string& word,
     StyleContext&      sc,
-    int&               cmdStateNew);
+    int&               cmd_state_new);
 
   void state_check(StyleContext& sc, int state, int& state_new, LexAccessor&);
   bool state_check_continue(StyleContext& sc, int& state, LexAccessor&);
-
-  typedef std::list<std::pair<wex::regex_part, section_t>> keywords_t;
 
   SubStyles m_sub_styles;
 
@@ -239,9 +258,11 @@ private:
   bool m_visual_mode{true};
   int  m_style_prev{-1};
 
-  quote*       m_quote{nullptr};
-  quote_stack* m_quote_stack{nullptr};
-  keywords_t*  m_section_keywords{nullptr};
+  std::unique_ptr<quote>           m_quote;
+  std::unique_ptr<quote_stack>     m_quote_stack;
+  std::unique_ptr<wex::regex_part> m_section_begin, m_section_end;
+
+  section_keywords_t m_section_keywords;
 
   std::vector<std::string> m_spaced_keywords;
 };

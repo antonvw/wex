@@ -27,8 +27,8 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 
 set(CMAKE_CXX_STANDARD 23)
 
-find_package(Boost 1.75.0 COMPONENTS
-  log_setup log filesystem program_options date_time regex json REQUIRED)
+find_package(Boost 1.81.0 COMPONENTS
+  log_setup log filesystem program_options date_time regex json url REQUIRED)
 
 find_package(ODBC QUIET)
 
@@ -159,7 +159,7 @@ endif()
 include_directories(${Boost_INCLUDE_DIRS})
 
 # these should be the same as in common.cmake
-set(wex_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/wex/23.04")
+set(wex_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/wex/23.10")
 set(wex_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib")
 
 set(wex_LIBRARIES
@@ -174,6 +174,7 @@ set(wex_LIBRARIES
   wex-data${USE_DEBUG}
   wex-syntax${USE_DEBUG}
   wex-factory${USE_DEBUG}
+  wex-test${USE_DEBUG}
   wex-core${USE_DEBUG}
   ${wx_LIBRARIES}
   ${apple_LIBRARIES}

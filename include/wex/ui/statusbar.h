@@ -2,12 +2,12 @@
 // Name:      statusbar.h
 // Purpose:   Declaration of wex::statusbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2010-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wex/data/window.h>
+#include <wex/factory/window.h>
 #include <wex/ui/statusbar-pane.h>
 #include <wx/statusbr.h>
 

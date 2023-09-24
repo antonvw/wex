@@ -2,13 +2,12 @@
 // Name:      ex-command.cpp
 // Purpose:   Implementation of class wex::ex_command
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2018-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/ex-command.h>
+#include <wex/factory/line-data.h>
 #include <wex/factory/stc.h>
-
-wex::ex_command::ex_command() {}
 
 wex::ex_command::ex_command(const std::string& command)
   : m_text(command)
@@ -17,34 +16,7 @@ wex::ex_command::ex_command(const std::string& command)
 
 wex::ex_command::ex_command(wex::factory::stc* stc)
   : m_stc(stc)
-  , m_stc_original(stc)
 {
-}
-
-wex::ex_command::ex_command(const ex_command& c)
-{
-  *this = c;
-}
-
-wex::ex_command& wex::ex_command::operator=(const ex_command& c)
-{
-  if (this != &c)
-  {
-    m_has_type = c.m_has_type;
-    m_text     = c.m_text;
-
-    if (c.m_stc != nullptr)
-    {
-      m_stc = c.m_stc;
-    }
-
-    if (c.m_stc_original != nullptr)
-    {
-      m_stc_original = c.m_stc_original;
-    }
-  }
-
-  return *this;
 }
 
 bool wex::ex_command::append_exec(char c)
@@ -55,7 +27,7 @@ bool wex::ex_command::append_exec(char c)
 
 bool wex::ex_command::exec() const
 {
-  return m_stc != nullptr && m_stc->vi_command(command());
+  return m_stc != nullptr && m_stc->vi_command(line_data().command(m_text));
 }
 
 bool wex::ex_command::exec_finish(bool user_input) const
@@ -68,28 +40,11 @@ void wex::ex_command::no_type()
   m_has_type = false;
 }
 
-wex::ex_command& wex::ex_command::reset(const std::string& text, bool full)
+wex::ex_command& wex::ex_command::reset(const std::string& text)
 {
   m_text = m_has_type ? m_text.substr(0, str().size()) + text : text;
 
-  if (full)
-  {
-    m_stc          = nullptr;
-    m_stc_original = nullptr;
-  }
-
   return *this;
-}
-
-void wex::ex_command::restore(const ex_command& c)
-{
-  m_has_type = c.m_has_type;
-  m_text     = c.m_text;
-
-  if (c.m_stc != nullptr || c.m_stc_original != nullptr)
-  {
-    m_stc = (c.m_stc_original != nullptr ? c.m_stc_original : c.m_stc);
-  }
 }
 
 const std::string wex::ex_command::selection_range()
@@ -102,17 +57,6 @@ wex::ex_command& wex::ex_command::set(const std::string& text)
   m_text = text;
 
   return *this;
-}
-
-void wex::ex_command::set(const ex_command& c)
-{
-  m_has_type = c.m_has_type;
-  m_text     = c.m_text;
-
-  if (c.m_stc != nullptr || c.m_stc_original != nullptr)
-  {
-    m_stc = (c.m_stc == c.m_stc_original ? c.m_stc : c.m_stc_original);
-  }
 }
 
 std::string wex::ex_command::str() const

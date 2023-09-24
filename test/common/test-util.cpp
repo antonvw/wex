@@ -2,7 +2,7 @@
 // Name:      test-util.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/util.h>
@@ -15,7 +15,7 @@
 
 TEST_CASE("wex::util" * doctest::may_fail())
 {
-  std::list<std::string> l{"x", "y", "z"};
+  wex::strings_t l{"x", "y", "z"};
 
   SUBCASE("auto_complete_filename")
   {
@@ -34,7 +34,7 @@ TEST_CASE("wex::util" * doctest::may_fail())
   SUBCASE("combobox_as")
   {
     auto* cb = new wxComboBox(get_frame(), wxID_ANY);
-    wex::combobox_as<const std::list<std::string>>(cb, l);
+    wex::combobox_as<const wex::strings_t>(cb, l);
   }
 
   SUBCASE("combobox_from_list")
@@ -114,12 +114,6 @@ TEST_CASE("wex::util" * doctest::may_fail())
     wex::vcs_command_stc(command, wex::lexer(get_stc()), get_stc());
     wex::vcs_command_stc(command, wex::lexer("cpp"), get_stc());
     wex::vcs_command_stc(command, wex::lexer(), get_stc());
-  }
-
-  SUBCASE("vcs_execute")
-  {
-    // wex::vcs_execute(get_frame(), 0, std::vector< std::string > {}); // calls
-    // dialog
   }
 
   SUBCASE("xml_error")

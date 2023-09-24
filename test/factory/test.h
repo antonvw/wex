@@ -2,16 +2,14 @@
 // Name:      test.h
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <wex/factory/frame.h>
 #include <wex/factory/stc.h>
-#include <wx/app.h>
-
-/// Add general test header.
-#include "../test.h"
+#include <wex/test/test.h>
 
 namespace wex::test
 {
@@ -23,15 +21,9 @@ class stc : public wex::factory::stc
 public:
   /// Default constructor.
   stc()
+    : wex::factory::stc()
   {
-    if (wxTheApp != nullptr)
-    {
-      Create(wxTheApp->GetTopWindow(), -1);
-    }
-    else
-    {
-      std::cout << "no parent available\n";
-    }
+    ;
   };
 
   /// Overriden virtual methods.
@@ -45,3 +37,6 @@ private:
   bool m_visual{true};
 };
 }; // namespace wex::test
+
+/// Returns the frame.
+wex::factory::frame* frame();

@@ -6,6 +6,9 @@
 // Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <sstream>
+#include <utility>
+
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
@@ -27,7 +30,7 @@
 wex::macros wex::ex::m_macros;
 
 wex::ex::ex(wex::syntax::stc* stc, mode_t mode)
-  : m_command(ex_command(stc))
+  : m_command(stc)
   , m_frame(dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()))
   , m_ex_stream(new wex::ex_stream(this))
   , m_mode(mode)
@@ -145,30 +148,31 @@ void wex::ex::info_message(const std::string& text, wex::info_message_t type)
   if (const auto lines = get_number_of_lines(text);
       lines > config("stc.Reported lines").get(5))
   {
-    wxString msg;
+    std::stringstream msg;
+    msg << lines - 1 << " ";
 
     switch (type)
     {
       case wex::info_message_t::ADD:
-        msg = _("%d lines added");
+        msg << _("lines added");
         break;
       case wex::info_message_t::COPY:
-        msg = _("%d lines copied");
+        msg << _("lines copied");
         break;
       case wex::info_message_t::DEL:
-        msg = _("%d fewer lines");
+        msg << _("fewer lines");
         break;
       case wex::info_message_t::MOVE:
-        msg = _("%d lines moved");
+        msg << _("lines moved");
         break;
       case wex::info_message_t::YANK:
-        msg = _("%d lines yanked");
+        msg << _("lines yanked");
         break;
       default:
         return;
     }
 
-    m_frame->show_ex_message(wxString::Format(msg, lines - 1));
+    m_frame->show_ex_message(msg.str());
   }
 }
 
@@ -415,8 +419,13 @@ void wex::ex::use(mode_t mode)
 {
   if (mode != m_mode)
   {
-    log::trace("ex mode from")
-      << static_cast<int>(m_mode) << "to:" << static_cast<int>(mode);
+    // e.g. shell and dialog disable vi mode: do not trace
+    if (!get_stc()->path().empty())
+    {
+      log::trace("ex mode")
+        << get_stc()->path().filename() << "from" << std::to_underlying(m_mode)
+        << "to:" << std::to_underlying(mode);
+    }
 
     m_mode = mode;
   }

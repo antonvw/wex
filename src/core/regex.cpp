@@ -2,8 +2,10 @@
 // Name:      core/regex.cpp
 // Purpose:   Implementation of class wex::regex
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
+
+#include <algorithm>
 
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
@@ -28,8 +30,15 @@ enum class wex::regex::find_t
   MATCH,
 };
 
+wex::regex::regex(const data& d)
+  : m_datas({d})
+  , m_it(m_datas.end())
+{
+}
+
 wex::regex::regex(const std::string& str, std::regex::flag_type flags)
   : m_datas({{{str, nullptr}, flags}})
+  , m_it(m_datas.end())
 {
 }
 
@@ -38,31 +47,28 @@ wex::regex::regex(
   function_t            f,
   std::regex::flag_type flags)
   : m_datas({{{str, f}, flags}})
+  , m_it(m_datas.end())
 {
 }
 
 wex::regex::regex(const regex_v_t& regex, std::regex::flag_type flags)
   : m_datas(FILL_DATA(regex_v_t, v.emplace_back(regex_c_t(e, nullptr), flags)))
+  , m_it(m_datas.end())
 {
 }
 
 wex::regex::regex(const regex_v_c_t& regex, std::regex::flag_type flags)
   : m_datas(FILL_DATA(regex_v_c_t, v.emplace_back(e, flags)))
+  , m_it(m_datas.end())
 {
 }
 
 int wex::regex::find(const std::string& text, find_t how)
 {
-  m_match_no = -1;
-
-  if (m_datas.empty())
-  {
-    return -1;
-  }
-
-  for (int index = 0; const auto& reg : m_datas)
-  {
-    try
+  m_it = std::find_if(
+    m_datas.begin(),
+    m_datas.end(),
+    [this, text, how](auto const& reg)
     {
       if (std::match_results<std::string::const_iterator> m;
           ((how == find_t::MATCH && std::regex_match(text, m, reg.regex())) ||
@@ -74,26 +80,20 @@ int wex::regex::find(const std::string& text, find_t how)
           std::copy(++m.begin(), m.end(), std::back_inserter(m_matches));
         }
 
-        m_data     = reg;
-        m_match_no = index;
-
         if (reg.function() != nullptr)
         {
           reg.function()(m_matches);
         }
 
-        return static_cast<int>(m_matches.size());
+        return true;
       }
+      else
+      {
+        return false;
+      }
+    });
 
-      index++;
-    }
-    catch (std::regex_error& e)
-    {
-      log(e) << reg.text() << "code:" << static_cast<int>(e.code());
-    }
-  }
-
-  return -1;
+  return (m_it != m_datas.end()) ? static_cast<int>(m_matches.size()) : -1;
 }
 
 int wex::regex::match(const std::string& text)
@@ -101,17 +101,27 @@ int wex::regex::match(const std::string& text)
   return find(text, find_t::MATCH);
 }
 
+const wex::regex::data wex::regex::match_data() const
+{
+  return m_it != m_datas.end() ? *m_it : data();
+}
+
+int wex::regex::match_no() const
+{
+  return m_it == m_datas.end() ? -1 : std::distance(m_datas.begin(), m_it);
+}
+
 bool wex::regex::replace(
   std::string&                          text,
   const std::string&                    replacement,
   std::regex_constants::match_flag_type flag_type) const
 {
-  if (m_data.text().empty())
+  if (m_it == m_datas.end())
   {
     return false;
   }
 
-  text = std::regex_replace(text, m_data.regex(), replacement, flag_type);
+  text = std::regex_replace(text, m_it->regex(), replacement, flag_type);
 
   return true;
 }
@@ -122,8 +132,22 @@ int wex::regex::search(const std::string& text)
 }
 
 wex::regex::data::data(const regex_c_t& regex, std::regex::flag_type flags)
-  : m_regex(regex.first, flags)
+  : m_text(regex.first)
   , m_function(regex.second)
-  , m_text(regex.first)
 {
+  init(regex, flags);
+}
+
+wex::regex::data::data() {}
+
+void wex::regex::data::init(const regex_c_t& regex, std::regex::flag_type flags)
+{
+  try
+  {
+    m_regex = std::regex(m_text, flags);
+  }
+  catch (std::regex_error& e)
+  {
+    log(e) << m_text << "code:" << static_cast<int>(e.code());
+  }
 }

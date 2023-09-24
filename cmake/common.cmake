@@ -81,6 +81,9 @@ function(wex_install)
   install(FILES ${CMAKE_SOURCE_DIR}/external/ctags/libreadtags/readtags.h
     DESTINATION ${WEX_INSTALL_DIR})
 
+  install(FILES ${CMAKE_SOURCE_DIR}/external/doctest/doctest/doctest.h
+    DESTINATION ${WEX_INSTALL_DIR})
+
   if (ODBC_FOUND)
     install(FILES ${CMAKE_SOURCE_DIR}/external/otl/otlv4.h
       DESTINATION ${WEX_INSTALL_DIR})
@@ -203,7 +206,11 @@ function(wex_target_link_all)
   endif ()
 endfunction()
 
-set_property(GLOBAL PROPERTY test_libs)
+if (APPLE)
+  set_property(GLOBAL PROPERTY test_libs wex-test)
+else ()
+  set_property(GLOBAL PROPERTY wex-test test_libs)
+endif()
 
 function(add_test_libs)
     get_property(tmp GLOBAL PROPERTY test_libs)

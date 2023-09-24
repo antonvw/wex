@@ -9,7 +9,7 @@ index 1efa85e255..20ba26ac42 100644
 -wx_lib_link_libraries(wxqa PUBLIC wxxml)
 +wx_lib_link_libraries(wxqa PUBLIC)
 diff --git a/build/cmake/options.cmake b/build/cmake/options.cmake
-index 2c70d91763..b3fc493ac3 100644
+index 96f3c504c4..274f728a43 100644
 --- a/build/cmake/options.cmake
 +++ b/build/cmake/options.cmake
 @@ -53,7 +53,7 @@ if(NOT MSVC OR MSVC_VERSION GREATER 1800)
@@ -20,7 +20,7 @@ index 2c70d91763..b3fc493ac3 100644
 +              ${wxCXX_STANDARD_DEFAULT} STRINGS COMPILER_DEFAULT 11 14 17 20 23)
  endif()
  
- if(WIN32)
+ if(UNIX)
 diff --git a/build/cmake/toolkit.cmake b/build/cmake/toolkit.cmake
 index 49a21c1fc8..5e10a1a3c8 100644
 --- a/build/cmake/toolkit.cmake
@@ -36,24 +36,3 @@ index 49a21c1fc8..5e10a1a3c8 100644
      list(APPEND wxTOOLKIT_INCLUDE_DIRS ${${gtk_lib}_INCLUDE_DIRS})
      list(APPEND wxTOOLKIT_LIBRARIES ${${gtk_lib}_LIBRARIES})
      list(APPEND wxTOOLKIT_DEFINITIONS ${${gtk_lib}_DEFINITIONS})
-diff --git a/src/gtk/app.cpp b/src/gtk/app.cpp
-index 7d1855860c..3886875413 100644
---- a/src/gtk/app.cpp
-+++ b/src/gtk/app.cpp
-@@ -43,6 +43,8 @@
- // local functions
- //-----------------------------------------------------------------------------
- 
-+#include <X11/Xlib.h>
-+
- // One-shot signal emission hook, to install idle handler.
- extern "C" {
- static gboolean
-@@ -307,6 +309,7 @@ wxIMPLEMENT_DYNAMIC_CLASS(wxApp,wxEvtHandler);
- 
- wxApp::wxApp()
- {
-+    XInitThreads();
-     m_isInAssert = false;
-     m_idleSourceId = 0;
- }

@@ -5,8 +5,8 @@
 // Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/core/version.h>
+#include <wex/test/test.h>
 
 TEST_CASE("wex::version")
 {

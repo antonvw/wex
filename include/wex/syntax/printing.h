@@ -2,7 +2,7 @@
 // Name:      printing.h
 // Purpose:   Include file for wex::printing class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -12,7 +12,6 @@
 #include <wx/print.h>
 
 #include <memory>
-#include <vector>
 
 class wxStyledTextCtrl;
 
@@ -57,33 +56,6 @@ private:
   std::unique_ptr<wxPrinter>          m_printer;
   std::unique_ptr<wxHtmlEasyPrinting> m_html_printer;
 
-  static printing* m_self;
-};
-
-// Offers a print out to be used by wxStyledTextCtrl.
-class printout : public wxPrintout
-{
-public:
-  /// Constructor.
-  explicit printout(wxStyledTextCtrl* owner);
-
-  /// Methods overridden from base class.
-  void
-  GetPageInfo(int* minPage, int* maxPage, int* pageFrom, int* pageTo) override;
-  bool HasPage(int pageNum) override
-  {
-    return (pageNum >= 1 && pageNum <= static_cast<int>(m_page_breaks.size()));
-  };
-  void OnPreparePrinting() override;
-  bool OnPrintPage(int pageNum) override;
-
-private:
-  void count_pages();
-  void set_scale();
-
-  wxRect m_page_rect, m_print_rect;
-
-  std::vector<int>  m_page_breaks;
-  wxStyledTextCtrl* m_owner;
+  static inline printing* m_self{nullptr};
 };
 }; // namespace wex

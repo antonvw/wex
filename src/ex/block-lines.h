@@ -2,7 +2,7 @@
 // Name:      block-lines.h
 // Purpose:   Declaration of class wex::block_lines
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -22,9 +22,6 @@ class block_lines
 public:
   /// Constructor, specify ex component, and start and end line.
   block_lines(ex* ex, int start = 0, int end = 0);
-
-  /// Operator =.
-  block_lines& operator=(const block_lines& r);
 
   /// Spaceship operator.
   auto operator<=>(const block_lines& r) const

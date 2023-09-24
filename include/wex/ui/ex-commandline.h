@@ -2,12 +2,12 @@
 // Name:      ex-commandline.h
 // Purpose:   Declaration of wex::ex_commandline class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016-2022 Anton van Wezenbeek
+// Copyright: (c) 2016-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wex/data/window.h>
+#include <wex/factory/window.h>
 
 class wxControl;
 

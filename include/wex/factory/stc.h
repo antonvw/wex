@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wex::factory::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,6 +10,7 @@
 #include <wex/core/path.h>
 #include <wex/factory/ex-command.h>
 #include <wex/factory/text-window.h>
+#include <wex/factory/window.h>
 #include <wx/print.h>
 #include <wx/stc/stc.h>
 
@@ -17,6 +18,7 @@
 
 namespace wex
 {
+class line_data;
 
 namespace data
 {
@@ -44,10 +46,16 @@ public:
   /// A typedef containing margin flags.
   typedef std::bitset<4> margin_t;
 
+  /// Default constructor.
+  stc(const data::window& data = data::window());
+
   /// Virtual interface.
 
   /// Adds text.
   virtual void add_text(const std::string& text) { AddText(text); }
+
+  /// Adds text block mode.
+  virtual void add_text_block(const std::string& text) { AddText(text); }
 
   /// Appends text (to end).
   virtual void append_text(const std::string& text) { AppendText(text); }
@@ -77,7 +85,7 @@ public:
   };
 
   /// Hex lines.
-  virtual std::string get_hexmode_lines(const std::string& text)
+  virtual std::string get_hexmode_lines(const std::string& text) const
   {
     return std::string();
   };
@@ -178,7 +186,7 @@ public:
   virtual void use_modification_markers(bool use) { ; }
 
   /// Runs a vi command on this stc (default false).
-  virtual bool vi_command(const std::string& command) { return false; }
+  virtual bool vi_command(const line_data& data) { return false; }
 
   /// Finish last vi command (default false).
   virtual bool vi_command_finish(bool user_input) { return false; }

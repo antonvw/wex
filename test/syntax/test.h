@@ -2,16 +2,14 @@
 // Name:      test.h
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/syntax/stc.h>
+#include <wex/test/test.h>
 #include <wx/app.h>
-
-/// Add general test header.
-#include "../test.h"
 
 namespace wex::test
 {
@@ -22,20 +20,10 @@ namespace wex::test
 class stc : public wex::syntax::stc
 {
 public:
-  stc(wxFrame* parent = nullptr)
+  stc(const data::window& data = data::window())
+    : syntax::stc(data)
   {
-    if (parent != nullptr)
-    {
-      Create(parent, -1);
-    }
-    else if (wxTheApp != nullptr)
-    {
-      Create(wxTheApp->GetTopWindow(), -1);
-    }
-    else
-    {
-      std::cout << "no parent available\n";
-    }
+    ;
   };
 
 private:

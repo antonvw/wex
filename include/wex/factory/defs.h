@@ -2,7 +2,7 @@
 // Name:      defs.h
 // Purpose:   Common defs for all wex classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -39,7 +39,7 @@ enum window_id
 {
   ID_LOWEST = wxID_HIGHEST + 1000, // see stc-bind.h
 
-  ID_ALL_LOWEST, // all ALL commands after this one
+  ID_ALL_LOWEST, // all commands after this one
   ID_ALL_CLOSE,
   ID_ALL_CLOSE_OTHERS,
   ID_ALL_CONFIG_GET,

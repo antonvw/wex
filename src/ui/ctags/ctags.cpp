@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::ctags
 //            https://github.com/universal-ctags/ctags
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -40,7 +40,7 @@ public:
   // Constructor.
   explicit ctags_info(const tagEntry& entry)
     : m_line_number(entry.address.lineNumber)
-    , m_path(entry.file)
+    , m_path(entry.file == nullptr ? std::filesystem::path() : entry.file)
     , m_pattern(
         [](const tagEntry& entry)
         {
@@ -59,16 +59,19 @@ public:
   {
   }
 
+  // Returns true if path is valid.
+  bool is_path_valid() const { return !m_path.data().empty(); }
+
   // Returns name, being fullpath or path name depending on
   // config settings.
-  const std::string name() const { return tag_name(m_path); }
+  const auto name() const { return tag_name(m_path); }
 
   // Opens file in specified frame.
   auto open_file(factory::frame* frame) const
   {
     return frame->open_file(
       m_path,
-      data::control().line(m_line_number).command(m_pattern));
+      data::control().line(m_line_number).command(m_pattern).is_ctag(true));
   }
 
 private:
@@ -78,8 +81,8 @@ private:
 };
 }; // namespace wex
 
-std::map<std::string, wex::ctags_info>           wex::ctags::m_matches;
-std::map<std::string, wex::ctags_info>::iterator wex::ctags::m_iterator;
+wex::ctags::ctags_t           wex::ctags::m_matches;
+wex::ctags::ctags_t::iterator wex::ctags::m_iterator;
 
 wex::ctags::ctags(wex::factory::stc* stc, bool open_file)
   : m_stc(stc)
@@ -190,20 +193,33 @@ bool wex::ctags::find(const std::string& tag, factory::stc* stc)
   }
   else
   {
-    m_matches.clear();
-
-    do
+    try
     {
-      if (const ctags_info ct(entry.entry());
-          stc == nullptr || (ct.name() != tag_name(stc->path())))
+      if (tag.empty())
       {
-        m_matches.insert({ct.name(), ct});
+        return true; // next already invoked
       }
-    } while (tagsFindNext(m_file, &entry.entry()) == TagSuccess);
 
-    m_iterator = m_matches.begin();
+      m_matches.clear();
 
-    log::trace("ctags::find matches") << m_matches.size();
+      do
+      {
+        if (const ctags_info ct(entry.entry());
+            ct.is_path_valid() &&
+            (stc == nullptr || (ct.name() != tag_name(stc->path()))))
+        {
+          m_matches.insert({ct.name(), ct});
+        }
+      } while (tagsFindNext(m_file, &entry.entry()) == TagSuccess);
+
+      m_iterator = m_matches.begin();
+
+      log::trace("ctags::find matches") << m_matches.size();
+    }
+    catch (const std::exception& e)
+    {
+      log(e) << "find tag:" << tag;
+    }
 
     return find_exit(tag, stc);
   }
@@ -271,8 +287,6 @@ bool wex::ctags::find_exit(const std::string& tag, factory::stc* stc)
       }
     }
   }
-
-  find_replace_data::get()->set_find_string(tag);
 
   return true;
 }

@@ -7,18 +7,60 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
         with:
           submodules: recursive
 
-      - name: Install boost and gtk3
-        run: sudo apt-get update && sudo apt-get install -yq libboost-all-dev liblzma5 libjbig0 libgtk-3-dev
+      - name: Install boost
+        uses: MarkusJx/install-boost@v2.4.1
+        id: install-boost
+        with:
+          # REQUIRED: Specify the required boost version
+          # A list of supported versions can be found here:
+          # https://github.com/actions/boost-versions/blob/main/versions-manifest.json
+          boost_version: 1.81.0
+          # OPTIONAL: Specify a platform version
+          platform_version: 20.04
 
-      - name: Install gcc-11
-        run: sudo apt-get install -yq gcc-11 g++-11
+      - name: Install gtk
+        run: sudo apt-get update && sudo apt-get install liblzma5 libjbig0 libgtk-3-dev
+
+      - name: Install gcc, lcov, gdb
+        run: sudo apt-get install -yq gcc-12 g++-12 lcov gdb
+
+      - name: Install xvfb to allow headless tests
+        run: sudo apt-get install xvfb
+          
+      - name: Install coveralls
+        run: sudo curl -L https://coveralls.io/coveralls-linux.tar.gz | tar -xz -C /usr/local/bin
+
+      - name: Install robotframework
+        run: sudo pip install robotframework
 
       - name: Configure
-        run: export CC=gcc-11 && export CXX=g++-11 && mkdir build && cd build && cmake ..
+        # adding -DwexBUILD_SAMPLES=ON should result in app running,
+        # but then the headless test keeps on running
+        run: export CC=gcc-12 && export CXX=g++-12 && mkdir build && cd build &&
+          cmake
+            -DCMAKE_BUILD_TYPE=Coverage
+            -DwexGCOV=gcov-12
+            -DwexBUILD_TESTS=ON
+            -DwexBUILD_GITHUB=ON
+            -DBoost_INCLUDE_DIR=${{steps.install-boost.outputs.BOOST_ROOT}}/include
+            -DBoost_LIBRARY_DIRS=${{steps.install-boost.outputs.BOOST_ROOT}}/lib
+            ..
+        env:
+          BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
 
       - name: Make
         run: cd build && make
+
+      - name: Headless Test
+        run: cd build &&
+          make lcov-prep &&
+          xvfb-run --auto-servernum ctest -VV &&
+          make lcov
+
+      - name: Coveralls
+        run: cd build && coveralls -r 9vV6skuIGeagBBkz5TCZNI12ezUv12gOj --format=lcov --file=src/app.run

@@ -2,7 +2,7 @@
 // Name:      main.cpp
 // Purpose:   main for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022
+// Copyright: (c) 2021-2023
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "test.h"
@@ -25,24 +25,10 @@ private:
 };
 }; // namespace wex::test
 
-class data_listview : public wex::factory::listview
-{
-public:
-  explicit data_listview(wxFrame* parent)
-  {
-    Create(parent, -1);
-    Show();
-  }
-};
-
 class data_stc : public wex::syntax::stc
 {
 public:
-  explicit data_stc(wxFrame* parent)
-  {
-    Create(parent, -1);
-    Show();
-  };
+  explicit data_stc(wxFrame* parent) { Show(); };
 
 private:
   const wex::path& path() const override { return m_path; };
@@ -65,7 +51,7 @@ bool wex::test::data::OnInit()
   m_frame = new wxFrame(nullptr, wxID_ANY, "test");
   m_frame->Show();
 
-  m_listview = new data_listview(m_frame);
+  m_listview = new factory::listview(wex::data::window().parent(m_frame));
   m_stc      = new data_stc(m_frame);
 
   return true;

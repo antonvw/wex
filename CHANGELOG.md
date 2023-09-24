@@ -1,96 +1,188 @@
-# changes
+# changelog
 
-**v23.04** *March 12, 2023*
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+
+## 24.04 - 2024-04-01 [Unreleased]
+
+## 23.10 - 2023-10-08
+
+### Added
+
+- wex-test lib
+- python bindings
+
+### Changed
+
+- boost::regular expression lib used by wex::regex_part
+- boost::URL lib used, requiring boost 1.81
+- frame::open_file_same_page: argument now takes wex::path
+- item::layout: argument now takes wex::data::layout
+- stc::vi_command: argument now takes wex::line_data
+- removed some not necessary copy constructors
+- moved window.h and control.h to factory
+- lilypond lexer improved
+- added wex::ex_stream::stream argument line size and increased default value
+
+### Fixed
+- possible crash in lisview sorting
+- ctags::find and empty tag finds next tag
+- rectangular paste
+
+## 23.04 - 2023-03-12
+
+### Added
+
+- wex-ctags and wex-syntax library
+
+### Changed
 
 - c++23 standard
-- wex-ctags and wex-syntax library added
 - wxWidgets 3.3, and lexilla 5.0.1
+
+### Fixed
+
 - ex mode fixes
 
-**v22.10** *September 18, 2022*
+## 22.10 - 2022-09-18
 
-- added blame revision
+### Added
+
+- blame revision
+- ex command-line is improved, it is now a factory::stc
+- wex-ex and wex-vcs library
+
+### Changed
+
+- wxWidgets 3.2
 - ex commands more closely follow
   The Open Group Base Specifications Issue 7, 2018 edition
-- ex command-line is improved, it is now a factory::stc
-- wxWidgets 3.2
-- wex-ex and wex-vcs library added
 
-**v22.04** *March 6, 2022*
+## 22.04 - 2022-03-06
 
-- Microsoft Visual Studio 2022
-- boost::json lib instead of nlohmann/json lib, requiring boost 1.75
-- added methods to allow testing wex applications
+### Added
+
+- methods to allow testing wex applications
+- a few vim g commands
+- version info to wex libs
+
+### Changed
+
 - c++20 standard
-- added a few vim g commands
-- added version info to wex libs
+- boost::json lib instead of nlohmann/json lib, requiring boost 1.75
+- Microsoft Visual Studio 2022
 
-**v21.10** *September 12, 2021*
+## 21.10 - 2021-09-12
+
+### Added
+
+- wex::factory namespace, renamed wex::report namespace into wex::del
+- option wexBUILD_SHARED to use dynamic libs
+
+### Changed
 
 - boost::algorithm lib used
 - boost::tokenizer lib used
-- added wex::factory namespace, renamed wex::report namespace into wex::del
-- added option wexBUILD_SHARED to use dynamic libs
 - use std::thread for find and replace in files
 
-**v21.04** *March 7, 2021*
+## 21.04 - 2021-03-07
 
-- added FindWEX.cmake to assist using wex library using cmake projects
-- boost::log lib instead of easylogging++ lib
-- c++2a standard, c++17 available as tag
+### Added
+
+- FindWEX.cmake to assist using wex library using cmake projects
 - support of ex mode handling of files
+
+### Changed
+
+- c++2a standard, c++17 available as tag
+- boost::log lib used instead of easylogging++ lib
 - moved apps folder to gitlab
 
-**v20.10** *October 2, 2020*
+## 20.10 - 2020-10-02
+
+### Added
 
 - clang-format support, and wex code follows these guidelines
-- ex append, insert, change, set commands follow
-    The Open Group Base Specifications Issue 7, 2018 edition
 - ctags update to use libreadtags and auto_complete improvements
 - bettercodehub improvements, split up of src directories
 - gtk3 is used as default widget toolkit
-- added wex::data namespace
+- wex::data namespace
 
-**v20.04** *March 15, 2020*
+### Changed
 
-- scintilla is compiled to use `std::regex` (ECMAScript)
-- The Open Group Base Specifications Issue 7, 2018 edition
-- Microsoft Visual Studio 2019
+- ex append, insert, change, set commands follow
+    The Open Group Base Specifications Issue 7, 2018 edition
+
+## 20.04 - 2020-03-15
+
+### Added
+
 - usage of test suites
 
-**v19.10** *September 14, 2019*
+### Changed
 
+- The Open Group Base Specifications Issue 7, 2018 edition
+- scintilla is compiled to use `std::regex` (ECMAScript)
+- Microsoft Visual Studio 2019
+
+## 19.10 - 2019-09-14
+
+### Added
+
+- wex::test and wex::report namespace
+
+### Changed
+
+- uses nlohmann/json instead of wxConfig
 - uses boost 1.65
   - boost::process lib instead of tiny-process-library
   - boost::program_options lib instead of TCLAP lib
   - boost::spirit lib instead of eval lib
   - boost::statechart lib instead of FSM lib
-- uses nlohmann/json instead of wxConfig
-- added wex::test and wex::report namespace
 
-**v19.04** *March 9, 2019*
+## 19.04 - 2019-03-09
 
-- added wex namespace
-- uses std::filesystem instead of std::experimental::filesystem
+### Added
+
+- wex namespace
 - tiny-process-library lib
 
-**v18.10** *October 1, 2018*
+### Changed
 
-- c++17 standard
+- uses std::filesystem instead of std::experimental::filesystem
+
+## 18.10 - 2018-10-01
+
+### Changed
+
 - wxWidgets used as submodule
+
+### Fixed
+
 - osx fixes
 
-**v18.04** *April 8, 2018*
+### Changed
+
+- c++17 standard
+
+## 18.04 - 2018-04-08
+
+### Added
 
 - easylogging++ lib
 - FSM lib
 
-**v17.10** *September 30, 2017*
+## 17.10 - 2017-09-30
+
+### Changed
 
 - c++1z, using std::experimental::filesystem
 - Microsoft Visual Studio 2017
 
-**v17.04** *April 8, 2017*
+## 17.04 - 2017-04-08
+
+### Changed
 
 - git submodules
 - ctags lib
@@ -98,93 +190,146 @@
 - pugixml lib
 - TCLAP lib
 
-**v16.10** *September 30, 2016*
+## 16.10 - 2016-09-30
+
+### Added
 
 - eval lib
 - osx support
 
-**v3.1.0** *March 11, 2016*
+## 3.1.0 - 2016-03-11
 
-- c++14 standard
-- wxWidgets 3.1.0
+### Added
+
+- The Open Group Base Specifications Issue 7, 2013 edition
+
+### Changed
+
 - catch lib instead of cppunit lib
 - cmake build tool
 - Microsoft Visual Studio 2015
-- The Open Group Base Specifications Issue 7, 2013 edition
 
-**v3.0.2** *October 10, 2014*
+### Changed
+
+- c++14 standard
+- wxWidgets 3.1.0
+
+## 3.0.2 - 2014-10-10
+
+### Changed
 
 - c++11 standard
 - wxWidgets 3.0.2
 
-**v3.0.1** *June 19, 2014*
+## 3.0.1 - 2010-06-19
+
+### Changed
 
 - wxWidgets 3.0.1
 - Microsoft Visual Studio 2013
 
-**v3.0.0** *November 14, 2013*
+## 3.0.0 - 2013-11-14
 
-- cppunit lib
-- wxWidgets 3.0.0
-- Microsoft Visual Studio 2012
+### Added
+
+- unittests using cppunit lib
 - sourceforge
 
-**v2.9.5** *July 20, 2013*
+### Changed
+
+- wxWidgets 3.0.0
+- Microsoft Visual Studio 2012
+
+## 2.9.5 - 2013-07-20
+
+### Changed
 
 - wxWidgets 2.9.5
 
-**v2.9.4** *July 16, 2012*
+## 2.9.4 - 2012-07-16
+
+### Changed
 
 - wxWidgets 2.9.4
 
-**v2.9.3** *March 24, 2012*
+## 2.9.3 - 2012-03-24
+
+### Added
 
 - ex mode derived from vi mode
-- wxWidgets 2.9.3
 - rfw lexer
 
-**v2.9.2** *December 16, 2011*
+### Changed
+
+- wxWidgets 2.9.3
+
+## 2.9.2 - 2011-12-11
+
+### Added
+
+- vi mode
+
+### Changed
 
 - use git (GitHub)
-- vi mode
-- c++0x
+
+### Changed
+
+- c++0x standard
 - wxWidgets 2.9.2
 - Microsoft Visual Studio 2010
 
-**v6.0** *November 20, 2008*
+## 6.0 - 2008-11-20
 
-- use svn (sliksvn, xp-dev)
+### Added
+
 - macro support added
 - multi-threaded architecture
 - doxygen
 - otlv4.0 lib
 - use bakefile
 
-**v5.1** *September 10, 2007*
+### Changed
+
+- use svn (sliksvn, xp-dev)
+
+## 5.1 - 2007-09-10
+
+### Added
 
 - recent project support
 
-**v5.0** *April 4, 2007*
+## 5.0 - 2007-04-04
+
+### Added
 
 - wxAUI lib
 - MDI projects
 
-**v4.4** *December 14, 2006*
+## 4.4 - 2006-12-14
+
+### Added
 
 - portable version that reads and saves all config
     files from exe directory
 
-**v4.3** *June 19, 2006*
+## 4.3 - 2006-06-19
 
-**v4.2** *April 3, 2006*
+## 4.2 - 2006-04-03
+
+### Added
 
 - MDI editors
 
-**v4.1** *February 6, 2006*
+## 4.1 - 2006-02-06
+
+### Added
 
 - hex mode opening
 
-**v4.0** *December 23, 2005*
+## 4.0 - 2005-12-23
+
+### Added
 
 - STL container classes
     (ClassBuilder no longer used)
@@ -196,69 +341,104 @@
 - autocompletion
 - folding
 
-**v3.6** *July 9, 2003*
+## 3.6 - 2003-07-09
+
+### Added
 
 - wxStyledTextCtrl component used
+
+### Changed
+
 - gcc 3.2
 
-**v3.5** *March 22, 2002*
+## 3.5 - 2002-03-22
 
-**v3.4** *February 21, 2002*
+## 3.4 - 2002-02-21
 
-**v3.3** *November 30, 2001*
+## 3.3 - 2001-11-30
 
-**v3.2** *July 11, 2001*
+## 3.2 - 2001-07-11
 
-**v3.1** *June 22, 2001*
+## 3.1 - 2001-06-22
+
+### Changed
 
 - wxWidgets 2.2.7
 
-**v3.0** *June 12, 2001*
+## 3.0 - 2001-06-12
 
-- wxWidgets 2.2.1
+### Added
+
 - recent file support
 - ported to Unix
 
-**v2.2** *December 18, 2000*
+### Changed
 
-- XTToolKit lib
+- wxWidgets 2.2.1 instead of MFC
+
+## 2.2 - 2002-12-18
+
+### Added
+
 - drag/drop support
 
-**v2.1** *November 14, 2000*
+### Changed
+
+- XTToolKit lib
+
+## 2.1 - 2000-11-14
+
+### Added
 
 - CodeJock lib v6.09
 
-**v2.0** *June 19, 2000*
+## 2.0 - 2000-06-19
 
-- Visual C++ 6.0 and MFC 6.0
+### Changed
 
-**v1.9** *April 18, 2000*
+- MFC 6.0
+- Visual C++ 6.0
 
-**v1.8** *January 7, 2000*
+## 1.9 - 2000-04-18
 
-**v1.7** *December 15, 1999*
+## 1.8 - 2000-01-07
+
+## 1.7 - 1999-09-15
+
+### Added
 
 - ClassBuilder 2.0
 
-**v1.6** *October 12, 1999*
+## 1.6 - 1999-10-12
+
+### Added
 
 - SDI interface
 
-**v1.5** *March 23, 1999*
+## 1.5 - 1999-03-23
 
-**v1.4** *August 8, 1998*
+## 1.4 - 1998-08-08
 
-**v1.3** *June 18, 1998*
+## 1.3 - 1998-06-18
 
-**v1.2** *April 23, 1998*
+## 1.2 - 1998-04-23
+
+### Changed
 
 - use CListCtrl instead of CListBox
 
-**v1.1** *March 16, 1998*
+## 1.1 - 1998-03-16
+
+### Changed
 
 - use CListBox instead of CEdit
 
-**v1.0** *January 27, 1998*
+## 1.0 - 1998-01-27
 
-- Visual C++ 5.0 and MFC 5.0
+### Added
+
+- MFC 5.0
 - CEdit is used as base for the output
+- Visual C++ 5.0
+
+<!-- markdownlint-configure-file { "MD022": false, "MD024": false, "MD030": false, "MD032": false} -->

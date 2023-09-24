@@ -2,7 +2,7 @@
 // Name:      odbc.cpp
 // Purpose:   Implementation of wex::odbc class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2022 Anton van Wezenbeek
+// Copyright: (c) 2008-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -21,7 +21,7 @@
 #define OTL_ODBC
 #define OTL_STL
 
-//#define OTL_UNICODE
+// #define OTL_UNICODE
 #if __UNIX__
 #define OTL_ODBC_UNIX
 #endif
@@ -336,7 +336,7 @@ long wex::odbc::query(
   // Get all rows.
   while (!i.eof() && !stopped)
   {
-    wxString line;
+    std::string line;
 
     for (auto n = 0; n < desc_len; n++)
     {
@@ -346,7 +346,7 @@ long wex::odbc::query(
         {
           otl_long_string var;
           i >> var;
-          line += var.v;
+          line.append((const char* )var.v);
         }
         else
         {

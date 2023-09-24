@@ -2,7 +2,7 @@
 // Name:      test-listview.cpp
 // Purpose:   Implementation for wex del unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2015-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/del/defs.h>
@@ -37,9 +37,9 @@ TEST_CASE("wex::del::listview")
     wex::config(_("list.Comparator")).set("diff");
 
 #ifndef __WXMSW__
+    // do not test VCS, it results in modal dialog
     for (auto id : std::vector<int>{
            wex::ID_EDIT_OPEN,
-           wex::ID_EDIT_VCS_LOWEST,
            wex::del::ID_LIST_COMPARE,
            wex::del::ID_LIST_RUN_MAKE})
     {

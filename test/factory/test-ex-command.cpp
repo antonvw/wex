@@ -2,7 +2,7 @@
 // Name:      test-ex-command.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/ex-command.h>
@@ -50,6 +50,7 @@ TEST_CASE("wex::ex_command")
 
   SUBCASE("change")
   {
+    REQUIRE(command.get_stc() == stc);
     command.append('g');
     REQUIRE(command.command() == "g");
     command.append('g');
@@ -60,14 +61,15 @@ TEST_CASE("wex::ex_command")
     command.pop_back();
     REQUIRE(command.size() == 1);
 
-    command.set(wex::ex_command("dd"));
+    command = wex::ex_command("dd");
     REQUIRE(command.command() == "dd");
-    REQUIRE(command.get_stc() == stc);
-    command.restore(wex::ex_command("ww"));
+    REQUIRE(command.get_stc() == nullptr);
+
+    command = wex::ex_command("ww");
     REQUIRE(command.command() == "ww");
     command.append("ww");
     REQUIRE(command.command() == "wwww");
-    REQUIRE(command.get_stc() == stc);
+    REQUIRE(command.get_stc() == nullptr);
 
     REQUIRE(!command.append_exec('w'));
     REQUIRE(command.command() == "wwwww");
@@ -133,5 +135,8 @@ TEST_CASE("wex::ex_command")
     command.set(":" + wex::ex_command::selection_range() + "!pwd");
     REQUIRE(command.type() == wex::ex_command::type_t::ESCAPE_RANGE);
     REQUIRE(command.str() == ":" + wex::ex_command::selection_range() + "!");
+
+    command.set_stc(stc);
+    REQUIRE(command.get_stc() == stc);
   }
 }

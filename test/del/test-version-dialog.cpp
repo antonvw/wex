@@ -5,7 +5,7 @@
 // Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
+#include <wex/test/test.h>
 #include <wex/del/version-dialog.h>
 
 TEST_CASE("wex::about_info")

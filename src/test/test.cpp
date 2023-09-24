@@ -5,12 +5,10 @@
 // Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-
-#include <wex/core/log.h>
 #include <wx/frame.h>
 
-#include "test.h"
+#include <wex/core/log.h>
+#include <wex/test/test.h>
 
 const wex::path wex::test::get_path(const std::string& file, path::log_t t)
 {

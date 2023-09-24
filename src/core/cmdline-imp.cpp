@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <utility>
 
 #define WEX_CALLBACK(TYPE, FIELD)        \
   v->second.FIELD(it.second.as<TYPE>()); \
@@ -104,7 +105,7 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
   po::notify(m_vm);
 
   auto loglevel = m_vm.count("level") ? m_vm["level"].as<int>() :
-                                        static_cast<int>(log::level_t_def());
+                                        std::to_underlying(log::level_t_def());
 
   if (m_vm.count("help") || m_vm.count("version"))
   {

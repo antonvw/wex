@@ -2,7 +2,7 @@
 // Name:      macros.h
 // Purpose:   Declaration of class wex::macros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2022 Anton van Wezenbeek
+// Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -12,7 +12,7 @@
 #include <wex/ex/macro-mode.h>
 #include <wex/ex/variable.h>
 
-#include <map>
+#include <unordered_map>
 #include <vector>
 
 namespace wex
@@ -45,10 +45,19 @@ public:
   };
 
   /// Maps key to command.
-  typedef std::map<int, std::string>                      keys_map_t;
-  typedef std::map<std::string, std::string>              strings_map_t;
-  typedef std::map<std::string, std::vector<std::string>> macros_map_t;
-  typedef std::map<std::string, variable>                 variables_map_t;
+  typedef std::unordered_map<int, std::string> keys_map_t;
+
+  /// Type for commands.
+  typedef std::vector<std::string> commands_t;
+
+  /// Maps string to command.
+  typedef std::unordered_map<std::string, std::string> strings_map_t;
+
+  /// Maps macro (register) to vector of command.
+  typedef std::unordered_map<std::string, commands_t> macros_map_t;
+
+  /// Maps string to variable.
+  typedef std::unordered_map<std::string, variable> variables_map_t;
 
   /// Default constructor.
   macros();
@@ -60,11 +69,11 @@ public:
   /// Finds macro in macros or variables,
   /// and returns contents as a vector of strings,
   /// or empty vector if not found.
-  const std::vector<std::string> find(const std::string& name) const;
+  const commands_t find(const std::string& name) const;
 
   /// Returns all macro names as a vector of strings.
   /// Does not include registers.
-  const std::vector<std::string> get() const;
+  const commands_t get() const;
 
   /// Returns abbreviations.
   const auto& get_abbreviations() const { return m_abbreviations; }
@@ -73,8 +82,7 @@ public:
   const keys_map_t& get_keys_map(key_t type = KEY_NORMAL) const;
 
   /// Returns commands for specified macro.
-  const std::vector<std::string>
-  get_macro_commands(const std::string& macro) const;
+  const commands_t get_macro_commands(const std::string& macro) const;
 
   /// Returns (string) map.
   const auto& get_map() const { return m_map; }
@@ -84,7 +92,7 @@ public:
 
   /// Returns all registers (with content) as a vector of strings.
   /// Does not include macros.
-  const std::vector<std::string> get_registers() const;
+  const commands_t get_registers() const;
 
   /// Returns variables.
   const auto& get_variables() const { return m_variables; }

@@ -9,47 +9,16 @@
 #include <wex/factory/listview.h>
 #include <wex/syntax/lexer.h>
 
-wex::data::listview::listview(factory::listview* lv)
-  : m_listview(lv)
-{
-}
+wex::data::listview::listview() {}
 
-wex::data::listview::listview(factory::listview* lv, const data::listview& r)
-  : m_listview(lv)
-{
-  *this = r;
-}
-
-wex::data::listview::listview(data::control& data, factory::listview* lv)
+wex::data::listview::listview(data::control& data)
   : m_data(data)
-  , m_listview(lv)
 {
 }
 
-wex::data::listview::listview(data::window& data, factory::listview* lv)
+wex::data::listview::listview(data::window& data)
   : m_data(data::control().window(data))
-  , m_listview(lv)
 {
-}
-
-wex::data::listview& wex::data::listview::operator=(const data::listview& r)
-{
-  if (this != &r)
-  {
-    m_data        = r.m_data;
-    m_image_type  = r.m_image_type;
-    m_initialized = r.m_initialized;
-    m_lexer       = r.m_lexer;
-    m_menu_flags  = r.m_menu_flags;
-    m_type        = r.m_type;
-
-    if (m_listview != nullptr && r.m_listview != nullptr)
-    {
-      m_listview = r.m_listview;
-    }
-  }
-
-  return *this;
 }
 
 void wex::data::listview::add_columns()
@@ -153,6 +122,12 @@ wex::data::listview&
 wex::data::listview::menu(menu_t flags, data::control::action_t action)
 {
   m_data.flags<flags.size()>(flags, m_menu_flags, action);
+  return *this;
+}
+
+wex::data::listview& wex::data::listview::set_listview(factory::listview* rhs)
+{
+  m_listview = rhs;
   return *this;
 }
 

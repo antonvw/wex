@@ -2,14 +2,14 @@
 // Name:      art.h
 // Purpose:   Declaration of wex::stockart class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2022 Anton van Wezenbeek
+// Copyright: (c) 2009-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wx/artprov.h> // for wxArtID
 
-#include <map>
+#include <unordered_map>
 
 namespace wex
 {
@@ -29,7 +29,7 @@ public:
 private:
   static void add(int id, const wxArtID& art);
 
-  static std::map<wxWindowID, wxArtID> m_art_ids;
-  const wxWindowID                     m_id;
+  static inline std::unordered_map<wxWindowID, wxArtID> m_art_ids;
+  const wxWindowID                                      m_id;
 };
 }; // namespace wex

@@ -2,11 +2,11 @@
 // Name:      test-file.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/core/file.h>
+#include <wex/test/test.h>
 
 #include <chrono>
 
@@ -24,6 +24,7 @@ TEST_CASE("wex::file")
     REQUIRE(!file.is_written());
     REQUIRE(!file.is_contents_changed());
     REQUIRE(file.is_open());
+    REQUIRE(file.stream().is_open());
 
     file.reset_contents_changed();
 
@@ -74,6 +75,7 @@ TEST_CASE("wex::file")
       std::ios_base::in | std::ios_base::out);
 
     REQUIRE(!file.file_save());
+    REQUIRE(file.file_save(wex::path("test-save")));
     REQUIRE(file.file_save(wex::path("test-save")));
 
     REQUIRE(remove("test-save") == 0);

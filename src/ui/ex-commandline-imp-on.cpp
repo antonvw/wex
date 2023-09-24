@@ -2,7 +2,7 @@
 // Name:      ex-commandline-imp-on.cpp
 // Purpose:   Implementation of wex::ex_commandline_imp class on.. methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/util.h>
@@ -15,6 +15,15 @@
 #include <wex/ui/frd.h>
 
 #include "ex-commandline-imp.h"
+
+void wex::ex_commandline_imp::ex_mode()
+{
+  ClearAll();
+
+  m_command.set(":");
+
+  SetFocus();
+}
 
 void wex::ex_commandline_imp::on_char(wxKeyEvent& event)
 {
@@ -89,10 +98,6 @@ void wex::ex_commandline_imp::on_key_down(wxKeyEvent& event)
       break;
 
     default:
-      if (isascii(event.GetKeyCode()))
-      {
-        Cut();
-      }
       event.Skip();
   }
 }
@@ -122,8 +127,7 @@ void wex::ex_commandline_imp::on_key_down_escape()
 {
   if (is_ex_mode())
   {
-    ClearAll();
-    m_command = ex_command(":");
+    ex_mode();
   }
   else if (m_cl->stc() != nullptr)
   {
@@ -211,8 +215,8 @@ void wex::ex_commandline_imp::on_text_enter(wxEvent& event)
     if (const auto& text(get_text().substr(0, get_text().size() - 2));
         text != ":." && !text.empty())
     {
-      m_cl->stc()->vi_command(
-        ":" + std::string(1, m_input) + "|" + text + m_cl->stc()->eol());
+      m_cl->stc()->vi_command(line_data().command(
+        ":" + std::string(1, m_input) + "|" + text + m_cl->stc()->eol()));
     }
 
     m_cl->get_frame()->show_ex_bar();
@@ -271,9 +275,7 @@ void wex::ex_commandline_imp::on_text_enter_do()
 
   if (is_ex_mode())
   {
-    ClearAll();
-    m_command = ex_command(":");
-    SetFocus();
+    ex_mode();
   }
 
   if (m_input == 0 && !is_ex_mode())
@@ -295,7 +297,7 @@ bool wex::ex_commandline_imp::on_text_enter_prep()
     if (is_ex_mode())
     {
       m_command.reset();
-      m_cl->stc()->vi_command(":.+1");
+      m_cl->stc()->vi_command(line_data().command(":.+1"));
       SetFocus();
     }
     else

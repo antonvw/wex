@@ -2,7 +2,7 @@
 // Name:      cmdline.cpp
 // Purpose:   Implementation of wex::cmdline class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -123,18 +123,13 @@ wex::cmdline::cmdline(
   const cmd_switches_t& s,
   const cmd_options_t&  o,
   const cmd_params_t&   p,
-  bool                  add_standard_options,
-  const std::string&    prefix)
-  : m_cfg(new config(prefix))
+  bool                  add_standard_options)
+  : m_cfg(new config())
   , m_options(o)
   , m_params(p)
   , m_switches(s)
   , m_add_standard_options(add_standard_options)
 {
-  if (!prefix.empty())
-  {
-    m_cfg->child_start();
-  }
 }
 
 wex::cmdline::~cmdline()
@@ -298,7 +293,7 @@ bool wex::cmdline::parse_set(data::cmdline& data) const
   /*
     When no arguments are specified, write the value of the term edit
     option and those options whose values have been changed from the default
-    settings; when the argument all is specified, write all of the option
+    settings; when the argument all is specified, write all the option
     values.
 
     Giving an option name followed by the character '?' shall cause the

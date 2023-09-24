@@ -2,11 +2,12 @@
 // Name:      item-template-dialog.h
 // Purpose:   Declaration of wex::item_template_dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <wex/core/core.h>
 #include <wex/core/path.h>
 #include <wex/factory/frame.h>
 #include <wex/ui/dialog.h>
@@ -18,18 +19,6 @@
 #include <wx/filepicker.h>
 #include <wx/textctrl.h>
 #include <wx/tglbtn.h> // for wxEVT_TOGGLEBUTTON
-
-#define DO_DIALOG                                            \
-  {                                                          \
-    /* NOLINTNEXTLINE */                                     \
-    if (dlg.ShowModal() == wxID_OK)                          \
-    {                                                        \
-      const auto value = dlg.GetPath();                      \
-      const int  item  = browse->FindString(value);          \
-      browse->SetSelection(                                  \
-        item == wxNOT_FOUND ? browse->Append(value) : item); \
-    }                                                        \
-  }
 
 #define PICKER_HANDLE(COMPONENT)                              \
   if (auto* pc = reinterpret_cast<COMPONENT*>(item.window()); \
@@ -119,7 +108,7 @@ private:
 
   bool m_force_checkbox_checked{false}, m_one_checkbox_checked{false};
 
-  wxString m_contains, m_page;
+  std::string m_contains, m_page;
 };
 
 // implementation
@@ -159,41 +148,6 @@ template <class T> bool wex::item_template_dialog<T>::bind_button(const T& item)
         {
           if (!item.apply())
             click(event);
-        },
-        item.window()->GetId());
-      break;
-
-    case item::COMBOBOX_DIR:
-      Bind(
-        wxEVT_BUTTON,
-        [&, this](const wxCommandEvent& event)
-        {
-          auto*       browse = reinterpret_cast<wxComboBox*>(item.window());
-          wxDirDialog dlg(
-            this,
-            _(wxDirSelectorPromptStr),
-            browse->GetValue(),
-            wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-          DO_DIALOG;
-        },
-        item.window()->GetId());
-      break;
-
-    case item::COMBOBOX_FILE:
-      Bind(
-        wxEVT_BUTTON,
-        [&, this](const wxCommandEvent& event)
-        {
-          auto*        browse = reinterpret_cast<wxComboBox*>(item.window());
-          const path   path(browse->GetValue());
-          wxFileDialog dlg(
-            this,
-            _(wxFileSelectorPromptStr),
-            path.parent_path(),
-            path.filename(),
-            wxFileSelectorDefaultWildcardStr,
-            wxFD_DEFAULT_STYLE | wxFD_FILE_MUST_EXIST);
-          DO_DIALOG;
         },
         item.window()->GetId());
       break;
@@ -257,14 +211,14 @@ void wex::item_template_dialog<T>::force_checkbox_checked(
 
 template <class T> void wex::item_template_dialog<T>::layout(int rows, int cols)
 {
-  wxFlexGridSizer* previous_item_sizer = nullptr;
-  wxFlexGridSizer* sizer =
-    (rows > 0 ? new wxFlexGridSizer(rows, cols, 0, 0) :
-                new wxFlexGridSizer(cols));
+  data::layout::sizer_t* previous_item_sizer = nullptr;
+
+  data::layout layout(this, cols, rows);
+  layout.is_readonly(data().button() == wxCANCEL);
 
   for (int i = 0; i < cols; i++)
   {
-    sizer->AddGrowableCol(i);
+    layout.sizer()->AddGrowableCol(i);
   }
 
   int previous_type = -1;
@@ -274,28 +228,25 @@ template <class T> void wex::item_template_dialog<T>::layout(int rows, int cols)
     if (item.empty())
       continue;
 
-    // If this item has same type as previous type use previous sizer,
+    // If this item has the same type as previous type use previous sizer,
     // otherwise use no sizer (layout will create a new one).
-    wxFlexGridSizer* current_item_sizer =
-      (item.type() == previous_type && cols == 1 ? previous_item_sizer :
-                                                   nullptr);
+    layout.sizer_layout_create(
+      item.type() == previous_type && cols == 1 ? previous_item_sizer :
+                                                  nullptr);
 
     // layout the item.
-    previous_item_sizer =
-      item.layout(this, sizer, data().button() == wxCANCEL, current_item_sizer);
-    previous_type = item.type();
+    previous_item_sizer = item.layout(layout);
+    previous_type       = item.type();
 
-    if (
-      sizer->GetEffectiveRowsCount() >= 1 &&
-      !sizer->IsRowGrowable(sizer->GetEffectiveRowsCount() - 1) &&
-      item.is_row_growable())
+    if (item.is_row_growable())
     {
-      sizer->AddGrowableRow(sizer->GetEffectiveRowsCount() - 1);
+      layout.sizer_grow_row();
     }
+
     bind_button(item);
   }
 
-  add_user_sizer(sizer);
+  add_user_sizer(layout.sizer());
   layout_sizers();
 
   m_items.insert(m_items.end(), m_items_tmp.begin(), m_items_tmp.end());
@@ -377,8 +328,8 @@ void wex::item_template_dialog<T>::process_checkbox(const T& item)
   if (m_force_checkbox_checked)
   {
     if (auto* cb = reinterpret_cast<wxCheckBox*>(item.window());
-        wxString(item.label()).Lower().Contains(m_contains.Lower()) &&
-        cb->IsChecked() && item.page() == m_page)
+        icontains(item.label(), m_contains) && cb->IsChecked() &&
+        item.page() == m_page)
     {
       m_one_checkbox_checked = true;
     }
@@ -394,8 +345,8 @@ void wex::item_template_dialog<T>::process_checklistbox(const T& item)
     for (size_t i = 0; i < clb->GetCount(); i++)
     {
       if (
-        clb->GetString(i).Lower().Contains(m_contains.Lower()) &&
-        clb->IsChecked(i) && item.page() == m_page)
+        icontains(clb->GetString(i), m_contains) && clb->IsChecked(i) &&
+        item.page() == m_page)
       {
         m_one_checkbox_checked = true;
       }

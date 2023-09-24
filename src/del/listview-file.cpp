@@ -2,7 +2,7 @@
 // Name:      listview-file.cpp
 // Purpose:   Implementation of class wex::del::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2010-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <pugixml.hpp>
@@ -29,9 +29,9 @@ wex::del::file::file(const wex::path& p, const data::listview& data)
         data::control().is_required(true)},
        {m_text_in_folder,
         item::COMBOBOX_DIR,
-        std::list<std::string>{wxGetHomeDir().ToStdString()},
+        config::strings_t{wxGetHomeDir().ToStdString()},
         data::control().is_required(true)},
-       {std::set<std::string>{
+       {item::choices_bool_t{
          m_text_add_files,
          m_text_add_folders,
          m_text_add_recursive}}},

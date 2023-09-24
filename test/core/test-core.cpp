@@ -5,14 +5,15 @@
 // Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../test.h"
 #include <wex/core/core.h>
+#include <wex/core/types.h>
+#include <wex/test/test.h>
 
 #include <vector>
 
 TEST_CASE("wex::core")
 {
-  std::vector<int> cs{'(', ')', '{', '<', '>'};
+  wex::ints_t cs{'(', ')', '{', '<', '>'};
 
   SUBCASE("clipboard")
   {
@@ -102,6 +103,29 @@ TEST_CASE("wex::core")
     REQUIRE(wex::get_word(with_nl) == "test2");
   }
 
+  SUBCASE("icompare")
+  {
+    REQUIRE(wex::icompare("", "") == 0);
+    REQUIRE(wex::icompare("test", "test") == 0);
+    REQUIRE(wex::icompare("test", "tESt") == 0);
+
+    REQUIRE(wex::icompare("", "x") != 0);
+    REQUIRE(wex::icompare("test", "xtESt") != 0);
+    REQUIRE(wex::icompare("test", "tEStx") != 0);
+  }
+
+  SUBCASE("icontains")
+  {
+    REQUIRE(wex::icontains("test", ""));
+    REQUIRE(wex::icontains("test", "e"));
+    REQUIRE(wex::icontains("test", "E"));
+    REQUIRE(wex::icontains("test", "TEST"));
+
+    REQUIRE(!wex::icontains("e", "test"));
+    REQUIRE(!wex::icontains("test", "f"));
+    REQUIRE(!wex::icontains("test", "TESTx"));
+  }
+
   SUBCASE("is_brace")
   {
     for (const auto& c : cs)
@@ -141,12 +165,5 @@ TEST_CASE("wex::core")
   {
     REQUIRE(wex::quoted_find("test") == "test");
     REQUIRE(wex::quoted_find("te st") == "\"te st\"");
-  }
-
-  SUBCASE("translate")
-  {
-    REQUIRE(
-      wex::translate("hello @PAGENUM@ from @PAGESCNT@", 1, 2).find("@") ==
-      std::string::npos);
   }
 }

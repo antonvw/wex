@@ -2,13 +2,13 @@
 // Name:      grid.h
 // Purpose:   Declaration of wex::grid class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wex/data/window.h>
 #include <wex/factory/grid.h>
+#include <wex/factory/window.h>
 #include <wex/ui/menu.h>
 
 namespace wex

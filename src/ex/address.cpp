@@ -2,8 +2,10 @@
 // Name:      address.cpp
 // Purpose:   Implementation of class wex::address
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2013-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
+
+#include <charconv>
 
 #include <wex/core/core.h>
 #include <wex/core/file.h>
@@ -64,7 +66,7 @@ int find_stc(ex* ex, const std::string& text, int start_pos, bool forward)
 
 int find_stream(ex* ex, const std::string& text, bool forward)
 {
-  if (ex->ex_stream()->find(text, -1, forward))
+  if (ex->ex_stream()->find(text, 0, forward))
   {
     return ex->ex_stream()->get_current_line() + 1;
   }
@@ -129,7 +131,9 @@ bool wex::address::adjust_window(const std::string& text) const
     return false;
   }
 
-  const auto  count = (v[1].empty() ? 2 : std::stoi(v[1]));
+  int count = 2;
+  std::from_chars(v[1].data(), v[1].data() + v[1].size(), count);
+
   const auto& flags(v[2]);
 
   if (!flags_supported(flags))
@@ -214,7 +218,7 @@ int wex::address::get_line(int start_pos) const
   // shall address the first line found by searching backward.
   // In addition, the second <question-mark> can be omitted at the end of a
   // command line.
-  if (regex v({std::string("/(.*)/$"), "/(.*)$", "\\?(.*)\\?$", "\\?(.*)$"});
+  if (regex v({"/(.*)/$", "/(.*)$", "\\?(.*)\\?$", "\\?(.*)$"});
       v.match(m_address) > 0)
   {
     const auto use_pos =
@@ -226,7 +230,7 @@ int wex::address::get_line(int start_pos) const
                           find_stream(m_ex, text, m_address[0] == '/') :
                           find_stc(m_ex, text, use_pos, m_address[0] == '/');
 
-    if (result > 0)
+    if (result > 0 && !m_ex->line_data().is_ctag())
     {
       find_replace_data::get()->set_find_string(text);
     }

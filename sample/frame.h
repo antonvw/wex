@@ -13,8 +13,13 @@
 class frame : public wex::del::frame
 {
 public:
+  /// Default constructor.
   frame();
 
+  /// Destructor.
+  ~frame();
+
+  /// Update from app.
   void update(app* a);
 
 private:
@@ -31,7 +36,7 @@ private:
   wex::stc* open_file(
     const wex::path&      file,
     const wex::data::stc& data = wex::data::stc()) final;
-  void open_file_same_page(wxCommandEvent& event) final;
+  void open_file_same_page(const wex::path& p) final;
 
   wex::notebook*             m_notebook{nullptr};
   wex::stc*                  m_stc{nullptr};
@@ -42,6 +47,5 @@ private:
   wex::shell*                m_shell{nullptr};
   wex::grid_statistics<int>* m_statistics{nullptr};
 
-  int  m_browse_index{0};
   long m_flags_stc{0};
 };

@@ -2,7 +2,7 @@
 // Name:      ex-commandline-input.cpp
 // Purpose:   Implementation of wex::ex_commandline_input class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <stdlib.h>
@@ -117,19 +117,19 @@ bool wex::ex_commandline_input::set(int key, wxTextEntryBase* te)
       break;
 
     case WXK_UP:
-      if (m_iterator != m_values.cend())
+      if (std::distance(m_iterator, m_values.cend()) > 1)
       {
         ++m_iterator;
       }
       break;
 
     case WXK_END:
-      m_iterator = m_values.cend();
-      --m_iterator;
+      m_iterator = m_values.cbegin();
       break;
 
     case WXK_HOME:
-      m_iterator = m_values.cbegin();
+      m_iterator = m_values.cend();
+      --m_iterator;
       break;
 
     case WXK_PAGEDOWN:

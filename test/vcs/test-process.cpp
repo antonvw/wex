@@ -2,7 +2,7 @@
 // Name:      test-process.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -11,10 +11,20 @@
 
 #include "test.h"
 
+void check_process(wex::process& process, const std::string& text)
+{
+  REQUIRE(process.system(wex::process_data("echo %LINES")) == 0);
+  CAPTURE(text);
+  CAPTURE(process.std_out());
+  REQUIRE(!process.std_out().contains("%LINES"));
+  REQUIRE(process.std_out().contains(text));
+}
+
 TEST_CASE("wex::process")
 {
   wex::path cwd;
 
+#ifndef GITHUB
   SUBCASE("static")
   {
     REQUIRE(wex::process::prepare_output(frame()) != nullptr);
@@ -23,6 +33,7 @@ TEST_CASE("wex::process")
     frame()->pane_add(wex::process::get_shell());
     wex::process::get_shell()->set_text(std::string());
   }
+#endif
 
   wex::process process;
 
@@ -43,6 +54,7 @@ TEST_CASE("wex::process")
       REQUIRE(!process.is_running());
     }
 
+#ifdef __WXOSX__
     SUBCASE("invalid")
     {
       wex::log_none off;
@@ -50,6 +62,7 @@ TEST_CASE("wex::process")
       process.async_sleep_for(std::chrono::milliseconds(25));
       REQUIRE(!process.is_running());
     }
+#endif
 
     SUBCASE("macro")
     {
@@ -121,16 +134,12 @@ TEST_CASE("wex::process-macro" * doctest::skip())
     process.show_output();
     process.get_shell()->SetFocus();
     process.get_shell()->DocumentEnd();
-    // only success if run as separate subcase?
-    REQUIRE(process.system(wex::process_data("echo %LINES")) == 0);
-    CAPTURE(process.std_out());
-    REQUIRE(!process.std_out().contains("%LINES"));
-    REQUIRE(process.std_out().contains("15,15"));
+
+    // only success if run as separate case?
+    // ./test/vcs/wex-test-vcs -tc=wex::process-macro -ns
+    check_process(process, "15,15");
 
     process.get_shell()->SetSelection(1, 5);
-    REQUIRE(process.system(wex::process_data("echo %LINES")) == 0);
-    CAPTURE(process.std_out());
-    REQUIRE(!process.std_out().contains("%LINES"));
-    REQUIRE(process.std_out().contains("1,1"));
+    check_process(process, "1,1");
   }
 }

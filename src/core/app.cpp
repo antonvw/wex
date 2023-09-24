@@ -11,9 +11,30 @@
 #include <wex/core/version.h>
 #include <wx/clipbrd.h>
 
+#ifdef __WXGTK__
+#include <X11/Xlib.h>
+#include <thread>
+#endif
+
 #include <iostream>
 
 #include "app-locale.h"
+
+namespace wex
+{
+// This routine performs first init of  a wex::app,
+// it runs before OnInit.
+int first_init()
+{
+#ifdef __WXGTK__
+  XInitThreads();
+#endif
+
+  return 1;
+}
+} // namespace wex
+
+int wex::app::m_first_init = first_init();
 
 const std::string wex::app::get_catalog_dir() const
 {
@@ -38,6 +59,9 @@ int wex::app::OnExit()
     std::cout << e.what() << "\n";
   }
 
+  delete wxTranslations::Get();
+  delete m_loader;
+
   return wxApp::OnExit();
 }
 
@@ -45,7 +69,7 @@ bool wex::app::OnInit()
 {
   log::on_init();
   log::info("started") << GetAppName().ToStdString()
-                       << get_version_info().get();
+                       << get_version_info().get(false);
 
   config::on_init();
 
@@ -54,13 +78,13 @@ bool wex::app::OnInit()
 
   if (m_language != wxLANGUAGE_UNKNOWN && m_language != wxLANGUAGE_DEFAULT)
   {
-    auto* loader = new file_translations_loader();
+    m_loader = new file_translations_loader();
     wxUILocale::FromTag(wxUILocale::GetLanguageCanonicalName(m_language));
     wxTranslations::Set(new wxTranslations());
     wxTranslations::Get()->SetLanguage(m_language);
-    wxTranslations::Get()->SetLoader(loader);
+    wxTranslations::Get()->SetLoader(m_loader);
 
-    loader->add_catalogs(m_language);
+    m_loader->add_catalogs(m_language);
   }
 
   // Necessary for auto_complete images.

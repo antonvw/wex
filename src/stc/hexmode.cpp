@@ -2,14 +2,14 @@
 // Name:      hexmode.cpp
 // Purpose:   Implementation of class wex::hexmode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
 #include <wex/factory/stc-undo.h>
 #include <wex/factory/stc.h>
-#include <wex/syntax/lexers.h>
 #include <wex/stc/hexmode.h>
+#include <wex/syntax/lexers.h>
 #include <wex/ui/item-dialog.h>
 #include <wx/numdlg.h>
 #include <wx/spinctrl.h>
@@ -23,10 +23,9 @@ namespace wex
 int get_hex_number(const std::string& caption, factory::stc* stc, int value)
 {
   const std::string message(_("Input") + " 00 - FF");
-  const data::item  data(wex::data::item(
-    data::item().min(0).max(255).window(
-      data::window().title(caption).parent(stc)),
-    value));
+  const data::item  data(
+    wex::data::item(data::item().min(0).max(255).initial(value).window(
+      data::window().title(caption).parent(stc))));
 
   item::use_config(false);
   item_dialog dlg({{message, item::SPINCTRL, data}}, data.window());

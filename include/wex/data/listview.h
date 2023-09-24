@@ -2,12 +2,12 @@
 // Name:      data/listview.h
 // Purpose:   Declaration of wex::data::listview
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2022 Anton van Wezenbeek
+// Copyright: (c) 2017-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wex/data/control.h>
+#include <wex/factory/control.h>
 
 #include <bitset>
 
@@ -57,19 +57,13 @@ public:
   typedef std::bitset<2> menu_t;
 
   /// Default constructor.
-  listview(factory::listview* lv = nullptr);
-
-  /// Copy constructor.
-  listview(factory::listview* lv, const data::listview& r);
+  listview();
 
   /// Constructor from control data.
-  listview(data::control& data, factory::listview* lv = nullptr);
+  listview(data::control& data);
 
   /// Constructor from window data.
-  listview(data::window& data, factory::listview* lv = nullptr);
-
-  /// Assignment operator.
-  listview& operator=(const data::listview& r);
+  listview(data::window& data);
 
   /// Returns control data.
   const auto& control() const { return m_data; }
@@ -80,6 +74,9 @@ public:
     m_data = data;
     return *this;
   };
+
+  /// Returns listview.
+  auto* get_listview() { return m_listview; };
 
   /// Returns image type.
   const auto& image() const { return m_image_type; }
@@ -102,6 +99,9 @@ public:
   /// Sets menu flags.
   listview&
   menu(menu_t flags, data::control::action_t action = data::control::SET);
+
+  /// Sets listview.
+  listview& set_listview(factory::listview* rhs);
 
   /// Returns type.
   const auto& type() const { return m_type; }

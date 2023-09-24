@@ -12,7 +12,7 @@
 #include "process-imp.h"
 
 wex::factory::process::process()
-  : m_imp(std::make_unique<process_imp>())
+  : m_imp(std::make_shared<process_imp>())
 {
 }
 
@@ -28,18 +28,11 @@ void wex::factory::process::async_sleep_for(const std::chrono::milliseconds& ms)
 
 bool wex::factory::process::async_system(const process_data& data)
 {
-  try
+  if (m_eh_out != nullptr)
   {
-    if (m_eh_out != nullptr)
-    {
-      m_data = data;
-      m_imp->async_system(this, data); // this is a void
-      return true;
-    }
-  }
-  catch (std::exception& e)
-  {
-    log(e) << data.log();
+    m_data = data;
+    m_imp->async_system(this, data); // this is a void
+    return true;
   }
 
   return false;
@@ -95,6 +88,13 @@ int wex::factory::process::system(const process_data& data)
     if (ef.valid())
     {
       m_stderr = ef.get();
+    }
+
+    if (data.std_in().empty())
+    {
+      boost::process::std_in
+        .close(); // e.g. for svn a password is required, not yet ok
+      log::trace("closing stdin");
     }
 
     if (!ec)

@@ -70,7 +70,7 @@ TEST_CASE("wex::ex")
 
     REQUIRE(ex->command(":chd"));
     CAPTURE(keep.string());
-    REQUIRE(keep.original() != wex::path::current());
+    REQUIRE(keep.original() != wex::path::current().data());
 
     for (const auto& command : std::vector<std::pair<std::string, std::string>>{
            {":chd /usr", "/usr"},
@@ -257,6 +257,16 @@ TEST_CASE("wex::ex")
     ex->use(wex::ex::VISUAL);
     REQUIRE(ex->is_active());
     REQUIRE(ex->visual() == wex::ex::VISUAL);
+  }
+
+  SUBCASE("line-data")
+  {
+    REQUIRE(!ex->line_data().is_ctag());
+    
+    wex::line_data data;
+    data.is_ctag(true);
+    ex->set_line_data(data);
+    REQUIRE(ex->line_data().is_ctag());
   }
 
   SUBCASE("map")

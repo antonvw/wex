@@ -2,7 +2,7 @@
 // Name:      ex-stream.h
 // Purpose:   Declaration of class wex::ex_stream
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,7 +10,7 @@
 #include <wex/factory/text-window.h>
 
 #include <fstream>
-#include <map>
+#include <unordered_map>
 
 namespace wex
 {
@@ -45,7 +45,7 @@ public:
     INSERT_AFTER   ///< after address
   };
 
-  /// Constructor.
+  /// Constructor, specify ex component
   explicit ex_stream(wex::ex* ex);
 
   /// Destructor.
@@ -101,9 +101,9 @@ public:
   /// Returns false if no stream, or range or dest is invalid.
   bool move(const addressrange& range, const address& dest);
 
-  /// Sets the streams. Puts first line on stc.
+  /// Sets the streams and default line size. Puts first line on stc.
   /// This must be called before the other methods.
-  void stream(file& f);
+  void stream(file& f, size_t default_line_size = 100000);
 
   /// Substitutes within the range find by replace.
   /// Returns false if no stream, or range is invalid.
@@ -142,11 +142,11 @@ private:
   bool get_previous_line();
   void set_text();
 
-  bool m_block_mode{false}, m_is_modified{false};
+  bool m_block_mode{false}, m_is_modified{false}, m_pos_to_bol{false};
 
   const size_t m_buffer_size, m_context_lines;
 
-  size_t m_current_line_size;
+  size_t m_current_line_size{0}, m_default_line_size{0};
 
   std::fstream* m_stream{nullptr}; // pointer in m_file to actual stream
   file *        m_file{nullptr}, *m_temp{nullptr}, *m_work{nullptr};
@@ -156,10 +156,10 @@ private:
     m_line_no{LINE_COUNT_UNKNOWN},
     m_last_line_no{LINE_COUNT_UNKNOWN};
 
-  std::map<char, int> m_markers;
+  std::unordered_map<char, int> m_markers;
 
-  char* m_buffer;
-  char* m_current_line;
+  char* m_buffer{nullptr};
+  char* m_current_line{nullptr};
 
   syntax::stc* m_stc;
   wex::ex*     m_ex;

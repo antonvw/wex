@@ -2,7 +2,7 @@
 // Name:      queue-thread.h
 // Purpose:   Declaration of class wex::queue_thread
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2019-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -30,9 +30,6 @@ public:
   class event_handler
   {
   public:
-    /// Default constructor.
-    event_handler() {}
-
     /// Destructor.
     virtual ~event_handler() = default;
 
@@ -48,9 +45,6 @@ public:
     /// timeout im milliseconds used
     unsigned int timeout_ms = 500);
 
-  /// Destructor.
-  ~queue_thread() {}
-
   /// Emplaces event on the queue.
   /// The thread pool takes care of reading and clearing
   /// the queue, and sending it to the event handler
@@ -58,7 +52,7 @@ public:
   void emplace(std::unique_ptr<T>& event);
 
   /// Returns true if queue is empty.
-  bool empty();
+  bool empty() const;
 
   /// Returns true if event loop is started.
   bool is_running() const { return m_running.load(); }
@@ -105,9 +99,8 @@ void wex::queue_thread<T>::emplace(std::unique_ptr<T>& event)
   m_queue_condition.notify_one();
 }
 
-template <typename T> bool wex::queue_thread<T>::empty()
+template <typename T> bool wex::queue_thread<T>::empty() const
 {
-  std::unique_lock<std::mutex> lock(m_queue_mutex);
   return m_event_queue.empty();
 }
 

@@ -43,7 +43,9 @@ frame::frame()
   , m_process(new wex::process())
   , m_statistics(
       new wex::grid_statistics<int>({}, wex::data::window().parent(m_notebook)))
-  , m_shell(new wex::shell(wex::data::stc(), ">"))
+  , m_shell(new wex::shell(
+      wex::data::stc().window(wex::data::window().parent(m_notebook)),
+      ">"))
 {
   wex::process::prepare_output(this);
   m_statistics->show(false);
@@ -82,9 +84,7 @@ frame::frame()
              {wex::ID_TOOL_REPLACE, "Replace In Files"}}),
           _("&Find And Replace")}}),
       "&Edit"},
-#ifndef __WXMSW__
-     {new wex::menu({{this}, {ID_STATISTICS_SHOW, "Statistics"}}), "&View"},
-#endif
+     {new wex::menu({{}, {this}, {ID_STATISTICS_SHOW, "Statistics"}}), "&View"},
      {new wex::menu(
         {{ID_DLG_ITEM, wex::ellipsed("Item Dialog")},
          {},
@@ -123,6 +123,11 @@ frame::frame()
      {"PaneInfo", 100},
      {"PaneLexer", 60},
      {"PaneMacro", 50}});
+}
+
+frame::~frame()
+{
+  delete m_process;
 }
 
 wex::del::listview*
@@ -181,7 +186,7 @@ void frame::bind_all()
         if (val >= 0)
         {
           wex::item_dialog(
-            test_config_items(0, val),
+            wex::test_config_item().vector(0, val),
             wex::data::window()
               .title("Config Dialog Columns")
               .size(wxSize(600, 400)),
@@ -194,7 +199,7 @@ void frame::bind_all()
      {[=, this](wxCommandEvent& event)
       {
         auto* dlg = new wex::item_dialog(
-          test_config_items(0, 1),
+          wex::test_config_item().vector(0, 1),
           wex::data::window()
             .title("Config Dialog")
             .id(ID_DLG_CONFIG_ITEM)
@@ -210,9 +215,10 @@ void frame::bind_all()
      {[=, this](wxCommandEvent& event)
       {
         wex::item_dialog(
-          test_config_items(0, 1),
+          wex::test_config_item().vector(0, 1),
           wex::data::window()
             .button(wxCANCEL)
+            .id(ID_DLG_CONFIG_ITEM_READONLY)
             .title("Config Dialog Readonly")
             .size(wxSize(600, 400)),
           0,
@@ -222,7 +228,10 @@ void frame::bind_all()
       ID_DLG_CONFIG_ITEM_READONLY},
      {[=, this](wxCommandEvent& event)
       {
-        wex::item_dialog(test_items()).ShowModal();
+        wex::item_dialog(
+          wex::test_item().vector(),
+          wex::data::window().id(ID_DLG_ITEM))
+          .ShowModal();
       },
       ID_DLG_ITEM},
      {[=, this](wxCommandEvent& event)
@@ -238,13 +247,13 @@ void frame::bind_all()
       wxID_PREFERENCES},
      {[=, this](wxCommandEvent& event)
       {
-        std::string text;
+        std::stringstream text;
         for (auto i = 0; i < 100; i++)
         {
-          text += wxString::Format("Hello from line: %d\n", i);
+          text << "Hello from line: " << i << "\n";
         }
         wex::stc_entry_dialog(
-          text,
+          text.str(),
           "Greetings from " + std::string(wxTheApp->GetAppDisplayName()),
           wex::data::window().title("Hello world"))
           .ShowModal();
@@ -319,8 +328,6 @@ void frame::bind_all()
       {
         if (m_notebook->set_selection("Statistics") == nullptr)
         {
-          wex::data::window data;
-          data.parent(m_notebook);
           m_notebook->add_page(wex::data::notebook()
                                  .page(m_statistics->show())
                                  .caption("Statistics")
@@ -331,7 +338,7 @@ void frame::bind_all()
       ID_STATISTICS_SHOW},
      {[=, this](wxCommandEvent& event)
       {
-        const long value = wxGetNumberFromUser(
+        const auto value = wxGetNumberFromUser(
           "Input:",
           wxEmptyString,
           "STC Open Flag",
@@ -502,44 +509,11 @@ wex::stc* frame::open_file(const wex::path& file, const wex::data::stc& data)
   }
 }
 
-void frame::open_file_same_page(wxCommandEvent& event)
+void frame::open_file_same_page(const wex::path& p)
 {
-  if (file_history().size() > 1)
-  {
-    if (event.GetId() == wxID_FORWARD)
-    {
-      if (m_browse_index < file_history().size() - 1)
-      {
-        m_browse_index++;
-      }
-      else if (m_browse_index > file_history().size() - 1)
-      {
-        m_browse_index = file_history().size() - 1;
-        return;
-      }
-      else
-      {
-        return;
-      }
-    }
-    else
-    {
-      if (m_browse_index > 0)
-      {
-        m_browse_index--;
-      }
-      else
-      {
-        return;
-      }
-    }
-
-    const auto& p(file_history()[m_browse_index]);
-
-    m_stc->open(p, wex::data::stc().recent(false));
-    m_stc->get_lexer().set(wex::path_lexer(p).lexer().display_lexer(), true);
-    m_stc->properties_message();
-  }
+  m_stc->open(p, wex::data::stc().recent(false));
+  m_stc->get_lexer().set(wex::path_lexer(p).lexer().display_lexer(), true);
+  m_stc->properties_message();
 }
 
 void frame::update(app* a)
@@ -572,6 +546,9 @@ void frame::update(app* a)
 
   m_notebook->add_page(
     wex::data::notebook().page(m_project).key("wex::project"));
+
+  m_notebook->add_page(
+    wex::data::notebook().page(m_statistics).key("wex::statistics"));
 
   m_notebook->add_page(
     wex::data::notebook().page(m_listview).key("wex::listview"));

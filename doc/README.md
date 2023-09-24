@@ -7,24 +7,25 @@ to your apps.
 
 ## wex c++ libraries
 
-src     | lib         | sub-lib   | info
---------|-------------|-----------|--
-core    | wex-core    |           | core
-factory | wex-factory |           | virtual base
-syntax  | wex-syntax  |           | syntax highlighting
-data    | wex-data    |           | data
-common  | wex-common  |           | common
-ui      | wex-ui      | wex-ctags | user interface
-ex      | wex-ex      | wex-vi    | ex and vi classes
-stc     | wex-stc     |           | stc
-vcs     | wex-vcs     |           | version control
-del     | wex-del     |           | delivered
+lib         | sub-lib   | src     | info
+------------|-----------|---------|------
+wex-core    |           | core    | core classes
+wex-test    |           | test    | test classes
+wex-factory |           | factory | virtual base classes
+wex-syntax  |           | syntax  | syntax highlighting classes
+wex-data    |           | data    | data classes
+wex-common  |           | common  | common classes
+wex-ui      | wex-ctags | ui      | user interface classes
+wex-ex      | wex-vi    | ex      | ex and vi classes
+wex-stc     |           | stc     | stc classes
+wex-vcs     |           | vcs     | version control system classes
+wex-del     |           | del     | delivered classes
 
 It benefits from the following c++ features:
 
 ## c++ libraries
 
-- Algorithms library
+### Algorithms library
 
 ```cpp
   std::all_of (c++11)
@@ -51,7 +52,7 @@ bool wex::global_env::for_each(const block_lines& match) const
 }
 ```
 
-- Filesystem library (c++17)
+### Filesystem library (c++17)
 
 ```cpp
   std::filesystem
@@ -59,7 +60,26 @@ bool wex::global_env::for_each(const block_lines& match) const
   std::filesystem::recursive_directory_iterator
 ```
 
-- Input/output library
+### Formatting library (c++20)
+
+```cpp
+  std::format
+```
+
+  example:
+
+```cpp
+  std::string
+  wex::get_lines(factory::stc* stc, int start, int end, const std::string& flags)
+  ...
+
+    if (flags.contains("#"))
+    {
+#ifndef __WXOSX__
+      text += std::format("{:6} ", i + 1);
+```
+
+### Input/output library
 
 ```cpp
   std::fstream
@@ -67,7 +87,7 @@ bool wex::global_env::for_each(const block_lines& match) const
 
   The base of all io uses a std::fstream class.
 
-- Numerics library
+### Numerics library
 
 ```cpp
   std::accumulate
@@ -88,7 +108,7 @@ bool wex::global_env::for_each(const block_lines& match) const
                                 std::string();
 ```
 
-- Regular expressions library (c++11)
+### Regular expressions library (c++11)
 
 ```cpp
   std::regex
@@ -106,7 +126,7 @@ bool wex::global_env::for_each(const block_lines& match) const
   that implements the ex :set OpenSource specs.
 
   example:
-  
+
 ```cpp
   regex r(
     {"all",
@@ -159,7 +179,7 @@ bool wex::global_env::for_each(const block_lines& match) const
   }
 ```
 
-- Strings library
+### Strings library
 
 ```cpp
   std::stoi (c++11)
@@ -175,7 +195,7 @@ bool wex::global_env::for_each(const block_lines& match) const
 ```
 
   vi/vi.cpp:
-  
+
 ```cpp
   if (command.starts_with(k_s(WXK_CONTROL_R) + "="))
 ```
@@ -185,12 +205,12 @@ bool wex::global_env::for_each(const block_lines& match) const
 ```
 
   syntax/lexer.cpp:
-  
+
 ```cpp
     if (line.contains(":"))
 ```
 
-- Thread support library (c++17)
+### Thread support library (c++17)
 
 ```cpp
   std::thread
@@ -199,7 +219,7 @@ bool wex::global_env::for_each(const block_lines& match) const
 
   See next.
 
-- Utilities library
+### Utilities library
 
 ```cpp
   std::any (c++17)
@@ -215,7 +235,7 @@ bool wex::global_env::for_each(const block_lines& match) const
   A lot used for callbacks, e.g.:
 
   example: in lexers:
-  
+
 ```cpp
     void wex::lexers::apply_default_style(
       std::function<void(const std::string&)> back,
@@ -236,7 +256,7 @@ bool wex::global_env::for_each(const block_lines& match) const
 ```
 
   used in listview
-  
+
 ```cpp
       lexers::get()->apply_default_style([=, this](const std::string& back) {
         SetBackgroundColour(wxColour(back));
@@ -308,6 +328,18 @@ bool wex::global_env::for_each(const block_lines& match) const
     }
 ```
 
+```cpp
+  std::to_underlying (c++23)
+```
+
+  Converts an enumeration to its underlying type.
+  example in ex.cpp:
+
+```cpp
+    log::trace("ex mode from")
+      << std::to_underlying(m_mode) << "to:" << std::to_underlying(mode);
+```
+
 ## c++ language
 
 - init_statement in if, case statements (c++17), and for range (c++20)
@@ -318,13 +350,13 @@ bool wex::global_env::for_each(const block_lines& match) const
 ```
 
   vi/command-ex.cpp:
-  
+
 ```cpp
       if (const std::string line(it); !line.empty())
 ```
 
   ui/item.cpp
-  
+
 ```cpp
     for (int item  = 0; const auto& b : std::any_cast<choices_t>(m_data.initial()))
 ```
@@ -362,7 +394,7 @@ wex::regex::regex(
   {
     class stc;
   }
-  
+
 ```
 
   as forward declaration
@@ -370,7 +402,7 @@ wex::regex::regex(
 - override or final specifier (c++11)
 
   vi.h:
-  
+
 ```cpp
     bool command(const std::string& command) final;
 ```
@@ -379,7 +411,7 @@ wex::regex::regex(
 
 - spaceship operator (c++20)
   see presentation.h or block-lines.h
-  
+
 ```cpp
   auto operator<=>(const block_lines& r) const
   {
@@ -391,23 +423,26 @@ It benefits from the following boost libraries:
 
 ## boost c++ libraries
 
-lib | info
+lib  | info
 -----|------
-boost::algorithm lib | uses find_tail, iequals, replace_all, to_upper, trim
+boost::algorithm lib | uses find_tail, icontains, iequals, replace_all, to_upper, trim
 boost::json lib | to implement wex::config
 boost::log lib | to implement wex::log
 boost::process lib | to implement wex::process
 boost::program_options lib | to implement wex::cmdline
+boost::regular expression lib | to implement the wex::regex_part
 boost::spirit lib | to implement the wex::evaluator
 boost::statechart lib | to implement the statemachine for vi mode and macro mode
 boost::tokenizer lib | to tokenize expressions
+boost::URL lib | to handle URLs
 
 It benefits from the following wxWidgets libraries:
 
 ## wxWidgets libraries
 
 - all gui classes are derived from / use wxWidgets base classes
-lib | info
+
+lib  | info
 -----|------
 wxbase | base
 wxcore | core

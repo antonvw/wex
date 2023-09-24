@@ -2,13 +2,13 @@
 // Name:      test-config.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
 #include <wx/font.h>
 
-#include "../test.h"
+#include <wex/test/test.h>
 
 TEST_CASE("wex::config")
 {
@@ -41,11 +41,11 @@ TEST_CASE("wex::config")
     REQUIRE(wex::config("xcvb").empty());
     REQUIRE(wex::config("x").item() == "x");
     REQUIRE(wex::config("x").get("space") == "space");
-    REQUIRE(wex::config("l").get(std::list<std::string>{}).empty());
+    REQUIRE(wex::config("l").get(wex::config::strings_t{}).empty());
     REQUIRE(wex::config("l").get_first_of().empty());
     REQUIRE(wex::config("l").get_first_of("k") == "k");
     REQUIRE(wex::config("l").empty());
-    REQUIRE(!wex::config("m").get(std::list<std::string>{"one"}).empty());
+    REQUIRE(!wex::config("m").get(wex::config::strings_t{"one"}).empty());
 
     REQUIRE(std::get<0>(wex::config("sb").get(sb)[0]) == "one");
     REQUIRE(std::get<1>(wex::config("sb").get(sb)[0]).front() == "normal");
@@ -62,7 +62,7 @@ TEST_CASE("wex::config")
   {
     REQUIRE(wex::config("m").set_first_of("one") == "one");
     REQUIRE(wex::config("m").set_first_of("two") == "two");
-    REQUIRE(wex::config("m").get(std::list<std::string>{}).size() == 2);
+    REQUIRE(wex::config("m").get(wex::config::strings_t{}).size() == 2);
     REQUIRE(wex::config("m").get_first_of() == "two");
 
     wex::config("y").set(4);
@@ -77,7 +77,7 @@ TEST_CASE("wex::config")
 
     wex::config("list_items").set({"1", "2", "3"});
     REQUIRE(
-      wex::config("list_items").get(std::list<std::string>{}).front() == "1");
+      wex::config("list_items").get(wex::config::strings_t{}).front() == "1");
 
     wex::config("y").erase();
     REQUIRE(!wex::config("y").exists());
@@ -152,8 +152,8 @@ TEST_CASE("wex::config")
     REQUIRE(wex::config("number.v").exists());
     REQUIRE(wex::config("number.v").get(9) == 8);
 
-    wex::config("vector.v").set(std::vector<int>{1, 2, 3});
-    REQUIRE(wex::config("vector.v").get(std::vector<int>{}).size() == 3);
+    wex::config("vector.v").set(wex::config::ints_t{1, 2, 3});
+    REQUIRE(wex::config("vector.v").get(wex::config::ints_t{}).size() == 3);
   }
 
   SUBCASE("hierarchy")

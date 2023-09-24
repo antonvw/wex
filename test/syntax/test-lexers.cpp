@@ -2,12 +2,11 @@
 // Name:      test-lexers.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/syntax/lexers.h>
-
-#include "../test.h"
+#include <wex/test/test.h>
 
 TEST_CASE("wex::lexers")
 {

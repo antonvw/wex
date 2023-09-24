@@ -2,19 +2,20 @@
 // Name:      listview.h
 // Purpose:   Declaration of wex::listview and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/common/path-match.h>
+#include <wex/core/types.h>
 #include <wex/data/listview.h>
 #include <wex/factory/listview.h>
 
 #include <wx/artprov.h> // for wxArtID
 
 #include <list>
-#include <map>
+#include <unordered_map>
 
 namespace wex
 {
@@ -88,10 +89,10 @@ public:
     long index = -1);
 
   /// Loads listview from list.
-  bool load(const std::list<std::string>& l);
+  bool load(const strings_t& l);
 
   /// Saves listview to list.
-  const std::list<std::string> save() const;
+  const strings_t save() const;
 
   /// Sets an item string field at a particular column.
   /// Returns false if an error occurred.
@@ -184,8 +185,8 @@ private:
   int m_col_event_id     = -1;
   int m_sorted_column_no = -1, m_to_be_sorted_column_no = -1;
 
-  std::map<wxArtID, unsigned int> m_art_ids;
-  std::vector<column>             m_columns;
+  std::unordered_map<wxArtID, unsigned int> m_art_ids;
+  std::vector<column>                       m_columns;
 
   frame* m_frame;
 

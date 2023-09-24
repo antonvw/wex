@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::factory::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -27,6 +27,19 @@
   wxWindow*  win = wxWindow::FindFocus();                        \
   classname* cl  = dynamic_cast<classname*>(win);                \
   return cl;
+
+wex::factory::frame::frame()
+  : wxFrame()
+{
+}
+
+wex::factory::frame::frame(
+  wxWindow*          parent,
+  wxWindowID         winid,
+  const std::string& title)
+  : wxFrame(parent, winid, title)
+{
+}
 
 wex::factory::grid* wex::factory::frame::get_grid()
 {

@@ -64,6 +64,11 @@ TEST_CASE("wex::addressrange")
     REQUIRE(stc->get_text().contains("changed"));
   }
 
+  SUBCASE("data")
+  {
+    REQUIRE(!wex::addressrange::data().is_global());
+  }
+
   SUBCASE("copy")
   {
     stc->set_text(contents);
@@ -236,17 +241,45 @@ TEST_CASE("wex::addressrange")
 
   SUBCASE("sort")
   {
-    REQUIRE(ex->command(":1,2S"));
     REQUIRE(!ex->command(":1,2Sx"));
+
+    const std::string org("hello\nhello\nhello11\nhello11\nhello22\ntest\ngcc\n"
+                          "blame\nthis\nyank\ncopy");
+    stc->set_text(org);
+    REQUIRE(ex->command(":1,2S"));
+
+    // MSW fails, EOL?
+#ifndef __WXMSW__
+    REQUIRE(stc->get_text() == org);
+
     REQUIRE(ex->command(":1,2Su"));
-    REQUIRE(ex->command(":1,2Sr"));
-    REQUIRE(ex->command(":1,2Sur"));
+    REQUIRE(
+      stc->get_text() ==
+      "hello\nhello11\nhello11\nhello22\ntest\ngcc\nblame\nthis\nyank\ncopy");
+
+    stc->set_text(org);
+    REQUIRE(ex->command(":4,5Sr"));
+    REQUIRE(
+      stc->get_text() == "hello\nhello\nhello11\nhello22\nhello11\ntest\ngcc\nb"
+                         "lame\nthis\nyank\ncopy");
+
+    stc->set_text(org);
+    REQUIRE(ex->command(":1,4Sur"));
+    REQUIRE(
+      stc->get_text() ==
+      "hello11\nhello\nhello22\ntest\ngcc\nblame\nthis\nyank\ncopy");
+#endif
+
+    REQUIRE(!ex->command(":1,2S8,7"));
+
+    REQUIRE(ex->command(":1,2S8,9"));
+    REQUIRE(ex->command(":1,2Sr8,9"));
   }
 
   SUBCASE("substitute")
   {
     stc->set_text(contents);
-        
+
     SUBCASE("empty")
     {
       REQUIRE(ex->command(":%s/tiger//"));
@@ -255,6 +288,26 @@ TEST_CASE("wex::addressrange")
       stc->Undo();
       CAPTURE(stc->get_text());
       REQUIRE(stc->get_text() == contents);
+    }
+
+    SUBCASE("eol-all")
+    {
+      REQUIRE(ex->command(":%s/$/xxxxx/"));
+      REQUIRE(stc->get_text().contains("TIGERxxxxx"));
+      REQUIRE(stc->get_text().contains("tigerxxxxx"));
+    }
+
+    SUBCASE("eol-part")
+    {
+      REQUIRE(ex->command(":%s/TIGER$/xxxxx/"));
+      REQUIRE(!stc->get_text().contains("TIGER"));
+      REQUIRE(stc->get_text().contains("xxxxx"));
+      REQUIRE(!stc->get_text().contains("tigerxxxxx"));
+
+      stc->set_text(contents);
+      REQUIRE(ex->command(":%s/tig.*$/yyyyy/"));
+      REQUIRE(!stc->get_text().contains("tiger"));
+      REQUIRE(stc->get_text().contains("yyyyy"));
     }
 
     SUBCASE("lower")
@@ -286,7 +339,7 @@ TEST_CASE("wex::addressrange")
       REQUIRE(!stc->get_text().contains("tiger"));
       REQUIRE(!stc->get_text().contains("\\U"));
     }
-   }
+  }
 
   SUBCASE("substitute-other")
   {

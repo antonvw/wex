@@ -2,7 +2,7 @@
 // Name:      file.cpp
 // Purpose:   Implementation of class wex::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -15,7 +15,13 @@ namespace wex
 {
 bool copy(const wex::path& from, const wex::path& to)
 {
-  return fs::copy_file(from.data(), to.data());
+  std::error_code ec;
+
+  return fs::copy_file(
+    from.data(),
+    to.data(),
+    fs::copy_options::overwrite_existing,
+    ec);
 }
 } // namespace wex
 
@@ -62,6 +68,7 @@ wex::file& wex::file::operator=(const file& f)
     m_is_loaded  = f.m_is_loaded;
     m_is_written = f.m_is_written;
     m_path       = f.m_path;
+    m_path_prev  = f.m_path_prev;
     m_stat       = f.m_stat;
     m_use_stream = f.m_use_stream;
   }

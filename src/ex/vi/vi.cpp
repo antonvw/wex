@@ -3,10 +3,12 @@
 // Purpose:   Implementation of class wex::vi
 //            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/vi.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2009-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
+#include <charconv>
+
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/ex/macros.h>
@@ -15,10 +17,11 @@
 #include <wex/ui/frame.h>
 #include <wex/vi/vi.h>
 
+#include "util.h"
 #include "vim.h"
 
 // without this code adding tab in block insert mode fails, it only
-// add one tab instead of a line of tabs
+// adds one tab instead of a line of tabs
 namespace wex
 {
 bool is_block_insert(vi* vi)
@@ -362,20 +365,20 @@ void wex::vi::filter_count(std::string& command)
    */
   if (regex v("^([1-9][0-9]*)(.*)"); v.match(command) == 2)
   {
-    try
+    if (int count;
+        std::from_chars(v[0].data(), v[0].data() + v[0].size(), count).ec ==
+        std::errc())
     {
-      m_count_present  = true;
-      const auto count = std::stoi(v[0]);
+      m_count_present = true;
       m_count *= count;
       append_insert_command(v[0]);
-      command = v[1];
     }
-    catch (std::exception& e)
+    else
     {
       m_count_present = false;
-      log(e) << command;
-      command = v[1];
     }
+
+    command = v[1];
   }
 }
 
@@ -695,9 +698,12 @@ bool wex::vi::on_char(const wxKeyEvent& event)
         }
         else
         {
+          m_control_down = (event.GetModifiers() & wxMOD_RAW_CONTROL);
+
 #ifdef __WXOSX__
           if (event.GetModifiers() & wxMOD_RAW_CONTROL)
           {
+
             if (m_command.append_exec(event.GetKeyCode()))
             {
               m_command.clear();
@@ -813,7 +819,8 @@ bool wex::vi::put(bool after)
   }
 
   // do not trim
-  const bool yanked_lines = (get_number_of_lines(register_text(), false) > 1);
+  const bool yanked_lines = (get_number_of_lines(register_text(), false) > 1) &&
+                            m_mode_yank != vi_mode::VISUAL_BLOCK;
 
   if (yanked_lines)
   {
@@ -830,7 +837,9 @@ bool wex::vi::put(bool after)
     get_stc()->Home();
   }
 
-  get_stc()->add_text(register_text());
+  m_mode_yank == vi_mode::VISUAL_BLOCK ?
+    get_stc()->add_text_block(register_text()) :
+    get_stc()->add_text(register_text());
 
   if (yanked_lines && after)
   {
@@ -865,6 +874,8 @@ void wex::vi::set_last_command(const std::string& command)
 
 void wex::vi::yank_range(int start)
 {
+  m_mode_yank = m_mode.get();
+
   if (auto end = get_stc()->GetCurrentPos(); end - start > 0)
   {
     get_stc()->CopyRange(start, end - start);

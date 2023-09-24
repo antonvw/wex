@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-config_item.h
-// Purpose:   Declaration and implementation of test_config_items
+// Name:      test-configitem.h
+// Purpose:   Declaration and implementation of class test_config_item
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -15,17 +15,27 @@
 #include <wx/textctrl.h>
 #include <wx/valtext.h>
 
-/// Returns a vector with all config items available.
-/// The first item is a notebook, containing the other items,
-/// the arguments are arguments for the notebook item.
-const auto test_config_items(int rows = 0, int cols = 0)
+namespace wex
+{
+class test_config_item
+{
+public:
+  /// Returns a vector with all config items available.
+  /// The first item is a notebook, containing the other items,
+  /// the arguments are arguments for the notebook item.
+  const std::vector<wex::item> vector(int rows = 0, int cols = 0);
+};
+
+// inline implementation
+
+inline const std::vector<wex::item> test_config_item::vector(int rows, int cols)
 {
   auto* validator = new wxTextValidator(wxFILTER_INCLUDE_CHAR_LIST);
   validator->SetCharIncludes("0123");
 
   return std::vector<wex::item>{
     {"notebook",
-     {{"buttons",
+     {{"buttons:3",
        {{"<span size='x-large' color='blue'>Big</span> <b>bold</b> button",
          wex::item::BUTTON},
         {"lambda",
@@ -36,7 +46,7 @@ const auto test_config_items(int rows = 0, int cols = 0)
            .apply(
              [=](wxWindow* user, const std::any& value, bool save)
              {
-               wex::log::status("Click on lambda");
+               // wex::log::status("Click on lambda");
              })}}},
 
       {"checkboxes",
@@ -44,7 +54,7 @@ const auto test_config_items(int rows = 0, int cols = 0)
         {"group checkbox1", wex::item::CHECKBOX},
         {"group checkbox2", wex::item::CHECKBOX}}},
 
-      {"checkbox lists",
+      {"checkbox lists:x",
        {{"bin choices",
          {{1, "bit one"}, {2, "bit two"}, {4, "bit three"}, {8, "bit four"}},
          false},
@@ -104,7 +114,7 @@ const auto test_config_items(int rows = 0, int cols = 0)
 
       {"static line", {{wxHORIZONTAL}, {wxVERTICAL}}},
 
-      {"strings",
+      {"strings:3",
        {{"string"},
         {"string validator",
          std::string(),
@@ -136,7 +146,7 @@ const auto test_config_items(int rows = 0, int cols = 0)
              [=](wxWindow* user, wxWindow* parent)
              {
                (reinterpret_cast<wxTextCtrl*>(user))
-                 ->Create(parent, 100, "Hello world");
+                 ->Create(parent, 101, "Hello world");
              })
            .label_type(wex::data::item::LABEL_LEFT)
            .user_window_to_config(
@@ -157,3 +167,4 @@ const auto test_config_items(int rows = 0, int cols = 0)
      wex::item::NOTEBOOK_LIST,
      wex::data::item().columns(cols)}};
 }
+} // namespace wex

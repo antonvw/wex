@@ -2,7 +2,7 @@
 // Name:      debug.cpp
 // Purpose:   Implementation of class wex::debug
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2016-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -23,6 +23,7 @@
 #include <wex/vcs/debug.h>
 
 #include <algorithm>
+#include <charconv>
 #include <fstream>
 
 #ifdef __WXGTK__
@@ -188,17 +189,17 @@ wex::path wex::debug::complete_path(const std::string& text) const
 
 bool wex::debug::execute(const std::string& action, wex::stc* stc)
 {
-  const auto& exe(
-    m_entry.name() + (!m_entry.flags().empty() ?
-                        std::string(1, ' ') + m_entry.flags() :
-                        std::string()));
-
   if (const auto& [r, args] = get_args(action, stc); !r)
   {
     return false;
   }
   else
   {
+    const auto& exe(
+      m_entry.name() + (!m_entry.flags().empty() ?
+                          std::string(1, ' ') + m_entry.flags() :
+                          std::string()));
+
     log::trace("debug exe") << exe << args;
 
     if (
@@ -236,65 +237,87 @@ wex::debug::get_args(const std::string& command, stc* stc)
 {
   std::string args;
 
-  if (regex v("^(at|attach)"); v.search(command) == 1)
+  if (regex v("^(at\\b|attach)(( +)(.*))?"); v.search(command) >= 1)
   {
-    static listview* lv   = nullptr;
-    bool             init = false;
-
-    if (m_dialog == nullptr)
+    if (v.size() > 1 && !v[1].empty())
     {
-      init     = true;
-      m_dialog = new item_dialog(
-        {
+      if (int result{};
+          std::from_chars(v[1].data(), v[1].data() + v[1].size(), result).ec !=
+          std::errc())
+      {
+        return {false, args};
+      }
+
+      args = command;
+    }
+    else
+    {
+      static listview* lv   = nullptr;
+      bool             init = false;
+
+      if (m_dialog == nullptr)
+      {
+        init     = true;
+        m_dialog = new item_dialog(
+          {
 #ifdef __WXGTK__
-          {"debug.processes",
-           data::listview(),
-           std::any(),
-           data::item()
-             .label_type(data::item::LABEL_NONE)
-             .apply(
-               [&](wxWindow* user, const std::any& value, bool save)
-               {
-                 lv = ((wex::listview*)user);
-                 if (save && lv->GetFirstSelected() != -1)
+            {"debug.processes",
+             data::listview(),
+             std::any(),
+             data::item()
+               .label_type(data::item::LABEL_NONE)
+               .apply(
+                 [&](wxWindow* user, const std::any& value, bool save)
                  {
-                   args =
-                     " " + lv->get_item_text(lv->GetFirstSelected(), "Pid");
-                 }
-               })}},
+                   lv = ((wex::listview*)user);
+                   if (save && lv->GetFirstSelected() != -1)
+                   {
+                     args =
+                       " " + lv->get_item_text(lv->GetFirstSelected(), "Pid");
+                   }
+                 })}},
 #else
-          {"debug.pid",
-           item::TEXTCTRL_INT,
-           std::any(),
-           data::item(data::control().is_required(true))
-             .label_type(data::item::LABEL_LEFT)
-             .apply(
-               [&](wxWindow* user, const std::any& value, bool save)
-               {
-                 if (save)
-                   args += " " + std::to_string(std::any_cast<long>(value));
-               })}},
+            {"debug.pid",
+             item::TEXTCTRL_INT,
+             std::any(),
+             data::item(data::control().is_required(true))
+               .label_type(data::item::LABEL_LEFT)
+               .apply(
+                 [&](wxWindow* user, const std::any& value, bool save)
+                 {
+                   if (save)
+                     args += " " + std::to_string(std::any_cast<long>(value));
+                 })}},
 #endif
-        data::window().title(_("Attach")).size({400, 400}).parent(m_frame));
-    }
+          data::window().title(_("Attach")).size({400, 400}).parent(m_frame));
+      }
 
 #ifdef __WXGTK__
-    if (lv != nullptr)
-    {
-      process_dir(lv, init).find_files();
-    }
+      if (lv != nullptr)
+      {
+        process_dir(lv, init).find_files();
+      }
 #endif
-
+    }
     return {m_dialog->ShowModal() != wxID_CANCEL, args};
   }
-  else if (regex r("^(b|break)"); r.search(command) == 1 && stc != nullptr)
+  else if (regex r("^(b|break)"); r.search(command) == 1)
   {
+    if (stc == nullptr)
+    {
+      return {false, args};
+    }
+
     args += " " + stc->path().string() + ":" +
             std::to_string(stc->get_current_line() + 1);
   }
-  else if (regex r("^(d|del|delete) (br|breakpoint)");
-           r.search(command) > 0 && stc != nullptr)
+  else if (regex r("^(d|del|delete) (br|breakpoint)"); r.search(command) > 0)
   {
+    if (stc == nullptr)
+    {
+      return {false, args};
+    }
+
     for (auto& it : m_breakpoints)
     {
       if (
@@ -310,6 +333,10 @@ wex::debug::get_args(const std::string& command, stc* stc)
   }
   else if (clear_breakpoints(command))
   {
+  }
+  else if (regex r("^(detach)"); r.search(command) == 1)
+  {
+    is_finished();
   }
   else if (command == "file")
   {
@@ -330,9 +357,12 @@ wex::debug::get_args(const std::string& command, stc* stc)
           .ShowModal() != wxID_CANCEL,
       args};
   }
-  else if (regex r("^(p|print)"); r.search(command) == 1 && stc != nullptr)
+  else if (regex r("^(p|print)"); r.search(command) == 1)
   {
-    args += " " + stc->GetSelectedText();
+    if (stc != nullptr)
+    {
+      args += " " + stc->GetSelectedText();
+    }
   }
   else if (regex r("^(u|until|thread until)");
            r.search(command) == 1 && stc != nullptr)
@@ -492,6 +522,11 @@ void wex::debug::process_stdout(const std::string& text)
   {
     m_stdout.clear();
   }
+  else if (regex v("error: "); v.search(m_stdout) == 0)
+  {
+    m_stdout.clear();
+    m_frame->pane_show("PROCESS");
+  }
   else if (regex v("'(.*)'"); v.search(m_stdout) == 1)
   {
     if (wex::path filename(v[0]); allow_open(filename))
@@ -589,7 +624,7 @@ bool wex::debug::toggle_breakpoint(int line, stc* stc)
     }
   }
 
-  // Otherwise set it.
+  // Otherwise, set it.
   m_path = stc->path();
 
   log::trace("debug toggle breakpoint") << m_path;

@@ -2,8 +2,10 @@
 // Name:      ex-commandline-imp.cpp
 // Purpose:   Implementation of wex::ex_commandline_imp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
+
+#include <utility>
 
 #include <wex/core/config.h>
 #include <wex/factory/bind.h>
@@ -18,7 +20,8 @@ wex::ex_commandline_imp::ex_commandline_imp(
   ex_commandline*     cl,
   wxControl*          prefix,
   const data::window& data)
-  : m_id_register(NewControlId())
+  : syntax::stc(data)
+  , m_id_register(NewControlId())
   , m_prefix(prefix)
   , m_cl(cl)
   , m_clis{
@@ -38,7 +41,7 @@ wex::ex_commandline_imp::ex_commandline_imp(
         ex_command::type_t::FIND_MARGIN,
         "ex-cmd.margin")}
 {
-  init(data);
+  init();
   bind();
 }
 
@@ -46,10 +49,11 @@ wex::ex_commandline_imp::ex_commandline_imp(
   ex_commandline*     cl,
   const std::string&  value,
   const data::window& data)
-  : m_id_register(0)
+  : syntax::stc(data)
+  , m_id_register(0)
   , m_cl(cl)
 {
-  init(data);
+  init();
 
   set_text(value);
 
@@ -107,10 +111,10 @@ void wex::ex_commandline_imp::bind()
 
 wex::ex_commandline_input* wex::ex_commandline_imp::cli()
 {
-  return static_cast<int>(m_command.type()) >=
-             static_cast<int>(ex_command::type_t::NONE) ?
-           m_clis[static_cast<int>(ex_command::type_t::COMMAND)] :
-           m_clis[static_cast<int>(m_command.type())];
+  return std::to_underlying(m_command.type()) >=
+             std::to_underlying(ex_command::type_t::NONE) ?
+           m_clis[std::to_underlying(ex_command::type_t::COMMAND)] :
+           m_clis[std::to_underlying(m_command.type())];
 }
 
 bool wex::ex_commandline_imp::Destroy()
@@ -136,9 +140,11 @@ bool wex::ex_commandline_imp::handle(const std::string& command)
   }
   else
   {
-    m_command.reset(command, true);
+    m_command.reset(command);
     get_lexer().set(std::string());
   }
+
+  m_command.set_stc(m_cl->stc());
 
   m_input       = 0;
   m_mode_visual = !range.empty();
@@ -245,10 +251,8 @@ bool wex::ex_commandline_imp::handle_type(
   return true;
 }
 
-void wex::ex_commandline_imp::init(const data::window& data)
+void wex::ex_commandline_imp::init()
 {
-  Create(data.parent(), data.id(), data.pos(), data.size(), data.style());
-
   SetUseHorizontalScrollBar(false);
   SetUseVerticalScrollBar(false);
   SetFont(config(_("stc.Text font"))

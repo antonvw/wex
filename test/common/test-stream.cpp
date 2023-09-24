@@ -8,7 +8,7 @@
 #include <wex/common/stream.h>
 #include <wex/factory/frd.h>
 
-#include "../test.h"
+#include <wex/test/test.h>
 
 #include <chrono>
 

@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2022 Anton van Wezenbeek
+// Copyright: (c) 2008-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -11,20 +11,25 @@
 #include <wex/ex/address.h>
 #include <wex/ex/ex-stream.h>
 #include <wex/ex/macros.h>
+#include <wex/factory/stc-undo.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/auto-indent.h>
 #include <wex/stc/entry-dialog.h>
 #include <wex/stc/stc.h>
 #include <wex/syntax/lexers.h>
 #include <wex/syntax/printing.h>
+#include <wex/syntax/printout.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/item-vector.h>
 #include <wx/app.h>
 #include <wx/settings.h>
 
+#include <algorithm>
+
 wex::stc::stc(const wex::path& p, const data::stc& data)
-  : m_data(this, data)
+  : syntax::stc(data.window())
+  , m_data(data)
   , m_auto_complete(new wex::auto_complete(this))
   , m_vi(
       new vi(this, data.flags().test(data::stc::WIN_EX) ? ex::EX : ex::VISUAL))
@@ -32,15 +37,9 @@ wex::stc::stc(const wex::path& p, const data::stc& data)
   , m_hexmode(hexmode(this))
   , m_frame(dynamic_cast<frame*>(wxTheApp->GetTopWindow()))
 {
-  assert(m_frame != nullptr);
+  m_data.set_stc(this);
 
-  Create(
-    data.window().parent(),
-    data.window().id(),
-    data.window().pos(),
-    data.window().size(),
-    data.window().style(),
-    data.window().name());
+  assert(m_frame != nullptr);
 
   if (m_config_items == nullptr)
   {
@@ -153,6 +152,26 @@ void wex::stc::add_text(const std::string& text)
   }
 }
 
+void wex::stc::add_text_block(const std::string& text)
+{
+  stc_undo undo(this);
+
+  std::for_each(
+    text.begin(),
+    text.end(),
+    [this](const auto& it)
+    {
+      if (it != '\n' && it != '\r')
+      {
+        AddText(it);
+      }
+      else
+      {
+        LineDown();
+      }
+    });
+}
+
 void wex::stc::append_text(const std::string& text)
 {
   Allocate(GetTextLength() + text.size());
@@ -186,6 +205,8 @@ void wex::stc::Copy()
   if (CanCopy())
   {
     syntax::stc::Copy();
+
+    m_selection_mode_copy = GetSelectionMode();
   }
 }
 
@@ -265,7 +286,7 @@ bool wex::stc::get_hexmode_insert(const std::string& command, int pos)
   return m_hexmode.insert(command, pos);
 }
 
-std::string wex::stc::get_hexmode_lines(const std::string& text)
+std::string wex::stc::get_hexmode_lines(const std::string& text) const
 {
   return m_hexmode.lines(text);
 }
@@ -487,6 +508,7 @@ void wex::stc::on_styled_text(wxStyledTextEvent& event)
 bool wex::stc::open(const wex::path& p, const data::stc& data)
 {
   m_data = data::stc(data).window(data::window().name(p.string()));
+  m_data.set_stc(this);
 
   if (path() != p)
   {
@@ -512,7 +534,14 @@ void wex::stc::Paste()
 {
   if (CanPaste())
   {
-    syntax::stc::Paste();
+    if (m_selection_mode_copy == wxSTC_SEL_RECTANGLE)
+    {
+      add_text_block(clipboard_get());
+    }
+    else
+    {
+      syntax::stc::Paste();
+    }
   }
 }
 
@@ -564,8 +593,7 @@ void wex::stc::properties_message(path::log_t flags)
       GetName().empty() ? path().string() : GetName().ToStdString());
 
     const auto readonly(
-      GetReadOnly() ? wxString(" [" + _("Readonly") + "]").ToStdString() :
-                      std::string());
+      GetReadOnly() ? std::string(" [" + _("Readonly") + "]") : std::string());
 
     std::string title = name + readonly;
 
@@ -648,9 +676,15 @@ void wex::stc::use_modification_markers(bool use)
         (void)Unbind(wxEVT_STC_MODIFIED, &stc::on_styled_text, this);
 }
 
-bool wex::stc::vi_command(const std::string& command)
+bool wex::stc::vi_command(const line_data& data)
 {
-  return m_vi->command(command);
+  m_vi->set_line_data(data);
+
+  const bool r(m_vi->command(data.command()));
+
+  m_vi->set_line_data(line_data());
+
+  return r;
 }
 
 bool wex::stc::vi_command_finish(bool user_input)

@@ -6,22 +6,16 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
+#include <boost/url.hpp>
+
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/core/path.h>
 #include <wx/mimetype.h>
 #include <wx/translation.h>
-#include <wx/url.h>
+#include <wx/utils.h>
 
 namespace fs = std::filesystem;
-
-namespace wex
-{
-const std::string substitute_tilde(const std::string& text)
-{
-  return boost::algorithm::replace_all_copy(text, "~", wxGetHomeDir());
-}
-}; // namespace wex
 
 wex::path::path(const fs::path& p, log_t t)
   : m_path(p)
@@ -40,7 +34,9 @@ wex::path::path(const path& p, const std::string& name, log_t t)
 }
 
 wex::path::path(const std::string& p, log_t t)
-  : path(fs::path(substitute_tilde(p)), t)
+  : path(
+      fs::path(boost::algorithm::replace_all_copy(p, "~", wxGetHomeDir())),
+      t)
 {
 }
 
@@ -71,19 +67,6 @@ wex::path::~path()
   }
 }
 
-wex::path& wex::path::operator=(const wex::path& r)
-{
-  if (this != &r)
-  {
-    m_path          = r.data();
-    m_path_original = r.m_path_original;
-    m_stat          = r.m_stat;
-    m_log           = r.m_log;
-  }
-
-  return *this;
-}
-
 wex::path& wex::path::append(const wex::path& path)
 {
   m_path /= fs::path(path.data());
@@ -97,7 +80,7 @@ void wex::path::current(const wex::path& p)
   {
     try
     {
-      log::trace("change dir") << p;
+      log::trace("change dir") << p.string();
       fs::current_path(p.data());
     }
     catch (const std::exception& e)
@@ -174,7 +157,7 @@ bool wex::path::open_mime() const
 {
   if (extension().empty())
   {
-    if (wxURL(m_path.string()).IsOk() || m_path.string().substr(0, 4) == "http")
+    if (boost::urls::url_view view(m_path.string()); view.has_scheme())
     {
       return browser(m_path.string());
     }

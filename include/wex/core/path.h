@@ -2,7 +2,7 @@
 // Name:      path.h
 // Purpose:   Declaration of class wex::path
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2017-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -68,9 +68,6 @@ public:
 
   /// Copy constructor.
   path(const path& r);
-
-  /// Assignment operator.
-  path& operator=(const path& r);
 
   /// Destructor.
   ~path();

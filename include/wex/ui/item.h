@@ -2,23 +2,22 @@
 // Name:      item.h
 // Purpose:   Declaration of wex::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2022 Anton van Wezenbeek
+// Copyright: (c) 2015-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/data/item.h>
+#include <wex/data/layout.h>
 #include <wex/data/listview.h>
 #include <wx/sizer.h> // for wxSizer, and wxSizerFlags
-#include <wx/slider.h>
 
 #include <any>
-#include <map>
-#include <set>
+#include <unordered_map>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
-class wxFlexGridSizer;
 class wxWindow;
 
 namespace wex
@@ -158,7 +157,7 @@ public:
   };
 
   /// Choices for radioboxes.
-  typedef std::map<
+  typedef std::unordered_map<
     /// value
     long,
     /// name, default the value is not set,
@@ -167,7 +166,7 @@ public:
     choices_t;
 
   /// Choices for listboxes with toggle options.
-  typedef std::set<std::string> choices_bool_t;
+  typedef std::unordered_set<std::string> choices_bool_t;
 
   /// A group is a pair of text with a vector of items.
   /// If the text is empty, a group is used, otherwise a static box,
@@ -187,27 +186,15 @@ public:
   static void use_config(bool use) { m_use_config = use; }
 
   /// Default constructor for an EMPTY item.
-  item()
-    : item(EMPTY)
-  {
-    ;
-  };
+  item();
 
   /// Constructor for a SPACER item.
   /// The size is the size for the spacer used.
-  item(int size)
-    : item(SPACER)
-  {
-    m_data.window(data::window().style(size));
-  };
+  item(int size);
 
   /// Constructor for a STATICLINE item.
   /// The orientation is wxHORIZONTAL or wxVERTICAL.
-  item(wxOrientation orientation)
-    : item(STATICLINE)
-  {
-    m_data.window(data::window().style(orientation));
-  };
+  item(wxOrientation orientation);
 
   /// Constructor from data::item.
   item(
@@ -256,17 +243,7 @@ public:
     /// - SLIDER
     type_t type = SPINCTRL,
     /// item data
-    const data::item& data = data::item())
-    : item(
-        type,
-        label,
-        value,
-        data::item(data)
-          .window(data::window().style(wxSP_ARROW_KEYS))
-          .min(min)
-          .max(max))
-  {
-  }
+    const data::item& data = data::item());
 
   /// Constructor for a SPINCTRLDOUBLE item.
   item(
@@ -280,10 +257,7 @@ public:
     const std::any& value = std::any(),
     /// item data
     const data::item& data =
-      data::item().window(data::window().style(wxSP_ARROW_KEYS)))
-    : item(SPINCTRLDOUBLE, label, value, data::item(data).min(min).max(max))
-  {
-  }
+      data::item().window(data::window().style(wxSP_ARROW_KEYS)));
 
   /// Constructor for a CHECKLISTBOX_BOOL item.
   /// This checklistbox can be used to get/set several boolean values.
@@ -293,10 +267,7 @@ public:
     /// ',1' postfix to the name
     const choices_bool_t& choices,
     /// item data
-    const data::item& data = data::item().label_type(data::item::LABEL_NONE))
-    : item(CHECKLISTBOX_BOOL, "checklistbox_bool", choices, data)
-  {
-  }
+    const data::item& data = data::item().label_type(data::item::LABEL_NONE));
 
   /// Constructor for a NOTEBOOK item, being a vector
   /// of a pair of pages with a vector of items.
@@ -332,10 +303,7 @@ public:
     type_t type = NOTEBOOK,
 #endif
     /// item data
-    const data::item& data = data::item().label_type(data::item::LABEL_NONE))
-    : item(type, label, v, data)
-  {
-  }
+    const data::item& data = data::item().label_type(data::item::LABEL_NONE));
 
   /// Constructor for a STATICBOX or GROUP item.
   /// If the group text is empty, a GROUP item is created, otherwise a
@@ -344,10 +312,7 @@ public:
     /// group items
     const group_t& g,
     /// item data
-    const data::item& data = data::item().label_type(data::item::LABEL_NONE))
-    : item(g.first.empty() ? GROUP : STATICBOX, g.first, g, data)
-  {
-  }
+    const data::item& data = data::item().label_type(data::item::LABEL_NONE));
 
   /// Constructor for a RADIOBOX, or a CHECKLISTBOX_BIT item.
   /// This checklistbox (not mutually exclusive choices)
@@ -363,16 +328,7 @@ public:
     /// indicates whether to use a radiobox or a checklistbox.
     bool use_radiobox = true,
     /// item data
-    const data::item& data = data::item())
-    : item(
-        use_radiobox ? RADIOBOX : CHECKLISTBOX_BIT,
-        label,
-        choices,
-        data::item(data)
-          .window(data::window().style(wxRA_SPECIFY_COLS))
-          .label_type(data::item::LABEL_NONE))
-  {
-  }
+    const data::item& data = data::item());
 
   /// Constructor for a USER item.
   item(
@@ -381,11 +337,7 @@ public:
     /// the window (use default constructor for it)
     wxWindow* window,
     /// remember to set callback for window creation
-    const data::item& data)
-    : item(USER, label, std::string(), data)
-  {
-    m_window = window;
-  };
+    const data::item& data);
 
   /// Constructor a LISTVIEW item.
   item(
@@ -397,11 +349,7 @@ public:
     /// expects std::list< std::string>
     const std::any& value = std::any(),
     /// item data
-    const data::item& d = data::item().label_type(data::item::LABEL_NONE))
-    : item(LISTVIEW, label, value, d)
-  {
-    m_data_listview = data;
-  };
+    const data::item& d = data::item().label_type(data::item::LABEL_NONE));
 
   /// Constructor several items.
   item(
@@ -431,18 +379,7 @@ public:
     /// - TEXTCTRL_INT expects std::string with int contents
     const std::any& value = std::any(),
     /// item data
-    const data::item& data = data::item())
-    : item(
-        type,
-        label,
-        value,
-        data::item(data).label_type(
-          type == BUTTON || type == CHECKBOX || type == COMMANDLINKBUTTON ||
-              type == TOGGLEBUTTON ?
-            data::item::LABEL_NONE :
-            data.label_type()))
-  {
-  }
+    const data::item& data = data::item());
 
   /// If apply callback has been provided calls apply.
   /// Otherwise returns false.
@@ -473,20 +410,10 @@ public:
   /// Returns the label window.
   const auto& label_window() const { return m_label_window; }
 
-  /// layouts this item (creates the window) on the specified sizer.
+  /// layouts this item (creates the window) using the specified layout.
   /// It returns the flex grid sizer that was used for creating the item
   /// sizer. Or it returns nullptr if no flex grid sizer was used.
-  wxFlexGridSizer* layout(
-    /// the parent
-    wxWindow* parent,
-    /// the sizer
-    wxSizer* sizer,
-    /// specify the item will be readonly, it will not be changeable
-    /// if underlying control supports this
-    bool readonly = false,
-    /// specify the sizer for creating the item, or nullptr,
-    /// than a new one is created
-    wxFlexGridSizer* fgz = nullptr);
+  data::layout::sizer_t* layout(data::layout& layout);
 
   /// Logs info about this item.
   std::stringstream log() const;
@@ -534,16 +461,12 @@ private:
     const std::any&    value = std::string(),
     const data::item&        = data::item());
 
-  wxFlexGridSizer* add(wxSizer* sizer, wxFlexGridSizer* current) const;
-  wxFlexGridSizer* add_browse_button(wxSizer* sizer) const;
-  wxFlexGridSizer* add_static_text(wxSizer* sizer) const;
+  data::layout::sizer_t* add(data::layout& layout) const;
+  data::layout::sizer_t* add_browse_button(wxSizer* sizer) const;
+  data::layout::sizer_t* add_static_text(wxSizer* sizer) const;
 
   void add_items(group_t& page, bool readonly);
-  void add_items(
-    wxWindow*          parent,
-    wxFlexGridSizer*   sizer,
-    std::vector<item>& v,
-    bool               readonly);
+  void add_items(data::layout& layout, std::vector<item>& v);
 
   bool     create_window(wxWindow* parent, bool readonly);
   create_t creators();

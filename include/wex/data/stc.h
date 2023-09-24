@@ -2,13 +2,13 @@
 // Name:      stc.h
 // Purpose:   Declaration of wex::data::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2022 Anton van Wezenbeek
+// Copyright: (c) 2017-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/core/path.h>
-#include <wex/data/control.h>
+#include <wex/factory/control.h>
 
 #include <bitset>
 
@@ -81,19 +81,13 @@ public:
   };
 
   /// Default constructor.
-  stc(syntax::stc* stc = nullptr);
+  stc();
 
   /// Constructor from control data.
-  stc(const data::control& data, syntax::stc* stc = nullptr);
+  stc(const data::control& data);
 
   /// Constructor from window data.
-  stc(const data::window& data, syntax::stc* stc = nullptr);
-
-  /// Copy constructor.
-  stc(syntax::stc* stc, const data::stc& r);
-
-  /// Assignment operator.
-  stc& operator=(const data::stc& r);
+  stc(const data::window& data);
 
   /// Returns control data.
   auto& control() const { return m_data; }
@@ -124,6 +118,9 @@ public:
   /// Set window flags.
   stc&
   flags(window_t flags, data::control::action_t action = data::control::SET);
+
+  /// Returns stc.
+  auto* get_stc() { return m_stc; };
 
   /// Returns head path.
   const auto& head_path() const { return m_head_path; }
@@ -157,6 +154,13 @@ public:
   stc& recent(bool recent)
   {
     m_recent = recent;
+    return *this;
+  };
+
+  /// Sets stc.
+  stc& set_stc(syntax::stc* rhs)
+  {
+    m_stc = rhs;
     return *this;
   };
 

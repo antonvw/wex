@@ -2,7 +2,7 @@
 // Name:      toolbar.cpp
 // Purpose:   Implementation of wex::toolbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2010-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -297,7 +297,7 @@ void wex::toolbar::add_standard(bool realize)
   bind(this).command(
     {{[=, this](wxCommandEvent& event)
       {
-        m_frame->open_file_same_page(event);
+        m_frame->browse(event);
       },
       wxID_FORWARD,
       wxID_BACKWARD}});
@@ -312,31 +312,43 @@ bool wex::toolbar::add_tool(
   const std::vector<data::toolbar_item>& v,
   bool                                   realize)
 {
-  for (const auto& it : v)
-  {
-    if (const stockart art(it.id()); art.get_bitmap(wxART_TOOLBAR).IsOk())
-    {
-      if (!AddTool(
-            it.id(),
-            wxEmptyString, // no label
+  if (!std::all_of(
+        v.begin(),
+        v.end(),
+        [this](const auto& it)
+        {
+          if (const stockart art(it.id()); art.get_bitmap(wxART_TOOLBAR).IsOk())
+          {
+            if (!AddTool(
+                  it.id(),
+                  wxEmptyString, // no label
 #ifdef __WXGTK__
-            art.get_bitmap(wxART_TOOLBAR),
+                  art.get_bitmap(wxART_TOOLBAR),
 #else
-            art.get_bitmap(wxART_MENU, wxSize(16, 16)),
+                  art.get_bitmap(wxART_MENU, wxSize(16, 16)),
 #endif
-            wxGetStockLabel(it.id(), wxSTOCK_NOFLAGS), // short help
-            it.kind()))
-      {
-        return false;
-      }
-    }
-    else if (it.bitmap().IsOk())
-    {
-      if (!AddTool(it.id(), it.label(), it.bitmap(), it.help(), it.kind()))
-      {
-        return false;
-      }
-    }
+                  wxGetStockLabel(it.id(), wxSTOCK_NOFLAGS), // short help
+                  it.kind()))
+            {
+              return false;
+            }
+          }
+          else if (it.bitmap().IsOk())
+          {
+            if (!AddTool(
+                  it.id(),
+                  it.label(),
+                  it.bitmap(),
+                  it.help(),
+                  it.kind()))
+            {
+              return false;
+            }
+          }
+          return true;
+        }))
+  {
+    return false;
   }
 
   if (realize)
@@ -407,7 +419,7 @@ wex::find_bar::find_bar(wex::frame* frame, const data::window& data)
       }
       else
       {
-        // using a the bind in ex_commandline did not work
+        // using bind in ex_commandline did not work
         on_key_down(event);
       }
     });

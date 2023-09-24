@@ -2,12 +2,25 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wex::factory::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
 #include <wex/factory/bind.h>
 #include <wex/factory/stc.h>
+#include <wx/app.h>
+
+wex::factory::stc::stc(const wex::data::window& data)
+  : wxStyledTextCtrl(
+      data.parent() != nullptr ? data.parent() : wxTheApp->GetTopWindow(),
+      data.id(),
+      data.pos(),
+      data.size(),
+      data.style(),
+      data.name())
+  , m_command(this)
+{
+}
 
 void wex::factory::stc::bind_wx()
 {

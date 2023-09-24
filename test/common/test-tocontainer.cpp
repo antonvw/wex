@@ -2,7 +2,7 @@
 // Name:      test-tocontainer.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
@@ -42,12 +42,12 @@ TEST_CASE("wex::to_container")
 #endif
   REQUIRE(wex::to_list_string(a).get().size() == 4);
   REQUIRE(wex::to_list_string("test test test").get().size() == 3);
-  REQUIRE(wex::to_container<std::list<std::string>>(cb, 5).get().size() == 1);
+  REQUIRE(wex::to_container<wex::strings_t>(cb, 5).get().size() == 1);
 
-  wex::combobox_from_list(cb, std::list<std::string>{"x", "y", "z"});
+  wex::combobox_from_list(cb, wex::strings_t{"x", "y", "z"});
   REQUIRE(wex::to_list_string(cb).get().size() == cb->GetCount());
-  REQUIRE(wex::to_container<std::list<std::string>>(cb, 2).get().size() == 2);
-  REQUIRE(wex::to_container<std::list<std::string>>(cb, 0).get().empty());
+  REQUIRE(wex::to_container<wex::strings_t>(cb, 2).get().size() == 2);
+  REQUIRE(wex::to_container<wex::strings_t>(cb, 0).get().empty());
 
   cb->SetValue(wxEmptyString);
   REQUIRE(wex::to_list_string(cb).get().size() == cb->GetCount() + 1);

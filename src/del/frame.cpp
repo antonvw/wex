@@ -2,26 +2,12 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2009-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
-#include <wex/common/dir.h>
-#include <wex/common/tostring.h>
-#include <wex/common/util.h>
-#include <wex/core/cmdline.h>
-#include <wex/core/log.h>
-#include <wex/core/path.h>
-#include <wex/core/regex.h>
-#include <wex/del/wex.h>
-#include <wex/ex/command-parser.h>
-#include <wex/ex/macros.h>
-#include <wex/stc/wex.h>
-#include <wex/syntax/blame.h>
-#include <wex/syntax/lexers.h>
-#include <wex/ui/wex.h>
-#include <wex/vcs/wex.h>
+#include <wex/wex.h>
 
 #include "blaming.h"
 
@@ -110,7 +96,7 @@ wex::del::frame::frame(
       .id(id_replace_in_files)
       .title(_("Replace In Files"))
 #ifdef __WXOSX__
-      .size({375, 400})
+      .size({410, 400})
 #endif
       .style(wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxSTAY_ON_TOP));
 
@@ -308,8 +294,7 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
               (v.size() > i ? config(m_text_in_folder).set_first_of(v[i++]) :
                               config(m_text_in_folder).get_first_of());
           }},
-         false,
-         "grep")
+         false)
          .parse(cmdl))
   {
     statustext(cmdl.help(), std::string());
@@ -487,7 +472,9 @@ void wex::del::frame::open_from_event(
     }
 
     if (!shell_expansion(text))
+    {
       return;
+    }
 
     std::string cmd;
     if (regex v("\\+([^ \t]+)* *(.*)"); v.match(text) > 1)
@@ -876,6 +863,11 @@ bool wex::del::frame::vcs_blame_show(vcs_entry* vcs, syntax::stc* stc)
   return true;
 }
 
+void wex::del::frame::vcs_destroy_dialog()
+{
+  vcs::destroy_dialog();
+}
+
 bool wex::del::frame::vcs_dir_exists(const path& p) const
 {
   return vcs::dir_exists(p);
@@ -883,7 +875,9 @@ bool wex::del::frame::vcs_dir_exists(const path& p) const
 
 void wex::del::frame::vcs_execute(
   int                           event_id,
-  const std::vector<wex::path>& paths)
+  const std::vector<wex::path>& paths,
+  const data::window&           data)
+
 {
-  wex::vcs_execute(this, event_id, paths);
+  wex::vcs_execute(this, event_id, paths, data);
 }

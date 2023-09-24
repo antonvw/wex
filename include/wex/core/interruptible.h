@@ -26,8 +26,9 @@ public:
   /// Returns false if process is already running.
   static bool start();
 
-  /// Stops or indicates that the interruptible process has finished.
-  static void end();
+  /// Stops the interruptible process.
+  /// Returns false if process is not running.
+  static bool end();
 
   /// Returns true if process is running.
   static bool is_running();

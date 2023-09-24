@@ -2,7 +2,7 @@
 // Name:      grid.cpp
 // Purpose:   Implementation of wex::grid class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -58,6 +58,40 @@ bool text_droptarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
   }
 
   return m_grid->drop_selection(coord, data);
+}
+
+const std::string get_cells_value(const grid* gr, bool is_selected)
+{
+  // This does not work, only filled in for singly selected cells.
+  // wxGridCellCoordsArray cells = GetSelectedCells();
+  std::stringstream text;
+
+  for (int i = 0; i < gr->GetNumberRows(); i++)
+  {
+    bool value_added = false;
+
+    for (int j = 0; j < gr->GetNumberCols(); j++)
+    {
+      if (!is_selected || gr->IsInSelection(i, j))
+      {
+        if (value_added)
+        {
+          text << "\t";
+        }
+
+        text << gr->GetCellValue(i, j);
+
+        value_added = true;
+      }
+    }
+
+    if (value_added)
+    {
+      text << "\n";
+    }
+  }
+
+  return text.str();
 }
 }; // namespace wex
 
@@ -417,31 +451,7 @@ bool wex::grid::find_next(const data::find& f)
 
 const std::string wex::grid::get_cells_value() const
 {
-  std::stringstream text;
-
-  for (int i = 0; i < GetNumberRows(); i++)
-  {
-    bool value_added = false;
-
-    for (int j = 0; j < GetNumberCols(); j++)
-    {
-      if (value_added)
-      {
-        text << "\t";
-      }
-
-      text << GetCellValue(i, j);
-
-      value_added = true;
-    }
-
-    if (value_added)
-    {
-      text << "\n";
-    }
-  }
-
-  return text.str();
+  return wex::get_cells_value(this, false);
 }
 
 const std::string wex::grid::get_find_string() const
@@ -475,36 +485,7 @@ const std::string wex::grid::get_find_string() const
 
 const std::string wex::grid::get_selected_cells_value() const
 {
-  // This does not work, only filled in for singly selected cells.
-  // wxGridCellCoordsArray cells = GetSelectedCells();
-  std::stringstream text;
-
-  for (int i = 0; i < GetNumberRows(); i++)
-  {
-    bool value_added = false;
-
-    for (int j = 0; j < GetNumberCols(); j++)
-    {
-      if (IsInSelection(i, j))
-      {
-        if (value_added)
-        {
-          text << "\t";
-        }
-
-        text << GetCellValue(i, j);
-
-        value_added = true;
-      }
-    }
-
-    if (value_added)
-    {
-      text << "\n";
-    }
-  }
-
-  return text.str();
+  return wex::get_cells_value(this, true);
 }
 
 bool wex::grid::is_allowed_drop_selection(
@@ -527,7 +508,7 @@ bool wex::grid::is_allowed_drop_selection(
          ++tt)
     {
       // If readonly, or this cell is part of the current selection, or outside
-      // grid do not allow. Otherwise when dropping and clearing old selection
+      // grid do not allow. Otherwise, when dropping and clearing old selection
       // afterwards, we also cleared the new cells. If moving is really
       // supported by wxGrid, this might be changed.
       if (

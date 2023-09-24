@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wex::syntax::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -22,6 +22,13 @@ namespace syntax
 class stc : public factory::stc
 {
 public:
+  /// Default constructor.
+  stc(const data::window& data = data::window())
+    : factory::stc(data)
+  {
+    ;
+  };
+
   /// Virtual interface
 
   virtual bool lexer_is_previewable() const final

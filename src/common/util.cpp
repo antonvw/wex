@@ -2,8 +2,10 @@
 // Name:      common/util.cpp
 // Purpose:   Implementation of wex common utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
+
+#include <numeric>
 
 #include <wex/common/dir.h>
 #include <wex/common/tostring.h>
@@ -80,8 +82,11 @@ wex::auto_complete_filename(const std::string& text)
     path.make_absolute();
   }
 
-  const auto                     prefix(path.filename());
-  const std::vector<std::string> v(get_all_files(
+  // alias to filename
+  const auto& prefix(path.filename());
+
+  // get all matching files
+  const auto& v(get_all_files(
     path.parent_path(),
     data::dir()
       .file_spec(prefix + "*")
@@ -92,11 +97,10 @@ wex::auto_complete_filename(const std::string& text)
   {
     return {false, std::string(), v};
   }
-
-  if (v.size() > 1)
+  else if (v.size() > 1)
   {
     auto rest_equal_size = 0;
-    bool all_ok          = true;
+    auto all_ok          = true;
 
     for (auto i = prefix.length(); i < v[0].size() && all_ok; i++)
     {
@@ -114,6 +118,15 @@ wex::auto_complete_filename(const std::string& text)
       }
     }
 
+    log::status() << std::accumulate(
+      v.begin(),
+      v.size() <= 5 ? v.end() : v.begin() + 5,
+      std::string(),
+      [&](const std::string& a, const std::string& b)
+      {
+        return a.empty() ? b : a + " " + b;
+      });
+
     return {true, v[0].substr(prefix.size(), rest_equal_size), v};
   }
   else
@@ -122,9 +135,9 @@ wex::auto_complete_filename(const std::string& text)
   }
 }
 
-void wex::combobox_from_list(wxComboBox* cb, const std::list<std::string>& text)
+void wex::combobox_from_list(wxComboBox* cb, const strings_t& text)
 {
-  combobox_as<const std::list<std::string>>(cb, text);
+  combobox_as<const strings_t>(cb, text);
 }
 
 bool wex::compare_file(const path& file1, const path& file2)
@@ -323,7 +336,7 @@ void wex::xml_error(
 
   if (stc != nullptr && result->offset != 0)
   {
-    stc->vi_command("gg");
-    stc->vi_command(std::to_string(result->offset) + "|");
+    stc->vi_command(line_data().command("gg"));
+    stc->vi_command(line_data().command(std::to_string(result->offset) + "|"));
   }
 }

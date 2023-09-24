@@ -166,7 +166,7 @@ int wex::get_number_of_lines(const std::string& text, bool trim)
   const auto& trimmed = (trim ? boost::algorithm::trim_copy(text) : text);
 
   // If text contains \r\n, assume a DOS file, count only \n.
-  // Otherwise count all endings.
+  // Otherwise, count all endings.
   return ((trimmed.contains("\r\n")) ?
             std::count(trimmed.begin(), trimmed.end(), '\n') :
             std::count_if(
@@ -219,6 +219,17 @@ const std::string wex::get_word(std::string& text)
   return token;
 }
 
+int wex::icompare(const std::string& text1, const std::string& text2)
+{
+  return boost::algorithm::to_upper_copy(text1).compare(
+    boost::algorithm::to_upper_copy(text2));
+}
+
+bool wex::icontains(const std::string& text, const std::string& sequence)
+{
+  return boost::algorithm::icontains(text, sequence);
+}
+
 bool wex::is_brace(int c)
 {
   return c == '[' || c == ']' || c == '(' || c == ')' || c == '{' || c == '}' ||
@@ -236,7 +247,7 @@ bool wex::matches_one_of(
   const std::string& pattern)
 {
   if (pattern == "*")
-    return true; // asterix matches always
+    return true;  // asterix matches always
   if (filename.empty())
     return false; // empty string never matches
 
@@ -304,18 +315,4 @@ bool wex::single_choice_dialog(
   selection = dlg.GetStringSelection();
 
   return true;
-}
-
-const std::string
-wex::translate(const std::string& text, int pageNum, int numPages)
-{
-  const auto& translation(boost::algorithm::replace_all_copy(
-    text,
-    "@PAGENUM@",
-    std::to_string(pageNum)));
-
-  return boost::algorithm::replace_all_copy(
-    translation,
-    "@PAGESCNT@",
-    std::to_string(numPages));
 }

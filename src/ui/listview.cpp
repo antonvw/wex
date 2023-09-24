@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of wex::listview and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -91,9 +91,10 @@ const std::vector<item> config_items()
          {_("list.Single selection"), item::CHECKBOX},
          {_("list.Comparator"), item::FILEPICKERCTRL},
          {_("list.Sort method"),
-          {{SORT_ASCENDING, _("Sort ascending")},
-           {SORT_DESCENDING, _("Sort descending")},
-           {SORT_TOGGLE, _("Sort toggle")}}},
+          {{SORT_TOGGLE, _("Sort toggle")},
+           {SORT_KEEP, _("Sort keep order")},
+           {SORT_ASCENDING, _("Sort ascending")},
+           {SORT_DESCENDING, _("Sort descending")}}},
          {_("list.Context size"), 0, 80, 10},
          {_("list.Rulers"),
           {{wxLC_HRULES, _("Horizontal rulers")},
@@ -111,29 +112,19 @@ const std::vector<item> config_items()
 }; // namespace wex
 
 wex::listview::listview(const data::listview& data)
-  : m_image_height(16) // not used if IMAGE_FILE_ICON is used, then 16 is fixed
+  : factory::listview(data.window(), data.control())
+  , m_image_height(16) // not used if IMAGE_FILE_ICON is used, then 16 is fixed
   , m_image_width(16)
   , m_col_event_id(1000)
-  , m_data(
-      this,
-      data::listview(data).image(
-        data.type() == data::listview::NONE ||
-            data.type() == data::listview::TSV ?
-          data.image() :
-          data::listview::IMAGE_FILE_ICON))
+  , m_data(data::listview(data)
+             .image(
+               data.type() == data::listview::NONE ||
+                   data.type() == data::listview::TSV ?
+                 data.image() :
+                 data::listview::IMAGE_FILE_ICON)
+             .set_listview(this))
   , m_frame(dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()))
 {
-  Create(
-    data.window().parent(),
-    data.window().id(),
-    data.window().pos(),
-    data.window().size(),
-    data.window().style() == data::NUMBER_NOT_SET ? wxLC_REPORT :
-                                                    data.window().style(),
-    data.control().validator() != nullptr ? *data.control().validator() :
-                                            wxDefaultValidator,
-    data.window().name());
-
   config_get();
 
   m_data.inject();
@@ -382,7 +373,7 @@ void wex::listview::bind_other()
               GetItemCount()));
             val > 0)
         {
-          data::listview(data::control().line(val), this).inject();
+          data::listview(data::control().line(val)).set_listview(this).inject();
         }
       },
       wxID_JUMP_TO}});
@@ -950,7 +941,7 @@ void wex::listview::items_update()
   }
 }
 
-bool wex::listview::load(const std::list<std::string>& l)
+bool wex::listview::load(const strings_t& l)
 {
   clear();
 
@@ -961,7 +952,7 @@ bool wex::listview::load(const std::list<std::string>& l)
 
   if (m_data.type() == data::listview::TSV && GetColumnCount() == 0)
   {
-    // Use front item to setup the columns, so we assume each
+    // Use front item to set up the columns, so we assume each
     // item in the vector has the same columns.
     boost::tokenizer<boost::char_separator<char>> tok(
       l.front(),
@@ -1216,9 +1207,9 @@ bool wex::listview::report_view(const std::string& text)
   return true;
 }
 
-const std::list<std::string> wex::listview::save() const
+const wex::strings_t wex::listview::save() const
 {
-  std::list<std::string> l;
+  strings_t l;
 
   for (auto i = 0; i < GetItemCount(); i++)
   {
@@ -1277,10 +1268,8 @@ int wxCALLBACK compare_cb(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData)
     case wex::column::STRING:
       if (!wex::find_replace_data::get()->match_case())
       {
-        return ascending ? boost::algorithm::to_upper_copy(str1).compare(
-                             boost::algorithm::to_upper_copy(str2)) :
-                           boost::algorithm::to_upper_copy(str2).compare(
-                             boost::algorithm::to_upper_copy(str1));
+        return ascending ? wex::icompare(str1, str2) :
+                           wex::icompare(str2, str1);
       }
       else
       {

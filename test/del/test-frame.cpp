@@ -199,7 +199,10 @@ TEST_CASE("wex::del::frame")
 
   SUBCASE("vcs_execute")
   {
-    del_frame()->vcs_execute(10, {wex::path()});
+    wex::data::window data;
+    data.button(wxOK | wxCANCEL | wxAPPLY);
+    del_frame()->vcs_execute(9, {wex::test::get_path("test.h")}, data);
+    del_frame()->vcs_destroy_dialog();
   }
 
   SUBCASE("virtual")

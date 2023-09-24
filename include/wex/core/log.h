@@ -2,7 +2,7 @@
 // Name:      log.h
 // Purpose:   Declaration of wex::log class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2017-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -41,7 +41,7 @@ public:
   static void on_init(
     /// loglevel
     level_t loglevel = level_t_def(),
-    /// logfile, empty string is default logfile
+    /// logfile, empty string uses a default logfile
     const std::string& logfile = std::string());
 
   /// Return current filter log level.
@@ -52,6 +52,9 @@ public:
 
   /// Returns default log level.
   static level_t level_t_def();
+
+  /// Returns path for actual logfile used.
+  static const std::string path();
 
   /// Sets filter log level.
   static void set_level(level_t loglevel);
@@ -96,6 +99,9 @@ public:
 
   /// Logs int according to level.
   log& operator<<(int);
+
+  /// Logs unsigned int according to level.
+  log& operator<<(unsigned int);
 
   /// Logs size_t according to level.
   log& operator<<(size_t);
@@ -152,13 +158,13 @@ private:
   void              flush();
   const std::string S(); // separator
 
-  const std::string  m_topic;
-  std::stringstream  m_ss;
-  std::wstringstream m_wss;
-  bool               m_separator{true};
-  level_t            m_level;
+  const std::string m_topic;
+  std::stringstream m_ss;
+  bool              m_separator{true};
+  level_t           m_level;
 
-  static inline bool    m_initialized{false};
-  static inline level_t m_level_filter;
+  static inline bool        m_initialized{false};
+  static inline level_t     m_level_filter;
+  static inline std::string m_logfile;
 };
 }; // namespace wex

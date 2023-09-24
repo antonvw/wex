@@ -2,9 +2,10 @@
 // Name:      item.cpp
 // Purpose:   Implementation of wex::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <charconv>
 #include <sstream>
 
 #include <wex/common/tocontainer.h>
@@ -15,11 +16,16 @@
 #include "item.h"
 #include "ui.h"
 
-// When using a wxGridBagSizer instead of a wxFlexGridSizer:
-// wxWidgets/src/common/gbsizer.cpp(781):
-// assert ""Assert failure"" failed in Insert():
-// Insert should not be used with wxGridBagSizer.
-// during sizer->Add, and all item dialogs are incorrect
+#define DO_DIALOG                                                       \
+  {                                                                     \
+    /* NOLINTNEXTLINE */                                                \
+    if (dlg.ShowModal() == wxID_OK)                                     \
+    {                                                                   \
+      const auto value = dlg.GetPath();                                 \
+      const int  item  = cb->FindString(value);                         \
+      cb->SetSelection(item == wxNOT_FOUND ? cb->Append(value) : item); \
+    }                                                                   \
+  }
 
 wex::item::item(
   type_t             type,
@@ -27,11 +33,14 @@ wex::item::item(
   const std::any&    value,
   const data::item&  data)
   : m_type(type)
-  , m_data(data, value)
+  , m_data(data)
   , m_label(label)
   , m_label_window(rfind_after(label, "."))
-  , m_sizer_flags(wxSizerFlags().Border().Left())
+  , m_sizer_flags(
+      m_type == GROUP ? wxSizerFlags().Left() : wxSizerFlags().Border().Left())
 {
+  m_data.initial(value);
+
   if (is_notebook())
   {
     m_is_row_growable = true;
@@ -77,6 +86,121 @@ wex::item::item(
   }
 }
 
+wex::item::item()
+  : item(EMPTY)
+{
+}
+
+wex::item::item(int size)
+  : item(SPACER)
+{
+  m_data.window(data::window().style(size));
+}
+
+wex::item::item(wxOrientation orientation)
+  : item(STATICLINE)
+{
+  m_data.window(data::window().style(orientation));
+}
+
+wex::item::item(
+  const std::string& label,
+  int                min,
+  int                max,
+  const std::any&    value,
+  type_t             type,
+  const data::item&  data)
+  : item(
+      type,
+      label,
+      value,
+      data::item(data)
+        .window(data::window().style(wxSP_ARROW_KEYS))
+        .min(min)
+        .max(max))
+{
+}
+
+wex::item::item(
+  const std::string& label,
+  double             min,
+  double             max,
+  const std::any&    value,
+  const data::item&  data)
+  : item(SPINCTRLDOUBLE, label, value, data::item(data).min(min).max(max))
+{
+}
+
+wex::item::item(const choices_bool_t& choices, const data::item& data)
+  : item(CHECKLISTBOX_BOOL, "checklistbox_bool", choices, data)
+{
+}
+
+wex::item::item(
+  const std::string& label,
+  const notebook_t&  v,
+  type_t             type,
+  const data::item&  data)
+  : item(type, label, v, data)
+{
+}
+
+wex::item::item(const group_t& g, const data::item& data)
+  : item(g.first.empty() ? GROUP : STATICBOX, g.first, g, data)
+{
+}
+
+wex::item::item(
+  const std::string& label,
+  const choices_t&   choices,
+  bool               use_radiobox,
+  const data::item&  data)
+  : item(
+      use_radiobox ? RADIOBOX : CHECKLISTBOX_BIT,
+      label,
+      choices,
+      data::item(data)
+        .window(data::window().style(wxRA_SPECIFY_COLS))
+        .label_type(data::item::LABEL_NONE))
+{
+}
+
+wex::item::item(
+  const std::string& label,
+  wxWindow*          window,
+  const data::item&  data)
+  : item(USER, label, std::string(), data)
+{
+  m_window = window;
+}
+
+wex::item::item(
+  const std::string&    label,
+  const data::listview& data,
+  const std::any&       value,
+  const data::item&     d)
+  : item(LISTVIEW, label, value, d)
+{
+  m_data_listview = data;
+}
+
+wex::item::item(
+  const std::string& label,
+  type_t             type,
+  const std::any&    value,
+  const data::item&  data)
+  : item(
+      type,
+      label,
+      value,
+      data::item(data).label_type(
+        type == BUTTON || type == CHECKBOX || type == COMMANDLINKBUTTON ||
+            type == TOGGLEBUTTON ?
+          data::item::LABEL_NONE :
+          data.label_type()))
+{
+}
+
 wex::item::item(const std::string& label, type_t type, const data::item& data)
   : item(label, type, data.initial(), data)
 {
@@ -98,32 +222,32 @@ wex::item::item(
 {
 }
 
-wxFlexGridSizer* wex::item::add(wxSizer* sizer, wxFlexGridSizer* current) const
+wex::data::layout::sizer_t* wex::item::add(data::layout& layout) const
 {
-  if (current == nullptr)
+  if (layout.sizer_layout() == nullptr)
   {
-    current = new wxFlexGridSizer(
-      m_data.label_type() == data::item::LABEL_LEFT ? 2 : 1);
-    current->AddGrowableCol(current->GetCols() - 1); // make last col growable
-    sizer->Add(current, wxSizerFlags().Expand());
+    layout.sizer_layout_create(new wex::data::layout::sizer_t(
+      m_data.label_type() == data::item::LABEL_LEFT ? 2 : 1));
+    layout.sizer_layout_grow_col();
+    layout.sizer()->Add(layout.sizer_layout(), wxSizerFlags().Expand());
   }
 
   if (m_data.label_type() != data::item::LABEL_NONE && !m_label.empty())
   {
-    add_static_text(current);
+    add_static_text(layout.sizer_layout());
   }
 
   if (m_window != nullptr)
   {
-    current->Add(m_window, m_sizer_flags);
+    layout.sizer_layout()->Add(m_window, m_sizer_flags);
   }
 
-  if (m_is_row_growable && current->GetEffectiveRowsCount() >= 1)
+  if (m_is_row_growable)
   {
-    current->AddGrowableRow(current->GetEffectiveRowsCount() - 1);
+    layout.sizer_layout_grow_row();
   }
 
-  return current;
+  return layout.sizer_layout();
 }
 
 wxFlexGridSizer* wex::item::add_browse_button(wxSizer* sizer) const
@@ -140,7 +264,6 @@ wxFlexGridSizer* wex::item::add_browse_button(wxSizer* sizer) const
   // Tried to use a wxDirPickerCtrl here, is nice,
   // but does not use a combobox for keeping old values, so this is better.
   // And the text box that is used is not resizable as well.
-  // In item_template_dialog the button click is bound to browse dialog.
   auto* browse = new wxButton(
     m_window->GetParent(),
     m_window->GetId(),
@@ -150,14 +273,67 @@ wxFlexGridSizer* wex::item::add_browse_button(wxSizer* sizer) const
 
   sizer->Add(fgz, wxSizerFlags().Left().Expand()); // no border
 
+  switch (m_type)
+  {
+    case COMBOBOX_DIR:
+      browse->Bind(
+        wxEVT_BUTTON,
+        [&, window = this->m_window, label = this->m_label](
+          const wxCommandEvent& event)
+        {
+          if (auto* cb = reinterpret_cast<wxComboBox*>(window); cb != nullptr)
+          {
+            wxDirDialog dlg(
+              window,
+              _(wxDirSelectorPromptStr),
+              cb->GetValue(),
+              wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+            DO_DIALOG;
+          }
+          else
+          {
+            wex::log("browse dir failed") << label;
+          }
+        },
+        m_window->GetId());
+      break;
+
+    case COMBOBOX_FILE:
+      browse->Bind(
+        wxEVT_BUTTON,
+        [&, window = this->m_window, label = this->m_label](
+          const wxCommandEvent& event)
+        {
+          if (auto* cb = reinterpret_cast<wxComboBox*>(window); cb != nullptr)
+          {
+            const path   path(cb->GetValue());
+            wxFileDialog dlg(
+              window,
+              _(wxFileSelectorPromptStr),
+              path.parent_path(),
+              path.filename(),
+              wxFileSelectorDefaultWildcardStr,
+              wxFD_DEFAULT_STYLE | wxFD_FILE_MUST_EXIST);
+            DO_DIALOG;
+          }
+          else
+          {
+            wex::log("browse file failed") << label;
+          }
+        },
+        window()->GetId());
+      break;
+
+    default:
+      assert(0);
+  }
+
   return fgz;
 }
 
 void wex::item::add_items(group_t& page, bool readonly)
 {
-  int use_cols = 1;
-  if (m_data.columns() != -1)
-    use_cols = m_data.columns();
+  int use_cols = (m_data.columns() != -1 ? m_data.columns() : 1);
 
   if (auto* bookctrl = dynamic_cast<wxBookCtrlBase*>(m_window);
       bookctrl != nullptr)
@@ -165,13 +341,17 @@ void wex::item::add_items(group_t& page, bool readonly)
     m_page      = page.first;
     int imageId = wxWithImages::NO_IMAGE;
 
-    if (const auto col = m_page.contains(":"))
+    if (const auto col = m_page.find(":"); col != std::string::npos)
     {
-      use_cols = std::stoi(m_page.substr(col + 1));
-      m_page   = m_page.substr(0, col);
-    }
+      std::from_chars(
+        m_page.data() + col + 1,
+        m_page.data() + m_page.size(),
+        use_cols);
 
-    auto* fgz = new wxFlexGridSizer(use_cols);
+      log::trace("found page cols") << use_cols;
+
+      m_page = m_page.substr(0, col);
+    }
 
     if (m_data.image_list() != nullptr)
     {
@@ -193,28 +373,33 @@ void wex::item::add_items(group_t& page, bool readonly)
       true, // select
       imageId);
 
-    bookctrl->GetCurrentPage()->SetSizer(fgz);
+    data::layout layout(bookctrl->GetCurrentPage(), use_cols);
+    layout.is_readonly(readonly);
+
+    bookctrl->GetCurrentPage()->SetSizer(layout.sizer());
 
     for (int i = 0; i < use_cols; i++)
     {
-      fgz->AddGrowableCol(i);
+      layout.sizer()->AddGrowableCol(i);
     }
 
-    add_items(bookctrl->GetCurrentPage(), fgz, page.second, readonly);
+    add_items(layout, page.second);
   }
   else if (auto* sb = dynamic_cast<wxStaticBox*>(m_window); sb != nullptr)
   {
-    auto* fgz = new wxFlexGridSizer(use_cols);
-    add_items(sb, fgz, page.second, readonly);
-    sb->SetSizerAndFit(fgz);
+    data::layout layout(sb, use_cols);
+    layout.is_readonly(readonly);
+    add_items(layout, page.second);
+    sb->SetSizerAndFit(layout.sizer());
   }
   else if (m_type == GROUP)
   {
-    auto* panel = dynamic_cast<wxPanel*>(m_window);
-    auto* fgz   = new wxFlexGridSizer(page.second.size());
-    fgz->AddGrowableCol(0);
-    add_items(panel, fgz, page.second, readonly);
-    panel->SetSizerAndFit(fgz);
+    auto*        panel = dynamic_cast<wxPanel*>(m_window);
+    data::layout layout(panel, page.second.size());
+    layout.sizer()->AddGrowableCol(0);
+    layout.is_readonly(readonly);
+    add_items(layout, page.second);
+    panel->SetSizerAndFit(layout.sizer());
   }
   else
   {
@@ -222,23 +407,19 @@ void wex::item::add_items(group_t& page, bool readonly)
   }
 }
 
-void wex::item::add_items(
-  wxWindow*          parent,
-  wxFlexGridSizer*   fgz,
-  std::vector<item>& v,
-  bool               readonly)
+void wex::item::add_items(data::layout& layout, std::vector<item>& v)
 {
-  wxFlexGridSizer* previous_item_sizer = nullptr;
+  wex::data::layout::sizer_t* previous_item_sizer = nullptr;
 
   for (int previous_type = -1; auto& item : v)
   {
-    // If this item has same type as previous type use previous sizer,
-    // otherwise use no sizer (layout will create a new one).
-    wxFlexGridSizer* current_item_sizer =
-      (item.type() == previous_type ? previous_item_sizer : nullptr);
+    // If this item has the same type as previous type use previous sizer,
+    // otherwise use no sizer (layout will create a new one)
+    // (see also item_template_dialog::layout).
+    layout.sizer_layout_create(
+      item.type() == previous_type ? previous_item_sizer : nullptr);
 
-    previous_item_sizer =
-      item.layout(parent, fgz, readonly, current_item_sizer);
+    previous_item_sizer = item.layout(layout);
 
     previous_type = item.type();
 
@@ -249,12 +430,9 @@ void wex::item::add_items(
       m_dialog->bind_button(item);
     }
 
-    if (
-      fgz->GetEffectiveRowsCount() >= 1 &&
-      !fgz->IsRowGrowable(fgz->GetEffectiveRowsCount() - 1) &&
-      item.is_row_growable())
+    if (item.is_row_growable())
     {
-      fgz->AddGrowableRow(fgz->GetEffectiveRowsCount() - 1);
+      layout.sizer_grow_row();
     }
   }
 }
@@ -372,9 +550,9 @@ const std::any wex::item::get_value() const
           break;
 
         case TEXTCTRL_FLOAT:
-          if (const auto v = (reinterpret_cast<wxTextCtrl*>(m_window))
-                               ->GetValue()
-                               .ToStdString();
+          if (const auto& v = (reinterpret_cast<wxTextCtrl*>(m_window))
+                                ->GetValue()
+                                .ToStdString();
               !v.empty())
           {
             any = std::stod(v);
@@ -386,12 +564,14 @@ const std::any wex::item::get_value() const
           break;
 
         case TEXTCTRL_INT:
-          if (const auto v = (reinterpret_cast<wxTextCtrl*>(m_window))
-                               ->GetValue()
-                               .ToStdString();
+          if (const auto& v = (reinterpret_cast<wxTextCtrl*>(m_window))
+                                ->GetValue()
+                                .ToStdString();
               !v.empty())
           {
-            any = std::stol(v);
+            long val = 0; // value if from_chars has ec
+            std::from_chars(v.data(), v.data() + v.size(), val);
+            any = val;
           }
           else
           {
@@ -443,43 +623,39 @@ bool wex::item::is_notebook() const
   return m_type >= NOTEBOOK && m_type <= NOTEBOOK_WEX;
 }
 
-wxFlexGridSizer* wex::item::layout(
-  wxWindow*        parent,
-  wxSizer*         sizer,
-  bool             readonly,
-  wxFlexGridSizer* fgz)
+wex::data::layout::sizer_t* wex::item::layout(data::layout& layout)
 {
-  assert(sizer != nullptr);
+  assert(layout.sizer() != nullptr);
 
   try
   {
-    if (!create_window(parent, readonly))
+    if (!create_window(layout.parent(), layout.is_readonly()))
     {
       return nullptr;
     }
 
-    wxFlexGridSizer* return_sizer = nullptr;
+    wex::data::layout::sizer_t* return_sizer = nullptr;
 
     switch (m_type)
     {
       case COMBOBOX_DIR:
       case COMBOBOX_FILE:
-        return_sizer = add_browse_button(sizer);
+        return_sizer = add_browse_button(layout.sizer());
         break;
 
       case EMPTY:
-        return fgz;
+        return layout.sizer_layout();
 
       case SPACER:
-        sizer->AddSpacer(m_data.window().style());
-        return fgz;
+        layout.sizer()->AddSpacer(m_data.window().style());
+        return layout.sizer_layout();
 
       case GROUP:
       case STATICBOX:
       {
         auto group(std::any_cast<group_t>(m_data.initial()));
-        return_sizer = add(sizer, fgz);
-        add_items(group, readonly);
+        return_sizer = add(layout);
+        add_items(group, layout.is_readonly());
       }
       break;
 
@@ -495,12 +671,12 @@ wxFlexGridSizer* wex::item::layout(
           auto* bookctrl = reinterpret_cast<wxBookCtrlBase*>(m_window);
           bookctrl->SetName("book-" + m_label_window);
 
-          return_sizer = add(sizer, fgz);
+          return_sizer = add(layout);
 
           // Add all pages and recursive layout the subitems.
           for (auto& page : std::any_cast<notebook_t>(m_data.initial()))
           {
-            add_items(page, readonly);
+            add_items(page, layout.is_readonly());
           }
 
           if (!wxPersistenceManager::Get().RegisterAndRestore(bookctrl))
@@ -514,7 +690,7 @@ wxFlexGridSizer* wex::item::layout(
         }
         else
         {
-          return_sizer = add(sizer, fgz);
+          return_sizer = add(layout);
         }
     }
 

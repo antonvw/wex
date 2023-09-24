@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-vi.cpp
+// Name:      stc/test-vi.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021-2023 Anton van Wezenbeek
@@ -12,18 +12,9 @@
 #include <wex/ex/ex-stream.h>
 #include <wex/ex/util.h>
 #include <wex/ui/frd.h>
-#include <wex/vi/vi.h>
 
+#include "../vi/test.h"
 #include "test.h"
-
-void change_mode(
-  wex::vi*              vi,
-  const std::string&    command,
-  wex::vi_mode::state_t mode)
-{
-  REQUIRE(vi->command(command));
-  REQUIRE(vi->mode().get() == mode);
-}
 
 void create_file()
 {
@@ -43,9 +34,48 @@ wex::file open_file()
 
 TEST_CASE("wex::vi")
 {
-  auto* stc = get_stc();
-  auto* vi  = &get_stc()->get_vi();
+  auto* stc = new wex::stc();
+  frame()->pane_add(stc);
+  auto* vi = &stc->get_vi();
   stc->set_text("");
+
+  SUBCASE("change")
+  {
+    stc->set_text("aaaaa\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");
+    auto* vi = &stc->get_vi();
+
+    SUBCASE("normal")
+    {
+      vi->command("ce");
+      vi->command("OK");
+      REQUIRE(
+        stc->get_text() == "OK\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");
+    }
+
+    SUBCASE("selection")
+    {
+      vi->command("v");
+      vi->command("w");
+      change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
+      REQUIRE(stc->get_selected_text() == "aaaaa");
+
+      vi->command("c");
+      REQUIRE(vi->mode().get() == wex::vi_mode::INSERT);
+      vi->command("OK");
+      REQUIRE(
+        stc->get_text() == "OK\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");
+    }
+
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
+  }
+
+  SUBCASE("enter")
+  {
+    stc->set_text("aaaaa\nbbbbb\nccccc\n");
+
+    REQUIRE(vi->command("j\n"));
+    REQUIRE(stc->get_text() == "aaaaa\nbbbbb\nccccc\n");
+  }
 
   SUBCASE("find")
   {
@@ -87,6 +117,52 @@ TEST_CASE("wex::vi")
     }
   }
 
+  SUBCASE("navigate")
+  {
+    stc->set_text("{a brace and a close brace}");
+
+    SUBCASE("brace")
+    {
+      REQUIRE(vi->command("%"));
+      REQUIRE(stc->GetCurrentPos() == 26);
+      REQUIRE(vi->command("%"));
+      REQUIRE(stc->GetCurrentPos() == 0);
+    }
+
+    SUBCASE("brace-visual")
+    {
+      REQUIRE(vi->command("y%"));
+      REQUIRE(stc->GetSelectedText().size() == 27);
+    }
+
+    SUBCASE("delete")
+    {
+      REQUIRE(vi->command(wex::k_s(WXK_DELETE)));
+      REQUIRE(stc->get_text().starts_with("a brace"));
+    }
+  }
+
+  SUBCASE("number")
+  {
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
+    wxKeyEvent event(wxEVT_CHAR);
+    event.m_keyCode = WXK_CONTROL_J;
+    event.m_uniChar = WXK_CONTROL_J;
+    event.SetRawControlDown(true);
+
+    for (const auto& number :
+         std::vector<std::string>{"101", "0xf7", "077", "-99"})
+    {
+      stc->set_text("number: " + number);
+      vi->command("gg");
+      vi->command("2w");
+      REQUIRE(vi->on_key_down(event));
+      REQUIRE(!vi->on_char(event));
+      CAPTURE(number);
+      REQUIRE(!stc->get_text().contains(number));
+    }
+  }
+
   SUBCASE("on_char")
   {
     wxKeyEvent event(wxEVT_CHAR);
@@ -105,6 +181,23 @@ TEST_CASE("wex::vi")
 
     change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     REQUIRE(vi->inserted_text().contains(vi->get_stc()->eol()));
+  }
+
+  SUBCASE("put-block")
+  {
+    stc->set_text("XXXXX\nYYYYY  \nZZZZZ\n");
+
+    REQUIRE(vi->command("K"));
+    REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL_BLOCK);
+    REQUIRE(vi->command("j"));
+    REQUIRE(vi->command("j"));
+    REQUIRE(vi->command(" "));
+    REQUIRE(vi->command("y"));
+    REQUIRE(vi->mode().get() == wex::vi_mode::state_t::COMMAND);
+    REQUIRE(vi->command("h"));
+    REQUIRE(vi->command("p"));
+
+    REQUIRE(stc->get_text() == "XXXXXX\nYYYYYY  \nZZZZZZ\n");
   }
 
   SUBCASE("registers")
@@ -260,11 +353,7 @@ TEST_CASE("wex::vi")
   {
     stc->set_text("this text contains xx");
 
-    for (const auto& visual :
-         std::vector<std::pair<std::string, wex::vi_mode::state_t>>{
-           {"v", wex::vi_mode::state_t::VISUAL},
-           {"V", wex::vi_mode::state_t::VISUAL_LINE},
-           {"K", wex::vi_mode::state_t::VISUAL_BLOCK}})
+    for (const auto& visual : visuals())
     {
       wxKeyEvent event(wxEVT_CHAR);
       change_mode(vi, visual.first, visual.second);
@@ -312,21 +401,6 @@ TEST_CASE("wex::vi")
       event.m_uniChar = control_key;
       REQUIRE(vi->on_key_down(event));
       REQUIRE(!vi->on_char(event));
-    }
-
-    // Test change number.
-    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
-    event.m_uniChar = WXK_CONTROL_J;
-    for (const auto& number :
-         std::vector<std::string>{"101", "0xf7", "077", "-99"})
-    {
-      stc->set_text("number: " + number);
-      vi->command("gg");
-      vi->command("2w");
-      REQUIRE(vi->on_key_down(event));
-      REQUIRE(!vi->on_char(event));
-      CAPTURE(number);
-      REQUIRE(!stc->get_text().contains(number));
     }
 
     // Test navigate command keys.

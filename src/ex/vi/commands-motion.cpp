@@ -2,7 +2,7 @@
 // Name:      commands-motion.cpp
 // Purpose:   Implementation of wex::vi::commands_motion
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -15,6 +15,7 @@
 #include <wex/ui/frd.h>
 #include <wex/vi/vi.h>
 
+#include "util.h"
 #include "vim.h"
 
 namespace wex
@@ -294,7 +295,7 @@ wex::vi::commands_t wex::vi::commands_motion()
     {"%",
      [&](const std::string& command)
      {
-       int pos = get_stc()->GetCurrentPos();
+       int  pos         = get_stc()->GetCurrentPos();
        auto brace_match = get_stc()->BraceMatch(pos);
 
        if (brace_match == wxSTC_INVALID_POSITION)
@@ -346,9 +347,14 @@ wex::vi::commands_t wex::vi::commands_motion()
          return (size_t)1;
        }
      }},
-    {"\r_",
+    {"\n\r_",
      [&](const std::string& command)
      {
+       if (command.front() == '\n' && m_control_down)
+       {
+         return 0;
+       }
+
        get_stc()->Home();
        if (command.front() == '_')
          m_count--;
@@ -490,7 +496,7 @@ size_t wex::vi::find_command(const std::string& command)
       return command.size();
     }
 
-    // This is a previous entered command.
+    // This is a previously entered command.
     // The trim is to enable find after -E option in
     // syncped.
     const auto text(
@@ -550,7 +556,16 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
     }
     else if (type == motion_t::DEL || type == motion_t::CHANGE)
     {
-      return addressrange(this, m_count).erase();
+      const auto result(addressrange(this, m_count).erase());
+
+      if (result && type == motion_t::CHANGE)
+      {
+        std::string insert("i");
+        m_mode.transition(insert);
+      }
+
+      command.clear();
+      return result;
     }
   }
 
@@ -731,6 +746,8 @@ void wex::vi::visual_extend(int begin_pos, int end_pos) const
 
     default:
       get_stc()->SetCurrentPos(end_pos);
+      get_stc()
+        ->SelectNone(); // apparently previous call selects to the new pos ..
       break;
   }
 }

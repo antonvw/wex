@@ -2,7 +2,7 @@
 // Name:      stc/bind-other.cpp
 // Purpose:   Implementation of class wex::stc method bind_other
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -177,7 +177,7 @@ void wex::stc::bind_other()
     wxEVT_FIND_REPLACE,
     [=, this](wxFindDialogEvent& event)
     {
-      replace_next(false);
+      replace_next(true);
     });
 
   Bind(

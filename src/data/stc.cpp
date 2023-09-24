@@ -2,7 +2,7 @@
 // Name:      data/stc.cpp
 // Purpose:   Implementation of wex::data::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2022 Anton van Wezenbeek
+// Copyright: (c) 2017-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -11,49 +11,16 @@
 #include <wex/syntax/indicator.h>
 #include <wex/syntax/stc.h>
 
-wex::data::stc::stc(wex::syntax::stc* stc)
-  : m_stc(stc)
-{
-}
+wex::data::stc::stc() {}
 
-wex::data::stc::stc(wex::syntax::stc* stc, const data::stc& r)
-  : m_stc(stc)
-{
-  *this = r;
-  m_stc = stc;
-}
-
-wex::data::stc::stc(const data::control& data, wex::syntax::stc* stc)
+wex::data::stc::stc(const data::control& data)
   : m_data(data)
-  , m_stc(stc)
 {
 }
 
-wex::data::stc::stc(const data::window& data, wex::syntax::stc* stc)
+wex::data::stc::stc(const data::window& data)
   : m_data(data::control().window(data))
-  , m_stc(stc)
 {
-}
-
-wex::data::stc& wex::data::stc::operator=(const data::stc& r)
-{
-  if (this != &r)
-  {
-    m_data         = r.m_data;
-    m_event_data   = r.m_event_data;
-    m_indicator_no = r.m_indicator_no;
-    m_head_path    = r.m_head_path;
-    m_menu_flags   = r.m_menu_flags;
-    m_recent       = r.m_recent;
-    m_win_flags    = r.m_win_flags;
-
-    if (m_stc != nullptr && r.m_stc != nullptr)
-    {
-      m_stc = r.m_stc;
-    }
-  }
-
-  return *this;
 }
 
 wex::data::stc&
@@ -106,6 +73,7 @@ bool wex::data::stc::inject() const
     (m_stc->path().file_exists() && m_stc->path().is_readonly()))
   {
     m_stc->SetReadOnly(true);
+    m_stc->properties_message();
     injected = true;
   }
 
@@ -166,7 +134,7 @@ bool wex::data::stc::inject_col() const
 
 bool wex::data::stc::inject_command() const
 {
-  return m_stc->vi_command(m_data.command());
+  return m_stc->vi_command(m_data);
 }
 
 bool wex::data::stc::inject_find() const
@@ -269,7 +237,7 @@ void wex::data::stc::event_data::set(syntax::stc* s, bool synced)
   // Synchronizing by appending only new data only works for log files.
   // Other kind of files might get new data anywhere inside the file,
   // we cannot sync that by keeping pos.
-  // Also only do it for reasonably large files.
+  // Also, only do it for reasonably large files.
   const bool is_log = (s->path().extension().starts_with(".log"));
   m_synced          = synced;
   m_synced_log      = synced && is_log && s->GetTextLength() > 1024;

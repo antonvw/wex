@@ -2,7 +2,7 @@
 // Name:      ctags.h
 // Purpose:   Declaration of class wex::ctags
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -87,9 +87,12 @@ public:
     const ctags_entry& filter = ctags_entry());
 
   /// Separator used by auto_complete.
-  auto separator() const { return m_separator; }
+  int separator() const { return m_separator; }
 
 private:
+  /// Type for ctags, cannot be unordered, as we have a previous.
+  typedef std::map<std::string, ctags_info> ctags_t;
+
   void        auto_complete_prepare();
   static bool do_open(const std::string& path);
   static bool find_exit(const std::string& tag, factory::stc* stc);
@@ -99,8 +102,8 @@ private:
   const int     m_separator{3};
   bool          m_is_prepared{false};
 
-  static inline tagFile*                             m_file = nullptr;
-  static std::map<std::string, ctags_info>           m_matches;
-  static std::map<std::string, ctags_info>::iterator m_iterator;
+  static inline tagFile*   m_file = nullptr;
+  static ctags_t           m_matches;
+  static ctags_t::iterator m_iterator;
 };
 }; // namespace wex
