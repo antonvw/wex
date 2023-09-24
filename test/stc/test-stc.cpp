@@ -2,8 +2,10 @@
 // Name:      test-stc.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
+
+#include <thread>
 
 #include <wex/core/config.h>
 #include <wex/factory/defs.h>
@@ -45,6 +47,16 @@ TEST_CASE("wex::stc")
     REQUIRE(stc->data().flags() == 0);
     const auto& buffer = stc->get_text();
     REQUIRE(buffer.length() == 40);
+  }
+
+  SUBCASE("clear")
+  {
+    stc->SetText("added text");
+    wxPostEvent(stc, wxCommandEvent(wxEVT_MENU, wxID_CLEAR));
+    wxTheApp->ProcessPendingEvents();
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+    REQUIRE(stc->get_text().empty());
   }
 
   SUBCASE("config_dialog")

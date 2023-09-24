@@ -221,7 +221,6 @@ TEST_CASE("wex::frame")
     {
       wxCommandEvent event(wxEVT_MENU, id);
       wxPostEvent(frame(), event);
-      wxPostEvent(frame(), event);
     }
 #endif
   }
