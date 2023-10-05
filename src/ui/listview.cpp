@@ -697,7 +697,7 @@ bool wex::listview::insert_item(
         switch (m_columns[no].type())
         {
           case column::DATE:
-            if (const auto& [r, t] = chrono().get_time(col); !r)
+            if (const auto& r(chrono().get_time(col)); !r)
               return false;
             break;
 
@@ -1248,13 +1248,13 @@ int wxCALLBACK compare_cb(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData)
   {
     case wex::column::DATE:
     {
-      const auto& [r1, t1] = wex::chrono().get_time(str1);
-      const auto& [r2, t2] = wex::chrono().get_time(str2);
-      if (!r1 || !r2)
+      const auto& t1(wex::chrono().get_time(str1));
+      const auto& t2(wex::chrono().get_time(str2));
+      if (!t1 || !t2)
         return 0;
 
-      return ascending ? wex::compare((unsigned long)t1, (unsigned long)t2) :
-                         wex::compare((unsigned long)t2, (unsigned long)t1);
+      return ascending ? wex::compare((unsigned long)*t1, (unsigned long)*t2) :
+                         wex::compare((unsigned long)*t2, (unsigned long)*t1);
     }
 
     case wex::column::FLOAT:
@@ -1297,7 +1297,7 @@ bool wex::listview::set_item(
     switch (m_columns[column].type())
     {
       case column::DATE:
-        if (const auto& [r, t] = chrono().get_time(text); !r)
+        if (const auto& r(chrono().get_time(text)); !r)
           return false;
         break;
 

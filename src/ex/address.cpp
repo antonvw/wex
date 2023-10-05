@@ -238,19 +238,23 @@ int wex::address::get_line(int start_pos) const
     return result;
   }
   // Try address calculation.
-  else if (const auto sum = m_ex->calculator(m_address); sum < 0)
+  else if (const auto& sum(m_ex->calculator(m_address)); !sum)
+  {
+    return 0;
+  }
+  else if (*sum < 0)
   {
     return 1;
   }
-  else if (sum > m_ex->get_stc()->get_line_count())
+  else if (*sum > m_ex->get_stc()->get_line_count())
   {
     return m_ex->get_stc()->get_line_count() == LINE_COUNT_UNKNOWN ?
-             sum :
+             *sum :
              m_ex->get_stc()->get_line_count();
   }
   else
   {
-    return sum;
+    return *sum;
   }
 }
 

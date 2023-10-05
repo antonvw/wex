@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## 24.04 - 2024-04-01 [Unreleased]
 
+### Changed
+
+- std::optional is used to return values at several places
+
 ## 23.10 - 2023-10-08
 
 ### Added
@@ -26,6 +30,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - added wex::ex_stream::stream argument line size and increased default value
 
 ### Fixed
+
 - possible crash in lisview sorting
 - ctags::find and empty tag finds next tag
 - rectangular paste

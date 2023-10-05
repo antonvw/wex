@@ -182,9 +182,9 @@ void wex::ex_commandline_imp::on_key_down_tab()
     path::current(m_cl->stc()->path().data().parent_path());
   }
 
-  if (const auto& [r, e, v] = auto_complete_filename(get_text()); r)
+  if (const auto& r(auto_complete_filename(get_text())); r)
   {
-    append_text(e);
+    append_text(r->expansion);
     DocumentEnd();
   }
 }

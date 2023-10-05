@@ -11,6 +11,7 @@
 #include <wex/syntax/marker.h>
 #include <wex/ui/debug-entry.h>
 
+#include <optional>
 #include <string>
 #include <tuple>
 #include <unordered_map>
@@ -81,7 +82,7 @@ private:
 
   bool clear_breakpoints(const std::string& text);
 
-  std::tuple<bool, std::string> get_args(const std::string& command, stc* stc);
+  std::optional<std::string> get_args(const std::string& command, stc* stc);
 
   path complete_path(const std::string& text) const;
   void is_finished();

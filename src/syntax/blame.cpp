@@ -72,10 +72,10 @@ wex::blame::margin_style_t wex::blame::get_style(const std::string& text) const
     return style;
   }
 
-  if (const auto& [r, t] = chrono(m_date_format).get_time(text); r)
+  if (const auto& r(chrono(m_date_format).get_time(text)); r)
   {
     const time_t now               = time(nullptr);
-    const auto   dt                = difftime(now, t);
+    const auto   dt                = difftime(now, *r);
     const int    seconds           = 1;
     const int    seconds_in_minute = 60 * seconds;
     const int    seconds_in_hour   = 60 * seconds_in_minute;
@@ -176,7 +176,7 @@ bool wex::blame::parse_compact(const std::string& line, const regex& r)
   m_skip_info = false;
   m_path.clear(); // not present in svn blame
   m_style = get_style(r[2]);
-  m_line_no++;    // not present in svn blame
+  m_line_no++; // not present in svn blame
   m_line_text = r[3];
 
   if (m_line_no < 5)
