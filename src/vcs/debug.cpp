@@ -189,7 +189,7 @@ wex::path wex::debug::complete_path(const std::string& text) const
 
 bool wex::debug::execute(const std::string& action, wex::stc* stc)
 {
-  if (const auto& [r, args] = get_args(action, stc); !r)
+  if (const auto& r(get_args(action, stc)); !r)
   {
     return false;
   }
@@ -200,7 +200,7 @@ bool wex::debug::execute(const std::string& action, wex::stc* stc)
                           std::string(1, ' ') + m_entry.flags() :
                           std::string()));
 
-    log::trace("debug exe") << exe << args;
+    log::trace("debug exe") << exe << *r;
 
     if (
       m_process == nullptr &&
@@ -216,13 +216,13 @@ bool wex::debug::execute(const std::string& action, wex::stc* stc)
       return false;
     }
 
-    if (regex v(" +([a-zA-Z0-9_./-]*)"); v.search(args) == 1)
+    if (regex v(" +([a-zA-Z0-9_./-]*)"); v.search(*r) == 1)
     {
       m_path = path(v[0]);
     }
 
     return m_process->write(
-      action == "interrupt" ? std::string(1, 3) : action + args);
+      action == "interrupt" ? std::string(1, 3) : action + *r);
   }
 }
 
@@ -232,7 +232,7 @@ bool wex::debug::execute(int item, stc* stc)
          execute(m_entry.get_commands().at(item).get_command(), stc);
 };
 
-std::tuple<bool, std::string>
+std::optional<std::string>
 wex::debug::get_args(const std::string& command, stc* stc)
 {
   std::string args;
@@ -245,7 +245,7 @@ wex::debug::get_args(const std::string& command, stc* stc)
           std::from_chars(v[1].data(), v[1].data() + v[1].size(), result).ec !=
           std::errc())
       {
-        return {false, args};
+        return {};
       }
 
       args = command;
@@ -299,13 +299,15 @@ wex::debug::get_args(const std::string& command, stc* stc)
       }
 #endif
     }
-    return {m_dialog->ShowModal() != wxID_CANCEL, args};
+    return m_dialog->ShowModal() == wxID_CANCEL ?
+             std::nullopt :
+             std::optional<std::string>{args};
   }
   else if (regex r("^(b|break)"); r.search(command) == 1)
   {
     if (stc == nullptr)
     {
-      return {false, args};
+      return {};
     }
 
     args += " " + stc->path().string() + ":" +
@@ -315,7 +317,7 @@ wex::debug::get_args(const std::string& command, stc* stc)
   {
     if (stc == nullptr)
     {
-      return {false, args};
+      return {};
     }
 
     for (auto& it : m_breakpoints)
@@ -340,22 +342,22 @@ wex::debug::get_args(const std::string& command, stc* stc)
   }
   else if (command == "file")
   {
-    return {
-      item_dialog(
-        {{_("debug.File"),
-          item::COMBOBOX_FILE,
-          std::any(),
-          data::item(data::control().is_required(true))
-            .apply(
-              [&](wxWindow* user, const std::any& value, bool save)
-              {
-                if (save)
-                  args += " " + std::any_cast<wxArrayString>(value)[0];
-              })},
-         {"debug." + m_entry.name(), item::FILEPICKERCTRL}},
-        data::window().title(_("Debug")).parent(m_frame))
-          .ShowModal() != wxID_CANCEL,
-      args};
+    return item_dialog(
+             {{_("debug.File"),
+               item::COMBOBOX_FILE,
+               std::any(),
+               data::item(data::control().is_required(true))
+                 .apply(
+                   [&](wxWindow* user, const std::any& value, bool save)
+                   {
+                     if (save)
+                       args += " " + std::any_cast<wxArrayString>(value)[0];
+                   })},
+              {"debug." + m_entry.name(), item::FILEPICKERCTRL}},
+             data::window().title(_("Debug")).parent(m_frame))
+                 .ShowModal() != wxID_CANCEL ?
+             std::optional<std::string>{args} :
+             std::nullopt;
   }
   else if (regex r("^(p|print)"); r.search(command) == 1)
   {
@@ -370,7 +372,7 @@ wex::debug::get_args(const std::string& command, stc* stc)
     args += " " + std::to_string(stc->get_current_line());
   }
 
-  return {true, args};
+  return {args};
 }
 
 bool wex::debug::is_active() const

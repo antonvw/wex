@@ -19,15 +19,15 @@ TEST_CASE("wex::util" * doctest::may_fail())
 
   SUBCASE("auto_complete_filename")
   {
-    REQUIRE(std::get<0>(wex::auto_complete_filename("te")));
-    REQUIRE(std::get<1>(wex::auto_complete_filename("te")) == "st");
-    REQUIRE(!std::get<0>(wex::auto_complete_filename("XX")));
+    REQUIRE(wex::auto_complete_filename("te"));
+    REQUIRE(wex::auto_complete_filename("te")->expansion == "st");
+    REQUIRE(!wex::auto_complete_filename("XX"));
 
 #ifdef __UNIX__
-    REQUIRE(std::get<0>(wex::auto_complete_filename("/usr/local/l")));
+    REQUIRE(wex::auto_complete_filename("/usr/local/l"));
 
     // we are in wex/test/data
-    REQUIRE(std::get<0>(wex::auto_complete_filename("../../src/v")));
+    REQUIRE(wex::auto_complete_filename("../../src/v"));
 #endif
   }
 

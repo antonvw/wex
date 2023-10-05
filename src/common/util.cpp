@@ -62,7 +62,7 @@ bool wex::open_file_dir::on_file(const wex::path& file) const
   return true;
 }
 
-std::tuple<bool, const std::string, const std::vector<std::string>>
+std::optional<wex::auto_complete_filename_t>
 wex::auto_complete_filename(const std::string& text)
 {
   // E.g.:
@@ -82,6 +82,8 @@ wex::auto_complete_filename(const std::string& text)
     path.make_absolute();
   }
 
+  auto_complete_filename_t out;
+
   // alias to filename
   const auto& prefix(path.filename());
 
@@ -95,7 +97,7 @@ wex::auto_complete_filename(const std::string& text)
 
   if (v.empty())
   {
-    return {false, std::string(), v};
+    return {};
   }
   else if (v.size() > 1)
   {
@@ -127,11 +129,12 @@ wex::auto_complete_filename(const std::string& text)
         return a.empty() ? b : a + " " + b;
       });
 
-    return {true, v[0].substr(prefix.size(), rest_equal_size), v};
+    return {
+      auto_complete_filename_t(v[0].substr(prefix.size(), rest_equal_size), v)};
   }
   else
   {
-    return {true, v[0].substr(prefix.size()), v};
+    return {auto_complete_filename_t(v[0].substr(prefix.size()), v)};
   }
 }
 

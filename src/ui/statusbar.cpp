@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <map>
+#include <optional>
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
@@ -110,6 +111,45 @@ std::vector<item> pane_dialog_items(const std::vector<statusbar_pane>& panes)
 
   return v_i;
 }
+
+// The first pane is shown_pane_no, or FIELD_NOT_SHOWN if the pane is not
+// shown, to be used as index in wxwidgets panes. The second pane the pane_no as
+// index in the panes vector.
+typedef struct
+{
+  int shown_no;
+  int no;
+} pane_info_t;
+
+std::optional<pane_info_t>
+pane_info(const std::vector<statusbar_pane>& panes, const std::string& pane)
+{
+  const std::string use_pane = pane.empty() ? "PaneText" : pane;
+
+  for (int pane_no = 0, shown_pane_no = 0; const auto& it : panes)
+  {
+    if (it.is_shown())
+    {
+      if (it.name() == use_pane)
+      {
+        return pane_info_t{shown_pane_no, pane_no};
+      }
+
+      shown_pane_no++;
+    }
+    else
+    {
+      if (it.name() == use_pane)
+      {
+        return pane_info_t{FIELD_NOT_SHOWN, pane_no};
+      }
+    }
+
+    pane_no++;
+  }
+
+  return {};
+}
 } // namespace wex
 
 std::vector<wex::statusbar_pane> wex::statusbar::m_panes = {{}};
@@ -132,12 +172,12 @@ wex::statusbar::statusbar(factory::frame* parent, const data::window& data)
 
 const std::string wex::statusbar::get_statustext(const std::string& pane) const
 {
-  const auto& [res, shown_pane_no, pane_no] = pane_info(pane);
-  return !res || shown_pane_no == FIELD_NOT_SHOWN ?
+  const auto& r(pane_info(m_panes, pane));
+  return !r || r->shown_no == FIELD_NOT_SHOWN ?
            // Do not show error, as you might explicitly want to ignore
            // messages.
            std::string() :
-           GetStatusText(shown_pane_no).ToStdString();
+           GetStatusText(r->shown_no).ToStdString();
 }
 
 void wex::statusbar::handle(wxMouseEvent& event, const statusbar_pane& pane)
@@ -225,40 +265,6 @@ void wex::statusbar::pane_dialog()
 
     setup(m_frame, v_p);
   }
-}
-
-// Returns a tuple with first pane true if the specified pane exists.
-// The second pane is shown_pane_no, or FIELD_NOT_SHOWN if the pane is not
-// shown, to be used as index in wxwidgets panes. The third pane the pane_no as
-// index in the panes vector.
-std::tuple<bool, int, int>
-wex::statusbar::pane_info(const std::string& pane) const
-{
-  const std::string use_pane = pane.empty() ? "PaneText" : pane;
-
-  for (int pane_no = 0, shown_pane_no = 0; const auto& it : m_panes)
-  {
-    if (it.is_shown())
-    {
-      if (it.name() == use_pane)
-      {
-        return {true, shown_pane_no, pane_no};
-      }
-
-      shown_pane_no++;
-    }
-    else
-    {
-      if (it.name() == use_pane)
-      {
-        return {true, FIELD_NOT_SHOWN, pane_no};
-      }
-    }
-
-    pane_no++;
-  }
-
-  return {false, 0, 0};
 }
 
 bool wex::statusbar::pane_show(const std::string& pane, bool show)
@@ -351,23 +357,23 @@ bool wex::statusbar::set_statustext(
   const std::string& text,
   const std::string& pane)
 {
-  if (const auto& [res, shown_pane_no, pane_no] = pane_info(pane); !res)
+  if (const auto& r(pane_info(m_panes, pane)); !r)
   {
     // Do not show error, as you might explicitly want to ignore messages.
     return false;
   }
-  else if (shown_pane_no == FIELD_NOT_SHOWN)
+  else if (r->shown_no == FIELD_NOT_SHOWN)
   {
-    m_panes[pane_no].hidden_text(text);
+    m_panes[r->no].hidden_text(text);
     return false;
   }
   else
   {
-    m_panes[pane_no].SetText(text);
+    m_panes[r->no].SetText(text);
 
     // wxStatusBar checks whether new text differs from current,
     // and does nothing if the same to avoid flicker.
-    SetStatusText(text, shown_pane_no);
+    SetStatusText(text, r->shown_no);
     return true;
   }
 }

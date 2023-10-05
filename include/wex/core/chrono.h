@@ -8,8 +8,8 @@
 #pragma once
 
 #include <chrono>
+#include <optional>
 #include <string>
-#include <utility>
 
 namespace wex
 {
@@ -45,12 +45,7 @@ public:
   get_time(const std::chrono::time_point<std::chrono::system_clock>& tp) const;
 
   /// Returns time_t for a time string.
-  std::pair<
-    /// true if time string could be converted into time_t
-    bool,
-    /// the converted time
-    time_t>
-  get_time(const std::string& time) const;
+  std::optional<time_t> get_time(const std::string& time) const;
 
 private:
   const std::string m_format;

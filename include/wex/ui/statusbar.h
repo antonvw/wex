@@ -11,7 +11,6 @@
 #include <wex/ui/statusbar-pane.h>
 #include <wx/statusbr.h>
 
-#include <tuple>
 #include <vector>
 
 namespace wex
@@ -80,8 +79,6 @@ private:
   void handle(wxMouseEvent& event, const statusbar_pane& statusbar_pane);
   void on_mouse(wxMouseEvent& event);
   void pane_dialog();
-
-  std::tuple<bool, int, int> pane_info(const std::string& pane) const;
 
   factory::frame* m_frame;
 

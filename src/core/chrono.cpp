@@ -113,7 +113,7 @@ std::string wex::chrono::get_time(
   return get_time(time_point_to_timespec(tp));
 }
 
-std::pair<bool, time_t> wex::chrono::get_time(const std::string& text) const
+std::optional<time_t> wex::chrono::get_time(const std::string& text) const
 {
   std::tm           tm = {0};
   std::stringstream ss(text);
@@ -122,10 +122,10 @@ std::pair<bool, time_t> wex::chrono::get_time(const std::string& text) const
 
   if (ss.fail())
   {
-    return {false, 0};
+    return {};
   }
 
   const time_t t(mktime(&tm));
 
-  return {t != -1, t};
+  return t != -1 ? std::optional<time_t>{t} : std::nullopt;
 }

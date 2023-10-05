@@ -14,8 +14,8 @@ TEST_CASE("wex::chrono")
 
   SUBCASE("string")
   {
-    REQUIRE(std::get<0>(chrono.get_time("2019-02-01 12:20:06")));
-    REQUIRE(!std::get<0>(chrono.get_time("201902-01 12:20:06")));
+    REQUIRE(chrono.get_time("2019-02-01 12:20:06"));
+    REQUIRE(!chrono.get_time("201902-01 12:20:06"));
   }
 
   SUBCASE("time_t")

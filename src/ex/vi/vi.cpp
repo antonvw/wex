@@ -203,23 +203,24 @@ void wex::vi::command_reg(const std::string& reg)
         }
         else
         {
-          const auto sum = calculator(reg.substr(2));
-
-          if (m_mode.is_insert())
+          if (const auto& sum(calculator(reg.substr(2))); sum)
           {
-            if (m_last_command.contains('c'))
+            if (m_mode.is_insert())
             {
-              get_stc()->ReplaceSelection(wxEmptyString);
+              if (m_last_command.contains('c'))
+              {
+                get_stc()->ReplaceSelection(wxEmptyString);
+              }
+
+              get_stc()->add_text(std::to_string(*sum));
+
+              append_insert_command(reg);
             }
-
-            get_stc()->add_text(std::to_string(sum));
-
-            append_insert_command(reg);
-          }
-          else
-          {
-            set_register_yank(std::to_string(sum));
-            frame()->show_ex_message(std::to_string(sum));
+            else
+            {
+              set_register_yank(std::to_string(*sum));
+              frame()->show_ex_message(std::to_string(*sum));
+            }
           }
         }
       }

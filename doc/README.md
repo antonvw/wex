@@ -329,6 +329,16 @@ bool wex::global_env::for_each(const block_lines& match) const
 ```
 
 ```cpp
+  std::optional (c++17)
+```
+
+  See e.g. chrono.h:
+
+```cpp
+  std::optional<time_t> get_time(const std::string& time) const;
+```
+
+```cpp
   std::to_underlying (c++23)
 ```
 

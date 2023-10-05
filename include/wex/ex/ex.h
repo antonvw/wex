@@ -15,6 +15,7 @@
 #include <wex/syntax/marker.h>
 
 #include <functional>
+#include <optional>
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -93,7 +94,7 @@ public:
   /// Other methods.
 
   /// Returns calculated value of text.
-  int calculator(const std::string& text);
+  std::optional<int> calculator(const std::string& text);
 
   /// Copies data from other component.
   void copy(const ex* ex);

@@ -65,13 +65,14 @@ bool wex::ex::auto_write()
   return true;
 }
 
-int wex::ex::calculator(const std::string& text)
+std::optional<int> wex::ex::calculator(const std::string& text)
 {
-  const auto& [val, err] = evaluator().eval(this, text);
+  const auto& val(evaluator().eval(this, text));
 
-  if (!err.empty())
+  // e.g. in case text is empty there is no error
+  if (!val && !evaluator::error().empty())
   {
-    show_dialog("Calculate Error", err);
+    show_dialog("Calculate Error", evaluator::error());
   }
 
   return val;

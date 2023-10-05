@@ -2,7 +2,7 @@
 // Name:      shell.cpp
 // Purpose:   Implementation of class wex::shell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -204,16 +204,16 @@ void wex::shell::expand()
 
     AutoCompCancel();
   }
-  else if (const auto [r, e, v] = auto_complete_filename(m_command); r)
+  else if (const auto t = auto_complete_filename(m_command); t)
   {
-    if (v.size() > 1)
+    if (t->vector.size() > 1)
     {
-      m_auto_complete_list = v;
+      m_auto_complete_list = t->vector;
       AutoCompShow(
         prefix.length(),
         std::accumulate(
-          v.begin(),
-          v.end(),
+          t->vector.begin(),
+          t->vector.end(),
           std::string(),
           [&](const std::string& a, const std::string& b)
           {
@@ -224,7 +224,7 @@ void wex::shell::expand()
     }
     else
     {
-      expansion = e;
+      expansion = t->expansion;
     }
   }
 

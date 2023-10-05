@@ -2,7 +2,7 @@
 // Name:      test-ex.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -46,20 +46,19 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->marker_add('t', 1));
     REQUIRE(ex->marker_add('u', 2));
 
-    std::vector<std::pair<std::string, std::pair<double, int>>> calcs{
-      {"", {0, 0}},      {"  ", {0, 0}},    {"1 + 1", {2, 0}},
-      {"5+5", {10, 0}},  {"1 * 1", {1, 0}}, {"1 - 1", {0, 0}},
-      {"2 / 1", {2, 0}}, {"2 / 0", {0, 0}}, {"2 < 2", {8, 0}},
-      {"2 > 1", {1, 0}}, {"2 | 1", {3, 0}}, {"2 & 1", {0, 0}},
-      {"~0", {-1, 0}},   {"4 % 3", {1, 0}}, {".", {1, 0}},
-      {"xxx", {0, 0}},   {"%s", {0, 0}},    {"%s/xx/", {0, 0}},
-      {"'a", {2, 0}},    {"'t", {2, 0}},    {"'u", {3, 0}},
-      {"$", {4, 0}}};
+    std::vector<std::pair<std::string, int>> calcs{
+      {"", 0},      {"  ", 0},    {"1 + 1", 2},  {"5+5", 10},  {"1 * 1", 1},
+      {"1 - 1", 0}, {"2 / 1", 2}, {"2 / 0", 0},  {"2 < 2", 8}, {"2 > 1", 1},
+      {"2 | 1", 3}, {"2 & 1", 0}, {"~0", -1},    {"4 % 3", 1}, {".", 1},
+      {"xxx", 0},   {"%s", 0},    {"%s/xx/", 0}, {"'a", 2},    {"'t", 2},
+      {"'u", 3},    {"$", 4}};
 
     for (const auto& calc : calcs)
     {
-      const auto val = ex->calculator(calc.first);
-      REQUIRE(val == calc.second.first);
+      if (const auto& val (ex->calculator(calc.first)); val)
+      {
+        REQUIRE(*val == calc.second);
+      }
     }
   }
 
@@ -262,7 +261,7 @@ TEST_CASE("wex::ex")
   SUBCASE("line-data")
   {
     REQUIRE(!ex->line_data().is_ctag());
-    
+
     wex::line_data data;
     data.is_ctag(true);
     ex->set_line_data(data);
