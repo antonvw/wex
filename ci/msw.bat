@@ -2,7 +2,7 @@
 :: Batch file for building/testing wex on appveyor
 :: we are in the build directory
 
-set BOOST=82
+set BOOST=83
 set YEAR=2022
 set VS=C:\Program Files\Microsoft Visual Studio
 
