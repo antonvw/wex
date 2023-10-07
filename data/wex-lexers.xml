@@ -637,6 +637,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
     </set>
     <set name="rfw-core">
       IN_RANGE 
+      REPEAT_KEYWORD
       Suite_Setup
       Suite_Teardown 
       Test_Setup 

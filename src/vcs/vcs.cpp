@@ -68,9 +68,7 @@ public:
     // .git
     // /home/user/wex/src/src/vi.cpp
     // should return -> /home/user/wex
-    path root;
-
-    for (const auto& part : m_path.data())
+    for (path root; const auto& part : m_path.data())
     {
       if (vcs_admin(m_dir, root.append(part)).exists())
       {

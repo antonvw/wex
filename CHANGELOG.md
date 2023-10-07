@@ -446,4 +446,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - CEdit is used as base for the output
 - Visual C++ 5.0
 
-<!-- markdownlint-configure-file { "MD022": false, "MD024": false, "MD030": false, "MD032": false} -->
+<!-- markdownlint-configure-file { "MD022": false,
+  "MD024": false, "MD030": false, "MD032": false} -->

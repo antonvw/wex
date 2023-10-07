@@ -13,6 +13,7 @@ if (NOT WIN32)
     COMMAND cppcheck
       --std=c++${WEX_CXX_STANDARD}
       --quiet --enable=all
+      --check-level=exhaustive
       --suppress=missingInclude
       --suppress=cppcheckError 
       --suppress=cstyleCast 
@@ -34,7 +35,7 @@ if (NOT WIN32)
   add_custom_target(cpplint
     COMMAND cpplint 
       --quiet 
-      --filter=-build,-readability/casting,-readability/fn_size,-readability/multiline_string,-runtime/explicit,-runtime/indentation_namespace,-runtime/int,-runtime/references,-whitespace 
+      --filter=-build,-readability/casting,-readability/fn_size,-readability/multiline_string,-runtime/explicit,-runtime/indentation_namespace,-runtime/int,-runtime/references,-whitespace
       ${SRCS}
     COMMENT "cpplint" VERBATIM)
 
@@ -44,7 +45,8 @@ if (NOT WIN32)
 
   add_custom_target(robocop
     COMMAND robocop
-      -e 0201 -e 0202 -e 0308 -e 0309 -e 0505 -e 0704 -e 1003 -e 1004
+      -e 0201 -e 0202 -e 0308 -e 0309 -e 0413 -e 0505 -e 0704
+      -e 1003 -e 1004 -e 1005 -e 1006
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test/app
     COMMENT "robocop" VERBATIM)
     
