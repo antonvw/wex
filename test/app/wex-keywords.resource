@@ -73,6 +73,19 @@ Contents Does Not Contain
 	${result}=	Get File	${file-contents}
 	Should Not Contain	${result}	${text}
 
+Ex Mode
+	[Documentation]	Runs appl in  ex mode
+	[Arguments]	${quit}=0
+	Run Process
+	...	${APPL}
+	...	-q	${quit}
+	...	-s	${file-input}
+	...	-V	${level}
+	...	-X	${file-output}
+	...	--ex
+	...	${file-startup}
+	...	stdout=${file-stdout}
+
 Find Appl
 	[Documentation]	Set the APPL variable to correct binary
 	[Tags]	:private

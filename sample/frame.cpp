@@ -35,9 +35,10 @@ enum
   ID_SAMPLE_HIGHEST
 };
 
-frame::frame()
+frame::frame(app* app)
   : m_notebook(new wex::notebook(wex::data::window().style(
       wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_WINDOWLIST_BUTTON)))
+  , m_app(app)
   , m_grid(new wex::grid(wex::data::window().parent(m_notebook)))
   , m_listview(new wex::listview(wex::data::window().parent(m_notebook)))
   , m_process(new wex::process())
@@ -338,16 +339,16 @@ void frame::bind_all()
       ID_STATISTICS_SHOW},
      {[=, this](wxCommandEvent& event)
       {
-        const auto value = wxGetNumberFromUser(
-          "Input:",
-          wxEmptyString,
-          "STC Open Flag",
-          m_flags_stc,
-          0,
-          0xFFFF);
-        if (value != -1)
+        if (const auto value = wxGetNumberFromUser(
+              "Input:",
+              wxEmptyString,
+              "STC Open Flag",
+              static_cast<unsigned long>(m_app->data().flags().to_ulong()),
+              0,
+              0xFFFF);
+            value != -1)
         {
-          m_flags_stc = value;
+          m_app->data().flags(value);
         }
       },
       ID_STC_FLAGS},
@@ -388,20 +389,15 @@ void frame::on_command(wxCommandEvent& event)
 
       if (event.GetString().empty())
       {
-        wex::file_dialog dlg(&m_stc->get_file());
-
-        if (dlg.show_modal_if_changed(true) == wxID_CANCEL)
-          return;
-
-        m_stc->open(
-          wex::path(dlg.GetPath().ToStdString()),
-          wex::data::stc().flags((wex::data::stc::window_t)m_flags_stc));
+        if (wex::file_dialog dlg(&m_stc->get_file());
+            dlg.show_modal_if_changed(true) != wxID_CANCEL)
+        {
+          open_file_same_page(wex::path(dlg.GetPath().ToStdString()));
+        }
       }
       else
       {
-        m_stc->open(
-          wex::path(event.GetString()),
-          wex::data::stc().flags((wex::data::stc::window_t)m_flags_stc));
+        open_file_same_page(wex::path(event.GetString()));
       }
 
       const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -453,7 +449,8 @@ void frame::on_command(wxCommandEvent& event)
       {
         auto* stc = new wex::stc(
           editor->path(),
-          wex::data::stc().window(wex::data::window().parent(m_notebook)));
+          wex::data::stc(m_app->data())
+            .window(wex::data::window().parent(m_notebook)));
         m_notebook->add_page(wex::data::notebook()
                                .page(stc)
                                .key("stc" + std::to_string(stc->GetId()))
@@ -502,7 +499,7 @@ wex::stc* frame::open_file(const wex::path& file, const wex::data::stc& data)
   else
   {
     m_stc->get_lexer().clear();
-    m_stc->open(file, wex::data::stc(data).flags(0));
+    open_file_same_page(file);
     m_notebook->set_selection("wex::stc");
 
     return m_stc;
@@ -511,12 +508,12 @@ wex::stc* frame::open_file(const wex::path& file, const wex::data::stc& data)
 
 void frame::open_file_same_page(const wex::path& p)
 {
-  m_stc->open(p, wex::data::stc().recent(false));
+  m_stc->open(p, wex::data::stc().recent(false).flags(m_app->data().flags()));
   m_stc->get_lexer().set(wex::path_lexer(p).lexer().display_lexer(), true);
   m_stc->properties_message();
 }
 
-void frame::update(app* a)
+void frame::update()
 {
   pane_add(
     {{m_notebook,
@@ -538,8 +535,10 @@ void frame::update(app* a)
     wex::data::listview().window(wex::data::window().parent(m_notebook)));
 
   m_stc = new wex::stc(
-    !a->get_files().empty() ? a->get_files().front() : wex::path(),
-    wex::data::stc(a->data()).window(wex::data::window().parent(m_notebook)));
+    !m_app->get_files().empty() ? m_app->get_files().front() :
+                                  wex::path("no name"),
+    wex::data::stc(m_app->data())
+      .window(wex::data::window().parent(m_notebook)));
 
   m_notebook->add_page(
     wex::data::notebook().page(m_stc).key("wex::stc").select());
