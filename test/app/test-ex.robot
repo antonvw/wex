@@ -91,6 +91,12 @@ set-verbosity
 	Appl
 	Output Contains	ve=${level}
 
+stream
+	Input	:a|line has text
+	Input	:a|line has text
+	...	:f
+	Ex Mode
+
 substitute
 	Input	:a|line has text
 	...	:a|line has a tiger
