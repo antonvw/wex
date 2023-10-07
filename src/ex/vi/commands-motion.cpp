@@ -107,7 +107,7 @@ bool wex::vi::command_finish(bool user_input)
   }
   else if (!user_input)
   {
-    find_next(m_command_string.find("/") == 0 ? "n" : "N");
+    find_next(m_command_string.starts_with("/") ? "n" : "N");
   }
 
   m_count = 1;

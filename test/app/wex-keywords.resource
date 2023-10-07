@@ -113,10 +113,7 @@ Input Many
 	...	and does not end write output and does not end with quit
 	...	Normally, invoke this as often a you like, finish with
 	...	one other Input keyword.
-	FOR	${index}	IN RANGE	${count}
-		Append To File	${file-input}	${line}
-		Append To File	${file-input}	\n
-	END
+	REPEAT KEYWORD	${count}	Append To File	${file-input}	${line}\n
 
 Input No Write
 	[Documentation]	As Input, but does not write the file
