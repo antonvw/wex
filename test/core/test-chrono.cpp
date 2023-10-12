@@ -27,7 +27,7 @@ TEST_CASE("wex::chrono")
   {
     REQUIRE(chrono.get_time(0).contains("1970"));
     REQUIRE(!chrono.get_time(0).contains("."));
-    REQUIRE(wex::chrono("%Y-%m-%d %H:%M:%S", wex::chrono::PRECISION_MILLI)
+    REQUIRE(wex::chrono("%Y-%m-%d %H:%M:%S", wex::chrono::precision_t::MILLI)
               .get_time(timespec{0, 123000000})
               .contains(".123"));
   }

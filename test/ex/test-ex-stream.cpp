@@ -65,7 +65,7 @@ TEST_CASE("wex::ex_stream")
 {
   auto* stc = get_stc();
   stc->set_text("\n\n\n\n\n\n");
-  wex::ex        ex(stc, wex::ex::EX);
+  wex::ex        ex(stc, wex::ex::mode_t::EX);
   wex::ex_stream exs(&ex);
 
   SUBCASE("constructor")
@@ -125,7 +125,7 @@ TEST_CASE("wex::ex_stream")
       REQUIRE(exs.insert_text(
         wex::address(&ex, 3),
         "TEXT_AFTER",
-        wex::ex_stream::INSERT_AFTER));
+        wex::ex_stream::loc_t::AFTER));
       REQUIRE((*exs.get_work()).contains("TEXT_AFTER"));
 
       REQUIRE(exs.is_modified());

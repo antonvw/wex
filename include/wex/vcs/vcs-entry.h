@@ -2,7 +2,7 @@
 // Name:      vcs-entry.h
 // Purpose:   Declaration of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2022 Anton van Wezenbeek
+// Copyright: (c) 2010-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -27,10 +27,10 @@ class vcs_entry
 public:
   /// Flags location flags, indicate where flags from xml
   /// should be placed when building vcs commands.
-  enum
+  enum class flags_location_t
   {
-    FLAGS_LOCATION_POSTFIX, /// after e.g. id
-    FLAGS_LOCATION_PREFIX   /// before e.g. id
+    POSTFIX, /// after e.g. id
+    PREFIX   /// before e.g. id
   };
 
   /// Default constructor using xml node.
@@ -101,8 +101,8 @@ public:
 private:
   const std::string bin() const;
 
-  // no const, as entry is set using operator+ in vcs.
-  int m_flags_location{FLAGS_LOCATION_POSTFIX};
+  // no const, as entry is set using operator= in vcs.
+  flags_location_t m_flags_location{flags_location_t::POSTFIX};
 
   std::string m_admin_dir, m_log_flags;
 

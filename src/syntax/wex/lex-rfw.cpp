@@ -177,7 +177,7 @@ void Scintilla::lex_rfw::section_start(
   do
   {
     sc.Forward();
-  } while (m_section_end->match(sc.ch) == wex::regex_part::MATCH_FULL);
+  } while (m_section_end->match(sc.ch) == wex::regex_part::match_t::FULL);
 
   sc.SetState(SCE_SH_WORD);
   m_section.start(section.second);
@@ -839,8 +839,8 @@ void SCI_METHOD Scintilla::lex_rfw::Lex(
     if (!spaced_keywords_detect(words, sc, cmd_state_new))
     {
       if (
-        m_section_begin->match_type() == wex::regex_part::MATCH_HISTORY ||
-        m_section_begin->match(sc.ch) >= wex::regex_part::MATCH_PART)
+        m_section_begin->match_type() == wex::regex_part::match_t::HISTORY ||
+        m_section_begin->match(sc.ch) >= wex::regex_part::match_t::PART)
       {
         if (
           section_keywords_detect(

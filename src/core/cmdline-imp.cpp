@@ -64,7 +64,7 @@ wex::cmdline_imp::cmdline_imp(bool add_standard_options, config& cfg)
          "quits after specified number of milliseconds")
       ("version,r", "displays version information and exits")
       ("verbose,v", "activates maximum (trace) verbosity")
-      ("level,V", po::value<int>()->default_value(log::level_t_def()),
+      ("level,V", po::value<int>()->default_value(std::to_underlying(log::level_t_def())),
         std::string("activates verbosity down from verbose level\n" +
           log::get_level_info()).c_str())
       ("scriptout,w", po::value<std::string>(), 
@@ -140,7 +140,7 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
 
   if (m_vm.count("verbose"))
   {
-    loglevel = log::LEVEL_TRACE;
+    loglevel = std::to_underlying(log::level_t::TRACE);
   }
 
   if (!parse_args(data))

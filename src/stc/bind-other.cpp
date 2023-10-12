@@ -102,7 +102,7 @@ menu::menu_t get_style(stc* stc)
   if (stc->GetTextLength() == 0)
     style.set(menu::IS_EMPTY);
 
-  if (stc->get_vi().visual() == ex::VISUAL)
+  if (stc->get_vi().visual() == ex::mode_t::VISUAL)
     style.set(menu::IS_VISUAL);
 
   if (stc->CanPaste())
@@ -334,7 +334,7 @@ void wex::stc::key_action(wxKeyEvent& event)
     m_auto_complete->on_char(event.GetUnicodeKey());
   }
 
-  if (m_vi->visual() == ex::OFF)
+  if (m_vi->visual() == ex::mode_t::OFF)
   {
     event.Skip();
   }

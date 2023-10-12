@@ -66,11 +66,11 @@ std::string wex::chrono::get_time(const timespec& ts) const
 
   ss << get_time(ts.tv_sec);
 
-  if (m_precision != PRECISION_SEC)
+  if (m_precision != precision_t::SEC)
   {
     switch (const auto tp = timespec_to_time_point(ts); m_precision)
     {
-      case PRECISION_MICRO:
+      case precision_t::MICRO:
       {
         const auto tp_ms =
           std::chrono::duration_cast<std::chrono::microseconds>(
@@ -80,7 +80,7 @@ std::string wex::chrono::get_time(const timespec& ts) const
       }
       break;
 
-      case PRECISION_MILLI:
+      case precision_t::MILLI:
       {
         const auto tp_ms =
           std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -90,7 +90,7 @@ std::string wex::chrono::get_time(const timespec& ts) const
       }
       break;
 
-      case PRECISION_NANO:
+      case precision_t::NANO:
       {
         const auto tp_ms = std::chrono::duration_cast<std::chrono::nanoseconds>(
                              tp.time_since_epoch()) %

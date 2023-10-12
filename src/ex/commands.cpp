@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      comands-ex.cpp
+// Name:      commands-ex.cpp
 // Purpose:   Implementation of class wex::ex::commands_ex
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021-2023 Anton van Wezenbeek
@@ -246,10 +246,10 @@ wex::ex::commands_t wex::ex::commands_ex()
                  m_macros.get_keys_map()) +
                "[Alt key map]\n" +
                report_container<int, wex::macros::keys_map_t>(
-                 m_macros.get_keys_map(macros::KEY_ALT)) +
+                 m_macros.get_keys_map(macros::key_t::ALT)) +
                "[Control key map]\n" +
                report_container<int, wex::macros::keys_map_t>(
-                 m_macros.get_keys_map(macros::KEY_CONTROL)),
+                 m_macros.get_keys_map(macros::key_t::CONTROL)),
              lexer_props().scintilla_lexer());
            return true;
 

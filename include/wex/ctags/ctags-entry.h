@@ -2,7 +2,7 @@
 // Name:      ctags-entry.h
 // Purpose:   Declaration of class wex::ctags_entry
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2022 Anton van Wezenbeek
+// Copyright: (c) 2019-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -137,14 +137,6 @@ public:
   ctags_entry& signature(const std::string& v);
 
 private:
-  enum image_access_t
-  {
-    IMAGE_NONE,
-    IMAGE_PUBLIC,
-    IMAGE_PROTECTED,
-    IMAGE_PRIVATE
-  };
-
   bool entry_equal(const std::string& text, const std::string& field) const;
   std::string image_string() const;
   std::string signature_and_image() const;

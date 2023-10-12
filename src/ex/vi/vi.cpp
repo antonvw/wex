@@ -754,7 +754,7 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
   else if (
     (event.GetModifiers() & wxMOD_CONTROL) && event.GetKeyCode() != WXK_NONE)
   {
-    return process_modifier(this, macros::key_t::KEY_CONTROL, event);
+    return process_modifier(this, macros::key_t::CONTROL, event);
   }
   else if ((event.GetModifiers() & wxMOD_ALT) && event.GetKeyCode() != WXK_NONE)
   {
@@ -763,7 +763,7 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
       command(esc());
     }
 
-    return process_modifier(this, macros::key_t::KEY_ALT, event);
+    return process_modifier(this, macros::key_t::ALT, event);
   }
   else
   {
@@ -821,7 +821,7 @@ bool wex::vi::put(bool after)
 
   // do not trim
   const bool yanked_lines = (get_number_of_lines(register_text(), false) > 1) &&
-                            m_mode_yank != vi_mode::VISUAL_BLOCK;
+                            m_mode_yank != vi_mode::state_t::VISUAL_BLOCK;
 
   if (yanked_lines)
   {
@@ -838,7 +838,7 @@ bool wex::vi::put(bool after)
     get_stc()->Home();
   }
 
-  m_mode_yank == vi_mode::VISUAL_BLOCK ?
+  m_mode_yank == vi_mode::state_t::VISUAL_BLOCK ?
     get_stc()->add_text_block(register_text()) :
     get_stc()->add_text(register_text());
 

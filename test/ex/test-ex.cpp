@@ -55,7 +55,7 @@ TEST_CASE("wex::ex")
 
     for (const auto& calc : calcs)
     {
-      if (const auto& val (ex->calculator(calc.first)); val)
+      if (const auto& val(ex->calculator(calc.first)); val)
       {
         REQUIRE(*val == calc.second);
       }
@@ -251,11 +251,11 @@ TEST_CASE("wex::ex")
   SUBCASE("is_active")
   {
     REQUIRE(ex->is_active());
-    ex->use(wex::ex::OFF);
+    ex->use(wex::ex::mode_t::OFF);
     REQUIRE(!ex->is_active());
-    ex->use(wex::ex::VISUAL);
+    ex->use(wex::ex::mode_t::VISUAL);
     REQUIRE(ex->is_active());
-    REQUIRE(ex->visual() == wex::ex::VISUAL);
+    REQUIRE(ex->visual() == wex::ex::mode_t::VISUAL);
   }
 
   SUBCASE("line-data")

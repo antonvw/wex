@@ -70,7 +70,7 @@ public:
   /// Other methods.
 
   /// The visual modes.
-  enum mode_t
+  enum class mode_t
   {
     OFF,    ///< not using ex or vi mode
     EX,     ///< ex mode, without vi keys, for reading large files
@@ -79,7 +79,7 @@ public:
 
   /// Constructor.
   /// Provide stc cpomponent and ex mode.
-  explicit ex(syntax::stc* stc, mode_t mode = VISUAL);
+  explicit ex(syntax::stc* stc, mode_t mode = mode_t::VISUAL);
 
   /// Destructor.
   virtual ~ex();
@@ -123,7 +123,7 @@ public:
   void info_message(const std::string& text, info_message_t type) const;
 
   /// Returns whether ex is active.
-  auto is_active() const { return m_mode != OFF; }
+  auto is_active() const { return m_mode != mode_t::OFF; }
 
   /// Returns line data.
   const auto& line_data() const { return m_data; }

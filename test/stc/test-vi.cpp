@@ -60,7 +60,7 @@ TEST_CASE("wex::vi")
       REQUIRE(stc->get_selected_text() == "aaaaa");
 
       vi->command("c");
-      REQUIRE(vi->mode().get() == wex::vi_mode::INSERT);
+      REQUIRE(vi->mode().get() == wex::vi_mode::state_t::INSERT);
       vi->command("OK");
       REQUIRE(
         stc->get_text() == "OK\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");
@@ -252,10 +252,10 @@ TEST_CASE("wex::vi")
     REQUIRE(wex::config("stc.Reported lines").get(5) == 10);
 
     REQUIRE(vi->command(":set ve=5"));
-    REQUIRE(wex::log::get_level() == 5);
+    REQUIRE(std::to_underlying(wex::log::get_level()) == 5);
 
     REQUIRE(vi->command(":set ve=4"));
-    REQUIRE(wex::log::get_level() == 4);
+    REQUIRE(std::to_underlying(wex::log::get_level()) == 4);
   }
 
 #ifndef __WXMSW__

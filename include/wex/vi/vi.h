@@ -35,7 +35,7 @@ public:
   enum class motion_t;
 
   /// Constructor.
-  explicit vi(wex::syntax::stc* stc, mode_t mode = VISUAL);
+  explicit vi(wex::syntax::stc* stc, mode_t mode = mode_t::VISUAL);
 
   /// Appends string to executed insert command.
   void append_insert_command(const std::string& s);
@@ -135,7 +135,7 @@ private:
   std::string m_insert_command, m_insert_text;
 
   vi_mode          m_mode;
-  vi_mode::state_t m_mode_yank{vi_mode::COMMAND};
+  vi_mode::state_t m_mode_yank{vi_mode::state_t::COMMAND};
 
   const commands_t m_motion_commands, m_other_commands;
 

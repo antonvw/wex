@@ -15,7 +15,7 @@ TEST_CASE("wex::log_none")
 
   {
     wex::log_none off;
-    REQUIRE(wex::log::get_level() == wex::log::LEVEL_OFF);
+    REQUIRE(wex::log::get_level() == wex::log::level_t::OFF);
   }
 
   REQUIRE(wex::log::get_level() == level);

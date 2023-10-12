@@ -2,7 +2,7 @@
 // Name:      mode.h
 // Purpose:   Declaration of class wex::vi_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -40,7 +40,7 @@ class vi_mode
 {
 public:
   /// The possible vi mode states.
-  enum state_t
+  enum class state_t
   {
     COMMAND,      ///< command (or navigation) mode
     INSERT,       ///< pressing key inserts key
@@ -72,7 +72,7 @@ public:
   state_t get() const;
 
   /// Returns true if in command mode.
-  bool is_command() const { return get() == COMMAND; }
+  bool is_command() const { return get() == state_t::COMMAND; }
 
   /// Returns true if in insert mode.
   bool is_insert() const;

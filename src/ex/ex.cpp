@@ -82,7 +82,7 @@ bool wex::ex::command(const std::string& cmd)
 {
   auto command(cmd);
 
-  if (m_mode == OFF || command.empty() || command.front() != ':')
+  if (m_mode == mode_t::OFF || command.empty() || command.front() != ':')
     return false;
 
   log::trace("ex command") << cmd;

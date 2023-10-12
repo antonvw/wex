@@ -28,7 +28,7 @@ TEST_CASE("wex::address")
 
   SUBCASE("constructor")
   {
-    REQUIRE(wex::address(ex).type() == wex::address::IS_SINGLE);
+    REQUIRE(wex::address(ex).type() == wex::address::address_t::IS_SINGLE);
     REQUIRE(wex::address(ex).get_line() == 0);
     REQUIRE(wex::address(ex, 5).get_line() == 5);
 

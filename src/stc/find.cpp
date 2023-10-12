@@ -134,11 +134,11 @@ bool wex::stc::find(const std::string& text, int find_flags, bool forward)
 
   switch (m_vi->visual())
   {
-    case ex::EX:
+    case ex::mode_t::EX:
       return m_file.ex_stream()->find_data(f);
 
-    case ex::OFF:
-    case ex::VISUAL:
+    case ex::mode_t::OFF:
+    case ex::mode_t::VISUAL:
       if (m_margin_text_click >= 0)
       {
         return find_margin(f);

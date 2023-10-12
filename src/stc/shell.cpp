@@ -164,12 +164,14 @@ void wex::shell::enable(bool enabled)
   if (!m_enabled)
   {
     // A disabled shell follows vi mode.
-    get_vi().use(config(_("stc.vi mode")).get(true) ? ex::VISUAL : ex::OFF);
+    get_vi().use(
+      config(_("stc.vi mode")).get(true) ? ex::mode_t::VISUAL :
+                                           ex::mode_t::OFF);
   }
   else
   {
     // An enabled shell does not use vi mode.
-    get_vi().use(ex::OFF);
+    get_vi().use(ex::mode_t::OFF);
   }
 }
 
