@@ -2,7 +2,7 @@
 // Name:      vcs-entry.cpp
 // Purpose:   Implementation of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -21,8 +21,8 @@ wex::vcs_entry::vcs_entry(const pugi::xml_node& node)
   , m_admin_dir(node.attribute("admin-dir").value())
   , m_flags_location(
       (strcmp(node.attribute("flags-location").value(), "prefix") == 0 ?
-         FLAGS_LOCATION_PREFIX :
-         FLAGS_LOCATION_POSTFIX))
+         flags_location_t::PREFIX :
+         flags_location_t::POSTFIX))
   , m_blame(node)
   , m_log_flags(node.attribute("log-flags").value())
 {
@@ -49,7 +49,7 @@ bool wex::vcs_entry::execute(
 
   std::string prefix;
 
-  if (m_flags_location == FLAGS_LOCATION_PREFIX)
+  if (m_flags_location == flags_location_t::PREFIX)
   {
     prefix = config(_("vcs.Prefix flags")).get();
 
@@ -144,7 +144,7 @@ bool wex::vcs_entry::log(const path& p, const std::string& id)
   std::string command   = bin() + " log ";
   std::string separator = (!m_log_flags.empty() ? " " : std::string());
 
-  command += m_flags_location == FLAGS_LOCATION_PREFIX || name() == "svn" ?
+  command += m_flags_location == flags_location_t::PREFIX || name() == "svn" ?
                m_log_flags + separator + id :
                id + separator + m_log_flags;
 

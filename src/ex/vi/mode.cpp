@@ -101,8 +101,8 @@ private:
   std::string                                     m_command;
   std::function<void(const std::string& command)> m_f_insert{nullptr};
   std::function<void()>                           m_f_command{nullptr};
-  vi_mode::state_t                                m_state{vi_mode::COMMAND};
-  factory::stc*                                   m_stc;
+  vi_mode::state_t m_state{vi_mode::state_t::COMMAND};
+  factory::stc*    m_stc;
 };
 
 // All events.
@@ -149,7 +149,7 @@ struct ssvCOMMAND : sc::state<ssvCOMMAND, ssvACTIVE>
   explicit ssvCOMMAND(my_context ctx)
     : my_base(ctx)
   {
-    context<vi_fsm>().state(vi_mode::COMMAND);
+    context<vi_fsm>().state(vi_mode::state_t::COMMAND);
   };
 
   sc::result react(const evINSERT&)
@@ -166,7 +166,7 @@ struct ssvTEXTINPUT : sc::state<ssvTEXTINPUT, ssvACTIVE>
   explicit ssvTEXTINPUT(my_context ctx)
     : my_base(ctx)
   {
-    context<vi_fsm>().state(vi_mode::INSERT);
+    context<vi_fsm>().state(vi_mode::state_t::INSERT);
     context<vi_fsm>().insert_mode();
   };
 
@@ -192,7 +192,7 @@ struct ssvVISUAL : sc::state<ssvVISUAL, ssvVISUAL_MODE>
   explicit ssvVISUAL(my_context ctx)
     : my_base(ctx)
   {
-    context<vi_fsm>().state(vi_mode::VISUAL);
+    context<vi_fsm>().state(vi_mode::state_t::VISUAL);
   };
 };
 
@@ -201,7 +201,7 @@ struct ssvVISUAL_LINE : sc::state<ssvVISUAL_LINE, ssvVISUAL_MODE>
   explicit ssvVISUAL_LINE(my_context ctx)
     : my_base(ctx)
   {
-    context<vi_fsm>().state(vi_mode::VISUAL_LINE);
+    context<vi_fsm>().state(vi_mode::state_t::VISUAL_LINE);
   };
 };
 
@@ -212,7 +212,7 @@ struct ssvVISUAL_BLOCK : sc::state<ssvVISUAL_BLOCK, ssvVISUAL_MODE>
   explicit ssvVISUAL_BLOCK(my_context ctx)
     : my_base(ctx)
   {
-    context<vi_fsm>().state(vi_mode::VISUAL_BLOCK);
+    context<vi_fsm>().state(vi_mode::state_t::VISUAL_BLOCK);
   };
 };
 
@@ -224,7 +224,7 @@ struct ssvVISUAL_BLOCK_TEXTINPUT
   explicit ssvVISUAL_BLOCK_TEXTINPUT(my_context ctx)
     : my_base(ctx)
   {
-    context<vi_fsm>().state(vi_mode::INSERT_BLOCK);
+    context<vi_fsm>().state(vi_mode::state_t::INSERT_BLOCK);
     context<vi_fsm>().insert_mode();
   };
 };
@@ -296,21 +296,21 @@ wex::vi_mode::~vi_mode() {}
 
 void wex::vi_mode::command()
 {
-  if (get() == COMMAND)
+  if (get() == state_t::COMMAND)
   {
     return;
   }
 
   escape();
 
-  if (get() == COMMAND)
+  if (get() == state_t::COMMAND)
   {
     return;
   }
 
   escape();
 
-  if (get() != COMMAND)
+  if (get() != state_t::COMMAND)
   {
     log("vi command mode") << m_fsm->state_string();
   }
@@ -329,12 +329,13 @@ wex::vi_mode::state_t wex::vi_mode::get() const
 
 bool wex::vi_mode::is_insert() const
 {
-  return get() == INSERT || get() == INSERT_BLOCK;
+  return get() == state_t::INSERT || get() == state_t::INSERT_BLOCK;
 }
 
 bool wex::vi_mode::is_visual() const
 {
-  return get() == VISUAL || get() == VISUAL_LINE || get() == VISUAL_BLOCK;
+  return get() == state_t::VISUAL || get() == state_t::VISUAL_LINE ||
+         get() == state_t::VISUAL_BLOCK;
 }
 
 bool wex::vi_mode::transition(std::string& command)
@@ -383,7 +384,7 @@ bool wex::vi_mode::transition(std::string& command)
 
   switch (get())
   {
-    case INSERT:
+    case state_t::INSERT:
       if (!m_vi->get_stc()->is_hexmode())
       {
         if (const auto& it = std::find_if(
@@ -401,7 +402,7 @@ bool wex::vi_mode::transition(std::string& command)
       }
       break;
 
-    case VISUAL_LINE:
+    case state_t::VISUAL_LINE:
       if (m_vi->get_stc()->SelectionIsRectangle())
       {
         m_vi->get_stc()->Home();

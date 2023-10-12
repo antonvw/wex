@@ -2,7 +2,7 @@
 // Name:      address.h
 // Purpose:   Declaration of class wex::address
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2013-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -22,7 +22,7 @@ class address
 
 public:
   /// The kind of address this one is.
-  enum address_t
+  enum class address_t
   {
     IS_BEGIN,  ///< part of range, the begin
     IS_END,    ///< part of range, the end
@@ -83,16 +83,12 @@ public:
   address_t type() const { return m_type; }
 
 private:
-  enum add_t
-  {
-    ADD_APPEND,
-    ADD_INSERT
-  };
+  enum class add_t;
 
   bool adjust_window(const std::string& text) const;
   bool add(add_t type, const std::string& text) const;
-  bool append(const std::string& text) const { return add(ADD_APPEND, text); };
-  bool insert(const std::string& text) const { return add(ADD_INSERT, text); };
+  bool append(const std::string& text) const;
+  bool insert(const std::string& text) const;
   bool put(char name = '0') const;
   bool read(const std::string& arg) const;
   void set_line(int line);
@@ -100,7 +96,7 @@ private:
 
   ex*         m_ex;
   int         m_line = 0;
-  address_t   m_type{IS_SINGLE};
+  address_t   m_type{address_t::IS_SINGLE};
   std::string m_address; // set by address range
 };
 }; // namespace wex

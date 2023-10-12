@@ -2,7 +2,7 @@
 // Name:      eval.cpp
 // Purpose:   Implementation of class wex::evaluator
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -88,7 +88,7 @@ struct eval
     }
     else if (e.token == "$")
     {
-      if (m_ex->visual() == wex::ex::EX)
+      if (m_ex->visual() == wex::ex::mode_t::EX)
       {
         return m_ex->ex_stream()->get_line_count_request();
       }

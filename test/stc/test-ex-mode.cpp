@@ -14,7 +14,7 @@ TEST_CASE("wex::ex-mode")
 {
   auto* stc = get_stc();
   auto* ex  = &stc->get_vi();
-  ex->use(wex::ex::EX);
+  ex->use(wex::ex::mode_t::EX);
   stc->DocumentStart();
 
   SUBCASE("find")
@@ -23,7 +23,7 @@ TEST_CASE("wex::ex-mode")
     REQUIRE(ifs.is_open());
     ex->ex_stream()->stream(ifs);
 
-    REQUIRE(ex->visual() == wex::ex::EX);
+    REQUIRE(ex->visual() == wex::ex::mode_t::EX);
     REQUIRE(ex->command(":/w/"));
     REQUIRE(ex->ex_stream()->get_current_line() == 2);
     REQUIRE(ex->command("://"));
@@ -32,5 +32,5 @@ TEST_CASE("wex::ex-mode")
     REQUIRE(ex->ex_stream()->get_current_line() == 2);
   }
 
-  ex->use(wex::ex::VISUAL);
+  ex->use(wex::ex::mode_t::VISUAL);
 }

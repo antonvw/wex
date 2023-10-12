@@ -2,7 +2,7 @@
 // Name:      test-vcsentry.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -20,7 +20,7 @@ TEST_CASE("wex::vcs_entry")
     REQUIRE(wex::vcs_entry().get_commands().empty());
     REQUIRE(
       wex::vcs_entry().flags_location() ==
-      wex::vcs_entry::FLAGS_LOCATION_POSTFIX);
+      wex::vcs_entry::flags_location_t::POSTFIX);
   }
 
   SUBCASE("constructor using xml")

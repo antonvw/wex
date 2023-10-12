@@ -48,10 +48,10 @@ TEST_CASE("wex::log")
 
   SUBCASE("level")
   {
-    const auto current = wex::log::LEVEL_ERROR;
+    const auto current = wex::log::level_t::ERROR;
 
-    wex::log::set_level(wex::log::LEVEL_TRACE);
-    REQUIRE(wex::log::get_level() == wex::log::LEVEL_TRACE);
+    wex::log::set_level(wex::log::level_t::TRACE);
+    REQUIRE(wex::log::get_level() == wex::log::level_t::TRACE);
 
     wex::log::set_level(current);
     REQUIRE(wex::log::get_level() == current);
@@ -59,12 +59,12 @@ TEST_CASE("wex::log")
 
   SUBCASE("off")
   {
-    const auto current = wex::log::LEVEL_ERROR;
+    const auto current = wex::log::level_t::ERROR;
 
     {
       wex::log log("off");
-      wex::log::set_level(wex::log::LEVEL_OFF);
-      REQUIRE(wex::log::get_level() == wex::log::LEVEL_OFF);
+      wex::log::set_level(wex::log::level_t::OFF);
+      REQUIRE(wex::log::get_level() == wex::log::level_t::OFF);
       log << wex::test::get_path("test.h");
 
       REQUIRE(!log.get().empty());

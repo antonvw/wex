@@ -216,8 +216,8 @@ TEST_CASE("wex::addressrange")
 
     wex::addressrange ar(ex, "/blame/,/yank/");
     REQUIRE(ar.is_ok());
-    REQUIRE(ar.begin().type() == wex::address::IS_BEGIN);
-    REQUIRE(ar.end().type() == wex::address::IS_END);
+    REQUIRE(ar.begin().type() == wex::address::address_t::IS_BEGIN);
+    REQUIRE(ar.end().type() == wex::address::address_t::IS_END);
   }
 
   SUBCASE("range-selection")

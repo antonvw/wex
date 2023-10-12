@@ -77,6 +77,12 @@ int find_stream(ex* ex, const std::string& text, bool forward)
 }
 }; // namespace wex
 
+enum class wex::address::add_t
+{
+  APPEND,
+  INSERT
+};
+
 wex::address::address(ex* ex, int line)
   : m_ex(ex)
   , m_line(line)
@@ -100,7 +106,8 @@ bool wex::address::add(add_t type, const std::string& text) const
     m_ex->ex_stream()->insert_text(
       *this,
       text + m_ex->get_stc()->eol(),
-      type == ADD_APPEND ? ex_stream::INSERT_AFTER : ex_stream::INSERT_BEFORE);
+      type == add_t::APPEND ? ex_stream::loc_t::AFTER :
+                              ex_stream::loc_t::BEFORE);
     return true;
   }
   else if (m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode())
@@ -110,10 +117,11 @@ bool wex::address::add(add_t type, const std::string& text) const
   else
   {
     m_ex->get_stc()->insert_text(
-      m_ex->get_stc()->PositionFromLine(type == ADD_APPEND ? line : line - 1),
+      m_ex->get_stc()->PositionFromLine(
+        type == add_t::APPEND ? line : line - 1),
       text + m_ex->get_stc()->eol());
 
-    if (type == ADD_APPEND)
+    if (type == add_t::APPEND)
     {
       m_ex->get_stc()->goto_line(line + get_number_of_lines(text) - 1);
     }
@@ -181,6 +189,11 @@ bool wex::address::adjust_window(const std::string& text) const
   m_ex->print(output);
 
   return true;
+}
+
+bool wex::address::append(const std::string& text) const
+{
+  return add(add_t::APPEND, text);
 }
 
 bool wex::address::flags_supported(const std::string& flags)
@@ -256,6 +269,11 @@ int wex::address::get_line(int start_pos) const
   {
     return *sum;
   }
+}
+
+bool wex::address::insert(const std::string& text) const
+{
+  return add(add_t::INSERT, text);
 }
 
 bool wex::address::marker_add(char marker) const

@@ -42,7 +42,7 @@ std::string get_logfile(const std::string& default_logfile)
 
 std::string quote(const std::string& r, log::level_t level)
 {
-  if (level == log::LEVEL_STATUS)
+  if (level == log::level_t::STATUS)
   {
     return "";
   }
@@ -62,18 +62,18 @@ std::string ws2s(const std::wstring& wstr)
 } // namespace wex
 
 wex::log::log(const std::string& topic)
-  : log(topic, LEVEL_ERROR)
+  : log(topic, level_t::ERROR)
 {
 }
 
 wex::log::log(const std::exception& e)
-  : log(std::string(), LEVEL_ERROR)
+  : log(std::string(), level_t::ERROR)
 {
   m_ss << "std::exception:" << S() << e.what();
 }
 
 wex::log::log(const pugi::xml_parse_result& r)
-  : log(std::string(), LEVEL_ERROR)
+  : log(std::string(), level_t::ERROR)
 {
   if (r.status != pugi::xml_parse_status::status_ok)
   {
@@ -82,7 +82,7 @@ wex::log::log(const pugi::xml_parse_result& r)
   }
   else
   {
-    m_level     = LEVEL_INFO;
+    m_level     = level_t::INFO;
     m_separator = false;
   }
 }
@@ -209,51 +209,51 @@ wex::log& wex::log::operator<<(const pugi::xml_node& r)
 
 wex::log wex::log::debug(const std::string& topic)
 {
-  return log(topic, LEVEL_DEBUG);
+  return log(topic, level_t::DEBUG);
 }
 
 wex::log wex::log::fatal(const std::string& topic)
 {
-  return log(topic, LEVEL_FATAL);
+  return log(topic, level_t::FATAL);
 }
 
 void wex::log::flush()
 {
-  if (const auto& text(get()); !text.empty() || m_level == LEVEL_STATUS)
+  if (const auto& text(get()); !text.empty() || m_level == level_t::STATUS)
   {
     switch (m_level)
     {
-      case LEVEL_DEBUG:
+      case level_t::DEBUG:
         BOOST_LOG_TRIVIAL(debug) << text;
         break;
 
-      case LEVEL_ERROR:
+      case level_t::ERROR:
         BOOST_LOG_TRIVIAL(error) << text;
         break;
 
-      case LEVEL_FATAL:
+      case level_t::FATAL:
         BOOST_LOG_TRIVIAL(fatal) << text;
         break;
 
-      case LEVEL_INFO:
+      case level_t::INFO:
         BOOST_LOG_TRIVIAL(info) << text;
         break;
 
-      case LEVEL_OFF:
+      case level_t::OFF:
         break;
 
-      case LEVEL_STATUS:
-        if (m_level_filter != LEVEL_OFF)
+      case level_t::STATUS:
+        if (m_level_filter != level_t::OFF)
         {
           wxLogStatus("%s", text.c_str());
         }
         break;
 
-      case LEVEL_TRACE:
+      case level_t::TRACE:
         BOOST_LOG_TRIVIAL(trace) << text;
         break;
 
-      case LEVEL_WARNING:
+      case level_t::WARNING:
         BOOST_LOG_TRIVIAL(warning) << text;
         break;
 
@@ -272,9 +272,12 @@ const std::string wex::log::get() const
 std::string wex::log::get_level_info()
 {
   std::stringstream help;
-  help << "valid ranges: " << LEVEL_TRACE << "-" << LEVEL_OFF;
+  help << "valid ranges: " << std::to_underlying(level_t::TRACE) << "-"
+       << std::to_underlying(level_t::OFF);
 
-  for (int i = LEVEL_TRACE; i <= LEVEL_FATAL; i++)
+  for (int i = std::to_underlying(level_t::TRACE);
+       i <= std::to_underlying(level_t::FATAL);
+       i++)
   {
     help << "\n"
          << i << " "
@@ -282,10 +285,10 @@ std::string wex::log::get_level_info()
   }
 
   help << "\n"
-       << LEVEL_STATUS << " "
+       << std::to_underlying(level_t::STATUS) << " "
        << "status";
   help << "\n"
-       << LEVEL_OFF << " "
+       << std::to_underlying(level_t::OFF) << " "
        << "none";
 
   return help.str();
@@ -293,12 +296,12 @@ std::string wex::log::get_level_info()
 
 wex::log wex::log::info(const std::string& topic)
 {
-  return log(topic, LEVEL_INFO);
+  return log(topic, level_t::INFO);
 }
 
 wex::log::level_t wex::log::level_t_def()
 {
-  return LEVEL_ERROR;
+  return level_t::ERROR;
 }
 
 void wex::log::on_init(level_t loglevel, const std::string& default_logfile)
@@ -334,45 +337,45 @@ void wex::log::set_level(level_t loglevel)
 {
   switch (loglevel)
   {
-    case LEVEL_DEBUG:
+    case level_t::DEBUG:
       logging::core::get()->set_filter(
         logging::trivial::severity >= logging::trivial::debug);
       break;
 
-    case LEVEL_ERROR:
+    case level_t::ERROR:
       logging::core::get()->set_filter(
         logging::trivial::severity >= logging::trivial::error);
       break;
 
-    case LEVEL_FATAL:
+    case level_t::FATAL:
       logging::core::get()->set_filter(
         logging::trivial::severity >= logging::trivial::fatal);
       break;
 
-    case LEVEL_INFO:
+    case level_t::INFO:
       logging::core::get()->set_filter(
         logging::trivial::severity >= logging::trivial::info);
       break;
 
-    case LEVEL_OFF:
-    case LEVEL_STATUS:
+    case level_t::OFF:
+    case level_t::STATUS:
       logging::core::get()->set_filter(
         logging::trivial::severity > logging::trivial::fatal);
       break;
 
-    case LEVEL_TRACE:
+    case level_t::TRACE:
       logging::core::get()->set_filter(
         logging::trivial::severity >= logging::trivial::trace);
       break;
 
-    case LEVEL_WARNING:
+    case level_t::WARNING:
       logging::core::get()->set_filter(
         logging::trivial::severity >= logging::trivial::warning);
       break;
 
     default:
       log("unsupported level, using error level");
-      set_level(LEVEL_ERROR);
+      set_level(level_t::ERROR);
       return;
   }
 
@@ -381,17 +384,17 @@ void wex::log::set_level(level_t loglevel)
 
 wex::log wex::log::status(const std::string& topic)
 {
-  return log(topic, LEVEL_STATUS);
+  return log(topic, level_t::STATUS);
 }
 
 wex::log wex::log::trace(const std::string& topic)
 {
-  return log(topic, LEVEL_TRACE);
+  return log(topic, level_t::TRACE);
 }
 
 wex::log wex::log::warning(const std::string& topic)
 {
-  return log(topic, LEVEL_WARNING);
+  return log(topic, level_t::WARNING);
 }
 
 const std::string wex::log::S()

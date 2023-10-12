@@ -2,7 +2,7 @@
 // Name:      macros.cpp
 // Purpose:   Implementation of class wex::macros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -87,9 +87,9 @@ const wex::macros::keys_map_t& wex::macros::get_keys_map(key_t type) const
 {
   switch (type)
   {
-    case KEY_ALT:
+    case key_t::ALT:
       return m_map_alt_keys;
-    case KEY_CONTROL:
+    case key_t::CONTROL:
       return m_map_control_keys;
     default:
       return m_map_keys;
@@ -448,15 +448,15 @@ void wex::macros::set_key_map(
 {
   switch (type)
   {
-    case KEY_ALT:
+    case key_t::ALT:
       set<int, keys_map_t>(m_map_alt_keys, "map-alt", name, value);
       break;
 
-    case KEY_CONTROL:
+    case key_t::CONTROL:
       set<int, keys_map_t>(m_map_control_keys, "map-control", name, value);
       break;
 
-    case KEY_NORMAL:
+    case key_t::NORMAL:
       set<int, keys_map_t>(m_map_keys, "map-key", name, value);
       break;
   }

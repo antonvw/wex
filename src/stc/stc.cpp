@@ -31,8 +31,10 @@ wex::stc::stc(const wex::path& p, const data::stc& data)
   : syntax::stc(data.window())
   , m_data(data)
   , m_auto_complete(new wex::auto_complete(this))
-  , m_vi(
-      new vi(this, data.flags().test(data::stc::WIN_EX) ? ex::EX : ex::VISUAL))
+  , m_vi(new vi(
+      this,
+      data.flags().test(data::stc::WIN_EX) ? ex::mode_t::EX :
+                                             ex::mode_t::VISUAL))
   , m_file(this, wex::path(data.window().name()))
   , m_hexmode(hexmode(this))
   , m_frame(dynamic_cast<frame*>(wxTheApp->GetTopWindow()))
@@ -126,12 +128,12 @@ wex::stc::~stc()
 
 void wex::stc::add_text(const std::string& text)
 {
-  if (m_vi->visual() == ex::EX)
+  if (m_vi->visual() == ex::mode_t::EX)
   {
     m_file.ex_stream()->insert_text(
       address(m_vi, m_file.ex_stream()->get_current_line()),
       text,
-      ex_stream::INSERT_AFTER);
+      ex_stream::loc_t::AFTER);
   }
   else if (!GetOvertype())
   {
@@ -234,7 +236,7 @@ bool wex::stc::file_readonly_attribute_changed()
 
 int wex::stc::get_current_line() const
 {
-  if (m_vi->visual() == ex::EX)
+  if (m_vi->visual() == ex::mode_t::EX)
   {
     return m_file.ex_stream()->get_current_line();
   }
@@ -310,7 +312,7 @@ bool wex::stc::get_hexmode_sync()
 
 int wex::stc::get_line_count() const
 {
-  if (m_vi->visual() == ex::EX)
+  if (m_vi->visual() == ex::mode_t::EX)
   {
     return m_file.ex_stream()->get_line_count();
   }
@@ -322,7 +324,7 @@ int wex::stc::get_line_count() const
 
 int wex::stc::get_line_count_request()
 {
-  if (m_vi->visual() == ex::EX)
+  if (m_vi->visual() == ex::mode_t::EX)
   {
     return m_file.ex_stream()->get_line_count_request();
   }
@@ -344,7 +346,7 @@ wex::vi& wex::stc::get_vi()
 
 void wex::stc::goto_line(int line)
 {
-  if (m_vi->visual() == ex::EX)
+  if (m_vi->visual() == ex::mode_t::EX)
   {
     m_file.ex_stream()->goto_line(line);
   }
@@ -399,7 +401,7 @@ bool wex::stc::inject(const data::control& data)
 
 void wex::stc::insert_text(int pos, const std::string& text)
 {
-  if (m_vi->visual() == ex::EX)
+  if (m_vi->visual() == ex::mode_t::EX)
   {
     m_file.ex_stream()->insert_text(address(m_vi, LineFromPosition(pos)), text);
   }
@@ -416,7 +418,7 @@ bool wex::stc::IsModified() const
 
 bool wex::stc::is_visual() const
 {
-  return m_vi->visual() != ex::EX;
+  return m_vi->visual() != ex::mode_t::EX;
 }
 
 bool wex::stc::marker_delete_all_change()
@@ -597,7 +599,7 @@ void wex::stc::properties_message(path::log_t flags)
 
     std::string title = name + readonly;
 
-    if (m_vi->visual() == ex::EX)
+    if (m_vi->visual() == ex::mode_t::EX)
     {
       title += " [ex]";
     }
@@ -722,7 +724,7 @@ void wex::stc::visual(bool on)
 
   if (on)
   {
-    if (m_vi->visual() != ex::VISUAL)
+    if (m_vi->visual() != ex::mode_t::VISUAL)
     {
       std::stringstream info;
 
@@ -734,14 +736,14 @@ void wex::stc::visual(bool on)
       log::info("enter visual mode") << on << info;
     }
 
-    m_vi->use(ex::VISUAL); // needed in do_file_load
+    m_vi->use(ex::mode_t::VISUAL); // needed in do_file_load
     m_file.close();
     m_file.use_stream(false);
     m_file.file_load(path());
   }
   else
   {
-    m_vi->use(ex::EX);
+    m_vi->use(ex::mode_t::EX);
   }
 
   config_get();

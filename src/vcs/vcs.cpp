@@ -489,7 +489,7 @@ int wex::vcs::show_dialog(const data::window& arg)
                config(m_entry->flags_key()).set(m_entry->get_flags());
              })) :
        item(),
-     m_entry->flags_location() == vcs_entry::FLAGS_LOCATION_PREFIX &&
+     m_entry->flags_location() == vcs_entry::flags_location_t::PREFIX &&
          m_entry->get_command().ask_flags() ?
        item(_("vcs.Prefix flags"), std::string()) :
        item(),

@@ -2,7 +2,7 @@
 // Name:      ex-stream.cpp
 // Purpose:   Implementation of class wex::ex_stream
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -502,7 +502,7 @@ bool wex::ex_stream::insert_text(
   const std::string& text,
   loc_t              loc)
 {
-  const auto line(loc == INSERT_BEFORE ? a.get_line() : a.get_line() + 1);
+  const auto line(loc == loc_t::BEFORE ? a.get_line() : a.get_line() + 1);
   const addressrange range(
     m_ex,
     std::to_string(line) + "," + std::to_string(line));

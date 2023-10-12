@@ -117,7 +117,7 @@ TEST_CASE("wex::stc")
 
   SUBCASE("find")
   {
-    for (const auto mode : {wex::ex::OFF, wex::ex::VISUAL})
+    for (const auto mode : {wex::ex::mode_t::OFF, wex::ex::mode_t::VISUAL})
     {
       stc->get_vi().use(mode);
 
@@ -171,7 +171,7 @@ TEST_CASE("wex::stc")
 
   SUBCASE("find_next")
   {
-    for (const auto mode : {wex::ex::OFF, wex::ex::VISUAL})
+    for (const auto mode : {wex::ex::mode_t::OFF, wex::ex::mode_t::VISUAL})
     {
       stc->get_vi().use(mode);
 

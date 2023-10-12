@@ -638,8 +638,8 @@ const std::string wex::addressrange::regex_commands() const
 
 void wex::addressrange::set(int begin, int end)
 {
-  m_begin.m_type = address::IS_BEGIN;
-  m_end.m_type   = address::IS_END;
+  m_begin.m_type = address::address_t::IS_BEGIN;
+  m_end.m_type   = address::address_t::IS_END;
 
   m_begin.set_line(begin);
   m_end.set_line(end);
@@ -647,16 +647,16 @@ void wex::addressrange::set(int begin, int end)
 
 bool wex::addressrange::set(const std::string& begin, const std::string& end)
 {
-  m_begin.m_type = address::IS_BEGIN;
-  m_end.m_type   = address::IS_END;
+  m_begin.m_type = address::address_t::IS_BEGIN;
+  m_end.m_type   = address::address_t::IS_END;
 
   return set_single(begin, m_begin) && set_single(end, m_end);
 }
 
 void wex::addressrange::set(address& begin, address& end, int lines) const
 {
-  begin.m_type = address::IS_BEGIN;
-  end.m_type   = address::IS_END;
+  begin.m_type = address::address_t::IS_BEGIN;
+  end.m_type   = address::address_t::IS_END;
 
   begin.set_line(m_stc->LineFromPosition(m_stc->GetCurrentPos()) + 1);
   end.set_line(begin.get_line() + lines - 1);
@@ -709,8 +709,8 @@ bool wex::addressrange::set_single(const std::string& line, address& addr)
   addr.m_address = line;
 
   if (const auto line_no = addr.get_line(
-        addr.type() == address::IS_BEGIN ? m_stc->GetCurrentPos() :
-                                           m_stc->GetTargetEnd());
+        addr.type() == address::address_t::IS_BEGIN ? m_stc->GetCurrentPos() :
+                                                      m_stc->GetTargetEnd());
       line_no > 0)
   {
     addr.set_line(line_no);

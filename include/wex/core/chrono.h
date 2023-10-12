@@ -21,18 +21,18 @@ public:
   static inline const std::string TIME_FORMAT = "%Y-%m-%d %H:%M:%S";
 
   /// Precision used for outputting time.
-  enum precision_t
+  enum class precision_t
   {
-    PRECISION_SEC,   ///< seconds
-    PRECISION_MILLI, ///< millisecond
-    PRECISION_MICRO, ///< microsecond
-    PRECISION_NANO,  ///< nanosecond
+    SEC,   ///< seconds
+    MILLI, ///< millisecond
+    MICRO, ///< microsecond
+    NANO,  ///< nanosecond
   };
 
   /// Default constructor.
   chrono(
     const std::string& format    = TIME_FORMAT,
-    precision_t        precision = PRECISION_SEC);
+    precision_t        precision = precision_t::SEC);
 
   /// Returns time string for a time_t. Precision is not used.
   std::string get_time(time_t tt) const;
@@ -55,5 +55,5 @@ private:
 /// Returns now as a string.
 const std::string now(
   const std::string&  format    = chrono::TIME_FORMAT,
-  chrono::precision_t precision = chrono::PRECISION_SEC);
+  chrono::precision_t precision = chrono::precision_t::SEC);
 } // namespace wex

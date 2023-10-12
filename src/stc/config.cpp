@@ -123,12 +123,12 @@ void wex::stc::config_get()
 
     if (!m_data.flags().test(data::stc::WIN_EX))
     {
-      get_vi().use(ex::OFF);
+      get_vi().use(ex::mode_t::OFF);
     }
   }
   else if (!m_data.flags().test(data::stc::WIN_EX))
   {
-    get_vi().use(ex::VISUAL);
+    get_vi().use(ex::mode_t::VISUAL);
   }
 
   show_line_numbers(iv.find<bool>(_("stc.Line numbers")));

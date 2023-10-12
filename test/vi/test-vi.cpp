@@ -220,9 +220,9 @@ TEST_CASE("wex::vi")
   SUBCASE("is_active")
   {
     REQUIRE(vi->is_active());
-    vi->use(wex::ex::OFF);
+    vi->use(wex::ex::mode_t::OFF);
     REQUIRE(!vi->is_active());
-    vi->use(wex::ex::VISUAL);
+    vi->use(wex::ex::mode_t::VISUAL);
     REQUIRE(vi->is_active());
   }
 
