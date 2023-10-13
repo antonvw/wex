@@ -226,20 +226,43 @@ TEST_CASE("wex::vi")
   {
     stc->set_text("xx\nxx\nyy\nzz\n");
 
+    // Default setting.
+    REQUIRE(bool(vi->search_flags() & wxSTC_FIND_REGEXP));
+
     REQUIRE(vi->command(":set noaw"));
-    REQUIRE(vi->command(":set noic"));
     REQUIRE(vi->command(":set noreadonly"));
     REQUIRE(vi->command(":set nosws"));
     REQUIRE(vi->command(":set dir=./"));
 
-    // Default setting.
-    REQUIRE(bool(vi->search_flags() & wxSTC_FIND_REGEXP));
+    // Test noic.
+    REQUIRE(vi->command(":set noic"));
+    REQUIRE(bool(vi->search_flags() & wxSTC_FIND_MATCHCASE));
+    REQUIRE(wex::find_replace_data::get()->match_case());
+
+    // Test mw.
+    REQUIRE(vi->command(":set mw"));
+    REQUIRE(bool(vi->search_flags() & wxSTC_FIND_WHOLEWORD));
+    REQUIRE(wex::find_replace_data::get()->match_word());
 
     // Test nomagic.
     REQUIRE(vi->command(":set nomagic"));
     REQUIRE(bool(!(vi->search_flags() & wxSTC_FIND_REGEXP)));
 
+    // And, for new component, the search_flags are kept.
+    auto vi_2 = new wex::vi(stc);
+    CAPTURE(vi_2->search_flags());
+    REQUIRE(bool(vi_2->search_flags() & wxSTC_FIND_MATCHCASE));
+    REQUIRE(bool(vi_2->search_flags() & wxSTC_FIND_WHOLEWORD));
+
     // Back to default.
+    REQUIRE(vi->command(":set ic"));
+    REQUIRE(bool(!(vi->search_flags() & wxSTC_FIND_MATCHCASE)));
+    REQUIRE(!wex::find_replace_data::get()->match_case());
+
+    REQUIRE(vi->command(":set nomw"));
+    REQUIRE(bool(!(vi->search_flags() & wxSTC_FIND_WHOLEWORD)));
+    REQUIRE(!wex::find_replace_data::get()->match_word());
+
     REQUIRE(vi->command(":set magic"));
     REQUIRE(bool(vi->search_flags() & wxSTC_FIND_REGEXP));
 

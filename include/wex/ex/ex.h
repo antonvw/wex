@@ -2,7 +2,7 @@
 // Name:      ex.h
 // Purpose:   Declaration of class wex::ex
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2012-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -155,7 +155,7 @@ public:
   /// active).
   const std::string register_text() const;
 
-  /// Resets search flags.
+  /// Resets search flags, to what is available in config.
   void reset_search_flags();
 
   /// Returns search flags.
