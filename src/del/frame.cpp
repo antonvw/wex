@@ -8,6 +8,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 #include <wex/wex.h>
+#include <wx/timer.h>
 
 #include "blaming.h"
 
@@ -44,6 +45,43 @@ wex::del::frame::frame(
        find_replace_data::get()->text_regex(),
        m_text_recursive + ",1",
        m_text_hidden})
+  , m_function_repeat(
+      "frame",
+      this,
+      [this](wxTimerEvent&)
+      {
+        std::string       title(GetTitle());
+        const std::string indicator(" *");
+
+        if (title.size() < indicator.size())
+        {
+          return;
+        }
+
+        auto* stc     = dynamic_cast<wex::stc*>(get_stc());
+        auto* project = get_project();
+
+        if (const size_t pos = title.size() - indicator.size();
+            (project != nullptr && project->is_contents_changed()) ||
+            // using is_contents_changed gives assert in vcs dialog
+            (stc != nullptr && stc->GetModify() &&
+             !stc->data().flags().test(data::stc::WIN_NO_INDICATOR)))
+        {
+          // Project or editor changed, add indicator if not yet done.
+          if (title.substr(pos) != indicator)
+          {
+            SetTitle(title + indicator);
+          }
+        }
+        else
+        {
+          // Project or editor not changed, remove indicator if not yet done.
+          if (title.substr(pos) == indicator)
+          {
+            SetTitle(title.erase(pos));
+          }
+        }
+      })
 {
   auto info(m_info);
   // Match whole word does not work with replace.
@@ -396,43 +434,6 @@ void wex::del::frame::on_command_item_dialog(
   }
 }
 
-void wex::del::frame::on_idle(wxIdleEvent& event)
-{
-  event.Skip();
-
-  std::string       title(GetTitle());
-  const std::string indicator(" *");
-
-  if (title.size() < indicator.size())
-  {
-    return;
-  }
-
-  auto* stc     = dynamic_cast<wex::stc*>(get_stc());
-  auto* project = get_project();
-
-  if (const size_t pos = title.size() - indicator.size();
-      (project != nullptr && project->is_contents_changed()) ||
-      // using is_contents_changed gives assert in vcs dialog
-      (stc != nullptr && stc->GetModify() &&
-       !stc->data().flags().test(data::stc::WIN_NO_INDICATOR)))
-  {
-    // Project or editor changed, add indicator if not yet done.
-    if (title.substr(pos) != indicator)
-    {
-      SetTitle(title + indicator);
-    }
-  }
-  else
-  {
-    // Project or editor not changed, remove indicator if not yet done.
-    if (title.substr(pos) == indicator)
-    {
-      SetTitle(title.erase(pos));
-    }
-  }
-}
-
 void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
 {
   if (is_closing() || !IsShown())
@@ -717,12 +718,6 @@ void wex::del::frame::stc_entry_dialog_title(const std::string& title)
 void wex::del::frame::stc_entry_dialog_validator(const std::string& regex)
 {
   entry_dialog()->set_validator(regex);
-}
-
-void wex::del::frame::sync(bool start)
-{
-  start ? Bind(wxEVT_IDLE, &frame::on_idle, this) :
-          (void)Unbind(wxEVT_IDLE, &frame::on_idle, this);
 }
 
 void wex::del::frame::use_file_history_list(listview* list)

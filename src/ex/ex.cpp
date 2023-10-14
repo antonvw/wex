@@ -5,7 +5,7 @@
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2012-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
-
+ 
 #include <sstream>
 #include <utility>
 

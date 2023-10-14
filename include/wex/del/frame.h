@@ -8,6 +8,7 @@
 #pragma once
 
 #include <wex/core/config.h>
+#include <wex/core/function-repeat.h>
 #include <wex/del/defs.h>
 #include <wex/del/listview.h>
 #include <wex/ui/file-history.h>
@@ -121,7 +122,7 @@ public:
 
   /// Starts or stops syncing.
   /// Default syncing is started during construction.
-  void sync(bool start);
+  void sync(bool start = true) { m_function_repeat.activate(start); };
 
   /// Uses specified history list, and adds all elements from file history
   /// to the list.
@@ -205,7 +206,6 @@ private:
     const std::string& text  = std::string());
 
   void find_in_files(wex::window_id id);
-  void on_idle(wxIdleEvent& event);
 
   item_dialog *     m_fif_dialog{nullptr}, *m_rif_dialog{nullptr};
   stc_entry_dialog* m_entry_dialog{nullptr};
@@ -215,6 +215,8 @@ private:
 
   listview*          m_file_history_listview{nullptr};
   class file_history m_project_history;
+
+  function_repeat m_function_repeat;
 
   static inline constexpr int id_find_in_files    = ID_FREE_LOWEST;
   static inline constexpr int id_replace_in_files = ID_FREE_LOWEST + 1;

@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <wex/core/function-repeat.h>
 #include <wex/data/stc.h>
 #include <wex/stc/file.h>
 #include <wex/stc/hexmode.h>
@@ -236,7 +237,8 @@ public:
   void set_text(const std::string& value) override;
   void show_ascii_value() override;
   void show_line_numbers(bool show) override;
-  void sync(bool start = true) override;
+  void sync(bool start = true) override { m_function_repeat.activate(start); }
+
   void use_modification_markers(bool use) override;
 
   bool        vi_command(const line_data& data) override;
@@ -276,7 +278,6 @@ private:
   void margin_action(wxStyledTextEvent& event);
   void mouse_action(wxMouseEvent& event);
   void mark_modified(const wxStyledTextEvent& event);
-  void on_idle(wxIdleEvent& event);
   void on_styled_text(wxStyledTextEvent& event);
   void show_properties();
   void sort_action(const wxCommandEvent& event);
@@ -289,10 +290,10 @@ private:
 
   class auto_complete* m_auto_complete;
 
-  hexmode m_hexmode;
-
-  data::stc m_data;
-  stc_file  m_file;
+  hexmode         m_hexmode;
+  function_repeat m_function_repeat;
+  data::stc       m_data;
+  stc_file        m_file;
 
   int m_selection_mode_copy{wxSTC_SEL_STREAM};
 
