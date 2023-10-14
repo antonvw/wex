@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::ex
 //            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/ex.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2012-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
@@ -345,7 +345,18 @@ const std::string wex::ex::register_text() const
 
 void wex::ex::reset_search_flags()
 {
-  m_search_flags &= ~wxSTC_FIND_WHOLEWORD;
+  const auto ic(config("ex-set.ignorecase").get(true));
+  const auto mw(config("ex-set.matchwords").get(false));
+
+  if (!ic)
+    m_search_flags |= wxSTC_FIND_MATCHCASE;
+  else
+    m_search_flags &= ~wxSTC_FIND_MATCHCASE;
+
+  if (!mw)
+    m_search_flags &= ~wxSTC_FIND_WHOLEWORD;
+  else
+    m_search_flags |= wxSTC_FIND_WHOLEWORD;
 }
 
 void wex::ex::search_whole_word()
