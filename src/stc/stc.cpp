@@ -38,6 +38,21 @@ wex::stc::stc(const wex::path& p, const data::stc& data)
   , m_file(this, wex::path(data.window().name()))
   , m_hexmode(hexmode(this))
   , m_frame(dynamic_cast<frame*>(wxTheApp->GetTopWindow()))
+  , m_function_repeat(
+      "stc",
+      this,
+      [this](wxTimerEvent&)
+      {
+        if (
+          is_visual() && m_file.check_sync() &&
+          // the readonly flags bit of course can differ from file actual
+          // readonly mode, therefore add this check
+          !m_data.flags().test(data::stc::WIN_READ_ONLY) &&
+          path().stat().is_readonly() != GetReadOnly())
+        {
+          file_readonly_attribute_changed();
+        }
+      })
 {
   m_data.set_stc(this);
 
@@ -50,7 +65,7 @@ wex::stc::stc(const wex::path& p, const data::stc& data)
 
   get_lexer().set(lexer(this));
 
-  if (config("AllowSync").get(true) && p != wex::ex::get_macros().path())
+  if (p != wex::ex::get_macros().path())
   {
     sync();
   }
@@ -482,21 +497,6 @@ void wex::stc::mark_modified(const wxStyledTextEvent& event)
   use_modification_markers(true);
 }
 
-void wex::stc::on_idle(wxIdleEvent& event)
-{
-  event.Skip();
-
-  if (
-    is_visual() && m_file.check_sync() &&
-    // the readonly flags bit of course can differ from file actual readonly
-    // mode, therefore add this check
-    !m_data.flags().test(data::stc::WIN_READ_ONLY) &&
-    path().stat().is_readonly() != GetReadOnly())
-  {
-    file_readonly_attribute_changed();
-  }
-}
-
 void wex::stc::on_styled_text(wxStyledTextEvent& event)
 {
   if (is_visual())
@@ -658,12 +658,6 @@ void wex::stc::show_line_numbers(bool show)
       m_margin_line_number,
       show ? iv.find<int>(_("stc.margin.Line number")) : 0);
   }
-}
-
-void wex::stc::sync(bool start)
-{
-  start ? Bind(wxEVT_IDLE, &stc::on_idle, this) :
-          (void)Unbind(wxEVT_IDLE, &stc::on_idle, this);
 }
 
 void wex::stc::Undo()
