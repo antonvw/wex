@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- the build system now supports ninja besides make
+- the build tool now supports ninja besides make
 - added class function_repeat to offer syncing without idle events
 
 ### Changed
