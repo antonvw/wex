@@ -27,7 +27,7 @@ public:
     DEBUG,   ///< debug level
     INFO,    ///< info level
     WARNING, ///< warning level
-    ERROR,   ///< error level
+    ERRORS,  ///< error level
     FATAL,   ///< fatal level
     STATUS,  ///< from wxLog
     OFF,     ///< no logging
