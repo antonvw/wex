@@ -34,6 +34,10 @@ bool wex::factory::process::async_system(const process_data& data)
     m_imp->async_system(this, data); // this is a void
     return true;
   }
+  else
+  {
+    log::trace("async_system needs set_handler_out");
+  }
 
   return false;
 }

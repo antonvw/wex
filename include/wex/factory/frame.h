@@ -14,6 +14,7 @@ class wxListView;
 
 namespace wex
 {
+class process_data;
 class vcs_entry;
 
 namespace data
@@ -93,6 +94,9 @@ public:
 
   /// Allows you to handle output text, .e.g. from a process.
   virtual bool output(const std::string& text) const { return false; }
+
+  /// Runs async process.
+  virtual bool process_async_system(const process_data& data) { return false; };
 
   /// Allows derived class to update file history.
   virtual void set_recent_file(const path& path) { ; }

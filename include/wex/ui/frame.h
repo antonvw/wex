@@ -160,9 +160,6 @@ public:
     return false;
   };
 
-  /// Runs async process.
-  virtual bool process_async_system(const process_data& data) { return false; };
-
   /// Allows you to perform action for a (vi) command.
   /// This method is invoked after command is executed.
   virtual void record(const std::string& command);

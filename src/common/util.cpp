@@ -2,7 +2,7 @@
 // Name:      common/util.cpp
 // Purpose:   Implementation of wex common utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <numeric>
@@ -198,17 +198,6 @@ bool wex::lexers_dialog(syntax::stc* stc)
                     (void)stc->get_lexer().set(lexer, true);
     return true;
   }
-}
-
-bool wex::make(const path& makefile)
-{
-  auto* process = new wex::factory::process;
-
-  return process->async_system(process_data(
-                                 config("Make").get("make") + " " +
-                                 config("MakeSwitch").get("-f") + " " +
-                                 makefile.string())
-                                 .start_dir(makefile.parent_path()));
 }
 
 int wex::open_files(

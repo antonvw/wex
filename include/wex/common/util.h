@@ -2,7 +2,7 @@
 // Name:      util.h
 // Purpose:   Include file for wex utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -84,12 +84,6 @@ bool compare_file(const path& file1, const path& file2);
 /// Returns true and sets the lexer on the stc component if you selected
 /// one.
 bool lexers_dialog(syntax::stc* stc);
-
-/// Runs make on specified makefile.
-/// Returns value from executing the make process.
-bool make(
-  /// the makefile
-  const path& makefile);
 
 /// Opens all files specified by files.
 /// Returns number of files opened.

@@ -2,7 +2,7 @@
 // Name:      dirctrl.cpp
 // Purpose:   Implementation of class wex::del::dirctrl
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2010-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
@@ -93,9 +93,9 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
       {
         GET_VECTOR_FILES
 
-        make(files[0]);
+        build(path_lexer(files[0]));
       },
-      ID_TREE_RUN_MAKE},
+      ID_TREE_RUN_BUILD},
      {[=, this](wxCommandEvent& event)
       {
         frame->find_in_files(
@@ -171,9 +171,9 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
         menu.append({{}, {filename, frame}});
       }
 
-      if (filename.lexer().scintilla_lexer() == "makefile")
+      if (filename.is_build())
       {
-        menu.append({{}, {ID_TREE_RUN_MAKE, "&Make"}});
+        menu.append({{}, {ID_TREE_RUN_BUILD, "&Build"}});
       }
 
       menu.append(

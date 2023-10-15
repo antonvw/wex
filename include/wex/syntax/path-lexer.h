@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      path-lexer.h
-// Purpose:   Declaration of class wex::path
+// Purpose:   Declaration of class wex::path_lexer
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -22,10 +22,19 @@ public:
   /// Constructor using path.
   explicit path_lexer(const path& p);
 
+  /// Returns true if this path can be built.
+  bool is_build() const;
+
   /// Returns the lexer.
   const auto& lexer() const { return m_lexer; }
 
 private:
   const wex::lexer m_lexer;
 };
+
+/// Runs a build on specified file (makefile or ninja build).
+/// Returns value from executing the process.
+bool build(
+  /// the build file
+  const path_lexer& p);
 }; // namespace wex
