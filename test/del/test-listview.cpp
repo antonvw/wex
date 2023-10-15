@@ -41,7 +41,7 @@ TEST_CASE("wex::del::listview")
     for (auto id : std::vector<int>{
            wex::ID_EDIT_OPEN,
            wex::del::ID_LIST_COMPARE,
-           wex::del::ID_LIST_RUN_MAKE})
+           wex::del::ID_LIST_RUN_BUILD})
     {
       auto* event = new wxCommandEvent(wxEVT_MENU, id);
       wxQueueEvent(lv, event);

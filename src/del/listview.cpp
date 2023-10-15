@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of class wex::del::listview
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/dir.h>
@@ -21,7 +21,7 @@ namespace wex::del
 {
 struct menu_env
 {
-  bool is_ok = true, is_folder = false, is_make = false, is_readonly = false;
+  bool is_ok = true, is_folder = false, is_build = false, is_readonly = false;
 };
 } // namespace wex::del
 
@@ -51,9 +51,9 @@ wex::del::listview::listview(const data::listview& data)
 
      {[=, this](wxCommandEvent& event)
       {
-        make(listitem(this, GetFirstSelected()).path());
+        build(path_lexer(listitem(this, GetFirstSelected()).path()));
       },
-      ID_LIST_RUN_MAKE},
+      ID_LIST_RUN_BUILD},
 
      {[=, this](wxCommandEvent& event)
       {
@@ -84,8 +84,7 @@ void wex::del::listview::build_popup_menu(wex::menu& menu)
     env.is_ok       = item.path().stat().is_ok();
     env.is_folder   = item.path().dir_exists();
     env.is_readonly = item.path().stat().is_readonly();
-    env.is_make =
-      path_lexer(item.path()).lexer().scintilla_lexer() == "makefile";
+    env.is_build    = path_lexer(item.path()).is_build();
   }
 
   wex::listview::build_popup_menu(menu);
@@ -159,9 +158,9 @@ void wex::del::listview::build_popup_menu_single(
   const menu_env* env,
   wex::menu&      menu)
 {
-  if (env->is_make)
+  if (env->is_build)
   {
-    menu.append({{}, {ID_LIST_RUN_MAKE, _("&Make")}});
+    menu.append({{}, {ID_LIST_RUN_BUILD, _("&Build")}});
   }
 
   if (data().type() != data::listview::FILE && env->is_ok && !env->is_folder)

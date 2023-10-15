@@ -2,7 +2,7 @@
 // Name:      test-util.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/util.h>
@@ -53,16 +53,6 @@ TEST_CASE("wex::util" * doctest::may_fail())
     REQUIRE(wex::compare_file(
       wex::test::get_path("test.h"),
       wex::test::get_path("test.h")));
-  }
-#endif
-
-#ifdef __UNIX__
-  SUBCASE("make")
-  {
-    wex::path cwd; // as /usr/bin/git changes wd
-    REQUIRE(wex::make(wex::path("xxx")) != -1);
-    REQUIRE(wex::make(wex::path("make.tst")) != -1);
-    REQUIRE(wex::make(wex::path("/usr/bin/git")) != -1);
   }
 #endif
 

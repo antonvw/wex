@@ -6,9 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## 24.04 - 2024-04-01 [Unreleased]
 
+### Added
+
+- the build tool now supports ninja besides make
+- added class function_repeat to offer syncing without idle events
+
 ### Changed
 
-- added class sync_check to offer syncing without idle events
 - ex options ignorecase and matchword are kept in config
 - std::optional is used to return values at several places
 - use more enum classes
