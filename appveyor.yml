@@ -8,8 +8,11 @@ environment:
   matrix:
   - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
 
-configuration: 
+configuration:
   - Release
+
+cache:
+  - build\external -> external
 
 install:
   - git config http.postBuffer 1048576000
