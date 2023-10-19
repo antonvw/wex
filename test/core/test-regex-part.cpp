@@ -27,7 +27,7 @@ TEST_CASE("wex::regex_part")
   {
     wex::regex_part rer("[xyz");
 
-    REQUIRE(rer.match('x') == wex::regex_part::match_t::ERROR);
+    REQUIRE(rer.match('x') == wex::regex_part::match_t::ERRORS);
     REQUIRE(rer.error().contains("Unmatched"));
 
     REQUIRE(wex::regex_part("x").match('y') == wex::regex_part::match_t::NONE);

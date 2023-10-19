@@ -48,7 +48,7 @@ TEST_CASE("wex::log")
 
   SUBCASE("level")
   {
-    const auto current = wex::log::level_t::ERROR;
+    const auto current = wex::log::get_level();
 
     wex::log::set_level(wex::log::level_t::TRACE);
     REQUIRE(wex::log::get_level() == wex::log::level_t::TRACE);
@@ -59,7 +59,7 @@ TEST_CASE("wex::log")
 
   SUBCASE("off")
   {
-    const auto current = wex::log::level_t::ERROR;
+    const auto current = wex::log::get_level();
 
     {
       wex::log log("off");

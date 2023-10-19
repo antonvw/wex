@@ -26,7 +26,7 @@ public:
   enum class match_t
   {
     NONE,    ///< the current text does not match at all, even partly
-    ERROR,   ///< the regex part gives a regex error during parsing
+    ERRORS,  ///< the regex part gives a regex error during parsing
     PART,    ///< the current text matches part of regex part
     HISTORY, ///< the current text matches part of regex part, last char
              ///< not
@@ -40,7 +40,7 @@ public:
     /// the regex flags
     boost::regex::flag_type flags = boost::regex::ECMAScript);
 
-  /// Returns the error (in case match_t::ERROR).
+  /// Returns the error (in case match_t::ERRORS).
   const std::string& error() const { return m_error; };
 
   /// Regular expression match using a single char at a time,
@@ -49,7 +49,7 @@ public:
   /// - PART: The resulting text from this and all previous chars do match
   /// - FULL: The text matches the complete regex
   /// - NONE: There is no match
-  /// - ERROR: There is a regex error, available using error()
+  /// - ERRORS: There is a regex error, available using error()
   /// Non ascii chars are ignored.
   match_t match(char c);
 
@@ -113,7 +113,7 @@ inline wex::regex_part::match_t wex::regex_part::match(char c)
   catch (boost::regex_error& e)
   {
     m_error      = m_regex + " error: " + e.what() + "\n";
-    m_match_type = match_t::ERROR;
+    m_match_type = match_t::ERRORS;
   }
 
   return m_match_type;
