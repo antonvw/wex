@@ -72,10 +72,8 @@ TEST_CASE("wex::vi")
 
     SUBCASE("block")
     {
-      REQUIRE(vi->command("K"));
-      REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL_BLOCK);
-      REQUIRE(vi->command("j"));
-      REQUIRE(vi->command("j"));
+      start_block(vi);
+      REQUIRE(vi->command("2j"));
       REQUIRE(vi->command(" "));
       REQUIRE(vi->command("x"));
       REQUIRE(stc->get_text() == "XXXX\nYYYY  \nZZZZ\n");
@@ -106,10 +104,8 @@ TEST_CASE("wex::vi")
 
     stc->set_text("xxxxxxxxxx second third\nxxxxxxxxxx\naaaaaaaaaa\n");
 
-    REQUIRE(vi->command("K"));
-    REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL_BLOCK);
-    REQUIRE(vi->command("j"));
-    REQUIRE(vi->command("j"));
+    start_block(vi);
+    REQUIRE(vi->command("2j"));
 
     SUBCASE("block")
     {

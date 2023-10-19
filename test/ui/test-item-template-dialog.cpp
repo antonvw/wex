@@ -5,8 +5,8 @@
 // Copyright: (c) 2020 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/test/test.h>
 #include <wex/factory/defs.h>
+#include <wex/test/test.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/item-template-dialog.h>
 #include <wex/ui/item.h>

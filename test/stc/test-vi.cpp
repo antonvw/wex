@@ -187,10 +187,8 @@ TEST_CASE("wex::vi")
   {
     stc->set_text("XXXXX\nYYYYY  \nZZZZZ\n");
 
-    REQUIRE(vi->command("K"));
-    REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL_BLOCK);
-    REQUIRE(vi->command("j"));
-    REQUIRE(vi->command("j"));
+    start_block(vi);
+    REQUIRE(vi->command("2j"));
     REQUIRE(vi->command(" "));
     REQUIRE(vi->command("y"));
     REQUIRE(vi->mode().get() == wex::vi_mode::state_t::COMMAND);

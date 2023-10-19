@@ -258,7 +258,7 @@ public:
   bool allow_browse_forward() const;
 
   /// Handles forward and backward click.
-  bool browse(wxCommandEvent& event);
+  bool browse(const wxCommandEvent& event);
 
   /// Returns current debugger.
   const auto* debug_entry() const { return m_debug_entry; }

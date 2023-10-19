@@ -49,14 +49,15 @@ private:
 
 std::string query_error(const otl_exception& e)
 {
-  const std::string query((const char*)e.stm_text);
-
-  if (const std::string str((const char*)e.msg); !str.empty())
+  if (const std::string str(reinterpret_cast<const char*>(e.msg)); !str.empty())
   {
     return "OTL error: " + wex::quoted(str);
   }
-  else if (const std::string ss((const char*)e.sqlstate); !ss.empty())
+  else if (const std::string ss(reinterpret_cast<const char*>(e.sqlstate));
+           !ss.empty())
   {
+    const std::string query(reinterpret_cast<const char*>(e.stm_text));
+
     return "sqlstate: " + ss + " in: " + wex::quoted(query);
   }
   else
@@ -150,7 +151,7 @@ bool wex::odbc::logon(const wex::data::window& par)
 
     frame->stc_entry_dialog_title("Cannot logon to " + datasource());
     frame->stc_entry_dialog_component()->set_text(
-      std::string((const char*)p.msg));
+      std::string(reinterpret_cast<const char*>(p.msg)));
     frame->show_stc_entry_dialog(true);
   }
 
@@ -346,7 +347,7 @@ long wex::odbc::query(
         {
           otl_long_string var;
           i >> var;
-          line.append((const char* )var.v);
+          line.append(reinterpret_cast<const char*>(var.v));
         }
         else
         {

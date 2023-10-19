@@ -18,6 +18,12 @@ void change_mode(
   REQUIRE(vi->mode().get() == mode);
 }
 
+void start_block(wex::vi* vi)
+{
+  REQUIRE(vi->command("K"));
+  REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL_BLOCK);
+}
+
 std::vector<std::pair<std::string, wex::vi_mode::state_t>> visuals()
 {
   return std::vector<std::pair<std::string, wex::vi_mode::state_t>>{

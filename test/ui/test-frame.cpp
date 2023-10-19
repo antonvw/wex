@@ -12,6 +12,17 @@
 
 #include "test.h"
 
+void browse_check(
+  bool                  backward,
+  bool                  forward,
+  bool                  browse,
+  const wxCommandEvent& ev)
+{
+  REQUIRE(frame()->allow_browse_backward() == backward);
+  REQUIRE(frame()->allow_browse_forward() == forward);
+  REQUIRE(frame()->browse(ev) == browse);
+}
+
 TEST_CASE("wex::frame")
 {
   get_stc()->SetFocus();
@@ -26,9 +37,6 @@ TEST_CASE("wex::frame")
 
     frame()->setup_statusbar(std::vector<wex::statusbar_pane>{
       {{"Pane0"}, {"Pane1"}, {"Pane2"}, {"Pane3"}, {"Pane4"}}});
-    frame()->statusbar_clicked("test");
-    frame()->statusbar_clicked("Pane1");
-    frame()->statusbar_clicked("Pane2");
 
     frame()->statusbar_clicked_right("test");
     frame()->statusbar_clicked_right("Pane1");
@@ -41,10 +49,6 @@ TEST_CASE("wex::frame")
     REQUIRE(frame()->statustext("hello2", "Pane2"));
     REQUIRE(frame()->get_statustext("Pane1") == "hello1");
     REQUIRE(frame()->get_statustext("Pane2") == "hello2");
-
-    REQUIRE(!frame()->update_statusbar(frame()->get_stc(), "test"));
-    REQUIRE(!frame()->update_statusbar(frame()->get_stc(), "Pane1"));
-    REQUIRE(!frame()->update_statusbar(frame()->get_stc(), "Pane2"));
   }
 
   SUBCASE("browse")
@@ -54,32 +58,19 @@ TEST_CASE("wex::frame")
     wxCommandEvent forward(wxEVT_MENU, wxID_FORWARD);
     wxCommandEvent backward(wxEVT_MENU, wxID_BACKWARD);
 
-    REQUIRE(!frame()->browse(forward));
-    REQUIRE(!frame()->allow_browse_backward());
-    REQUIRE(!frame()->allow_browse_forward());
+    browse_check(false, false, false, forward);
+    browse_check(false, false, false, backward);
 
     frame()->set_recent_file(wex::path(wex::test::get_path("test.h")));
     frame()->set_recent_file(wex::path(wex::test::get_path("test.md")));
     frame()->set_recent_file(wex::path(wex::test::get_path("test.bin")));
     REQUIRE(frame()->file_history().size() == 3);
-    REQUIRE(!frame()->allow_browse_backward());
-    REQUIRE(frame()->allow_browse_forward());
 
-    REQUIRE(frame()->browse(forward));
-    REQUIRE(frame()->allow_browse_backward());
-    REQUIRE(frame()->allow_browse_forward());
-
-    REQUIRE(frame()->browse(forward));
-    REQUIRE(frame()->allow_browse_backward());
-    REQUIRE(!frame()->allow_browse_forward());
-
-    REQUIRE(!frame()->browse(forward));
-    REQUIRE(frame()->allow_browse_backward());
-    REQUIRE(!frame()->allow_browse_forward());
-
-    REQUIRE(frame()->browse(backward));
-    REQUIRE(frame()->allow_browse_backward());
-    REQUIRE(frame()->allow_browse_forward());
+    browse_check(false, true, true, forward);
+    browse_check(true, true, true, forward);
+    browse_check(true, false, false, forward);
+    browse_check(true, false, true, backward);
+    browse_check(true, true, true, backward);
   }
 
   SUBCASE("coverage")

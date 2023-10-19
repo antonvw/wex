@@ -2,7 +2,7 @@
 // Name:      ex-stream.cpp
 // Purpose:   Implementation of class wex::ex_stream
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -142,7 +142,7 @@ void wex::ex_stream::filter_line(int start, int end, std::streampos spos)
   // and set the stream pointer
   const size_t sz(end - start);
 
-  strncpy(m_current_line, m_buffer + start + 1, sz);
+  memcpy(m_current_line, m_buffer + start + 1, sz);
   m_current_line[sz] = 0;
   m_stream->clear();
 
@@ -411,7 +411,7 @@ bool wex::ex_stream::get_previous_line()
       }
     }
 
-    strncpy(m_current_line, m_buffer, m_stream->gcount());
+    memcpy(m_current_line, m_buffer, m_stream->gcount());
     m_current_line[m_stream->gcount()] = 0;
     m_stream->clear();
     m_stream->seekg((size_t)pos);
