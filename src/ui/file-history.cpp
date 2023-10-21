@@ -2,7 +2,7 @@
 // Name:      file-history.cpp
 // Purpose:   Implementation of wex::file_history class methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -20,7 +20,7 @@ namespace wex
 class file_history_imp : public wxFileHistory
 {
 public:
-  file_history_imp(
+  explicit file_history_imp(
     size_t             maxFiles = 9,
     wxWindowID         idBase   = wxID_FILE1,
     const std::string& key      = std::string())

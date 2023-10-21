@@ -403,7 +403,7 @@ bool wex::frame::allow_close(wxWindowID id, wxWindow* page)
   return true;
 }
 
-bool wex::frame::browse(wxCommandEvent& event)
+bool wex::frame::browse(const wxCommandEvent& event)
 {
   if (m_file_history.size() <= 1)
   {

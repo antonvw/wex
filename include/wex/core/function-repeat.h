@@ -11,7 +11,7 @@
 
 namespace wex
 {
-/// Offers a class thar allows repeating a function on
+/// Offers a class that allows repeating a function on
 /// an event handler (window).
 class function_repeat
 {
@@ -23,13 +23,14 @@ public:
   function_repeat(
     const std::string& name, ///< name for the repeater
     wxEvtHandler*      evt,  ///< where event will be handled
-    repeat_t);               ///< the function to be repeated
+    repeat_t           t     ///< the function to be repeated
+  );
 
   /// Destructor.
   ~function_repeat();
 
   /// Starts or stops repeating.
-  /// Returns true if action is succesful.
+  /// Returns true if action is successful.
   bool activate(bool start = true);
 
   /// Returns name.
