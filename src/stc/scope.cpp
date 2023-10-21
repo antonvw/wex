@@ -17,7 +17,7 @@ wex::scope::scope(stc* s)
 {
 }
 
-void wex::scope::check_levels(const check_t& type)
+bool wex::scope::check_levels(const check_t& type)
 {
   bool       changed = false;
   const auto level(m_stc->get_fold_level());
@@ -50,6 +50,8 @@ void wex::scope::check_levels(const check_t& type)
   {
     m_it = m_filters[level].end();
   }
+
+  return changed;
 }
 
 const std::string wex::scope::class_name(const std::string& name) const
@@ -130,8 +132,7 @@ wex::scope::iterator(const std::string& text) const
   return m_filters[level].end();
 }
 
-void wex::scope::sync()
+bool wex::scope::sync()
 {
-  log::debug("scope::sync");
-  check_levels();
+  return check_levels();
 }

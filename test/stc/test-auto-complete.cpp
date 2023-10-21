@@ -2,11 +2,10 @@
 // Name:      test-auto-complete.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/stc/auto-complete.h>
-#include <wx/uiaction.h>
 
 #include "test.h"
 
@@ -110,6 +109,20 @@ TEST_CASE("wex::auto_complete")
 #ifdef INVEST
     REQUIRE(stc->get_fold_level() == 0);
 #endif
+  }
+
+  SUBCASE("sync")
+  {
+    REQUIRE(ac.sync());
+    REQUIRE(!ac.sync());
+
+    event(stc, 'O');
+    event(stc, '{');
+    event(stc, WXK_RETURN);
+    event(stc, WXK_RETURN);
+
+    REQUIRE(ac.sync());
+    REQUIRE(!ac.sync());
   }
 
   SUBCASE("use")

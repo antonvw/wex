@@ -29,9 +29,7 @@ wex::function_repeat::function_repeat(
 
 wex::function_repeat::~function_repeat()
 {
-  m_timer->Stop();
-
-  delete m_timer;
+  delete m_timer; // stops timer if running
 }
 
 bool wex::function_repeat::action(action_t a)

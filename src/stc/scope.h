@@ -22,9 +22,6 @@ class stc;
 class scope
 {
 public:
-  /// A map of variable name with ctags_entry.
-  typedef std::map<std::string, ctags_entry> map_t;
-
   /// Constructor.
   scope(stc* s);
 
@@ -50,7 +47,7 @@ public:
 
   /// Synchronizes scope filters with current level
   /// in current position stc.
-  void sync();
+  bool sync();
 
 private:
   /// Check level flags.
@@ -60,9 +57,12 @@ private:
     LEVEL_UP   = 1, ///< level up flag
   };
 
+  /// A map of variable name with ctags_entry.
+  typedef std::map<std::string, ctags_entry> map_t;
+
   typedef std::bitset<2> check_t;
 
-  void check_levels(const check_t& type = check_t().set());
+  bool check_levels(const check_t& type = check_t().set());
 
   /// Finds text in scope (from current down), returns iterator.
   map_t::const_iterator iterator(const std::string& text) const;

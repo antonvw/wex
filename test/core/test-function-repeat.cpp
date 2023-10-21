@@ -26,14 +26,23 @@ TEST_CASE("wex::function_repeat")
     });
 
   REQUIRE(x == 0);
-  REQUIRE(repeat.activate());
-  REQUIRE(!repeat.activate());
 
-  std::this_thread::sleep_for(std::chrono::milliseconds(1500));
-  wxTheApp->ProcessPendingEvents();
+  SUBCASE("all")
+  {
+    REQUIRE(repeat.activate());
+    REQUIRE(!repeat.activate());
 
-   //REQUIRE(x == 10);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+    wxTheApp->ProcessPendingEvents();
 
-  REQUIRE(repeat.activate(false));
-  REQUIRE(!repeat.activate(false));
+    // REQUIRE(x == 10);
+
+    REQUIRE(repeat.activate(false));
+    REQUIRE(!repeat.activate(false));
+  }
+
+  SUBCASE("no-activate")
+  {
+    REQUIRE(!repeat.activate(false));
+  }
 }
