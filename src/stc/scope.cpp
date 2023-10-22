@@ -17,13 +17,13 @@ wex::scope::scope(stc* s)
 {
 }
 
-bool wex::scope::check_levels(const check_t& type)
+bool wex::scope::check_levels()
 {
   bool       changed = false;
   const auto level(m_stc->get_fold_level());
   const auto size(m_filters.size());
 
-  if (type[LEVEL_DOWN] && size >= 1 && level < size - 1)
+  if (size >= 1 && level < size - 1)
   {
     m_filters.erase(m_filters.begin() + level + 1, m_filters.end());
     changed = true;
@@ -33,7 +33,7 @@ bool wex::scope::check_levels(const check_t& type)
       << "size:" << m_filters.size();
   }
 
-  if (!changed && type[LEVEL_UP] && level >= size)
+  if (!changed && level >= size)
   {
     map_t m;
     m[std::string()] = ctags_entry();
