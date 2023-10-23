@@ -2,7 +2,7 @@
 // Name:      ctags.h
 // Purpose:   Declaration of class wex::ctags
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2016-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -22,13 +22,14 @@ namespace factory
 class stc;
 };
 
-const char DEFAULT_TAGFILE[] = "tags";
-
 /// Offers ctags handling.
 class ctags
 {
 public:
   /// Static interface.
+
+  /// Default tagfile.
+  static inline std::string DEFAULT_TAGFILE = "tags";
 
   /// Closes ctags file.
   /// Returns false if file was not opened.
