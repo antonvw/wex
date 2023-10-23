@@ -17,6 +17,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - std::optional is used to return values at several places
 - use more enum classes
 
+### Fixed
+
+- auto_complete handling
+
 ## 23.10 - 2023-10-08
 
 ### Added

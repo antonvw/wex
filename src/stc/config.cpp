@@ -72,7 +72,7 @@ void wex::stc::config_get()
   }
 
   AnnotationSetVisible(iv.find<long>(_("stc.Annotation style")));
-  AutoCompSetMaxWidth(iv.find<int>(_("stc.Autocomplete maxwidth")));
+  AutoCompSetMaxWidth(iv.find<int>(_("stc.Autocomplete max width")));
   SetCaretLineVisible(iv.find<bool>(_("stc.Caret line")));
   SetFoldFlags(iv.find<long>(_("stc.Fold flags")));
   SetIndent(iv.find<int>(_("stc.Indent")));
@@ -233,7 +233,8 @@ void wex::stc::on_init()
           data::item().columns(1)}}},
        {_("Margin"),
         {{_("<i>Margins:</i>")},
-         {_("stc.Autocomplete maxwidth"), 0, 100, 0},
+         {_("stc.Autocomplete max width"), 0, 100, 0},
+         {_("stc.Autocomplete min size"), 0, 100, 0},
          {_("stc.Indent"), 0, 500, 2},
          {_("stc.Tab width"), 1, 500, 2},
          {_("blame.Author size"), -1, 500, -1},

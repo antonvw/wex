@@ -2,7 +2,7 @@
 // Name:      auto-complete.cpp
 // Purpose:   Implementation of class wex::auto_complete
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -14,9 +14,24 @@
 
 #include "scope.h"
 
-wex::auto_complete::auto_complete(wex::stc* stc, size_t min_size)
+namespace wex
+{
+class auto_complete::actions
+{
+public:
+  void reset()
+  {
+    m_show_inserts  = false;
+    m_show_keywords = false;
+  };
+
+  bool m_show_inserts{true};
+  bool m_show_keywords{true};
+};
+}; // namespace wex
+
+wex::auto_complete::auto_complete(wex::stc* stc)
   : m_stc(stc)
-  , m_min_size(min_size)
   , m_scope(new scope(stc))
 {
 }
@@ -47,8 +62,12 @@ bool wex::auto_complete::action_default(char c)
 {
   if (is_codeword_separator(c) || iscntrl(c))
   {
-    clear_insert();
-    clear();
+    if (!m_stc->AutoCompActive())
+    {
+      update_inserts();
+      clear();
+    }
+
     return false;
   }
   else
@@ -80,7 +99,7 @@ bool wex::auto_complete::action_request(char c, actions& ac)
 
       if (!m_active.empty())
       {
-        clear_insert();
+        update_inserts();
       }
     }
 
@@ -92,21 +111,10 @@ bool wex::auto_complete::action_request(char c, actions& ac)
 
 void wex::auto_complete::clear()
 {
-  clear_insert();
+  update_inserts();
 
   m_request_members.clear();
   m_stc->AutoCompCancel();
-}
-
-void wex::auto_complete::clear_insert()
-{
-  if (m_insert.size() >= m_min_size)
-  {
-    m_inserts.emplace(m_insert);
-    log::debug("auto_complete::clear inserts") << m_insert;
-  }
-
-  m_insert.clear();
 }
 
 bool wex::auto_complete::complete(const std::string& text)
@@ -139,6 +147,42 @@ bool wex::auto_complete::complete(const std::string& text)
 
   // do not add current insert
   m_insert.clear();
+
+  return true;
+}
+
+bool wex::auto_complete::determine_actions(char c, actions& ac)
+{
+  switch (c)
+  {
+    case WXK_BACK:
+      return action_back();
+
+    case '.':
+    case '>':
+      return action_request(c, ac);
+
+    case ',':
+      store_variable();
+      return false;
+
+    case ';':
+      store_variable();
+
+      // active end
+      clear();
+      m_active.clear();
+      return false;
+
+    case '{':
+      // scope start
+      clear();
+      m_request_members.clear();
+      return false;
+
+    default:
+      return action_default(c);
+  }
 
   return true;
 }
@@ -177,51 +221,6 @@ bool wex::auto_complete::on_char(char c)
   return true;
 }
 
-bool wex::auto_complete::determine_actions(char c, actions& ac)
-{
-  switch (c)
-  {
-    case WXK_BACK:
-      return action_back();
-
-    case WXK_RETURN:
-      return false;
-
-    case '.':
-    case '>':
-      return action_request(c, ac);
-
-    case ',':
-      store_variable();
-      return false;
-
-    case ';':
-      store_variable();
-
-      // active end
-      clear();
-      m_active.clear();
-      return false;
-
-    case '{':
-      // scope start
-      clear();
-      m_request_members.clear();
-      return false;
-
-    default:
-      return action_default(c);
-  }
-
-  return true;
-}
-
-void wex::auto_complete::actions::reset()
-{
-  m_show_inserts  = false;
-  m_show_keywords = false;
-}
-
 bool wex::auto_complete::show_ctags()
 {
   // If members are requested, and class is active, save it in the filters.
@@ -234,7 +233,7 @@ bool wex::auto_complete::show_ctags()
       true));
     const std::string word(m_stc->GetTextRange(wsp, m_stc->GetCurrentPos()));
 
-    clear_insert();
+    update_inserts();
 
     if (!m_active.empty() && !m_scope->find(word))
     {
@@ -253,7 +252,8 @@ bool wex::auto_complete::show_ctags()
     m_stc->AutoCompSetSeparator(m_stc->get_vi().ctags()->separator());
     m_stc->AutoCompShow(m_insert.length() - 1, comp);
     m_stc->AutoCompSetSeparator(' ');
-    log::debug("auto_complete::show_ctags chars") << m_insert << comp.size();
+    log::debug("auto_complete::show_ctags insert")
+      << m_insert << "size" << comp.size();
     return true;
   }
 
@@ -264,11 +264,11 @@ bool wex::auto_complete::show_inserts(bool show) const
 {
   if (show && !m_insert.empty() && !m_inserts.empty())
   {
-    if (const auto& comp(get_string_set(m_inserts, m_min_size, m_insert));
-        !comp.empty())
+    if (const auto& comp(get_string_set(m_inserts, 0, m_insert)); !comp.empty())
     {
       m_stc->AutoCompShow(m_insert.length() - 1, comp);
-      log::debug("auto_complete::show_inserts chars") << comp.size();
+      log::debug("auto_complete::show_inserts insert")
+        << m_insert << "size" << comp.size();
       return true;
     }
   }
@@ -282,12 +282,12 @@ bool wex::auto_complete::show_keywords(bool show) const
     show && !m_insert.empty() &&
     m_stc->get_lexer().keyword_starts_with(m_insert))
   {
-    if (const auto& comp(
-          m_stc->get_lexer().keywords_string(-1, m_min_size, m_insert));
+    if (const auto& comp(m_stc->get_lexer().keywords_string(-1, 0, m_insert));
         !comp.empty())
     {
       m_stc->AutoCompShow(m_insert.length() - 1, comp);
-      log::debug("auto_complete::show_keywords chars") << comp.size();
+      log::debug("auto_complete::show_keywords insert")
+        << m_insert << "size" << comp.size();
       return true;
     }
   }
@@ -304,9 +304,20 @@ void wex::auto_complete::store_variable()
   }
 }
 
-void wex::auto_complete::sync() const
+bool wex::auto_complete::sync() const
 {
-  m_scope->sync();
+  return m_scope->sync();
+}
+
+void wex::auto_complete::update_inserts()
+{
+  if (m_insert.size() >= config("stc.Autocomplete min size").get(2))
+  {
+    m_inserts.emplace(m_insert);
+    log::debug("auto_complete::update_inserts added") << m_insert;
+  }
+
+  m_insert.clear();
 }
 
 bool wex::auto_complete::use() const
