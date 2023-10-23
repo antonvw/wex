@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::ctags
 //            https://github.com/universal-ctags/ctags
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2016-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -343,21 +343,21 @@ void wex::ctags::open(const std::string& filename)
 
   if (filename != DEFAULT_TAGFILE)
   {
-    do_open(filename);
-  }
-  else if (const std::vector<std::string> v{"./", config::dir().string() + "/"};
-           !std::any_of(
-             v.begin(),
-             v.end(),
-             [filename](const auto& p)
-             {
-               return do_open(p + filename);
-             }))
-  {
-    if (filename != DEFAULT_TAGFILE && m_file == nullptr)
+    if (!do_open(filename))
     {
       log("could not locate ctags file") << filename;
     }
+  }
+  else
+  {
+    const std::vector<std::string> v{"./", config::dir().string() + "/"};
+    std::any_of(
+      v.begin(),
+      v.end(),
+      [filename](const auto& p)
+      {
+        return do_open(p + filename);
+      });
   }
 }
 

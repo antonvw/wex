@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-lv="llvm@16"
+lv="llvm@17"
 
 export CC=/usr/local/opt/${lv}/bin/clang
 export CXX=/usr/local/opt/${lv}/bin/clang
