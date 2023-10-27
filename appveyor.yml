@@ -19,7 +19,8 @@ install:
   - git submodule init && git submodule update --init --recursive
 
 before_build:
-  - mkdir build && cd build
+  - if not exists build\ mkdir build 
+  - cd build
 
 build_script:
   - ..\ci\msw.bat
