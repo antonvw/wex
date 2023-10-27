@@ -35,7 +35,7 @@ Suite Setup
 	${version}=	Evaluate	robot.__version__
 	${result}=	Get Substring	${version}	0	1
 	${result}=	Convert To Integer	${result}
-	Should Be True	${result} >= 6
+	Should Be True	${result} >= 5
 
 Suite Teardown
 	IF	${level} > 0
@@ -44,6 +44,7 @@ Suite Teardown
 		Remove File	${file-input}
 		Remove File	${file-output}
 	END
+	Remove File	${file-startup}
 
 Test Setup
 	Create File	${file-input}

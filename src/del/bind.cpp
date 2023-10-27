@@ -46,7 +46,6 @@ void wex::del::frame::bind_all()
 
       config("show.MenuBar")
         .set(GetMenuBar() != nullptr && GetMenuBar()->IsShown());
-      delete m_debug;
 
       event.Skip();
     });

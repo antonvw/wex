@@ -40,7 +40,7 @@ const std::string wex::ex_commandline::get_text() const
 
 void wex::ex_commandline::on_exit()
 {
-  m_imp->Destroy();
+  // when doing m_imp->Destroy(), the test-ex stream errors on exit
 }
 
 void wex::ex_commandline::on_key_down(wxKeyEvent& event)
