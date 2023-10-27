@@ -2,7 +2,7 @@
 // Name:      temp-filename.cpp
 // Purpose:   Implementation of class wex::temp_filename
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
@@ -25,8 +25,11 @@ wex::temp_filename::temp_filename(bool cleanup)
 
 wex::temp_filename::~temp_filename()
 {
-  if (m_cleanup && remove(m_name.c_str()) != 0)
+  if (m_cleanup)
   {
-    log("could not remove file") << m_name;
+    if (wex::path p(m_name); p.file_exists() && remove(m_name.c_str()) != 0)
+    {
+      log("could not remove file") << m_name;
+    }
   }
 }

@@ -2,7 +2,7 @@
 // Name:      temp-filename.h
 // Purpose:   Declaration of class wex::temp_filename
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -20,7 +20,7 @@ public:
   /// It just generates the filename, creating the file is not done.
   explicit temp_filename(bool cleanup = false);
 
-  /// Destructor, removes the temp file if asked for.
+  /// Destructor, removes the temp file if asked for, and file exists.
   ~temp_filename();
 
   /// Returns the name (fullpath) of the temp file.
