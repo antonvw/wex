@@ -12,14 +12,14 @@ configuration:
   - Release
 
 cache:
-  - build\external -> external
+  - ci\external -> external
 
 install:
   - git config http.postBuffer 1048576000
   - git submodule init && git submodule update --init --recursive
 
 before_build:
-  - mkdir build && cd build
+  - cd ci
 
 build_script:
   - ..\ci\msw.bat
