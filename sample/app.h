@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Declaration of wex sample class app
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -14,7 +14,7 @@ class app : public wex::del::app
 {
 public:
   auto& data() { return m_data; }
-  auto& get_files() const { return m_files; }
+  auto& get_files() { return m_files; }
 
 private:
   bool OnInit() final;

@@ -233,6 +233,7 @@ bool wex::del::file::do_file_load(bool synced)
     t.join();
 #endif
 
+  log::status(_("Opened")) << path();
   log::info("opened") << path();
 
   return true;
@@ -275,6 +276,7 @@ void wex::del::file::do_file_save(bool save_as)
 
   if (doc.save_file(path().string().c_str()))
   {
+    log::status(_("Saved")) << path();
     log::info("saved") << path();
   }
   else

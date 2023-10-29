@@ -24,6 +24,7 @@ ${APPL}	${EMPTY}
 ${file-contents}	contents.txt
 ${file-input}	input.txt
 ${file-output}	output.txt
+${file-project}	test.prj
 ${file-startup}	empty.txt
 ${file-stdout}	stdout.txt
 
@@ -75,7 +76,7 @@ Contents Does Not Contain
 	Should Not Contain	${result}	${text}
 
 Ex Mode
-	[Documentation]	Runs appl in  ex mode
+	[Documentation]	Runs appl in ex mode
 	[Arguments]	${quit}=0
 	Run Process
 	...	${APPL}
@@ -137,6 +138,18 @@ Output Does Not Contain
 	[Arguments]	${text}
 	${result}=	Get File	${file-output}
 	Should Not Contain	${result}	${text}
+
+Project Mode
+	[Documentation]	Runs appl in project mode
+	[Arguments]	${quit}=0
+	Run Process
+	...	${APPL}
+	...	-q	${quit}
+	...	-s	${file-input}
+	...	-V	${level}
+	...	-X	${file-output}
+	...	-p	${file-project}
+	...	stdout=${file-stdout}
 
 Std Output Contains
 	[Documentation]	Verifies stdout does not contain text

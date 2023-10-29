@@ -44,6 +44,8 @@ public:
     return true;
   }
 
+  void clear() { m_contents.clear(); };
+
   const auto& contents() { return m_contents; }
 
   void save() { config(m_key).set(m_contents); }
@@ -107,6 +109,8 @@ void wex::file_history::clear()
       m_history->RemoveFileFromHistory(i);
     }
   }
+  
+  m_history->clear();
 }
 
 bool wex::file_history::empty() const
