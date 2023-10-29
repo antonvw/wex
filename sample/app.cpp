@@ -25,6 +25,14 @@ bool app::OnInit()
              m_data.flags(
                wex::data::stc::window_t().set(wex::data::stc::WIN_EX),
                wex::data::control::OR);
+           }},
+
+          {{"project,p", "open specified files as projects"},
+           [&](bool on)
+           {
+             m_data.flags(
+               wex::data::stc::window_t().set(wex::data::stc::WIN_IS_PROJECT),
+               wex::data::control::OR);
            }}},
 
          {// --- options with arguments ---

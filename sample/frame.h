@@ -29,9 +29,10 @@ private:
   wex::del::listview* activate(
     wex::data::listview::type_t type,
     const wex::lexer*           lexer = nullptr) final;
-  bool           allow_close(wxWindowID id, wxWindow* page) final;
-  wex::listview* get_listview() final;
-  wex::stc*      get_stc() final;
+  bool            allow_close(wxWindowID id, wxWindow* page) final;
+  wex::listview*  get_listview() final;
+  wex::del::file* get_project() final { return m_project; };
+  wex::stc*       get_stc() final;
   void on_command_item_dialog(wxWindowID id, const wxCommandEvent& event) final;
   wex::stc* open_file(
     const wex::path&      file,

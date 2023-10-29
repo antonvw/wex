@@ -409,6 +409,7 @@ void frame::on_command(wxCommandEvent& event)
 
     case wxID_SAVE:
       m_stc->get_file().file_save();
+      set_recent_file(m_stc->path());
 
       if (m_stc->path().data() == wex::lexers::get()->path().data())
       {
@@ -496,13 +497,17 @@ wex::stc* frame::open_file(const wex::path& file, const wex::data::stc& data)
 
     return nullptr;
   }
-  else
+  else if (m_stc != nullptr)
   {
     m_stc->get_lexer().clear();
     open_file_same_page(file);
     m_notebook->set_selection("wex::stc");
 
     return m_stc;
+  }
+  else
+  {
+    return nullptr;
   }
 }
 
@@ -511,6 +516,7 @@ void frame::open_file_same_page(const wex::path& p)
   m_stc->open(p, wex::data::stc().recent(false).flags(m_app->data().flags()));
   m_stc->get_lexer().set(wex::path_lexer(p).lexer().display_lexer(), true);
   m_stc->properties_message();
+  set_recent_file(m_stc->path());
 }
 
 void frame::update()
@@ -530,8 +536,18 @@ void frame::update()
         .Caption(_("Process"))
         .CloseButton(false)}});
 
+  wex::path project;
+
+  if (
+    m_app->data().flags().test(wex::data::stc::WIN_IS_PROJECT) &&
+    !m_app->get_files().empty())
+  {
+    project = m_app->get_files().front();
+    m_app->get_files().erase(m_app->get_files().begin());
+  }
+
   m_project = new wex::del::file(
-    wex::path(),
+    project,
     wex::data::listview().window(wex::data::window().parent(m_notebook)));
 
   m_stc = new wex::stc(

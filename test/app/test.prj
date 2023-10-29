@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<files>
+	<!-- syncped project test.prj 2023-10-29 12:08:00-->
+	<file>~/wex/src/core/app-locale.cpp</file>
+	<file>~/wex/src/core/app-locale.h</file>
+	<file>~/wex/src/core/app.cpp</file>
+	<file>~/wex/ninja/build.ninja</file>
+	<file>~/wex/src/core/chrono.cpp</file>
+	<file>~/wex/src/core/cmdline-imp.cpp</file>
+	<file>~/wex/src/core/cmdline-imp.h</file>
+	<file>~/wex/src/core/cmdline.cpp</file>
+	<file>~/wex/src/core/config-imp.cpp</file>
+	<file>~/wex/src/core/config-imp.h</file>
+	<file>~/wex/src/core/config.cpp</file>
+	<file>~/wex/src/core/file-status.cpp</file>
+	<file>~/wex/src/core/file.cpp</file>
+	<file>~/wex/src/core/function-repeat.cpp</file>
+	<file>~/wex/src/core/interruptible.cpp</file>
+	<file>~/wex/src/core/log-none.cpp</file>
+	<file>~/wex/src/core/log.cpp</file>
+	<file>~/wex/src/core/menu-command.cpp</file>
+	<file>~/wex/src/core/path.cpp</file>
+	<file>~/wex/src/core/regex.cpp</file>
+	<file>~/wex/src/core/temp-filename.cpp</file>
+	<file>~/wex/src/core/type-to-value.cpp</file>
+	<file>~/wex/src/core/util.cpp</file>
+	<file>~/wex/src/core/vcs-command.cpp</file>
+	<file>~/wex/src/core/version.cpp</file>
+</files>

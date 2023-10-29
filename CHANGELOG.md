@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 
 - auto_complete handling
+- history clear fixed
 
 ## 23.10 - 2023-10-08
 
