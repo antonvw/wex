@@ -27,6 +27,8 @@ TEST_CASE("wex::statusbar")
        {"LastPane"}});
 
     REQUIRE(get_statusbar()->get_pane(0).name() == "PaneText");
+    REQUIRE(get_statusbar()->get_pane(1).name() == "Pane0");
+    REQUIRE(get_statusbar()->get_pane(1).help_text() == "0");
     REQUIRE(get_statusbar()->GetFieldsCount() >= 10);
 
     REQUIRE(get_statusbar()->set_statustext("hello", ""));
@@ -73,6 +75,7 @@ TEST_CASE("wex::statusbar")
   SUBCASE("statusbar_pane")
   {
     wex::statusbar_pane pane1("PaneInfo", 15);
+    REQUIRE(pane1.help_text() == "Lines or Items");
     pane1.help("hello");
 
     REQUIRE(pane1.name() == "PaneInfo");
@@ -83,11 +86,31 @@ TEST_CASE("wex::statusbar")
     pane1.hidden_text("hidden");
     REQUIRE(pane1.hidden_text() == "hidden");
 
-    get_statusbar()->setup(
-      frame(),
-      {pane1, {"PaneLexer"}, {"PaneFileType"}, {"Pane1"}, {"Pane2"}});
+    SUBCASE("setup")
+    {
+      get_statusbar()->setup(
+        frame(),
+        {pane1, {"PaneLexer"}, {"PaneFileType"}, {"Pane1"}, {"Pane2"}});
 
-    REQUIRE(get_statusbar()->get_pane(0).name() == "PaneText");
-    REQUIRE(get_statusbar()->GetFieldsCount() == 6);
+      REQUIRE(get_statusbar()->get_pane(0).name() == "PaneText");
+      REQUIRE(get_statusbar()->get_pane(0).help_text().empty());
+      REQUIRE(get_statusbar()->GetFieldsCount() == 6);
+    }
+
+    SUBCASE("setup-with-text")
+    {
+      get_statusbar()->setup(
+        frame(),
+        {pane1,
+         {"PaneText"},
+         {"PaneLexer"},
+         {"PaneFileType"},
+         {"Pane1"},
+         {"Pane2"}});
+
+      REQUIRE(get_statusbar()->get_pane(0).name() == "PaneInfo");
+      REQUIRE(get_statusbar()->get_pane(0).help_text() == "hello");
+      REQUIRE(get_statusbar()->GetFieldsCount() == 6);
+    }
   }
 }

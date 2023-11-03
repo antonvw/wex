@@ -387,7 +387,19 @@ wex::statusbar* wex::statusbar::setup(
   if (m_panes.size() > 1)
   {
     m_panes.clear();
-    m_panes.push_back({});
+
+    // If the PaneText is not present, add it as first pane.
+    if (const auto& it = std::find_if(
+          panes.begin(),
+          panes.end(),
+          [](const auto& p)
+          {
+            return p.name() == "PaneText";
+          });
+        it == panes.end())
+    {
+      m_panes.push_back({});
+    }
   }
 
   m_panes.insert(std::end(m_panes), std::begin(panes), std::end(panes));
