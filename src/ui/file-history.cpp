@@ -109,7 +109,7 @@ void wex::file_history::clear()
       m_history->RemoveFileFromHistory(i);
     }
   }
-  
+
   m_history->clear();
 }
 
