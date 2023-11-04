@@ -300,7 +300,7 @@ public:
 #ifdef __WXMSW__
     type_t type = NOTEBOOK_LIST,
 #else
-    type_t type = NOTEBOOK,
+    type_t type = NOTEBOOK_LIST,
 #endif
     /// item data
     const data::item& data = data::item().label_type(data::item::LABEL_NONE));

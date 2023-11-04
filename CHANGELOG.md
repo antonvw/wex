@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- moved single_choice_dialog to common lib, use data::window parameter
 - ex options ignorecase and matchword are kept in config
 - std::optional is used to return values at several places
 - use more enum classes

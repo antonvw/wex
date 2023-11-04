@@ -12,7 +12,6 @@
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/core/path.h>
-#include <wx/choicdlg.h>
 #include <wx/clipbrd.h>
 #include <wx/generic/dirctrlg.h> // for wxFileIconsTable
 
@@ -247,7 +246,7 @@ bool wex::matches_one_of(
   const std::string& pattern)
 {
   if (pattern == "*")
-    return true;  // asterix matches always
+    return true; // asterix matches always
   if (filename.empty())
     return false; // empty string never matches
 
@@ -290,29 +289,4 @@ wex::rfind_before(const std::string& text, const std::string& seq)
 {
   const auto pos = text.rfind(seq);
   return pos == std::string::npos ? text : text.substr(0, pos);
-}
-
-bool wex::single_choice_dialog(
-  wxWindow*                       parent,
-  const std::string&              title,
-  const std::vector<std::string>& v,
-  std::string&                    selection)
-{
-  wxArrayString s;
-
-  for (const auto& it : v)
-  {
-    s.Add(it);
-  }
-
-  wxSingleChoiceDialog dlg(parent, _("Input") + ":", title, s);
-
-  if (const auto index = s.Index(selection); index != wxNOT_FOUND)
-    dlg.SetSelection(index);
-  if (dlg.ShowModal() == wxID_CANCEL)
-    return false;
-
-  selection = dlg.GetStringSelection();
-
-  return true;
 }

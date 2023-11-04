@@ -103,6 +103,15 @@ int open_files(
 /// Returns false if process could not be executed.
 bool shell_expansion(std::string& command);
 
+/// Presents a dialog to choose one string out of an array.
+bool single_choice_dialog(
+  /// all window data
+  const data::window& data,
+  /// the strings to choose from
+  const std::vector<std::string>& v,
+  /// the selected one
+  std::string& selection);
+
 /// Use specified vcs command to set lexer on stc document.
 void vcs_command_stc(
   /// VCS command, used to check for diff or open command
