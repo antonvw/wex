@@ -665,8 +665,7 @@ bool wex::lexers::show_theme_dialog(wxWindow* parent)
           .title(_("Enter Theme"))
           .size(
 #ifdef __WXGTK__
-            100,
-            250
+            wxSize(100, 250)
 #else
             wxDefaultSize
 #endif
