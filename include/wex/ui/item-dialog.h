@@ -2,7 +2,7 @@
 // Name:      item-dialog.h
 // Purpose:   Declaration of wex::item_dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2021 Anton van Wezenbeek
+// Copyright: (c) 2015-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -20,10 +20,14 @@ class item_dialog : public item_template_dialog<item>
 public:
   /// Constructor.
   item_dialog(
+    /// a vector of items
     const std::vector<item>& v,
-    const data::window& data = data::window().title(_("Options").ToStdString()),
-    int                 rows = 0,
-    int                 cols = 1)
+    /// the window data
+    const data::window& data = data::window().title(_("Options")),
+    /// number of rows (0) is dynamic
+    int rows = 0,
+    /// number of columns
+    int cols = 1)
     : item_template_dialog(v, data, rows, cols)
   {
     Bind(wxEVT_BUTTON, &item_dialog::on_command, this, wxID_APPLY);

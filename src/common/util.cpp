@@ -22,6 +22,7 @@
 #include <wex/syntax/lexer.h>
 #include <wex/syntax/lexers.h>
 #include <wex/syntax/stc.h>
+#include <wex/syntax/util.h>
 #include <wx/app.h>
 #include <wx/wupdlock.h>
 
@@ -187,8 +188,10 @@ bool wex::lexers_dialog(syntax::stc* stc)
       return i.display_lexer();
     });
 
-  if (auto lexer = stc->get_lexer().display_lexer();
-      !single_choice_dialog(stc, _("Enter Lexer"), s, lexer))
+  if (auto lexer = stc->get_lexer().display_lexer(); !single_choice_dialog(
+        data::window().parent(stc).title(_("Enter Lexer")),
+        s,
+        lexer))
   {
     return false;
   }

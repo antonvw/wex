@@ -5,6 +5,7 @@
 // Copyright: (c) 2008-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
@@ -418,7 +419,7 @@ bool wex::lexers::load_document_init()
 
   m_indicators.insert(indicator());
   m_keywords[std::string()] = std::string();
-  m_macros[std::string()] = name_values_t{};
+  m_macros[std::string()]   = name_values_t{};
   m_markers.insert(marker());
   m_theme_colours[std::string()] = m_default_colours;
   m_theme_macros[std::string()]  = name_values_t{};
@@ -658,8 +659,22 @@ bool wex::lexers::show_theme_dialog(wxWindow* parent)
       return i.first;
     });
 
-  if (!single_choice_dialog(parent, _("Enter Theme"), v, m_theme))
+  if (!single_choice_dialog(
+        data::window()
+          .parent(parent)
+          .title(_("Enter Theme"))
+          .size(
+#ifdef __WXGTK__
+            wxSize(100, 250)
+#else
+            wxDefaultSize
+#endif
+              ),
+        v,
+        m_theme))
+  {
     return false;
+  }
 
   config("theme").set(m_theme);
 

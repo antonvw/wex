@@ -8,13 +8,13 @@
 #include <boost/tokenizer.hpp>
 #include <wex/common/dir.h>
 #include <wex/core/config.h>
-#include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
 #include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/process.h>
 #include <wex/stc/stc.h>
+#include <wex/syntax/util.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/item-dialog.h>
 #include <wex/ui/listview.h>
@@ -595,8 +595,10 @@ bool wex::debug::show_dialog(wxWindow* parent)
       return i.name();
     });
 
-  if (auto debugger = m_entry.name();
-      !single_choice_dialog(parent, _("Enter Debugger"), s, debugger))
+  if (auto debugger = m_entry.name(); !single_choice_dialog(
+        data::window().parent(parent).title(_("Enter Debugger")),
+        s,
+        debugger))
   {
     return false;
   }
