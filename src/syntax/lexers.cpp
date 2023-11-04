@@ -669,7 +669,7 @@ bool wex::lexers::show_theme_dialog(wxWindow* parent)
 #else
             wxDefaultSize
 #endif
-            ),
+              ),
         v,
         m_theme))
   {

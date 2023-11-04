@@ -7,7 +7,6 @@
 
 #include <boost/tokenizer.hpp>
 #include <wex/common/dir.h>
-#include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
@@ -15,6 +14,7 @@
 #include <wex/factory/defs.h>
 #include <wex/factory/process.h>
 #include <wex/stc/stc.h>
+#include <wex/syntax/util.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/item-dialog.h>
 #include <wex/ui/listview.h>

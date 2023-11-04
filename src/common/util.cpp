@@ -22,8 +22,8 @@
 #include <wex/syntax/lexer.h>
 #include <wex/syntax/lexers.h>
 #include <wex/syntax/stc.h>
+#include <wex/syntax/util.h>
 #include <wx/app.h>
-#include <wx/choicdlg.h>
 #include <wx/wupdlock.h>
 
 namespace wex
@@ -280,35 +280,6 @@ bool wex::shell_expansion(std::string& command)
       r.replace(command, process.std_out());
     }
   }
-
-  return true;
-}
-
-bool wex::single_choice_dialog(
-  const data::window&             data,
-  const std::vector<std::string>& v,
-  std::string&                    selection)
-{
-  wxArrayString s;
-
-  for (const auto& it : v)
-  {
-    s.Add(it);
-  }
-
-  wxSingleChoiceDialog dlg(data.parent(), _("Input") + ":", data.title(), s);
-
-  if (data.size() != wxDefaultSize)
-  {
-    dlg.SetSize(data.size());
-  }
-
-  if (const auto index = s.Index(selection); index != wxNOT_FOUND)
-    dlg.SetSelection(index);
-  if (dlg.ShowModal() == wxID_CANCEL)
-    return false;
-
-  selection = dlg.GetStringSelection();
 
   return true;
 }
