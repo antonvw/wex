@@ -390,6 +390,21 @@ TEST_CASE("wex::vi")
       REQUIRE(vi->mode().get() == visual.second);
       change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     }
+
+    stc->set_text("this text contains xx");
+    REQUIRE(stc->get_selected_text().empty());
+
+    REQUIRE(vi->command("v"));
+    REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL);
+
+    wxKeyEvent event(wxEVT_CHAR);
+    event.m_uniChar = WXK_NONE;
+    event.m_keyCode = WXK_END;
+
+    REQUIRE(!vi->on_key_down(event));
+    REQUIRE(stc->get_selected_text() == "this text contains xx");
+
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
   }
 
   SUBCASE("others")
