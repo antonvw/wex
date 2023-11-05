@@ -33,6 +33,21 @@ bool is_block_insert(vi* vi)
 
 bool is_special_key(const wxKeyEvent& event, const vi_mode& mode)
 {
+  if (event.GetKeyCode() == WXK_HOME || event.GetKeyCode() == WXK_END)
+  {
+    return true;
+  }
+
+#ifdef __WXOSX__
+  if (event.HasAnyModifiers() & wxMOD_ALT)
+  {
+    if (event.GetKeyCode() == WXK_LEFT || event.GetKeyCode() == WXK_RIGHT)
+    {
+      return true;
+    }
+  }
+#endif
+
   return !event.HasAnyModifiers() &&
          (event.GetKeyCode() == WXK_ESCAPE || event.GetKeyCode() == WXK_BACK ||
           event.GetKeyCode() == WXK_RETURN ||
@@ -281,8 +296,10 @@ char wex::vi::convert_key_event(const wxKeyEvent& event) const
     return WXK_BACK;
   else if (event.GetKeyCode() == WXK_RETURN && !m_mode.is_insert())
     return 'j';
+#ifndef __WXOSX__
   else if (event.GetModifiers() & wxMOD_RAW_CONTROL)
     return event.GetKeyCode();
+#endif
 
   char c = event.GetUnicodeKey();
 
@@ -290,29 +307,35 @@ char wex::vi::convert_key_event(const wxKeyEvent& event) const
   {
     switch (event.GetKeyCode())
     {
-      case WXK_LEFT:
-        c = 'h';
+      case WXK_DELETE:
+        c = 'x';
         break;
       case WXK_DOWN:
         c = 'j';
         break;
-      case WXK_UP:
-        c = 'k';
+      case WXK_END:
+        c = '$';
         break;
-      case WXK_RIGHT:
-        c = 'l';
+      case WXK_HOME:
+        c = '0';
         break;
-      case WXK_DELETE:
-        c = 'x';
+      case WXK_LEFT:
+        c = (event.HasAnyModifiers() & wxMOD_ALT) ? 'b' : 'h';
         break;
-      case WXK_PAGEUP:
-        c = WXK_CONTROL_B;
+      case WXK_NUMPAD_ENTER:
+        c = 'j';
         break;
       case WXK_PAGEDOWN:
         c = WXK_CONTROL_F;
         break;
-      case WXK_NUMPAD_ENTER:
-        c = 'j';
+      case WXK_PAGEUP:
+        c = WXK_CONTROL_B;
+        break;
+      case WXK_RIGHT:
+        c = (event.HasAnyModifiers() & wxMOD_ALT) ? 'w' : 'l';
+        break;
+      case WXK_UP:
+        c = 'k';
         break;
       default:
         c = event.GetKeyCode();
