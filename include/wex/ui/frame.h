@@ -202,7 +202,7 @@ public:
   /// Sets stc entry dialog title.
   virtual void stc_entry_dialog_title(const std::string& title) { ; }
 
-  /// Sets stc entry dialog vaildator.
+  /// Sets stc entry dialog validator.
   virtual void stc_entry_dialog_validator(const std::string& regex) { ; }
 
   /// Called after you checked the Sync checkbox on the options toolbar.

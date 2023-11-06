@@ -2,7 +2,7 @@
 // Name:      path.cpp
 // Purpose:   Implementation of class wex::path_lexer
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -55,12 +55,12 @@ bool build(const path_lexer& p)
         dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
       frame != nullptr)
   {
-    const build_system_t t(check_build_system(p));
-
+    const auto t(check_build_system(p));
+    const auto& sw(config("build." + binary[t] + ".switch").get(switches[t]));
     return frame->process_async_system(
       process_data(
         config("build." + binary[t] + ".bin").get(binary[t]) + " " +
-        config("build." + binary[t] + ".switch").get(switches[t]) + " " + p.filename())
+        (!sw.empty() ?  sw + " " +  p.filename(): std::string()))
         .start_dir(p.parent_path()));
   }
   else
@@ -71,7 +71,7 @@ bool build(const path_lexer& p)
 
 const std::string lexer_string(const std::string& filename)
 {
-  lexers* l = lexers::get(false);
+  auto* l = lexers::get(false);
   return l != nullptr && !l->get_lexers().empty() ?
            l->find_by_filename(filename).display_lexer() :
            std::string();

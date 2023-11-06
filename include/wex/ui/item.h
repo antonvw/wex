@@ -288,20 +288,16 @@ public:
     const std::string& label,
     /// notebook items
     const notebook_t& v,
-  /// type of this item (kind of notebook):
-  /// - NOTEBOOK
-  /// - NOTEBOOK_AUI
-  /// - NOTEBOOK_CHOICE
-  /// - NOTEBOOK_LIST
-  /// - NOTEBOOK_SIMPLE
-  /// - NOTEBOOK_TOOL
-  /// - NOTEBOOK_TREE
-  /// - NOTEBOOK_WEX
-#ifdef __WXMSW__
+    /// type of this item (kind of notebook):
+    /// - NOTEBOOK
+    /// - NOTEBOOK_AUI
+    /// - NOTEBOOK_CHOICE
+    /// - NOTEBOOK_LIST
+    /// - NOTEBOOK_SIMPLE
+    /// - NOTEBOOK_TOOL
+    /// - NOTEBOOK_TREE
+    /// - NOTEBOOK_WEX
     type_t type = NOTEBOOK_LIST,
-#else
-    type_t type = NOTEBOOK_LIST,
-#endif
     /// item data
     const data::item& data = data::item().label_type(data::item::LABEL_NONE));
 
