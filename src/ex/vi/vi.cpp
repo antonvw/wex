@@ -38,15 +38,15 @@ bool is_special_key(const wxKeyEvent& event, const vi_mode& mode)
     return true;
   }
 
-#ifdef __WXOSX__
-  if (event.HasAnyModifiers() & wxMOD_ALT)
+  if (
+    (event.HasAnyModifiers() & wxMOD_ALT) ||
+    (event.HasAnyModifiers() & wxMOD_CONTROL))
   {
     if (event.GetKeyCode() == WXK_LEFT || event.GetKeyCode() == WXK_RIGHT)
     {
       return true;
     }
   }
-#endif
 
   return !event.HasAnyModifiers() &&
          (event.GetKeyCode() == WXK_ESCAPE || event.GetKeyCode() == WXK_BACK ||
@@ -296,10 +296,6 @@ char wex::vi::convert_key_event(const wxKeyEvent& event) const
     return WXK_BACK;
   else if (event.GetKeyCode() == WXK_RETURN && !m_mode.is_insert())
     return 'j';
-#ifndef __WXOSX__
-  else if (event.GetModifiers() & wxMOD_RAW_CONTROL)
-    return event.GetKeyCode();
-#endif
 
   char c = event.GetUnicodeKey();
 
@@ -727,7 +723,6 @@ bool wex::vi::on_char(const wxKeyEvent& event)
 #ifdef __WXOSX__
           if (event.GetModifiers() & wxMOD_RAW_CONTROL)
           {
-
             if (m_command.append_exec(event.GetKeyCode()))
             {
               m_command.clear();
