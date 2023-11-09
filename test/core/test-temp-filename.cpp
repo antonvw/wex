@@ -33,7 +33,7 @@ TEST_CASE("wex::temp_filename")
       wex::path p = wex::path(tmpy.name());
       wex::file file(p);
 
-      REQUIRE(file.write("xyz"));
+      REQUIRE(file.write(std::string("xyz")));
       REQUIRE(p.file_exists());
     }
 

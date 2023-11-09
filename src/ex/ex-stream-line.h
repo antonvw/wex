@@ -2,11 +2,12 @@
 // Name:      ex-stream-line.h
 // Purpose:   Declaration of class wex::ex_stream_line
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <unordered_map>
 #include <wex/core/file.h>
 #include <wex/data/substitute.h>
 #include <wex/ex/addressrange.h>
@@ -70,13 +71,13 @@ public:
   int actions() const { return m_actions; }
 
   /// Handles a line.
-  handle_t handle(char* line, int& pos);
+  handle_t handle(char* line, size_t& pos);
 
   /// Returns lines.
   int lines() const { return m_line; }
 
 private:
-  void handle_substitute(char* line, int& pos);
+  void handle_substitute(char* line, size_t& pos);
 
   const action_t         m_action;
   const data::substitute m_data;
@@ -88,5 +89,7 @@ private:
   int   m_actions{0}, m_line{0};
 
   std::string m_copy;
+
+  static const std::unordered_map<action_t, std::string> m_action_names;
 };
 }; // namespace wex

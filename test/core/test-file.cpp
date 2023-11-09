@@ -57,7 +57,7 @@ TEST_CASE("wex::file")
       wex::path("test-create"),
       std::ios_base::out | std::ios_base::app);
     REQUIRE(f.is_open());
-    REQUIRE(f.write("extra text"));
+    REQUIRE(f.write(std::string("extra text")));
     REQUIRE(f.is_written());
   }
 

@@ -12,6 +12,7 @@
 #include <fstream>
 #include <istream>
 #include <memory>
+#include <span>
 
 namespace wex
 {
@@ -99,10 +100,13 @@ public:
   void use_stream(bool use = true) { m_use_stream = use; }
 
   /// Writes file from buffer.
-  bool write(const char* s, size_t n);
+  bool write(std::span<const char> buffer);
 
   /// Writes file from string.
-  bool write(const std::string& s) { return write(s.c_str(), s.size()); }
+  bool write(const std::string& s)
+  {
+    return write(std::span{s.c_str(), s.size()});
+  }
 
 public:
   /// Returns whether contents have been changed.

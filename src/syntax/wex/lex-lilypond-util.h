@@ -42,11 +42,11 @@ public:
 
   bool last_word_check(
     Sci_Position                    start,
-    const char*                     needle,
+    const std::string&              needle,
     const std::vector<std::string>& next,
     Sci_Position                    length,
     int&                            state) const;
-  bool last_word_is(Sci_Position start, const char* needle) const;
+  bool last_word_is(Sci_Position start, const std::string& needle) const;
   bool last_word_is_match_env(Sci_Position pos) const;
 
   bool next_not_blank_is(Sci_Position i, char needle) const;
@@ -123,7 +123,7 @@ inline bool lilypond::next_not_blank_is(Sci_Position i, char needle) const
 
 inline bool lilypond::last_word_check(
   Sci_Position                    start,
-  const char*                     needle,
+  const std::string&              needle,
   const std::vector<std::string>& checks,
   Sci_Position                    lengthDoc,
   int&                            state) const
@@ -166,10 +166,11 @@ inline bool lilypond::last_word_check(
   return false;
 }
 
-inline bool lilypond::last_word_is(Sci_Position start, const char* needle) const
+inline bool
+lilypond::last_word_is(Sci_Position start, const std::string& needle) const
 {
-  const Sci_PositionU l   = static_cast<Sci_PositionU>(strlen(needle));
-  const Sci_Position  ini = start - l + 1;
+  const auto         l   = static_cast<Sci_PositionU>(needle.size());
+  const Sci_Position ini = start - l + 1;
 
   char s[32];
 
@@ -181,7 +182,7 @@ inline bool lilypond::last_word_is(Sci_Position start, const char* needle) const
   }
   s[i] = '\0';
 
-  return (strcmp(s, needle) == 0);
+  return s == needle;
 }
 
 inline bool lilypond::last_word_is_match_env(Sci_Position pos) const

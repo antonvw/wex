@@ -28,8 +28,8 @@
     m_stream->clear();                                                        \
     m_stream->seekg(0);                                                       \
                                                                               \
-    int  i = 0;                                                               \
-    char c;                                                                   \
+    size_t i = 0;                                                             \
+    char   c;                                                                 \
                                                                               \
     while (m_stream->get(c))                                                  \
     {                                                                         \

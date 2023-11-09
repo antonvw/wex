@@ -44,7 +44,7 @@ public:
     return true;
   }
 
-  void clear() { m_contents.clear(); };
+  void clear() { m_contents.clear(); }
 
   const auto& contents() { return m_contents; }
 

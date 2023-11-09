@@ -294,7 +294,7 @@ const std::string* wex::file::read(std::streampos seek_position)
   return m_buffer.get();
 }
 
-bool wex::file::write(const char* s, size_t n)
+bool wex::file::write(std::span<const char> buffer)
 {
   if (!m_fs.is_open())
   {
@@ -305,11 +305,11 @@ bool wex::file::write(const char* s, size_t n)
     }
   }
 
-  m_fs.write(s, n);
+  m_fs.write(buffer.data(), buffer.size());
 
   if (!m_fs.good())
   {
-    log_stream_info("write", n);
+    log_stream_info("write", buffer.size());
   }
   else
   {
