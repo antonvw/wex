@@ -52,6 +52,20 @@ bool wex::global_env::for_each(const block_lines& match) const
 }
 ```
 
+### Containers library
+
+```cpp
+  std::span
+```
+
+  This container is used e.g. to pass buffers around.
+  Example:
+
+```cpp
+  /// Writes file from buffer.
+  bool write(std::span<const char> buffer);
+```
+
 ### Filesystem library (c++17)
 
 ```cpp

@@ -43,7 +43,7 @@ make analyse
 ## Test it
 
 - when updating one of the GitHub workflows yml files, use e.g
-  [yamlchecker](https://yamlchecker.com) to check the chaged file
+  [yamlchecker](https://yamlchecker.com) to check the changed file
 
 - add a test (and update sample)
 

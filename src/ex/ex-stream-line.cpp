@@ -2,7 +2,7 @@
 // Name:      ex-stream-line.cpp
 // Purpose:   Implementation of class wex::ex_stream_line
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cassert>
@@ -16,32 +16,16 @@
 
 namespace wex
 {
-std::string action_name(ex_stream_line::action_t type)
-{
-  switch (type)
-  {
-    case ex_stream_line::ACTION_COPY:
-      return "copied";
-    case ex_stream_line::ACTION_ERASE:
-      return "erased";
-    case ex_stream_line::ACTION_INSERT:
-      return "inserted";
-    case ex_stream_line::ACTION_JOIN:
-      return "joined";
-    case ex_stream_line::ACTION_MOVE:
-      return "moved";
-    case ex_stream_line::ACTION_SUBSTITUTE:
-      return "substituted";
-    case ex_stream_line::ACTION_WRITE:
-      return "written";
-    case ex_stream_line::ACTION_YANK:
-      return "yanked";
-
-    default:
-      assert(0);
-      return std::string();
-  };
-};
+const std::unordered_map<ex_stream_line::action_t, std::string>
+  ex_stream_line::m_action_names = {
+    {ex_stream_line::ACTION_COPY, "copied"},
+    {ex_stream_line::ACTION_ERASE, "erased"},
+    {ex_stream_line::ACTION_INSERT, "inserted"},
+    {ex_stream_line::ACTION_JOIN, "joined"},
+    {ex_stream_line::ACTION_MOVE, "moved"},
+    {ex_stream_line::ACTION_SUBSTITUTE, "substituted"},
+    {ex_stream_line::ACTION_WRITE, "written"},
+    {ex_stream_line::ACTION_YANK, "yanked"}};
 }; // namespace wex
 
 wex::ex_stream_line::ex_stream_line(
@@ -109,19 +93,27 @@ wex::ex_stream_line::ex_stream_line(
 
 wex::ex_stream_line::~ex_stream_line()
 {
-  log::trace("ex stream " + action_name(m_action))
-    << m_actions << m_begin << m_end << m_data.pattern()
-    << m_data.replacement();
+  std::stringstream ss;
+
+  if (!m_data.pattern().empty() || !m_data.replacement().empty())
+  {
+    ss << "pattern: " << m_data.pattern();
+    ss << " replacement: " << m_data.replacement();
+  }
+
+  log::trace("ex stream " + m_action_names.at(m_action))
+    << m_actions << "lines from" << m_begin << "to" << m_end << ss;
 }
 
-wex::ex_stream_line::handle_t wex::ex_stream_line::handle(char* line, int& pos)
+wex::ex_stream_line::handle_t
+wex::ex_stream_line::handle(char* line, size_t& pos)
 {
   if (m_line >= m_begin && m_line <= m_end)
   {
     switch (m_action)
     {
       case ACTION_COPY:
-        m_file->write(line, pos);
+        m_file->write(std::span{line, pos});
         m_copy += line;
         m_actions++;
         break;
@@ -134,13 +126,13 @@ wex::ex_stream_line::handle_t wex::ex_stream_line::handle(char* line, int& pos)
       case ACTION_INSERT:
         m_actions++;
         m_file->write(m_text);
-        m_file->write(line, pos);
+        m_file->write(std::span{line, pos});
         break;
 
       case ACTION_JOIN:
         // join: do not write last char, that is \n
         m_actions++;
-        m_file->write(line, pos - 1);
+        m_file->write(std::span{line, pos - 1});
         break;
 
       case ACTION_MOVE:
@@ -154,7 +146,7 @@ wex::ex_stream_line::handle_t wex::ex_stream_line::handle(char* line, int& pos)
 
       case ACTION_WRITE:
         m_actions++;
-        m_file->write(line, pos);
+        m_file->write(std::span{line, pos});
         break;
 
       case ACTION_YANK:
@@ -175,7 +167,7 @@ wex::ex_stream_line::handle_t wex::ex_stream_line::handle(char* line, int& pos)
     {
       case ACTION_COPY:
       case ACTION_MOVE:
-        m_file->write(line, pos);
+        m_file->write(std::span{line, pos});
 
         if (m_line > m_dest && !m_copy.empty())
         {
@@ -194,7 +186,7 @@ wex::ex_stream_line::handle_t wex::ex_stream_line::handle(char* line, int& pos)
         }
 
       default:
-        m_file->write(line, pos);
+        m_file->write(std::span{line, pos});
     }
   }
 
@@ -204,7 +196,7 @@ wex::ex_stream_line::handle_t wex::ex_stream_line::handle(char* line, int& pos)
   return HANDLE_CONTINUE;
 }
 
-void wex::ex_stream_line::handle_substitute(char* line, int& pos)
+void wex::ex_stream_line::handle_substitute(char* line, size_t& pos)
 {
   std::string text(line, pos);
 
