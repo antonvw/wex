@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <wex/core/reflection.h>
 #include <wex/syntax/property.h>
 #include <wex/syntax/style.h>
 
@@ -212,5 +213,7 @@ private:
   bool m_is_ok{false}, m_previewable{false};
 
   syntax::stc* m_stc{nullptr};
+
+  reflection m_reflect;
 };
 }; // namespace wex

@@ -38,6 +38,42 @@ wex::item::item(
   , m_label_window(rfind_after(label, "."))
   , m_sizer_flags(
       m_type == GROUP ? wxSizerFlags().Left() : wxSizerFlags().Border().Left())
+  , m_reflect(
+      {{"label",
+        [&]()
+        {
+          return m_label;
+        }},
+       {"type",
+        [&]()
+        {
+          return std::to_string(m_type);
+        }},
+       {"value",
+        [&]()
+        {
+          return get_value();
+        }},
+       {"initial",
+        [&]()
+        {
+          return m_data.initial();
+        }},
+       {"min",
+        [&]()
+        {
+          return m_data.min();
+        }},
+       {"max",
+        [&]()
+        {
+          return m_data.max();
+        }},
+       {"inc",
+        [&]()
+        {
+          return m_data.inc();
+        }}})
 {
   m_data.initial(value);
 
@@ -712,14 +748,7 @@ wex::data::layout::sizer_t* wex::item::layout(data::layout& layout)
 
 std::stringstream wex::item::log() const
 {
-  std::stringstream ss;
-
-  ss << "item::LABEL: " << m_label << " "
-     << "TYPE: " << m_type << " " << str("VALUE: ", get_value())
-     << str("INITIAL: ", m_data.initial()) << str("MIN: ", m_data.min())
-     << str("MAX: ", m_data.max()) << str("INC: ", m_data.inc());
-
-  return ss;
+  return m_reflect.log();
 }
 
 void wex::item::set_dialog(item_template_dialog<item>* dlg)

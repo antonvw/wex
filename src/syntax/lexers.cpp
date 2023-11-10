@@ -24,6 +24,67 @@ wex::lexers::lexers()
   : m_path(wex::path(config::dir(), "wex-lexers.xml"))
   , m_path_macro(wex::path(config::dir(), "wex-lexers-macro.xml"))
   , m_theme(config("theme").get())
+  , m_reflect(
+      {{"default colours",
+        [&]()
+        {
+          return m_default_colours.size();
+        }},
+       {"global properties",
+        [&]()
+        {
+          return m_global_properties.size();
+        }},
+       {"indicators",
+        [&]()
+        {
+          return m_indicators.size();
+        }},
+       {"keywords",
+        [&]()
+        {
+          return m_keywords.size();
+        }},
+       {"lexers",
+        [&]()
+        {
+          return m_lexers.size();
+        }},
+       {"macros",
+        [&]()
+        {
+          return m_macros.size();
+        }},
+       {"markers",
+        [&]()
+        {
+          return m_markers.size();
+        }},
+       {"styles",
+        [&]()
+        {
+          return m_styles.size();
+        }},
+       {"styles hex",
+        [&]()
+        {
+          return m_styles_hex.size();
+        }},
+       {"texts",
+        [&]()
+        {
+          return m_texts.size();
+        }},
+       {"theme colours",
+        [&]()
+        {
+          return m_theme_colours.size();
+        }},
+       {"theme macros",
+        [&]()
+        {
+          return m_theme_macros.size();
+        }}})
 {
 }
 
@@ -358,15 +419,7 @@ void wex::lexers::load_document_check()
     }
   }
 
-  log::trace("lexers info")
-    << "default colors:" << m_default_colours.size()
-    << "global properties:" << m_global_properties.size()
-    << "indicators:" << m_indicators.size() << "keywords:" << m_keywords.size()
-    << "lexers:" << m_lexers.size() << "macros:" << m_macros.size()
-    << "markers:" << m_markers.size() << "styles:" << m_styles.size()
-    << "styles hex:" << m_styles_hex.size() << "texts:" << m_texts.size()
-    << "theme colours:" << m_theme_colours.size()
-    << "theme macros:" << m_theme_macros.size();
+  log::trace("lexers info") << m_reflect.log();
 }
 
 bool wex::lexers::load_document_init()

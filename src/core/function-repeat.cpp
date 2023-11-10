@@ -24,6 +24,17 @@ wex::function_repeat::function_repeat(
   : m_name(name)
   , m_handler(evt)
   , m_f(f)
+  , m_reflect(
+      {{"id",
+        [&]()
+        {
+          return m_timer_id;
+        }},
+       {"interval",
+        [&]()
+        {
+          return m_timer->GetInterval();
+        }}})
 {
 }
 
@@ -52,8 +63,7 @@ bool wex::function_repeat::action(action_t a)
         return false;
       }
 
-      log::trace("repeat " + m_name)
-        << "id:" << m_timer_id << "interval:" << m_timer->GetInterval() << "\n";
+      log::trace("repeat " + m_name) << m_reflect.log();
 
       m_handler->Bind(wxEVT_TIMER, m_f, m_timer_id);
       break;

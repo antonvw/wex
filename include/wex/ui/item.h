@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <wex/core/reflection.h>
 #include <wex/data/item.h>
 #include <wex/data/layout.h>
 #include <wex/data/listview.h>
@@ -484,6 +485,8 @@ private:
   wxWindow*    m_window{nullptr};
 
   create_t m_creators;
+
+  reflection m_reflect;
 
   static inline item_template_dialog<item>* m_dialog     = nullptr;
   static inline bool                        m_use_config = true;

@@ -22,6 +22,27 @@
 
 wex::macros::macros()
   : m_mode(this)
+  , m_reflect(
+      {{"abbreviations",
+        [&]()
+        {
+          return m_abbreviations.size();
+        }},
+       {"maps",
+        [&]()
+        {
+          return m_map.size();
+        }},
+       {"macros",
+        [&]()
+        {
+          return m_macros.size();
+        }},
+       {"variables",
+        [&]()
+        {
+          return m_variables.size();
+        }}})
 {
 }
 
@@ -200,9 +221,7 @@ bool wex::macros::load_document()
     }
   }
 
-  log::trace("macros info")
-    << "abbreviations:" << m_abbreviations.size() << "maps:" << m_map.size()
-    << "macros:" << m_macros.size() << "variables:" << m_variables.size();
+  log::trace("macros info") << m_reflect.log();
 
   m_is_loaded = true;
 

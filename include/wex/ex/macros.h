@@ -9,6 +9,7 @@
 
 #include <pugixml.hpp>
 
+#include <wex/core/reflection.h>
 #include <wex/ex/macro-mode.h>
 #include <wex/ex/variable.h>
 
@@ -199,5 +200,7 @@ private:
   variables_map_t m_variables;
 
   keys_map_t m_map_alt_keys, m_map_control_keys, m_map_keys;
+
+  reflection m_reflect;
 };
 }; // namespace wex
