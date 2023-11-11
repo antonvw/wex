@@ -413,7 +413,7 @@ public:
   data::layout::sizer_t* layout(data::layout& layout);
 
   /// Logs info about this item.
-  std::stringstream log() const;
+  std::stringstream log() const { return m_reflect.log(); }
 
   /// Returns the page.
   const auto& page() const { return m_page; }

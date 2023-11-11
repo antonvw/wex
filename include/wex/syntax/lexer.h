@@ -134,7 +134,7 @@ public:
   size_t line_size() const;
 
   /// Logs info about this class.
-  std::stringstream log() const;
+  std::stringstream log() const { return m_reflect.log(); }
 
   /// Returns a lexer comment string with text formatted.
   const std::string make_comment(

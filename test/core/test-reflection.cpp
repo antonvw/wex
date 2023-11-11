@@ -20,16 +20,7 @@ TEST_CASE("wex::reflection")
   SUBCASE("log")
   {
     wex::reflection rfl(
-      {{"x",
-        [&]()
-        {
-          return std::string();
-        }},
-       {"y",
-        [&]()
-        {
-          return std::string("yyy");
-        }}});
+      {REFLECT_ADD("x", std::string()), REFLECT_ADD("y", std::string("yyy"))});
 
     CAPTURE(rfl.log().str());
     REQUIRE(rfl.log().str().contains("x, y: yyy"));
@@ -38,16 +29,7 @@ TEST_CASE("wex::reflection")
   SUBCASE("log-skip-empty")
   {
     wex::reflection rfl(
-      {{"x",
-        [&]()
-        {
-          return std::string();
-        }},
-       {"y",
-        [&]()
-        {
-          return std::string("yyy");
-        }}},
+      {REFLECT_ADD("x", std::string()), REFLECT_ADD("y", std::string("yyy"))},
       wex::reflection::log_t::SKIP_EMPTY);
 
     REQUIRE(rfl.log().str() == "y: yyy\n");

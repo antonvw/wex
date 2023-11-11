@@ -132,7 +132,7 @@ public:
   ctags_entry& kind(const std::string& v);
 
   /// Logs info about this entry.
-  const std::stringstream log() const;
+  const std::stringstream log() const { return m_reflect.log(); }
 
   /// Returns signature member.
   const auto& signature() const { return m_signature; }

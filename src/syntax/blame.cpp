@@ -60,17 +60,7 @@ wex::blame::blame(const pugi::xml_node& node)
   , m_date_print(node.attribute("date-print").as_uint())
   , m_name(node.attribute("name").value())
   , m_path_original("xxxxx")
-  , m_reflect(
-      {{"info",
-        [&]()
-        {
-          return m_info;
-        }},
-       {"line no",
-        [&]()
-        {
-          return m_line_no;
-        }}})
+  , m_reflect({REFLECT_ADD("info", m_info), REFLECT_ADD("line no", m_line_no)})
 {
 }
 

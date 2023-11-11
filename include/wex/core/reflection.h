@@ -12,6 +12,16 @@
 #include <sstream>
 #include <vector>
 
+/// YOu can use this macro to add reflection to your class members,
+/// or functions.
+#define REFLECT_ADD(NAME, ITEM) \
+  {                             \
+    NAME, [&]()                 \
+    {                           \
+      return ITEM;              \
+    }                           \
+  }
+
 namespace wex
 {
 /// This class offers reflection for any kind of class members.

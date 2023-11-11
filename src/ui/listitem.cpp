@@ -27,12 +27,7 @@ wex::listitem::listitem(listview* lv, long itemnumber)
            lv->get_item_text(itemnumber),
            path::log_t().set(path::LOG_MOD))))
   , m_file_spec(lv->get_item_text(itemnumber, _("Type")))
-  , m_reflect(
-      {{"path",
-        [&]()
-        {
-          return m_path.string();
-        }}})
+  , m_reflect({REFLECT_ADD("path", m_path.string())})
 {
   SetId(itemnumber);
 
@@ -50,12 +45,7 @@ wex::listitem::listitem(
   , m_path(filename)
   , m_file_spec(filespec)
   , m_is_readonly(false)
-  , m_reflect(
-      {{"path",
-        [&]()
-        {
-          return m_path.string();
-        }}})
+  , m_reflect({REFLECT_ADD("path", m_path.string())})
 {
   SetId(-1);
 }
@@ -94,11 +84,6 @@ void wex::listitem::insert(long index)
   {
     m_listview->SetItem(GetId(), col, filename);
   }
-}
-
-std::stringstream wex::listitem::log() const
-{
-  return m_reflect.log();
 }
 
 bool wex::listitem::set_item(

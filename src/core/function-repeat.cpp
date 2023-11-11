@@ -25,16 +25,8 @@ wex::function_repeat::function_repeat(
   , m_handler(evt)
   , m_f(f)
   , m_reflect(
-      {{"id",
-        [&]()
-        {
-          return m_timer_id;
-        }},
-       {"interval",
-        [&]()
-        {
-          return m_timer->GetInterval();
-        }}})
+      {REFLECT_ADD("id", m_timer_id),
+       REFLECT_ADD("interval", m_timer->GetInterval())})
 {
 }
 

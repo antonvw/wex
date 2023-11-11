@@ -24,16 +24,7 @@ wex::ex_commandline_input::ex_commandline_input(
   , m_values(config(m_name).get(values_t{}))
   , m_iterator(m_values.cbegin())
   , m_reflect(
-      {{"name",
-        [&]()
-        {
-          return m_name;
-        }},
-       {"size",
-        [&]()
-        {
-          return m_values.size();
-        }}})
+      {REFLECT_ADD("name", m_name), REFLECT_ADD("size", m_values.size())})
 {
   if (!m_values.empty())
   {

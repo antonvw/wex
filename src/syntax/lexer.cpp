@@ -84,26 +84,10 @@ wex::lexer::lexer(syntax::stc* stc)
 wex::lexer::lexer(const pugi::xml_node* node)
   : m_scintilla_lexer(node->attribute("name").value())
   , m_reflect(
-      {{"display",
-        [&]()
-        {
-          return m_display_lexer;
-        }},
-       {"extensions",
-        [&]()
-        {
-          return m_extensions;
-        }},
-       {"language",
-        [&]()
-        {
-          return m_language;
-        }},
-       {"lexer",
-        [&]()
-        {
-          return m_scintilla_lexer;
-        }}})
+      {REFLECT_ADD("display", m_display_lexer),
+       REFLECT_ADD("extensions", m_extensions),
+       REFLECT_ADD("language", m_language),
+       REFLECT_ADD("lexer", m_scintilla_lexer)})
 {
   m_is_ok = !m_scintilla_lexer.empty();
 
@@ -483,11 +467,6 @@ bool wex::lexer::keyword_starts_with(const std::string& word) const
 {
   const auto& it = m_keywords.lower_bound(word);
   return it != m_keywords.end() && it->starts_with(word);
-}
-
-std::stringstream wex::lexer::log() const
-{
-  return m_reflect.log();
 }
 
 const std::string wex::lexer::make_comment(

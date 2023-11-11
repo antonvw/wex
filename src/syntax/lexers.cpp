@@ -25,66 +25,18 @@ wex::lexers::lexers()
   , m_path_macro(wex::path(config::dir(), "wex-lexers-macro.xml"))
   , m_theme(config("theme").get())
   , m_reflect(
-      {{"default colours",
-        [&]()
-        {
-          return m_default_colours.size();
-        }},
-       {"global properties",
-        [&]()
-        {
-          return m_global_properties.size();
-        }},
-       {"indicators",
-        [&]()
-        {
-          return m_indicators.size();
-        }},
-       {"keywords",
-        [&]()
-        {
-          return m_keywords.size();
-        }},
-       {"lexers",
-        [&]()
-        {
-          return m_lexers.size();
-        }},
-       {"macros",
-        [&]()
-        {
-          return m_macros.size();
-        }},
-       {"markers",
-        [&]()
-        {
-          return m_markers.size();
-        }},
-       {"styles",
-        [&]()
-        {
-          return m_styles.size();
-        }},
-       {"styles hex",
-        [&]()
-        {
-          return m_styles_hex.size();
-        }},
-       {"texts",
-        [&]()
-        {
-          return m_texts.size();
-        }},
-       {"theme colours",
-        [&]()
-        {
-          return m_theme_colours.size();
-        }},
-       {"theme macros",
-        [&]()
-        {
-          return m_theme_macros.size();
-        }}})
+      {REFLECT_ADD("default colours", m_default_colours.size()),
+       REFLECT_ADD("global properties", m_global_properties.size()),
+       REFLECT_ADD("indicators", m_indicators.size()),
+       REFLECT_ADD("keywords", m_keywords.size()),
+       REFLECT_ADD("lexers", m_lexers.size()),
+       REFLECT_ADD("macros", m_macros.size()),
+       REFLECT_ADD("markers", m_markers.size()),
+       REFLECT_ADD("styles", m_styles.size()),
+       REFLECT_ADD("styles hex", m_styles_hex.size()),
+       REFLECT_ADD("texts", m_texts.size()),
+       REFLECT_ADD("theme colours", m_theme_colours.size()),
+       REFLECT_ADD("theme macros", m_theme_macros.size())})
 {
 }
 

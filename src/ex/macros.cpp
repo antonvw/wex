@@ -23,26 +23,10 @@
 wex::macros::macros()
   : m_mode(this)
   , m_reflect(
-      {{"abbreviations",
-        [&]()
-        {
-          return m_abbreviations.size();
-        }},
-       {"maps",
-        [&]()
-        {
-          return m_map.size();
-        }},
-       {"macros",
-        [&]()
-        {
-          return m_macros.size();
-        }},
-       {"variables",
-        [&]()
-        {
-          return m_variables.size();
-        }}})
+      {REFLECT_ADD("abbreviations", m_abbreviations.size()),
+       REFLECT_ADD("maps", m_map.size()),
+       REFLECT_ADD("macros", m_macros.size()),
+       REFLECT_ADD("variables", m_variables.size())})
 {
 }
 

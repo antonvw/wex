@@ -43,7 +43,7 @@ public:
   bool is_readonly() const { return m_is_readonly; }
 
   /// Logs info about this item.
-  std::stringstream log() const;
+  std::stringstream log() const { return m_reflect.log(); }
 
   /// Returns the path.
   const auto& path() const { return m_path; }
