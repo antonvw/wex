@@ -391,7 +391,7 @@ TEST_CASE("wex::vi")
       change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     }
 
-    stc->set_text("this text contains xx");
+    stc->set_text("this text contains xx\nand yy on other line");
     REQUIRE(stc->get_selected_text().empty());
 
     REQUIRE(vi->command("v"));
@@ -405,6 +405,16 @@ TEST_CASE("wex::vi")
     REQUIRE(stc->get_selected_text() == "this text contains xx");
 
     change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
+
+    event.SetControlDown(true);
+    REQUIRE(vi->command("gg"));
+    REQUIRE(stc->get_selected_text().empty());
+    REQUIRE(vi->command("v"));
+    REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL);
+    REQUIRE(!vi->on_key_down(event));
+    REQUIRE(
+      stc->get_selected_text() ==
+      "this text contains xx\nand yy on other line");
   }
 
   SUBCASE("others")

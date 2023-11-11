@@ -290,55 +290,59 @@ void wex::vi::command_reg(const std::string& reg)
   }
 }
 
-char wex::vi::convert_key_event(const wxKeyEvent& event) const
+std::string wex::vi::convert_key_event(const wxKeyEvent& event) const
 {
   if (event.GetKeyCode() == WXK_BACK)
-    return WXK_BACK;
+    return k_s(WXK_BACK);
   else if (event.GetKeyCode() == WXK_RETURN && !m_mode.is_insert())
-    return 'j';
+    return "j";
 
-  char c = event.GetUnicodeKey();
-
-  if (c == WXK_NONE)
+  if (auto c = event.GetUnicodeKey(); c != WXK_NONE)
   {
+    return std::string(1, c);
+  }
+  else
+  {
+    std::string cmd;
+
     switch (event.GetKeyCode())
     {
       case WXK_DELETE:
-        c = 'x';
+        cmd = "x";
         break;
       case WXK_DOWN:
-        c = 'j';
+        cmd = "j";
         break;
       case WXK_END:
-        c = '$';
+        cmd = (event.GetModifiers() == wxMOD_CONTROL) ? "G" : "$";
         break;
       case WXK_HOME:
-        c = '0';
+        cmd = (event.GetModifiers() == wxMOD_CONTROL) ? "gg" : "0";
         break;
       case WXK_LEFT:
-        c = (event.HasAnyModifiers() & wxMOD_ALT) ? 'b' : 'h';
+        cmd = (event.GetModifiers() == wxMOD_CONTROL) ? "b" : "h";
         break;
       case WXK_NUMPAD_ENTER:
-        c = 'j';
+        cmd = "j";
         break;
       case WXK_PAGEDOWN:
-        c = WXK_CONTROL_F;
+        cmd = WXK_CONTROL_F;
         break;
       case WXK_PAGEUP:
-        c = WXK_CONTROL_B;
+        cmd = WXK_CONTROL_B;
         break;
       case WXK_RIGHT:
-        c = (event.HasAnyModifiers() & wxMOD_ALT) ? 'w' : 'l';
+        cmd = (event.GetModifiers() == wxMOD_CONTROL) ? "w" : "l";
         break;
       case WXK_UP:
-        c = 'k';
+        cmd = "k";
         break;
       default:
-        c = event.GetKeyCode();
+        cmd = event.GetKeyCode();
     }
-  }
 
-  return c;
+    return cmd;
+  }
 }
 
 bool wex::vi::delete_range(int start, int end)
