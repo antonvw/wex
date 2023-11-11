@@ -60,6 +60,7 @@ wex::blame::blame(const pugi::xml_node& node)
   , m_date_print(node.attribute("date-print").as_uint())
   , m_name(node.attribute("name").value())
   , m_path_original("xxxxx")
+  , m_reflect({REFLECT_ADD("info", m_info), REFLECT_ADD("line no", m_line_no)})
 {
 }
 
@@ -181,7 +182,7 @@ bool wex::blame::parse_compact(const std::string& line, const regex& r)
 
   if (m_line_no < 5)
   {
-    log::trace("parse_compact") << m_info << "no:" << m_line_no;
+    log::trace("parse_compact") << m_reflect.log();
   }
 
   return true;
@@ -213,7 +214,7 @@ bool wex::blame::parse_full(const std::string& line, const regex& r)
 
   if (m_line_no < 5)
   {
-    log::trace("parse_full") << m_info;
+    log::trace("parse_full") << m_reflect.log();
   }
 
   return true;

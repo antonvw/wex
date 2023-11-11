@@ -10,6 +10,7 @@
 #include <string>
 
 #include <readtags.h>
+#include <wex/core/reflection.h>
 
 class wxStyledTextCtrl;
 
@@ -26,6 +27,9 @@ public:
   static void register_image(wxStyledTextCtrl* stc);
 
   /// Other methods.
+
+  /// Default constructor.
+  ctags_entry();
 
   /// Returns access member.
   const auto& access() const { return m_access; }
@@ -128,7 +132,7 @@ public:
   ctags_entry& kind(const std::string& v);
 
   /// Logs info about this entry.
-  const std::stringstream log() const;
+  const std::stringstream log() const { return m_reflect.log(); }
 
   /// Returns signature member.
   const auto& signature() const { return m_signature; }
@@ -144,5 +148,7 @@ private:
   tagEntry m_entry{0};
 
   std::string m_access, m_class, m_kind, m_signature;
+
+  reflection m_reflect;
 };
 }; // namespace wex

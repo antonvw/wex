@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <wex/core/reflection.h>
 #include <wx/timer.h>
 
 namespace wex
@@ -47,6 +48,8 @@ private:
   wxWindowID m_timer_id;
 
   repeat_t m_f;
+
+  reflection m_reflect;
 
   const std::string m_name;
 };

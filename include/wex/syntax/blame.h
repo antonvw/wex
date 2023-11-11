@@ -2,12 +2,13 @@
 // Name:      blame.h
 // Purpose:   Declaration of class wex::blame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2022 Anton van Wezenbeek
+// Copyright: (c) 2019-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <pugixml.hpp>
+#include <wex/core/reflection.h>
 
 namespace wex
 {
@@ -159,5 +160,7 @@ private:
   bool m_skip_info{false};
 
   size_t m_date_print{10}; // cannot be const because of used copy assignment
+
+  reflection m_reflect;
 };
 }; // namespace wex

@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <wex/core/reflection.h>
 #include <wex/core/types.h>
 #include <wex/factory/ex-command.h>
 
@@ -79,5 +80,7 @@ private:
 
   values_t                 m_values;
   values_t::const_iterator m_iterator;
+
+  reflection m_reflect;
 };
 }; // namespace wex

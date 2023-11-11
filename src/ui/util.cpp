@@ -97,52 +97,6 @@ bool no_value(wex::item::type_t t)
   return true;
 }
 
-const std::string str(const std::string& name, const std::any& any)
-{
-  std::stringstream s;
-
-  s << name << "{internal type: " << any.type().name() << ", value: ";
-
-  if (any.has_value())
-  {
-    try
-    {
-      if (any.type() == typeid(int))
-      {
-        s << std::any_cast<int>(any);
-      }
-      else if (any.type() == typeid(long))
-      {
-        s << std::any_cast<long>(any);
-      }
-      else if (any.type() == typeid(double))
-      {
-        s << std::any_cast<double>(any);
-      }
-      else if (any.type() == typeid(std::string))
-      {
-        s << std::any_cast<std::string>(any);
-      }
-      else
-      {
-        s << "<no cast available>";
-      }
-    }
-    catch (std::bad_cast& e)
-    {
-      s << "<log bad cast: " << e.what() << ">";
-    }
-  }
-  else
-  {
-    s << "<no value>";
-  }
-
-  s << "} ";
-
-  return s.str();
-}
-
 const item::type_t use_type(const std::string& label, item::type_t t)
 {
   return label.contains(':') ? item::STATICTEXT : t;

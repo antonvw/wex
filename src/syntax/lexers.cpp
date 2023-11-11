@@ -24,6 +24,19 @@ wex::lexers::lexers()
   : m_path(wex::path(config::dir(), "wex-lexers.xml"))
   , m_path_macro(wex::path(config::dir(), "wex-lexers-macro.xml"))
   , m_theme(config("theme").get())
+  , m_reflect(
+      {REFLECT_ADD("default colours", m_default_colours.size()),
+       REFLECT_ADD("global properties", m_global_properties.size()),
+       REFLECT_ADD("indicators", m_indicators.size()),
+       REFLECT_ADD("keywords", m_keywords.size()),
+       REFLECT_ADD("lexers", m_lexers.size()),
+       REFLECT_ADD("macros", m_macros.size()),
+       REFLECT_ADD("markers", m_markers.size()),
+       REFLECT_ADD("styles", m_styles.size()),
+       REFLECT_ADD("styles hex", m_styles_hex.size()),
+       REFLECT_ADD("texts", m_texts.size()),
+       REFLECT_ADD("theme colours", m_theme_colours.size()),
+       REFLECT_ADD("theme macros", m_theme_macros.size())})
 {
 }
 
@@ -358,15 +371,7 @@ void wex::lexers::load_document_check()
     }
   }
 
-  log::trace("lexers info")
-    << "default colors:" << m_default_colours.size()
-    << "global properties:" << m_global_properties.size()
-    << "indicators:" << m_indicators.size() << "keywords:" << m_keywords.size()
-    << "lexers:" << m_lexers.size() << "macros:" << m_macros.size()
-    << "markers:" << m_markers.size() << "styles:" << m_styles.size()
-    << "styles hex:" << m_styles_hex.size() << "texts:" << m_texts.size()
-    << "theme colours:" << m_theme_colours.size()
-    << "theme macros:" << m_theme_macros.size();
+  log::trace("lexers info") << m_reflect.log();
 }
 
 bool wex::lexers::load_document_init()

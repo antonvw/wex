@@ -2,7 +2,7 @@
 // Name:      listitem.cpp
 // Purpose:   Implementation of class wex::listitem
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -27,6 +27,7 @@ wex::listitem::listitem(listview* lv, long itemnumber)
            lv->get_item_text(itemnumber),
            path::log_t().set(path::LOG_MOD))))
   , m_file_spec(lv->get_item_text(itemnumber, _("Type")))
+  , m_reflect({REFLECT_ADD("path", m_path.string())})
 {
   SetId(itemnumber);
 
@@ -44,6 +45,7 @@ wex::listitem::listitem(
   , m_path(filename)
   , m_file_spec(filespec)
   , m_is_readonly(false)
+  , m_reflect({REFLECT_ADD("path", m_path.string())})
 {
   SetId(-1);
 }
@@ -82,15 +84,6 @@ void wex::listitem::insert(long index)
   {
     m_listview->SetItem(GetId(), col, filename);
   }
-}
-
-std::stringstream wex::listitem::log() const
-{
-  std::stringstream ss;
-
-  ss << "PATH: " << m_path.string();
-
-  return ss;
 }
 
 bool wex::listitem::set_item(

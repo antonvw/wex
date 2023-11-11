@@ -8,6 +8,7 @@
 #pragma once
 
 #include <wex/core/path.h>
+#include <wex/core/reflection.h>
 #include <wex/ui/listview.h>
 
 namespace wex
@@ -42,7 +43,7 @@ public:
   bool is_readonly() const { return m_is_readonly; }
 
   /// Logs info about this item.
-  std::stringstream log() const;
+  std::stringstream log() const { return m_reflect.log(); }
 
   /// Returns the path.
   const auto& path() const { return m_path; }
@@ -64,5 +65,7 @@ private:
   const wex::path   m_path;
   const std::string m_file_spec;
   bool              m_is_readonly;
+
+  reflection m_reflect;
 };
 }; // namespace wex

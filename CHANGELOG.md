@@ -10,10 +10,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - the build tool now supports ninja besides make
 - added class function_repeat to offer syncing without idle events
+- added class reflection to add reflection to classes
 
 ### Changed
 
-- moved single_choice_dialog to syntx lib, use data::window parameter
+- moved single_choice_dialog to syntax lib, use data::window parameter
 - ex options ignorecase and matchword are kept in config
 - std::optional is used to return values at several places
 - use more enum classes

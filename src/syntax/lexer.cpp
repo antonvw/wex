@@ -67,6 +67,7 @@ auto tokenize_int(const std::string& text, const char* sep = " \t\r\n")
 } // namespace wex
 
 wex::lexer::lexer(const std::string& lexer)
+  : m_reflect({})
 {
   if (!lexer.empty())
   {
@@ -76,11 +77,17 @@ wex::lexer::lexer(const std::string& lexer)
 
 wex::lexer::lexer(syntax::stc* stc)
   : m_stc(stc)
+  , m_reflect({})
 {
 }
 
 wex::lexer::lexer(const pugi::xml_node* node)
   : m_scintilla_lexer(node->attribute("name").value())
+  , m_reflect(
+      {REFLECT_ADD("display", m_display_lexer),
+       REFLECT_ADD("extensions", m_extensions),
+       REFLECT_ADD("language", m_language),
+       REFLECT_ADD("lexer", m_scintilla_lexer)})
 {
   m_is_ok = !m_scintilla_lexer.empty();
 
@@ -460,15 +467,6 @@ bool wex::lexer::keyword_starts_with(const std::string& word) const
 {
   const auto& it = m_keywords.lower_bound(word);
   return it != m_keywords.end() && it->starts_with(word);
-}
-
-std::stringstream wex::lexer::log() const
-{
-  std::stringstream ss;
-  ss << "display: " << m_display_lexer << "extensions: " << m_extensions
-     << "language: " << m_language << "lexer: " << m_scintilla_lexer;
-
-  return ss;
 }
 
 const std::string wex::lexer::make_comment(

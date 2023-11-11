@@ -22,6 +22,11 @@
 
 wex::macros::macros()
   : m_mode(this)
+  , m_reflect(
+      {REFLECT_ADD("abbreviations", m_abbreviations.size()),
+       REFLECT_ADD("maps", m_map.size()),
+       REFLECT_ADD("macros", m_macros.size()),
+       REFLECT_ADD("variables", m_variables.size())})
 {
 }
 
@@ -200,9 +205,7 @@ bool wex::macros::load_document()
     }
   }
 
-  log::trace("macros info")
-    << "abbreviations:" << m_abbreviations.size() << "maps:" << m_map.size()
-    << "macros:" << m_macros.size() << "variables:" << m_variables.size();
+  log::trace("macros info") << m_reflect.log();
 
   m_is_loaded = true;
 

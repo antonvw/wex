@@ -16,6 +16,7 @@
 #include <vector>
 
 #include <wex/core/path.h>
+#include <wex/core/reflection.h>
 #include <wex/syntax/indicator.h>
 #include <wex/syntax/lexer.h>
 #include <wex/syntax/marker.h>
@@ -200,6 +201,8 @@ private:
     m_style_no_text_margin_year{-1};
 
   bool m_is_loaded{false};
+
+  reflection m_reflect;
 
   static inline lexers* m_self = nullptr;
 };
