@@ -163,6 +163,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
     <text no="sh"> #!/bin/sh </text>
     <text no="errorlist"> !_TAG_FILE_ </text>
     <text no="bash"> #!.*/bin/.* </text>
+    <text no="bash"> # Doxyfile </text>
     <text no="rfw"> \*+ Settings </text>
   </global>
 
@@ -853,7 +854,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     </keywords>
   </lexer>
   <lexer name="baan"/>
-  <lexer name="bash" extensions="*.bash;*.sh;Doxyfile"> 
+  <lexer name="bash" extensions="*.bash;*.sh">
     <keywords>    
       alias bg bind break builtin caller case cd command compgen complete
       cp diff do done echo elif else esac exit fg fi find 
@@ -916,7 +917,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   <lexer name="clarion"/>
   <lexer name="clarionnocase" macro="clarion"/>
-  <lexer name="cmake" extensions="CMakeLists.txt;*.cmake">
+  <lexer name="cmake" extensions="CMakeLists.txt;*.cmake;meson.build">
     <styles>
       <style no="whiledef,foreachdef,ifdefinedef,macrodef"> fore:sky blue </style> 
     </styles> 
