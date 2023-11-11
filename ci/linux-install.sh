@@ -5,7 +5,7 @@ sudo apt-get -q update
 
 sudo apt-get install -y lcov ruby
 
-sudo apt-get install -y gcc-12 g++-12
+sudo apt-get install -y gcc-13 g++-13
 
 # add dependencies for gtk3
 sudo apt-get install -y liblzma5 libjbig0 libgtk-3-dev
