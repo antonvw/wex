@@ -25,6 +25,12 @@ bool wex::ex_command::append_exec(char c)
   return exec();
 }
 
+bool wex::ex_command::append_exec(const std::string& s)
+{
+  append(s);
+  return exec();
+}
+
 bool wex::ex_command::exec() const
 {
   return m_stc != nullptr && m_stc->vi_command(line_data().command(m_text));

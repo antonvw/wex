@@ -73,6 +73,9 @@ TEST_CASE("wex::ex_command")
 
     REQUIRE(!command.append_exec('w'));
     REQUIRE(command.command() == "wwwww");
+
+    REQUIRE(!command.append_exec("www"));
+    REQUIRE(command.command() == "wwwwwwww");
   }
 
   SUBCASE("exec")

@@ -87,9 +87,9 @@ private:
   commands_t commands_motion();
   commands_t commands_other();
 
-  char convert_key_event(const wxKeyEvent& event) const;
-  bool delete_range(int start, int end);
-  void filter_count(std::string& command);
+  std::string convert_key_event(const wxKeyEvent& event) const;
+  bool        delete_range(int start, int end);
+  void        filter_count(std::string& command);
 
   size_t find_char(const std::string& command);
   size_t find_command(const std::string& command);

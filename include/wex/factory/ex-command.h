@@ -65,6 +65,9 @@ public:
   /// Appends a char and tries to execute.
   bool append_exec(char c);
 
+  /// Appends a string and tries to execute.
+  bool append_exec(const std::string& s);
+
   /// Returns last char of command.
   auto back() const { return m_text.back(); }
 
