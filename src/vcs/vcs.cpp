@@ -16,15 +16,15 @@
 #include <wex/ui/menus.h>
 #include <wex/vcs/vcs.h>
 
-#define SET_ENTRY                                                \
-  if (                                                           \
-    parent != nullptr &&                                         \
-    item_dialog(v, data::window().parent(parent).title(message)) \
-        .ShowModal() == wxID_CANCEL)                             \
-  {                                                              \
-    return false;                                                \
-  }                                                              \
-                                                                 \
+#define SET_ENTRY                                                       \
+  if (                                                                  \
+    parent != nullptr && config(_("vcs.Always ask flags")).get(true) && \
+    item_dialog(v, data::window().parent(parent).title(message))        \
+        .ShowModal() == wxID_CANCEL)                                    \
+  {                                                                     \
+    return false;                                                       \
+  }                                                                     \
+                                                                        \
   m_entry = find_entry(m_store);
 
 #include <map>
@@ -189,6 +189,9 @@ int wex::vcs::config_dialog(const data::window& par) const
 
   // use a radiobox
   std::vector<item> v{{"vcs.VCS", choices, true, data::item().columns(cols)}};
+
+  config(_("vcs.Always ask flags")).get(true);
+  v.emplace_back(_("vcs.Always ask flags"), item::CHECKBOX);
 
   std::transform(
     m_store->begin(),
@@ -432,6 +435,11 @@ bool wex::vcs::set_entry_from_base(wxWindow* parent)
 int wex::vcs::show_dialog(const data::window& arg)
 {
   assert(!m_entry->name().empty());
+
+  if (!config(_("vcs.Always ask flags")).get(true))
+  {
+    return wxID_OK;
+  }
 
   if (m_entry->get_command().get_command().empty())
   {
