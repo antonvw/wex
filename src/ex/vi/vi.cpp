@@ -33,7 +33,9 @@ bool is_block_insert(vi* vi)
 
 bool is_special_key(const wxKeyEvent& event, const vi_mode& mode)
 {
-  if (event.GetKeyCode() == WXK_HOME || event.GetKeyCode() == WXK_END)
+  if (
+    !mode.is_insert() &&
+    (event.GetKeyCode() == WXK_HOME || event.GetKeyCode() == WXK_END))
   {
     return true;
   }
