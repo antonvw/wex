@@ -208,9 +208,9 @@ bool wex::ex::command_set(const std::string& command)
     }
   }
 
-  if (found)
+  if (!found)
   {
-    log::trace(":set") << command;
+    log(":set") << command;
   }
 
   return found;

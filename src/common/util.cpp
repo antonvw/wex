@@ -315,8 +315,8 @@ void wex::xml_error(
   const pugi::xml_parse_result* result,
   syntax::stc*                  stc)
 {
-  log::status("xml error") << result->description();
   log(*result) << filename.name();
+  log::status("xml error") << result->description();
 
   // prevent recursion
   if (stc == nullptr && filename != lexers::get()->path())

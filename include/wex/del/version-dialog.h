@@ -2,7 +2,7 @@
 // Name:      version-dialog.h
 // Purpose:   Declaration of class wex::version_info_dialog and about_info
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -19,8 +19,8 @@ const std::stringstream external_libraries();
 class about_info : public wxAboutDialogInfo
 {
 public:
-  /// Constructor.
-  about_info() { ; }
+  /// Default constructor.
+  about_info() = default;
 
   /// Sets description.
   about_info& description(const std::string& rhs);

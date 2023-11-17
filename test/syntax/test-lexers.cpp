@@ -8,12 +8,25 @@
 #include <wex/syntax/lexers.h>
 #include <wex/test/test.h>
 
+// see also test-stc, test-syntax
+
 TEST_CASE("wex::lexers")
 {
   SUBCASE("get")
   {
     REQUIRE(wex::lexers::get() != nullptr);
     REQUIRE(!wex::lexers::get()->get_lexers().empty());
+  }
+
+  SUBCASE("apply_default_style")
+  {
+    wex::lexers::get()->apply_default_style(
+      [=](const std::string& back)
+      {
+      },
+      [=](const std::string& fore)
+      {
+      });
   }
 
   SUBCASE("apply_macro")
