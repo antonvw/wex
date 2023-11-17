@@ -10,31 +10,63 @@
 
 #include <wex/core/config.h>
 #include <wex/core/log.h>
+#include <wex/core/regex.h>
 #include <wex/syntax/lexers.h>
 #include <wex/syntax/style.h>
 #include <wx/stc/stc.h>
 
 #include <charconv>
 
-void wex::style::apply(wxStyledTextCtrl* stc) const
+namespace wex
 {
+bool check_style_spec(const std::string& spec, const std::string& colour)
+{
+  if (regex r(colour + ":(.*)"); r.match(spec) > 0)
+  {
+    if (!wxColour(r[0]).IsOk())
+    {
+      log("style " + colour + " colour") << r[0];
+      return false;
+    }
+  }
+
+  return true;
+}
+} // namespace wex
+
+bool wex::style::apply(wxStyledTextCtrl* stc) const
+{
+  if (stc->GetParent() == nullptr)
+  {
+    return false;
+  }
+
   // Currently, the default style is constructed using
   // default constructor.
   // If this is the only style, reset stc.
-  if (stc->GetParent() != nullptr)
+  if (m_no.empty())
   {
-    if (m_no.empty())
+    stc->StyleResetDefault();
+  }
+  else
+  {
+    for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+           m_value,
+           boost::char_separator<char>(",")))
     {
-      stc->StyleResetDefault();
-    }
-    else
-    {
-      for (const auto& it : m_no)
+      if (!check_style_spec(it, "back") || !check_style_spec(it, "fore"))
       {
-        stc->StyleSetSpec(it, m_value);
+        return false;
       }
     }
+
+    for (const auto& it : m_no)
+    {
+      stc->StyleSetSpec(it, m_value);
+    }
   }
+
+  return true;
 }
 
 void wex::style::clear()

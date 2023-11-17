@@ -2,7 +2,7 @@
 // Name:      style.h
 // Purpose:   Declaration of wex::style class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2010-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -24,7 +24,7 @@ class style
 {
 public:
   /// Default constructor.
-  style() { ; }
+  style() = default;
 
   /// Constructor using xml node (sets no from the no attribute).
   style(const pugi::xml_node& node, const std::string& macro)
@@ -32,7 +32,7 @@ public:
     set(node, macro);
   }
 
-  /// Constructor using no and value.
+  /// Constructor using no, value, and macro.
   style(
     const std::string& no,
     const std::string& value,
@@ -44,7 +44,8 @@ public:
 
   /// Applies this style to stc component.
   /// If no style is present, stc StyleResetDefault is invoked.
-  void apply(wxStyledTextCtrl* stc) const;
+  /// If stc is not valid, or style could not be set, false is returned.
+  bool apply(wxStyledTextCtrl* stc) const;
 
   /// Clears style.
   void clear();

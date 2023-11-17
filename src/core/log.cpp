@@ -229,6 +229,7 @@ void wex::log::flush()
 
       case level_t::ERRORS:
         BOOST_LOG_TRIVIAL(error) << text;
+        wxLogStatus("%s", text.c_str());
         break;
 
       case level_t::FATAL:

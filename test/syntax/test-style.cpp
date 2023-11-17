@@ -6,11 +6,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
+#include <wex/syntax/lexers.h>
 #include <wex/syntax/style.h>
 #include <wex/test/test.h>
 #include <wx/stc/stc.h>
 
 #include <numeric>
+
+#include "test.h"
 
 TEST_CASE("wex::style")
 {
@@ -78,12 +81,42 @@ TEST_CASE("wex::style")
 
   SUBCASE("apply")
   {
-    wex::style       style("mark_circle", "0");
-    wxStyledTextCtrl s;
-    style.apply(&s);
-    REQUIRE(style.is_ok());
-    REQUIRE(!style.contains_default_style());
+    auto* stc = new wex::test::stc();
 
-    wex::style().apply(&s);
+    SUBCASE("colour")
+    {
+      wex::log_none off;
+      wex::style    style("32", "fore:gray 2,back:ivory 99");
+      REQUIRE(!style.apply(stc));
+      REQUIRE(style.is_ok());
+      REQUIRE(style.contains_default_style());
+
+      wex::lexers::get()->apply_default_style(
+        [=](const std::string& back)
+        {
+          REQUIRE(wxColour(back).IsOk());
+        },
+        [=](const std::string& fore)
+        {
+          REQUIRE(wxColour(fore).IsOk());
+        });
+    }
+
+    SUBCASE("empty")
+    {
+      wxStyledTextCtrl s;
+      REQUIRE(!wex::style().apply(&s));
+    }
+
+    SUBCASE("mark_circle")
+    {
+      wex::style       style("mark_circle", "0");
+      wxStyledTextCtrl s;
+
+      REQUIRE(!style.apply(&s));
+      REQUIRE(style.apply(stc));
+      REQUIRE(style.is_ok());
+      REQUIRE(!style.contains_default_style());
+    }
   }
 }
