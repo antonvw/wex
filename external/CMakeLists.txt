@@ -16,9 +16,14 @@ add_custom_target(ctags
   COMMAND ./configure
   COMMAND make
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/ctags
-  COMMENT "ctags" VERBATIM)
+  COMMENT "ctags build" VERBATIM)
   
 add_custom_target(ctags-install
   COMMAND make install
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/ctags
   COMMENT "ctags install" VERBATIM)
+
+add_custom_target(wxw)
+add_dependencies(wxw 
+  wxadv   wxaui   wxbase   wxcore   wxgl   wxhtml   wxjpeg   wxlexilla
+  wxnet   wxpng   wxqa   wxscintilla   wxstc)
