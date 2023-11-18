@@ -19,12 +19,14 @@ namespace fs = std::filesystem;
 
 void wex::file_translations_loader::add_catalogs(wxLanguage language)
 {
-  const std::vector<std::string> dirs{
+  std::vector<std::string> dirs{
     wxStandardPaths::Get().GetExecutablePath() + ".app/Contents/Resources/" +
       wxUILocale::GetLanguageCanonicalName(language) + ".lproj",
-    wxStandardPaths::Get().GetLocalizedResourcesDir(
-      wxUILocale::GetLanguageCanonicalName(language),
-      wxStandardPaths::ResourceCat_Messages).ToStdString(),
+    wxStandardPaths::Get()
+      .GetLocalizedResourcesDir(
+        wxUILocale::GetLanguageCanonicalName(language),
+        wxStandardPaths::ResourceCat_Messages)
+      .ToStdString(),
     wxStandardPaths::Get().GetResourcesDir().ToStdString()};
 
   for (const auto& dir : dirs)
