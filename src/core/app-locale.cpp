@@ -24,8 +24,8 @@ void wex::file_translations_loader::add_catalogs(wxLanguage language)
       wxUILocale::GetLanguageCanonicalName(language) + ".lproj",
     wxStandardPaths::Get().GetLocalizedResourcesDir(
       wxUILocale::GetLanguageCanonicalName(language),
-      wxStandardPaths::ResourceCat_Messages),
-    wxStandardPaths::Get().GetResourcesDir()};
+      wxStandardPaths::ResourceCat_Messages).ToStdString(),
+    wxStandardPaths::Get().GetResourcesDir().ToStdString()};
 
   for (const auto& dir : dirs)
   {
