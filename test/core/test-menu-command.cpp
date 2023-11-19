@@ -40,6 +40,15 @@ TEST_CASE("wex::menu_command")
     doc.load_string("<command type=\"ellipses\"> ask </command>");
     const wex::menu_command cmd(doc.document_element());
     REQUIRE(cmd.type().test(wex::menu_command::ELLIPSES));
+    REQUIRE(!cmd.type().test(wex::menu_command::IS_ASKED));
+  }
+
+  SUBCASE("ellipses-is-asked")
+  {
+    doc.load_string("<command type=\"ellipses-is-asked\"> ask </command>");
+    const wex::menu_command cmd(doc.document_element());
+    REQUIRE(cmd.type().test(wex::menu_command::ELLIPSES));
+    REQUIRE(cmd.type().test(wex::menu_command::IS_ASKED));
   }
 
   SUBCASE("flags")

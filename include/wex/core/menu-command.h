@@ -2,7 +2,7 @@
 // Name:      menu-command.h
 // Purpose:   Declaration of wex::menu_command class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2016-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -34,6 +34,7 @@ public:
   enum
   {
     IS_LINES = 0, ///< command supports lines
+    IS_ASKED,     ///< command is followed by an ellipses if asked
     IS_POPUP,     ///< command in popup menu
     IS_MAIN,      ///< command in main menu
     IS_SELECTED,  ///< command only shown if text selected
@@ -43,7 +44,7 @@ public:
   };
 
   /// A typedef containing type flags.
-  typedef std::bitset<7> type_t;
+  typedef std::bitset<8> type_t;
 
   /// Default constructor using xml node.
   menu_command(const pugi::xml_node& node = pugi::xml_node());
