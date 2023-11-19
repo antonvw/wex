@@ -17,7 +17,7 @@ cmake ^
 
 :: build it
 echo %configuration%
-devenv wex.sln /build %configuration% /project wex-core
+devenv wex.sln /build %configuration% /project wxw wex-core
 
 :: test it
 ::ctest -C %configuration% -VV -R wex-test-core

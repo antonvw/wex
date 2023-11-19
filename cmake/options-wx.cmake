@@ -17,7 +17,14 @@ option(wxUSE_PROPGRID "Use propgrid" OFF)
 option(wxUSE_REGEX "Use wx regex" builtin)
 option(wxUSE_RIBBON "Use ribbon" OFF)
 option(wxUSE_RICHTEXT "Use richtext" OFF)
-option(wxUSE_STD_STRING_CONV_IN_WXSTRING "Use std::string" 1)
+
+# should be fixed?
+if (MSVC)
+  option(wxUSE_STD_STRING_CONV_IN_WXSTRING "Use std::string" OFF)
+else ()
+  option(wxUSE_STD_STRING_CONV_IN_WXSTRING "Use std::string" ON)
+endif ()
+
 option(wxUSE_UNICODE "Use Unicode" ON)
 option(wxUSE_WEBVIEW "Use webview" OFF)
 option(wxUSE_WEBVIEW_WEBKIT "Use webviewkit" OFF)

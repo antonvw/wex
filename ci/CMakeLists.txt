@@ -4,6 +4,18 @@ file(GLOB MDS "../*.md")
 file(GLOB_RECURSE MDSR "../doc/*.md" "../src/*.md" "../test/*.md")
 
 if (NOT WIN32)
+  add_custom_target(ctags-wex
+    COMMAND ctags
+      --c++-kinds=+p --languages=c,c++ --fields=+aiS -R
+      ${CMAKE_SOURCE_DIR}/include
+      ${CMAKE_SOURCE_DIR}/src
+      ${CMAKE_SOURCE_DIR}/external/wxWidgets/include
+      ${CMAKE_SOURCE_DIR}/external/ctags/libreadtags
+      ${CMAKE_SOURCE_DIR}/external/pugixml/src  
+    COMMAND
+      /bin/mv tags $ENV{HOME}/.config/wex
+      COMMENT "ctags sync" VERBATIM)
+
   add_custom_target(codespell
     COMMAND codespell ${INCLUDES} ${SRCS}
       -L nd,te,INOUT,inout,defint,iif,hel -S "*.po,*.png,*.ico,*.icns,*.bin"
