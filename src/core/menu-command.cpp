@@ -34,6 +34,8 @@ wex::menu_command::menu_command(const pugi::xml_node& node)
           id.set(SEPARATOR);
         if (text.contains("ellipses"))
           id.set(ELLIPSES);
+        if (text.contains("ellipses-is-asked"))
+          id.set(IS_ASKED);
         if (text.contains("is-lines"))
           id.set(IS_LINES);
         if (text.contains("is-selected"))
