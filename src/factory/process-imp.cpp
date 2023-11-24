@@ -174,7 +174,7 @@ void wex::factory::process_imp::thread_input(const process* p)
         text.push_back(is.get());
         linesize++;
 
-        if (linesize > 10000)
+        if (linesize > 20000)
         {
           error = true;
           WEX_POST(ID_SHELL_APPEND, "\n*** LINE LIMIT ***\n", out)

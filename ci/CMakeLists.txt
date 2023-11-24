@@ -1,7 +1,10 @@
-file(GLOB_RECURSE SRCS "../src/*.cpp" "../sample/*.cpp")
-file(GLOB_RECURSE INCLUDES "../include/*.h")
-file(GLOB MDS "../*.md")
-file(GLOB_RECURSE MDSR "../doc/*.md" "../src/*.md" "../test/*.md")
+file(GLOB_RECURSE SRCS 
+  ../src/*.cpp 
+  ../src/syntax/wex/*.cpp 
+  ../sample/*.cpp)
+file(GLOB_RECURSE INCLUDES ../include/*.h)
+file(GLOB MDS ../*.md)
+file(GLOB_RECURSE MDSR ../doc/*.md ../src/*.md ../test/*.md)
 
 if (NOT WIN32)
   add_custom_target(ctags-wex
@@ -22,7 +25,7 @@ if (NOT WIN32)
     COMMENT "codespell" VERBATIM)
 
   add_custom_target(cppcheck
-    COMMAND cppcheck
+    COMMAND cppcheck 
       --std=c++${WEX_CXX_STANDARD}
       --quiet --enable=all
       --check-level=exhaustive
