@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <list>
 #include <memory>
 #include <string>
 #include <utility>
@@ -38,14 +37,14 @@ class options_rfw
   friend class option_set_rfw;
 
 public:
-  /// Access to mebers.
+  /// Access to members.
 
-  bool fold() const { return m_fold; };
-  bool fold_comment() const { return m_fold_comment; };
-  bool fold_compact() const { return m_fold_compact; };
-  bool fold_pipes() const { return m_fold_pipes; };
-  bool fold_tabs() const { return m_fold_tabs; };
-  bool vi_script() const { return m_vi_script; };
+  bool fold() const { return m_fold; }
+  bool fold_comment() const { return m_fold_comment; }
+  bool fold_compact() const { return m_fold_compact; }
+  bool fold_pipes() const { return m_fold_pipes; }
+  bool fold_tabs() const { return m_fold_tabs; }
+  bool vi_script() const { return m_vi_script; }
 
 private:
   bool m_fold{false}, m_fold_comment{false}, m_fold_compact{false},
@@ -84,7 +83,7 @@ class rfw_section
 {
 public:
   /// Gets current section id.
-  auto id() const { return m_id; };
+  auto id() const { return m_id; }
 
   /// Returns true if id is testcase or task.
   bool is_case() const
@@ -93,7 +92,7 @@ public:
   };
 
   /// Resets section.
-  void reset() { m_id = SECTION_UNKNOWN; };
+  void reset() { m_id = SECTION_UNKNOWN; }
 
   /// Starts a new section.
   void start(section_t id)
@@ -116,10 +115,10 @@ public:
   static inline ILexer5* get() { return new lex_rfw(); }
 
   /// Returns language.
-  static inline int language() { return SCLEX_AUTOMATIC; };
+  static inline int language() { return SCLEX_AUTOMATIC; }
 
   /// Returns lexer name.
-  static inline const char* name() { return "rfw"; };
+  static inline const char* name() { return "rfw"; }
 
   /// Subable styles.
   static inline char style_subable[] = {SCE_SH_IDENTIFIER, SCE_SH_SCALAR, 0};
@@ -129,24 +128,24 @@ private:
   lex_rfw();
 
   /// Destructor.
-  virtual ~lex_rfw();
+  virtual ~lex_rfw() = default;
 
-  /// Overide methods.
+  /// Override methods.
 
   int SCI_METHOD AllocateSubStyles(int styleBase, int numberStyles) override
   {
     return m_sub_styles.Allocate(styleBase, numberStyles);
-  };
+  }
 
   const char* SCI_METHOD DescribeProperty(const char* name) override
   {
     return m_option_set.DescribeProperty(name);
-  };
+  }
 
   const char* SCI_METHOD DescribeWordListSets() override
   {
     return m_option_set.DescribeWordListSets();
-  };
+  }
 
   int SCI_METHOD DistanceToSecondaryStyles() override { return 0; }
 
@@ -156,9 +155,9 @@ private:
     int           initStyle,
     IDocument*    pAccess) override;
 
-  void SCI_METHOD FreeSubStyles() override { m_sub_styles.Free(); };
+  void SCI_METHOD FreeSubStyles() override { m_sub_styles.Free(); }
 
-  const char* SCI_METHOD GetSubStyleBases() override { return style_subable; };
+  const char* SCI_METHOD GetSubStyleBases() override { return style_subable; }
 
   void SCI_METHOD Lex(
     Sci_PositionU startPos,
@@ -166,7 +165,7 @@ private:
     int           initStyle,
     IDocument*    pAccess) override;
 
-  int SCI_METHOD PrimaryStyleFromStyle(int style) override { return style; };
+  int SCI_METHOD PrimaryStyleFromStyle(int style) override { return style; }
 
   void* SCI_METHOD PrivateCall(int, void*) override { return 0; }
 
@@ -222,7 +221,7 @@ private:
 
   /// Other methods.
 
-  void init(LexAccessor& styler);
+  void init();
 
   void keywords_update();
 
@@ -244,8 +243,8 @@ private:
     StyleContext&      sc,
     int&               cmd_state_new);
 
-  void state_check(StyleContext& sc, int state, int& state_new, LexAccessor&);
-  bool state_check_continue(StyleContext& sc, int& state, LexAccessor&);
+  void state_check(StyleContext& sc, int state, int& state_new);
+  bool state_check_continue(StyleContext& sc, int& state);
 
   SubStyles m_sub_styles;
 
@@ -260,7 +259,8 @@ private:
 
   std::unique_ptr<quote>           m_quote;
   std::unique_ptr<quote_stack>     m_quote_stack;
-  std::unique_ptr<wex::regex_part> m_section_begin, m_section_end;
+  std::unique_ptr<wex::regex_part> m_regex_section_begin, m_regex_section_end;
+  std::unique_ptr<LexAccessor>     m_accessor;
 
   section_keywords_t m_section_keywords;
 

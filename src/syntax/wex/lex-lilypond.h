@@ -16,9 +16,9 @@ class lex_options
   friend class lex_option_set;
 
 public:
-  bool fold() const { return m_fold; };
-  bool fold_comment() const { return m_fold_comment; };
-  bool fold_compact() const { return m_fold_compact; };
+  bool fold() const { return m_fold; }
+  bool fold_comment() const { return m_fold_comment; }
+  bool fold_compact() const { return m_fold_compact; }
 
 private:
   bool m_fold{false}, m_fold_comment{false}, m_fold_compact{false};
@@ -47,10 +47,10 @@ public:
   static inline ILexer5* get() { return new lex_lilypond(); }
 
   /// Returns language.
-  static inline int language() { return SCLEX_AUTOMATIC; };
+  static inline int language() { return SCLEX_AUTOMATIC; }
 
   /// Returns lexer name.
-  static inline const char* name() { return "lilypond"; };
+  static inline const char* name() { return "lilypond"; }
 
 private:
   struct fold_save
@@ -76,7 +76,7 @@ private:
   /// Default constructor.
   lex_lilypond();
 
-  /// Overide methods.
+  /// Override methods.
 
   void SCI_METHOD Fold(
     Sci_PositionU startPos,
