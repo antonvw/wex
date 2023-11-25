@@ -914,6 +914,11 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   <lexer display="cisco" extensions="*.ios" name="fortran">
     <keywords set-0="cisco-0" set-1="cisco-1" set-2="cisco-2,cisco-3,cisco-4,cisco-5">
     </keywords>
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+    </properties>
   </lexer>
   <lexer name="clarion"/>
   <lexer name="clarionnocase" macro="clarion"/>
@@ -993,8 +998,14 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   <lexer name="escript"/>
   <lexer name="flagship"/>
   <lexer name="forth"/>
-  <lexer name="fortran"/>
-  <lexer name="f77" macro="fortran"/>
+  <lexer name="fortran" extensions="*.f90;*.f95;*.f03">
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+    </properties>
+  </lexer>
+  <lexer name="f77" extensions="*.f;*.for" macro="fortran"/>
   <lexer name="freebasic" macro="vb"/>
   <lexer name="fsharp"/>
   <lexer name="gap"/>
