@@ -1005,13 +1005,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <property name="fold.comment"> 1 </property>
     </properties>
   </lexer>
-  <lexer name="f77" extensions="*.f;*.for" macro="fortran">
-    <properties>
-      <property name="fold"> 1 </property>
-      <property name="fold.compact"> 1 </property>
-      <property name="fold.comment"> 1 </property>
-    </properties>
-  </lexer>
+  <lexer name="f77" extensions="*.f;*.for" macro="fortran"/>
   <lexer name="freebasic" macro="vb"/>
   <lexer name="fsharp"/>
   <lexer name="gap"/>
