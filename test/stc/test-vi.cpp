@@ -220,6 +220,25 @@ TEST_CASE("wex::vi")
     REQUIRE(stc->get_text() == "test.h");
   }
 
+  SUBCASE("select")
+  {
+    stc->set_text("this text contains xx");
+
+    wxKeyEvent event(wxEVT_CHAR);
+    event.m_uniChar = WXK_NONE;
+    event.m_keyCode = WXK_RIGHT;
+
+    event.SetShiftDown(true);
+    REQUIRE(!vi->on_key_down(event));
+    REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL);
+    REQUIRE(stc->get_selected_text() == "t");
+
+    event.SetShiftDown(false);
+    REQUIRE(!vi->on_key_down(event));
+    REQUIRE(vi->mode().get() == wex::vi_mode::state_t::COMMAND);
+    REQUIRE(stc->get_selected_text().empty());
+  }
+
   SUBCASE("set")
   {
     stc->set_text("xx\nxx\nyy\nzz\n");
@@ -376,7 +395,6 @@ TEST_CASE("wex::vi")
 
     for (const auto& visual : visuals())
     {
-      wxKeyEvent event(wxEVT_CHAR);
       change_mode(vi, visual.first, visual.second);
       change_mode(vi, "jjj", visual.second);
       change_mode(vi, visual.first, visual.second); // second has no effect
@@ -385,6 +403,7 @@ TEST_CASE("wex::vi")
       vi->command("j");
       change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
 
+      wxKeyEvent event(wxEVT_CHAR);
       event.m_uniChar = visual.first[0];
       REQUIRE(!vi->on_char(event));
       REQUIRE(vi->mode().get() == visual.second);

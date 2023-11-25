@@ -89,6 +89,7 @@ private:
 
   std::string convert_key_event(const wxKeyEvent& event) const;
   bool        delete_range(int start, int end);
+  void        enter_visual_mode();
   void        filter_count(std::string& command);
 
   size_t find_char(const std::string& command);
@@ -128,7 +129,7 @@ private:
   static inline std::string m_last_find_char_command;
 
   bool m_control_down{false}, m_count_present{false}, m_dot{false},
-    m_search_forward{true};
+    m_search_forward{true}, m_visual_mode_from_shift{false};
 
   int m_count{1};
 

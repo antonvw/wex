@@ -42,6 +42,7 @@ bool is_special_key(const wxKeyEvent& event, const vi_mode& mode)
 
   if (
     (event.HasAnyModifiers() & wxMOD_ALT) ||
+    (event.HasAnyModifiers() & wxMOD_SHIFT) ||
     (event.HasAnyModifiers() & wxMOD_CONTROL))
   {
     if (event.GetKeyCode() == WXK_LEFT || event.GetKeyCode() == WXK_RIGHT)
@@ -814,6 +815,17 @@ bool wex::vi::process_macro_key(const wxKeyEvent& event)
 
 bool wex::vi::process_special_key(const wxKeyEvent& event)
 {
+  if (event.ShiftDown())
+  {
+    m_mode.visual();
+    m_visual_mode_from_shift = true;
+  }
+  else if (m_visual_mode_from_shift)
+  {
+    m_visual_mode_from_shift = false;
+    m_mode.escape();
+  }
+
   if (event.GetKeyCode() == WXK_BACK)
   {
     if (!m_insert_text.empty())
