@@ -662,11 +662,7 @@ bool wex::vi::motion_command_handle(
         break;
 
       case motion_t::YANK:
-        if (!m_mode.is_visual())
-        {
-          std::string visual("v");
-          m_mode.transition(visual);
-        }
+        m_mode.visual();
 
         if ((parsed = f_type(command)) == 0)
         {

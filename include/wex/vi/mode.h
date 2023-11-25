@@ -65,7 +65,7 @@ public:
   /// Transitions to command mode.
   void command();
 
-  /// escapes current mode.
+  /// Escapes current mode.
   bool escape();
 
   /// Returns the state we are in.
@@ -86,11 +86,14 @@ public:
   /// Returns mode as a string.
   const std::string str() const;
 
-  /// transitions to other mode depending on command.
+  /// Transitions to other mode depending on command.
   /// Returns true if command represents a mode change, otherwise false.
   /// If true is returned, it does not mean that mode was changed, in case
   /// of readonly doc.
   bool transition(std::string& command);
+
+  /// Transitions to visual mode.
+  void visual();
 
 private:
   bool transition_prep(const std::string& command);

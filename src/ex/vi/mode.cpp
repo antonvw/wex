@@ -338,6 +338,11 @@ bool wex::vi_mode::is_visual() const
          get() == state_t::VISUAL_BLOCK;
 }
 
+const std::string wex::vi_mode::str() const
+{
+  return m_fsm->state_string();
+}
+
 bool wex::vi_mode::transition(std::string& command)
 {
   if (!transition_prep(command))
@@ -468,7 +473,11 @@ bool wex::vi_mode::transition_prep(const std::string& command)
   return true;
 }
 
-const std::string wex::vi_mode::str() const
+void wex::vi_mode::visual()
 {
-  return m_fsm->state_string();
+  if (!is_visual())
+  {
+    std::string visual("v");
+    transition(visual);
+  }
 }
