@@ -55,18 +55,18 @@ bool build(const path_lexer& p)
         dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
       frame != nullptr)
   {
-    const auto t(check_build_system(p));
-    const auto& sw(config("build." + binary[t] + ".switch").get(switches[t]));
-    return frame->process_async_system(
-      process_data(
-        config("build." + binary[t] + ".bin").get(binary[t]) + " " +
-        (!sw.empty() ?  sw + " " +  p.filename(): std::string()))
-        .start_dir(p.parent_path()));
+    if (const auto t(check_build_system(p)); t != build_system_t::OTHER)
+    {
+      const auto& sw(config("build." + binary[t] + ".switch").get(switches[t]));
+      return frame->process_async_system(
+        process_data(
+          config("build." + binary[t] + ".bin").get(binary[t]) + " " +
+          (!sw.empty() ? sw + " " + p.filename() : std::string()))
+          .start_dir(p.parent_path()));
+    }
   }
-  else
-  {
-    return false;
-  }
+
+  return false;
 }
 
 const std::string lexer_string(const std::string& filename)

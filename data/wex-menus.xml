@@ -176,7 +176,7 @@ Copyright: (c) 2021-2022 Anton van Wezenbeek
       <command type="main ellipses-is-asked"> &amp;branch </command>
       <command type="ellipses"> &amp;checkout </command>
       <command type="ellipses"> &amp;commit </command>
-      <command type="ellipses"> &amp;diff </command>
+      <command type="ellipses-is-asked"> &amp;diff </command>
       <command type="ellipses main"> &amp;help </command>
       <command type="ellipses-is-asked"> &amp;log </command>
       <!-- pull and push ask for password (should be asyc, not yet)
