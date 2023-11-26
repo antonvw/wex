@@ -66,7 +66,7 @@ std::stringstream wex::reflection::log() const
 
   for (const auto& i : m_items)
   {
-    const auto& val(to_string(i.f()));
+    const auto val(to_string(i.f())); // do not take reference
 
     if (m_log_t == log_t::SKIP_EMPTY && val.empty())
     {

@@ -5,6 +5,7 @@
 // Copyright: (c) 2016-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log-none.h>
 #include <wex/ctags/ctags.h>
 #include <wex/ui/frd.h>
 
@@ -57,6 +58,7 @@ TEST_CASE("wex::ctags")
 
   SUBCASE("non-existing-ctags")
   {
+    wex::log_none off;
     wex::ctags::open("xxx");
 
     REQUIRE(!wex::ctags::close());
