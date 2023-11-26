@@ -222,7 +222,6 @@ bool wex::del::file::do_file_load(bool synced)
 
       interruptible::end();
       get_frame()->set_recent_project(path());
-
     });
 
   t.join();
