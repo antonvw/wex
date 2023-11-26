@@ -192,11 +192,9 @@ bool wex::del::file::do_file_load(bool synced)
 
   interruptible::start();
 
-#ifdef FIX__WXMSW__
   std::thread t(
-    [=, this]
+    [=, this, &doc]
     {
-#endif
       for (const auto& child : doc.document_element().children())
       {
         if (const std::string value = child.text().get();
@@ -225,13 +223,9 @@ bool wex::del::file::do_file_load(bool synced)
       interruptible::end();
       get_frame()->set_recent_project(path());
 
-#ifdef FIX__WXMSW__
     });
-  if (detached)
-    t.detach();
-  else
-    t.join();
-#endif
+
+  t.join();
 
   log::status(_("Opened")) << path();
   log::info("opened") << path();
