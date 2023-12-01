@@ -2,7 +2,7 @@
 // Name:      style.cpp
 // Purpose:   Implementation of wex::style class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2010-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -50,14 +50,18 @@ bool wex::style::apply(wxStyledTextCtrl* stc) const
   }
   else
   {
-    for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
-           m_value,
-           boost::char_separator<char>(",")))
+    if (const auto& tok(boost::tokenizer<boost::char_separator<char>>(
+          m_value,
+          boost::char_separator<char>(",")));
+        !std::all_of(
+          tok.begin(),
+          tok.end(),
+          [](const auto& it)
+          {
+            return check_style_spec(it, "back") && check_style_spec(it, "fore");
+          }))
     {
-      if (!check_style_spec(it, "back") || !check_style_spec(it, "fore"))
-      {
-        return false;
-      }
+      return false;
     }
 
     for (const auto& it : m_no)
@@ -92,14 +96,14 @@ void wex::style::set(const pugi::xml_node& node, const std::string& macro)
 
   set_no(lexers::get()->apply_macro(m_define, macro), macro, node);
 
-  const std::string text(std::string(node.text().get()));
-  const auto        font(config(_("stc.Default font"))
+  const auto text(std::string(node.text().get()));
+  const auto font(config(_("stc.Default font"))
                     .get(wxFont(
                       12,
                       wxFONTFAMILY_DEFAULT,
                       wxFONTSTYLE_NORMAL,
                       wxFONTWEIGHT_NORMAL)));
-  const auto        font_size(std::to_string(font.GetPointSize()));
+  const auto font_size(std::to_string(font.GetPointSize()));
 
   // The style is parsed using the themed macros, and
   // you can specify several styles separated by a + sign.

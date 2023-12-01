@@ -315,7 +315,7 @@ TEST_CASE("wex::vi")
   SUBCASE("visual mode")
   {
     stc->set_text("123456789");
-    vi->command("v");
+    vi->mode().visual();
     REQUIRE(vi->mode().is_visual());
 
     vi->visual_extend(0, 10);
@@ -323,7 +323,7 @@ TEST_CASE("wex::vi")
     vi->mode().escape();
 
     vi->command("gg");
-    vi->command("v");
+    vi->mode().visual();
     REQUIRE(vi->mode().is_visual());
     vi->command("llll");
     REQUIRE(vi->command("y"));
@@ -333,12 +333,12 @@ TEST_CASE("wex::vi")
     // visual mode and brace match
     stc->set_text("some text\n{and text within brace} some text");
     vi->command("gg");
-    vi->command("v");
+    vi->mode().visual();
     vi->command("j");
     vi->command("%");
     REQUIRE(stc->GetSelectedText().size() == 33);
     vi->command("G");
-    vi->command("v");
+    vi->mode().visual();
     vi->command("2bh");
     vi->command("%");
     // README: This should pass, but selection is not ok.
