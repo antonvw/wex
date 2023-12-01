@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - auto_complete handling
 - history clear fixed
 - statusbar setup after showing dialog fixed
+- vi selecting using arrow keys while shift or control down pressed
 
 ## 23.10 - 2023-10-08
 

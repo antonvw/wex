@@ -54,7 +54,7 @@ TEST_CASE("wex::vi")
 
     SUBCASE("selection")
     {
-      vi->command("v");
+      vi->mode().visual();
       vi->command("w");
       change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
       REQUIRE(stc->get_selected_text() == "aaaaa");
@@ -233,7 +233,13 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL);
     REQUIRE(stc->get_selected_text() == "t");
 
+    event.SetControlDown(true);
+    REQUIRE(!vi->on_key_down(event));
+    REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL);
+    REQUIRE(stc->get_selected_text() == "this ");
+
     event.SetShiftDown(false);
+    event.SetControlDown(false);
     REQUIRE(!vi->on_key_down(event));
     REQUIRE(vi->mode().get() == wex::vi_mode::state_t::COMMAND);
     REQUIRE(stc->get_selected_text().empty());
@@ -413,7 +419,7 @@ TEST_CASE("wex::vi")
     stc->set_text("this text contains xx\nand yy on other line");
     REQUIRE(stc->get_selected_text().empty());
 
-    REQUIRE(vi->command("v"));
+    vi->mode().visual();
     REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL);
 
     wxKeyEvent event(wxEVT_CHAR);
@@ -428,7 +434,7 @@ TEST_CASE("wex::vi")
     event.SetControlDown(true);
     REQUIRE(vi->command("gg"));
     REQUIRE(stc->get_selected_text().empty());
-    REQUIRE(vi->command("v"));
+    vi->mode().visual();
     REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL);
     REQUIRE(!vi->on_key_down(event));
     REQUIRE(

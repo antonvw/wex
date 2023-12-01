@@ -41,14 +41,10 @@ bool is_special_key(const wxKeyEvent& event, const vi_mode& mode)
   }
 
   if (
-    (event.HasAnyModifiers() & wxMOD_ALT) ||
-    (event.HasAnyModifiers() & wxMOD_SHIFT) ||
-    (event.HasAnyModifiers() & wxMOD_CONTROL))
+    event.HasAnyModifiers() && event.GetKeyCode() == WXK_LEFT ||
+    event.GetKeyCode() == WXK_RIGHT)
   {
-    if (event.GetKeyCode() == WXK_LEFT || event.GetKeyCode() == WXK_RIGHT)
-    {
-      return true;
-    }
+    return true;
   }
 
   return !event.HasAnyModifiers() &&
@@ -317,13 +313,13 @@ std::string wex::vi::convert_key_event(const wxKeyEvent& event) const
         cmd = "j";
         break;
       case WXK_END:
-        cmd = (event.GetModifiers() == wxMOD_CONTROL) ? "G" : "$";
+        cmd = (event.ControlDown() || event.RawControlDown()) ? "G" : "$";
         break;
       case WXK_HOME:
-        cmd = (event.GetModifiers() == wxMOD_CONTROL) ? "gg" : "0";
+        cmd = (event.ControlDown() || event.RawControlDown()) ? "gg" : "0";
         break;
       case WXK_LEFT:
-        cmd = (event.GetModifiers() == wxMOD_CONTROL) ? "b" : "h";
+        cmd = (event.ControlDown() || event.RawControlDown()) ? "b" : "h";
         break;
       case WXK_NUMPAD_ENTER:
         cmd = "j";
@@ -335,7 +331,7 @@ std::string wex::vi::convert_key_event(const wxKeyEvent& event) const
         cmd = WXK_CONTROL_B;
         break;
       case WXK_RIGHT:
-        cmd = (event.GetModifiers() == wxMOD_CONTROL) ? "w" : "l";
+        cmd = (event.ControlDown() || event.RawControlDown()) ? "w" : "l";
         break;
       case WXK_UP:
         cmd = "k";
