@@ -64,6 +64,10 @@ public:
   /// Returns context lines.
   size_t get_context_lines() const { return m_context_lines; }
 
+  /// Builds a string with text from range.
+  /// Returns false if no stream, or range is invalid.
+  bool get_lines(const addressrange& range, const std::string& flags);
+
   /// Returns content of work file.
   const std::string* get_work() const;
 
@@ -108,6 +112,9 @@ public:
   /// Substitutes within the range find by replace.
   /// Returns false if no stream, or range is invalid.
   bool substitute(const addressrange& range, const data::substitute& data);
+
+  /// Returns text value.
+  auto& text() const { return m_text; }
 
   /// Writes working stream to file.
   /// Returns false if internal streams are not valid.
@@ -160,6 +167,8 @@ private:
 
   char* m_buffer{nullptr};
   char* m_current_line{nullptr};
+
+  std::string m_text;
 
   syntax::stc* m_stc;
   wex::ex*     m_ex;

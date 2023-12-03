@@ -138,7 +138,6 @@ private:
   bool indent(bool forward = true) const;
   bool move(const address& destination) const;
   bool print(const command_parser& cp);
-  bool print(const std::string& flags = std::string()) const;
   bool set(const std::string& begin, const std::string& end);
   void set(address& begin, address& end, int lines) const;
   void set(int begin, int end);

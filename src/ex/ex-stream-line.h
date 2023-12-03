@@ -21,6 +21,7 @@ public:
   {
     ACTION_COPY,
     ACTION_ERASE,
+    ACTION_GET,
     ACTION_INSERT,
     ACTION_JOIN,
     ACTION_MOVE,
@@ -59,7 +60,11 @@ public:
   ex_stream_line(file* work, const addressrange& range, char name);
 
   /// Constructor for other actions.
-  ex_stream_line(file* work, action_t type, const addressrange& range);
+  ex_stream_line(
+    file*               work,
+    action_t            type,
+    const addressrange& range,
+    const std::string&  text = std::string());
 
   /// Destructor.
   ~ex_stream_line();
@@ -70,8 +75,17 @@ public:
   /// Returns actions.
   int actions() const { return m_actions; }
 
+  /// Returns copy value.
+  auto& copy() const { return m_copy; }
+
   /// Handles a line.
   handle_t handle(char* line, size_t& pos);
+
+  /// Returns true if action is allowed to write.
+  bool is_write() const
+  {
+    return m_action != ACTION_GET && m_action != ACTION_YANK;
+  }
 
   /// Returns lines.
   int lines() const { return m_line; }

@@ -324,6 +324,17 @@ TEST_CASE("wex::ex")
   SUBCASE("print")
   {
     ex->print("This is printed");
+    REQUIRE(ex->get_print_text() == "This is printed");
+
+    stc->set_text("this is some text\nnext line");
+    REQUIRE(ex->command(":p"));
+    REQUIRE(ex->get_print_text() == "this is some text\n");
+    REQUIRE(ex->command(":%p"));
+    REQUIRE(ex->get_print_text() == "this is some text\nnext line\n");
+    REQUIRE(ex->command(":l"));
+    REQUIRE(ex->get_print_text() == "this is some text$\n");
+    REQUIRE(ex->command(":%l"));
+    REQUIRE(ex->get_print_text() == "this is some text$\nnext line$\n");
   }
 
   SUBCASE("range")

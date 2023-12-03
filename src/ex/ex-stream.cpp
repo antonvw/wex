@@ -48,14 +48,7 @@
                                                                               \
     m_stream->clear();                                                        \
                                                                               \
-    if (sl.action() == ex_stream_line::ACTION_YANK)                           \
-    {                                                                         \
-      return true;                                                            \
-    }                                                                         \
-                                                                              \
-    if (                                                                      \
-      (sl.actions() > 0 || sl.action() == ex_stream_line::ACTION_WRITE) &&    \
-      !copy(m_temp, m_work))                                                  \
+    if (sl.actions() > 0 && sl.is_write() && !copy(m_temp, m_work))           \
     {                                                                         \
       return false;                                                           \
     }                                                                         \
@@ -341,6 +334,19 @@ int wex::ex_stream::get_line_count_request()
   m_stream->seekg(pos);
 
   return m_last_line_no;
+}
+
+bool wex::ex_stream::get_lines(
+  const addressrange& range,
+  const std::string&  flags)
+{
+  ex_stream_line sl(m_temp, ex_stream_line::ACTION_GET, range, flags);
+
+  STREAM_LINE_ON_CHAR();
+
+  m_text = sl.copy();
+
+  return true;
 }
 
 bool wex::ex_stream::get_next_line()

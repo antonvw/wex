@@ -601,20 +601,8 @@ bool wex::addressrange::print(const command_parser& cp)
     arg = "l";
   }
 
-  return (m_stc->GetName() != "Print" ? print(arg + cp.text()) : false);
-}
-
-bool wex::addressrange::print(const std::string& flags) const
-{
-  if (!is_ok() || !address::flags_supported(flags))
-  {
-    return false;
-  }
-
-  m_ex->print(
-    get_lines(m_stc, m_begin.get_line() - 1, m_end.get_line(), flags));
-
-  return true;
+  return (
+    m_stc->GetName() != "Print" ? m_ex->print(*this, arg + cp.text()) : false);
 }
 
 const std::string wex::addressrange::regex_commands() const

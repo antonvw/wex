@@ -20,16 +20,26 @@ TEST_CASE("wex::ex-mode")
   SUBCASE("find")
   {
     wex::file ifs("test.md", std::ios_base::in);
-    REQUIRE(ifs.is_open());
     ex->ex_stream()->stream(ifs);
-
-    REQUIRE(ex->visual() == wex::ex::mode_t::EX);
     REQUIRE(ex->command(":/w/"));
     REQUIRE(ex->ex_stream()->get_current_line() == 2);
     REQUIRE(ex->command("://"));
     REQUIRE(ex->ex_stream()->get_current_line() == 9);
     REQUIRE(ex->command(":??"));
     REQUIRE(ex->ex_stream()->get_current_line() == 2);
+  }
+
+  SUBCASE("print")
+  {
+    wex::file ifs("test.md", std::ios_base::in);
+    ex->ex_stream()->stream(ifs);
+    const std::string check("# Markdown\n\n- test for opening a Markdown "
+                            "document (and used in test-ex-stream)\n");
+    REQUIRE(ex->command(":p"));
+    CAPTURE(ex->get_print_text());
+    REQUIRE(ex->get_print_text() == "# Markdown\n");
+    REQUIRE(ex->command(":1,3p"));
+    REQUIRE(ex->get_print_text() == check);
   }
 
   ex->use(wex::ex::mode_t::VISUAL);

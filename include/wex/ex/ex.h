@@ -22,6 +22,7 @@
 
 namespace wex
 {
+class addressrange;
 class ctags;
 class ex_stream;
 class macros;
@@ -116,6 +117,9 @@ public:
   /// Returns command.
   const auto& get_command() const { return m_command; }
 
+  /// Returns last printed text.
+  const auto& get_print_text() const { return m_print_text; }
+
   /// Returns stc component.
   syntax::stc* get_stc() const;
 
@@ -147,6 +151,9 @@ public:
   /// Returns line for specified marker.
   /// Returns LINE_NUMBER_UNKNOWN if marker does not exist.
   int marker_line(char marker) const;
+
+  /// Prints address range.
+  bool print(const addressrange& ar, const std::string& flags = std::string());
 
   /// Prints text in the dialog.
   void print(const std::string& text);
@@ -243,6 +250,8 @@ private:
     m_marker_identifiers,
     // relate a marker to mark number
     m_marker_numbers;
+
+  std::string m_print_text;
 };
 
 /// Expands all markers and registers in command.

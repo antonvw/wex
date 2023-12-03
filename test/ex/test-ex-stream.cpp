@@ -110,6 +110,19 @@ TEST_CASE("wex::ex_stream")
       write_file(exs, 3);
     }
 
+    SUBCASE("get_lines")
+    {
+      REQUIRE(exs.get_line_count_request() == 5);
+      REQUIRE(exs.get_line_count() == 5);
+
+      const wex::addressrange ar(&ex, "1,2");
+
+      REQUIRE(exs.get_lines(ar, ""));
+      REQUIRE(!exs.is_modified());
+      REQUIRE(exs.text() == "test1\ntest2\n");
+      REQUIRE(exs.get_line_count() == 5);
+    }
+
     SUBCASE("insert")
     {
       REQUIRE(!exs.insert_text(wex::address(&ex, 0), "TEXT_BEFORE"));
