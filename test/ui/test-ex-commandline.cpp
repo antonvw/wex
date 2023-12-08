@@ -41,4 +41,17 @@ TEST_CASE("wex::ex_commandline")
 
   cl->set_stc(stc);
   REQUIRE(cl->stc() == stc);
+
+  wxKeyEvent event(wxEVT_KEY_DOWN);
+
+  for (auto id : std::vector<int>{
+         WXK_TAB,
+         WXK_HOME,
+         WXK_ESCAPE,
+         WXK_RETURN,
+         WXK_PAGEDOWN})
+  {
+    event.m_keyCode = id;
+    cl->on_key_down(event);
+  }
 }

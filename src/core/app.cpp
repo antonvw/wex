@@ -95,6 +95,11 @@ bool wex::app::OnInit()
   return true; // do not call base class: we have our own cmd line processing
 }
 
+wxLanguage wex::app::get_default_language() const
+{
+  return wxLANGUAGE_DEFAULT;
+}
+
 void wex::app::set_language()
 {
   if (const auto& lang(config("Language").get()); !lang.empty())
@@ -113,6 +118,6 @@ void wex::app::set_language()
   }
   else
   {
-    m_language = wxLANGUAGE_DEFAULT;
+    m_language = get_default_language();
   }
 }

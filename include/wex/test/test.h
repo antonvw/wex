@@ -33,6 +33,9 @@ public:
 
   /// Start event loop and start testing.
   int OnRun() override;
+
+private:
+  wxLanguage get_default_language() const override;
 };
 
 /// Connects main proc and test app. All doctests will start.

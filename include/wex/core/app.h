@@ -45,6 +45,9 @@ public:
   /// Returns locale language.
   auto get_language() const { return m_language; }
 
+protected:
+  virtual wxLanguage get_default_language() const;
+
 private:
   void set_language();
 

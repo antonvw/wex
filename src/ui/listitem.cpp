@@ -2,7 +2,7 @@
 // Name:      listitem.cpp
 // Purpose:   Implementation of class wex::listitem
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2009-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -44,7 +44,6 @@ wex::listitem::listitem(
   : m_listview(listview)
   , m_path(filename)
   , m_file_spec(filespec)
-  , m_is_readonly(false)
   , m_reflect({REFLECT_ADD("path", m_path.string())})
 {
   SetId(-1);
