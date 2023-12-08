@@ -5,7 +5,7 @@
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2012-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
- 
+
 #include <sstream>
 #include <utility>
 
@@ -13,10 +13,12 @@
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/ctags/ctags.h>
+#include <wex/ex/addressrange.h>
 #include <wex/ex/command-parser.h>
 #include <wex/ex/ex-stream.h>
 #include <wex/ex/ex.h>
 #include <wex/ex/macros.h>
+#include <wex/ex/util.h>
 #include <wex/factory/defs.h>
 #include <wex/syntax/lexers.h>
 #include <wex/syntax/stc.h>
@@ -26,6 +28,12 @@
 #include <wx/app.h>
 
 #include "eval.h"
+
+#define SEPARATE                                                              \
+  if (separator)                                                              \
+  {                                                                           \
+    output += std::string(config(_("stc.Edge column")).get(80l), '-') + "\n"; \
+  }
 
 wex::macros wex::ex::m_macros;
 
@@ -324,8 +332,44 @@ int wex::ex::marker_line(char marker) const
   return LINE_NUMBER_UNKNOWN;
 }
 
+bool wex::ex::print(
+  const addressrange& ar,
+  const std::string&  flags,
+  bool                separator)
+{
+  if (!ar.is_ok() || !address::flags_supported(flags))
+  {
+    return false;
+  }
+
+  std::string output;
+
+  SEPARATE;
+
+  if (m_mode == mode_t::VISUAL)
+  {
+    output += get_lines(
+      get_stc(),
+      ar.begin().get_line() - 1,
+      ar.end().get_line(),
+      flags);
+  }
+  else if (m_ex_stream->get_lines(ar, flags))
+  {
+    output += m_ex_stream->text();
+  }
+
+  SEPARATE;
+
+  print(output);
+
+  return true;
+}
+
 void wex::ex::print(const std::string& text)
 {
+  m_print_text = text;
+
   if (!m_frame->print_ex(get_stc(), text))
   {
     show_dialog("Print", text);

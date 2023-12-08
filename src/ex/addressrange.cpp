@@ -100,6 +100,13 @@ wex::addressrange::addressrange(ex* ex, int lines)
   }
 }
 
+wex::addressrange::addressrange(ex* ex, int begin_line, int end_line)
+  : m_begin(ex, begin_line)
+  , m_end(ex, end_line)
+  , m_ex(ex)
+{
+}
+
 wex::addressrange::addressrange(ex* ex, const std::string& range)
   : m_begin(ex)
   , m_end(ex)
@@ -601,20 +608,8 @@ bool wex::addressrange::print(const command_parser& cp)
     arg = "l";
   }
 
-  return (m_stc->GetName() != "Print" ? print(arg + cp.text()) : false);
-}
-
-bool wex::addressrange::print(const std::string& flags) const
-{
-  if (!is_ok() || !address::flags_supported(flags))
-  {
-    return false;
-  }
-
-  m_ex->print(
-    get_lines(m_stc, m_begin.get_line() - 1, m_end.get_line(), flags));
-
-  return true;
+  return (
+    m_stc->GetName() != "Print" ? m_ex->print(*this, arg + cp.text()) : false);
 }
 
 const std::string wex::addressrange::regex_commands() const

@@ -2,7 +2,7 @@
 // Name:      stc/file.cpp
 // Purpose:   Implementation of class wex::stc_file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -14,7 +14,7 @@
 #include <wex/syntax/path-lexer.h>
 #include <wex/ui/file-dialog.h>
 
-//#define USE_THREAD 1
+// #define USE_THREAD 1
 
 #define FILE_POST(ACTION)                                                 \
   wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_FILE_ACTION); \
@@ -50,8 +50,6 @@ wex::stc_file::stc_file(stc* stc, const wex::path& path)
   , m_stc(stc)
 {
 }
-
-wex::stc_file::~stc_file() {}
 
 bool wex::stc_file::do_file_load(bool synced)
 {

@@ -10,6 +10,7 @@
 #include <wex/core/regex.h>
 #include <wex/ex/ex.h>
 #include <wex/ex/macros.h>
+#include <wex/ex/util.h>
 #include <wex/ui/frd.h>
 
 #include "ex-stream-line.h"
@@ -20,6 +21,7 @@ const std::unordered_map<ex_stream_line::action_t, std::string>
   ex_stream_line::m_action_names = {
     {ex_stream_line::ACTION_COPY, "copied"},
     {ex_stream_line::ACTION_ERASE, "erased"},
+    {ex_stream_line::ACTION_GET, "get"},
     {ex_stream_line::ACTION_INSERT, "inserted"},
     {ex_stream_line::ACTION_JOIN, "joined"},
     {ex_stream_line::ACTION_MOVE, "moved"},
@@ -31,9 +33,11 @@ const std::unordered_map<ex_stream_line::action_t, std::string>
 wex::ex_stream_line::ex_stream_line(
   file*               work,
   action_t            type,
-  const addressrange& range)
+  const addressrange& range,
+  const std::string&  text)
   : m_action(type)
   , m_file(work)
+  , m_text(text)
   , m_begin(range.begin().get_line() - 1)
   , m_end(
       type != ACTION_JOIN ? range.end().get_line() - 1 :
@@ -114,12 +118,30 @@ wex::ex_stream_line::handle(char* line, size_t& pos)
     {
       case ACTION_COPY:
         m_file->write(std::span{line, pos});
-        m_copy += line;
+        m_copy.append(line, pos);
         m_actions++;
         break;
 
       case ACTION_ERASE:
         // skip this line: no write at all
+        m_actions++;
+        break;
+
+      case ACTION_GET:
+        if (m_text.contains("#"))
+        {
+          append_line_no(m_copy, m_line);
+        }
+        if (m_text.contains("l"))
+        {
+          m_copy.append(line, pos - 1);
+          m_copy.append("$\n");
+        }
+        else
+        {
+          m_copy.append(line, pos);
+        }
+
         m_actions++;
         break;
 
@@ -136,7 +158,7 @@ wex::ex_stream_line::handle(char* line, size_t& pos)
         break;
 
       case ACTION_MOVE:
-        m_copy += line;
+        m_copy.append(line, pos);
         m_actions++;
         break;
 
@@ -179,11 +201,13 @@ wex::ex_stream_line::handle(char* line, size_t& pos)
       case ACTION_WRITE:
         break;
 
+      case ACTION_GET:
       case ACTION_YANK:
         if (m_line > m_end)
         {
           return HANDLE_STOP;
         }
+        break;
 
       default:
         m_file->write(std::span{line, pos});

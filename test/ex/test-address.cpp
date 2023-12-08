@@ -65,8 +65,15 @@ TEST_CASE("wex::address")
   SUBCASE("flags_supported")
   {
     REQUIRE(wex::address::flags_supported(""));
+    REQUIRE(wex::address::flags_supported("-"));
+    REQUIRE(wex::address::flags_supported("+"));
+    REQUIRE(wex::address::flags_supported("p"));
+    REQUIRE(wex::address::flags_supported("l"));
+    REQUIRE(wex::address::flags_supported("lllll"));
     REQUIRE(wex::address::flags_supported("#"));
+
     REQUIRE(!wex::address::flags_supported("x"));
+    REQUIRE(!wex::address::flags_supported("lxllll"));
   }
 
   SUBCASE("get_line")

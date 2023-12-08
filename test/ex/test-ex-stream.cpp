@@ -110,6 +110,26 @@ TEST_CASE("wex::ex_stream")
       write_file(exs, 3);
     }
 
+    SUBCASE("get_lines")
+    {
+      REQUIRE(exs.get_line_count_request() == 5);
+      REQUIRE(exs.get_line_count() == 5);
+
+      const wex::addressrange ar(&ex, "1,2");
+
+      REQUIRE(exs.get_lines(ar));
+      REQUIRE(exs.text() == "test1\ntest2\n");
+      REQUIRE(exs.get_lines(ar, "p"));
+      REQUIRE(exs.text() == "test1\ntest2\n");
+      REQUIRE(exs.get_lines(ar, "l"));
+      REQUIRE(exs.text() == "test1$\ntest2$\n");
+      REQUIRE(exs.get_lines(ar, "l#"));
+      REQUIRE(exs.text() == "     1 test1$\n     2 test2$\n");
+
+      REQUIRE(exs.get_line_count() == 5);
+      REQUIRE(!exs.is_modified());
+    }
+
     SUBCASE("insert")
     {
       REQUIRE(!exs.insert_text(wex::address(&ex, 0), "TEXT_BEFORE"));
@@ -307,6 +327,7 @@ TEST_CASE("wex::ex_stream")
     exs.goto_line(3);
     REQUIRE(exs.get_current_line() == 3);
     REQUIRE(exs.get_line_count_request() == lines_test_md);
+    REQUIRE(!exs.write());
   }
 
   SUBCASE("write")

@@ -2,7 +2,7 @@
 // Name:      stc/file.h
 // Purpose:   Declaration of class wex::stc_file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -36,7 +36,7 @@ public:
     const wex::path& p = wex::path());
 
   /// Destructor.
-  ~stc_file() override;
+  ~stc_file() = default;
 
   /// The ex stream (used if in ex mode), might be nullptr.
   class ex_stream*       ex_stream();

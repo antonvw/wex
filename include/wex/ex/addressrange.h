@@ -2,7 +2,7 @@
 // Name:      addressrange.h
 // Purpose:   Declaration of class wex::addressrange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2022 Anton van Wezenbeek
+// Copyright: (c) 2015-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -50,6 +50,15 @@ public:
     /// lines 1 is current line only
     /// lines 0 is illegal
     int lines = 1);
+
+  /// Constructor for a range with specified begin and end line.
+  explicit addressrange(
+    /// the ex (or vi) component
+    ex* ex,
+    /// begin line
+    int begin_line,
+    /// end line
+    int end_line);
 
   /// Constructor for a range (including visual range).
   explicit addressrange(
@@ -138,7 +147,6 @@ private:
   bool indent(bool forward = true) const;
   bool move(const address& destination) const;
   bool print(const command_parser& cp);
-  bool print(const std::string& flags = std::string()) const;
   bool set(const std::string& begin, const std::string& end);
   void set(address& begin, address& end, int lines) const;
   void set(int begin, int end);
