@@ -281,6 +281,8 @@ const std::string* wex::file::read(std::streampos seek_position)
   m_buffer->resize(m_path.m_stat.get_size() - seek_position);
   m_fs.read(m_buffer->data(), m_buffer->size());
 #else
+  // For MSW the m_fs.read using stat size results in reading NULL chars.
+  // Last tested with VS 17.8.3. Therefore read by single char.
   char c;
   while (m_fs.get(c))
   {
