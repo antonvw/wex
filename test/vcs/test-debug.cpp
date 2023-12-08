@@ -101,6 +101,10 @@ TEST_CASE("wex::debug" * doctest::may_fail())
     REQUIRE(dbg.toggle_breakpoint(1, stc));
     REQUIRE(!dbg.apply_breakpoints(stc));
 
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wex::ID_DEBUG_STDIN);
+    event.SetString("del 0");
+    wxPostEvent(&dbg, event);
+
     process.stop();
     process.async_sleep_for(std::chrono::milliseconds(10));
 

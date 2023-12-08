@@ -137,6 +137,9 @@ public:
 
   /// Overridden methods.
 
+  static inline const int id_find_in_files    = ID_FREE_LOWEST;
+  static inline const int id_replace_in_files = ID_FREE_LOWEST + 1;
+
   void append_vcs(menu*, const menu_item* i) const override;
   void bind_accelerators(
     wxWindow*                              parent,
@@ -217,9 +220,6 @@ private:
   class file_history m_project_history;
 
   function_repeat m_function_repeat;
-
-  static inline constexpr int id_find_in_files    = ID_FREE_LOWEST;
-  static inline constexpr int id_replace_in_files = ID_FREE_LOWEST + 1;
 
   const std::string m_text_hidden{_("fif.Hidden")},
     m_text_in_files{_("fif.In files")}, m_text_in_folder{_("fif.In folder")},

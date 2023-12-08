@@ -2,7 +2,7 @@
 // Name:      test-frame.cpp
 // Purpose:   Implementation for wex del unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -26,6 +26,25 @@ TEST_CASE("wex::del::frame")
   SUBCASE("default_extensions")
   {
     REQUIRE(!del_frame()->default_extensions().empty());
+  }
+
+  SUBCASE("events")
+  {
+    for (auto id : std::vector<int>{
+           wxID_PREFERENCES,
+           wex::ID_CLEAR_FILES,
+           wex::ID_CLEAR_PROJECTS,
+           wex::ID_FIND_FIRST,
+           wex::ID_FIND_LAST,
+           wex::del::ID_PROJECT_SAVE,
+           // wex::ID_EDIT_VCS_LOWEST,
+           wex::ID_VIEW_MENUBAR,
+           wex::ID_VIEW_TITLEBAR})
+    {
+      auto* event = new wxCommandEvent(wxEVT_MENU, id);
+      wxQueueEvent(del_frame(), event);
+      wxTheApp->ProcessPendingEvents();
+    }
   }
 
   SUBCASE("find_in_files")
@@ -237,6 +256,10 @@ TEST_CASE("wex::del::frame")
 
     del_frame()->on_command_item_dialog(
       wxID_ADD,
+      wxCommandEvent(wxEVT_NULL, wxID_OK));
+
+    del_frame()->on_command_item_dialog(
+      wex::del::frame::id_find_in_files,
       wxCommandEvent(wxEVT_NULL, wxID_OK));
 
     del_frame()->on_notebook(100, nullptr);

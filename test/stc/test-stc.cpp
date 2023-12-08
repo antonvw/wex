@@ -10,6 +10,7 @@
 #include <wex/core/config.h>
 #include <wex/factory/defs.h>
 #include <wex/stc/auto-complete.h>
+#include <wex/stc/bind.h>
 #include <wex/ui/frd.h>
 
 #include "test.h"
@@ -113,6 +114,13 @@ TEST_CASE("wex::stc")
   SUBCASE("eol")
   {
     REQUIRE(!stc->eol().empty());
+  }
+
+  SUBCASE("events")
+  {
+    wxCommandEvent event(wxEVT_MENU, wex::id::stc::margin_text_blame_revision);
+    wxPostEvent(stc, event);
+    wxTheApp->ProcessPendingEvents();
   }
 
   SUBCASE("find")
