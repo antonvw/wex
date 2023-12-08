@@ -59,8 +59,6 @@ wex::file::file(const file& rhs)
   *this = rhs;
 }
 
-wex::file::~file() {}
-
 wex::file& wex::file::operator=(const file& f)
 {
   if (this != &f)
@@ -86,7 +84,9 @@ void wex::file::assign(const wex::path& p)
 
 bool wex::file::check_sync()
 {
-  if (is_open() || !m_path.m_stat.is_ok() || !config("AllowSync").get(true))
+  if (
+    (!m_use_stream && is_open()) || !m_path.m_stat.is_ok() ||
+    !config("AllowSync").get(true))
   {
     return false;
   }
@@ -97,9 +97,12 @@ bool wex::file::check_sync()
 
     if (m_path.m_stat.get_modification_time() != m_stat.get_modification_time())
     {
-      // Do not check return value,
-      // we sync anyhow, to force nex time no sync.
-      file_load(true);
+      if (!m_use_stream)
+      {
+        // Do not check return value,
+        // we sync anyhow, to force nex time no sync.
+        file_load(true);
+      }
 
       sync_needed = true;
     }

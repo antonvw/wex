@@ -24,6 +24,9 @@ namespace factory
 class stc;
 };
 
+/// Appends a line no to text.h, using ex # format.
+void append_line_no(std::string& text, int line);
+
 /// Returns escape sequence.
 const std::string esc();
 

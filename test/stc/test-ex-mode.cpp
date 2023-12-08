@@ -36,8 +36,19 @@ TEST_CASE("wex::ex-mode")
     const std::string check("# Markdown\n\n- test for opening a Markdown "
                             "document (and used in test-ex-stream)\n");
     REQUIRE(ex->command(":p"));
-    CAPTURE(ex->get_print_text());
     REQUIRE(ex->get_print_text() == "# Markdown\n");
+
+    REQUIRE(ex->command(":p#"));
+    REQUIRE(ex->get_print_text() == "     1 # Markdown\n");
+
+    REQUIRE(ex->command(":l"));
+    REQUIRE(ex->get_print_text() == "# Markdown$\n");
+
+    REQUIRE(ex->command(":2z="));
+    CAPTURE(ex->get_print_text());
+    REQUIRE(ex->get_print_text().starts_with("---------"));
+    REQUIRE(ex->get_print_text().ends_with("--------\n"));
+
     REQUIRE(ex->command(":1,3p"));
     REQUIRE(ex->get_print_text() == check);
   }

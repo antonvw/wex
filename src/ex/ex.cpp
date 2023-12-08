@@ -29,6 +29,12 @@
 
 #include "eval.h"
 
+#define SEPARATE                                                              \
+  if (separator)                                                              \
+  {                                                                           \
+    output += std::string(config(_("stc.Edge column")).get(80l), '-') + "\n"; \
+  }
+
 wex::macros wex::ex::m_macros;
 
 wex::ex::ex(wex::syntax::stc* stc, mode_t mode)
@@ -326,25 +332,36 @@ int wex::ex::marker_line(char marker) const
   return LINE_NUMBER_UNKNOWN;
 }
 
-bool wex::ex::print(const addressrange& ar, const std::string& flags)
+bool wex::ex::print(
+  const addressrange& ar,
+  const std::string&  flags,
+  bool                separator)
 {
   if (!ar.is_ok() || !address::flags_supported(flags))
   {
     return false;
   }
 
+  std::string output;
+
+  SEPARATE;
+
   if (m_mode == mode_t::VISUAL)
   {
-    print(get_lines(
+    output += get_lines(
       get_stc(),
       ar.begin().get_line() - 1,
       ar.end().get_line(),
-      flags));
+      flags);
   }
   else if (m_ex_stream->get_lines(ar, flags))
   {
-    print(m_ex_stream->text());
+    output += m_ex_stream->text();
   }
+
+  SEPARATE;
+
+  print(output);
 
   return true;
 }

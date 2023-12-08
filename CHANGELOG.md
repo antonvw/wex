@@ -25,6 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - history clear fixed
 - statusbar setup after showing dialog fixed
 - vi selecting using arrow keys while shift or control down pressed
+- ex mode fixes for printing, adjust_window
 
 ## 23.10 - 2023-10-08
 

@@ -100,6 +100,13 @@ wex::addressrange::addressrange(ex* ex, int lines)
   }
 }
 
+wex::addressrange::addressrange(ex* ex, int begin_line, int end_line)
+  : m_begin(ex, begin_line)
+  , m_end(ex, end_line)
+  , m_ex(ex)
+{
+}
+
 wex::addressrange::addressrange(ex* ex, const std::string& range)
   : m_begin(ex)
   , m_end(ex)

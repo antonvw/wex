@@ -10,6 +10,7 @@
 #include <wex/core/regex.h>
 #include <wex/ex/ex.h>
 #include <wex/ex/macros.h>
+#include <wex/ex/util.h>
 #include <wex/ui/frd.h>
 
 #include "ex-stream-line.h"
@@ -127,7 +128,20 @@ wex::ex_stream_line::handle(char* line, size_t& pos)
         break;
 
       case ACTION_GET:
-        m_copy.append(line, pos);
+        if (m_text.contains("#"))
+        {
+          append_line_no(m_copy, m_line);
+        }
+        if (m_text.contains("l"))
+        {
+          m_copy.append(line, pos - 1);
+          m_copy.append("$\n");
+        }
+        else
+        {
+          m_copy.append(line, pos);
+        }
+
         m_actions++;
         break;
 

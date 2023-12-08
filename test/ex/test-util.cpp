@@ -33,7 +33,7 @@ TEST_CASE("wex::ex::utils")
     REQUIRE(wex::get_lines(stc, 0, 10000) == "xx\nxx\nyy\nzz\n");
     REQUIRE(
       wex::get_lines(stc, 0, 10000, "ADHJHJHJJKJK#") ==
-      "     1 xx\n     2 xx\n     3 yy\n     4 zz\n     5 ");
+      "     1 xx\n     2 xx\n     3 yy\n     4 zz\n     5 \n");
     REQUIRE(wex::get_lines(stc, 0, 10000, "l").contains("$"));
 
     const auto lines(wex::get_lines(stc, 0, 10000, "#l"));

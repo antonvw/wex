@@ -153,7 +153,10 @@ public:
   int marker_line(char marker) const;
 
   /// Prints address range.
-  bool print(const addressrange& ar, const std::string& flags = std::string());
+  bool print(
+    const addressrange& ar,
+    const std::string&  flags     = std::string(),
+    bool                separator = false);
 
   /// Prints text in the dialog.
   void print(const std::string& text);

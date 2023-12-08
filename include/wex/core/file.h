@@ -43,7 +43,7 @@ public:
   file(const file& rhs);
 
   /// Destructor.
-  virtual ~file();
+  virtual ~file() = default;
 
   /// Assignment operator.
   file& operator=(const file& f);

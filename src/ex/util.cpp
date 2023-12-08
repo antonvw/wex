@@ -16,7 +16,7 @@
 #include <wex/ex/util.h>
 #include <wex/syntax/stc.h>
 
-void append_line_no(std::string& text, int line)
+void wex::append_line_no(std::string& text, int line)
 {
 #ifdef __WXMSW__
   // not yet for gcc 12, clang 16
@@ -46,6 +46,11 @@ const std::string wex::find_first_of(
 std::string
 wex::get_lines(factory::stc* stc, int start, int end, const std::string& flags)
 {
+  if (start == end)
+  {
+    return std::string();
+  }
+
   std::string text;
 
   for (auto i = start; i < end && i < stc->get_line_count(); i++)

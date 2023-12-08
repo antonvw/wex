@@ -12,11 +12,11 @@
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
 #include <wex/ex/address.h>
+#include <wex/ex/addressrange.h>
 #include <wex/ex/command-parser.h>
 #include <wex/ex/ex-stream.h>
 #include <wex/ex/ex.h>
 #include <wex/ex/macros.h>
-#include <wex/ex/util.h>
 #include <wex/factory/process.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
@@ -27,12 +27,6 @@
   {                                                                           \
     return ex->get_stc()->LineFromPosition(ex->get_stc()->GetTargetStart()) + \
            1;                                                                 \
-  }
-
-#define SEPARATE                                             \
-  if (separator)                                             \
-  {                                                          \
-    output += std::string(40, '-') + m_ex->get_stc()->eol(); \
   }
 
 namespace wex
@@ -179,16 +173,10 @@ bool wex::address::adjust_window(const std::string& text) const
     }
   }
 
-  std::string output;
-
-  SEPARATE;
-  output +=
-    wex::get_lines(m_ex->get_stc(), begin - 1, begin + count - 1, flags);
-  SEPARATE;
-
-  m_ex->print(output);
-
-  return true;
+  return m_ex->print(
+    addressrange(m_ex, begin - 1, begin + count - 1),
+    flags,
+    separator);
 }
 
 bool wex::address::append(const std::string& text) const
