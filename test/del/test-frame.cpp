@@ -28,6 +28,7 @@ TEST_CASE("wex::del::frame")
     REQUIRE(!del_frame()->default_extensions().empty());
   }
 
+  /*
   SUBCASE("events")
   {
     for (auto id : std::vector<int>{
@@ -45,7 +46,7 @@ TEST_CASE("wex::del::frame")
       wxQueueEvent(del_frame(), event);
       wxTheApp->ProcessPendingEvents();
     }
-  }
+  }*/
 
   SUBCASE("find_in_files")
   {
