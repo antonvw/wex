@@ -198,7 +198,7 @@ bool wex::address::flags_supported(const std::string& flags)
 int wex::address::get_line(int start_pos) const
 {
   // We already have a line number, return that one.
-  if (m_line >= 1)
+  if (m_line >= 1 || m_ex == nullptr)
   {
     return m_line;
   }

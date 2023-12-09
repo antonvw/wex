@@ -15,19 +15,18 @@
 // Do not give an error if columns do not exist.
 // E.g. the LIST_PROCESS has none of the file columns.
 wex::listitem::listitem(listview* lv, long itemnumber)
-  : m_listview(lv)
-  , m_path(
-      (!lv->get_item_text(itemnumber, _("File Name")).empty() &&
-           !lv->get_item_text(itemnumber, _("In Folder")).empty() ?
-         wex::path(
-           wex::path(lv->get_item_text(itemnumber, _("In Folder"))),
-           lv->get_item_text(itemnumber, _("File Name")),
-           path::log_t().set(path::LOG_MOD)) :
-         wex::path(
-           lv->get_item_text(itemnumber),
-           path::log_t().set(path::LOG_MOD))))
-  , m_file_spec(lv->get_item_text(itemnumber, _("Type")))
-  , m_reflect({REFLECT_ADD("path", m_path.string())})
+  : listitem(
+      lv,
+      !lv->get_item_text(itemnumber, _("File Name")).empty() &&
+          !lv->get_item_text(itemnumber, _("In Folder")).empty() ?
+        wex::path(
+          wex::path(lv->get_item_text(itemnumber, _("In Folder"))),
+          lv->get_item_text(itemnumber, _("File Name")),
+          path::log_t().set(path::LOG_MOD)) :
+        wex::path(
+          lv->get_item_text(itemnumber),
+          path::log_t().set(path::LOG_MOD)),
+      lv->get_item_text(itemnumber, _("Type")))
 {
   SetId(itemnumber);
 
@@ -44,7 +43,8 @@ wex::listitem::listitem(
   : m_listview(listview)
   , m_path(filename)
   , m_file_spec(filespec)
-  , m_reflect({REFLECT_ADD("path", m_path.string())})
+  , m_reflect({REFLECT_ADD("path", m_path.string()),
+               REFLECT_ADD("id", GetId())})
 {
   SetId(-1);
 }
@@ -93,7 +93,7 @@ bool wex::listitem::set_item(
   {
     if (!m_listview->SetItem(GetId(), col, text))
     {
-      log() << *this << "col:" << col << "id:" << GetId() << "text:" << text;
+      log() << *this << "col:" << col << "text:" << text;
       return false;
     }
   }

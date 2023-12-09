@@ -31,17 +31,30 @@ const std::unordered_map<ex_stream_line::action_t, std::string>
 }; // namespace wex
 
 wex::ex_stream_line::ex_stream_line(
-  file*               work,
-  action_t            type,
-  const addressrange& range,
-  const std::string&  text)
+  file*                   work,
+  action_t                type,
+  const addressrange&     range,
+  const std::string&      text,
+  const data::substitute& data,
+  char                    name,
+  const address&          dest)
   : m_action(type)
   , m_file(work)
   , m_text(text)
+  , m_data(data)
+  , m_register(name)
+  , m_dest(dest.get_line() - 1)
   , m_begin(range.begin().get_line() - 1)
   , m_end(
       type != ACTION_JOIN ? range.end().get_line() - 1 :
                             range.end().get_line() - 2)
+  , m_reflect(
+      {REFLECT_ADD("actions", m_actions),
+       REFLECT_ADD("from", m_begin),
+       REFLECT_ADD("to", m_end),
+       REFLECT_ADD("pattern", m_data.pattern()),
+       REFLECT_ADD("replacement", m_data.replacement())},
+      reflection::log_t::SKIP_EMPTY)
 {
 }
 
@@ -49,11 +62,7 @@ wex::ex_stream_line::ex_stream_line(
   file*               work,
   const addressrange& range,
   const std::string&  text)
-  : m_action(ACTION_INSERT)
-  , m_file(work)
-  , m_text(text)
-  , m_begin(range.begin().get_line() - 1)
-  , m_end(range.end().get_line() - 1)
+  : ex_stream_line(work, ACTION_INSERT, range, text)
 {
 }
 
@@ -61,11 +70,7 @@ wex::ex_stream_line::ex_stream_line(
   file*                   work,
   const addressrange&     range,
   const data::substitute& data)
-  : m_action(ACTION_SUBSTITUTE)
-  , m_file(work)
-  , m_data(data)
-  , m_begin(range.begin().get_line() - 1)
-  , m_end(range.end().get_line() - 1)
+  : ex_stream_line(work, ACTION_SUBSTITUTE, range, std::string(), data)
 {
 }
 
@@ -74,11 +79,14 @@ wex::ex_stream_line::ex_stream_line(
   const addressrange& range,
   const address&      dest,
   action_t            type)
-  : m_action(type)
-  , m_file(work)
-  , m_begin(range.begin().get_line() - 1)
-  , m_end(range.end().get_line() - 1)
-  , m_dest(dest.get_line() - 1)
+  : ex_stream_line(
+      work,
+      type,
+      range,
+      std::string(),
+      data::substitute(),
+      0,
+      dest)
 {
 }
 
@@ -86,27 +94,20 @@ wex::ex_stream_line::ex_stream_line(
   file*               work,
   const addressrange& range,
   char                name)
-  : m_action(ACTION_YANK)
-  , m_file(work)
-  , m_begin(range.begin().get_line() - 1)
-  , m_end(range.end().get_line() - 1)
-  , m_register(name)
+  : ex_stream_line(
+      work,
+      ACTION_YANK,
+      range,
+      std::string(),
+      data::substitute(),
+      name)
 {
   ex::get_macros().set_register(m_register, std::string());
 }
 
 wex::ex_stream_line::~ex_stream_line()
 {
-  std::stringstream ss;
-
-  if (!m_data.pattern().empty() || !m_data.replacement().empty())
-  {
-    ss << "pattern: " << m_data.pattern();
-    ss << " replacement: " << m_data.replacement();
-  }
-
-  log::trace("ex stream " + m_action_names.at(m_action))
-    << m_actions << "lines from" << m_begin << "to" << m_end << ss;
+  log::trace("ex stream " + m_action_names.at(m_action)) << m_reflect.log();
 }
 
 wex::ex_stream_line::handle_t

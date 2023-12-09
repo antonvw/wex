@@ -180,6 +180,9 @@ public:
   size_t usable_chars_per_line() const;
 
 private:
+  /// Delegate constructor.
+  explicit lexer(const pugi::xml_node* node, syntax::stc* s);
+
   void              auto_match(const std::string& lexer);
   const std::string formatted_text(
     const std::string& lines,
