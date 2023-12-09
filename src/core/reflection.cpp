@@ -40,9 +40,9 @@ const std::string to_string(const std::any& any)
         s << "<no cast available>";
       }
     }
-    catch (std::bad_cast& e)
+    catch (const std::exception& e)
     {
-      s << "<log bad cast: " << e.what() << ">";
+      s << "<exception: " << e.what() << ">";
     }
   }
   else
