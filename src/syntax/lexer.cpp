@@ -66,28 +66,22 @@ auto tokenize_int(const std::string& text, const char* sep = " \t\r\n")
 };
 } // namespace wex
 
-wex::lexer::lexer(const std::string& lexer)
-  : m_reflect({})
+wex::lexer::lexer(const std::string& lex)
+  : lexer(nullptr, nullptr)
 {
-  if (!lexer.empty())
+  if (!lex.empty())
   {
-    set(lexer);
+    set(lex);
   }
 }
 
 wex::lexer::lexer(syntax::stc* stc)
-  : m_stc(stc)
-  , m_reflect({})
+  : lexer(nullptr, stc)
 {
 }
 
 wex::lexer::lexer(const pugi::xml_node* node)
-  : m_scintilla_lexer(node->attribute("name").value())
-  , m_reflect(
-      {REFLECT_ADD("display", m_display_lexer),
-       REFLECT_ADD("extensions", m_extensions),
-       REFLECT_ADD("language", m_language),
-       REFLECT_ADD("lexer", m_scintilla_lexer)})
+  : lexer(node, nullptr)
 {
   m_is_ok = !m_scintilla_lexer.empty();
 
@@ -113,6 +107,17 @@ wex::lexer::lexer(const pugi::xml_node* node)
 
     parse_childen(node);
   }
+}
+
+wex::lexer::lexer(const pugi::xml_node* node, syntax::stc* s)
+  : m_scintilla_lexer(node != nullptr ? node->attribute("name").value() : "")
+  , m_stc(s)
+  , m_reflect(
+      {REFLECT_ADD("display", m_display_lexer),
+       REFLECT_ADD("extensions", m_extensions),
+       REFLECT_ADD("language", m_language),
+       REFLECT_ADD("lexer", m_scintilla_lexer)})
+{
 }
 
 // Adds the specified keywords to the keywords map and the keywords set.

@@ -99,6 +99,11 @@ wex::dir::dir(
   , m_data(data)
   , m_eh(eh)
   , m_tool(ID_TOOL_ADD)
+  , m_reflect(
+      {REFLECT_ADD("path", m_dir.string()),
+       REFLECT_ADD("on dirs", m_data.dir_spec()),
+       REFLECT_ADD("on files", m_data.file_spec()),
+       REFLECT_ADD("flags", m_data.type())})
 {
 }
 
@@ -127,7 +132,7 @@ int wex::dir::find_files()
       {
         const auto id(std::hash<std::thread::id>{}(std::this_thread::get_id()));
 
-        log::trace("thread") << id << "started" << m_dir.string();
+        log::trace("thread") << id << "started" << m_reflect;
 
         run();
 
@@ -281,10 +286,7 @@ int wex::dir::run() const
     log(e) << "exception";
   }
 
-  log::trace("iterated") << m_dir << "on files:" << m_data.file_spec()
-                         << "on dirs:" << m_data.dir_spec()
-                         << "flags:" << m_data.type()
-                         << "matches:" << matches();
+  log::trace("iterated") << m_dir << "matches:" << matches() << m_reflect.log();
 
   end();
 

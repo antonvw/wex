@@ -349,7 +349,10 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       domain_error double_t duration duration_cast dynamic_pointer_cast dynarray
       egrep emplace emplace_after emplace_back emplace_front emplace_hint
       empty enable_if enable_if_t enable_shared_from_this end endl
-      ends eof eofbit epsilon equal equal_range
+      ends eof 
+      ends_with
+      eofbit epsilon 
+      equal equal_range
       equal_to erase erase_after erf erfc error_backref
       error_badbrace error_badrepeat error_brace error_brack error_collate error_complexity
       error_ctype error_escape error_paren error_range error_space error_stack

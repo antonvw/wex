@@ -2,7 +2,7 @@
 // Name:      dir.h
 // Purpose:   Declaration of class wex::dir
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2008-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -11,6 +11,7 @@
 #include <wex/common/tool.h>
 #include <wex/core/interruptible.h>
 #include <wex/core/path.h>
+#include <wex/core/reflection.h>
 #include <wex/data/dir.h>
 
 #include <filesystem>
@@ -87,10 +88,12 @@ private:
   bool traverse(const std::filesystem::directory_entry& e) const;
 
   static inline stream_statistics m_statistics;
-  const path                      m_dir;
-  const data::dir                 m_data;
-  wxEvtHandler*                   m_eh{nullptr};
-  wex::tool                       m_tool;
+
+  const path      m_dir;
+  const data::dir m_data;
+  wxEvtHandler*   m_eh{nullptr};
+  wex::tool       m_tool;
+  reflection      m_reflect;
 };
 
 /// Returns all matching files into a vector of strings (without paths).

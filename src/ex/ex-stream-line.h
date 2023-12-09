@@ -9,6 +9,7 @@
 
 #include <unordered_map>
 #include <wex/core/file.h>
+#include <wex/core/reflection.h>
 #include <wex/data/substitute.h>
 #include <wex/ex/addressrange.h>
 
@@ -60,11 +61,15 @@ public:
   ex_stream_line(file* work, const addressrange& range, char name);
 
   /// Constructor for other actions.
+  /// Used as delegate constructor.
   ex_stream_line(
-    file*               work,
-    action_t            type,
-    const addressrange& range,
-    const std::string&  text = std::string());
+    file*                   work,
+    action_t                type,
+    const addressrange&     range,
+    const std::string&      text = std::string(),
+    const data::substitute& data = data::substitute(),
+    char                    name = 0,
+    const address&          dest = address());
 
   /// Destructor.
   ~ex_stream_line();
@@ -103,6 +108,8 @@ private:
   int   m_actions{0}, m_line{0};
 
   std::string m_copy;
+
+  reflection m_reflect;
 
   static const std::unordered_map<action_t, std::string> m_action_names;
 };

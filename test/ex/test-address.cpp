@@ -28,6 +28,11 @@ TEST_CASE("wex::address")
 
   SUBCASE("constructor")
   {
+    REQUIRE(wex::address().get_line() == 0);
+    REQUIRE(wex::address().type() == wex::address::address_t::IS_SINGLE);
+    REQUIRE(!wex::address().marker_add('x'));
+    REQUIRE(!wex::address().marker_delete());
+
     REQUIRE(wex::address(ex).type() == wex::address::address_t::IS_SINGLE);
     REQUIRE(wex::address(ex).get_line() == 0);
     REQUIRE(wex::address(ex, 5).get_line() == 5);

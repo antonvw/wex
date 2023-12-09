@@ -37,6 +37,9 @@ public:
 
   /// Other methods.
 
+  /// Default constructor.
+  address() = default;
+
   /// Constructor for an address from a line string.
   explicit address(
     /// the ex (or vi) component
@@ -94,7 +97,7 @@ private:
   void set_line(int line);
   bool write_line_number() const;
 
-  ex*         m_ex;
+  ex*         m_ex{nullptr};
   int         m_line = 0;
   address_t   m_type{address_t::IS_SINGLE};
   std::string m_address; // set by address range
