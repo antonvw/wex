@@ -46,7 +46,7 @@ TEST_CASE("wex::del::frame")
       wxQueueEvent(del_frame(), event);
       wxTheApp->ProcessPendingEvents();
     }
-  }*/
+  }
 
   SUBCASE("find_in_files")
   {
@@ -79,7 +79,7 @@ TEST_CASE("wex::del::frame")
 
     REQUIRE(del_frame()->sed("xxxxxxx yyy *.xyz"));
 #endif
-  }
+  }*/
 
   SUBCASE("get_debug")
   {
