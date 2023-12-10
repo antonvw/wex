@@ -28,7 +28,6 @@ TEST_CASE("wex::del::frame")
     REQUIRE(!del_frame()->default_extensions().empty());
   }
 
-  /*
   SUBCASE("events")
   {
     for (auto id : std::vector<int>{
@@ -79,7 +78,7 @@ TEST_CASE("wex::del::frame")
 
     REQUIRE(del_frame()->sed("xxxxxxx yyy *.xyz"));
 #endif
-  }*/
+  }
 
   SUBCASE("get_debug")
   {

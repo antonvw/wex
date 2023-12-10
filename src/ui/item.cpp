@@ -445,16 +445,14 @@ void wex::item::add_items(data::layout& layout, std::vector<item>& v)
   }
 }
 
-wxFlexGridSizer* wex::item::add_static_text(wxSizer* sizer) const
+void wex::item::add_static_text(wxSizer* sizer) const
 {
-  assert(!m_label_window.empty());
-  assert(m_window != nullptr);
-
-  sizer->Add(
-    new wxStaticText(m_window->GetParent(), wxID_ANY, m_label_window + ":"),
-    wxSizerFlags().Right().Border().Align(wxALIGN_LEFT));
-
-  return nullptr;
+  if (!m_label_window.empty() && m_window != nullptr)
+  {
+    sizer->Add(
+      new wxStaticText(m_window->GetParent(), wxID_ANY, m_label_window + ":"),
+      wxSizerFlags().Right().Border().Align(wxALIGN_LEFT));
+  }
 }
 
 bool wex::item::apply(bool save) const

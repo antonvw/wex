@@ -460,7 +460,7 @@ private:
 
   data::layout::sizer_t* add(data::layout& layout) const;
   data::layout::sizer_t* add_browse_button(wxSizer* sizer) const;
-  data::layout::sizer_t* add_static_text(wxSizer* sizer) const;
+  void                   add_static_text(wxSizer* sizer) const;
 
   void add_items(group_t& page, bool readonly);
   void add_items(data::layout& layout, std::vector<item>& v);
