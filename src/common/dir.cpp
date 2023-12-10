@@ -99,11 +99,12 @@ wex::dir::dir(
   , m_data(data)
   , m_eh(eh)
   , m_tool(ID_TOOL_ADD)
-  , m_reflect(
-      {REFLECT_ADD("path", m_dir),
-       REFLECT_ADD("on dirs", m_data),
-       REFLECT_ADD("on files", m_data.file_spec()),
-       REFLECT_ADD("flags", m_data.type())})
+  , m_reflect({})
+/*
+  REFLECT_ADD("path", m_dir),
+  REFLECT_ADD("on dirs", m_data),
+  REFLECT_ADD("on files", m_data.file_spec()),
+  REFLECT_ADD("flags", m_data.type())}) */
 {
 }
 

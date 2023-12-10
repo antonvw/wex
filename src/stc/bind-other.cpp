@@ -480,5 +480,6 @@ void wex::stc::mouse_action(wxMouseEvent& event)
   catch (std::exception& e)
   {
     log(e) << "mouse action";
+    event.Skip();
   }
 }
