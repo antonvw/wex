@@ -24,7 +24,8 @@
 
 namespace wex
 {
-/// This class offers reflection for any kind of class members.
+/// This class offers reflection for any kind of class members,
+/// as long as you add a conversion from / to std::any.
 class reflection
 {
 public:

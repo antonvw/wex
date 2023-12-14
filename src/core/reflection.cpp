@@ -19,6 +19,10 @@ const std::string to_string(const std::any& any)
       {
         s << std::any_cast<double>(any);
       }
+      else if (any.type() == typeid(bool))
+      {
+        s << std::any_cast<bool>(any);
+      }
       else if (any.type() == typeid(int))
       {
         s << std::any_cast<int>(any);
@@ -26,6 +30,10 @@ const std::string to_string(const std::any& any)
       else if (any.type() == typeid(long))
       {
         s << std::any_cast<long>(any);
+      }
+      else if (any.type() == typeid(float))
+      {
+        s << std::any_cast<float>(any);
       }
       else if (any.type() == typeid(size_t))
       {

@@ -9,6 +9,7 @@
 #include <wex/common/stream.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
+#include <wex/core/reflection.h>
 #include <wx/translation.h>
 
 #include <thread>
@@ -99,12 +100,6 @@ wex::dir::dir(
   , m_data(data)
   , m_eh(eh)
   , m_tool(ID_TOOL_ADD)
-  , m_reflect({})
-/*
-  REFLECT_ADD("path", m_dir),
-  REFLECT_ADD("on dirs", m_data),
-  REFLECT_ADD("on files", m_data.file_spec()),
-  REFLECT_ADD("flags", m_data.type())}) */
 {
 }
 
@@ -128,18 +123,10 @@ int wex::dir::find_files()
 
   if (m_eh != nullptr)
   {
-    const auto reflect(m_reflect.log().str());
-
     std::thread t(
-      [*this, reflect]
+      [*this]
       {
-        const auto id(std::hash<std::thread::id>{}(std::this_thread::get_id()));
-
-        log::trace("thread") << id << "started" << reflect;
-
         run();
-
-        log::trace("thread") << id << "end";
       });
 
     t.detach();
@@ -228,6 +215,17 @@ void wex::dir::post_event(const path& p) const
 
 int wex::dir::run() const
 {
+  reflection reflect(
+    {REFLECT_ADD("path", m_dir.string()),
+     REFLECT_ADD("on dirs", m_data.dir_spec()),
+     REFLECT_ADD("on files", m_data.file_spec()),
+     REFLECT_ADD("flags", m_data.type().to_string())},
+    reflection::log_t::SKIP_EMPTY);
+
+  const auto id(std::hash<std::thread::id>{}(std::this_thread::get_id()));
+
+  log::trace("thread") << id << "started" << reflect;
+
   try
   {
     if (m_data.type().test(data::dir::RECURSIVE))
@@ -289,7 +287,7 @@ int wex::dir::run() const
     log(e) << "exception";
   }
 
-  log::trace("iterated") << m_dir << "matches:" << matches() << m_reflect.log();
+  log::trace("thread") << id << "ended matches:" << matches() << reflect.log();
 
   end();
 

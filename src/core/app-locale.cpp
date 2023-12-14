@@ -59,7 +59,7 @@ void wex::file_translations_loader::add_catalogs(wxLanguage language)
     }
   }
 
-  log("no locale files")
+  log::trace("no locale files")
     << std::accumulate(dirs.begin(), dirs.end(), std::string());
 }
 

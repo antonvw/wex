@@ -16,15 +16,30 @@ class test_reflect
 public:
   test_reflect()
     : m_reflect(
-        {REFLECT_ADD("chrono", m_chrono),
+        {REFLECT_ADD("bool", m_bool),
+         REFLECT_ADD("double", m_double),
+         REFLECT_ADD("float", m_float),
+         REFLECT_ADD("int", m_int),
+         REFLECT_ADD("long", m_long),
+         REFLECT_ADD("size", m_size),
+         REFLECT_ADD("chrono", m_chrono),
          REFLECT_ADD("time", m_chrono.get_time("2019-02-01 12:20:06"))})
   {
     ;
   };
 
+  void change() { m_int++; };
+
   const auto log() const { return m_reflect.log(); }
 
 private:
+  bool   m_bool{false};
+  double m_double{0.0};
+  float  m_float{0.1};
+  int    m_int{0};
+  long   m_long{0};
+  size_t m_size{0};
+
   wex::chrono     m_chrono;
   wex::reflection m_reflect;
 };
@@ -56,6 +71,12 @@ TEST_CASE("wex::reflection")
 
   SUBCASE("member")
   {
-    REQUIRE(test_reflect().log().str().contains("no cast available"));
+    test_reflect reflect;
+
+    REQUIRE(reflect.log().str().contains("no cast available"));
+    REQUIRE(reflect.log().str().contains("int: 0"));
+
+    reflect.change();
+    REQUIRE(reflect.log().str().contains("int: 1"));
   }
 }
