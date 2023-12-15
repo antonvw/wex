@@ -11,7 +11,6 @@
 #include <wex/common/tool.h>
 #include <wex/core/interruptible.h>
 #include <wex/core/path.h>
-#include <wex/core/reflection.h>
 #include <wex/data/dir.h>
 
 #include <filesystem>
@@ -93,7 +92,6 @@ private:
   const data::dir m_data;
   wxEvtHandler*   m_eh{nullptr};
   wex::tool       m_tool;
-  reflection      m_reflect;
 };
 
 /// Returns all matching files into a vector of strings (without paths).

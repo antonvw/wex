@@ -41,8 +41,8 @@ bool is_special_key(const wxKeyEvent& event, const vi_mode& mode)
   }
 
   if (
-    event.HasAnyModifiers() && event.GetKeyCode() == WXK_LEFT ||
-    event.GetKeyCode() == WXK_RIGHT)
+    !mode.is_insert() && event.HasAnyModifiers() &&
+    (event.GetKeyCode() == WXK_LEFT || event.GetKeyCode() == WXK_RIGHT))
   {
     return true;
   }

@@ -220,6 +220,23 @@ TEST_CASE("wex::vi")
     REQUIRE(stc->get_text() == "test.h");
   }
 
+  SUBCASE("right-while-in-insert")
+  {
+    stc->set_text("this text contains xx");
+
+    wxKeyEvent event(wxEVT_CHAR);
+    event.m_uniChar = 'i';
+    REQUIRE(!vi->on_char(event));
+    REQUIRE(vi->mode().is_insert());
+
+    event.m_uniChar = WXK_NONE;
+    event.m_keyCode = WXK_RIGHT;
+    REQUIRE(vi->on_key_down(event));
+    REQUIRE(!stc->get_text().contains("l"));
+
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
+  }
+
   SUBCASE("select")
   {
     stc->set_text("this text contains xx");
