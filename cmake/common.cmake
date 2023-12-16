@@ -289,6 +289,7 @@ list(APPEND wxTOOLKIT_INCLUDE_DIRS
   include 
   external/pugixml/src
   external/ctags/libreadtags/
+  external/wxMaterialDesignArtProvider/MaterialDesign/
   external/wxWidgets/include
   external)
 

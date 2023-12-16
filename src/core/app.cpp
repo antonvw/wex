@@ -10,6 +10,7 @@
 #include <wex/core/log.h>
 #include <wex/core/version.h>
 #include <wx/clipbrd.h>
+#include <wxMaterialDesignArtProvider.hpp>
 
 #ifdef __WXGTK__
 #include <X11/Xlib.h>
@@ -89,6 +90,9 @@ bool wex::app::OnInit()
 
   // Necessary for auto_complete images.
   wxInitAllImageHandlers();
+
+  // Register art provider
+  wxArtProvider::Push(new wxMaterialDesignArtProvider);
 
   wxTheClipboard->UsePrimarySelection(true);
 
