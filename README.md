@@ -43,6 +43,7 @@ An example is the [syncped editor](https://gitlab.kitware.com/antonvw/syncped).
 ## Uses
 
 - [doctest lib](https://github.com/doctest/doctest)
+- [MaterialDesignArtProvider](https://github.com/perazz/wxMaterialDesignArtProvider)
 - [OTL database lib](http://otl.sourceforge.net/)
 - [pugixml lib](https://github.com/zeux/pugixml)
 - [universal-ctags lib](https://github.com/universal-ctags/ctags)

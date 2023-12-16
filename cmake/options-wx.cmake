@@ -14,9 +14,9 @@ option(wxUSE_GLCANVAS "Use gl canvas" OFF)
 option(wxUSE_LIBTIFF "Use libtiff" OFF)
 option(wxUSE_MEDIACTRL "Use mediactrl" OFF)
 option(wxUSE_PROPGRID "Use propgrid" OFF)
-option(wxUSE_REGEX "Use wx regex" builtin)
 option(wxUSE_RIBBON "Use ribbon" OFF)
 option(wxUSE_RICHTEXT "Use richtext" OFF)
+set(wxUSE_REGEX builtin)
 
 # should be fixed?
 if (MSVC)

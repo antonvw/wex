@@ -10,3 +10,6 @@
 [submodule "external/ctags"]
 	path = external/ctags
 	url = https://github.com/universal-ctags/ctags.git
+[submodule "external/wxMaterialDesignArtProvider"]
+	path = external/wxMaterialDesignArtProvider
+	url = https://github.com/perazz/wxMaterialDesignArtProvider
