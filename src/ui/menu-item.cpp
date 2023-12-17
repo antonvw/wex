@@ -101,11 +101,10 @@ void wex::menu_item::append(wex::menu* menu) const
     {
       auto* item = new wxMenuItem(menu, m_id, m_name, m_data.help_text());
 
-      if (const stockart art(m_id); art.get_bitmap().IsOk())
+      if (const art art(m_id); art.get_bitmap().IsOk())
       {
-        item->SetBitmap(art.get_bitmap(
-          wxART_MENU,
-          wxArtProvider::GetSizeHint(wxART_MENU)));
+        item->SetBitmap(
+          art.get_bitmap(wxART_MENU, wxArtProvider::GetSizeHint(wxART_MENU)));
       }
       else if (!m_data.art().empty())
       {

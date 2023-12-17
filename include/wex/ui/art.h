@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      art.h
-// Purpose:   Declaration of wex::stockart class
+// Purpose:   Declaration of wex::art class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2009-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,7 @@ namespace wex
 /// Offers a collection of art, mapping window id's to art id's.
 /// Default the stock art and material design art is used.
 /// You can also choose to use your own art only.
-class stockart
+class art
 {
 public:
   enum class art_t
@@ -49,7 +49,7 @@ public:
   /// Others.
 
   /// Constructor, provide the window id.
-  explicit stockart(wxWindowID id);
+  explicit art(wxWindowID id);
 
   /// If the window id is a stock id, returns stock bitmap bundle from the stock
   /// art map. Check IsOk for valid bitmap.
