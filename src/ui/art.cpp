@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      art.cpp
-// Purpose:   Implementation of wex::stockart class
+// Purpose:   Implementation of wex::art class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2009-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -10,7 +10,7 @@
 #include <wx/stockitem.h>
 #include <wxMaterialDesignArtProvider.hpp>
 
-std::unordered_map<wxWindowID, wxArtID> wex::stockart::m_art_ids{
+std::unordered_map<wxWindowID, wxArtID> wex::art::m_art_ids{
   // stock items, with wx art, or material art
   {wxID_ADD, wxART_ADD},
   {wxID_BACKWARD, wxART_GO_BACK},
@@ -33,6 +33,7 @@ std::unordered_map<wxWindowID, wxArtID> wex::stockart::m_art_ids{
   {wxID_NEW, wxART_NEW},
   {wxID_OPEN, wxART_FILE_OPEN},
   {wxID_PASTE, wxART_PASTE},
+  {wxID_PREFERENCES, wxART_ROOM_PREFERENCES},
   {wxID_PREVIEW, wxART_PREVIEW},
   {wxID_PRINT, wxART_PRINT},
   {wxID_REDO, wxART_REDO},
@@ -57,15 +58,15 @@ std::unordered_map<wxWindowID, wxArtID> wex::stockart::m_art_ids{
   {ID_TOOL_REPLACE, wxART_FIND_REPLACE},
   {ID_TOOL_REPORT_FIND, wxART_FIND_IN_PAGE}};
 
-wxArtClient wex::stockart::m_client = wxART_CLIENT_MATERIAL_ROUND;
-std::string wex::stockart::m_colour = "light blue";
+wxArtClient wex::art::m_client = wxART_CLIENT_MATERIAL_ROUND;
+std::string wex::art::m_colour = "light blue";
 
-wex::stockart::stockart(wxWindowID id)
+wex::art::art(wxWindowID id)
   : m_id(id)
 {
 }
 
-bool wex::stockart::default_client(const wxArtClient& c)
+bool wex::art::default_client(const wxArtClient& c)
 {
   if (!wxMaterialDesignArtProvider::HasClient(c))
   {
@@ -77,7 +78,7 @@ bool wex::stockart::default_client(const wxArtClient& c)
   return true;
 }
 
-bool wex::stockart::default_colour(const wxColour& c)
+bool wex::art::default_colour(const wxColour& c)
 {
   if (!c.IsOk())
   {
@@ -89,7 +90,7 @@ bool wex::stockart::default_colour(const wxColour& c)
   return true;
 }
 
-void wex::stockart::insert(const std::unordered_map<wxWindowID, wxArtID>& ids)
+void wex::art::insert(const std::unordered_map<wxWindowID, wxArtID>& ids)
 {
   for (const auto& id : ids)
   {
@@ -97,7 +98,7 @@ void wex::stockart::insert(const std::unordered_map<wxWindowID, wxArtID>& ids)
   }
 }
 
-const wxBitmapBundle wex::stockart::get_bitmap(
+const wxBitmapBundle wex::art::get_bitmap(
   const wxArtClient& client,
   const wxSize&      bitmap_size,
   const wxColour&    colour) const
@@ -144,7 +145,7 @@ const wxBitmapBundle wex::stockart::get_bitmap(
   return wxBitmapBundle();
 }
 
-void wex::stockart::type(art_t t)
+void wex::art::type(art_t t)
 {
   if (t == art_t::USER)
   {

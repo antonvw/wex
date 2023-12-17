@@ -317,7 +317,8 @@ bool wex::toolbar::add_tool(
         v.end(),
         [this](const auto& it)
         {
-          if (const stockart art(it.id()); art.get_bitmap(wxART_TOOLBAR).IsOk())
+          // If the id has a bitmap from our art.
+          if (const art art(it.id()); art.get_bitmap(wxART_TOOLBAR).IsOk())
           {
             if (!AddTool(
                   it.id(),
@@ -327,12 +328,15 @@ bool wex::toolbar::add_tool(
 #else
                   art.get_bitmap(wxART_MENU, wxSize(16, 16)),
 #endif
-                  wxGetStockLabel(it.id(), wxSTOCK_NOFLAGS), // short help
+                  wxIsStockID(it.id()) ?
+                    wxGetStockLabel(it.id(), wxSTOCK_NOFLAGS).ToStdString() :
+                    it.help(),
                   it.kind()))
             {
               return false;
             }
           }
+          // If the it has a bitmap on it's own.
           else if (it.bitmap().IsOk())
           {
             if (!AddTool(

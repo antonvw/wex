@@ -84,6 +84,9 @@ function(wex_install)
   install(FILES ${CMAKE_SOURCE_DIR}/external/doctest/doctest/doctest.h
     DESTINATION ${WEX_INSTALL_DIR})
 
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxMaterialDesignArtProvider/MaterialDesign/
+    DESTINATION ${WEX_INSTALL_DIR})
+
   if (ODBC_FOUND)
     install(FILES ${CMAKE_SOURCE_DIR}/external/otl/otlv4.h
       DESTINATION ${WEX_INSTALL_DIR})
