@@ -216,29 +216,29 @@ public:
   virtual void vcs_add_path(factory::link* l) { ; }
 
   /// Annotates commit.
-  virtual void
+  virtual bool
   vcs_annotate_commit(syntax::stc*, int line, const std::string& commit_id)
   {
-    ;
+    return false;
   };
 
   /// Blames the specified stc.
-  virtual void vcs_blame(syntax::stc*) { ; }
+  virtual bool vcs_blame(syntax::stc*) { return false; }
 
   /// Blames revision.
-  virtual void vcs_blame_revision(
+  virtual bool vcs_blame_revision(
     syntax::stc*,
     const std::string& renamed,
     const std::string& offset)
   {
-    ;
+    return false;
   }
 
   /// Returns true if dir exists.
   virtual bool vcs_dir_exists(const path& p) const { return false; };
 
   /// Executes vcs.
-  virtual void vcs_execute(
+  virtual bool vcs_execute(
     /// the vcs id
     int event_id,
     /// the paths
@@ -246,7 +246,7 @@ public:
     /// window data
     const data::window& arg = data::window())
   {
-    ;
+    return false;
   }
 
   /// Other methods

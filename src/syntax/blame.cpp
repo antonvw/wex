@@ -60,7 +60,8 @@ wex::blame::blame(const pugi::xml_node& node)
   , m_date_print(node.attribute("date-print").as_uint())
   , m_name(node.attribute("name").value())
   , m_path_original("xxxxx")
-  , m_reflect({REFLECT_ADD("info", m_info), REFLECT_ADD("line no", m_line_no)})
+  // adding m_info gives a bad_alloc
+  , m_reflect({REFLECT_ADD("line no", m_line_no)})
 {
 }
 
@@ -208,14 +209,23 @@ bool wex::blame::parse_full(const std::string& line, const regex& r)
   m_skip_info = false;
   m_path      = boost::algorithm::trim_copy(r[1]);
   m_style     = get_style(r[3]);
-  std::from_chars(r[4].data(), r[4].data() + r[4].size(), m_line_no);
-  m_line_no--;
-  m_line_text = r[5];
 
-  if (m_line_no < 5)
+  if (const auto [ptr, ec] =
+        std::from_chars(r[4].data(), r[4].data() + r[4].size(), m_line_no);
+      ec == std::errc())
   {
-    log::trace("parse_full") << m_reflect.log();
-  }
+    m_line_no--;
+    m_line_text = r[5];
 
-  return true;
+    if (m_line_no < 5)
+    {
+      log::trace("parse_full") << m_reflect.log();
+    }
+
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }

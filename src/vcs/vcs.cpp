@@ -537,14 +537,16 @@ bool wex::vcs::use() const
   return config("vcs.VCS").get(VCS_AUTO) != VCS_NONE;
 }
 
-void wex::vcs_execute(
+bool wex::vcs_execute(
   factory::frame*          frame,
   int                      id,
   const std::vector<path>& files,
   const data::window&      data)
 {
   if (files.empty())
-    return;
+  {
+    return false;
+  }
 
   if (vcs vcs(files, id); vcs.entry().get_command().is_open())
   {
@@ -578,4 +580,6 @@ void wex::vcs_execute(
   {
     vcs.request();
   }
+
+  return true;
 }

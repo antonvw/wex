@@ -7,7 +7,9 @@
 
 #include <wex/core/reflection.h>
 
-const std::string to_string(const std::any& any)
+namespace wex
+{
+const std::string to_string(const std::any any)
 {
   std::stringstream s;
 
@@ -41,7 +43,12 @@ const std::string to_string(const std::any& any)
       }
       else if (any.type() == typeid(std::string))
       {
-        s << std::any_cast<std::string>(any);
+        const auto str(std::any_cast<std::string>(any));
+        s.write(str.data(), str.size());
+      }
+      else if (any.type() == typeid(const char*))
+      {
+        s << std::any_cast<const char*>(any);
       }
       else
       {
@@ -60,6 +67,7 @@ const std::string to_string(const std::any& any)
 
   return s.str();
 }
+} // namespace wex
 
 wex::reflection::reflection(const std::vector<reflection_t>& t, log_t what)
   : m_items(t)
@@ -72,7 +80,7 @@ std::stringstream wex::reflection::log() const
   std::stringstream ss;
   bool              first = true;
 
-  for (const auto& i : m_items)
+  for (const auto i : m_items)
   {
     const auto val(to_string(i.f())); // do not take reference
 
