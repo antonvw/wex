@@ -746,7 +746,7 @@ void wex::del::frame::vcs_add_path(factory::link* l)
   }
 }
 
-void wex::del::frame::vcs_annotate_commit(
+bool wex::del::frame::vcs_annotate_commit(
   syntax::stc*       stc,
   int                line,
   const std::string& commit_id)
@@ -761,22 +761,29 @@ void wex::del::frame::vcs_annotate_commit(
     stc->AnnotationSetText(
       line,
       lexer().make_comment(boost::algorithm::trim_copy(vcs.entry().std_out())));
+
+    return true;
   }
   else if (!vcs.entry().std_err().empty())
   {
     log("margin") << vcs.entry().std_err();
   }
+
+  return false;
 }
 
-void wex::del::frame::vcs_blame(syntax::stc* stc)
+bool wex::del::frame::vcs_blame(syntax::stc* stc)
 {
   if (wex::vcs vcs{{stc->path()}}; vcs.execute("blame " + stc->path().string()))
   {
     vcs_blame_show(&vcs.entry(), stc);
+    return true;
   }
+
+  return false;
 }
 
-void wex::del::frame::vcs_blame_revision(
+bool wex::del::frame::vcs_blame_revision(
   syntax::stc*       stc,
   const std::string& renamed,
   const std::string& offset)
@@ -785,7 +792,7 @@ void wex::del::frame::vcs_blame_revision(
 
   if (!bl.execute(stc->path()))
   {
-    return;
+    return false;
   }
 
   data::stc data(*stc->get_data());
@@ -800,6 +807,8 @@ void wex::del::frame::vcs_blame_revision(
   }
 
   open_file_vcs(wex::path(path(bl.renamed())), bl.vcs().entry(), data);
+
+  return true;
 }
 
 bool wex::del::frame::vcs_blame_show(vcs_entry* vcs, syntax::stc* stc)
@@ -868,11 +877,11 @@ bool wex::del::frame::vcs_dir_exists(const path& p) const
   return vcs::dir_exists(p);
 }
 
-void wex::del::frame::vcs_execute(
+bool wex::del::frame::vcs_execute(
   int                           event_id,
   const std::vector<wex::path>& paths,
   const data::window&           data)
 
 {
-  wex::vcs_execute(this, event_id, paths, data);
+  return wex::vcs_execute(this, event_id, paths, data);
 }

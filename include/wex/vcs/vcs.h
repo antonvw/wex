@@ -133,7 +133,7 @@ private:
 
 /// Executes VCS command id for specified files
 /// and opens component if necessary.
-void vcs_execute(
+bool vcs_execute(
   /// frame on which open_file is called
   factory::frame* frame,
   /// VCS menu id to execute

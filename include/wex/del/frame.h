@@ -176,15 +176,15 @@ public:
   void         stc_entry_dialog_validator(const std::string& regex) override;
 
   void vcs_add_path(factory::link*) override;
-  void vcs_annotate_commit(syntax::stc*, int line, const std::string& commit_id)
+  bool vcs_annotate_commit(syntax::stc*, int line, const std::string& commit_id)
     override;
-  void vcs_blame(syntax::stc*) override;
-  void vcs_blame_revision(
+  bool vcs_blame(syntax::stc*) override;
+  bool vcs_blame_revision(
     syntax::stc*,
     const std::string& renamed,
     const std::string& offset) override;
   bool vcs_dir_exists(const path& p) const override;
-  void vcs_execute(
+  bool vcs_execute(
     int                           event_id,
     const std::vector<wex::path>& paths,
     const data::window&           arg = data::window()) override;

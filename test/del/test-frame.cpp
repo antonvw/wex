@@ -171,22 +171,24 @@ TEST_CASE("wex::del::frame")
     auto*       stc = get_stc();
     std::string commit_id;
 
-    del_frame()->vcs_annotate_commit(stc, 5, commit_id);
+    REQUIRE(!del_frame()->vcs_annotate_commit(stc, 5, commit_id));
   }
 
   SUBCASE("vcs_blame")
   {
     auto* stc = get_stc();
-    del_frame()->vcs_blame(stc);
+    REQUIRE(stc != nullptr);
+    REQUIRE(del_frame()->vcs_blame(stc));
   }
 
   SUBCASE("vcs_blame_revision")
   {
-    auto*             stc = get_stc();
+    auto* stc = get_stc();
+    REQUIRE(stc != nullptr);
     const std::string renamed;
     const std::string offset;
 
-    del_frame()->vcs_blame_revision(stc, renamed, offset);
+    REQUIRE(del_frame()->vcs_blame_revision(stc, renamed, offset));
   }
 
   SUBCASE("vcs_blame_show")
@@ -220,7 +222,7 @@ TEST_CASE("wex::del::frame")
   {
     wex::data::window data;
     data.button(wxOK | wxCANCEL | wxAPPLY);
-    del_frame()->vcs_execute(9, {wex::test::get_path("test.h")}, data);
+    REQUIRE(del_frame()->vcs_execute(9, {wex::test::get_path("test.h")}, data));
     del_frame()->vcs_destroy_dialog();
   }
 
