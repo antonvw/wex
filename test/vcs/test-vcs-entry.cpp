@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-vcsentry.cpp
+// Name:      test-vcs-entry.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -51,7 +51,10 @@ TEST_CASE("wex::vcs_entry")
 
 #ifndef __WXMSW__
     // the get_branch gives error on msw
+    REQUIRE(entry.get_branch("/tmp").empty());
     REQUIRE(!entry.get_branch().empty());
+    REQUIRE(!entry.get_branch().starts_with(" "));
+    REQUIRE(!entry.get_branch().starts_with("*"));
     REQUIRE(!entry.std_out().empty());
 #endif
     entry.show_output();
