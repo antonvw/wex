@@ -155,14 +155,13 @@ TEST_CASE("wex::del::frame")
 
   SUBCASE("vcs_add_path")
   {
-    auto*              stc = get_stc();
     wex::link          lnk;
     wex::data::control data;
     wex::config(_("vcs.Base folder"))
       .set(wex::config::strings_t{wxGetCwd().ToStdString()});
-    stc->get_lexer().clear();
+    get_stc()->get_lexer().clear();
     REQUIRE(wex::vcs::load_document());
-    REQUIRE(lnk.get_path("modified:  test/vcs/test-vcs.cpp", data, stc)
+    REQUIRE(lnk.get_path("modified:  test/vcs/test-vcs.cpp", data, get_stc())
               .file_exists());
   }
 
@@ -171,71 +170,65 @@ TEST_CASE("wex::del::frame")
     wex::config("vcs.VCS").set(2);
     const std::string commit_id("b6aae80e3ab4402c7930a9bd590d355641c74746");
 
-    auto* stc = get_stc();
-    stc->set_text("line 1\nline 2\nline 3\nline 4\nline 5\n");
+    get_stc()->set_text("line 1\nline 2\nline 3\nline 4\nline 5\n");
     {
       wex::log_none off;
-      REQUIRE(!del_frame()->vcs_annotate_commit(stc, 15, commit_id));
-      REQUIRE(!del_frame()->vcs_annotate_commit(stc, 4, std::string()));
+      REQUIRE(!del_frame()->vcs_annotate_commit(get_stc(), 15, commit_id));
+      REQUIRE(!del_frame()->vcs_annotate_commit(get_stc(), 4, std::string()));
     }
 
-    REQUIRE(del_frame()->vcs_annotate_commit(stc, 4, commit_id));
+    REQUIRE(del_frame()->vcs_annotate_commit(get_stc(), 4, commit_id));
   }
 
   SUBCASE("vcs_blame")
   {
-    auto* stc = get_stc();
-    stc->set_text(std::string());
-    REQUIRE(stc != nullptr);
+    get_stc()->set_text(std::string());
     {
       wex::config("vcs.VCS").set(-2);
       wex::log_none off;
-      REQUIRE(!del_frame()->vcs_blame(stc));
+      REQUIRE(!del_frame()->vcs_blame(get_stc()));
     }
     wex::config("vcs.VCS").set(2);
-    REQUIRE(stc->open(wex::test::get_path("test.h")));
-    REQUIRE(del_frame()->vcs_blame(stc));
+    REQUIRE(get_stc()->open(wex::test::get_path("test.h")));
+    REQUIRE(del_frame()->vcs_blame(get_stc()));
 
-    stc->SetFocus();
-    stc->set_margin_text_click(2);
-    REQUIRE(stc->get_margin_text_click() == 2);
-    REQUIRE(stc->find("b6aae80e3a"));
-    stc->SetFocus();
+    get_stc()->SetFocus();
+    get_stc()->set_margin_text_click(2);
+    REQUIRE(get_stc()->get_margin_text_click() == 2);
+    REQUIRE(get_stc()->find("b6aae80e3a"));
+    get_stc()->SetFocus();
     wxMouseEvent event(wxEVT_LEFT_DOWN);
-    wxPostEvent(stc, event);
+    wxPostEvent(get_stc(), event);
     wxYield();
-    REQUIRE(!stc->find("b6aae80e3a"));
+    REQUIRE(!get_stc()->find("b6aae80e3a"));
   }
 
   SUBCASE("vcs_blame_revision")
   {
     wex::config("vcs.VCS").set(2);
-    auto* stc = get_stc();
-    REQUIRE(stc != nullptr);
-    stc->set_text("line 1\nline 2\nline 3\nline 4\nline 5\n");
+    get_stc()->set_text("line 1\nline 2\nline 3\nline 4\nline 5\n");
     const std::string renamed;
     const std::string offset;
 
-    REQUIRE(del_frame()->vcs_blame_revision(stc, renamed, offset));
+    REQUIRE(del_frame()->vcs_blame_revision(get_stc(), renamed, offset));
   }
 
   SUBCASE("vcs_blame_show")
   {
-    auto*      stc = get_stc();
     wex::blame blame;
-    wex::lexers::get()->apply_margin_text_style(stc, &blame);
+    wex::lexers::get()->apply_margin_text_style(get_stc(), &blame);
     auto* entry(load_git_entry());
 
-    REQUIRE(!del_frame()->vcs_blame_show(entry, stc));
+    REQUIRE(!del_frame()->vcs_blame_show(entry, get_stc()));
 
 #ifndef __WXMSW__
     REQUIRE(
       entry->system(wex::process_data().args(
         "blame " + wex::test::get_path("test.h").string())) == 0);
-    REQUIRE(del_frame()->vcs_blame_show(entry, stc));
+    REQUIRE(del_frame()->vcs_blame_show(entry, get_stc()));
 #endif
 
-    stc->get_file().reset_contents_changed();
+    get_stc()->get_file().reset_contents_changed();
   }
 
   SUBCASE("vcs_dir_exists")
