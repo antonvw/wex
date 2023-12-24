@@ -221,6 +221,14 @@ void wex::stc::bind_other()
     });
 
   Bind(
+    wxEVT_LEFT_DOWN,
+    [=, this](wxMouseEvent& event)
+    {
+      event.Skip();
+      m_margin_text_click = -1;
+    });
+
+  Bind(
     wxEVT_LEFT_DCLICK,
     [=, this](wxMouseEvent& event)
     {

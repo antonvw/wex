@@ -751,12 +751,22 @@ bool wex::del::frame::vcs_annotate_commit(
   int                line,
   const std::string& commit_id)
 {
-  wex::vcs vcs{
-    {!stc->get_data()->head_path().empty() ? stc->get_data()->head_path() :
-                                             stc->path()}};
+  if (commit_id.empty())
+  {
+    // this is not an error
+    return false;
+  }
 
-  if (const auto& revision(commit_id);
-      !revision.empty() && vcs.entry().log(stc->path(), revision))
+  if (line > stc->get_line_count())
+  {
+    log("annotate commit line not present") << line;
+    return false;
+  }
+
+  if (wex::vcs vcs{
+        {!stc->get_data()->head_path().empty() ? stc->get_data()->head_path() :
+                                                 stc->path()}};
+      vcs.entry().log(stc->path(), commit_id))
   {
     stc->AnnotationSetText(
       line,
@@ -764,9 +774,9 @@ bool wex::del::frame::vcs_annotate_commit(
 
     return true;
   }
-  else if (!vcs.entry().std_err().empty())
+  else
   {
-    log("margin") << vcs.entry().std_err();
+    log::trace("annotate commit failed") << vcs.name();
   }
 
   return false;
@@ -776,8 +786,7 @@ bool wex::del::frame::vcs_blame(syntax::stc* stc)
 {
   if (wex::vcs vcs{{stc->path()}}; vcs.execute("blame " + stc->path().string()))
   {
-    vcs_blame_show(&vcs.entry(), stc);
-    return true;
+    return vcs_blame_show(&vcs.entry(), stc);
   }
 
   return false;

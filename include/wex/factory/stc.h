@@ -264,6 +264,9 @@ public:
   /// Default just resets all margins.
   void reset_margins(margin_t type = margin_t().set());
 
+  /// Sets the margin line that is clicked (for testing).
+  void set_margin_text_click(int line) { m_margin_text_click = line; }
+
   /// Returns renamed.
   auto& vcs_renamed() const { return m_renamed; }
 
@@ -315,7 +318,7 @@ protected:
   int  m_margin_text_click{-1};
   bool m_margin_text_is_shown{false};
 
-  const int m_margin_divider_number{1}, m_margin_folding_number{2},
+  const size_t m_margin_divider_number{1}, m_margin_folding_number{2},
     m_margin_line_number{0}, m_margin_text_number{3};
 
   int m_saved_pos{-1}, m_saved_selection_start{-1}, m_saved_selection_end{-1};
