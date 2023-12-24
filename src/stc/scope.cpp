@@ -58,7 +58,7 @@ const std::string wex::scope::class_name(const std::string& name) const
 {
   const auto level(m_stc->get_fold_level());
 
-  if (m_filters.empty() || level > m_filters.size())
+  if (m_filters.empty() || level >= m_filters.size())
   {
     return std::string();
   }

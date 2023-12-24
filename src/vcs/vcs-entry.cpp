@@ -2,7 +2,7 @@
 // Name:      vcs-entry.cpp
 // Purpose:   Implementation of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2010-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -115,19 +115,23 @@ bool wex::vcs_entry::execute(
 
 const std::string wex::vcs_entry::get_branch(const std::string& wd) const
 {
-  if (name() == "git")
+  if (process p; name() == "git" &&
+                 p.system(process_data(bin() + " branch").start_dir(wd)) == 0)
   {
-    if (process p; p.system(process_data(bin() + " branch").start_dir(wd)) == 0)
+    const auto& tok(boost::tokenizer<boost::char_separator<char>>(
+      p.std_out(),
+      boost::char_separator<char>("\r\n")));
+
+    if (const auto& it = std::find_if(
+          tok.begin(),
+          tok.end(),
+          [](const auto& i)
+          {
+            return i.starts_with('*');
+          });
+        it != tok.end())
     {
-      for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
-             p.std_out(),
-             boost::char_separator<char>("\r\n")))
-      {
-        if (it.starts_with('*'))
-        {
-          return boost::algorithm::trim_copy(it.substr(1));
-        }
-      }
+      return boost::algorithm::trim_copy(it->substr(1));
     }
   }
 
