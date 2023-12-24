@@ -2,7 +2,7 @@
 // Name:      test-stc.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "test.h"
@@ -38,6 +38,11 @@ TEST_CASE("wex::factory::stc")
     stc->MarginSetText(0, "54321 xxx");
     REQUIRE(stc->get_margin_text_click() == -1);
     REQUIRE(stc->margin_get_revision_id().empty()); // not yet clicked
+
+    stc->set_margin_text_click(5);
+    REQUIRE(stc->get_margin_text_click() == 5);
+    stc->set_margin_text_click(-1);
+    REQUIRE(stc->get_margin_text_click() == -1);
   }
 
   SUBCASE("motion")

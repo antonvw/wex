@@ -168,23 +168,51 @@ TEST_CASE("wex::del::frame")
 
   SUBCASE("vcs_annotate_commit")
   {
-    auto*       stc = get_stc();
-    std::string commit_id;
+    wex::config("vcs.VCS").set(2);
+    const std::string commit_id("b6aae80e3ab4402c7930a9bd590d355641c74746");
 
-    REQUIRE(!del_frame()->vcs_annotate_commit(stc, 5, commit_id));
+    auto* stc = get_stc();
+    stc->set_text("line 1\nline 2\nline 3\nline 4\nline 5\n");
+    {
+      wex::log_none off;
+      REQUIRE(!del_frame()->vcs_annotate_commit(stc, 15, commit_id));
+      REQUIRE(!del_frame()->vcs_annotate_commit(stc, 4, std::string()));
+    }
+
+    REQUIRE(del_frame()->vcs_annotate_commit(stc, 4, commit_id));
   }
 
   SUBCASE("vcs_blame")
   {
     auto* stc = get_stc();
+    stc->set_text(std::string());
     REQUIRE(stc != nullptr);
+    {
+      wex::config("vcs.VCS").set(-2);
+      wex::log_none off;
+      REQUIRE(!del_frame()->vcs_blame(stc));
+    }
+    wex::config("vcs.VCS").set(2);
+    REQUIRE(stc->open(wex::test::get_path("test.h")));
     REQUIRE(del_frame()->vcs_blame(stc));
+
+    stc->SetFocus();
+    stc->set_margin_text_click(2);
+    REQUIRE(stc->get_margin_text_click() == 2);
+    REQUIRE(stc->find("b6aae80e3a"));
+    stc->SetFocus();
+    wxMouseEvent event(wxEVT_LEFT_DOWN);
+    wxPostEvent(stc, event);
+    wxYield();
+    REQUIRE(!stc->find("b6aae80e3a"));
   }
 
   SUBCASE("vcs_blame_revision")
   {
+    wex::config("vcs.VCS").set(2);
     auto* stc = get_stc();
     REQUIRE(stc != nullptr);
+    stc->set_text("line 1\nline 2\nline 3\nline 4\nline 5\n");
     const std::string renamed;
     const std::string offset;
 
