@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2023 Anton van Wezenbeek
+// Copyright: (c) 2008-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -695,13 +695,13 @@ void wex::stc::visual(bool on)
         info << path().string();
       }
 
+      m_vi->use(ex::mode_t::VISUAL); // needed in do_file_load
+      m_file.close();
+      m_file.use_stream(false);
+      m_file.file_load(path());
+
       log::info("enter visual mode") << on << info;
     }
-
-    m_vi->use(ex::mode_t::VISUAL); // needed in do_file_load
-    m_file.close();
-    m_file.use_stream(false);
-    m_file.file_load(path());
   }
   else
   {

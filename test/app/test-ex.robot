@@ -1,5 +1,5 @@
 *** Comments ***
-Copyright: (c) 2020-2023 Anton van Wezenbeek
+Copyright: (c) 2020-2024 Anton van Wezenbeek
 
 
 *** Settings ***
@@ -125,3 +125,7 @@ substitute-global
 	Output Contains	2
 	Output Contains	simon
 	Contents Does Not Contain	simon
+
+visual
+	Input No Write	:vi
+	Appl
