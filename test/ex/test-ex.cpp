@@ -2,7 +2,7 @@
 // Name:      test-ex.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -91,9 +91,9 @@ TEST_CASE("wex::ex")
 
   SUBCASE("commands")
   {
-    // Most commands are tested using the :so command.
+    // Most commands are tested using the :so command in stc/test-vi.cpp
     for (const auto& command :
-         std::vector<std::string>{":ab", ":ve", ":1,$s/s/w/"})
+         std::vector<std::string>{":ab", ":ve", ":vi", ":1,$s/s/w/"})
     {
       CAPTURE(command);
       REQUIRE(ex->command(command));
