@@ -2,7 +2,7 @@
 // Name:      auto-indent.h
 // Purpose:   Declaration of class wex::auto_indent
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -15,7 +15,7 @@ class stc;
 class auto_indent
 {
 public:
-  /// Static interface
+  // Static interface
 
   /// Returns true if active.
   static bool use();
@@ -23,7 +23,7 @@ public:
   /// Sets auto indent on or off.
   static void use(bool on);
 
-  /// Other methods
+  // Other methods
 
   /// Constructor.
   auto_indent(wex::stc* stc);

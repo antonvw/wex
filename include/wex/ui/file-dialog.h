@@ -2,7 +2,7 @@
 // Name:      file-dialog.h
 // Purpose:   Declaration of wex::file_dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2023 Anton van Wezenbeek
+// Copyright: (c) 2009-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -30,10 +30,10 @@ public:
     /// window data
     const data::window& data = data::window().style(wxFD_DEFAULT_STYLE));
 
-  /// Virtual interface.
+  // Virtual interface.
   int ShowModal() override;
 
-  /// Other methods.
+  // Other methods.
 
   /// Returns true if hexmode checkbox is (was) checked.
   bool is_hexmode() const { return m_hexmode; }

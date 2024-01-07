@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2023 Anton van Wezenbeek
+// Copyright: (c) 2008-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -43,7 +43,7 @@ class frame;
 class stc : public syntax::stc
 {
 public:
-  /// Static interface
+  // Static interface
 
   /// Shows a dialog with options, returns dialog return code.
   /// If used modeless, it uses the dialog id as specified,
@@ -77,7 +77,7 @@ public:
   /// Destructor.
   ~stc() override;
 
-  /// Virtual interface
+  // Virtual interface
 
   /// Processes specified char.
   /// Default does nothing, but is invoked during control_char_dialog,
@@ -85,7 +85,7 @@ public:
   /// Return true if char was processed.
   virtual bool process_char(int c) { return false; }
 
-  /// Other methods.
+  // Other methods.
 
   /// Returns auto_complete.
   auto* auto_complete() { return m_auto_complete; }
@@ -169,7 +169,7 @@ public:
     /// argument passed on to find_next
     bool stc_find_string = true);
 
-  /// Virtual methods from wxWidgets.
+  // Virtual methods from wxWidgets.
 
   bool CanCut() const override;
   bool CanPaste() const override;
@@ -183,7 +183,7 @@ public:
   void SelectNone() override;
   void Undo() override;
 
-  /// Virtual methods from factory.
+  // Virtual methods from factory.
 
   void add_text(const std::string& text) override;
 

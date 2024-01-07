@@ -2,7 +2,7 @@
 // Name:      listview.h
 // Purpose:   Declaration of wex::listview and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -38,7 +38,7 @@ public:
   /// Default constructor.
   explicit listview(const data::listview& data = data::listview());
 
-  /// Virtual interface
+  // Virtual interface
 
   /// Inserts new item with column values from text.
   /// Items are separated by newlines, columns by a field separator.
@@ -53,7 +53,7 @@ public:
   /// be changed after sorting etc.
   virtual void items_update();
 
-  /// Other methods
+  // Other methods
 
   /// Clears all items.
   void clear();
@@ -127,7 +127,7 @@ public:
   /// Returns current sorted column no.
   int sorted_column_no() const { return m_sorted_column_no; }
 
-  /// Virtual methods.
+  // Virtual methods.
 
   bool append_columns(const std::vector<column>& cols) override;
   bool find_next(const std::string& text, bool find_next = true) override;
@@ -135,7 +135,7 @@ public:
   void print_preview() override;
 
 protected:
-  /// Virtual interface
+  // Virtual interface
 
   /// Invoked after sorting, allows you to do something extra.
   virtual void after_sorting() { ; }

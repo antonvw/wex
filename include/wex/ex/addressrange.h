@@ -37,7 +37,7 @@ class stc;
 class addressrange
 {
 public:
-  /// Static methods.
+  // Static methods.
 
   /// Returns substitute data.
   static auto& data() { return m_substitute; }

@@ -2,7 +2,7 @@
 // Name:      tool.h
 // Purpose:   Declaration of wex::tool classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2023 Anton van Wezenbeek
+// Copyright: (c) 2008-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -50,7 +50,7 @@ template <class T> class statistics;
 class tool
 {
 public:
-  /// Static interface.
+  // Static interface.
 
   /// Adds your own info to the tool.
   /// If you use a %d in the info string, it is replaced by get_statistics
@@ -67,7 +67,7 @@ public:
   /// Returns all the tool info.
   static const auto& get_tool_info() { return m_tool_info; }
 
-  /// Other methods.
+  // Other methods.
 
   /// Default constructor, specify the toolid to use.
   explicit tool(window_id id)

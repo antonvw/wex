@@ -136,7 +136,7 @@ public:
   /// Returns false if no stream, or range is invalid.
   bool yank(const addressrange& range, char name = '0');
 
-  /// Virtual methods from text_window.
+  // Virtual methods from text_window.
 
   bool find(const std::string& text, int find_flags = -1, bool find_next = true)
     override;

@@ -79,7 +79,7 @@ public:
     const data::window&  w = data::window(),
     const data::control& c = data::control());
 
-  /// Virtual interface.
+  // Virtual interface.
 
   /// Appends new columns.
   /// Returns false if appending a column failed.

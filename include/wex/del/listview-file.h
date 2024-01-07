@@ -2,7 +2,7 @@
 // Name:      listview-file.h
 // Purpose:   Declaration of class wex::del::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -27,7 +27,7 @@ public:
   /// Destructor.
   ~file() override;
 
-  /// Other methods
+  // Other methods
 
   /// Adds items.
   void add_items(
@@ -45,7 +45,7 @@ public:
   const auto& text_addwhat() const { return m_text_add_what; }
   const auto& text_infolder() const { return m_text_in_folder; }
 
-  /// Virtual interface
+  // Virtual interface
   bool is_contents_changed() const final { return m_contents_changed; }
   bool item_from_text(const std::string& text) final;
   void reset_contents_changed() final { m_contents_changed = false; }

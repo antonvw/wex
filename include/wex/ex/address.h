@@ -2,7 +2,7 @@
 // Name:      address.h
 // Purpose:   Declaration of class wex::address
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013-2023 Anton van Wezenbeek
+// Copyright: (c) 2013-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -29,13 +29,13 @@ public:
     IS_SINGLE, ///< not part of range
   };
 
-  /// Static interface.
+  // Static interface.
 
   /// Returns true if flags are supported (for adjust window,
   /// and addressrange print).
   static bool flags_supported(const std::string& flags);
 
-  /// Other methods.
+  // Other methods.
 
   /// Default constructor.
   address() = default;

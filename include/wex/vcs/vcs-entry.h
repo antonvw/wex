@@ -36,7 +36,7 @@ public:
   /// Default constructor using xml node.
   vcs_entry(const pugi::xml_node& node = pugi::xml_node());
 
-  /// Virtual overrides.
+  // Virtual overrides.
 
   /// Executes the command synchronously.
   /// You just need to specify the flags, the binary itself is
@@ -45,7 +45,7 @@ public:
   /// Return value is the process exit code.
   int system(const process_data& data) override;
 
-  /// Other methods.
+  // Other methods.
 
   /// Returns the administrative directory.
   const auto& admin_dir() const { return m_admin_dir; }
@@ -94,7 +94,7 @@ public:
     /// id to be retrieved
     const std::string& id);
 
-  /// Virtual interface
+  // Virtual interface
 
   void show_output(const std::string& caption = std::string()) const override;
 

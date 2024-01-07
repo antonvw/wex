@@ -29,7 +29,7 @@ public:
     ;
   };
 
-  /// Virtual interface
+  // Virtual interface
 
   virtual bool lexer_is_previewable() const final
   {
@@ -41,7 +41,7 @@ public:
     return m_lexer.display_lexer();
   }
 
-  /// Other methods.
+  // Other methods.
 
   /// Blames margin.
   void blame_margin(const blame* blame);

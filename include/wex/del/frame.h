@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Include file for wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2023 Anton van Wezenbeek
+// Copyright: (c) 2009-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -44,7 +44,7 @@ public:
     size_t              maxProjects = 0,
     const data::window& data = data::window().style(wxDEFAULT_FRAME_STYLE));
 
-  /// Virtual interface
+  // Virtual interface
 
   /// This method is called to activate a certain listview.
   /// Default it returns nullptr.
@@ -59,7 +59,7 @@ public:
   /// Default it returns nullptr.
   virtual file* get_project() { return nullptr; }
 
-  /// Other methods
+  // Other methods
 
   /// Returns a list with default file extensions.
   config::strings_t default_extensions() const;
