@@ -2,7 +2,7 @@
 // Name:      stream.cpp
 // Purpose:   Implementation of wex::stream class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2023 Anton van Wezenbeek
+// Copyright: (c) 2008-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -53,38 +53,27 @@ bool wex::stream::process(std::string& text, size_t line_no)
   {
     if (m_tool.id() == ID_TOOL_REPORT_FIND)
     {
-      if (const auto it =
-            (!m_frd->match_case() ? std::search(
-                                      text.begin(),
-                                      text.end(),
-                                      m_find_string.begin(),
-                                      m_find_string.end(),
-                                      [](char ch1, char ch2)
-                                      {
-                                        return std::toupper(ch1) == ch2;
-                                      }) :
-#ifndef __WXOSX__
-                                    std::search(
-                                      text.begin(),
-                                      text.end(),
-                                      std::boyer_moore_searcher(
-                                        m_find_string.begin(),
-                                        m_find_string.end())));
-#else
-                                    std::search(
-                                      text.begin(),
-                                      text.end(),
-                                      m_find_string.begin(),
-                                      m_find_string.end()));
-#endif
-          it != text.end())
+      auto text_find(text);
+
+      if (!m_frd->match_case())
+      {
+        boost::algorithm::to_upper(text_find);
+      }
+
+      if (const auto it = std::search(
+            text_find.begin(),
+            text_find.end(),
+            std::boyer_moore_searcher(
+              m_find_string.begin(),
+              m_find_string.end()));
+          it != text_find.end())
       {
         match = true;
-        pos   = it - text.begin();
+        pos   = it - text_find.begin();
 
         if (
           m_frd->match_word() &&
-          ((it != text.begin() && is_word_character(*std::prev(it))) ||
+          ((it != text_find.begin() && is_word_character(*std::prev(it))) ||
            is_word_character(*std::next(it, m_find_string.length()))))
         {
           match = false;

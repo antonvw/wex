@@ -2,7 +2,7 @@
 // Name:      art.h
 // Purpose:   Declaration of wex::art class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2023 Anton van Wezenbeek
+// Copyright: (c) 2009-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -19,6 +19,7 @@ namespace wex
 class art
 {
 public:
+  /// The kind of art that will be used by the wex lib.
   enum class art_t
   {
     BOTH,     ///< use stock and material art
@@ -27,7 +28,7 @@ public:
     USER,     ///< use none, add you own art
   };
 
-  /// Static interface.
+  // Static interface.
 
   /// Sets the default bitmap client (for material art).
   /// Returns false if client if not valid for material art.
@@ -46,7 +47,7 @@ public:
   /// bitmaps.
   static void type(art_t t);
 
-  /// Others.
+  // Others.
 
   /// Constructor, provide the window id.
   explicit art(wxWindowID id);

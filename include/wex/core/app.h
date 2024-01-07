@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Include file for wex::app class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2023 Anton van Wezenbeek
+// Copyright: (c) 2009-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -20,12 +20,12 @@ class file_translations_loader;
 class app : public wxApp
 {
 public:
-  /// Static interface.
+  // Static interface.
 
   /// Returns the locale.
   static const wxUILocale& get_locale();
 
-  /// Virtual interface
+  // Virtual interface
 
   /// Constructs the config, initializes the locale, loads the VCS file.
   /// In your own OnInit first set the app name,
@@ -37,7 +37,7 @@ public:
   /// You should normally don't need to override it.
   int OnExit() override;
 
-  /// Other methods
+  // Other methods
 
   /// Returns the catalog dir.
   const std::string get_catalog_dir() const;

@@ -168,7 +168,7 @@ public:
     return *this;
   };
 
-  /// Virtual overrides.
+  // Virtual overrides.
 
   void reset() override;
 

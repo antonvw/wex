@@ -2,7 +2,7 @@
 // Name:      process.h
 // Purpose:   Declaration of class wex::factory::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -32,7 +32,7 @@ public:
   /// Destructor, stops running process.
   virtual ~process();
 
-  /// Virtual interface
+  // Virtual interface
 
   /// Starts the async process, collecting output
   /// into the out handler, and debug info in debug handler.
@@ -50,7 +50,7 @@ public:
   // Writes data to the input of the async process.
   virtual bool write(const std::string& text);
 
-  /// Other methods
+  // Other methods
 
   /// Sleeps for some milliseconds time.
   void async_sleep_for(const std::chrono::milliseconds& ms);

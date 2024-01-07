@@ -2,7 +2,7 @@
 // Name:      ex.h
 // Purpose:   Declaration of class wex::ex
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012-2023 Anton van Wezenbeek
+// Copyright: (c) 2012-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -51,7 +51,7 @@ class ex
   friend class macro_mode;
 
 public:
-  /// Static interface.
+  // Static interface.
 
   /// Returns the macros.
   static auto& get_macros() { return m_macros; }
@@ -68,7 +68,7 @@ public:
   /// Sets yank register.
   static void set_register_yank(const std::string& value);
 
-  /// Other methods.
+  // Other methods.
 
   /// The visual modes.
   enum class mode_t
@@ -85,14 +85,14 @@ public:
   /// Destructor.
   virtual ~ex();
 
-  /// Virtual interface.
+  // Virtual interface.
 
   /// Executes ex: command that was entered on the command line,
   /// or present as modeline command inside a file.
   /// Returns true if the command was executed.
   virtual bool command(const std::string& command);
 
-  /// Other methods.
+  // Other methods.
 
   /// Returns calculated value of text.
   std::optional<int> calculator(const std::string& text);

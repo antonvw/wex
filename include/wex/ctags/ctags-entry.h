@@ -2,7 +2,7 @@
 // Name:      ctags-entry.h
 // Purpose:   Declaration of class wex::ctags_entry
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2023 Anton van Wezenbeek
+// Copyright: (c) 2019-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -21,12 +21,12 @@ namespace wex
 class ctags_entry
 {
 public:
-  /// Static interface.
+  // Static interface.
 
   /// Register image on stc component.
   static void register_image(wxStyledTextCtrl* stc);
 
-  /// Other methods.
+  // Other methods.
 
   /// Default constructor.
   ctags_entry();

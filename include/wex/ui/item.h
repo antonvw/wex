@@ -2,7 +2,7 @@
 // Name:      item.h
 // Purpose:   Declaration of wex::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -379,7 +379,7 @@ public:
     const data::item& data = data::item());
 
   /// If apply callback has been provided calls apply.
-  /// Otherwise returns false.
+  // Otherwise returns false.
   bool apply(bool save = true) const;
 
   /// Returns item data.
@@ -436,7 +436,7 @@ public:
   auto type() const { return m_type; }
 
   /// If validate callback has been provided calls validate.
-  /// Otherwise returns true.
+  // Otherwise returns true.
   bool validate() const;
 
   /// Validates current value against supplied regex.

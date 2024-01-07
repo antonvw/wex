@@ -2,7 +2,7 @@
 // Name:      frd.h
 // Purpose:   Declaration of wex::find_replace_data class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ///////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -24,7 +24,7 @@ class find_replace_data : public factory::find_replace_data
   friend class find_bar;
 
 public:
-  /// Static interface.
+  // Static interface.
 
   /// Returns the find replace data.
   static find_replace_data* get(bool createOnDemand = true);
@@ -34,7 +34,7 @@ public:
   /// (both the parameter and returned value may be nullptr).
   static find_replace_data* set(find_replace_data* frd);
 
-  /// Other methods.
+  // Other methods.
 
   /// Returns the find strings.
   const auto& get_find_strings() const { return m_find_strings.values(); }
@@ -59,7 +59,7 @@ public:
   /// strings list.
   void set_replace_strings(const ex_commandline_input::values_t& v);
 
-  /// Virtual overrides.
+  // Virtual overrides.
 
   void set_find_string(const std::string& value) override;
   void set_replace_string(const std::string& value) override;

@@ -2,7 +2,7 @@
 // Name:      frd.h
 // Purpose:   Declaration of wex::find_replace_data class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2021 Anton van Wezenbeek
+// Copyright: (c) 2018-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -19,7 +19,7 @@ namespace wex::factory
 class find_replace_data
 {
 public:
-  /// Static interface.
+  // Static interface.
 
   /// Returns text.
   static const auto& text_find() { return m_text_find; }
@@ -39,7 +39,7 @@ public:
   /// Returns text.
   static const auto& text_search_down() { return m_text_search_down; }
 
-  /// Other methods.
+  // Other methods.
 
   /// Default constructor.
   find_replace_data();
@@ -47,7 +47,7 @@ public:
   /// Destructor, writes data to config.
   ~find_replace_data();
 
-  /// Virtual interface.
+  // Virtual interface.
 
   /// Sets the find string.
   /// If use_regex also sets the regular expression.
@@ -61,7 +61,7 @@ public:
   /// strings list.
   virtual void set_replace_string(const std::string& value);
 
-  /// Other methods.
+  // Other methods.
 
   /// Access to data.
   wxFindReplaceData* data();

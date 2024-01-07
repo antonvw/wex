@@ -42,7 +42,7 @@ public:
   /// Constructor for wxFrame.
   frame(wxWindow* parent, wxWindowID winid, const std::string& title);
 
-  /// Virtual interface
+  // Virtual interface
 
   /// Returns a grid.
   virtual factory::grid* get_grid();
@@ -115,7 +115,7 @@ public:
     return false;
   };
 
-  /// Other methods
+  // Other methods
 
   /// Returns the find focus.
   wxWindow* get_find_focus() { return m_find_focus; }

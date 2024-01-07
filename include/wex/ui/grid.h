@@ -2,7 +2,7 @@
 // Name:      grid.h
 // Purpose:   Declaration of wex::grid class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -80,7 +80,7 @@ public:
   void use_drag_and_drop(bool use);
 
 protected:
-  /// Virtual Interface.
+  // Virtual Interface.
 
   /// Builds the popup menu.
   virtual void build_popup_menu(menu& menu);

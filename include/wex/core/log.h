@@ -33,7 +33,7 @@ public:
     OFF,     ///< no logging
   };
 
-  /// Static methods.
+  // Static methods.
 
   /// Initializes logging, and optionally sets logfile.
   /// Should be called before constructing a log object.
@@ -77,7 +77,7 @@ public:
   /// Builds a warning level logger.
   static log warning(const std::string& topic = std::string());
 
-  /// Other methods.
+  // Other methods.
 
   /// Default constructor.
   /// This prepares a error level logging.

@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wex::factory::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -49,7 +49,7 @@ public:
   /// Default constructor.
   stc(const data::window& data = data::window());
 
-  /// Virtual interface.
+  // Virtual interface.
 
   /// Adds text.
   virtual void add_text(const std::string& text) { AddText(text); }
@@ -209,7 +209,7 @@ public:
   /// Sets using visual vi (on) or ex mode (!on).
   virtual void visual(bool on) { ; }
 
-  /// Other methods.
+  // Other methods.
 
   /// Binds wx methods.
   void bind_wx();

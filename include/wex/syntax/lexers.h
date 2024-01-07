@@ -2,7 +2,7 @@
 // Name:      lexers.h
 // Purpose:   Declaration of wex::lexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2023 Anton van Wezenbeek
+// Copyright: (c) 2008-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -41,7 +41,7 @@ public:
   /// Name values type for macros.
   typedef std::unordered_map<std::string, std::string> name_values_t;
 
-  /// static interface
+  // Static interface
 
   /// Returns the lexers object.
   /// If this is the first invocation, and createOnDemand is true,
@@ -53,7 +53,7 @@ public:
   /// (both the parameter and returned value may be nullptr).
   static lexers* set(lexers* lexers);
 
-  /// other methods
+  // Other methods
 
   /// Applies containers (except global styles) to specified component.
   void apply(factory::stc* stc) const;
@@ -69,7 +69,7 @@ public:
 
   /// Applies macro to text:
   /// if text is referring to a macro, text is replaced by the macro value.
-  /// Otherwise the same text is returned.
+  // Otherwise the same text is returned.
   const std::string apply_macro(
     const std::string& text,
     const std::string& lexer = "global") const;

@@ -2,7 +2,7 @@
 // Name:      process.h
 // Purpose:   Declaration of class wex::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -19,7 +19,7 @@ class shell;
 class process : public factory::process
 {
 public:
-  /// Static interface.
+  // Static interface.
 
   /// Shows a config dialog, allowing you to set the command and folder.
   /// Returns dialog return code.
@@ -32,12 +32,12 @@ public:
   /// Construct the shell component, and returns it.
   static shell* prepare_output(wxWindow* parent);
 
-  /// Other methods.
+  // Other methods.
 
   /// Default constructor.
   process();
 
-  /// Virtual interface
+  // Virtual interface
 
   /// Shows stdout or stderr from system on the shell component.
   /// You can override this method to e.g. prepare a lexer on get_shell
@@ -59,7 +59,7 @@ public:
   /// The response stdout is collected in the shell.
   bool write(const std::string& text) override;
 
-  /// Other methods.
+  // Other methods.
 
   /// Returns the frame.
   auto* get_frame() { return m_frame; }

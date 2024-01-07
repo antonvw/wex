@@ -81,7 +81,7 @@ public:
   /// Destructor, uninits the aui manager.
   ~frame() override;
 
-  /// Virtual interface
+  // Virtual interface
 
   /// Returns true if the page can be closed.
   /// Default resets the find focus.
@@ -249,7 +249,7 @@ public:
     return false;
   }
 
-  /// Other methods
+  // Other methods
 
   /// Can we browse backward?
   bool allow_browse_backward() const;
