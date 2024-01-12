@@ -2,7 +2,7 @@
 // Name:      test-stc.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -52,7 +52,7 @@ TEST_CASE("wex::stc")
 
   SUBCASE("clear")
   {
-    stc->SetText("added text");
+    stc->set_text("added text");
     wxPostEvent(stc, wxCommandEvent(wxEVT_MENU, wxID_CLEAR));
     wxTheApp->ProcessPendingEvents();
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -67,8 +67,10 @@ TEST_CASE("wex::stc")
 
   SUBCASE("contents_changed")
   {
-    stc->SetText("added text");
+    stc->set_text("added text");
     REQUIRE(stc->get_text().contains("added text"));
+    REQUIRE(!stc->get_file().is_contents_changed());
+    stc->add_text("aha");
     REQUIRE(stc->get_file().is_contents_changed());
     stc->get_file().reset_contents_changed();
     REQUIRE(!stc->get_file().is_contents_changed());
@@ -97,6 +99,16 @@ TEST_CASE("wex::stc")
     stc->use_modification_markers(true);
     stc->use_modification_markers(false);
 
+    stc->BigWordLeft();
+    stc->BigWordLeftExtend();
+    stc->BigWordLeftRectExtend();
+    stc->BigWordRight();
+    stc->BigWordRightEnd();
+    stc->BigWordRightEndExtend();
+    stc->BigWordRightEndRectExtend();
+    stc->BigWordRightExtend();
+    stc->BigWordRightRectExtend();
+  
     stc->LineHome();
     stc->LineHomeExtend();
     stc->LineHomeRectExtend();
@@ -267,17 +279,29 @@ TEST_CASE("wex::stc")
     REQUIRE(!lexer_s.is_ok());
     REQUIRE(lexer_s.apply());
 
-    stc->SetText("// a rust comment");
+    stc->set_text("// a rust comment");
     REQUIRE(lexer_s.set("rust"));
     REQUIRE(lexer_s.scintilla_lexer() == "rust");
   }
 
   SUBCASE("link")
   {
-    stc->SetText("no link");
-#ifdef __WXOSX__
+    stc->set_text("no link");
     REQUIRE(!stc->link_open());
-#endif
+
+    stc->set_text("test.h");
+    REQUIRE(stc->link_open());
+
+    stc->set_text("xxxxtest.h");
+    REQUIRE(!stc->link_open());
+
+    wex::find_replace_data::get()->set_match_word(false);
+    REQUIRE(stc->find("test.h"));
+    REQUIRE(stc->link_open());
+
+    stc->set_text("test.h\ntest.h\ntest.h\ntest.h\ntesst.h");
+    stc->SelectAll();
+    REQUIRE(stc->link_open());
   }
 
   SUBCASE("margin")

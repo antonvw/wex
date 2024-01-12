@@ -2,10 +2,11 @@
 // Name:      link.cpp
 // Purpose:   Implementation of class wex::link and stc::link... methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
+#include <boost/tokenizer.hpp>
 #include <wex/stc/link.h>
 #include <wex/stc/stc.h>
 #include <wex/ui/frame.h>
@@ -49,66 +50,82 @@ bool wex::stc::link_open()
   return link_open(link_t().set(LINK_OPEN).set(LINK_OPEN_MIME));
 }
 
-bool wex::stc::link_open(link_t mode, std::string* filename)
+bool wex::stc::link_open(link_t mode, std::string* link)
 {
-  const auto& sel(GetSelectedText().ToStdString());
+  const auto& sel(get_selected_text());
 
-  if (sel.size() > 200 || (!sel.empty() && sel.contains('\n')))
+  if (sel.size() > 1000)
   {
     return false;
   }
 
   const auto& text(!sel.empty() ? sel : GetCurLine().ToStdString());
+  bool        found(false);
 
-  if (mode[LINK_OPEN])
+  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+         text,
+         boost::char_separator<char>("\n")))
   {
-    data::control data;
-
-    if (const wex::path path(m_link->get_path(text, data, this));
-        !path.string().empty())
+    if (mode[LINK_OPEN])
     {
-      if (filename != nullptr)
-      {
-        *filename = path.filename();
-      }
-      else if (!mode[LINK_CHECK])
-      {
-        m_frame->open_file(path, data);
-      }
+      data::control data;
 
-      return true;
+      if (const wex::path path(m_link->get_path(it, data, this));
+          !path.string().empty())
+      {
+        if (link != nullptr)
+        {
+          if (!link->empty())
+          {
+            *link += ",";
+          }
+          
+          *link += path.filename();
+        }
+        else if (!mode[LINK_CHECK])
+        {
+          m_frame->open_file(path, data);
+        }
+
+        found = true;
+      }
+    }
+
+    if (mode[LINK_OPEN_MIME])
+    {
+      if (const wex::path path(m_link->get_path(
+            it,
+            data::control().line(link::LINE_OPEN_URL),
+            this));
+          !path.string().empty())
+      {
+        if (!mode[LINK_CHECK])
+        {
+          browser(path.string());
+        }
+
+        found = true;
+      }
+      else if (const wex::path mime(m_link->get_path(
+                 it,
+                 data::control().line(link::LINE_OPEN_MIME),
+                 this));
+               !mime.string().empty())
+      {
+        if (!mode[LINK_CHECK])
+        {
+          mime.open_mime();
+        }
+
+        found = true;
+      }
     }
   }
 
-  if (mode[LINK_OPEN_MIME])
+  if (link != nullptr)
   {
-    if (const wex::path path(m_link->get_path(
-          text,
-          data::control().line(link::LINE_OPEN_URL),
-          this));
-        !path.string().empty())
-    {
-      if (!mode[LINK_CHECK])
-      {
-        browser(path.string());
-      }
-
-      return true;
-    }
-    else if (const wex::path mime(m_link->get_path(
-               text,
-               data::control().line(link::LINE_OPEN_MIME),
-               this));
-             !mime.string().empty())
-    {
-      if (!mode[LINK_CHECK])
-      {
-        return mime.open_mime();
-      }
-
-      return true;
-    }
+    *link = find_tail(*link, 25);
   }
 
-  return false;
+  return found;
 }
