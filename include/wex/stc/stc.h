@@ -64,8 +64,6 @@ public:
   /// Invoked once during app::OnInit.
   static void on_init();
 
-  /// Constructors.
-
   /// Default constructor, sets text if not empty.
   stc(
     const std::string& text = std::string(),
