@@ -2,7 +2,7 @@
 // Name:      ex-commandline-imp.cpp
 // Purpose:   Implementation of wex::ex_commandline_imp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <utility>
@@ -16,6 +16,27 @@
 
 #include "ex-commandline-imp.h"
 
+namespace wex
+{
+std::vector<ex_commandline_input*> make_clis()
+{
+  return {
+    new ex_commandline_input(ex_command::type_t::COMMAND, "ex-cmd.command"),
+    new ex_commandline_input(ex_command::type_t::CALC, "ex-cmd.calc"),
+    new ex_commandline_input(
+      ex_command::type_t::COMMAND_EX,
+      "ex-cmd.command-ex"),
+    new ex_commandline_input(
+      ex_command::type_t::COMMAND_RANGE,
+      "ex-cmd.command-ex-range"),
+    new ex_commandline_input(ex_command::type_t::ESCAPE, "ex-cmd.escape"),
+    new ex_commandline_input(
+      ex_command::type_t::ESCAPE_RANGE,
+      "ex-cmd.escape-range"),
+    new ex_commandline_input(ex_command::type_t::FIND_MARGIN, "ex-cmd.margin")};
+}
+}; // namespace wex
+
 wex::ex_commandline_imp::ex_commandline_imp(
   ex_commandline*     cl,
   wxControl*          prefix,
@@ -24,22 +45,7 @@ wex::ex_commandline_imp::ex_commandline_imp(
   , m_id_register(NewControlId())
   , m_prefix(prefix)
   , m_cl(cl)
-  , m_clis{
-      new ex_commandline_input(ex_command::type_t::COMMAND, "ex-cmd.command"),
-      new ex_commandline_input(ex_command::type_t::CALC, "ex-cmd.calc"),
-      new ex_commandline_input(
-        ex_command::type_t::COMMAND_EX,
-        "ex-cmd.command-ex"),
-      new ex_commandline_input(
-        ex_command::type_t::COMMAND_RANGE,
-        "ex-cmd.command-ex-range"),
-      new ex_commandline_input(ex_command::type_t::ESCAPE, "ex-cmd.escape"),
-      new ex_commandline_input(
-        ex_command::type_t::ESCAPE_RANGE,
-        "ex-cmd.escape-range"),
-      new ex_commandline_input(
-        ex_command::type_t::FIND_MARGIN,
-        "ex-cmd.margin")}
+  , m_clis(make_clis())
 {
   init();
   bind();
@@ -52,12 +58,13 @@ wex::ex_commandline_imp::ex_commandline_imp(
   : syntax::stc(data)
   , m_id_register(0)
   , m_cl(cl)
+  , m_clis(make_clis())
 {
   init();
+  bind();
 
   set_text(value);
 
-  m_command.no_type();
   m_command.set(value);
 }
 
@@ -169,6 +176,11 @@ bool wex::ex_commandline_imp::handle(const std::string& command)
 
 bool wex::ex_commandline_imp::handle(char command)
 {
+  if (command != 'a' && command != 'c' && command != 'i')
+  {
+    return false;
+  }
+
   m_control_r = false;
   m_input     = command;
 

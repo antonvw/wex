@@ -2,7 +2,7 @@
 // Name:      main.cpp
 // Purpose:   main for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/vcs/process.h>
@@ -17,7 +17,7 @@ namespace test
 class vcs_app : public stc_app
 {
 public:
-  /// Virtual interface
+  // Virtual interface
   bool OnInit() override;
 };
 }; // namespace test

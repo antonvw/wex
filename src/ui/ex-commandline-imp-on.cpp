@@ -80,9 +80,19 @@ void wex::ex_commandline_imp::on_key_down(wxKeyEvent& event)
       on_key_down_control_r(event);
       break;
 
-    case WXK_DOWN:
     case WXK_END:
     case WXK_HOME:
+      if (!event.HasAnyModifiers())
+      {
+        on_key_down_page(event);
+      }
+      else
+      {
+        event.Skip();
+      }
+      break;
+
+    case WXK_DOWN:
     case WXK_PAGEDOWN:
     case WXK_PAGEUP:
     case WXK_UP:

@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
@@ -221,7 +221,6 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
     [=, this](wxCloseEvent& event)
     {
       m_file_history.save();
-      m_ex_commandline->on_exit();
 
       delete find_replace_data::set(nullptr);
 

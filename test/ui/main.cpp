@@ -2,7 +2,7 @@
 // Name:      main.cpp
 // Purpose:   main for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "test.h"
@@ -25,14 +25,14 @@ namespace test
 class ui : public app
 {
 public:
-  /// Static methods
+  // Static methods
 
   static auto* frame() { return m_frame; }
   static auto* get_statusbar() { return m_statusbar; }
   static auto* get_stc() { return m_stc; }
 
 private:
-  /// Virtual interface
+  // Virtual interface
   bool OnInit() override;
 
   inline static wex::frame*  m_frame     = nullptr;
