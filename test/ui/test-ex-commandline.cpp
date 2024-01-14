@@ -64,7 +64,7 @@ TEST_CASE("wex::ex_commandline")
     cl->set_stc(stc);
     REQUIRE(cl->stc() == stc);
 
-    for (auto c : std::vector<char>{'a', 'i'})
+    for (auto c : std::vector<char>{'a', 'c', 'i'})
     {
       REQUIRE(cl->set_stc(stc, c));
     }
