@@ -2,7 +2,7 @@
 // Name:      test.h
 // Purpose:   Declaration of classes for unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -19,12 +19,12 @@ namespace test
 class stc_app : public app
 {
 public:
-  /// Static methods
+  // Static methods
 
   static auto* frame() { return m_frame; }
   static auto* get_stc() { return m_stc; }
 
-  /// Virtual interface
+  // Virtual interface
 
   bool OnInit() override;
 

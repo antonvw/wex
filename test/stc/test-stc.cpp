@@ -286,7 +286,7 @@ TEST_CASE("wex::stc")
 
   SUBCASE("link")
   {
-    stc->set_text("no link");
+    stc->set_text("not_a_link");
     REQUIRE(!stc->link_open());
 
     stc->set_text("test.h");

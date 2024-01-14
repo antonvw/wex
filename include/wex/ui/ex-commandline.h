@@ -2,7 +2,7 @@
 // Name:      ex-commandline.h
 // Purpose:   Declaration of wex::ex_commandline class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016-2023 Anton van Wezenbeek
+// Copyright: (c) 2016-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -39,7 +39,9 @@ public:
     const std::string&  value = std::string(),
     const data::window& data  = data::window());
 
-  /// Returns the stc control window for the component.
+  /// Returns the stc control window for the component,
+  /// the commandline itself is just another stc, just as
+  /// the one it is related to (through set_stc and stc).
   syntax::stc* control();
 
   /// Returns frame.
@@ -47,9 +49,6 @@ public:
 
   /// Get string value.
   const std::string get_text() const;
-
-  /// Destroys the implementation.
-  void on_exit();
 
   /// Handles keydown event.
   void on_key_down(wxKeyEvent& event);
@@ -64,7 +63,8 @@ public:
   /// Returns false if command not supported.
   bool set_stc(wex::syntax::stc* stc, const std::string& command);
 
-  /// Sets stc component and handles char command.
+  /// Sets stc component and handles char command to
+  /// enter the input mode (a or c or i).
   /// Returns false if command not supported.
   bool set_stc(wex::syntax::stc* stc, char command);
 
