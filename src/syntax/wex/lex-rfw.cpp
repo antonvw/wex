@@ -2,7 +2,7 @@
 // Name:      lex-rfw.cpp
 // Purpose:   Implementation of lmRFW
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -377,7 +377,7 @@ void Scintilla::lex_rfw::state_check(
           {
             m_quote_stack->push(sc.ch, RFW_DELIM_BACKTICK);
           }
-          else if (sc.ch == '$' && sc.chNext == '(')
+          else if (sc.ch == '$' && sc.chNext == '{')
           {
             sc.Forward();
             m_quote_stack->push(sc.ch, RFW_DELIM_COMMAND);
@@ -411,7 +411,7 @@ void Scintilla::lex_rfw::state_check(
               sc.Forward();
               m_quote_stack->push(sc.ch, RFW_DELIM_LSTRING);
             }
-            else if (sc.chNext == '(')
+            else if (sc.chNext == '{')
             {
               sc.Forward();
               m_quote_stack->push(sc.ch, RFW_DELIM_COMMAND);
@@ -547,9 +547,9 @@ bool Scintilla::lex_rfw::state_check_continue(StyleContext& sc, int& cmd_state)
   }
   else if (sc.ch == '$' || sc.ch == '@')
   {
-    if (sc.Match("$(("))
+    if (sc.Match("${{"))
     {
-      sc.SetState(SCE_SH_OPERATOR); // handle '((' later
+      sc.SetState(SCE_SH_OPERATOR); // handle '{{' later
       return true;
     }
     sc.SetState(SCE_SH_SCALAR);
@@ -564,7 +564,7 @@ bool Scintilla::lex_rfw::state_check_continue(StyleContext& sc, int& cmd_state)
       sc.ChangeState(SCE_SH_STRING);
       m_quote_stack->start(sc.ch, RFW_DELIM_LSTRING);
     }
-    else if (sc.ch == '(')
+    else if (sc.ch == '{')
     {
       sc.ChangeState(SCE_SH_BACKTICKS);
       m_quote_stack->start(sc.ch, RFW_DELIM_COMMAND);
@@ -591,7 +591,7 @@ bool Scintilla::lex_rfw::state_check_continue(StyleContext& sc, int& cmd_state)
   {
     sc.SetState(SCE_SH_OPERATOR);
     // globs have no whitespace, do not appear in arithmetic expressions
-    if (cmd_state != RFW_CMD_ARITH && sc.ch == '(' && sc.chNext != '(')
+    if (cmd_state != RFW_CMD_ARITH && sc.ch == '{' && sc.chNext != '{')
     {
       int i = lex_rfw_access(*m_accessor).glob_scan(sc);
       if (i > 1)
@@ -604,7 +604,7 @@ bool Scintilla::lex_rfw::state_check_continue(StyleContext& sc, int& cmd_state)
     // handle opening delimiters for test/arithmetic expressions - ((,[[,[
     if (cmd_state == RFW_CMD_START || cmd_state == RFW_CMD_BODY)
     {
-      if (sc.Match('(', '('))
+      if (sc.Match('{', '{'))
       {
         cmd_state = RFW_CMD_ARITH;
         sc.Forward();
@@ -622,7 +622,7 @@ bool Scintilla::lex_rfw::state_check_continue(StyleContext& sc, int& cmd_state)
       }
     }
     // section state -- for ((x;y;z)) in ... looping
-    if (cmd_state == RFW_CMD_WORD && sc.Match('(', '('))
+    if (cmd_state == RFW_CMD_WORD && sc.Match('{', '{'))
     {
       cmd_state = RFW_CMD_ARITH;
       sc.Forward();
@@ -659,7 +659,7 @@ bool Scintilla::lex_rfw::state_check_continue(StyleContext& sc, int& cmd_state)
       }
     }
     // handle closing delimiters for test/arithmetic expressions - )),]],]
-    if (cmd_state == RFW_CMD_ARITH && sc.Match(')', ')'))
+    if (cmd_state == RFW_CMD_ARITH && sc.Match('}', '}'))
     {
       cmd_state = RFW_CMD_BODY;
       sc.Forward();
