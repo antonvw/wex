@@ -9,7 +9,6 @@
 #include <wex/core/version.h>
 #include <wx/translation.h>
 
-#include <iomanip>
 #include <sstream>
 
 const wex::version_info wex::get_version_info()

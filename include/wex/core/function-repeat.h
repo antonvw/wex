@@ -2,7 +2,7 @@
 // Name:      function-repeat.h
 // Purpose:   Declaration of class wex::function_repeat
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -35,7 +35,7 @@ public:
   bool activate(bool start = true);
 
   /// Returns name.
-  const auto& name() const { return m_name; };
+  const std::string& name() const { return m_name; };
 
 private:
   enum class action_t;

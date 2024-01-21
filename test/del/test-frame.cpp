@@ -2,7 +2,7 @@
 // Name:      test-frame.cpp
 // Purpose:   Implementation for wex del unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -206,7 +206,7 @@ TEST_CASE("wex::del::frame")
   SUBCASE("vcs_blame_revision")
   {
     wex::config("vcs.VCS").set(2);
-    get_stc()->set_text("line 1\nline 2\nline 3\nline 4\nline 5\n");
+    REQUIRE(get_stc()->open(wex::test::get_path("test.h")));
     const std::string renamed;
     const std::string offset;
 

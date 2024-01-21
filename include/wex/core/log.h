@@ -2,7 +2,7 @@
 // Name:      log.h
 // Purpose:   Declaration of wex::log class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2023 Anton van Wezenbeek
+// Copyright: (c) 2017-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -45,7 +45,7 @@ public:
     const std::string& logfile = std::string());
 
   /// Return current filter log level.
-  static auto get_level() { return m_level_filter; }
+  static level_t get_level() { return m_level_filter; }
 
   /// Returns info for log levels.
   static std::string get_level_info();

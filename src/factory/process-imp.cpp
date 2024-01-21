@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      process-imp.cpp
-// Purpose:   Implementation of class wex::factory::process
+// Purpose:   Implementation of class wex::factory::process_imp
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -53,7 +53,6 @@ void wex::factory::process_imp::async_system(
   }
   catch (std::exception& e)
   {
-    log::status("async_system") << e.what();
     log("async_system") << e.what();
   }
 }
