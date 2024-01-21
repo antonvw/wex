@@ -2,7 +2,7 @@
 // Name:      core/cmdline-data.h
 // Purpose:   Declaration of wex::data::cmdline class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -39,7 +39,7 @@ public:
   char** av() const { return m_av; }
 
   /// Returns help.
-  const auto& help() const { return m_help; }
+  const std::string& help() const { return m_help; }
 
   /// Sets help.
   cmdline& help(const std::string& rhs)
@@ -59,7 +59,7 @@ public:
   };
 
   /// Returns command line string.
-  const auto& string() const { return m_string; }
+  const std::string& string() const { return m_string; }
 
   /// Sets command line string.
   cmdline& string(const std::string& rhs)

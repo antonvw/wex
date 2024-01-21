@@ -2,7 +2,7 @@
 // Name:      core/regex.cpp
 // Purpose:   Implementation of class wex::regex
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -63,6 +63,15 @@ wex::regex::regex(const regex_v_c_t& regex, std::regex::flag_type flags)
 {
 }
 
+const std::string wex::regex::operator[](size_t pos) const 
+{ 
+  return pos >= m_matches.size() ? std::string(): m_matches[pos]; 
+}
+
+const std::string wex::regex::back() const 
+{ 
+ return m_matches.empty() ? std::string(): m_matches.back(); 
+}
 int wex::regex::find(const std::string& text, find_t how)
 {
   m_it = std::find_if(

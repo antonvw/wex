@@ -2,7 +2,7 @@
 // Name:      regex.h
 // Purpose:   Include file for class wex::regex
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -44,20 +44,20 @@ public:
     data(const regex_c_t& regex, std::regex::flag_type flags);
 
     /// Returns function.
-    const auto& function() const { return m_function; };
+    const function_t& function() const { return m_function; };
 
     /// Returns regex.
-    const auto& regex() const { return m_regex; };
+    const std::regex& regex() const { return m_regex; };
 
     /// Returns text.
-    const auto& text() const { return m_text; };
+    const std::string& text() const { return m_text; };
 
   private:
     void init(const regex_c_t& regex, std::regex::flag_type flags);
 
-    const std::string m_text;
-    std::regex        m_regex;
-    function_t        m_function{nullptr};
+    std::string m_text;
+    std::regex  m_regex;
+    function_t  m_function{nullptr};
   };
 
   /// Constructor, provide regular expression data.
@@ -87,11 +87,13 @@ public:
     const regex_v_c_t&    regex,
     std::regex::flag_type flags = std::regex::ECMAScript);
 
-  /// Returns reference to the requested submatch element.
-  const auto& operator[](size_t pos) const { return m_matches[pos]; }
+  /// Returns requested submatch element.
+  /// Returns empty string if pos beyond index.
+  const std::string operator[](size_t pos) const;
 
   /// Returns the last (sub)match.
-  const auto& back() const { return m_matches.back(); }
+  /// Returns empty string if no matches present.
+  const std::string back() const;
 
   /// Returns true if matches is empty.
   bool empty() const { return m_matches.empty(); }
@@ -126,7 +128,7 @@ public:
   int search(const std::string& text);
 
   /// Returns number of submatches.
-  auto size() const { return m_matches.size(); }
+  size_t size() const { return m_matches.size(); }
 
 private:
   enum class find_t;

@@ -2,7 +2,7 @@
 // Name:      file-status.cpp
 // Purpose:   Implementation of wex::file_status class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/chrono.h>
@@ -11,7 +11,6 @@
 #ifdef _MSC_VER
 #include <io.h>
 #endif
-#include <iomanip>
 #include <wx/filefn.h>
 #ifdef __UNIX__
 #include <unistd.h>

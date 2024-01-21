@@ -2,7 +2,7 @@
 // Name:      menu-command.h
 // Purpose:   Declaration of wex::menu_command class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016-2023 Anton van Wezenbeek
+// Copyright: (c) 2016-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -58,26 +58,26 @@ public:
   };
 
   /// Returns the control key.
-  const auto& control() const { return m_control; }
+  const std::string& control() const { return m_control; }
 
   /// Returns the flags.
-  const auto& flags() const { return m_flags; }
+  const std::string& flags() const { return m_flags; }
 
   /// Returns the command (and subcommand and accelerators if necessary).
   const std::string
   get_command(include_t type = include_t().set(INCLUDE_SUBCOMMAND)) const;
 
   /// Returns the submenu.
-  const auto& submenu() const { return m_submenu; }
+  const std::string& submenu() const { return m_submenu; }
 
   /// Returns true if this is a help like command.
   bool is_help() const { return get_command(0) == "help"; }
 
   /// Returns the type.
-  auto& type() const { return m_type; }
+  const type_t& type() const { return m_type; }
 
   /// Returns the menu text.
-  const auto& text() const { return m_text; }
+  const std::string& text() const { return m_text; }
 
   /// Returns true if a subcommand can be used for this command.
   bool use_subcommand() const;

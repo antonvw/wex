@@ -2,7 +2,7 @@
 // Name:      file.h
 // Purpose:   Declaration of class wex::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2023 Anton van Wezenbeek
+// Copyright: (c) 2010-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -84,10 +84,10 @@ public:
   bool open(const path& p, std::ios_base::openmode mode = std::ios_base::in);
 
   /// Returns the path.
-  const auto& path() const { return m_path; }
+  const wex::path& path() const { return m_path; }
 
   /// Returns the path.
-  auto& path() { return m_path; }
+  wex::path& path() { return m_path; }
 
   /// Reads this file into a buffer.
   const std::string* read(std::streampos seek_position = 0);
