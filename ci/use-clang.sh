@@ -2,8 +2,8 @@
 
 lv="llvm@17"
 
-export CC=/usr/local/opt/${lv}/bin/clang
-export CXX=/usr/local/opt/${lv}/bin/clang
+export CC=/usr/local/Cellar/homebrew/opt/${lv}/bin/clang
+export CXX=/usr/local/Cellar/homebrew/opt/${lv}/bin/clang
 
-export LDFLAGS="-L/usr/local/opt/${lv}/lib -Wl"
-export CPPFLAGS=-I/usr/local/opt/${lv}/include
+export LDFLAGS="-L/usr/local/Cellar/homebrew/opt/${lv}/lib"
+export CPPFLAGS="-I/usr/local/Cellar/homebrew/opt/${lv}/include"

@@ -2,9 +2,10 @@
 // Name:      stc/find.cpp
 // Purpose:   Implementation of class wex::stc find methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2023 Anton van Wezenbeek
+// Copyright: (c) 2018-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/regex.hpp>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
@@ -15,6 +16,19 @@
 
 namespace wex
 {
+bool is_regex_valid(const std::string& text, int find_flags)
+{
+  if (const boost::regex r(text, boost::regex_constants::no_except);
+      (find_flags & (wxSTC_FIND_CXX11REGEX | wxSTC_FIND_REGEXP)) &&
+      r.status() != 0)
+  {
+    log::status("Incomplete regex");
+    return false;
+  }
+
+  return true;
+}
+
 bool find_margin(data::find& f)
 {
   if (int line = 0; f.find_margin(line))
@@ -32,6 +46,11 @@ bool find_margin(data::find& f)
 
 bool find_other(const vi& vi, data::find& f)
 {
+  if (!is_regex_valid(f.text(), f.flags()))
+  {
+    return false;
+  }
+
   f.stc()->SetTargetRange(f.start_pos(), f.end_pos());
 
   const std::string stext =
@@ -124,6 +143,11 @@ bool wex::stc::find(const std::string& text, int find_flags, bool forward)
     {
       find_flags |= wxSTC_FIND_CXX11REGEX | wxSTC_FIND_REGEXP;
     }
+  }
+
+  if (!is_regex_valid(text, find_flags))
+  {
+    return false;
   }
 
   wex::data::find f(

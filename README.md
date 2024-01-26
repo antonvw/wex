@@ -10,6 +10,7 @@ shows a usage of this library, offering a full featured source code text editor.
 - [cmake](http://www.cmake.org/)
 - [boost](https://www.boost.org)
 - a `c++23` standard supporting compiler
+- for Linux or osx [ninja](https://ninja-build.org) is optional
 
 ## Building
 

@@ -2,7 +2,7 @@
 // Name:      util.h
 // Purpose:   Methods to be used by ex lib
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -24,7 +24,8 @@ namespace factory
 class stc;
 };
 
-/// Appends a line no to text.h, using ex # format.
+/// Appends a ex line no to text, using ex # format:
+/// the text will contain the stc string line number.
 void append_line_no(std::string& text, int line);
 
 /// Returns escape sequence.
