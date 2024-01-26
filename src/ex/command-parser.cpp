@@ -139,10 +139,10 @@ bool wex::command_parser::parse_other()
     m_type = address_t::NO_ADDR;
   }
 
-  if (m_range.empty() && m_cmd != '!')
+  if (m_range.empty() && m_cmd != "!")
   {
     m_range =
-      (m_cmd.starts_with("g") || m_cmd == 'v' || m_cmd == 'w' ? "%" : ".");
+      (m_cmd.starts_with("g") || m_cmd == "v" || m_cmd == "w" ? "%" : ".");
   }
 
   return true;

@@ -108,7 +108,7 @@ TEST_CASE("wex::stc")
     stc->BigWordRightEndRectExtend();
     stc->BigWordRightExtend();
     stc->BigWordRightRectExtend();
-  
+
     stc->LineHome();
     stc->LineHomeExtend();
     stc->LineHomeRectExtend();
@@ -142,6 +142,8 @@ TEST_CASE("wex::stc")
       stc->get_vi().use(mode);
 
       stc->set_text("hello stc and more text");
+
+      REQUIRE(!stc->find("[", wxSTC_FIND_CXX11REGEX | wxSTC_FIND_REGEXP));
       REQUIRE(stc->find("hello"));
       REQUIRE(stc->get_word_at_pos(0) == "hello");
 

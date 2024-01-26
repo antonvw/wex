@@ -2,7 +2,7 @@
 // Name:      test-util.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex/util.h>
@@ -11,6 +11,15 @@
 
 TEST_CASE("wex::ex::utils")
 {
+  SUBCASE("append_line_no")
+  {
+    std::string text;
+    wex::append_line_no(text, 1);
+    wex::append_line_no(text, 300);
+    REQUIRE(text.contains("     2"));
+    REQUIRE(text.contains("   301"));
+  }
+
   SUBCASE("esc")
   {
     REQUIRE(wex::esc() == "\x1b");
