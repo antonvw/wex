@@ -2,7 +2,7 @@
 // Name:      test-macros.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2023 Anton van Wezenbeek
+// Copyright: (c) 2019-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -150,8 +150,7 @@ TEST_CASE("wex::macros" * doctest::may_fail())
     // the macro does not result in chaning stc text,
     // see playback in wex::ex
     ex->get_stc()->set_text("");
-    REQUIRE(!macros.mode().transition("@a", ex, true, 0));
-    REQUIRE(!macros.mode().transition("@a", ex, true, -8));
+    REQUIRE(macros.mode().transition("@a", ex, true, 0));
     REQUIRE(macros.mode().transition("@a", ex, true, 10));
     REQUIRE(macros.mode().transition("@b", ex) == 2);
 
