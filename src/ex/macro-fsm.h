@@ -2,7 +2,7 @@
 // Name:      macro-fsm.h
 // Purpose:   Declaration of class wex::macro_fsm
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/statechart/state_machine.hpp>
@@ -58,7 +58,7 @@ public:
   bool is_playback() const { return m_playback; }
 
   /// Plays back macro to ex.
-  void playback(const std::string& macro, ex* ex, int repeat);
+  void playback(const std::string& macro, ex* ex, size_t repeat);
 
   /// Starts or stops recording a macro.
   void record(const std::string& macro, ex* ex = nullptr);
