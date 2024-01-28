@@ -2,7 +2,7 @@
 // Name:      test-process.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -54,7 +54,7 @@ TEST_CASE("wex::process")
       REQUIRE(!process.is_running());
     }
 
-#ifdef __WXOSX__
+#ifndef GITHUB
     SUBCASE("invalid")
     {
       wex::log_none off;

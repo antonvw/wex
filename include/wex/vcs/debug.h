@@ -2,7 +2,7 @@
 // Name:      debug.h
 // Purpose:   Declaration of class wex::debug
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016-2023 Anton van Wezenbeek
+// Copyright: (c) 2016-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -29,11 +29,18 @@ class frame;
 class menu;
 class stc;
 
-/// Offers a debug that allows you to use an stc component as
+/// Offers a debug class that allows you to use an stc component as
 /// graphical interface for a debug process (e.g. gdb).
 class debug : public wxEvtHandler
 {
 public:
+  // Static interface.
+
+  /// Returns the default debugger for current platform.
+  static std::string default_exe();
+
+  // Other methods.
+
   /// Constructor.
   explicit debug(frame* frame, factory::process* process = nullptr);
 

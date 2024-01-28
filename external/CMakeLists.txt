@@ -11,7 +11,7 @@ add_definitions(-D SCI_NAMESPACE)
 
 add_subdirectory(wxWidgets)
 
-add_custom_target(ctags
+add_custom_target(ctags-build
   COMMAND ./autogen.sh
   COMMAND ./configure
   COMMAND make

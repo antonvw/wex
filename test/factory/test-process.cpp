@@ -61,7 +61,7 @@ TEST_CASE("wex::factory::process")
 
   SUBCASE("system")
   {
-#ifdef __WXOSX__
+#ifndef GITHUB
     SUBCASE("invalid")
     {
       wex::log_none off;
@@ -71,7 +71,7 @@ TEST_CASE("wex::factory::process")
     }
 #endif
 
-#ifdef __WXOSX__
+#ifndef GITHUB
     SUBCASE("stdin")
     {
       REQUIRE(process.system(wex::process_data("wc -c").std_in("xxxxxx")) == 0);

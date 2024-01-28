@@ -6,17 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <pugixml.hpp>
-#include <wex/common/dir.h>
-#include <wex/common/util.h>
-#include <wex/core/chrono.h>
-#include <wex/core/config.h>
-#include <wex/core/log.h>
-#include <wex/del/defs.h>
-#include <wex/del/frame.h>
-#include <wex/del/listview-file.h>
-#include <wex/factory/bind.h>
-#include <wex/ui/listitem.h>
-#include <wex/ui/menu.h>
+#include <wex/wex.h>
 
 #include <thread>
 

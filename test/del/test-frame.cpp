@@ -7,16 +7,7 @@
 
 #include <thread>
 
-#include <wex/core/log-none.h>
-#include <wex/core/path.h>
-#include <wex/del/defs.h>
-#include <wex/stc/link.h>
-#include <wex/syntax/blame.h>
-#include <wex/syntax/lexers.h>
-#include <wex/ui/frd.h>
-#include <wex/ui/menu.h>
-#include <wex/vcs/process.h>
-#include <wex/vcs/vcs.h>
+#include <wex/wex.h>
 
 #include "../vcs/test.h"
 #include "test.h"
@@ -263,7 +254,7 @@ TEST_CASE("wex::del::frame")
 
     del_frame()->debug_exe(100, get_stc());
 
-    del_frame()->debug_exe("gdb", get_stc());
+    del_frame()->debug_exe(wex::debug::default_exe(), get_stc());
 
     REQUIRE(del_frame()->debug_handler() != nullptr);
 

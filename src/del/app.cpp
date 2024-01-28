@@ -2,18 +2,10 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wex::del::app class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/core/path.h>
-#include <wex/ctags/ctags.h>
-#include <wex/del/app.h>
-#include <wex/stc/bind.h>
-#include <wex/stc/stc.h>
-#include <wex/syntax/lexers.h>
-#include <wex/syntax/printing.h>
-#include <wex/ui/art.h>
-#include <wex/vcs/vcs.h>
+#include <wex/wex.h>
 #include <wxMaterialDesignArtProvider.hpp>
 
 int wex::del::app::OnExit()

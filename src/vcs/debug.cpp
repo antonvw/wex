@@ -2,25 +2,11 @@
 // Name:      debug.cpp
 // Purpose:   Implementation of class wex::debug
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016-2023 Anton van Wezenbeek
+// Copyright: (c) 2016-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
-#include <wex/common/dir.h>
-#include <wex/core/config.h>
-#include <wex/core/log.h>
-#include <wex/core/regex.h>
-#include <wex/factory/bind.h>
-#include <wex/factory/defs.h>
-#include <wex/factory/process.h>
-#include <wex/stc/stc.h>
-#include <wex/syntax/util.h>
-#include <wex/ui/frame.h>
-#include <wex/ui/item-dialog.h>
-#include <wex/ui/listview.h>
-#include <wex/ui/menu.h>
-#include <wex/ui/menus.h>
-#include <wex/vcs/debug.h>
+#include <wex/wex.h>
 
 #include <algorithm>
 #include <charconv>
@@ -78,17 +64,21 @@ private:
   regex v(m_entry.regex_stdout(debug_entry::regex_t::REGEX)); \
   v.search(m_stdout)
 
+std::string wex::debug::default_exe()
+{
+  return
+#ifdef __WXOSX__
+    "lldb";
+#else
+    "gdb";
+#endif
+}
+
 wex::debug::debug(wex::frame* frame, wex::factory::process* debug)
   : m_frame(frame)
   , m_process(debug)
 {
-  set_entry(config("debug.debugger")
-              .get(
-#ifdef __WXOSX__
-                "lldb"));
-#else
-                "gdb"));
-#endif
+  set_entry(config("debug.debugger").get(default_exe()));
 
   bind(this).command(
     {{[=, this](wxCommandEvent& event)

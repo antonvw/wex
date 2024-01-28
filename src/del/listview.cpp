@@ -5,16 +5,7 @@
 // Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/common/dir.h>
-#include <wex/common/stream.h>
-#include <wex/common/util.h>
-#include <wex/core/core.h>
-#include <wex/core/log.h>
-#include <wex/del/wex.h>
-#include <wex/factory/bind.h>
-#include <wex/ui/frd.h>
-#include <wex/ui/listitem.h>
-#include <wex/vcs/vcs.h>
+#include <wex/wex.h>
 #include <wx/app.h>
 
 namespace wex::del
