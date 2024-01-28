@@ -2,10 +2,10 @@
 // Name:      util.cpp
 // Purpose:   Implementation of wex ex utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifdef __WXMSW__
+#ifndef __WXGTK__
 #include <format>
 #endif
 #include <regex>
@@ -18,8 +18,8 @@
 
 void wex::append_line_no(std::string& text, int line)
 {
-#ifdef __WXMSW__
-  // not yet for gcc 12, clang 16
+#ifndef __WXGTK__
+  // not yet for gcc 12
   text += std::format("{:6} ", line + 1);
 #else
   char buffer[8];

@@ -5,17 +5,7 @@
 // Copyright: (c) 2010-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/common/tostring.h>
-#include <wex/common/util.h>
-#include <wex/core/core.h>
-#include <wex/core/log.h>
-#include <wex/del/defs.h>
-#include <wex/del/dirctrl.h>
-#include <wex/del/frame.h>
-#include <wex/factory/bind.h>
-#include <wex/syntax/lexers.h>
-#include <wex/syntax/path-lexer.h>
-#include <wex/vcs/vcs.h>
+#include <wex/wex.h>
 #include <wx/stockitem.h> // for wxGetStockLabel
 
 #define GET_VECTOR_FILES                              \
