@@ -166,13 +166,13 @@ void SCI_METHOD lex_lilypond::Fold(
       }
       else
       {
-        for (j = 0; j < structWords.size(); ++j)
+        for (j = 0; j < (int)structWords.size(); ++j)
           if (strcmp(buf, structWords[j].c_str()) == 0)
             break;
-        if (j >= structWords.size())
+        if (j >= (int)structWords.size())
           continue;
         save.m_level = j; // level before the command
-        for (j = save.m_level + 1; j < save.m_open_begins.size(); ++j)
+        for (j = save.m_level + 1; j < (int)save.m_open_begins.size(); ++j)
         {
           save.m_open_begins[save.m_level] += save.m_open_begins[j];
           save.m_open_begins[j] = 0;

@@ -121,6 +121,7 @@ TEST_CASE("wex::path")
 
   SUBCASE("mime")
   {
+    REQUIRE(!wex::path("XXXXX.md").open_mime());
     REQUIRE(!wex::path("XXXXX").open_mime());
 
 #ifndef GITHUB

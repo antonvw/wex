@@ -4,7 +4,7 @@ Name:      wex-menus.xml
 Purpose:   setup of dynamic menus, like debuggers 
            and version control systems
 Author:    Anton van Wezenbeek
-Copyright: (c) 2021-2022 Anton van Wezenbeek
+Copyright: (c) 2010-2024 Anton van Wezenbeek
 -->
 
 <menus>
@@ -34,6 +34,8 @@ Copyright: (c) 2021-2022 Anton van Wezenbeek
       if type contains an extra 'separator' text, then the command
       will be followed by a separator on the menu.
       if type contains 'ellipses' then '...' is appended after the item.
+      if type contains 'ellipses-is-asked' then the ellipses is only added
+      if the "Always ask flags" checkbox is checked, otherwise no flags dialog is shown
       if type contains 'is-selected' then item is only added if the component
       has text selected
       if type contains 'is-visual' then item is only added if the component
@@ -231,20 +233,20 @@ Copyright: (c) 2021-2022 Anton van Wezenbeek
     date-print="10">
 
     <commands>
-      <command type="main"> &amp;add </command>
-      <command flags="-v --force" type="popup"> &amp;blame </command>
-      <command flags="none" type="separator"> &amp;stat </command>
+      <command type="main ellipses"> &amp;add </command>
+      <command type="popup" flags="-v --force"> &amp;blame </command>
+      <command type="separator" flags="none"> &amp;stat </command>
       <command type="ellipses popup"> &amp;cat </command>
       <command type="ellipses main"> &amp;cleanup </command>
       <command type="ellipses"> &amp;commit </command>
-      <command type="ellipses"> &amp;diff </command>
+      <command type="ellipses-is-asked"> &amp;diff </command>
       <command type="main"> &amp;help </command>
-      <command type="ellipses"> &amp;info </command>
-      <command type="ellipses"> &amp;log </command>
-      <command type="main"> &amp;ls </command>
+      <command type="ellipses-is-asked"> &amp;info </command>
+      <command type="ellipses-is-asked"> &amp;log </command>
+      <command type="main ellipses-is-asked"> &amp;ls </command>
       <command type="ellipses popup"> &amp;proplist </command>
       <command type="ellipses popup"> prop&amp;set </command>
-      <command type="ellipses"> &amp;update </command>
+      <command type="ellipses-is-asked"> &amp;update </command>
     </commands>
   </vcs>
 </menus>
