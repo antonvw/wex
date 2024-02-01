@@ -66,7 +66,8 @@ public:
   /// This file is searched for in the current dir, and if not found in the
   /// config dir.
   /// You can also specify an absolute filename.
-  static void open(const std::string& filename = DEFAULT_TAGFILE);
+  /// Returns false if no ctags file is opened.
+  static bool open(const std::string& filename = DEFAULT_TAGFILE);
 
   /// Jumps to previous match from a previous find.
   static bool previous();

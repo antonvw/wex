@@ -2,7 +2,7 @@
 // Name:      blame.cpp
 // Purpose:   Implementation of class wex::blame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2023 Anton van Wezenbeek
+// Copyright: (c) 2019-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -60,8 +60,6 @@ wex::blame::blame(const pugi::xml_node& node)
   , m_date_print(node.attribute("date-print").as_uint())
   , m_name(node.attribute("name").value())
   , m_path_original("xxxxx")
-  // adding m_info gives a bad_alloc
-  , m_reflect({REFLECT_ADD("line no", m_line_no)})
 {
 }
 
@@ -181,11 +179,6 @@ bool wex::blame::parse_compact(const std::string& line, const regex& r)
   m_line_no++; // not present in svn blame
   m_line_text = r[3];
 
-  if (m_line_no < 5)
-  {
-    log::trace("parse_compact") << m_reflect.log();
-  }
-
   return true;
 }
 
@@ -216,11 +209,6 @@ bool wex::blame::parse_full(const std::string& line, const regex& r)
   {
     m_line_no--;
     m_line_text = r[5];
-
-    if (m_line_no < 5)
-    {
-      log::trace("parse_full") << m_reflect.log();
-    }
 
     return true;
   }

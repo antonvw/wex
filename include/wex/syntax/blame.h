@@ -8,7 +8,6 @@
 #pragma once
 
 #include <pugixml.hpp>
-#include <wex/core/reflection.h>
 
 namespace wex
 {
@@ -160,7 +159,5 @@ private:
   bool m_skip_info{false};
 
   size_t m_date_print{10}; // cannot be const because of used copy assignment
-
-  reflection m_reflect;
 };
 }; // namespace wex
