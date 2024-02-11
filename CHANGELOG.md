@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- added build script build-gen.sh
 - the build tool now supports ninja besides make
 - added class function_repeat to offer syncing without idle events
 - added class reflection to add reflection to classes

@@ -13,7 +13,7 @@ jobs:
           submodules: recursive
 
       - name: Install boost
-        uses: MarkusJx/install-boost@v2.4.4
+        uses: MarkusJx/install-boost@v2.4.5
         id: install-boost
         with:
           # REQUIRED: Specify the required boost version
@@ -42,20 +42,13 @@ jobs:
         run: sudo pip install robotframework
 
       - name: Configure
-        # adding -DwexBUILD_SAMPLES=ON should result in app running,
+        # adding -s samples switch should result in app running,
         # but then the headless test keeps on running
-        run: export CC=gcc-13 && export CXX=g++-13 && mkdir build && cd build &&
-          cmake
-            -G Ninja
-            -DCMAKE_BUILD_TYPE=Coverage
-            -DwexGCOV=gcov-13
-            -DwexBUILD_TESTS=ON
-            -DwexBUILD_GITHUB=ON
-            -DBoost_INCLUDE_DIR=${{steps.install-boost.outputs.BOOST_ROOT}}/include
-            -DBoost_LIBRARY_DIRS=${{steps.install-boost.outputs.BOOST_ROOT}}/lib
-            ..
+        run: ./build-gen.sh -b -c -g -p -t -B ${{steps.install-boost.outputs.BOOST_ROOT}}
         env:
           BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
+          CC: gcc-13
+          CXX: g++-13
 
       - name: Make using ninja
         run: cd build && ninja

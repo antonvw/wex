@@ -449,17 +449,16 @@ It benefits from the following boost libraries:
 
 lib  | info
 -----|------
-boost::algorithm lib | uses find_tail, icontains, iequals, replace_all,
-  to_upper, trim
-boost::json lib | to implement wex::config
-boost::log lib | to implement wex::log
-boost::process lib | to implement wex::process
-boost::program_options lib | to implement wex::cmdline
-boost::regular expression lib | to implement the wex::regex_part
-boost::spirit lib | to implement the wex::evaluator
-boost::statechart lib | to implement the statemachine for vi mode and macro mode
-boost::tokenizer lib | to tokenize expressions
-boost::URL lib | to handle URLs
+boost::algorithm | uses find_tail, icontains, iequals, replace_all, to_upper, trim
+boost::json | to implement wex::config
+boost::log | to implement wex::log
+boost::process | to implement wex::process
+boost::program_options | to implement wex::cmdline
+boost::regular expression | to implement the wex::regex_part
+boost::spirit | to implement the wex::evaluator
+boost::statechart | to implement the statemachine for vi mode and macro mode
+boost::tokenizer | to tokenize expressions
+boost::URL | to handle URLs
 
 It benefits from the following wxWidgets libraries:
 

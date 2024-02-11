@@ -2,7 +2,7 @@
 // Name:      ex-commandline-imp-on.cpp
 // Purpose:   Implementation of wex::ex_commandline_imp class on.. methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2023 Anton van Wezenbeek
+// Copyright: (c) 2022-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/util.h>
@@ -116,7 +116,7 @@ void wex::ex_commandline_imp::on_key_down_control_r(wxKeyEvent& event)
 {
   Cut();
 
-#ifdef __WXMAC__
+#ifdef __WXOSX__
   /* NOLINTNEXTLINE */
   if (event.GetModifiers() & wxMOD_RAW_CONTROL)
 #else
