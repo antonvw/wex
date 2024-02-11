@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC2086
 ################################################################################
 # Name:      build-gen.sh
 # Purpose:   Generates (ninja) build files for osx or linux
