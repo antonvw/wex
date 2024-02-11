@@ -1,4 +1,4 @@
-#!/bin/bash sh
+#!/bin/bash
 ################################################################################
 # Name:      build-gen.sh
 # Purpose:   Generates (ninja) build files for osx or linux
@@ -31,6 +31,7 @@ option_build="-DwexBUILD_SHARED=ON"
 option_coverage=
 option_dir=build
 option_github=
+option_locale=
 option_odbc=
 option_prepare=false
 option_samples=
@@ -105,18 +106,19 @@ if [[ $uname == "Darwin" ]]; then
   . ci/use-clang.sh
 fi
 
-mkdir -p ${option_dir}
+mkdir -p "${option_dir}"
 
-cmake -B ${option_dir} -G Ninja \
-  ${option_asan} \
-  ${option_boost_build} \
-  ${option_build} \
-  ${option_coverage} \
-  ${option_github} \
-  ${option_odbc} \
-  ${option_samples} \
-  ${option_tests}
+cmake -B "${option_dir}" -G Ninja \
+  "${option_asan}" \
+  "${option_boost_build}" \
+  "${option_build}" \
+  "${option_coverage}" \
+  "${option_github}" \
+  "${option_locale}" \
+  "${option_odbc}" \
+  "${option_samples}" \
+  "${option_tests}"
 
 if [[ "${option_prepare}" == "false" ]]; then
-  cd ${option_dir} && ninja
+  cd "${option_dir}" && ninja
 fi
