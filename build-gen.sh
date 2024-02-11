@@ -1,3 +1,4 @@
+#!/bin/bash sh
 ################################################################################
 # Name:      build-gen.sh
 # Purpose:   Generates (ninja) build files for osx or linux
@@ -5,8 +6,6 @@
 # Author:    Anton van Wezenbeek
 # Copyright: (c) 2024 Anton van Wezenbeek
 ################################################################################
-
-#!/bin/bash sh
 
 usage()
 {
