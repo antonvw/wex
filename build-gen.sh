@@ -109,15 +109,15 @@ fi
 mkdir -p "${option_dir}"
 
 cmake -B "${option_dir}" -G Ninja \
-  "${option_asan}" \
-  "${option_boost_build}" \
-  "${option_build}" \
-  "${option_coverage}" \
-  "${option_github}" \
-  "${option_locale}" \
-  "${option_odbc}" \
-  "${option_samples}" \
-  "${option_tests}"
+  ${option_asan} \
+  ${option_boost_build} \
+  ${option_build} \
+  ${option_coverage} \
+  ${option_github} \
+  ${option_locale} \
+  ${option_odbc} \
+  ${option_samples} \
+  ${option_tests}
 
 if [[ "${option_prepare}" == "false" ]]; then
   cd "${option_dir}" && ninja
