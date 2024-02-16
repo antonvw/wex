@@ -257,10 +257,8 @@ TEST_CASE("wex::stc")
     REQUIRE(stc->get_lexer().set("xml"));
 
     event(stc, "i<xxxxx>\x1b");
-#ifdef TEST
-    // Due to queueing ? only ok i tested separately.
+
     REQUIRE(stc->get_text() == "<xxxxx></xxxxx>");
-#endif
   }
 
   SUBCASE("lexer")
