@@ -2,7 +2,7 @@
 // Name:      lex-rfw-access.h
 // Purpose:   Declaration of Scintilla::lex_rfw_access class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -294,6 +294,9 @@ inline void Scintilla::quote_stack::pop(void)
     return;
 
   m_stack.pop();
+
+  if (m_stack.empty())
+    return;
 
   m_count = m_stack.top().m_count;
   m_up    = m_stack.top().m_up;

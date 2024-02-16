@@ -46,11 +46,6 @@ bool find_margin(data::find& f)
 
 bool find_other(const vi& vi, data::find& f)
 {
-  if (!is_regex_valid(f.text(), f.flags()))
-  {
-    return false;
-  }
-
   f.stc()->SetTargetRange(f.start_pos(), f.end_pos());
 
   const std::string stext =
