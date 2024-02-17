@@ -3,6 +3,7 @@
 ################################################################################
 # Name:      build-gen.sh
 # Purpose:   Generates (ninja) build files for osx or linux
+#            for building wex itself, or for building apps using it
 #            Just run from repo root
 # Author:    Anton van Wezenbeek
 # Copyright: (c) 2024 Anton van Wezenbeek
@@ -101,10 +102,11 @@ while getopts ":B:d:abcghlopst" opt; do
   esac
 done
 
-uname=echo$(uname)
+uname=$(uname)
 
 if [[ $uname == "Darwin" ]]; then
-  . ci/use-clang.sh
+  # cmake find_package llvm otherwise gives error
+  export LLVM_DIR=/usr/local/Cellar/homebrew/opt
 fi
 
 mkdir -p "${option_dir}"
