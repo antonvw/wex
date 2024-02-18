@@ -5,6 +5,7 @@ file(GLOB_RECURSE SRCS
 file(GLOB_RECURSE INCLUDES ../include/*.h)
 file(GLOB MDS ../*.md)
 file(GLOB_RECURSE MDSR ../doc/*.md ../src/*.md ../test/*.md)
+file(GLOB SHELLS ../*.sh ../test/*.sh ../locale/*.sh)
 
 if (NOT WIN32)
   add_custom_target(ctags-wex
@@ -65,7 +66,11 @@ if (NOT WIN32)
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test/app
     COMMENT "robocop" VERBATIM)
     
+  add_custom_target(shellcheck
+    COMMAND shellcheck ${SHELLS}
+    COMMENT "shellcheck" VERBATIM)
+
   add_custom_target(analyse 
-    DEPENDS codespell cppcheck cpplint markdownlint robocop
+    DEPENDS codespell cppcheck cpplint markdownlint robocop shellcheck
     COMMENT "running checks" VERBATIM)
 endif()

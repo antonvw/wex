@@ -17,6 +17,7 @@ usage()
   echo "-b       build static libraries, default builds shared libraries"
   echo "-c       build coverage mode"
   echo "-d <dir> build <dir>, default uses the 'build' subdir"
+  echo "-D <x=y> add a general cmake define"
   echo "-g       build github mode"
   echo "-h       displays usage information and exits"
   echo "-l       add locale files"
@@ -30,6 +31,7 @@ option_asan=
 option_boost_build=
 # use shared libs for Boost, wxWidgets and wex
 option_build="-DwexBUILD_SHARED=ON"
+option_cmake=
 option_coverage=
 option_dir=build
 option_github=
@@ -39,7 +41,7 @@ option_prepare=false
 option_samples=
 option_tests=
 
-while getopts ":B:d:abcghlopst" opt; do
+while getopts ":B:d:D:abcghlopst" opt; do
   case $opt in
     a)
       option_asan="-DwexENABLE_ASAN=ON"
@@ -59,6 +61,10 @@ while getopts ":B:d:abcghlopst" opt; do
 
     d)
       option_dir="$OPTARG"
+    ;;
+
+    D)
+      option_cmake="${option_cmake} -D$OPTARG"
     ;;
 
     g)
@@ -115,6 +121,7 @@ cmake -B "${option_dir}" -G Ninja \
   ${option_asan} \
   ${option_boost_build} \
   ${option_build} \
+  ${option_cmake} \
   ${option_coverage} \
   ${option_github} \
   ${option_locale} \
