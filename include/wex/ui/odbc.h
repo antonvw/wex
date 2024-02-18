@@ -2,7 +2,7 @@
 // Name:      odbc.h
 // Purpose:   Declaration of wex::odbc class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -29,7 +29,7 @@ public:
   static const version_info get_version_info();
 
   /// Default constructor.
-  /// Initializes the eodbc connection using specified threaded mode.
+  /// Initializes the odbc connection using specified threaded mode and buffer size.
   explicit odbc(bool threaded_mode = false, size_t buffer_size = 1024);
 
   /// Destructor.

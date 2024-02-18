@@ -2,7 +2,7 @@
 // Name:      odbc.cpp
 // Purpose:   Implementation of wex::odbc class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2023 Anton van Wezenbeek
+// Copyright: (c) 2008-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -88,18 +88,6 @@ const std::string wex::odbc::datasource() const
   return wex::config(_("Datasource")).get_first_of();
 }
 
-bool wex::odbc::logoff()
-{
-  if (!is_connected())
-  {
-    return false;
-  }
-
-  m_odbc->connect().logoff();
-
-  return true;
-}
-
 const wex::version_info wex::odbc::get_version_info()
 {
   const long version = OTL_VERSION_NUMBER;
@@ -110,6 +98,18 @@ const wex::version_info wex::odbc::get_version_info()
 bool wex::odbc::is_connected() const
 {
   return m_odbc->connect().connected > 0;
+}
+
+bool wex::odbc::logoff()
+{
+  if (!is_connected())
+  {
+    return false;
+  }
+
+  m_odbc->connect().logoff();
+
+  return true;
 }
 
 bool wex::odbc::logon(const wex::data::window& par)

@@ -81,7 +81,7 @@ while getopts ":B:d:D:abcghlopst" opt; do
     ;;
 
     o)
-      option_odbc="-wexENABLE_ODBC=ON"
+      option_odbc="-DwexENABLE_ODBC=ON"
     ;;
 
     p)
