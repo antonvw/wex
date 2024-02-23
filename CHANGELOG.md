@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- clang-tidy support
 - added osx, linux build script build-gen.sh for building wex or
   for building apps using it (installed as wex-build-gen.sh)
 - the build tool now supports ninja besides make

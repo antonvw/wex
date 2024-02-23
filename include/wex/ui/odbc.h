@@ -29,7 +29,8 @@ public:
   static const version_info get_version_info();
 
   /// Default constructor.
-  /// Initializes the odbc connection using specified threaded mode and buffer size.
+  /// Initializes the odbc connection using specified threaded mode and buffer
+  /// size.
   explicit odbc(bool threaded_mode = false, size_t buffer_size = 1024);
 
   /// Destructor.
