@@ -186,7 +186,7 @@ const wex::config::statusbar_t wex::config::get(const statusbar_t& def) const
       m_item + ".widths." + std::get<0>(it),
       std::get<2>(it));
 
-    s.push_back({std::get<0>(it), style, width});
+    s.emplace_back(std::get<0>(it), style, width);
   }
 
   return s;

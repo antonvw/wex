@@ -2,7 +2,7 @@
 // Name:      data/item.h
 // Purpose:   Declaration of wex::data::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -54,7 +54,7 @@ public:
   const auto& apply() const { return m_apply; }
 
   /// Sets apply.
-  item& apply(const user_apply_t rhs);
+  item& apply(const user_apply_t& rhs);
 
   /// Returns the number of columns for the current page.
   auto columns() const { return m_major_dimension; }
@@ -120,13 +120,13 @@ public:
   auto& user_window_create() const { return m_user_window_create_t; }
 
   /// Sets user window create.
-  item& user_window_create(const user_window_create_t rhs);
+  item& user_window_create(const user_window_create_t& rhs);
 
   /// Returns validate.
   const auto validate() const { return m_validate; }
 
   /// Sets validator.
-  item& validate(const user_validate_t rhs);
+  item& validate(const user_validate_t& rhs);
 
   /// Returns validate regex.
   const auto& validate_re() const { return m_validate_re; }
@@ -138,7 +138,7 @@ public:
   auto& user_window_to_config() const { return m_user_window_to_config_t; }
 
   /// Sets user window config.
-  item& user_window_to_config(const user_window_to_config_t rhs);
+  item& user_window_to_config(const user_window_to_config_t& rhs);
 
   /// Returns window data.
   const data::window& window() const { return m_data.window(); }

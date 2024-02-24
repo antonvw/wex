@@ -2,7 +2,7 @@
 // Name:      mode.cpp
 // Purpose:   Implementation of class wex::vi_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2023 Anton van Wezenbeek
+// Copyright: (c) 2017-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/mpl/list.hpp>
@@ -21,6 +21,7 @@
 #include <wex/vi/vi.h>
 
 #include <algorithm>
+#include <utility>
 
 namespace mpl = boost::mpl;
 namespace sc  = boost::statechart;
@@ -39,8 +40,8 @@ public:
     std::function<void(const std::string& command)> insert,
     std::function<void()>                           command)
     : m_stc(stc)
-    , m_f_insert(insert)
-    , m_f_command(command)
+    , m_f_insert(std::move(insert))
+    , m_f_command(std::move(command))
   {
     ;
   };
@@ -138,16 +139,15 @@ struct ssvACTIVE : sc::simple_state<ssvACTIVE, vi_fsm, ssvCOMMAND>
 
 struct ssvCOMMAND : sc::state<ssvCOMMAND, ssvACTIVE>
 {
-  typedef mpl::list<
+  using reactions = mpl::list<
     sc::transition<evESCAPE, ssvCOMMAND>,
     sc::custom_reaction<evINSERT>,
     sc::transition<evVISUAL, ssvVISUAL_MODE>,
     sc::transition<evVISUAL_LINE, ssvVISUAL_LINE>,
-    sc::transition<evVISUAL_BLOCK, ssvVISUAL_BLOCK>>
-    reactions;
+    sc::transition<evVISUAL_BLOCK, ssvVISUAL_BLOCK>>;
 
   explicit ssvCOMMAND(my_context ctx)
-    : my_base(ctx)
+    : my_base(std::move(ctx))
   {
     context<vi_fsm>().state(vi_mode::state_t::COMMAND);
   };
@@ -161,10 +161,10 @@ struct ssvCOMMAND : sc::state<ssvCOMMAND, ssvACTIVE>
 
 struct ssvTEXTINPUT : sc::state<ssvTEXTINPUT, ssvACTIVE>
 {
-  typedef sc::custom_reaction<evESCAPE> reactions;
+  using reactions = sc::custom_reaction<evESCAPE>;
 
   explicit ssvTEXTINPUT(my_context ctx)
-    : my_base(ctx)
+    : my_base(std::move(ctx))
   {
     context<vi_fsm>().state(vi_mode::state_t::INSERT);
     context<vi_fsm>().insert_mode();
@@ -179,18 +179,17 @@ struct ssvTEXTINPUT : sc::state<ssvTEXTINPUT, ssvACTIVE>
 
 struct ssvVISUAL_MODE : sc::simple_state<ssvVISUAL_MODE, ssvACTIVE, ssvVISUAL>
 {
-  typedef mpl::list<
+  using reactions = mpl::list<
     sc::transition<evESCAPE, ssvCOMMAND>,
     sc::transition<evVISUAL, ssvVISUAL>,
     sc::transition<evVISUAL_LINE, ssvVISUAL_LINE>,
-    sc::transition<evVISUAL_BLOCK, ssvVISUAL_BLOCK>>
-    reactions;
+    sc::transition<evVISUAL_BLOCK, ssvVISUAL_BLOCK>>;
 };
 
 struct ssvVISUAL : sc::state<ssvVISUAL, ssvVISUAL_MODE>
 {
   explicit ssvVISUAL(my_context ctx)
-    : my_base(ctx)
+    : my_base(std::move(ctx))
   {
     context<vi_fsm>().state(vi_mode::state_t::VISUAL);
   };
@@ -199,7 +198,7 @@ struct ssvVISUAL : sc::state<ssvVISUAL, ssvVISUAL_MODE>
 struct ssvVISUAL_LINE : sc::state<ssvVISUAL_LINE, ssvVISUAL_MODE>
 {
   explicit ssvVISUAL_LINE(my_context ctx)
-    : my_base(ctx)
+    : my_base(std::move(ctx))
   {
     context<vi_fsm>().state(vi_mode::state_t::VISUAL_LINE);
   };
@@ -207,10 +206,10 @@ struct ssvVISUAL_LINE : sc::state<ssvVISUAL_LINE, ssvVISUAL_MODE>
 
 struct ssvVISUAL_BLOCK : sc::state<ssvVISUAL_BLOCK, ssvVISUAL_MODE>
 {
-  typedef sc::transition<evINSERT, ssvVISUAL_BLOCK_TEXTINPUT> reactions;
+  using reactions = sc::transition<evINSERT, ssvVISUAL_BLOCK_TEXTINPUT>;
 
   explicit ssvVISUAL_BLOCK(my_context ctx)
-    : my_base(ctx)
+    : my_base(std::move(ctx))
   {
     context<vi_fsm>().state(vi_mode::state_t::VISUAL_BLOCK);
   };
@@ -219,10 +218,10 @@ struct ssvVISUAL_BLOCK : sc::state<ssvVISUAL_BLOCK, ssvVISUAL_MODE>
 struct ssvVISUAL_BLOCK_TEXTINPUT
   : sc::state<ssvVISUAL_BLOCK_TEXTINPUT, ssvVISUAL_MODE>
 {
-  typedef sc::transition<evESCAPE, ssvVISUAL_BLOCK> reactions;
+  using reactions = sc::transition<evESCAPE, ssvVISUAL_BLOCK>;
 
   explicit ssvVISUAL_BLOCK_TEXTINPUT(my_context ctx)
-    : my_base(ctx)
+    : my_base(std::move(ctx))
   {
     context<vi_fsm>().state(vi_mode::state_t::INSERT_BLOCK);
     context<vi_fsm>().insert_mode();
@@ -233,9 +232,9 @@ struct ssvVISUAL_BLOCK_TEXTINPUT
 #define NAVIGATE(SCOPE, DIRECTION) m_vi->get_stc()->SCOPE##DIRECTION();
 
 wex::vi_mode::vi_mode(
-  vi*                                     vi,
-  std::function<void(const std::string&)> insert,
-  std::function<void()>                   command)
+  vi*                                            vi,
+  const std::function<void(const std::string&)>& insert,
+  const std::function<void()>&                   command)
   : m_vi(vi)
   , m_fsm(std::make_unique<vi_fsm>(vi->get_stc(), insert, command))
   , m_insert_commands{

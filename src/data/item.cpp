@@ -12,7 +12,7 @@ wex::data::item::item(const data::control& data)
 {
 }
 
-wex::data::item& wex::data::item::apply(const user_apply_t rhs)
+wex::data::item& wex::data::item::apply(const user_apply_t& rhs)
 {
   m_apply = rhs;
   return *this;
@@ -78,7 +78,7 @@ wex::data::item& wex::data::item::image_list(wxImageList* il)
   return *this;
 }
 
-wex::data::item& wex::data::item::validate(const user_validate_t rhs)
+wex::data::item& wex::data::item::validate(const user_validate_t& rhs)
 {
   m_validate = rhs;
   return *this;
@@ -91,14 +91,14 @@ wex::data::item& wex::data::item::validate_re(const std::string& rhs)
 }
 
 wex::data::item&
-wex::data::item::user_window_create(const user_window_create_t rhs)
+wex::data::item::user_window_create(const user_window_create_t& rhs)
 {
   m_user_window_create_t = rhs;
   return *this;
 }
 
 wex::data::item&
-wex::data::item::user_window_to_config(const user_window_to_config_t rhs)
+wex::data::item::user_window_to_config(const user_window_to_config_t& rhs)
 {
   m_user_window_to_config_t = rhs;
   return *this;

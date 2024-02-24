@@ -375,7 +375,7 @@ bool wex::frame::add_toolbar_panes(const panes_t& panes)
         .CaptionVisible(false);
     }
 
-    pns.push_back({it.first, pane});
+    pns.emplace_back(it.first, pane);
   }
 
   return pane_add(pns);

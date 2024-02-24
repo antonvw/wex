@@ -2,8 +2,10 @@
 // Name:      item.cpp
 // Purpose:   Implementation of wex::item::create_window and wex::item::creators
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
+
+#include <utility>
 
 #include "item.h"
 #include "ui.h"
@@ -66,7 +68,9 @@ void handle(const std::string& s, wxCheckListBox* clb, size_t& item_no)
   item_no++;
 }
 
-auto initial(const data::item& data, std::function<void(wxArrayString& as)> f)
+auto initial(
+  const data::item&                             data,
+  const std::function<void(wxArrayString& as)>& f)
 {
   wxArrayString as;
 
@@ -100,12 +104,12 @@ void create_checkbox(wxWindow* parent, wxWindow*& window, const wex::item& item)
 auto* create_checklistbox(
   wxWindow*                              parent,
   const wex::item&                       item,
-  std::function<void(wxArrayString& as)> f)
+  const std::function<void(wxArrayString& as)>& f)
 {
   return new wxCheckListBox(
     parent,
     IPS,
-    initial(item.data(), f),
+    initial(item.data(), std::move(f)),
     item.data().window().style());
 }
 

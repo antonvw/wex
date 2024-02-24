@@ -2,7 +2,7 @@
 // Name:      statusbar.cpp
 // Purpose:   Implementation of wex::statusbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -115,11 +115,11 @@ std::vector<item> pane_dialog_items(const std::vector<statusbar_pane>& panes)
 // The first pane is shown_pane_no, or FIELD_NOT_SHOWN if the pane is not
 // shown, to be used as index in wxwidgets panes. The second pane the pane_no as
 // index in the panes vector.
-typedef struct
+using pane_info_t = struct
 {
   int shown_no;
   int no;
-} pane_info_t;
+};
 
 std::optional<pane_info_t>
 pane_info(const std::vector<statusbar_pane>& panes, const std::string& pane)
@@ -398,7 +398,7 @@ wex::statusbar* wex::statusbar::setup(
           });
         it == panes.end())
     {
-      m_panes.push_back({});
+      m_panes.emplace_back();
     }
   }
 
@@ -418,8 +418,10 @@ wex::statusbar* wex::statusbar::setup(
 
   for (const auto& it : m_panes)
   {
-    sb_def.push_back(
-      {it.name(), pane_styles().find(it.GetStyle()), it.GetWidth()});
+    sb_def.emplace_back(
+      it.name(),
+      pane_styles().find(it.GetStyle()),
+      it.GetWidth());
   }
 
   const auto sb_config(config("statusbar").get(sb_def));

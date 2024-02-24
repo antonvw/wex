@@ -2,7 +2,7 @@
 // Name:      lexer-attribute-data.cpp
 // Purpose:   Implementation of wex::lexer_attribute_data class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -20,7 +20,7 @@ wex::lexer_attribute_data::lexer_attribute_data(
   , m_node(n)
 {
   const std::string nm(m_att.name());
-  const auto        pos = nm.find("-");
+  const auto        pos = nm.find('-');
 
   if (pos != std::string::npos)
   {

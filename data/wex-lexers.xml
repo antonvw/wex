@@ -1444,7 +1444,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <property name="fold.comment"> 1 </property>
     </properties>
   </lexer>
-  <lexer name="props" extensions="*.ini;*.conf;*.desktop;*.rc;.clang-format;hosts*" edgemode="none">
+  <lexer name="props" extensions="*.ini;*.conf;*.desktop;*.rc;hosts*" edgemode="none">
     <styles>
     <style no="section"> fore:sky blue </style>
     <style no="assignment"> fore:khaki</style>
@@ -1627,7 +1627,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     <keywords>
     </keywords>
   </lexer>
-  <lexer name="yaml" extensions="*.yml">
+  <lexer name="yaml" extensions="*.yml;.clang-*">
     <styles>
         <style no="identifier">bold</style>
     </styles>

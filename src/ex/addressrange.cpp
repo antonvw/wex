@@ -2,7 +2,7 @@
 // Name:      addressrange.cpp
 // Purpose:   Implementation of class wex::addressrange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -309,7 +309,7 @@ bool wex::addressrange::escape(const std::string& command)
 
       return true;
     }
-    else if (const auto err(process.std_err()); !err.empty())
+    else if (const auto& err(process.std_err()); !err.empty())
     {
       m_ex->frame()->show_ex_message(err);
       log("escape") << err;
@@ -343,7 +343,7 @@ bool wex::addressrange::execute(const std::string& reg) const
 
 bool wex::addressrange::general(
   const address&        destination,
-  std::function<bool()> f) const
+  const std::function<bool()>& f) const
 {
   const auto dest_line = destination.get_line();
 
@@ -670,7 +670,7 @@ bool wex::addressrange::set_range(const std::string& range)
       m_stc->GetFirstVisibleLine() + m_stc->LinesOnScreen() + 1);
     return true;
   }
-  else if (const auto comma(range.find(",")); comma != std::string::npos)
+  else if (const auto comma(range.find(',')); comma != std::string::npos)
   {
     return set(range.substr(0, comma), range.substr(comma + 1));
   }
@@ -775,7 +775,7 @@ bool wex::addressrange::sort(const std::string& parameters) const
     {
       pos--;
 
-      if (const auto co = filter.find(","); co != std::string::npos)
+      if (const auto co = filter.find(','); co != std::string::npos)
       {
         if (size_t end; std::from_chars(
                           filter.data() + co + 1,

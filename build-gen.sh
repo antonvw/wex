@@ -11,7 +11,7 @@
 
 usage()
 {
-  echo "usage: build-gen.sh [-B <dir>] [-d <dir>] [-abcghlopst]"
+  echo "usage: build-gen.sh [-B <dir>] [-d <dir>] [-abcghlopstT]"
   echo "-a       build ASAN leak sanitizer"
   echo "-B <dir> boost root build <dir>"
   echo "-b       build static libraries, default builds shared libraries"
@@ -25,6 +25,7 @@ usage()
   echo "-p       prepare only, do not run ninja after generating build files"
   echo "-s       build samples binaries as well"
   echo "-t       build tests binaries as well"
+  echo "-T       build clang-tidy (to enable run-clang-tidy)"
 }
 
 option_asan=
@@ -40,8 +41,9 @@ option_odbc=
 option_prepare=false
 option_samples=
 option_tests=
+option_tidy=
 
-while getopts ":B:d:D:abcghlopst" opt; do
+while getopts ":B:d:D:abcghlopstT" opt; do
   case $opt in
     a)
       option_asan="-DwexENABLE_ASAN=ON"
@@ -96,6 +98,10 @@ while getopts ":B:d:D:abcghlopst" opt; do
       option_tests="-DwexBUILD_TESTS=ON"
     ;;
 
+    T)
+      option_tidy="-DwexBUILD_TIDY=ON"
+    ;;
+
     :)
       echo "option -${OPTARG} requires an argument"
       exit 1
@@ -113,6 +119,8 @@ uname=$(uname)
 if [[ $uname == "Darwin" ]]; then
   # cmake find_package llvm otherwise gives error
   export LLVM_DIR=/usr/local/Cellar/homebrew/opt
+  export CC=${LLVM_DIR}/llvm/bin/clang
+  export CXX=${LLVM_DIR}/llvm/bin/clang
 fi
 
 mkdir -p "${option_dir}"
@@ -127,7 +135,8 @@ cmake -B "${option_dir}" -G Ninja \
   ${option_locale} \
   ${option_odbc} \
   ${option_samples} \
-  ${option_tests}
+  ${option_tests} \
+  ${option_tidy}
 
 if [[ "${option_prepare}" == "false" ]]; then
   cd "${option_dir}" && ninja

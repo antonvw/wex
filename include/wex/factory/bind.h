@@ -2,7 +2,7 @@
 // Name:      bind.h
 // Purpose:   Declaration of class wex::bind
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -24,30 +24,31 @@ public:
   explicit bind(wxEvtHandler* evt);
 
   /// Binds command events to handler.
-  void command(std::vector<std::pair<
+  void command(const std::vector<std::pair<
                  /// the callback
                  std::function<void(wxCommandEvent&)>,
                  /// the window id, or first for a range of id's (see defs.h)
-                 int>>);
+                 int>>&);
 
   /// Binds a range of command events to handler.
-  void command(std::vector<std::tuple<
+  void command(const std::vector<std::tuple<
                  /// the callback
                  std::function<void(wxCommandEvent&)>,
                  /// the range of id's
                  int,
-                 int>>);
+                 int>>&);
 
   /// Binds find replace data to handler.
-  void
-  frd(wxFindReplaceData* frd, std::function<void(const std::string&, bool)> f);
+  void frd(
+    wxFindReplaceData*                                   frd,
+    const std::function<void(const std::string&, bool)>& f);
 
   /// Binds update events to handler.
-  void ui(std::vector<std::pair<
+  void ui(const std::vector<std::pair<
             /// the callback
             std::function<void(wxUpdateUIEvent&)>,
             /// the window id
-            int>>);
+            int>>&);
 
 private:
   wxEvtHandler* m_handler;

@@ -2,7 +2,7 @@
 // Name:      link.cpp
 // Purpose:   Implementation of class wex::link
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -133,7 +133,7 @@ const wex::path wex::factory::link::find_filename(
     return path();
   }
 
-  std::string text_filter(text);
+  const std::string& text_filter(text);
 
   // The harddrive letter is filtered, it does not work
   // when adding it to match.

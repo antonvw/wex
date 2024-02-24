@@ -11,7 +11,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
   else ()
     set(wexGCOV_USE "gcov")
   endif ()
-
+  
   add_custom_target(lcov-prep
     # prepare initial tracefile
     lcov
@@ -59,6 +59,10 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
       --title "${PROJECT_NAME}" app.run
 
     COMMENT "Running lcov" VERBATIM)
+endif ()
+
+if (wexBUILD_TIDY)
+  set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 endif ()
 
 add_subdirectory(core)

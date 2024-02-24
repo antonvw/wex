@@ -2,14 +2,14 @@
 // Name:      reflection.cpp
 // Purpose:   Declaration of wex::reflection class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/reflection.h>
 
 namespace wex
 {
-const std::string to_string(const std::any any)
+const std::string to_string(const std::any& any)
 {
   std::stringstream s;
 
@@ -80,7 +80,7 @@ std::stringstream wex::reflection::log() const
   std::stringstream ss;
   bool              first = true;
 
-  for (const auto i : m_items)
+  for (const auto& i : m_items)
   {
     const auto val(to_string(i.f())); // do not take reference
 

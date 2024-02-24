@@ -2,7 +2,7 @@
 // Name:      lexers.cpp
 // Purpose:   Implementation of wex::lexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2023 Anton van Wezenbeek
+// Copyright: (c) 2008-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/util.h>
@@ -59,8 +59,8 @@ void wex::lexers::apply(factory::stc* stc) const
 }
 
 void wex::lexers::apply_default_style(
-  std::function<void(const std::string&)> back,
-  std::function<void(const std::string&)> fore) const
+  const std::function<void(const std::string&)>& back,
+  const std::function<void(const std::string&)>& fore) const
 {
   if (regex r(",back:(.*),");
       back != nullptr && r.match(m_default_style.value()) > 0)
@@ -399,7 +399,7 @@ bool wex::lexers::load_document_init()
     m_theme_colours.clear();
     m_theme_macros.clear();
 
-    m_lexers.push_back(lexer());
+    m_lexers.emplace_back();
   }
   else
   {
@@ -518,7 +518,7 @@ void wex::lexers::parse_node_global(const pugi::xml_node& node)
     }
     else if (strcmp(child.name(), "text") == 0)
     {
-      m_texts.push_back({child.attribute("no").value(), child.text().get()});
+      m_texts.emplace_back(child.attribute("no").value(), child.text().get());
     }
   }
 }

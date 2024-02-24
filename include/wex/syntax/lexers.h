@@ -60,8 +60,8 @@ public:
 
   /// Applies default style to functions for back and foreground colours.
   void apply_default_style(
-    std::function<void(const std::string&)> back,
-    std::function<void(const std::string&)> fore = nullptr) const;
+    const std::function<void(const std::string&)>& back,
+    const std::function<void(const std::string&)>& fore = nullptr) const;
 
   /// Sets global styles (and colours and indicators)
   /// for current theme for specified component.
