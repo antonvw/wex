@@ -2,7 +2,7 @@
 // Name:      addressrange.h
 // Purpose:   Declaration of class wex::addressrange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -142,7 +142,8 @@ private:
   bool copy(const command_parser& cp);
   bool escape(const std::string& command);
   bool execute(const std::string& reg) const;
-  bool general(const address& destination, std::function<bool()> f) const;
+  bool
+  general(const address& destination, const std::function<bool()>& f) const;
   bool global(const command_parser& cp) const;
   bool indent(bool forward = true) const;
   bool move(const address& destination) const;

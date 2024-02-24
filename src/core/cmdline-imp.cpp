@@ -2,7 +2,7 @@
 // Name:      cmdline-imp.cpp
 // Purpose:   Implementation of wex::cmdline_imp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/cmdline.h>
@@ -29,21 +29,21 @@
 wex::cmdline_imp::function_t::function_t(
   std::function<void(const std::any&)> f,
   cmdline::option_t                    o)
-  : m_fo(f)
+  : m_fo(std::move(f))
   , m_type(F_OPTION)
   , m_type_o(o)
 {
 }
 
 wex::cmdline_imp::function_t::function_t(std::function<void(bool)> f)
-  : m_fs(f)
+  : m_fs(std::move(f))
   , m_type(F_SWITCH)
 {
 }
 
 wex::cmdline_imp::function_t::function_t(
   std::function<void(std::vector<std::string>)> f)
-  : m_fp(f)
+  : m_fp(std::move(f))
   , m_type(F_PARAM)
 {
 }

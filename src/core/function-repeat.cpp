@@ -2,13 +2,15 @@
 // Name:      function-repeat.cpp
 // Purpose:   Implementation of class wex::function_repeat
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
 #include <wex/core/function-repeat.h>
 #include <wex/core/log.h>
 #include <wx/window.h>
+
+#include <utility>
 
 /// Supported actions.
 enum class wex::function_repeat::action_t
@@ -23,7 +25,7 @@ wex::function_repeat::function_repeat(
   repeat_t           f)
   : m_name(name)
   , m_handler(evt)
-  , m_f(f)
+  , m_f(std::move(f))
   , m_reflect(
       {REFLECT_ADD("id", m_timer_id),
        REFLECT_ADD("interval", m_timer->GetInterval())})

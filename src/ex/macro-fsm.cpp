@@ -24,6 +24,7 @@
 #include "macro-fsm.h"
 
 #include <fstream>
+#include <utility>
 
 namespace mpl = boost::mpl;
 
@@ -39,7 +40,7 @@ struct ssmIDLE : sc::state<ssmIDLE, ssmACTIVE>
   typedef sc::transition<macro_fsm::evRECORD, ssmRECORDING> reactions;
 
   explicit ssmIDLE(my_context ctx)
-    : my_base(ctx)
+    : my_base(std::move(ctx))
   {
     context<macro_fsm>().state(macro_fsm::IDLE);
   }
@@ -50,7 +51,7 @@ struct ssmRECORDING : sc::state<ssmRECORDING, ssmACTIVE>
   typedef sc::custom_reaction<macro_fsm::evRECORD> reactions;
 
   explicit ssmRECORDING(my_context ctx)
-    : my_base(ctx)
+    : my_base(std::move(ctx))
   {
     context<macro_fsm>().state(macro_fsm::RECORDING);
   };

@@ -2,7 +2,7 @@
 // Name:      stc/bind-other.cpp
 // Purpose:   Implementation of class wex::stc method bind_other
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -65,7 +65,7 @@ void hypertext(stc* stc)
       stc->GetCharAt(match_pos + 1) != '!')
   {
     if (const auto& match(stc->get_word_at_pos(match_pos + 1));
-        match.find("/") != 0 &&
+        match.find('/') != 0 &&
         stc->GetCharAt(stc->GetCurrentPos() - 2) != '/' &&
         (stc->get_lexer().language() == "xml" ||
          stc->get_lexer().is_keyword(match)) &&

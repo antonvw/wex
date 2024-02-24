@@ -398,7 +398,7 @@ wex::statusbar* wex::statusbar::setup(
           });
         it == panes.end())
     {
-      m_panes.push_back({});
+      m_panes.emplace_back();
     }
   }
 
@@ -418,8 +418,7 @@ wex::statusbar* wex::statusbar::setup(
 
   for (const auto& it : m_panes)
   {
-    sb_def.push_back(
-      {it.name(), pane_styles().find(it.GetStyle()), it.GetWidth()});
+    sb_def.emplace_back(it.name(), pane_styles().find(it.GetStyle()), it.GetWidth());
   }
 
   const auto sb_config(config("statusbar").get(sb_def));

@@ -2,7 +2,7 @@
 // Name:      commands-ex.cpp
 // Purpose:   Implementation of class wex::ex::commands_ex
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <charconv>
@@ -30,7 +30,7 @@
                                                               \
     if (command.contains(" "))                                \
     {                                                         \
-      event.SetString(command.substr(command.find(" ") + 1)); \
+      event.SetString(command.substr(command.find(' ') + 1)); \
     }                                                         \
                                                               \
     wxPostEvent(wxTheApp->GetTopWindow(), event);             \
@@ -95,7 +95,7 @@ bool source(ex* ex, const std::string& cmd)
            *buffer,
            boost::char_separator<char>("\r\n")))
     {
-      if (const std::string line(it); !line.empty())
+      if (const std::string& line(it); !line.empty())
       {
         if (line == cmd)
         {

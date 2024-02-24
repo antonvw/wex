@@ -2,14 +2,14 @@
 // Name:      data/menu.cpp
 // Purpose:   Implementation of wex::data::menu
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/menu.h>
 #include <wx/app.h>
 #include <wx/frame.h>
 
-wex::data::menu& wex::data::menu::action(const action_t rhs)
+wex::data::menu& wex::data::menu::action(const action_t& rhs)
 {
   m_action = rhs;
   return *this;
@@ -47,7 +47,7 @@ wex::data::menu& wex::data::menu::help_text(const std::string& rhs)
   return *this;
 }
 
-wex::data::menu& wex::data::menu::ui(const ui_t rhs)
+wex::data::menu& wex::data::menu::ui(const ui_t& rhs)
 {
   m_ui = rhs;
   return *this;

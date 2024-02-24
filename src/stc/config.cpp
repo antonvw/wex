@@ -61,7 +61,7 @@ void wex::stc::config_get()
     if (const auto el = iv.find<long>(_("stc.Edge line"));
         el != wxSTC_EDGE_NONE)
     {
-      const wxFont font(iv.find<wxFont>(_("stc.Default font")));
+      const auto font(iv.find<wxFont>(_("stc.Default font")));
       SetEdgeMode(font.IsFixedWidth() ? el : wxSTC_EDGE_BACKGROUND);
     }
     else

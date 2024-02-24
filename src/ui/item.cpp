@@ -2,7 +2,7 @@
 // Name:      item.cpp
 // Purpose:   Implementation of wex::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <charconv>
@@ -349,7 +349,7 @@ void wex::item::add_items(group_t& page, bool readonly)
     m_page      = page.first;
     int imageId = wxWithImages::NO_IMAGE;
 
-    if (const auto col = m_page.find(":"); col != std::string::npos)
+    if (const auto col = m_page.find(':'); col != std::string::npos)
     {
       std::from_chars(
         m_page.data() + col + 1,
@@ -581,7 +581,7 @@ const std::any wex::item::get_value() const
           }
           else
           {
-            any = 0l;
+            any = 0L;
           }
           break;
 

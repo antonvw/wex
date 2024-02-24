@@ -2,7 +2,7 @@
 // Name:      mode.h
 // Purpose:   Declaration of class wex::vi_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -55,9 +55,9 @@ public:
     /// specify vi component
     vi* vi,
     /// method to be called when going into insert mode
-    std::function<void(const std::string& command)> insert = nullptr,
+    const std::function<void(const std::string& command)>& insert = nullptr,
     /// method to be called when going back to command mode
-    std::function<void()> f = nullptr);
+    const std::function<void()>& f = nullptr);
 
   /// Destructor.
   ~vi_mode();

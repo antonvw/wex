@@ -2,7 +2,7 @@
 // Name:      vi.h
 // Purpose:   Declaration of class wex::vi
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2023 Anton van Wezenbeek
+// Copyright: (c) 2009-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -107,7 +107,10 @@ private:
   bool insert_mode_register(const std::string& text);
 
   bool motion_command(motion_t type, std::string& command);
-  bool motion_command_handle(motion_t type, std::string& command, function_t t);
+  bool motion_command_handle(
+    motion_t          type,
+    std::string&      command,
+    const function_t& t);
   bool other_command(std::string& command);
   bool parse_command(std::string& command);
   bool parse_command_handle(std::string& command);

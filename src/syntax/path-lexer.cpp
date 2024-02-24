@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      path.cpp
+// Name:      path-lexer.cpp
 // Purpose:   Implementation of class wex::path_lexer
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -32,7 +32,7 @@ std::map<build_system_t, std::string> switches{
   {build_system_t::MAKE, "-f"},
   {build_system_t::NINJA, ""}};
 
-build_system_t check_build_system(const path_lexer p)
+build_system_t check_build_system(const path_lexer& p)
 {
   if (p.lexer().scintilla_lexer() == "makefile")
   {

@@ -2,7 +2,7 @@
 // Name:      hexmode.cpp
 // Purpose:   Implementation of class wex::hexmode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -275,7 +275,7 @@ void wex::hexmode::set_pos(const wxKeyEvent& event)
   hexmode_line(this).set_pos(event);
 }
 
-void wex::hexmode::set_text(const std::string text)
+void wex::hexmode::set_text(const std::string& text)
 {
   if (!is_active())
     return;

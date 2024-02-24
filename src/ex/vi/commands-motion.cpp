@@ -2,7 +2,7 @@
 // Name:      commands-motion.cpp
 // Purpose:   Implementation of wex::vi::commands_motion
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -611,9 +611,9 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
 }
 
 bool wex::vi::motion_command_handle(
-  motion_t     type,
-  std::string& command,
-  function_t   f_type)
+  motion_t          type,
+  std::string&      command,
+  const function_t& f_type)
 {
   size_t parsed = 0;
   auto   start  = get_stc()->GetCurrentPos();
