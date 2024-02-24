@@ -2,7 +2,7 @@
 // Name:      file-history.cpp
 // Purpose:   Implementation of wex::file_history class methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -14,6 +14,7 @@
 #include <wx/stockitem.h>
 
 #include <filesystem>
+#include <ranges>
 
 namespace wex
 {
@@ -69,11 +70,9 @@ wex::file_history::file_history(
 {
   // The order should be inverted, as the last one added is the most recent
   // used.
-  for (auto it = m_history->contents().rbegin();
-       it != m_history->contents().rend();
-       ++it)
+  for (const auto& it : std::ranges::reverse_view(m_history->contents()))
   {
-    m_history->AddFileToHistory(*it);
+    m_history->AddFileToHistory(it);
   }
 }
 

@@ -139,13 +139,12 @@ struct ssvACTIVE : sc::simple_state<ssvACTIVE, vi_fsm, ssvCOMMAND>
 
 struct ssvCOMMAND : sc::state<ssvCOMMAND, ssvACTIVE>
 {
-  typedef mpl::list<
+  using reactions = mpl::list<
     sc::transition<evESCAPE, ssvCOMMAND>,
     sc::custom_reaction<evINSERT>,
     sc::transition<evVISUAL, ssvVISUAL_MODE>,
     sc::transition<evVISUAL_LINE, ssvVISUAL_LINE>,
-    sc::transition<evVISUAL_BLOCK, ssvVISUAL_BLOCK>>
-    reactions;
+    sc::transition<evVISUAL_BLOCK, ssvVISUAL_BLOCK>>;
 
   explicit ssvCOMMAND(my_context ctx)
     : my_base(std::move(ctx))
@@ -162,7 +161,7 @@ struct ssvCOMMAND : sc::state<ssvCOMMAND, ssvACTIVE>
 
 struct ssvTEXTINPUT : sc::state<ssvTEXTINPUT, ssvACTIVE>
 {
-  typedef sc::custom_reaction<evESCAPE> reactions;
+  using reactions = sc::custom_reaction<evESCAPE>;
 
   explicit ssvTEXTINPUT(my_context ctx)
     : my_base(std::move(ctx))
@@ -180,12 +179,11 @@ struct ssvTEXTINPUT : sc::state<ssvTEXTINPUT, ssvACTIVE>
 
 struct ssvVISUAL_MODE : sc::simple_state<ssvVISUAL_MODE, ssvACTIVE, ssvVISUAL>
 {
-  typedef mpl::list<
+  using reactions = mpl::list<
     sc::transition<evESCAPE, ssvCOMMAND>,
     sc::transition<evVISUAL, ssvVISUAL>,
     sc::transition<evVISUAL_LINE, ssvVISUAL_LINE>,
-    sc::transition<evVISUAL_BLOCK, ssvVISUAL_BLOCK>>
-    reactions;
+    sc::transition<evVISUAL_BLOCK, ssvVISUAL_BLOCK>>;
 };
 
 struct ssvVISUAL : sc::state<ssvVISUAL, ssvVISUAL_MODE>
@@ -208,7 +206,7 @@ struct ssvVISUAL_LINE : sc::state<ssvVISUAL_LINE, ssvVISUAL_MODE>
 
 struct ssvVISUAL_BLOCK : sc::state<ssvVISUAL_BLOCK, ssvVISUAL_MODE>
 {
-  typedef sc::transition<evINSERT, ssvVISUAL_BLOCK_TEXTINPUT> reactions;
+  using reactions = sc::transition<evINSERT, ssvVISUAL_BLOCK_TEXTINPUT>;
 
   explicit ssvVISUAL_BLOCK(my_context ctx)
     : my_base(std::move(ctx))
@@ -220,7 +218,7 @@ struct ssvVISUAL_BLOCK : sc::state<ssvVISUAL_BLOCK, ssvVISUAL_MODE>
 struct ssvVISUAL_BLOCK_TEXTINPUT
   : sc::state<ssvVISUAL_BLOCK_TEXTINPUT, ssvVISUAL_MODE>
 {
-  typedef sc::transition<evESCAPE, ssvVISUAL_BLOCK> reactions;
+  using reactions = sc::transition<evESCAPE, ssvVISUAL_BLOCK>;
 
   explicit ssvVISUAL_BLOCK_TEXTINPUT(my_context ctx)
     : my_base(std::move(ctx))

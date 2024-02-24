@@ -37,7 +37,7 @@ struct ssmACTIVE : sc::simple_state<ssmACTIVE, macro_fsm, ssmIDLE>
 
 struct ssmIDLE : sc::state<ssmIDLE, ssmACTIVE>
 {
-  typedef sc::transition<macro_fsm::evRECORD, ssmRECORDING> reactions;
+  using reactions = sc::transition<macro_fsm::evRECORD, ssmRECORDING>;
 
   explicit ssmIDLE(my_context ctx)
     : my_base(std::move(ctx))
@@ -48,7 +48,7 @@ struct ssmIDLE : sc::state<ssmIDLE, ssmACTIVE>
 
 struct ssmRECORDING : sc::state<ssmRECORDING, ssmACTIVE>
 {
-  typedef sc::custom_reaction<macro_fsm::evRECORD> reactions;
+  using reactions = sc::custom_reaction<macro_fsm::evRECORD>;
 
   explicit ssmRECORDING(my_context ctx)
     : my_base(std::move(ctx))
