@@ -21,6 +21,22 @@ wex-stc     |           | stc     | stc classes
 wex-vcs     |           | vcs     | version control system classes
 wex-del     |           | del     | delivered classes
 
+To ensure proper implementation of c++ code there is the excellent
+tool clang-tidy that checks for several c++ topics and also
+has an option to fix anomalies. Run it:
+
+```bash
+  ./build-gen.sh -T -d tidy
+  cd tidy
+  run-clang-tidy -quiet
+```
+
+possibly followed by:
+
+```bash
+  run-clang-tidy -fix
+```
+
 It benefits from the following c++ features:
 
 ## c++ libraries

@@ -11,15 +11,16 @@
 
 usage()
 {
-  echo "usage: build-gen.sh [-B <dir>] [-d <dir>] [-abcghlopstT]"
+  echo "usage: build-gen.sh [-B <dir>] [-d <dir>] [-abcghilopstT]"
   echo "-a       build ASAN leak sanitizer"
-  echo "-B <dir> boost root build <dir>"
   echo "-b       build static libraries, default builds shared libraries"
+  echo "-B <dir> boost root build <dir>"
   echo "-c       build coverage mode"
   echo "-d <dir> build <dir>, default uses the 'build' subdir"
   echo "-D <x=y> add a general cmake define"
   echo "-g       build github mode"
   echo "-h       displays usage information and exits"
+  echo "-i       build interface bindings for SWIG"
   echo "-l       add locale files"
   echo "-o       build ODBC"
   echo "-p       prepare only, do not run ninja after generating build files"
@@ -40,10 +41,11 @@ option_locale=
 option_odbc=
 option_prepare=false
 option_samples=
+option_swig=
 option_tests=
 option_tidy=
 
-while getopts ":B:d:D:abcghlopstT" opt; do
+while getopts ":B:d:D:abcghilopstT" opt; do
   case $opt in
     a)
       option_asan="-DwexENABLE_ASAN=ON"
@@ -76,6 +78,10 @@ while getopts ":B:d:D:abcghlopstT" opt; do
     h)
       usage
       exit 1
+    ;;
+
+    i)
+      option_swig="-DwexBUILD_BINDINGS=ON"
     ;;
 
     l)
@@ -135,6 +141,7 @@ cmake -B "${option_dir}" -G Ninja \
   ${option_locale} \
   ${option_odbc} \
   ${option_samples} \
+  ${option_swig} \
   ${option_tests} \
   ${option_tidy}
 
