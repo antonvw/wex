@@ -20,20 +20,21 @@
 #include <wex/ex/macros.h>
 #include <wex/ex/util.h>
 #include <wex/syntax/lexers.h>
+#include <wex/syntax/path-lexer.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 #include <wx/app.h>
 
-#define POST_COMMAND(ID)                                      \
-  {                                                           \
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID);    \
-                                                              \
-    if (command.contains(" "))                                \
-    {                                                         \
-      event.SetString(command.substr(command.find(' ') + 1)); \
-    }                                                         \
-                                                              \
-    wxPostEvent(wxTheApp->GetTopWindow(), event);             \
+#define POST_COMMAND(ID)                                                       \
+  {                                                                            \
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID);                     \
+                                                                               \
+    if (command.contains(" "))                                                 \
+    {                                                                          \
+      event.SetString(command.substr(command.find(' ') + 1));                  \
+    }                                                                          \
+                                                                               \
+    wxPostEvent(wxTheApp->GetTopWindow(), event);                              \
   };
 
 namespace wex
@@ -95,7 +96,7 @@ bool source(ex* ex, const std::string& cmd)
            *buffer,
            boost::char_separator<char>("\r\n")))
     {
-      if (const std::string& line(it); !line.empty())
+      if (const std::string & line(it); !line.empty())
       {
         if (line == cmd)
         {
@@ -155,7 +156,9 @@ wex::ex::commands_t wex::ex::commands_ex()
          text << wxTheApp->argv.GetArguments()[i] << "\n";
        }
        if (!text.str().empty())
+       {
          show_dialog("ar", text.str());
+       }
        return true;
      }},
     {"^:chd(ir)?\\b|:cd\\b",
@@ -326,7 +329,7 @@ wex::ex::commands_t wex::ex::commands_ex()
        {
          wex::lexers::get()->restore_theme();
          get_stc()->get_lexer().set(
-           get_stc()->get_lexer().display_lexer(),
+           path_lexer(get_stc()->path()).lexer(),
            true); // allow folding
        }
        else if (command.ends_with("off"))

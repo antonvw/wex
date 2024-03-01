@@ -25,6 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- syntax on now restores previous syntax
 - case insensitive find in files
 - auto_complete handling
 - history clear fixed
