@@ -24,8 +24,10 @@ git clone --recursive https://github.com/antonvw/wex.git
 
 ### for Visual Studio
 
-`mkdir build && cd build && cmake ..`
-`devenv wex.sln /build Release`
+```bash
+mkdir build && cd build && cmake ..
+devenv wex.sln /build Release
+```
 
 and for mingw add `-G "MinGW Makefiles"` and do `mingw32-make`.
 

@@ -1,6 +1,6 @@
 # bindings
 
-This directory will be used if wexBUILD_BINDINGS was specified,
+This directory will be used if switch -i was specified with build-gen,
 and [swig](https://www.swig.org/) is installed.
 
 This directory contains language bindings for wex.
@@ -13,7 +13,7 @@ build/bindings, or in the installed python directory.
 As an exampe of using the bindings: install wex, run python and do:
 
 ```python
->>> import wex'
+>>> import wex
 >>> wex.now()
 '2024-01-21 14:00:05'
 >>> r=wex.regex('([0-9])+xxx')

@@ -54,7 +54,7 @@ bool wex::stc::link_open(link_t mode, std::string* link)
 {
   const auto& sel(get_selected_text());
 
-  if (sel.size() > 1000)
+  if (const auto max_link_size = 10000; sel.size() > max_link_size)
   {
     return false;
   }
@@ -79,7 +79,7 @@ bool wex::stc::link_open(link_t mode, std::string* link)
           {
             *link += ",";
           }
-          
+
           *link += path.filename();
         }
         else if (!mode[LINK_CHECK])
