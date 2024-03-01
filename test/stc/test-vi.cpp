@@ -2,9 +2,10 @@
 // Name:      stc/test-vi.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <thread>
 #include <wex/core/config.h>
 #include <wex/core/log-none.h>
 #include <wex/core/log.h>
@@ -103,9 +104,13 @@ TEST_CASE("wex::vi")
       CAPTURE(go.first);
 
       if (go.first.back() != 'd')
+      {
         REQUIRE(vi->command(go.first));
+      }
       else
+      {
         REQUIRE(!vi->command(go.first));
+      }
 
       if (go.first[0] == '/' || go.first[0] == '?')
       {
@@ -385,6 +390,17 @@ TEST_CASE("wex::vi")
     REQUIRE(stc->get_text() == "xxOK\nxxOK\nyyOK\nzzOK\n");
   }
 
+  SUBCASE("syntax")
+  {
+    REQUIRE(stc->open(wex::path("test.md")));
+    stc->get_lexer().set("markdown");
+    REQUIRE(stc->get_lexer().display_lexer() == "markdown");
+    REQUIRE(vi->command(":syntax off"));
+    REQUIRE(stc->get_lexer().display_lexer().empty());
+    REQUIRE(vi->command(":syntax on"));
+    REQUIRE(stc->get_lexer().display_lexer() == "markdown");
+  }
+
   SUBCASE("tab")
   {
     stc->clear();
@@ -474,7 +490,9 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->mode().str() == "insert");
     // Second i (and more) all handled by vi.
     for (int i = 0; i < 10; i++)
+    {
       REQUIRE(!vi->on_char(event));
+    }
 
     // Test control keys.
     for (const auto& control_key : std::vector<int>{

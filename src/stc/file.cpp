@@ -16,10 +16,11 @@
 
 // #define USE_THREAD 1
 
-#define FILE_POST(ACTION)                                                 \
-  wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_FILE_ACTION); \
-  event.SetInt(ACTION);                                                   \
-  wxPostEvent(m_stc, event);
+#define FILE_POST(ACTION)                                                      \
+  auto* event =                                                                \
+    new wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_FILE_ACTION);      \
+  event->SetInt(ACTION);                                                       \
+  wxQueueEvent(m_stc, event);
 
 #include <thread>
 
