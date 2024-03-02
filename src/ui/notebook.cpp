@@ -2,7 +2,7 @@
 // Name:      notebook.cpp
 // Purpose:   Implementation of class wex::notebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
@@ -11,8 +11,8 @@
 #include <wex/ui/notebook.h>
 #include <wx/settings.h>
 
-#define PAGE_DATA                                                      \
-  data.page(), (data.caption().empty() ? data.key() : data.caption()), \
+#define PAGE_DATA                                                              \
+  data.page(), (data.caption().empty() ? data.key() : data.caption()),         \
     data.select(), data.bitmap()
 
 namespace wex
@@ -65,16 +65,16 @@ wex::notebook::notebook(const data::window& data)
         }
         else
         {
-          if (m_frame != nullptr)
-          {
-            if (m_keys.empty())
-              m_frame->sync_close_all(GetId());
-          }
-
           auto*      page = GetPage(sel);
           const auto key  = m_windows[page];
           m_windows.erase(page);
           m_keys.erase(key);
+
+          if (m_frame != nullptr && m_keys.empty())
+          {
+            m_frame->sync_close_all(GetId());
+          }
+
           event.Skip(); // call base
         }
       }
