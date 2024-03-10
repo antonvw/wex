@@ -2,7 +2,7 @@
 // Name:      listview.h
 // Purpose:   Declaration of wex::listview and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -96,8 +96,7 @@ public:
 
   /// Sets an item string field at a particular column.
   /// Returns false if an error occurred.
-  bool
-  set_item(long index, int column, const std::string& label, int imageId = -1);
+  bool set_item(long index, int column, const std::string& label);
 
   /// Sets the item image, using the image list.
   /// If the listview does not already contain the image, it is added.
@@ -174,8 +173,6 @@ private:
   };
 
   const char m_field_separator = '\t';
-
-  const int m_image_height, m_image_width;
 
   data::listview m_data;
 
