@@ -2,7 +2,7 @@
 // Name:      link.cpp
 // Purpose:   Implementation of class wex::link and stc::link... methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -91,7 +91,8 @@ bool wex::stc::link_open(link_t mode, std::string* link)
       }
     }
 
-    if (mode[LINK_OPEN_MIME])
+    // Open at most one mime link.
+    if (!found && mode[LINK_OPEN_MIME])
     {
       if (const wex::path path(m_link->get_path(
             it,

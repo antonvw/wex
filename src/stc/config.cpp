@@ -2,7 +2,7 @@
 // Name:      stc/config.cpp
 // Purpose:   Implementation of config related methods of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2017-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -294,7 +294,7 @@ void wex::stc::on_init()
              .window(data::window().size({200, 200})),
            // First try to find "..", then <..>, as in next example:
            // <A HREF="http://www.scintilla.org">scintilla</A> component.
-           config::strings_t({"\"\t\"", "<\t>", "[\t]", "'\t'", "{\t}"})}}},
+           config::strings_t({"\"\t\"", "`\t`", "<\t>", "[\t]", "'\t'", "{\t}"})}}},
       }}});
 
   if (item_vector(m_config_items).find<bool>(_("stc.Keep zoom")))

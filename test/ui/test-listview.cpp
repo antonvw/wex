@@ -2,11 +2,12 @@
 // Name:      test-listview.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
 #include <wex/factory/defs.h>
+#include <wex/ui/listitem.h>
 #include <wex/ui/listview.h>
 
 #include "test.h"
@@ -98,12 +99,36 @@ TEST_CASE("wex::listview")
     REQUIRE(lv->append_columns({{"String", wex::column::STRING}}));
 
     REQUIRE(lv->item_from_text("test.h\ntest.h"));
+    REQUIRE(!lv->item_to_text(0).empty());
+    REQUIRE(!lv->item_to_text(-1).empty());
+  }
+
+  SUBCASE("set_item_image")
+  {
+    REQUIRE(lv->data().image() == wex::data::listview::IMAGE_ART);
+    REQUIRE(!lv->data().type_description().empty());
+
+    REQUIRE(lv->append_columns({{"String", wex::column::STRING}}));
+
+    REQUIRE(lv->item_from_text("test.h\ntest.h"));
     REQUIRE(lv->set_item_image(0, wxART_WARNING));
     lv->items_update();
     REQUIRE(lv->data().image() == wex::data::listview::IMAGE_ART);
     REQUIRE(!lv->data().type_description().empty());
-    REQUIRE(!lv->item_to_text(0).empty());
-    REQUIRE(!lv->item_to_text(-1).empty());
+
+    wex::data::listview data;
+    data.image(wex::data::listview::IMAGE_NONE);
+    data.type(wex::data::listview::FOLDER);
+    auto* ov = new wex::listview(data);
+    frame()->pane_add(ov);
+    REQUIRE(ov->data().type() == wex::data::listview::FOLDER);
+    REQUIRE(ov->data().image() == wex::data::listview::IMAGE_FILE_ICON);
+    wex::listitem item(ov, wex::path("./test.h"));
+    item.insert();
+    REQUIRE(item.GetImage() != -1);
+    wex::listitem item2(ov, wex::path("./texxxst.h"));
+    item2.insert();
+    REQUIRE(item2.GetImage() == -1);
   }
 
   SUBCASE("sorting")
