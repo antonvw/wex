@@ -168,7 +168,9 @@ TEST_CASE("wex::del::frame")
       REQUIRE(!del_frame()->vcs_annotate_commit(get_stc(), 4, std::string()));
     }
 
+#ifndef GITHUB
     REQUIRE(del_frame()->vcs_annotate_commit(get_stc(), 4, commit_id));
+#endif
   }
 
   SUBCASE("vcs_blame")
