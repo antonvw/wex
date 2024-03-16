@@ -9,6 +9,7 @@
 
 #include <wex/factory/hexmode.h>
 #include <wx/event.h>
+#include <wx/stc/stc.h>
 
 namespace wex
 {
@@ -36,16 +37,16 @@ public:
   /// The text should be normal ascii text, it is encoded while appending.
   void append_text(const std::string& text);
 
+  /// Returns the buffer.
+  /// The buffer contains the normal text, without hex info.
+  const auto& buffer() const { return m_buffer; }
+
   /// Shows a control char dialog.
   void control_char_dialog(const std::string& caption);
 
   /// Deletes chars at current index at current line for
   /// both ascii and hex field.
-  bool erase(int count = 1, int pos = -1);
-
-  /// Returns the buffer.
-  /// The buffer contains the normal text, without hex info.
-  const auto& buffer() const { return m_buffer; }
+  bool erase(int count = 1, int pos = wxSTC_INVALID_POSITION);
 
   /// Returns info about current index,
   /// depending on which field is current.
@@ -65,11 +66,11 @@ public:
   /// Insert at ascii field or at hex field,
   /// at hex field you should provide the ascii
   /// hex codes, e.g. "30" inserts one byte space.
-  bool insert(const std::string& text, int pos = -1);
+  bool insert(const std::string& text, int pos = wxSTC_INVALID_POSITION);
 
-  /// Replaces current line at current index (if pos -1) with char for
-  /// both ascii and hex field. Otherwise at specified pos.
-  bool replace(char c, int pos = -1);
+  /// Replaces current line at current index (if pos wxSTC_INVALID_POSITION)
+  /// with char for both ascii and hex field. Otherwise at specified pos.
+  bool replace(char c, int pos = wxSTC_INVALID_POSITION);
 
   /// Replaces target with replacement text.
   /// This is only possible for hex the field,

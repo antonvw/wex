@@ -2,7 +2,7 @@
 // Name:      stc/hexmode-line.cpp
 // Purpose:   Implementation of class hexmode_line
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016-2023 Anton van Wezenbeek
+// Copyright: (c) 2016-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/hex.hpp>
@@ -33,8 +33,10 @@ wex::hexmode_line::hexmode_line(
 
   if (is_position)
   {
-    const int pos =
-      (pos_or_offset != -1 ? pos_or_offset : m_hex->get_stc()->GetCurrentPos());
+    const auto pos =
+      (pos_or_offset != wxSTC_INVALID_POSITION ?
+         pos_or_offset :
+         m_hex->get_stc()->GetCurrentPos());
 
     m_column_no = m_hex->get_stc()->GetColumn(pos);
     m_line_no   = m_hex->get_stc()->LineFromPosition(pos);
@@ -89,13 +91,15 @@ bool wex::hexmode_line::erase(int count, bool settext)
   if (
     is_readonly() || index == wxSTC_INVALID_POSITION ||
     (size_t)index >= m_hex->m_buffer.length())
+  {
     return false;
+  }
 
   m_hex->m_buffer.erase(index, count);
 
   if (settext)
   {
-    m_hex->set_text(m_hex->m_buffer);
+    m_hex->set_text(std::string(m_hex->m_buffer));
   }
 
   return true;
@@ -128,7 +132,9 @@ bool wex::hexmode_line::insert(const std::string& text)
   const auto index = buffer_index();
 
   if (is_readonly() || index == wxSTC_INVALID_POSITION)
+  {
     return false;
+  }
 
   if (m_column_no >= m_start_ascii_field)
   {
@@ -156,7 +162,9 @@ bool wex::hexmode_line::insert(const std::string& text)
   else
   {
     if (text.size() != 2 || (!isxdigit(text[0]) && !isxdigit(text[1])))
+    {
       return false;
+    }
 
     int val = 0;
     std::from_chars(text.data(), text.data() + 2, val, 16);
@@ -173,7 +181,9 @@ bool wex::hexmode_line::replace(char c)
   const auto index = buffer_index();
 
   if (is_readonly() || index == wxSTC_INVALID_POSITION)
+  {
     return false;
+  }
 
   const auto pos = m_hex->get_stc()->PositionFromLine(m_line_no);
 
@@ -198,7 +208,9 @@ bool wex::hexmode_line::replace(char c)
   {
     // hex text should be entered.
     if (!isxdigit(c))
+    {
       return false;
+    }
 
     // replace hex field with value
     m_hex->get_stc()->wxStyledTextCtrl::Replace(
@@ -245,7 +257,9 @@ void wex::hexmode_line::replace(const std::string& hex, bool settext)
   const auto index = buffer_index();
 
   if (is_readonly() || index == wxSTC_INVALID_POSITION)
+  {
     return;
+  }
 
   int code;
   std::from_chars(hex.data(), hex.data() + hex.size(), code, 16);
@@ -262,7 +276,9 @@ void wex::hexmode_line::replace_hex(int value)
   const auto index = buffer_index();
 
   if (is_readonly() || index == wxSTC_INVALID_POSITION)
+  {
     return;
+  }
 
   const auto pos = m_hex->get_stc()->PositionFromLine(m_line_no);
 
@@ -284,7 +300,9 @@ void wex::hexmode_line::replace_hex(int value)
 bool wex::hexmode_line::set_pos() const
 {
   if (m_line_no < 0 || m_column_no < 0)
+  {
     return false;
+  }
 
   m_hex->get_stc()->SetFocus();
   m_hex->get_stc()->SetCurrentPos(
