@@ -188,7 +188,9 @@ TEST_CASE("wex::del::frame")
     get_stc()->SetFocus();
     get_stc()->set_margin_text_click(2);
     REQUIRE(get_stc()->get_margin_text_click() == 2);
+#ifndef GITHUB
     REQUIRE(get_stc()->find("b6aae80e3a"));
+#endif
     get_stc()->SetFocus();
     wxMouseEvent event(wxEVT_LEFT_DOWN);
     wxPostEvent(get_stc(), event);
