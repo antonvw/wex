@@ -251,7 +251,9 @@ bool wex::hexmode::replace_target(const std::string& replacement, bool settext)
 bool wex::hexmode::set(bool on, bool use_modification_markers)
 {
   if (is_active() == on)
+  {
     return false;
+  }
 
   get_stc()->use_modification_markers(false);
 
@@ -278,7 +280,13 @@ void wex::hexmode::set_pos(const wxKeyEvent& event)
 void wex::hexmode::set_text(const std::string& text)
 {
   if (!is_active())
+  {
     return;
+  }
+
+  // hexmode_line invokes set_text it with m_buffer as argument,
+  // so m_buffer.clear clears text as well!
+  const auto keep(text);
 
   m_buffer.clear();
   m_buffer_original.clear();
@@ -287,7 +295,7 @@ void wex::hexmode::set_text(const std::string& text)
   stc_undo(get_stc(), stc_undo::undo_t().set(stc_undo::UNDO_POS));
   get_stc()->clear(false);
 
-  append_text(text);
+  append_text(keep);
 }
 
 bool wex::hexmode::sync()
