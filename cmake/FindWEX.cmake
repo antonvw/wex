@@ -138,6 +138,7 @@ if (MSVC)
     wxzlib
     wxscintilla${USE_DEBUG}
     wxlexilla${USE_DEBUG}
+    wxregexu${USE_DEBUG}
     comctl32.lib
     Rpcrt4.lib)
 else()
