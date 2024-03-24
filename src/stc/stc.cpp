@@ -366,13 +366,21 @@ void wex::stc::guess_type_and_modeline()
   }
 
   if (head.contains("\r\n"))
+  {
     SetEOLMode(wxSTC_EOL_CRLF);
+  }
   else if (head.contains("\n"))
+  {
     SetEOLMode(wxSTC_EOL_LF);
+  }
   else if (head.contains("\r"))
+  {
     SetEOLMode(wxSTC_EOL_CR);
+  }
   else
+  {
     return; // do nothing
+  }
 
   m_frame->update_statusbar(this, "PaneFileType");
 }
@@ -592,13 +600,19 @@ void wex::stc::set_search_flags(int flags)
     auto* frd = find_replace_data::get();
 
     if (frd->is_regex())
+    {
       flags |= wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX;
+    }
 
     if (frd->match_word() && !frd->is_regex())
+    {
       flags |= wxSTC_FIND_WHOLEWORD;
+    }
 
     if (frd->match_case())
+    {
       flags |= wxSTC_FIND_MATCHCASE;
+    }
   }
 
   SetSearchFlags(flags);
@@ -626,6 +640,16 @@ void wex::stc::show_line_numbers(bool show)
       m_margin_line_number,
       show ? iv.find<int>(_("stc.margin.Line number")) : 0);
   }
+}
+
+void wex::stc::show_whitespace(bool show)
+{
+  SetViewWhiteSpace(show ? wxSTC_WS_VISIBLEALWAYS : wxSTC_WS_INVISIBLE);
+  SetViewEOL(show);
+
+  config(_("stc.Whitespace visible"))
+    .set(show ? wxSTC_WS_VISIBLEALWAYS : wxSTC_WS_INVISIBLE);
+  config(_("stc.End of line")).set(show);
 }
 
 void wex::stc::Undo()

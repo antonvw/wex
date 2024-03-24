@@ -177,6 +177,9 @@ public:
   /// Shows or hides line numbers.
   virtual void show_line_numbers(bool show) { ; }
 
+  /// Shows or hides whitespace.
+  virtual void show_whitespace(bool show) { ; }
+
   /// Starts or stops syncing.
   /// Default syncing is started during construction.
   virtual void sync(bool start = true) { ; }

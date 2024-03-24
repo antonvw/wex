@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2023 Anton van Wezenbeek
+// Copyright: (c) 2009-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -11,6 +11,19 @@
 #include <wx/timer.h>
 
 #include "blaming.h"
+
+#define POPUPMENU_DO(ON, ACTION)                                               \
+  if (stc != nullptr)                                                          \
+  {                                                                            \
+    PopupMenu(new wex::menu(                                                   \
+      {{wxWindow::NewControlId(),                                              \
+        stc->ON() ? "&Hide" : "&Show",                                         \
+        data::menu().action(                                                   \
+          [=, this](wxCommandEvent&)                                           \
+          {                                                                    \
+            stc->ACTION(!stc->ON());                                           \
+          })}}));                                                              \
+  }
 
 namespace wex::del
 {
@@ -322,7 +335,9 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
             if (sed)
             {
               if (v.size() <= i)
+              {
                 return;
+              }
               find_replace_data::get()->set_replace_string(v[i++]);
             }
             arg2 =
@@ -406,11 +421,17 @@ void wex::del::frame::on_command_item_dialog(
             data::dir::type_t flags = 0;
 
             if (config(p->text_addfiles()).get(true))
+            {
               flags.set(data::dir::FILES);
+            }
             if (config(p->text_addrecursive()).get(true))
+            {
               flags.set(data::dir::RECURSIVE);
+            }
             if (config(p->text_addfolders()).get(true))
+            {
               flags.set(data::dir::DIRS);
+            }
 
             p->add_items(
               config(p->text_infolder()).get_first_of(),
@@ -642,17 +663,11 @@ void wex::del::frame::statusbar_clicked_right(const std::string& pane)
 {
   if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); pane == "PaneInfo")
   {
-    if (stc != nullptr)
-    {
-      PopupMenu(new wex::menu(
-        {{wxWindow::NewControlId(),
-          stc->is_shown_line_numbers() ? "&Hide" : "&Show",
-          data::menu().action(
-            [=, this](wxCommandEvent&)
-            {
-              stc->show_line_numbers(!stc->is_shown_line_numbers());
-            })}}));
-    }
+    POPUPMENU_DO(is_shown_line_numbers, show_line_numbers);
+  }
+  else if (pane == "PaneFileType")
+  {
+    POPUPMENU_DO(GetViewEOL, show_whitespace);
   }
   else if (pane == "PaneMacro")
   {

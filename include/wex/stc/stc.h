@@ -235,6 +235,7 @@ public:
   void set_text(const std::string& value) override;
   void show_ascii_value() override;
   void show_line_numbers(bool show) override;
+  void show_whitespace(bool show) override;
   void sync(bool start = true) override { m_function_repeat.activate(start); }
 
   void use_modification_markers(bool use) override;
