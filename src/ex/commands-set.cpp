@@ -117,8 +117,7 @@ bool wex::ex::command_set(const std::string& command)
         }
         else
         {
-          get_stc()->SetViewWhiteSpace(wxSTC_WS_VISIBLEALWAYS);
-          get_stc()->SetViewEOL(true);
+          get_stc()->show_whitespace(true);
         }
       }},
      {{"expandtab,et", _("stc.Expand tabs")},
