@@ -3,9 +3,9 @@
 <!--
 Name:      wex-lexers-macro.xml
 Purpose:   Lexers configuration for wex.
-           See lexilla 5.0.1 (https://www.scintilla.org/LexillaHistory.html)
+           See lexilla 5.3.1 (https://www.scintilla.org/LexillaHistory.html)
 Author:    Anton van Wezenbeek
-Copyright: (c) 2009-2023, Anton van Wezenbeek
+Copyright: (c) 2009-2024, Anton van Wezenbeek
 -->
 
 <lexers>
@@ -86,12 +86,12 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="indic_ime"> 32 </def>
       <def no ="indic_ime_max"> 35 </def>
       <def no ="indic_container"> 8 </def>
-      
+
       <def no ="iv_none"> 0 </def>
       <def no ="iv_real"/>
       <def no ="iv_lookforward"/>
       <def no ="iv_lookboth"/>
-      
+
       <!-- Macro's for wex -->
       <def no ="ex_marknum_change"> 1 </def>
       <!-- Macro for wex vi markers -->
@@ -137,7 +137,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="argument"/>
       <def no ="function"/>
     </def>
-    
+
     <def name = "ada">
       <def no ="default"/>
       <def no ="keyword1"/>
@@ -152,7 +152,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="commentline"/>
       <def no ="illegal"/>
     </def>
-    
+
     <def name = "apdl">
       <def no ="default"/>
       <def no ="comment"/>
@@ -168,7 +168,34 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="argument"/>
       <def no ="function"/>
     </def>
-    
+
+    <def name = "asciidoc">
+      <def no ="default"/>
+      <def no ="strong1"/>
+      <def no ="strong2"/>
+      <def no ="em1"/>
+      <def no ="em2"/>
+      <def no ="header1"/>
+      <def no ="header2"/>
+      <def no ="header3"/>
+      <def no ="header4"/>
+      <def no ="header5"/>
+      <def no ="header6"/>
+      <def no ="ulist_item"/>
+      <def no ="olist_item"/>
+      <def no ="blockquote"/>
+      <def no ="link"/>
+      <def no ="codebk"/>
+      <def no ="passbk"/>
+      <def no ="comment"/>
+      <def no ="commentbk"/>
+      <def no ="literal"/>
+      <def no ="literalbk"/>
+      <def no ="attrib"/>
+      <def no ="attribval"/>
+      <def no ="macro"/>
+    </def>
+
     <def name = "asm">
       <def no ="default"/>
       <def no ="comment"/>
@@ -187,7 +214,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="extinstruction"/>
       <def no ="commentdirective"/>
     </def>
-    
+
     <def name = "asn1">
       <def no ="default"/>
       <def no ="comment"/>
@@ -201,7 +228,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="type"/>
       <def no ="operator"/>
     </def>
-    
+
     <def name = "asy">
       <def no ="default"/>
       <def no ="comment"/>
@@ -216,7 +243,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="commentlinedoc"/>
       <def no ="keyword2"/>
     </def>
-    
+
     <def name = "au3">
       <def no ="default"/>
       <def no ="comment"/>
@@ -235,7 +262,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="comobj"/>
       <def no ="udf"/>
     </def>
-    
+
     <def name = "ave">
       <def no ="default"/>
       <def no ="comment"/>
@@ -253,7 +280,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="keyword6"/>
       <def no ="keyword7"/>
     </def>
-    
+
     <def name = "avs">
       <def no ="default"/>
       <def no ="commentblock"/>
@@ -299,7 +326,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="objectdef"/>
       <def no ="definedef"/>
     </def>
-    
+
     <def name = "bash">
       <def no ="default"/>
       <def no ="error"/>
@@ -316,7 +343,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="here_delim"/>
       <def no ="here_q"/>
     </def>
-    
+
     <def name = "batch">
       <def no ="default"/>
       <def no ="comment"/>
@@ -326,8 +353,9 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="command"/>
       <def no ="identifier"/>
       <def no ="operator"/>
+      <def no ="after_label"/>
     </def>
-    
+
     <def name = "bib">
       <def no = "default"/>
       <def no = "entry"/>
@@ -337,7 +365,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no = "value"/>
       <def no = "comment"/>
     </def>
-    
+
     <def name = "caml">
       <def no ="default"/>
       <def no ="identifier"/>
@@ -355,7 +383,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="comment2"/>
       <def no ="comment3"/>
     </def>
-    
+
     <def name = "cil">
       <def no ="default"/>
       <def no ="comment"/>
@@ -389,7 +417,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="error"/>
       <def no ="deprecated"/>
     </def>
-    
+
     <def name = "cmake">
       <def no ="default"/>
       <def no ="comment"/>
@@ -449,7 +477,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="ip"/>
       <def no ="directive"/>
     </def>
-    
+
     <def name = "cpp">
     <!-- cpp, bullant, cobol, tacl, tal -->
       <def no ="default"/>
@@ -481,7 +509,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="taskmarker"/>
       <def no ="escapesequence"/>
     </def>
-    
+
     <def name = "csound">
       <def no ="default"/>
       <def no ="comment"/>
@@ -500,15 +528,14 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="global_var"/>
       <def no ="stringeol"/>
     </def>
-    
+
     <def name = "css">
       <def no ="default"/>
       <def no ="tag"/>
       <def no ="class"/>
-      <def no ="keyword2"/>
       <def no ="unknown_pseudoclass"/>
       <def no ="operator"/>
-      <def no ="keyword1"/>
+      <def no ="identifier"/>
       <def no ="unknown_identifier"/>
       <def no ="value"/>
       <def no ="comment"/>
@@ -516,18 +543,18 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="important"/>
       <def no ="directive"/>
       <def no ="doublestring"/>
-      <def no ="singlestring"/>
-      <def no ="keyword3"/>
+      <def no ="single"/>
+      <def no ="identifier2"/>
       <def no ="attribute"/>
-      <def no ="keyword4"/>
-      <def no ="keyword5"/>
-      <def no ="keyword6"/>
-      <def no ="keyword7"/>
-      <def no ="keyword8"/>
-      <def no ="media"/>
+      <def no ="identifier3"/>
+      <def no ="pseudoelement"/>
+      <def no ="extended_identifier"/>
+      <def no ="extended_pseudoclass"/>
+      <def no ="extended_pseudoelement"/>
+      <def no ="group_rule"/>
       <def no ="variable"/>
     </def>
-    
+
     <def name = "d">
       <def no ="default"/>
       <def no ="comment"/>
@@ -548,7 +575,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="commentdockeyword"/>
       <def no ="commentdockeyworderror"/>
     </def>
-    
+
     <def name = "dataflex">
       <def no ="default"/>
       <def no ="identifier"/>
@@ -581,7 +608,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="removed_patch_add"/>
       <def no ="removed_patch_delete"/>
     </def>
-    
+
     <def name = "DMAP">
       <def no ="default"/>
       <def no ="comment"/>
@@ -595,7 +622,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="word2"/>
       <def no ="word3"/>
     </def>
-    
+
     <def name = "DMIS">
       <def no ="default"/>
       <def no ="comment"/>
@@ -608,7 +635,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="unsupported_minor"/>
       <def no ="label"/>
     </def>
-    
+
     <def name = "ecl">
       <def no ="default"/>
       <def no ="comment"/>
@@ -663,7 +690,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="identifier"/>
       <def no ="stringeol"/>
     </def>
-    
+
     <def name = "erlang">
       <def no ="default"/>
       <def no ="comment"/>
@@ -681,7 +708,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="node_name"/>
       <def no ="unknown"> 31 </def>
     </def>
-    
+
     <def name = "errorlist">
       <def no ="default"/>
       <def no ="python"/>
@@ -708,6 +735,8 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="gcc_included_from"/>
       <def no ="escseq"/>
       <def no ="escseq_unknown"/>
+      <def no ="gcc_excerpt"/>
+      <def no ="bash"/>
       <def no ="es_black"> 40 </def>
       <def no ="es_red"/>
       <def no ="es_green"/>
@@ -725,7 +754,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="es_bright_cyan"/>
       <def no ="es_white"/>
     </def>
-    
+
     <def name = "escript">
       <def no ="default"/>
       <def no ="comment"/>
@@ -740,7 +769,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="keyword2"/>
       <def no ="keyword3"/>
     </def>
-    
+
     <def name ="fcST">
       <def no ="default"/>
       <def no ="comment"/>
@@ -762,7 +791,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="vars"/>
       <def no ="pragmas"/>
     </def>
-    
+
     <def name = "flagship">
     <!--  (clipper) -->
       <def no ="default"/>
@@ -798,7 +827,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="identifier_c"/>
       <def no ="stringeol_c"/>
     </def>
-    
+
     <def name = "forth">
       <def no ="default"/>
       <def no ="comment"/>
@@ -813,7 +842,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="string"/>
       <def no ="locale"/>
     </def>
-    
+
     <def name = "fortran">
       <def no ="default"/>
       <def no ="comment"/>
@@ -869,7 +898,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="number"/>
       <def no ="stringeol"/>
     </def>
-    
+
     <def name = "gui4cli">
       <def no ="default"/>
       <def no ="commentline"/>
@@ -882,7 +911,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="string"/>
       <def no ="operator"/>
     </def>
-    
+
     <def name = "haskell">
       <def no ="default"/>
       <def no ="identifier"/>
@@ -908,7 +937,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="literate_comment"/>
       <def no ="literate_codelim"/>
     </def>
-    
+
     <def name = "hollywood">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1048,7 +1077,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="hphp_hstring_variable"/>
       <def no ="hphp_operator"/>
     </def>
-    
+
     <def name = "ihex">
       <def no = "default"/>
       <def no = "recstart"/>
@@ -1070,7 +1099,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no = "checksum_wrong"/>
       <def no = "garbage"/>
     </def>
-    
+
     <def name = "inno">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1086,7 +1115,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="string_single"/>
       <def no ="identifier"/>
     </def>
-    
+
     <def name = "json">
       <def no ="default"/>
       <def no ="number"/>
@@ -1103,7 +1132,32 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="ldkeyword"/>
       <def no ="error"/>
     </def>
-    
+
+    <def name = "julia">
+      <def no ="default"/>
+      <def no ="comment"/>
+      <def no ="number"/>
+      <def no ="keyword1"/>
+      <def no ="keyword2"/>
+      <def no ="keyword3"/>
+      <def no ="char"/>
+      <def no ="operator"/>
+      <def no ="bracket"/>
+      <def no ="identifier"/>
+      <def no ="string"/>
+      <def no ="symbol"/>
+      <def no ="macro"/>
+      <def no ="stringinterp"/>
+      <def no ="docstring"/>
+      <def no ="stringliteral"/>
+      <def no ="command"/>
+      <def no ="commandliteral"/>
+      <def no ="typeannot"/>
+      <def no ="lexerror"/>
+      <def no ="keyword4"/>
+      <def no ="typeoperator"/>
+    </def>
+
     <def name = "kix">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1118,7 +1172,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="commentstream"/>
       <def no ="identifier"> 31 </def>
     </def>
-    
+
     <def name = "kvirc">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1134,7 +1188,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="string_function"/>
       <def no ="string_variable"/>
     </def>
-    
+
     <def name = "latex">
       <def no ="default"/>
       <def no ="command"/>
@@ -1150,7 +1204,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="cmdopt"/>
       <def no ="error"/>
     </def>
-    
+
     <def name = "lilypond">
       <def no ="default"/>
       <def no ="command"/>
@@ -1166,7 +1220,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="cmdopt"/>
       <def no ="error"/>
     </def>
-    
+
     <def name = "lisp">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1181,7 +1235,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="special"/>
       <def no ="multi_comment"/>
     </def>
-    
+
     <def name = "lot">
       <def no ="default"/>
       <def no ="header"/>
@@ -1191,7 +1245,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="fail"/>
       <def no ="abort"/>
     </def>
-    
+
     <def name = "lout">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1205,7 +1259,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="identifier"/>
       <def no ="stringeol"/>
     </def>
-    
+
     <def name = "lua">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1229,7 +1283,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="keyword8"/>
       <def no ="label"/>
     </def>
-    
+
     <def name = "maxima">
       <def no="operator"/>
       <def no="commandending"/>
@@ -1240,7 +1294,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no="variable"/>
       <def no="unknown"/>
     </def>
-  
+
     <def name = "magiksf">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1260,7 +1314,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="pragma"/>
       <def no ="symbol"/>
     </def>
-    
+
     <def name = "makefile">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1270,7 +1324,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="target"/>
       <def no ="ideol"> 9 </def>
     </def>
-    
+
     <def name = "markdown">
       <def no ="default"/>
       <def no ="line_begin"/>
@@ -1295,7 +1349,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="code2"/>
       <def no ="codebk"/>
     </def>
-    
+
     <def name = "matlab">
     <!-- octave are identical to matlab -->
       <def no ="default"/>
@@ -1308,7 +1362,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="identifier"/>
       <def no ="doublequotestring"/>
     </def>
-    
+
     <def name = "metapost">
       <def no ="default"/>
       <def no ="special"/>
@@ -1318,7 +1372,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="text"/>
       <def no ="extra"/>
     </def>
-    
+
     <def name = "mmixal">
       <def no ="leadws"/>
       <def no ="comment"/>
@@ -1339,7 +1393,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="symbol"/>
       <def no ="include"/>
     </def>
-    
+
     <def name = "modula">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1380,7 +1434,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="default_pref_datatype"/>
       <def no ="column_name_"/>
     </def>
-    
+
     <def name = "mysql">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1405,7 +1459,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="user3"/>
       <def no ="hiddencommand"/>
     </def>
-    
+
     <def name = "nim">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1439,7 +1493,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="environment"/>
       <def no ="identifier"/>
     </def>
-    
+
     <def name = "nsis">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1461,7 +1515,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="functiondef"/>
       <def no ="commentbox"/>
     </def>
-    
+
     <def name = "opal">
       <def no ="space"/>
       <def no ="comment_block"/>
@@ -1474,7 +1528,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="bool_const"/>
       <def no ="default"> 32 </def>
     </def>
-    
+
     <def name = "oscript">
       <def no ="default"/>
       <def no ="line_comment"/>
@@ -1496,7 +1550,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="property"/>
       <def no ="method"/>
     </def>
-    
+
     <def name = "pascal">
       <def no ="default"/>
       <def no ="identifier"/>
@@ -1514,7 +1568,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="operator"/>
       <def no ="asm"/>
     </def>
-    
+
     <def name = "perl">
       <def no ="default"/>
       <def no ="error"/>
@@ -1562,7 +1616,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="string_qx_var"/>
       <def no ="string_qr_var"/>
     </def>
-    
+
     <def name = "PL/M">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1573,7 +1627,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="control"/>
       <def no ="keyword1"/>
     </def>
-    
+
     <def name = "po">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1592,7 +1646,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="msgctxt_text_eol"/>
       <def no ="error"/>
     </def>
-    
+
     <def name = "pov">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1612,7 +1666,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="keyword7"/>
       <def no ="keyword8"/>
     </def>
-    
+
     <def name = "powerpro">
       <def no ="default"/>
       <def no ="commentblock"/>
@@ -1632,7 +1686,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="altquote"/>
       <def no ="function"/>
     </def>
-    
+
     <def name = "powershell">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1652,7 +1706,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="here_character"/>
       <def no ="commentdockeyword"/>
     </def>
-    
+
     <def name = "abl">
       <def no ="DEFAULT"/>
       <def no ="NUMBER"/>
@@ -1668,7 +1722,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="TASKMARKER"/>
       <def no ="LINECOMMENT"/>
     </def>
-    
+
     <def name = "props">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1677,7 +1731,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="defval"/>
       <def no ="key"/>
     </def>
-    
+
     <def name = "ps">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1696,7 +1750,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="basestring"/>
       <def no ="badstringchar"/>
     </def>
-    
+
     <def name = "python">
       <def no ="default"/>
       <def no ="commentline"/>
@@ -1714,8 +1768,13 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="stringeol"/>
       <def no ="keyword2"/>
       <def no ="decorator"/>
+      <def no ="pstring"/>
+      <def no ="pcharacter"/>
+      <def no ="ptriple"/>
+      <def no ="ptripledouble"/>
+      <def no ="attribute"/>
     </def>
-    
+
     <def name = "r">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1729,8 +1788,12 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="identifier"/>
       <def no ="infix"/>
       <def no ="infixeol"/>
+      <def no ="backticks"/>
+      <def no ="rawstring"/>
+      <def no ="rawstring2"/>
+      <def no ="escapesequence"/>
     </def>
-    
+
     <def name = "raku">
       <def no ="default"/>
       <def no ="error"/>
@@ -1762,7 +1825,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="grammar"/>
       <def no ="class"/>
     </def>
-  
+
     <def name = "rebol">
       <def no ="default"/>
       <def no ="commentline"/>
@@ -1794,7 +1857,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="keyword7"/>
       <def no ="keyword8"/>
     </def>
-    
+
     <def name = "registry">
       <def no = "default"/>
       <def no = "comment"/>
@@ -1827,7 +1890,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="testcase"/>
       <def no ="keyword2"/>
     </def>
-    
+
     <def name = "ruby">
       <def no ="default"/>
       <def no ="error"/>
@@ -1862,9 +1925,13 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="stdin"/>
       <def no ="stdout"/>
       <def no ="stderr"> 40 </def>
+      <def no ="string_w"/>
+      <def no ="string_i"/>
+      <def no ="string_qi"/>
+      <def no ="string_qs"/>
       <def no ="upper_bound"/>
     </def>
-    
+
     <def name = "rust">
       <def no ="default"/>
       <def no ="commentblock"/>
@@ -1891,7 +1958,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="bytestringr"/>
       <def no ="bytecharacter"/>
     </def>
-    
+
     <def name = "sas">
       <def no ="default"/>
       <def no ="comment"/>
@@ -1929,7 +1996,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="classname"/>
       <def no ="preprocessor"/>
     </def>
-    
+
     <def name = "smalltalk">
       <def no ="default"/>
       <def no ="string"/>
@@ -1949,7 +2016,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="character"/>
       <def no ="spec_sel"/>
     </def>
-    
+
     <def name = "SML">
       <def no ="default"/>
       <def no ="identifier"/>
@@ -1967,7 +2034,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="comment2"/>
       <def no ="comment3"/>
     </def>
-    
+
     <def name = "sorcins">
       <def no ="default"/>
       <def no ="command"/>
@@ -1980,7 +2047,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="number"/>
       <def no ="constant"/>
     </def>
-    
+
     <def name = "specman">
       <def no ="default"/>
       <def no ="code"/>
@@ -1999,7 +2066,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="signal"/>
       <def no ="user"> 19 </def>
     </def>
-    
+
     <def name = "spice">
       <def no ="default"/>
       <def no ="identifier"/>
@@ -2011,7 +2078,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="value"/>
       <def no ="commentline"/>
     </def>
-    
+
     <def name = "sql">
       <def no ="default"/>
       <def no ="comment"/>
@@ -2037,7 +2104,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="quotedidentifier"/>
       <def no ="qoperator"/>
     </def>
-    
+
     <def name = "stata">
       <def no ="default"/>
       <def no ="comment"/>
@@ -2075,7 +2142,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="user3"/>
       <def no ="brace"/>
     </def>
-    
+
     <def name = "tcl">
       <def no ="default"/>
       <def no ="comment"/>
@@ -2100,7 +2167,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="box_comment"/>
       <def no ="block_comment"/>
     </def>
-    
+
     <def name = "tcmd">
       <def no ="comment"/>
       <def no ="keyword1"/>
@@ -2122,7 +2189,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="command"/>
       <def no ="text"/>
     </def>
-    
+
     <def name = "txt2tags">
       <def no ="default"/>
       <def no ="line_begin"/>
@@ -2178,7 +2245,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="docblock"/>
       <def no ="dockeyword"/>
     </def>
-    
+
     <def name = "verilog">
       <def no ="default"/>
       <def no ="comment"/>
@@ -2200,7 +2267,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="INOUT"/>
       <def no ="PORT_CONNECT"/>
     </def>
-    
+
     <def name = "vhdl">
       <def no ="default"/>
       <def no ="comment"/>
@@ -2219,7 +2286,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="userword"/>
       <def no ="block_comment"/>
     </def>
-    
+
     <def name = "visualprolog">
       <def no ="default"/>
       <def no ="key_major"/>
@@ -2233,18 +2300,20 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="anonymous"/>
       <def no ="number"/>
       <def no ="operator"/>
-      <def no ="character"/>
-      <def no ="character_too_many"/>
-      <def no ="character_escape_error"/>
-      <def no ="string"/>
+      <def no ="unused"/>
+      <def no ="unused2"/>
+      <def no ="unused3"/>
+      <def no ="string_quote"/>
       <def no ="string_escape"/>
       <def no ="string_escape_error"/>
-      <def no ="string_eol_open"/>
-      <def no ="string_verbatim"/>
-      <def no ="string_verbatim_special"/>
-      <def no ="string_verbatim_eol"/>
+      <def no ="unused4"/>
+      <def no ="string"/>
+      <def no ="unused5"/>
+      <def no ="string_eol"/>
+      <def no ="embedded"/>
+      <def no ="placeholder"/>
     </def>
-    
+
     <def name = "x12">
       <def no ="default"/>
       <def no ="bad"/>
@@ -2270,8 +2339,8 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       <def no ="operator"/>
     </def>
   </macro>
-  
-    <!-- add your own colours 
+
+    <!-- add your own colours
       see http://www.cloford.com/resources/colours/500col.htm
       -->
     <colour no="aliceblue">#F0F8FF</colour>
