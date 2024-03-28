@@ -282,6 +282,14 @@ TEST_CASE("wex::stc")
     stc->set_text("// a rust comment");
     REQUIRE(lexer_s.set("rust"));
     REQUIRE(lexer_s.scintilla_lexer() == "rust");
+
+    const auto keep(wex::config::path());
+    wex::config::set_path(wex::path("xxxx"));
+    auto* json = new wex::stc(wex::config::path());
+    frame()->pane_add(json);
+    REQUIRE(json->get_lexer().scintilla_lexer() == "json");
+
+    wex::config::set_path(keep);
   }
 
   SUBCASE("link")
