@@ -14,6 +14,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - upgrade to lexilla 5.3.1
 
+### Fixed
+
+- any file used for config uses json lexer
+
 ## 24.04 - 2024-04-01
 
 ### Added

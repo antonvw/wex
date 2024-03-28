@@ -23,7 +23,6 @@
 #include <wex/ui/frd.h>
 #include <wex/ui/item-vector.h>
 #include <wx/app.h>
-#include <wx/settings.h>
 
 #include <algorithm>
 
@@ -122,6 +121,13 @@ wex::stc::stc(const wex::path& p, const data::stc& data)
 
     m_file.file_new(p);
     m_data.inject();
+  }
+
+  if (p == config::path())
+  {
+    lexer l(this);
+    l.set("json");
+    get_lexer().set(l);
   }
 }
 
