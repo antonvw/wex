@@ -2,7 +2,7 @@
 // Name:      test-art.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/defs.h>
@@ -18,7 +18,11 @@ TEST_CASE("wex::art")
     REQUIRE(wex::art::default_client(wxART_CLIENT_MATERIAL_ROUND));
 
     REQUIRE(!wex::art::default_colour("xxx"));
+    REQUIRE(!wex::art::default_colour().IsOk());
     REQUIRE(wex::art::default_colour("blue"));
+    REQUIRE(wex::art::default_colour().IsOk());
+    REQUIRE(!wex::art::default_colour("xxx"));
+    REQUIRE(wex::art::default_colour().IsOk());
   }
 
   SUBCASE("default-art-type")
@@ -31,6 +35,7 @@ TEST_CASE("wex::art")
     REQUIRE(wex::art(wex::ID_CLEAR_FILES).get_bitmap().IsOk());
   }
 
+  // this test should be last, it uses art_t::USER
   SUBCASE("art-type")
   {
     wex::art::type(wex::art::art_t::MATERIAL);

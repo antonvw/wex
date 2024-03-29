@@ -27,6 +27,8 @@ bool wex::del::app::OnInit()
     return false;
   }
 
+  art::default_colour("light steel blue");
+
   vcs::on_init();
 
   wex::art::insert(
