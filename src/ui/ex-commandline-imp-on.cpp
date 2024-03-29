@@ -2,7 +2,7 @@
 // Name:      ex-commandline-imp-on.cpp
 // Purpose:   Implementation of wex::ex_commandline_imp class on.. methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2023 Anton van Wezenbeek
+// Copyright: (c) 2022-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/util.h>
@@ -80,9 +80,19 @@ void wex::ex_commandline_imp::on_key_down(wxKeyEvent& event)
       on_key_down_control_r(event);
       break;
 
-    case WXK_DOWN:
     case WXK_END:
     case WXK_HOME:
+      if (event.HasAnyModifiers())
+      {
+        on_key_down_page(event);
+      }
+      else
+      {
+        event.Skip();
+      }
+      break;
+
+    case WXK_DOWN:
     case WXK_PAGEDOWN:
     case WXK_PAGEUP:
     case WXK_UP:
@@ -106,7 +116,7 @@ void wex::ex_commandline_imp::on_key_down_control_r(wxKeyEvent& event)
 {
   Cut();
 
-#ifdef __WXMAC__
+#ifdef __WXOSX__
   /* NOLINTNEXTLINE */
   if (event.GetModifiers() & wxMOD_RAW_CONTROL)
 #else
@@ -182,9 +192,9 @@ void wex::ex_commandline_imp::on_key_down_tab()
     path::current(m_cl->stc()->path().data().parent_path());
   }
 
-  if (const auto& [r, e, v] = auto_complete_filename(get_text()); r)
+  if (const auto& r(auto_complete_filename(get_text())); r)
   {
-    append_text(e);
+    append_text(r->expansion);
     DocumentEnd();
   }
 }

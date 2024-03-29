@@ -2,12 +2,13 @@
 // Name:      frame.h
 // Purpose:   Include file for wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2023 Anton van Wezenbeek
+// Copyright: (c) 2009-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/core/config.h>
+#include <wex/core/function-repeat.h>
 #include <wex/del/defs.h>
 #include <wex/del/listview.h>
 #include <wex/ui/file-history.h>
@@ -43,7 +44,7 @@ public:
     size_t              maxProjects = 0,
     const data::window& data = data::window().style(wxDEFAULT_FRAME_STYLE));
 
-  /// Virtual interface
+  // Virtual interface
 
   /// This method is called to activate a certain listview.
   /// Default it returns nullptr.
@@ -58,7 +59,7 @@ public:
   /// Default it returns nullptr.
   virtual file* get_project() { return nullptr; }
 
-  /// Other methods
+  // Other methods
 
   /// Returns a list with default file extensions.
   config::strings_t default_extensions() const;
@@ -121,7 +122,7 @@ public:
 
   /// Starts or stops syncing.
   /// Default syncing is started during construction.
-  void sync(bool start);
+  void sync(bool start = true) { m_function_repeat.activate(start); };
 
   /// Uses specified history list, and adds all elements from file history
   /// to the list.
@@ -135,6 +136,9 @@ public:
   void vcs_destroy_dialog();
 
   /// Overridden methods.
+
+  static inline const int id_find_in_files    = ID_FREE_LOWEST;
+  static inline const int id_replace_in_files = ID_FREE_LOWEST + 1;
 
   void append_vcs(menu*, const menu_item* i) const override;
   void bind_accelerators(
@@ -172,15 +176,15 @@ public:
   void         stc_entry_dialog_validator(const std::string& regex) override;
 
   void vcs_add_path(factory::link*) override;
-  void vcs_annotate_commit(syntax::stc*, int line, const std::string& commit_id)
+  bool vcs_annotate_commit(syntax::stc*, int line, const std::string& commit_id)
     override;
-  void vcs_blame(syntax::stc*) override;
-  void vcs_blame_revision(
+  bool vcs_blame(syntax::stc*) override;
+  bool vcs_blame_revision(
     syntax::stc*,
     const std::string& renamed,
     const std::string& offset) override;
   bool vcs_dir_exists(const path& p) const override;
-  void vcs_execute(
+  bool vcs_execute(
     int                           event_id,
     const std::vector<wex::path>& paths,
     const data::window&           arg = data::window()) override;
@@ -205,7 +209,6 @@ private:
     const std::string& text  = std::string());
 
   void find_in_files(wex::window_id id);
-  void on_idle(wxIdleEvent& event);
 
   item_dialog *     m_fif_dialog{nullptr}, *m_rif_dialog{nullptr};
   stc_entry_dialog* m_entry_dialog{nullptr};
@@ -216,8 +219,7 @@ private:
   listview*          m_file_history_listview{nullptr};
   class file_history m_project_history;
 
-  static inline constexpr int id_find_in_files    = ID_FREE_LOWEST;
-  static inline constexpr int id_replace_in_files = ID_FREE_LOWEST + 1;
+  function_repeat m_function_repeat;
 
   const std::string m_text_hidden{_("fif.Hidden")},
     m_text_in_files{_("fif.In files")}, m_text_in_folder{_("fif.In folder")},

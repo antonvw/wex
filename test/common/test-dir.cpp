@@ -61,9 +61,15 @@ TEST_CASE("wex::dir")
       REQUIRE(dir.find_files() == 1);
     }
 
-    SUBCASE("flat") { test_files("*.h", 2, false); }
+    SUBCASE("flat")
+    {
+      test_files("*.h", 2, false);
+    }
 
-    SUBCASE("hidden") { test_files("*.h", 3, true); }
+    SUBCASE("hidden")
+    {
+      test_files("*.h", 3, true);
+    }
 
     SUBCASE("recursive")
     {

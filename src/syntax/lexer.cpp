@@ -2,7 +2,7 @@
 // Name:      lexer.cpp
 // Purpose:   Implementation of wex::lexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2023 Anton van Wezenbeek
+// Copyright: (c) 2008-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -66,21 +66,22 @@ auto tokenize_int(const std::string& text, const char* sep = " \t\r\n")
 };
 } // namespace wex
 
-wex::lexer::lexer(const std::string& lexer)
+wex::lexer::lexer(const std::string& lex)
+  : lexer(nullptr, nullptr)
 {
-  if (!lexer.empty())
+  if (!lex.empty())
   {
-    set(lexer);
+    set(lex);
   }
 }
 
 wex::lexer::lexer(syntax::stc* stc)
-  : m_stc(stc)
+  : lexer(nullptr, stc)
 {
 }
 
 wex::lexer::lexer(const pugi::xml_node* node)
-  : m_scintilla_lexer(node->attribute("name").value())
+  : lexer(node, nullptr)
 {
   m_is_ok = !m_scintilla_lexer.empty();
 
@@ -106,6 +107,17 @@ wex::lexer::lexer(const pugi::xml_node* node)
 
     parse_childen(node);
   }
+}
+
+wex::lexer::lexer(const pugi::xml_node* node, syntax::stc* s)
+  : m_scintilla_lexer(node != nullptr ? node->attribute("name").value() : "")
+  , m_stc(s)
+  , m_reflect(
+      {REFLECT_ADD("display", m_display_lexer),
+       REFLECT_ADD("extensions", m_extensions),
+       REFLECT_ADD("language", m_language),
+       REFLECT_ADD("lexer", m_scintilla_lexer)})
+{
 }
 
 // Adds the specified keywords to the keywords map and the keywords set.
@@ -401,7 +413,7 @@ const std::string wex::lexer::formatted_text(
   std::string      out;
 
   // Process text between the carriage return line feeds.
-  for (size_t pos = 0; (pos = text.find("\n")) != std::string::npos;)
+  for (size_t pos = 0; (pos = text.find('\n')) != std::string::npos;)
   {
     out += align_text(
              text.substr(0, pos),
@@ -453,22 +465,13 @@ size_t wex::lexer::line_size() const
 {
   return !m_edge_columns.empty() ?
            m_edge_columns.back() :
-           (size_t)config(_("stc.Edge column")).get(80l);
+           (size_t)config(_("stc.Edge column")).get(80L);
 }
 
 bool wex::lexer::keyword_starts_with(const std::string& word) const
 {
   const auto& it = m_keywords.lower_bound(word);
   return it != m_keywords.end() && it->starts_with(word);
-}
-
-std::stringstream wex::lexer::log() const
-{
-  std::stringstream ss;
-  ss << "display: " << m_display_lexer << "extensions: " << m_extensions
-     << "language: " << m_language << "lexer: " << m_scintilla_lexer;
-
-  return ss;
 }
 
 const std::string wex::lexer::make_comment(
@@ -576,8 +579,7 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
 
   if (const std::string v(node->attribute("edgemode").value()); !v.empty())
   {
-    m_attribs.push_back(
-      {_("Edge line"),
+    m_attribs.emplace_back(_("Edge line"),
        convert_int_attrib(
          {{"none", wxSTC_EDGE_NONE},
           {"line", wxSTC_EDGE_LINE},
@@ -600,13 +602,12 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
              stc->SetEdgeMode(attrib);
              break;
          }
-       }});
+       });
   }
 
   if (const std::string v(node->attribute("spacevisible").value()); !v.empty())
   {
-    m_attribs.push_back(
-      {_("Whitespace visible"),
+    m_attribs.emplace_back(_("Whitespace visible"),
        convert_int_attrib(
          {{"invisible", wxSTC_WS_INVISIBLE},
           {"always", wxSTC_WS_VISIBLEALWAYS},
@@ -619,13 +620,12 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
          {
            stc->SetViewWhiteSpace(attrib);
          }
-       }});
+       });
   }
 
   if (const std::string v(node->attribute("tabdrawmode").value()); !v.empty())
   {
-    m_attribs.push_back(
-      {_("Tab draw mode"),
+    m_attribs.emplace_back(_("Tab draw mode"),
        convert_int_attrib(
          {{"arrow", wxSTC_TD_LONGARROW}, {"strike", wxSTC_TD_STRIKEOUT}},
          v),
@@ -635,13 +635,12 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
          {
            stc->SetTabDrawMode(attrib);
          }
-       }});
+       });
   }
 
   if (const std::string v(node->attribute("tabmode").value()); !v.empty())
   {
-    m_attribs.push_back(
-      {_("Expand tabs"),
+    m_attribs.emplace_back(_("Expand tabs"),
        convert_int_attrib({{"use", 1}, {"off", 0}}, v),
        [&](syntax::stc* stc, int attrib)
        {
@@ -649,13 +648,12 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
          {
            stc->SetUseTabs(attrib);
          }
-       }});
+       });
   }
 
   if (const auto v(node->attribute("tabwidth").as_int(0)); v > 0)
   {
-    m_attribs.push_back(
-      {_("Tab width"),
+    m_attribs.emplace_back(_("Tab width"),
        v,
        [&](syntax::stc* stc, int attrib)
        {
@@ -664,13 +662,12 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
            stc->SetIndent(attrib);
            stc->SetTabWidth(attrib);
          }
-       }});
+       });
   }
 
   if (const std::string v(node->attribute("wrapline").value()); !v.empty())
   {
-    m_attribs.push_back(
-      {_("Wrap line"),
+    m_attribs.emplace_back(_("Wrap line"),
        convert_int_attrib(
          {{"none", wxSTC_WRAP_NONE},
           {"word", wxSTC_WRAP_WORD},
@@ -683,7 +680,7 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
          {
            stc->SetWrapMode(attrib);
          }
-       }});
+       });
   }
 }
 

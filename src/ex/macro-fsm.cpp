@@ -2,7 +2,7 @@
 // Name:      macro-fsm.cpp
 // Purpose:   Implementation of class wex::macro_fsm
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/mpl/list.hpp>
@@ -24,6 +24,7 @@
 #include "macro-fsm.h"
 
 #include <fstream>
+#include <utility>
 
 namespace mpl = boost::mpl;
 
@@ -36,10 +37,10 @@ struct ssmACTIVE : sc::simple_state<ssmACTIVE, macro_fsm, ssmIDLE>
 
 struct ssmIDLE : sc::state<ssmIDLE, ssmACTIVE>
 {
-  typedef sc::transition<macro_fsm::evRECORD, ssmRECORDING> reactions;
+  using reactions = sc::transition<macro_fsm::evRECORD, ssmRECORDING>;
 
   explicit ssmIDLE(my_context ctx)
-    : my_base(ctx)
+    : my_base(std::move(ctx))
   {
     context<macro_fsm>().state(macro_fsm::IDLE);
   }
@@ -47,10 +48,10 @@ struct ssmIDLE : sc::state<ssmIDLE, ssmACTIVE>
 
 struct ssmRECORDING : sc::state<ssmRECORDING, ssmACTIVE>
 {
-  typedef sc::custom_reaction<macro_fsm::evRECORD> reactions;
+  using reactions = sc::custom_reaction<macro_fsm::evRECORD>;
 
   explicit ssmRECORDING(my_context ctx)
-    : my_base(ctx)
+    : my_base(std::move(ctx))
   {
     context<macro_fsm>().state(macro_fsm::RECORDING);
   };
@@ -201,12 +202,11 @@ bool wex::macro_fsm::expanding_variable(
   return true;
 }
 
-void wex::macro_fsm::playback(const std::string& macro, ex* ex, int repeat)
+void wex::macro_fsm::playback(const std::string& macro, ex* ex, size_t repeat)
 {
-  assert(ex != nullptr);
-
-  if (repeat <= 0)
+  if (ex == nullptr)
   {
+    log("playback requires ex") << macro;
     return;
   }
 
@@ -231,7 +231,7 @@ void wex::macro_fsm::playback(const std::string& macro, ex* ex, int repeat)
 
   const auto& commands(m_mode->get_macros()->get_macro_commands(macro));
 
-  for (int i = 0; i < repeat && !error; i++)
+  for (size_t i = 0; i < repeat && !error; i++)
   {
     if (!std::all_of(
           commands.begin(),

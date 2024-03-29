@@ -29,7 +29,7 @@ TEST_CASE("wex::addressrange")
 
   SUBCASE("constructor")
   {
-    SUBCASE("default")
+    SUBCASE("range-default")
     {
       wex::addressrange ar(ex);
 
@@ -43,6 +43,15 @@ TEST_CASE("wex::addressrange")
       wex::addressrange ar(ex, 6);
 
       REQUIRE(ar.begin().get_line() == 3);
+      REQUIRE(ar.end().get_line() == 8);
+      REQUIRE(!ar.find_indicator().is_ok());
+    }
+
+    SUBCASE("range-ints")
+    {
+      wex::addressrange ar(ex, 6, 8);
+
+      REQUIRE(ar.begin().get_line() == 6);
       REQUIRE(ar.end().get_line() == 8);
       REQUIRE(!ar.find_indicator().is_ok());
     }
@@ -216,8 +225,8 @@ TEST_CASE("wex::addressrange")
 
     wex::addressrange ar(ex, "/blame/,/yank/");
     REQUIRE(ar.is_ok());
-    REQUIRE(ar.begin().type() == wex::address::IS_BEGIN);
-    REQUIRE(ar.end().type() == wex::address::IS_END);
+    REQUIRE(ar.begin().type() == wex::address::address_t::IS_BEGIN);
+    REQUIRE(ar.end().type() == wex::address::address_t::IS_END);
   }
 
   SUBCASE("range-selection")

@@ -4,7 +4,7 @@ if (NOT Python_FOUND)
   return()
 endif()
 
-find_package(SWIG 4.1 COMPONENTS python)
+find_package(SWIG 4.2.1 COMPONENTS python)
 include(UseSWIG)
 
 if (NOT SWIG_FOUND)
@@ -14,6 +14,7 @@ endif()
 include_directories(${CMAKE_SOURCE_DIR}/bindings ${Python_INCLUDE_DIRS})
 
 set_property(SOURCE wex.i PROPERTY CPLUSPLUS ON)
+set_property(SOURCE wex.i PROPERTY SWIG_FLAGS -std=c++23)
 
 swig_add_library(${PROJECT_NAME} 
   TYPE SHARED 

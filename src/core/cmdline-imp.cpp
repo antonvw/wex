@@ -2,7 +2,7 @@
 // Name:      cmdline-imp.cpp
 // Purpose:   Implementation of wex::cmdline_imp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/cmdline.h>
@@ -29,21 +29,21 @@
 wex::cmdline_imp::function_t::function_t(
   std::function<void(const std::any&)> f,
   cmdline::option_t                    o)
-  : m_fo(f)
+  : m_fo(std::move(f))
   , m_type(F_OPTION)
   , m_type_o(o)
 {
 }
 
 wex::cmdline_imp::function_t::function_t(std::function<void(bool)> f)
-  : m_fs(f)
+  : m_fs(std::move(f))
   , m_type(F_SWITCH)
 {
 }
 
 wex::cmdline_imp::function_t::function_t(
   std::function<void(std::vector<std::string>)> f)
-  : m_fp(f)
+  : m_fp(std::move(f))
   , m_type(F_PARAM)
 {
 }
@@ -64,7 +64,7 @@ wex::cmdline_imp::cmdline_imp(bool add_standard_options, config& cfg)
          "quits after specified number of milliseconds")
       ("version,r", "displays version information and exits")
       ("verbose,v", "activates maximum (trace) verbosity")
-      ("level,V", po::value<int>()->default_value(log::level_t_def()),
+      ("level,V", po::value<int>()->default_value(std::to_underlying(log::level_t_def())),
         std::string("activates verbosity down from verbose level\n" +
           log::get_level_info()).c_str())
       ("scriptout,w", po::value<std::string>(), 
@@ -140,7 +140,7 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
 
   if (m_vm.count("verbose"))
   {
-    loglevel = log::LEVEL_TRACE;
+    loglevel = std::to_underlying(log::level_t::TRACE);
   }
 
   if (!parse_args(data))

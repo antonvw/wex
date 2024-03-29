@@ -16,15 +16,15 @@
 #include <wex/ui/menus.h>
 #include <wex/vcs/vcs.h>
 
-#define SET_ENTRY                                                \
-  if (                                                           \
-    parent != nullptr &&                                         \
-    item_dialog(v, data::window().parent(parent).title(message)) \
-        .ShowModal() == wxID_CANCEL)                             \
-  {                                                              \
-    return false;                                                \
-  }                                                              \
-                                                                 \
+#define SET_ENTRY                                                       \
+  if (                                                                  \
+    parent != nullptr && config(_("vcs.Always ask flags")).get(true) && \
+    item_dialog(v, data::window().parent(parent).title(message))        \
+        .ShowModal() == wxID_CANCEL)                                    \
+  {                                                                     \
+    return false;                                                       \
+  }                                                                     \
+                                                                        \
   m_entry = find_entry(m_store);
 
 #include <map>
@@ -68,9 +68,7 @@ public:
     // .git
     // /home/user/wex/src/src/vi.cpp
     // should return -> /home/user/wex
-    path root;
-
-    for (const auto& part : m_path.data())
+    for (path root; const auto& part : m_path.data())
     {
       if (vcs_admin(m_dir, root.append(part)).exists())
       {
@@ -191,6 +189,9 @@ int wex::vcs::config_dialog(const data::window& par) const
 
   // use a radiobox
   std::vector<item> v{{"vcs.VCS", choices, true, data::item().columns(cols)}};
+
+  config(_("vcs.Always ask flags")).get(true);
+  v.emplace_back(_("vcs.Always ask flags"), item::CHECKBOX);
 
   std::transform(
     m_store->begin(),
@@ -378,7 +379,7 @@ void wex::vcs::on_init()
   if (m_store == nullptr)
   {
     m_store = new store_t;
-    m_store->emplace_back(vcs_entry());
+    m_store->emplace_back();
 
     load_document();
   }
@@ -434,6 +435,13 @@ bool wex::vcs::set_entry_from_base(wxWindow* parent)
 int wex::vcs::show_dialog(const data::window& arg)
 {
   assert(!m_entry->name().empty());
+
+  if (
+    !config(_("vcs.Always ask flags")).get(true) &&
+    m_entry->get_command().type().test(wex::menu_command::IS_ASKED))
+  {
+    return wxID_OK;
+  }
 
   if (m_entry->get_command().get_command().empty())
   {
@@ -491,7 +499,7 @@ int wex::vcs::show_dialog(const data::window& arg)
                config(m_entry->flags_key()).set(m_entry->get_flags());
              })) :
        item(),
-     m_entry->flags_location() == vcs_entry::FLAGS_LOCATION_PREFIX &&
+     m_entry->flags_location() == vcs_entry::flags_location_t::PREFIX &&
          m_entry->get_command().ask_flags() ?
        item(_("vcs.Prefix flags"), std::string()) :
        item(),
@@ -529,14 +537,16 @@ bool wex::vcs::use() const
   return config("vcs.VCS").get(VCS_AUTO) != VCS_NONE;
 }
 
-void wex::vcs_execute(
+bool wex::vcs_execute(
   factory::frame*          frame,
   int                      id,
   const std::vector<path>& files,
   const data::window&      data)
 {
   if (files.empty())
-    return;
+  {
+    return false;
+  }
 
   if (vcs vcs(files, id); vcs.entry().get_command().is_open())
   {
@@ -570,4 +580,6 @@ void wex::vcs_execute(
   {
     vcs.request();
   }
+
+  return true;
 }

@@ -72,10 +72,8 @@ TEST_CASE("wex::vi")
 
     SUBCASE("block")
     {
-      REQUIRE(vi->command("K"));
-      REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL_BLOCK);
-      REQUIRE(vi->command("j"));
-      REQUIRE(vi->command("j"));
+      start_block(vi);
+      REQUIRE(vi->command("2j"));
       REQUIRE(vi->command(" "));
       REQUIRE(vi->command("x"));
       REQUIRE(stc->get_text() == "XXXX\nYYYY  \nZZZZ\n");
@@ -106,10 +104,8 @@ TEST_CASE("wex::vi")
 
     stc->set_text("xxxxxxxxxx second third\nxxxxxxxxxx\naaaaaaaaaa\n");
 
-    REQUIRE(vi->command("K"));
-    REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL_BLOCK);
-    REQUIRE(vi->command("j"));
-    REQUIRE(vi->command("j"));
+    start_block(vi);
+    REQUIRE(vi->command("2j"));
 
     SUBCASE("block")
     {
@@ -220,9 +216,9 @@ TEST_CASE("wex::vi")
   SUBCASE("is_active")
   {
     REQUIRE(vi->is_active());
-    vi->use(wex::ex::OFF);
+    vi->use(wex::ex::mode_t::OFF);
     REQUIRE(!vi->is_active());
-    vi->use(wex::ex::VISUAL);
+    vi->use(wex::ex::mode_t::VISUAL);
     REQUIRE(vi->is_active());
   }
 
@@ -319,7 +315,7 @@ TEST_CASE("wex::vi")
   SUBCASE("visual mode")
   {
     stc->set_text("123456789");
-    vi->command("v");
+    vi->mode().visual();
     REQUIRE(vi->mode().is_visual());
 
     vi->visual_extend(0, 10);
@@ -327,7 +323,7 @@ TEST_CASE("wex::vi")
     vi->mode().escape();
 
     vi->command("gg");
-    vi->command("v");
+    vi->mode().visual();
     REQUIRE(vi->mode().is_visual());
     vi->command("llll");
     REQUIRE(vi->command("y"));
@@ -337,12 +333,12 @@ TEST_CASE("wex::vi")
     // visual mode and brace match
     stc->set_text("some text\n{and text within brace} some text");
     vi->command("gg");
-    vi->command("v");
+    vi->mode().visual();
     vi->command("j");
     vi->command("%");
     REQUIRE(stc->GetSelectedText().size() == 33);
     vi->command("G");
-    vi->command("v");
+    vi->mode().visual();
     vi->command("2bh");
     vi->command("%");
     // README: This should pass, but selection is not ok.

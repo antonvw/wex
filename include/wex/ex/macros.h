@@ -9,6 +9,7 @@
 
 #include <pugixml.hpp>
 
+#include <wex/core/reflection.h>
 #include <wex/ex/macro-mode.h>
 #include <wex/ex/variable.h>
 
@@ -37,11 +38,11 @@ class macros
 
 public:
   /// Type of macro key used for key_map.
-  enum key_t
+  enum class key_t
   {
-    KEY_ALT,     ///< alt key
-    KEY_CONTROL, ///< control key
-    KEY_NORMAL,  ///< normal key (default)
+    ALT,     ///< alt key
+    CONTROL, ///< control key
+    NORMAL,  ///< normal key (default)
   };
 
   /// Maps key to command.
@@ -79,7 +80,7 @@ public:
   const auto& get_abbreviations() const { return m_abbreviations; }
 
   /// Returns keys map.
-  const keys_map_t& get_keys_map(key_t type = KEY_NORMAL) const;
+  const keys_map_t& get_keys_map(key_t type = key_t::NORMAL) const;
 
   /// Returns commands for specified macro.
   const commands_t get_macro_commands(const std::string& macro) const;
@@ -152,7 +153,7 @@ public:
   void set_key_map(
     const std::string& name,
     const std::string& value,
-    key_t              type = KEY_NORMAL);
+    key_t              type = key_t::NORMAL);
 
   /// Sets map (overwrites existing map).
   void set_map(const std::string& name, const std::string& value);
@@ -199,5 +200,7 @@ private:
   variables_map_t m_variables;
 
   keys_map_t m_map_alt_keys, m_map_control_keys, m_map_keys;
+
+  reflection m_reflect;
 };
 }; // namespace wex

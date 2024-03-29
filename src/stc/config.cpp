@@ -2,7 +2,7 @@
 // Name:      stc/config.cpp
 // Purpose:   Implementation of config related methods of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2017-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -26,8 +26,7 @@ const std::string def(const std::string& v)
 
 int wex::stc::config_dialog(const data::window& par)
 {
-  const data::window data(
-    data::window(par).title(_("Editor Options").ToStdString()));
+  const data::window data(data::window(par).title(_("Editor Options")));
 
   if (m_config_dialog == nullptr)
   {
@@ -62,7 +61,7 @@ void wex::stc::config_get()
     if (const auto el = iv.find<long>(_("stc.Edge line"));
         el != wxSTC_EDGE_NONE)
     {
-      const wxFont font(iv.find<wxFont>(_("stc.Default font")));
+      const auto font(iv.find<wxFont>(_("stc.Default font")));
       SetEdgeMode(font.IsFixedWidth() ? el : wxSTC_EDGE_BACKGROUND);
     }
     else
@@ -72,7 +71,7 @@ void wex::stc::config_get()
   }
 
   AnnotationSetVisible(iv.find<long>(_("stc.Annotation style")));
-  AutoCompSetMaxWidth(iv.find<int>(_("stc.Autocomplete maxwidth")));
+  AutoCompSetMaxWidth(iv.find<int>(_("stc.Autocomplete max width")));
   SetCaretLineVisible(iv.find<bool>(_("stc.Caret line")));
   SetFoldFlags(iv.find<long>(_("stc.Fold flags")));
   SetIndent(iv.find<int>(_("stc.Indent")));
@@ -123,12 +122,12 @@ void wex::stc::config_get()
 
     if (!m_data.flags().test(data::stc::WIN_EX))
     {
-      get_vi().use(ex::OFF);
+      get_vi().use(ex::mode_t::OFF);
     }
   }
   else if (!m_data.flags().test(data::stc::WIN_EX))
   {
-    get_vi().use(ex::VISUAL);
+    get_vi().use(ex::mode_t::VISUAL);
   }
 
   show_line_numbers(iv.find<bool>(_("stc.Line numbers")));
@@ -151,147 +150,152 @@ void wex::stc::on_init()
 {
   m_config_items = new std::vector<item>(
     {{"stc-notebook",
-      {{_("General"),
-        {{"stc-subnotebook",
-          {{_("Switches"),
-            {{{_("stc.End of line"),
-               _("stc.Line numbers"),
-               def(_("stc.Expand tabs")),
-               _("stc.Ex mode show hex"),
-               def(_("stc.Caret line")),
-               def(_("stc.Scroll bars")),
-               _("stc.Auto beautify"),
-               _("stc.Auto blame"),
-               _("stc.Auto complete"),
-               def(_("stc.Auto indent")),
-               def(_("stc.Keep zoom")),
-               def(_("stc.vi mode")),
-               _("stc.vi tag fullpath")}},
-             {_("stc.Beautifier"), item::COMBOBOX, beautify().list()},
-             {_("stc.Search engine"),
-              item::COMBOBOX,
-              config::strings_t{{"https://duckduckgo.com"}}}}},
-           {_("Choices"),
-            {{_("stc.Wrap visual flags"),
-              {{wxSTC_WRAPVISUALFLAG_NONE, _("None")},
-               {wxSTC_WRAPVISUALFLAG_END, _("End")},
-               {wxSTC_WRAPVISUALFLAG_START, _("Start")},
-               {wxSTC_WRAPVISUALFLAG_MARGIN, _("Margin")}},
-              true,
-              data::item().columns(4)},
-             {_("stc.Tab draw mode"),
-              {{wxSTC_TD_LONGARROW, def(_("Longarrow"))},
-               {wxSTC_TD_STRIKEOUT, _("Strikeout")}},
-              true,
-              data::item().columns(2)},
-             {_("stc.Whitespace visible"),
-              {{wxSTC_WS_INVISIBLE, _("Off")},
-               {wxSTC_WS_VISIBLEAFTERINDENT, _("After indent")},
-               {wxSTC_WS_VISIBLEALWAYS, _("Always")},
-               {wxSTC_WS_VISIBLEONLYININDENT, _("Only indent")}},
-              true,
-              data::item().columns(2)},
-             {_("stc.Annotation style"),
-              {{wxSTC_ANNOTATION_HIDDEN, _("Hidden")},
-               {wxSTC_ANNOTATION_STANDARD, _("Standard")},
-               {wxSTC_ANNOTATION_BOXED, def(_("Boxed"))},
-               {wxSTC_ANNOTATION_INDENTED, _("indented")}},
-              true,
-              data::item().columns(2)},
-             {_("stc.Wrap line"),
-              {{wxSTC_WRAP_NONE, _("None")},
-               {wxSTC_WRAP_WORD, _("Word")},
-               {wxSTC_WRAP_CHAR, _("Char")},
-               {wxSTC_WRAP_WHITESPACE, _("Whitespace")}},
-              true,
-              data::item().columns(2)}}}}}}},
-       {_("Font"),
-        {{_("stc.Default font"),
-          item::FONTPICKERCTRL,
-          wxFont(
-            12,
-            wxFONTFAMILY_DEFAULT,
-            wxFONTSTYLE_NORMAL,
-            wxFONTWEIGHT_NORMAL),
-          data::item().apply(
-            [=](wxWindow* user, const std::any& value, bool save)
-            {
-              // Doing this once is enough, not yet possible.
-              lexers::get()->load_document();
-            })},
-         {_("stc.Text font"),
-          item::FONTPICKERCTRL,
-          wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)}}},
-       {_("Edge"),
-        {{_("stc.Edge column"), 0, 500, 80},
-         {_("stc.Edge line"),
-          {{wxSTC_EDGE_NONE, _("None")},
-           {wxSTC_EDGE_LINE, _("Line")},
-           {wxSTC_EDGE_BACKGROUND, _("Background")},
-           {wxSTC_EDGE_MULTILINE, _("Multiline")}},
-          true,
-          data::item().columns(1)}}},
-       {_("Margin"),
-        {{_("<i>Margins:</i>")},
-         {_("stc.Autocomplete maxwidth"), 0, 100, 0},
-         {_("stc.Indent"), 0, 500, 2},
-         {_("stc.Tab width"), 1, 500, 2},
-         {_("blame.Author size"), -1, 500, -1},
-         {_("<i>Line Margins:</i>")},
-         {_("stc.margin.Divider"), 0, 40, 16},
-         {_("stc.margin.Folding"), 0, 40, 16},
-         {_("stc.margin.Line number"), 0, 100, 60},
-         {_("stc.margin.Text"), -1, 500, -1},
-         {_("<i>Max:</i>")},
-         {_("stc.max.Size visual"),
-          item::TEXTCTRL_INT,
-          std::string("10000000")},
-         {_("stc.max.Size lexer"),
-          item::TEXTCTRL_INT,
-          std::string("10000000")}}},
-       {_("Folding"),
-        {{_("stc.Indentation guide"), item::CHECKBOX},
-         {_("stc.Auto fold"), 0, INT_MAX, 1500},
-         {_("stc.Fold flags"),
-          {{wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, _("Line before expanded")},
-           {wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED,
-            def(_("Line before contracted"))},
-           {wxSTC_FOLDFLAG_LINEAFTER_EXPANDED, _("Line after expanded")},
-           {wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED,
-            def(_("Line after contracted"))},
-           {wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")}},
-          false}}},
-       {_("Linking"),
-        {{_("<i>Includes:</i>")},
-         {_("stc.link.Include directory"),
-          data::listview()
-            .type(data::listview::FOLDER)
-            .window(data::window().size({200, 200})),
-          std::any(),
-          data::item()
-            .label_type(data::item::LABEL_NONE)
-            .apply(
-              [=](wxWindow* user, const std::any& value, bool save)
-              {
-                m_link->config_get();
-              })},
-         {_("<i>Matches:</i>")},
-         {_("stc.link.Pairs"),
-          data::listview()
-            .type(data::listview::TSV)
-            .window(data::window().size({200, 200})),
-          // First try to find "..", then <..>, as in next example:
-          // <A HREF="http://www.scintilla.org">scintilla</A> component.
-          config::strings_t({"\"\t\"", "<\t>", "[\t]", "'\t'", "{\t}"})}}},
-       {_("Printer"),
-        {{_("stc.Print flags"),
-          {{wxSTC_PRINT_NORMAL, _("Normal")},
-           {wxSTC_PRINT_INVERTLIGHT, _("Invert on white")},
-           {wxSTC_PRINT_BLACKONWHITE, def(_("Black on white"))},
-           {wxSTC_PRINT_COLOURONWHITE, _("Colour on white")},
-           {wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal")}},
-          true,
-          data::item().columns(1)}}}}}});
+      {
+        {_("General"),
+         {{"stc-subnotebook",
+           {{_("Switches"),
+             {{{_("stc.End of line"),
+                _("stc.Line numbers"),
+                def(_("stc.Expand tabs")),
+                _("stc.Ex mode show hex"),
+                def(_("stc.Caret line")),
+                def(_("stc.Scroll bars")),
+                _("stc.Auto beautify"),
+                _("stc.Auto blame"),
+                _("stc.Auto complete"),
+                def(_("stc.Auto indent")),
+                def(_("stc.Keep zoom")),
+                def(_("stc.vi mode")),
+                _("stc.vi tag fullpath")}},
+              {_("stc.Beautifier"), item::COMBOBOX, beautify().list()},
+              {_("stc.Search engine"),
+               item::COMBOBOX,
+               config::strings_t{{"https://duckduckgo.com"}}}}},
+            {_("Choices"),
+             {{_("stc.Wrap visual flags"),
+               {{wxSTC_WRAPVISUALFLAG_NONE, _("None")},
+                {wxSTC_WRAPVISUALFLAG_END, _("End")},
+                {wxSTC_WRAPVISUALFLAG_START, _("Start")},
+                {wxSTC_WRAPVISUALFLAG_MARGIN, _("Margin")}},
+               true,
+               data::item().columns(4)},
+              {_("stc.Tab draw mode"),
+               {{wxSTC_TD_LONGARROW, def(_("Longarrow"))},
+                {wxSTC_TD_STRIKEOUT, _("Strikeout")}},
+               true,
+               data::item().columns(2)},
+              {_("stc.Whitespace visible"),
+               {{wxSTC_WS_INVISIBLE, _("Off")},
+                {wxSTC_WS_VISIBLEAFTERINDENT, _("After indent")},
+                {wxSTC_WS_VISIBLEALWAYS, _("Always")},
+                {wxSTC_WS_VISIBLEONLYININDENT, _("Only indent")}},
+               true,
+               data::item().columns(2)},
+              {_("stc.Annotation style"),
+               {{wxSTC_ANNOTATION_HIDDEN, _("Hidden")},
+                {wxSTC_ANNOTATION_STANDARD, _("Standard")},
+                {wxSTC_ANNOTATION_BOXED, def(_("Boxed"))},
+                {wxSTC_ANNOTATION_INDENTED, _("indented")}},
+               true,
+               data::item().columns(2)},
+              {_("stc.Wrap line"),
+               {{wxSTC_WRAP_NONE, _("None")},
+                {wxSTC_WRAP_WORD, _("Word")},
+                {wxSTC_WRAP_CHAR, _("Char")},
+                {wxSTC_WRAP_WHITESPACE, _("Whitespace")}},
+               true,
+               data::item().columns(2)}}},
+            {_("Printer"),
+             {{_("stc.Print flags"),
+               {{wxSTC_PRINT_NORMAL, _("Normal")},
+                {wxSTC_PRINT_INVERTLIGHT, _("Invert on white")},
+                {wxSTC_PRINT_BLACKONWHITE, def(_("Black on white"))},
+                {wxSTC_PRINT_COLOURONWHITE, _("Colour on white")},
+                {wxSTC_PRINT_COLOURONWHITEDEFAULTBG,
+                 _("Colour on white normal")}},
+               true,
+               data::item().columns(1)}}}}}}},
+        {_("Font"),
+         {{_("stc.Default font"),
+           item::FONTPICKERCTRL,
+           wxFont(
+             12,
+             wxFONTFAMILY_DEFAULT,
+             wxFONTSTYLE_NORMAL,
+             wxFONTWEIGHT_NORMAL),
+           data::item().apply(
+             [=](wxWindow* user, const std::any& value, bool save)
+             {
+               // Doing this once is enough, not yet possible.
+               lexers::get()->load_document();
+             })},
+          {_("stc.Text font"),
+           item::FONTPICKERCTRL,
+           wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)}}},
+        {_("Edge"),
+         {{_("stc.Edge column"), 0, 500, 80},
+          {_("stc.Edge line"),
+           {{wxSTC_EDGE_NONE, _("None")},
+            {wxSTC_EDGE_LINE, _("Line")},
+            {wxSTC_EDGE_BACKGROUND, _("Background")},
+            {wxSTC_EDGE_MULTILINE, _("Multiline")}},
+           true,
+           data::item().columns(1)}}},
+        {_("Margin"),
+         {{_("<i>Margins:</i>")},
+          {_("stc.Autocomplete max width"), 0, 100, 0},
+          {_("stc.Autocomplete min size"), 0, 100, 0},
+          {_("stc.Indent"), 0, 500, 2},
+          {_("stc.Tab width"), 1, 500, 2},
+          {_("blame.Author size"), -1, 500, -1},
+          {_("<i>Line Margins:</i>")},
+          {_("stc.margin.Divider"), 0, 40, 16},
+          {_("stc.margin.Folding"), 0, 40, 16},
+          {_("stc.margin.Line number"), 0, 100, 60},
+          {_("stc.margin.Text"), -1, 500, -1},
+          {_("<i>Max:</i>")},
+          {_("stc.max.Size visual"),
+           item::TEXTCTRL_INT,
+           std::string("10000000")},
+          {_("stc.max.Size lexer"),
+           item::TEXTCTRL_INT,
+           std::string("10000000")},
+          {_("Repeater"), item::TEXTCTRL_INT, std::string("1000")}}},
+        {_("Folding"),
+         {{_("stc.Indentation guide"), item::CHECKBOX},
+          {_("stc.Auto fold"), 0, INT_MAX, 1500},
+          {_("stc.Fold flags"),
+           {{wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, _("Line before expanded")},
+            {wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED,
+             def(_("Line before contracted"))},
+            {wxSTC_FOLDFLAG_LINEAFTER_EXPANDED, _("Line after expanded")},
+            {wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED,
+             def(_("Line after contracted"))},
+            {wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")}},
+           false}}},
+        {_("Linking"),
+         {{_("<i>Includes:</i>")},
+          {_("stc.link.Include directory"),
+           data::listview()
+             .type(data::listview::FOLDER)
+             .window(data::window().size({200, 200})),
+           std::any(),
+           data::item()
+             .label_type(data::item::LABEL_NONE)
+             .apply(
+               [=](wxWindow* user, const std::any& value, bool save)
+               {
+                 m_link->config_get();
+               })},
+          {_("<i>Matches:</i>")},
+          {_("stc.link.Pairs"),
+           data::listview()
+             .type(data::listview::TSV)
+             .window(data::window().size({200, 200})),
+           // First try to find "..", then <..>, as in next example:
+           // <A HREF="http://www.scintilla.org">scintilla</A> component.
+           config::strings_t({"\"\t\"", "`\t`", "<\t>", "[\t]", "'\t'", "{\t}"})}}},
+      }}});
 
   if (item_vector(m_config_items).find<bool>(_("stc.Keep zoom")))
   {

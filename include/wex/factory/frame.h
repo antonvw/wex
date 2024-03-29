@@ -14,6 +14,7 @@ class wxListView;
 
 namespace wex
 {
+class process_data;
 class vcs_entry;
 
 namespace data
@@ -41,7 +42,7 @@ public:
   /// Constructor for wxFrame.
   frame(wxWindow* parent, wxWindowID winid, const std::string& title);
 
-  /// Virtual interface
+  // Virtual interface
 
   /// Returns a grid.
   virtual factory::grid* get_grid();
@@ -94,6 +95,9 @@ public:
   /// Allows you to handle output text, .e.g. from a process.
   virtual bool output(const std::string& text) const { return false; }
 
+  /// Runs async process.
+  virtual bool process_async_system(const process_data& data) { return false; };
+
   /// Allows derived class to update file history.
   virtual void set_recent_file(const path& path) { ; }
 
@@ -111,7 +115,7 @@ public:
     return false;
   };
 
-  /// Other methods
+  // Other methods
 
   /// Returns the find focus.
   wxWindow* get_find_focus() { return m_find_focus; }

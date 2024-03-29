@@ -2,7 +2,7 @@
 // Name:      dir.h
 // Purpose:   Declaration of class wex::dir
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2008-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -41,7 +41,7 @@ public:
   /// Destructor.
   virtual ~dir() = default;
 
-  /// Virtual interface.
+  // Virtual interface.
 
   /// Override for action after find_files has ended.
   virtual void find_files_end() const;
@@ -54,7 +54,7 @@ public:
   /// Default supports find and replace, and adding items to handler.
   virtual bool on_file(const path&) const;
 
-  /// Other methods.
+  // Other methods.
 
   /// Returns the data.
   const auto& data() const { return m_data; }
@@ -87,10 +87,11 @@ private:
   bool traverse(const std::filesystem::directory_entry& e) const;
 
   static inline stream_statistics m_statistics;
-  const path                      m_dir;
-  const data::dir                 m_data;
-  wxEvtHandler*                   m_eh{nullptr};
-  wex::tool                       m_tool;
+
+  const path      m_dir;
+  const data::dir m_data;
+  wxEvtHandler*   m_eh{nullptr};
+  wex::tool       m_tool;
 };
 
 /// Returns all matching files into a vector of strings (without paths).

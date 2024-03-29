@@ -2,7 +2,7 @@
 // Name:      blame.cpp
 // Purpose:   Implementation of class wex::blame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2023 Anton van Wezenbeek
+// Copyright: (c) 2019-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -72,10 +72,10 @@ wex::blame::margin_style_t wex::blame::get_style(const std::string& text) const
     return style;
   }
 
-  if (const auto& [r, t] = chrono(m_date_format).get_time(text); r)
+  if (const auto& r(chrono(m_date_format).get_time(text)); r)
   {
     const time_t now               = time(nullptr);
-    const auto   dt                = difftime(now, t);
+    const auto   dt                = difftime(now, *r);
     const int    seconds           = 1;
     const int    seconds_in_minute = 60 * seconds;
     const int    seconds_in_hour   = 60 * seconds_in_minute;
@@ -176,13 +176,8 @@ bool wex::blame::parse_compact(const std::string& line, const regex& r)
   m_skip_info = false;
   m_path.clear(); // not present in svn blame
   m_style = get_style(r[2]);
-  m_line_no++;    // not present in svn blame
+  m_line_no++; // not present in svn blame
   m_line_text = r[3];
-
-  if (m_line_no < 5)
-  {
-    log::trace("parse_compact") << m_info << "no:" << m_line_no;
-  }
 
   return true;
 }
@@ -207,14 +202,18 @@ bool wex::blame::parse_full(const std::string& line, const regex& r)
   m_skip_info = false;
   m_path      = boost::algorithm::trim_copy(r[1]);
   m_style     = get_style(r[3]);
-  std::from_chars(r[4].data(), r[4].data() + r[4].size(), m_line_no);
-  m_line_no--;
-  m_line_text = r[5];
 
-  if (m_line_no < 5)
+  if (const auto [ptr, ec] =
+        std::from_chars(r[4].data(), r[4].data() + r[4].size(), m_line_no);
+      ec == std::errc())
   {
-    log::trace("parse_full") << m_info;
-  }
+    m_line_no--;
+    m_line_text = r[5];
 
-  return true;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }

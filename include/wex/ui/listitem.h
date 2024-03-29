@@ -2,12 +2,13 @@
 // Name:      listitem.h
 // Purpose:   Declaration of class wex::listitem
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2021 Anton van Wezenbeek
+// Copyright: (c) 2009-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/core/path.h>
+#include <wex/core/reflection.h>
 #include <wex/ui/listview.h>
 
 namespace wex
@@ -16,10 +17,10 @@ namespace wex
 class listitem : public wxListItem
 {
 public:
-  /// Constructor.
+  /// Constructor using existing item number.
   listitem(listview* listview, long itemnumber);
 
-  /// Constructor.
+  /// Constructor using a path, to be inserted later on.
   listitem(
     listview*          listview,
     const path&        filename,
@@ -42,7 +43,7 @@ public:
   bool is_readonly() const { return m_is_readonly; }
 
   /// Logs info about this item.
-  std::stringstream log() const;
+  std::stringstream log() const { return m_reflect.log(); }
 
   /// Returns the path.
   const auto& path() const { return m_path; }
@@ -63,6 +64,8 @@ private:
 
   const wex::path   m_path;
   const std::string m_file_spec;
-  bool              m_is_readonly;
+  bool              m_is_readonly{false};
+
+  reflection m_reflect;
 };
 }; // namespace wex

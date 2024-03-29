@@ -20,7 +20,7 @@ namespace wex
 {
 class frame;
 
-/// Offers a toolbar together with stock art.
+/// Offers a toolbar together with wex art.
 /// Default no controls are added, you have to call
 /// one of the add_ methods to do that.
 class toolbar : public wxAuiToolBar
@@ -62,6 +62,7 @@ public:
   void add_standard(bool realize = true);
 
   /// Adds a vector of general toolbar items to this toolbar.
+  /// If bitmap in wex::art is present the bitmap from the art is added.
   /// Returns false if one of the items could not be added.
   bool add_tool(const std::vector<data::toolbar_item>& v, bool realize = true);
 

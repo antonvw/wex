@@ -32,7 +32,7 @@ public:
     const std::string&  value = std::string(),
     const data::window& data  = data::window());
 
-  /// other methods
+  // other methods
 
   /// Handles string command.
   bool handle(const std::string& command);
@@ -43,7 +43,7 @@ public:
   /// Handles keydown event.
   void on_key_down(wxKeyEvent& event);
 
-  /// Virtual interface
+  // Virtual interface
 
   bool Destroy() override;
 

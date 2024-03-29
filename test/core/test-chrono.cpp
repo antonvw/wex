@@ -14,8 +14,8 @@ TEST_CASE("wex::chrono")
 
   SUBCASE("string")
   {
-    REQUIRE(std::get<0>(chrono.get_time("2019-02-01 12:20:06")));
-    REQUIRE(!std::get<0>(chrono.get_time("201902-01 12:20:06")));
+    REQUIRE(chrono.get_time("2019-02-01 12:20:06"));
+    REQUIRE(!chrono.get_time("201902-01 12:20:06"));
   }
 
   SUBCASE("time_t")
@@ -27,7 +27,7 @@ TEST_CASE("wex::chrono")
   {
     REQUIRE(chrono.get_time(0).contains("1970"));
     REQUIRE(!chrono.get_time(0).contains("."));
-    REQUIRE(wex::chrono("%Y-%m-%d %H:%M:%S", wex::chrono::PRECISION_MILLI)
+    REQUIRE(wex::chrono("%Y-%m-%d %H:%M:%S", wex::chrono::precision_t::MILLI)
               .get_time(timespec{0, 123000000})
               .contains(".123"));
   }

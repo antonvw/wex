@@ -6,6 +6,35 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## 24.04 - 2024-04-01 [Unreleased]
 
+### Added
+
+- clang-tidy support
+- added osx, linux build script build-gen.sh for building wex or
+  for building apps using it (installed as wex-build-gen.sh)
+- the build tool now supports ninja besides make
+- added class function_repeat to offer syncing without idle events
+- added class reflection to add reflection to classes
+- added wxMaterialDesignArtProvider, and renamed wex::stockart into wex::art.
+
+### Changed
+
+- moved single_choice_dialog to syntax lib, use data::window parameter
+- ex options ignorecase and matchword are kept in config
+- std::optional is used to return values at several places
+- use more enum classes
+
+### Fixed
+
+- sync_close_all now correctly handled
+- syntax on now restores previous syntax
+- case insensitive find in files
+- auto_complete handling
+- history clear fixed
+- statusbar setup after showing dialog fixed
+- vi selecting using arrow keys while shift or control down pressed
+- switching between find in stc margin and normal window
+- ex mode fixes for printing, adjust_window
+
 ## 23.10 - 2023-10-08
 
 ### Added
@@ -26,6 +55,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - added wex::ex_stream::stream argument line size and increased default value
 
 ### Fixed
+
 - possible crash in lisview sorting
 - ctags::find and empty tag finds next tag
 - rectangular paste
@@ -441,4 +471,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - CEdit is used as base for the output
 - Visual C++ 5.0
 
-<!-- markdownlint-configure-file { "MD022": false, "MD024": false, "MD030": false, "MD032": false} -->
+<!-- markdownlint-configure-file { "MD022": false,
+  "MD024": false, "MD030": false, "MD032": false} -->

@@ -2,7 +2,7 @@
 // Name:      address.cpp
 // Purpose:   Implementation of class wex::address
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013-2023 Anton van Wezenbeek
+// Copyright: (c) 2013-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <charconv>
@@ -12,52 +12,36 @@
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
 #include <wex/ex/address.h>
+#include <wex/ex/addressrange.h>
 #include <wex/ex/command-parser.h>
 #include <wex/ex/ex-stream.h>
 #include <wex/ex/ex.h>
 #include <wex/ex/macros.h>
-#include <wex/ex/util.h>
 #include <wex/factory/process.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 
-#define SEARCH_TARGET                                                         \
-  if (ex->get_stc()->SearchInTarget(text) != -1)                              \
-  {                                                                           \
-    return ex->get_stc()->LineFromPosition(ex->get_stc()->GetTargetStart()) + \
-           1;                                                                 \
-  }
-
-#define SEPARATE                                             \
-  if (separator)                                             \
-  {                                                          \
-    output += std::string(40, '-') + m_ex->get_stc()->eol(); \
+#define SEARCH_TARGET                                                          \
+  if (ex->get_stc()->SearchInTarget(text) != -1)                               \
+  {                                                                            \
+    return ex->get_stc()->LineFromPosition(ex->get_stc()->GetTargetStart()) +  \
+           1;                                                                  \
   }
 
 namespace wex
 {
 int find_stc(ex* ex, const std::string& text, int start_pos, bool forward)
 {
-  if (forward)
-  {
-    ex->get_stc()->SetTargetRange(start_pos, ex->get_stc()->GetTextLength());
-  }
-  else
-  {
-    ex->get_stc()->SetTargetRange(start_pos, 0);
-  }
+  ex->get_stc()->SetTargetRange(
+    start_pos,
+    forward ? ex->get_stc()->GetTextLength() : 0);
 
   SEARCH_TARGET;
 
-  if (forward)
-  {
-    ex->get_stc()->SetTargetRange(0, start_pos);
-  }
-  else
-  {
-    ex->get_stc()->SetTargetRange(ex->get_stc()->GetTextLength(), start_pos);
-  }
+  ex->get_stc()->SetTargetRange(
+    forward ? 0 : ex->get_stc()->GetTextLength(),
+    start_pos);
 
   SEARCH_TARGET;
 
@@ -66,16 +50,17 @@ int find_stc(ex* ex, const std::string& text, int start_pos, bool forward)
 
 int find_stream(ex* ex, const std::string& text, bool forward)
 {
-  if (ex->ex_stream()->find(text, 0, forward))
-  {
-    return ex->ex_stream()->get_current_line() + 1;
-  }
-  else
-  {
-    return 0;
-  }
+  return ex->ex_stream()->find(text, 0, forward) ?
+           ex->ex_stream()->get_current_line() + 1 :
+           0;
 }
 }; // namespace wex
+
+enum class wex::address::add_t
+{
+  APPEND,
+  INSERT
+};
 
 wex::address::address(ex* ex, int line)
   : m_ex(ex)
@@ -100,7 +85,8 @@ bool wex::address::add(add_t type, const std::string& text) const
     m_ex->ex_stream()->insert_text(
       *this,
       text + m_ex->get_stc()->eol(),
-      type == ADD_APPEND ? ex_stream::INSERT_AFTER : ex_stream::INSERT_BEFORE);
+      type == add_t::APPEND ? ex_stream::loc_t::AFTER :
+                              ex_stream::loc_t::BEFORE);
     return true;
   }
   else if (m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode())
@@ -110,10 +96,11 @@ bool wex::address::add(add_t type, const std::string& text) const
   else
   {
     m_ex->get_stc()->insert_text(
-      m_ex->get_stc()->PositionFromLine(type == ADD_APPEND ? line : line - 1),
+      m_ex->get_stc()->PositionFromLine(
+        type == add_t::APPEND ? line : line - 1),
       text + m_ex->get_stc()->eol());
 
-    if (type == ADD_APPEND)
+    if (type == add_t::APPEND)
     {
       m_ex->get_stc()->goto_line(line + get_number_of_lines(text) - 1);
     }
@@ -171,26 +158,20 @@ bool wex::address::adjust_window(const std::string& text) const
     }
   }
 
-  std::string output;
+  return m_ex->print(
+    addressrange(m_ex, begin - 1, begin + count - 1),
+    flags,
+    separator);
+}
 
-  SEPARATE;
-  output +=
-    wex::get_lines(m_ex->get_stc(), begin - 1, begin + count - 1, flags);
-  SEPARATE;
-
-  m_ex->print(output);
-
-  return true;
+bool wex::address::append(const std::string& text) const
+{
+  return add(add_t::APPEND, text);
 }
 
 bool wex::address::flags_supported(const std::string& flags)
 {
-  if (flags.empty())
-  {
-    return true;
-  }
-
-  if (regex("([-+#pl]+)").match(flags) < 0)
+  if (!flags.empty() && regex("([-+#pl]+)").match(flags) < 0)
   {
     log::status("Unsupported flags") << flags;
     return false;
@@ -202,7 +183,7 @@ bool wex::address::flags_supported(const std::string& flags)
 int wex::address::get_line(int start_pos) const
 {
   // We already have a line number, return that one.
-  if (m_line >= 1)
+  if (m_line >= 1 || m_ex == nullptr)
   {
     return m_line;
   }
@@ -238,20 +219,29 @@ int wex::address::get_line(int start_pos) const
     return result;
   }
   // Try address calculation.
-  else if (const auto sum = m_ex->calculator(m_address); sum < 0)
+  else if (const auto& sum(m_ex->calculator(m_address)); !sum)
+  {
+    return 0;
+  }
+  else if (*sum < 0)
   {
     return 1;
   }
-  else if (sum > m_ex->get_stc()->get_line_count())
+  else if (*sum > m_ex->get_stc()->get_line_count())
   {
     return m_ex->get_stc()->get_line_count() == LINE_COUNT_UNKNOWN ?
-             sum :
+             *sum :
              m_ex->get_stc()->get_line_count();
   }
   else
   {
-    return sum;
+    return *sum;
   }
+}
+
+bool wex::address::insert(const std::string& text) const
+{
+  return add(add_t::INSERT, text);
 }
 
 bool wex::address::marker_add(char marker) const
@@ -329,8 +319,8 @@ bool wex::address::parse(const command_parser& cp)
 
 bool wex::address::put(char name) const
 {
-  if (const auto line = get_line(); m_ex->get_stc()->GetReadOnly() ||
-                                    m_ex->get_stc()->is_hexmode() || line <= 0)
+  if (const auto line(get_line()); m_ex->get_stc()->GetReadOnly() ||
+                                   m_ex->get_stc()->is_hexmode() || line <= 0)
   {
     return false;
   }
@@ -430,7 +420,7 @@ void wex::address::set_line(int line)
 
 bool wex::address::write_line_number() const
 {
-  if (const auto line = get_line(); line <= 0)
+  if (const auto line(get_line()); line <= 0)
   {
     return false;
   }

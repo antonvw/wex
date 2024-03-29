@@ -2,7 +2,7 @@
 // Name:      vcs.h
 // Purpose:   Declaration of wex::vcs class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -28,7 +28,7 @@ public:
   /// The store is a vector of vcs entries.
   typedef std::vector<vcs_entry> store_t;
 
-  /// Static interface.
+  // Static interface.
 
   /// Destroys dialog.
   static void destroy_dialog();
@@ -54,7 +54,7 @@ public:
   /// Returns the number of vcs entries.
   static size_t size();
 
-  /// Other methods.
+  // Other methods.
 
   /// Default constructor.
   vcs(
@@ -133,7 +133,7 @@ private:
 
 /// Executes VCS command id for specified files
 /// and opens component if necessary.
-void vcs_execute(
+bool vcs_execute(
   /// frame on which open_file is called
   factory::frame* frame,
   /// VCS menu id to execute

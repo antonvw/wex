@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2023 Anton van Wezenbeek
+// Copyright: (c) 2008-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -31,11 +31,28 @@ wex::stc::stc(const wex::path& p, const data::stc& data)
   : syntax::stc(data.window())
   , m_data(data)
   , m_auto_complete(new wex::auto_complete(this))
-  , m_vi(
-      new vi(this, data.flags().test(data::stc::WIN_EX) ? ex::EX : ex::VISUAL))
+  , m_vi(new vi(
+      this,
+      data.flags().test(data::stc::WIN_EX) ? ex::mode_t::EX :
+                                             ex::mode_t::VISUAL))
   , m_file(this, wex::path(data.window().name()))
   , m_hexmode(hexmode(this))
   , m_frame(dynamic_cast<frame*>(wxTheApp->GetTopWindow()))
+  , m_function_repeat(
+      "stc",
+      this,
+      [this](wxTimerEvent&)
+      {
+        if (
+          is_visual() && m_file.check_sync() &&
+          // the readonly flags bit of course can differ from file actual
+          // readonly mode, therefore add this check
+          !m_data.flags().test(data::stc::WIN_READ_ONLY) &&
+          path().stat().is_readonly() != GetReadOnly())
+        {
+          file_readonly_attribute_changed();
+        }
+      })
 {
   m_data.set_stc(this);
 
@@ -48,7 +65,7 @@ wex::stc::stc(const wex::path& p, const data::stc& data)
 
   get_lexer().set(lexer(this));
 
-  if (config("AllowSync").get(true) && p != wex::ex::get_macros().path())
+  if (p != wex::ex::get_macros().path())
   {
     sync();
   }
@@ -126,12 +143,12 @@ wex::stc::~stc()
 
 void wex::stc::add_text(const std::string& text)
 {
-  if (m_vi->visual() == ex::EX)
+  if (m_vi->visual() == ex::mode_t::EX)
   {
     m_file.ex_stream()->insert_text(
       address(m_vi, m_file.ex_stream()->get_current_line()),
       text,
-      ex_stream::INSERT_AFTER);
+      ex_stream::loc_t::AFTER);
   }
   else if (!GetOvertype())
   {
@@ -234,7 +251,7 @@ bool wex::stc::file_readonly_attribute_changed()
 
 int wex::stc::get_current_line() const
 {
-  if (m_vi->visual() == ex::EX)
+  if (m_vi->visual() == ex::mode_t::EX)
   {
     return m_file.ex_stream()->get_current_line();
   }
@@ -242,38 +259,6 @@ int wex::stc::get_current_line() const
   {
     return syntax::stc::get_current_line();
   }
-}
-
-const std::string wex::stc::get_find_string() const
-{
-  if (const auto selection =
-        const_cast<stc*>(this)->GetSelectedText().ToStdString();
-      !selection.empty() && get_number_of_lines(selection) == 1)
-  {
-    bool alnum = true;
-
-    // If regexp is true, then only use selected text if text does not
-    // contain special regexp characters.
-    if (GetSearchFlags() & wxSTC_FIND_REGEXP)
-    {
-      for (size_t i = 0; i < selection.size() && alnum; i++)
-      {
-        if (
-          !isalnum(selection[i]) && selection[i] != ' ' &&
-          selection[i] != '.' && selection[i] != '-' && selection[i] != '_')
-        {
-          alnum = false;
-        }
-      }
-    }
-
-    if (alnum)
-    {
-      find_replace_data::get()->set_find_string(selection);
-    }
-  }
-
-  return find_replace_data::get()->get_find_string();
 }
 
 bool wex::stc::get_hexmode_erase(int begin, int end)
@@ -310,7 +295,7 @@ bool wex::stc::get_hexmode_sync()
 
 int wex::stc::get_line_count() const
 {
-  if (m_vi->visual() == ex::EX)
+  if (m_vi->visual() == ex::mode_t::EX)
   {
     return m_file.ex_stream()->get_line_count();
   }
@@ -322,7 +307,7 @@ int wex::stc::get_line_count() const
 
 int wex::stc::get_line_count_request()
 {
-  if (m_vi->visual() == ex::EX)
+  if (m_vi->visual() == ex::mode_t::EX)
   {
     return m_file.ex_stream()->get_line_count_request();
   }
@@ -344,7 +329,7 @@ wex::vi& wex::stc::get_vi()
 
 void wex::stc::goto_line(int line)
 {
-  if (m_vi->visual() == ex::EX)
+  if (m_vi->visual() == ex::mode_t::EX)
   {
     m_file.ex_stream()->goto_line(line);
   }
@@ -399,7 +384,7 @@ bool wex::stc::inject(const data::control& data)
 
 void wex::stc::insert_text(int pos, const std::string& text)
 {
-  if (m_vi->visual() == ex::EX)
+  if (m_vi->visual() == ex::mode_t::EX)
   {
     m_file.ex_stream()->insert_text(address(m_vi, LineFromPosition(pos)), text);
   }
@@ -416,7 +401,7 @@ bool wex::stc::IsModified() const
 
 bool wex::stc::is_visual() const
 {
-  return m_vi->visual() != ex::EX;
+  return m_vi->visual() != ex::mode_t::EX;
 }
 
 bool wex::stc::marker_delete_all_change()
@@ -478,21 +463,6 @@ void wex::stc::mark_modified(const wxStyledTextEvent& event)
   }
 
   use_modification_markers(true);
-}
-
-void wex::stc::on_idle(wxIdleEvent& event)
-{
-  event.Skip();
-
-  if (
-    is_visual() && m_file.check_sync() &&
-    // the readonly flags bit of course can differ from file actual readonly
-    // mode, therefore add this check
-    !m_data.flags().test(data::stc::WIN_READ_ONLY) &&
-    path().stat().is_readonly() != GetReadOnly())
-  {
-    file_readonly_attribute_changed();
-  }
 }
 
 void wex::stc::on_styled_text(wxStyledTextEvent& event)
@@ -597,7 +567,7 @@ void wex::stc::properties_message(path::log_t flags)
 
     std::string title = name + readonly;
 
-    if (m_vi->visual() == ex::EX)
+    if (m_vi->visual() == ex::mode_t::EX)
     {
       title += " [ex]";
     }
@@ -658,12 +628,6 @@ void wex::stc::show_line_numbers(bool show)
   }
 }
 
-void wex::stc::sync(bool start)
-{
-  start ? Bind(wxEVT_IDLE, &stc::on_idle, this) :
-          (void)Unbind(wxEVT_IDLE, &stc::on_idle, this);
-}
-
 void wex::stc::Undo()
 {
   syntax::stc::Undo();
@@ -722,7 +686,7 @@ void wex::stc::visual(bool on)
 
   if (on)
   {
-    if (m_vi->visual() != ex::VISUAL)
+    if (m_vi->visual() != ex::mode_t::VISUAL)
     {
       std::stringstream info;
 
@@ -731,17 +695,17 @@ void wex::stc::visual(bool on)
         info << path().string();
       }
 
+      m_vi->use(ex::mode_t::VISUAL); // needed in do_file_load
+      m_file.close();
+      m_file.use_stream(false);
+      m_file.file_load(path());
+
       log::info("enter visual mode") << on << info;
     }
-
-    m_vi->use(ex::VISUAL); // needed in do_file_load
-    m_file.close();
-    m_file.use_stream(false);
-    m_file.file_load(path());
   }
   else
   {
-    m_vi->use(ex::EX);
+    m_vi->use(ex::mode_t::EX);
   }
 
   config_get();

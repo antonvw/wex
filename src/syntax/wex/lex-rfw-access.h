@@ -2,7 +2,7 @@
 // Name:      lex-rfw-access.h
 // Purpose:   Declaration of Scintilla::lex_rfw_access class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -13,7 +13,7 @@
 
 namespace Scintilla
 {
-/// The robotframework lexer acces class.
+/// The robotframework lexer access class.
 /// It is compiled during wxWidgets LexBash compiling,
 /// and uses c++11.
 class lex_rfw_access
@@ -28,19 +28,19 @@ public:
   };
 
   /// Returns count.
-  int count() const { return m_count; };
+  int count() const { return m_count; }
 
   /// Decreases count.
-  void decrease() { m_count--; };
+  void decrease() { m_count--; }
 
   /// Returns down.
-  int down() const { return m_down; };
+  int down() const { return m_down; }
 
   /// Performs global scan.
   int glob_scan(StyleContext& sc) const;
 
   /// Increases count.
-  void increase() { m_count++; };
+  void increase() { m_count++; }
 
   /// Initializes.
   Sci_Position init(Sci_PositionU startPos) const;
@@ -61,7 +61,7 @@ public:
   int translate_digit(int ch) const;
 
   /// Return up.
-  int up() const { return m_up; };
+  int up() const { return m_up; }
 
 protected:
   int opposite(int ch) const;
@@ -105,7 +105,7 @@ public:
   };
 
   /// Returns depth.
-  size_t depth() const { return m_stack.size(); };
+  size_t depth() const { return m_stack.size(); }
 
   /// Pops.
   void pop(void);
@@ -117,7 +117,7 @@ public:
   void start(int u, int s);
 
   /// Returns style.
-  int style() const { return m_style; };
+  int style() const { return m_style; }
 
 private:
   int m_style{0};
@@ -294,6 +294,9 @@ inline void Scintilla::quote_stack::pop(void)
     return;
 
   m_stack.pop();
+
+  if (m_stack.empty())
+    return;
 
   m_count = m_stack.top().m_count;
   m_up    = m_stack.top().m_up;

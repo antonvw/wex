@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <wex/core/function-repeat.h>
 #include <wex/factory/text-window.h>
 
 #include <fstream>
@@ -39,10 +40,10 @@ class ex_stream : public factory::text_window
 {
 public:
   /// The place where text will be inserted.
-  enum loc_t
+  enum class loc_t
   {
-    INSERT_BEFORE, ///< before address
-    INSERT_AFTER   ///< after address
+    BEFORE, ///< before address
+    AFTER   ///< after address
   };
 
   /// Constructor, specify ex component
@@ -64,6 +65,14 @@ public:
   /// Returns context lines.
   size_t get_context_lines() const { return m_context_lines; }
 
+  /// Builds a string with text from range, result present in text.
+  /// Returns false if no stream, or range is invalid.
+  bool get_lines(
+    /// the range
+    const addressrange& range,
+    /// flags to specify behaviour, see get_lines at ex/util.h
+    const std::string& flags = "");
+
   /// Returns content of work file.
   const std::string* get_work() const;
 
@@ -72,7 +81,7 @@ public:
   bool insert_text(
     const address&     address,
     const std::string& text,
-    loc_t              loc = INSERT_BEFORE);
+    loc_t              loc = loc_t::BEFORE);
 
   /// Returns true if we are in block mode.
   /// Block mode implies that no eols were found when
@@ -109,6 +118,9 @@ public:
   /// Returns false if no stream, or range is invalid.
   bool substitute(const addressrange& range, const data::substitute& data);
 
+  /// Returns text value, as result of doing a get_lines.
+  auto& text() const { return m_text; }
+
   /// Writes working stream to file.
   /// Returns false if internal streams are not valid.
   bool write();
@@ -124,7 +136,7 @@ public:
   /// Returns false if no stream, or range is invalid.
   bool yank(const addressrange& range, char name = '0');
 
-  /// Virtual methods from text_window.
+  // Virtual methods from text_window.
 
   bool find(const std::string& text, int find_flags = -1, bool find_next = true)
     override;
@@ -161,7 +173,11 @@ private:
   char* m_buffer{nullptr};
   char* m_current_line{nullptr};
 
+  std::string m_text;
+
   syntax::stc* m_stc;
   wex::ex*     m_ex;
+
+  function_repeat m_function_repeat;
 };
 }; // namespace wex

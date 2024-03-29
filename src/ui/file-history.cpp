@@ -2,7 +2,7 @@
 // Name:      file-history.cpp
 // Purpose:   Implementation of wex::file_history class methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -14,13 +14,14 @@
 #include <wx/stockitem.h>
 
 #include <filesystem>
+#include <ranges>
 
 namespace wex
 {
 class file_history_imp : public wxFileHistory
 {
 public:
-  file_history_imp(
+  explicit file_history_imp(
     size_t             maxFiles = 9,
     wxWindowID         idBase   = wxID_FILE1,
     const std::string& key      = std::string())
@@ -43,6 +44,8 @@ public:
 
     return true;
   }
+
+  void clear() { m_contents.clear(); }
 
   const auto& contents() { return m_contents; }
 
@@ -67,11 +70,9 @@ wex::file_history::file_history(
 {
   // The order should be inverted, as the last one added is the most recent
   // used.
-  for (auto it = m_history->contents().rbegin();
-       it != m_history->contents().rend();
-       ++it)
+  for (const auto& it : std::ranges::reverse_view(m_history->contents()))
   {
-    m_history->AddFileToHistory(*it);
+    m_history->AddFileToHistory(it);
   }
 }
 
@@ -107,6 +108,8 @@ void wex::file_history::clear()
       m_history->RemoveFileFromHistory(i);
     }
   }
+
+  m_history->clear();
 }
 
 bool wex::file_history::empty() const

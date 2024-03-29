@@ -2,7 +2,7 @@
 // Name:      shell.cpp
 // Purpose:   Implementation of class wex::shell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2011-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -18,6 +18,7 @@
 #include <wex/ui/frame.h>
 
 #include <numeric>
+#include <ranges>
 
 wex::shell::shell(
   const data::stc&   data,
@@ -164,12 +165,14 @@ void wex::shell::enable(bool enabled)
   if (!m_enabled)
   {
     // A disabled shell follows vi mode.
-    get_vi().use(config(_("stc.vi mode")).get(true) ? ex::VISUAL : ex::OFF);
+    get_vi().use(
+      config(_("stc.vi mode")).get(true) ? ex::mode_t::VISUAL :
+                                           ex::mode_t::OFF);
   }
   else
   {
     // An enabled shell does not use vi mode.
-    get_vi().use(ex::OFF);
+    get_vi().use(ex::mode_t::OFF);
   }
 }
 
@@ -204,16 +207,16 @@ void wex::shell::expand()
 
     AutoCompCancel();
   }
-  else if (const auto [r, e, v] = auto_complete_filename(m_command); r)
+  else if (const auto t = auto_complete_filename(m_command); t)
   {
-    if (v.size() > 1)
+    if (t->vector.size() > 1)
     {
-      m_auto_complete_list = v;
+      m_auto_complete_list = t->vector;
       AutoCompShow(
         prefix.length(),
         std::accumulate(
-          v.begin(),
-          v.end(),
+          t->vector.begin(),
+          t->vector.end(),
           std::string(),
           [&](const std::string& a, const std::string& b)
           {
@@ -224,7 +227,7 @@ void wex::shell::expand()
     }
     else
     {
-      expansion = e;
+      expansion = t->expansion;
     }
   }
 
@@ -491,10 +494,9 @@ bool wex::shell::set_command_from_history(const std::string& short_command)
         short_command.length() - m_command_end.length());
     }
 
-    for (auto it = m_commands.rbegin(); it != m_commands.rend(); ++it)
+    for (const auto& command : std::ranges::reverse_view(m_commands))
     {
-      if (const auto command = *it;
-          command.substr(0, short_command_check.size()) == short_command_check)
+      if (command.substr(0, short_command_check.size()) == short_command_check)
       {
         m_command = command;
         return true;

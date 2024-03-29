@@ -2,7 +2,7 @@
 // Name:      lexers.h
 // Purpose:   Declaration of wex::lexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2023 Anton van Wezenbeek
+// Copyright: (c) 2008-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -16,6 +16,7 @@
 #include <vector>
 
 #include <wex/core/path.h>
+#include <wex/core/reflection.h>
 #include <wex/syntax/indicator.h>
 #include <wex/syntax/lexer.h>
 #include <wex/syntax/marker.h>
@@ -40,7 +41,7 @@ public:
   /// Name values type for macros.
   typedef std::unordered_map<std::string, std::string> name_values_t;
 
-  /// static interface
+  // Static interface
 
   /// Returns the lexers object.
   /// If this is the first invocation, and createOnDemand is true,
@@ -52,15 +53,15 @@ public:
   /// (both the parameter and returned value may be nullptr).
   static lexers* set(lexers* lexers);
 
-  /// other methods
+  // Other methods
 
   /// Applies containers (except global styles) to specified component.
   void apply(factory::stc* stc) const;
 
   /// Applies default style to functions for back and foreground colours.
   void apply_default_style(
-    std::function<void(const std::string&)> back,
-    std::function<void(const std::string&)> fore = nullptr) const;
+    const std::function<void(const std::string&)>& back,
+    const std::function<void(const std::string&)>& fore = nullptr) const;
 
   /// Sets global styles (and colours and indicators)
   /// for current theme for specified component.
@@ -68,7 +69,7 @@ public:
 
   /// Applies macro to text:
   /// if text is referring to a macro, text is replaced by the macro value.
-  /// Otherwise the same text is returned.
+  // Otherwise the same text is returned.
   const std::string apply_macro(
     const std::string& text,
     const std::string& lexer = "global") const;
@@ -200,6 +201,8 @@ private:
     m_style_no_text_margin_year{-1};
 
   bool m_is_loaded{false};
+
+  reflection m_reflect;
 
   static inline lexers* m_self = nullptr;
 };

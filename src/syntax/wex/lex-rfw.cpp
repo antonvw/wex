@@ -2,7 +2,7 @@
 // Name:      lex-rfw.cpp
 // Purpose:   Implementation of lmRFW
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -30,7 +30,27 @@ Scintilla::lex_rfw::lex_rfw()
   m_cmd_delimiter.Set("| || |& & && ; ;; ( ) { }");
 }
 
-Scintilla::lex_rfw::~lex_rfw() {}
+void Scintilla::lex_rfw::init()
+{
+  /* The recommended header format is *** Settings ***,
+     but the header is case-insensitive, surrounding spaces are
+     optional, and the number of asterisk characters can vary as long
+     as there is one asterisk in the beginning.
+     In addition to using the plural format, also singular variants
+     like Setting and Test Case are accepted.
+     In other words, also *setting would be recognized as a section
+     header.
+     And it is an error to have both test cases and tasks in the same file.
+     -> our compare is not yet case insensitive
+    */
+  m_regex_section_begin = std::make_unique<wex::regex_part>("\\*+ *");
+  m_regex_section_end   = std::make_unique<wex::regex_part>("s? *\\**");
+
+  m_quote       = std::make_unique<quote>(*m_accessor);
+  m_quote_stack = std::make_unique<quote_stack>(*m_accessor);
+
+  m_section.reset();
+}
 
 void Scintilla::lex_rfw::keywords_update()
 {
@@ -48,28 +68,6 @@ void Scintilla::lex_rfw::keywords_update()
       m_visual_mode = false;
     }
   }
-}
-
-void Scintilla::lex_rfw::init(LexAccessor& styler)
-{
-  /* The recommended header format is *** Settings ***,
-     but the header is case-insensitive, surrounding spaces are
-     optional, and the number of asterisk characters can vary as long
-     as there is one asterisk in the beginning.
-     In addition to using the plural format, also singular variants
-     like Setting and Test Case are accepted.
-     In other words, also *setting would be recognized as a section
-     header.
-     And it is an error to have both test cases and tasks in the same file.
-     -> our compare is not yet case insensitive
-    */
-  m_section_begin = std::make_unique<wex::regex_part>("\\*+ *");
-  m_section_end   = std::make_unique<wex::regex_part>("s? *\\**");
-
-  m_quote       = std::make_unique<quote>(styler);
-  m_quote_stack = std::make_unique<quote_stack>(styler);
-
-  m_section.reset();
 }
 
 void Scintilla::lex_rfw::parse_keyword(
@@ -177,7 +175,7 @@ void Scintilla::lex_rfw::section_start(
   do
   {
     sc.Forward();
-  } while (m_section_end->match(sc.ch) == wex::regex_part::MATCH_FULL);
+  } while (m_regex_section_end->match(sc.ch) == wex::regex_part::match_t::FULL);
 
   sc.SetState(SCE_SH_WORD);
   m_section.start(section.second);
@@ -221,8 +219,7 @@ bool Scintilla::lex_rfw::spaced_keywords_detect(
 void Scintilla::lex_rfw::state_check(
   StyleContext& sc,
   int           cmd_state,
-  int&          cmd_state_new,
-  LexAccessor&  styler)
+  int&          cmd_state_new)
 {
   // Determine if the current state should terminate.
   switch (sc.state)
@@ -237,7 +234,7 @@ void Scintilla::lex_rfw::state_check(
       break;
 
     case SCE_SH_TESTCASE:
-      if (!setWord.Contains(sc.ch))
+      if (!setWord.Contains(sc.ch) || sc.chNext == '*')
       {
         cmd_state_new = RFW_CMD_START;
         sc.SetState(SCE_SH_DEFAULT);
@@ -265,14 +262,14 @@ void Scintilla::lex_rfw::state_check(
       break;
 
     case SCE_SH_NUMBER:
-      if (auto digit = lex_rfw_access(styler).translate_digit(sc.ch);
+      if (auto digit = lex_rfw_access(*m_accessor).translate_digit(sc.ch);
           numBase == RFW_BASE_DECIMAL)
       {
         if (sc.ch == '#')
         {
           char s[10];
           sc.GetCurrent(s, sizeof(s));
-          numBase = lex_rfw_access(styler).number_base(s);
+          numBase = lex_rfw_access(*m_accessor).number_base(s);
           if (numBase != RFW_BASE_ERROR)
             break;
         }
@@ -380,7 +377,7 @@ void Scintilla::lex_rfw::state_check(
           {
             m_quote_stack->push(sc.ch, RFW_DELIM_BACKTICK);
           }
-          else if (sc.ch == '$' && sc.chNext == '(')
+          else if (sc.ch == '$' && sc.chNext == '{')
           {
             sc.Forward();
             m_quote_stack->push(sc.ch, RFW_DELIM_COMMAND);
@@ -414,7 +411,7 @@ void Scintilla::lex_rfw::state_check(
               sc.Forward();
               m_quote_stack->push(sc.ch, RFW_DELIM_LSTRING);
             }
-            else if (sc.chNext == '(')
+            else if (sc.chNext == '{')
             {
               sc.Forward();
               m_quote_stack->push(sc.ch, RFW_DELIM_COMMAND);
@@ -457,10 +454,7 @@ void Scintilla::lex_rfw::state_check(
   }
 }
 
-bool Scintilla::lex_rfw::state_check_continue(
-  StyleContext& sc,
-  int&          cmd_state,
-  LexAccessor&  styler)
+bool Scintilla::lex_rfw::state_check_continue(StyleContext& sc, int& cmd_state)
 {
   const CharacterSet setMetaCharacter(CharacterSet::setNone, "|&;()<> \t\r\n");
   const CharacterSet setRFWOperator(
@@ -553,9 +547,9 @@ bool Scintilla::lex_rfw::state_check_continue(
   }
   else if (sc.ch == '$' || sc.ch == '@')
   {
-    if (sc.Match("$(("))
+    if (sc.Match("${{"))
     {
-      sc.SetState(SCE_SH_OPERATOR); // handle '((' later
+      sc.SetState(SCE_SH_OPERATOR); // handle '{{' later
       return true;
     }
     sc.SetState(SCE_SH_SCALAR);
@@ -570,7 +564,7 @@ bool Scintilla::lex_rfw::state_check_continue(
       sc.ChangeState(SCE_SH_STRING);
       m_quote_stack->start(sc.ch, RFW_DELIM_LSTRING);
     }
-    else if (sc.ch == '(')
+    else if (sc.ch == '{')
     {
       sc.ChangeState(SCE_SH_BACKTICKS);
       m_quote_stack->start(sc.ch, RFW_DELIM_COMMAND);
@@ -597,9 +591,9 @@ bool Scintilla::lex_rfw::state_check_continue(
   {
     sc.SetState(SCE_SH_OPERATOR);
     // globs have no whitespace, do not appear in arithmetic expressions
-    if (cmd_state != RFW_CMD_ARITH && sc.ch == '(' && sc.chNext != '(')
+    if (cmd_state != RFW_CMD_ARITH && sc.ch == '{' && sc.chNext != '{')
     {
-      int i = lex_rfw_access(styler).glob_scan(sc);
+      int i = lex_rfw_access(*m_accessor).glob_scan(sc);
       if (i > 1)
       {
         sc.SetState(SCE_SH_IDENTIFIER);
@@ -610,7 +604,7 @@ bool Scintilla::lex_rfw::state_check_continue(
     // handle opening delimiters for test/arithmetic expressions - ((,[[,[
     if (cmd_state == RFW_CMD_START || cmd_state == RFW_CMD_BODY)
     {
-      if (sc.Match('(', '('))
+      if (sc.Match('{', '{'))
       {
         cmd_state = RFW_CMD_ARITH;
         sc.Forward();
@@ -628,7 +622,7 @@ bool Scintilla::lex_rfw::state_check_continue(
       }
     }
     // section state -- for ((x;y;z)) in ... looping
-    if (cmd_state == RFW_CMD_WORD && sc.Match('(', '('))
+    if (cmd_state == RFW_CMD_WORD && sc.Match('{', '{'))
     {
       cmd_state = RFW_CMD_ARITH;
       sc.Forward();
@@ -665,7 +659,7 @@ bool Scintilla::lex_rfw::state_check_continue(
       }
     }
     // handle closing delimiters for test/arithmetic expressions - )),]],]
-    if (cmd_state == RFW_CMD_ARITH && sc.Match(')', ')'))
+    if (cmd_state == RFW_CMD_ARITH && sc.Match('}', '}'))
     {
       cmd_state = RFW_CMD_BODY;
       sc.Forward();
@@ -693,24 +687,24 @@ void SCI_METHOD Scintilla::lex_rfw::Fold(
   int,
   IDocument* pAccess)
 {
-  LexAccessor styler(pAccess);
+  m_accessor = std::make_unique<LexAccessor>(pAccess);
 
   Sci_PositionU endPos      = startPos + length;
-  Sci_Position  lineCurrent = styler.GetLine(startPos);
+  Sci_Position  lineCurrent = m_accessor->GetLine(startPos);
 
-  int levelPrev    = styler.LevelAt(lineCurrent) & SC_FOLDLEVELNUMBERMASK,
+  int levelPrev    = m_accessor->LevelAt(lineCurrent) & SC_FOLDLEVELNUMBERMASK,
       levelCurrent = levelPrev, visibleChars = 0;
 
-  char chNext = styler[startPos];
+  char chNext = (*m_accessor)[startPos];
 
   for (Sci_PositionU i = startPos; i < endPos; i++)
   {
     char ch = chNext;
-    chNext  = styler.SafeGetCharAt(i + 1);
+    chNext  = m_accessor->SafeGetCharAt(i + 1);
 
     const bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
 
-    lex_rfw_access rfw(styler, lineCurrent);
+    lex_rfw_access rfw(*m_accessor, lineCurrent);
 
     // Comment folding
     if (m_options.fold_comment() && atEOL && rfw.is_comment_line())
@@ -746,9 +740,9 @@ void SCI_METHOD Scintilla::lex_rfw::Fold(
         lev |= SC_FOLDLEVELWHITEFLAG;
       if ((levelCurrent > levelPrev) && (visibleChars > 0))
         lev |= SC_FOLDLEVELHEADERFLAG;
-      if (lev != styler.LevelAt(lineCurrent))
+      if (lev != m_accessor->LevelAt(lineCurrent))
       {
-        styler.SetLevel(lineCurrent, lev);
+        m_accessor->SetLevel(lineCurrent, lev);
       }
       lineCurrent++;
       levelPrev    = levelCurrent;
@@ -761,8 +755,8 @@ void SCI_METHOD Scintilla::lex_rfw::Fold(
 
   // Fill in the real level of the next line, keeping the current flags as
   // they will be filled in later
-  int flagsNext = styler.LevelAt(lineCurrent) & ~SC_FOLDLEVELNUMBERMASK;
-  styler.SetLevel(lineCurrent, levelPrev | flagsNext);
+  int flagsNext = m_accessor->LevelAt(lineCurrent) & ~SC_FOLDLEVELNUMBERMASK;
+  m_accessor->SetLevel(lineCurrent, levelPrev | flagsNext);
 }
 
 void SCI_METHOD Scintilla::lex_rfw::Lex(
@@ -771,20 +765,20 @@ void SCI_METHOD Scintilla::lex_rfw::Lex(
   int           initStyle,
   IDocument*    pAccess)
 {
-  LexAccessor styler(pAccess);
+  m_accessor = std::make_unique<LexAccessor>(pAccess);
 
-  init(styler);
+  init();
 
   bool pipes     = false;
   int  cmd_state = RFW_CMD_START;
 
   Sci_PositionU endPos = startPos + length;
-  Sci_Position  ln     = lex_rfw_access(styler).init(startPos);
+  Sci_Position  ln     = lex_rfw_access(*m_accessor).init(startPos);
   initStyle            = SCE_SH_DEFAULT;
 
   std::string words;
 
-  StyleContext sc(startPos, endPos - startPos, initStyle, styler);
+  StyleContext sc(startPos, endPos - startPos, initStyle, *m_accessor);
 
   for (; sc.More(); sc.Forward())
   {
@@ -796,14 +790,14 @@ void SCI_METHOD Scintilla::lex_rfw::Lex(
     // handle line continuation, updates per-line stored state
     if (sc.atLineStart)
     {
-      ln = styler.GetLine(sc.currentPos);
+      ln = m_accessor->GetLine(sc.currentPos);
       if (
         sc.state == SCE_SH_STRING || sc.state == SCE_SH_BACKTICKS ||
         sc.state == SCE_SH_CHARACTER || sc.state == SCE_SH_COMMENTLINE ||
         sc.state == SCE_SH_PARAM)
       {
         // force backtrack while retaining cmd_state
-        styler.SetLineState(ln, RFW_CMD_BODY);
+        m_accessor->SetLineState(ln, RFW_CMD_BODY);
       }
       else
       {
@@ -819,7 +813,7 @@ void SCI_METHOD Scintilla::lex_rfw::Lex(
           else
             cmd_state = RFW_CMD_START;
         }
-        styler.SetLineState(ln, cmd_state);
+        m_accessor->SetLineState(ln, cmd_state);
       }
     }
 
@@ -839,12 +833,13 @@ void SCI_METHOD Scintilla::lex_rfw::Lex(
     if (!spaced_keywords_detect(words, sc, cmd_state_new))
     {
       if (
-        m_section_begin->match_type() == wex::regex_part::MATCH_HISTORY ||
-        m_section_begin->match(sc.ch) >= wex::regex_part::MATCH_PART)
+        m_regex_section_begin->match_type() ==
+          wex::regex_part::match_t::HISTORY ||
+        m_regex_section_begin->match(sc.ch) >= wex::regex_part::match_t::PART)
       {
         if (
           section_keywords_detect(
-            words.substr(m_section_begin->text().size()),
+            words.substr(m_regex_section_begin->text().size()),
             sc,
             cmd_state_new) &&
           m_section.is_case())
@@ -872,8 +867,8 @@ void SCI_METHOD Scintilla::lex_rfw::Lex(
       if (cmd_state_new != RFW_CMD_SKW_PARTIAL)
       {
         words.clear();
-        m_section_end->reset();
-        m_section_begin->reset();
+        m_regex_section_end->reset();
+        m_regex_section_begin->reset();
       }
     }
 
@@ -884,7 +879,7 @@ void SCI_METHOD Scintilla::lex_rfw::Lex(
       cmd_state = RFW_CMD_START;
     }
 
-    state_check(sc, cmd_state, cmd_state_new, styler);
+    state_check(sc, cmd_state, cmd_state_new);
 
     // update cmd_state about the current command segment
     if (m_style_prev != SCE_SH_DEFAULT && sc.state == SCE_SH_DEFAULT)
@@ -907,7 +902,7 @@ void SCI_METHOD Scintilla::lex_rfw::Lex(
 
     if (sc.state == SCE_SH_DEFAULT)
     {
-      if (state_check_continue(sc, cmd_state, styler))
+      if (state_check_continue(sc, cmd_state))
       {
         continue;
       }

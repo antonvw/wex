@@ -8,6 +8,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 #include <wex/wex.h>
+#include <wx/timer.h>
 
 #include "blaming.h"
 
@@ -44,6 +45,43 @@ wex::del::frame::frame(
        find_replace_data::get()->text_regex(),
        m_text_recursive + ",1",
        m_text_hidden})
+  , m_function_repeat(
+      "frame",
+      this,
+      [this](wxTimerEvent&)
+      {
+        std::string       title(GetTitle());
+        const std::string indicator(" *");
+
+        if (title.size() < indicator.size())
+        {
+          return;
+        }
+
+        auto* stc     = dynamic_cast<wex::stc*>(get_stc());
+        auto* project = get_project();
+
+        if (const size_t pos = title.size() - indicator.size();
+            (project != nullptr && project->is_contents_changed()) ||
+            // using is_contents_changed gives assert in vcs dialog
+            (stc != nullptr && stc->GetModify() &&
+             !stc->data().flags().test(data::stc::WIN_NO_INDICATOR)))
+        {
+          // Project or editor changed, add indicator if not yet done.
+          if (title.substr(pos) != indicator)
+          {
+            SetTitle(title + indicator);
+          }
+        }
+        else
+        {
+          // Project or editor not changed, remove indicator if not yet done.
+          if (title.substr(pos) == indicator)
+          {
+            SetTitle(title.erase(pos));
+          }
+        }
+      })
 {
   auto info(m_info);
   // Match whole word does not work with replace.
@@ -396,43 +434,6 @@ void wex::del::frame::on_command_item_dialog(
   }
 }
 
-void wex::del::frame::on_idle(wxIdleEvent& event)
-{
-  event.Skip();
-
-  std::string       title(GetTitle());
-  const std::string indicator(" *");
-
-  if (title.size() < indicator.size())
-  {
-    return;
-  }
-
-  auto* stc     = dynamic_cast<wex::stc*>(get_stc());
-  auto* project = get_project();
-
-  if (const size_t pos = title.size() - indicator.size();
-      (project != nullptr && project->is_contents_changed()) ||
-      // using is_contents_changed gives assert in vcs dialog
-      (stc != nullptr && stc->GetModify() &&
-       !stc->data().flags().test(data::stc::WIN_NO_INDICATOR)))
-  {
-    // Project or editor changed, add indicator if not yet done.
-    if (title.substr(pos) != indicator)
-    {
-      SetTitle(title + indicator);
-    }
-  }
-  else
-  {
-    // Project or editor not changed, remove indicator if not yet done.
-    if (title.substr(pos) == indicator)
-    {
-      SetTitle(title.erase(pos));
-    }
-  }
-}
-
 void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
 {
   if (is_closing() || !IsShown())
@@ -719,12 +720,6 @@ void wex::del::frame::stc_entry_dialog_validator(const std::string& regex)
   entry_dialog()->set_validator(regex);
 }
 
-void wex::del::frame::sync(bool start)
-{
-  start ? Bind(wxEVT_IDLE, &frame::on_idle, this) :
-          (void)Unbind(wxEVT_IDLE, &frame::on_idle, this);
-}
-
 void wex::del::frame::use_file_history_list(listview* list)
 {
   assert(list->data().type() == data::listview::HISTORY);
@@ -751,37 +746,53 @@ void wex::del::frame::vcs_add_path(factory::link* l)
   }
 }
 
-void wex::del::frame::vcs_annotate_commit(
+bool wex::del::frame::vcs_annotate_commit(
   syntax::stc*       stc,
   int                line,
   const std::string& commit_id)
 {
-  wex::vcs vcs{
-    {!stc->get_data()->head_path().empty() ? stc->get_data()->head_path() :
-                                             stc->path()}};
+  if (commit_id.empty())
+  {
+    // this is not an error
+    return false;
+  }
 
-  if (const auto& revision(commit_id);
-      !revision.empty() && vcs.entry().log(stc->path(), revision))
+  if (line > stc->get_line_count())
+  {
+    log("annotate commit line not present") << line;
+    return false;
+  }
+
+  if (wex::vcs vcs{
+        {!stc->get_data()->head_path().empty() ? stc->get_data()->head_path() :
+                                                 stc->path()}};
+      vcs.entry().log(stc->path(), commit_id))
   {
     stc->AnnotationSetText(
       line,
       lexer().make_comment(boost::algorithm::trim_copy(vcs.entry().std_out())));
+
+    return true;
   }
-  else if (!vcs.entry().std_err().empty())
+  else
   {
-    log("margin") << vcs.entry().std_err();
+    log::trace("annotate commit failed") << vcs.name();
   }
+
+  return false;
 }
 
-void wex::del::frame::vcs_blame(syntax::stc* stc)
+bool wex::del::frame::vcs_blame(syntax::stc* stc)
 {
   if (wex::vcs vcs{{stc->path()}}; vcs.execute("blame " + stc->path().string()))
   {
-    vcs_blame_show(&vcs.entry(), stc);
+    return vcs_blame_show(&vcs.entry(), stc);
   }
+
+  return false;
 }
 
-void wex::del::frame::vcs_blame_revision(
+bool wex::del::frame::vcs_blame_revision(
   syntax::stc*       stc,
   const std::string& renamed,
   const std::string& offset)
@@ -790,7 +801,7 @@ void wex::del::frame::vcs_blame_revision(
 
   if (!bl.execute(stc->path()))
   {
-    return;
+    return false;
   }
 
   data::stc data(*stc->get_data());
@@ -805,6 +816,8 @@ void wex::del::frame::vcs_blame_revision(
   }
 
   open_file_vcs(wex::path(path(bl.renamed())), bl.vcs().entry(), data);
+
+  return true;
 }
 
 bool wex::del::frame::vcs_blame_show(vcs_entry* vcs, syntax::stc* stc)
@@ -873,11 +886,11 @@ bool wex::del::frame::vcs_dir_exists(const path& p) const
   return vcs::dir_exists(p);
 }
 
-void wex::del::frame::vcs_execute(
+bool wex::del::frame::vcs_execute(
   int                           event_id,
   const std::vector<wex::path>& paths,
   const data::window&           data)
 
 {
-  wex::vcs_execute(this, event_id, paths, data);
+  return wex::vcs_execute(this, event_id, paths, data);
 }

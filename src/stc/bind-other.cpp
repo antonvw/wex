@@ -2,7 +2,7 @@
 // Name:      stc/bind-other.cpp
 // Purpose:   Implementation of class wex::stc method bind_other
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -65,7 +65,7 @@ void hypertext(stc* stc)
       stc->GetCharAt(match_pos + 1) != '!')
   {
     if (const auto& match(stc->get_word_at_pos(match_pos + 1));
-        match.find("/") != 0 &&
+        match.find('/') != 0 &&
         stc->GetCharAt(stc->GetCurrentPos() - 2) != '/' &&
         (stc->get_lexer().language() == "xml" ||
          stc->get_lexer().is_keyword(match)) &&
@@ -102,7 +102,7 @@ menu::menu_t get_style(stc* stc)
   if (stc->GetTextLength() == 0)
     style.set(menu::IS_EMPTY);
 
-  if (stc->get_vi().visual() == ex::VISUAL)
+  if (stc->get_vi().visual() == ex::mode_t::VISUAL)
     style.set(menu::IS_VISUAL);
 
   if (stc->CanPaste())
@@ -221,6 +221,14 @@ void wex::stc::bind_other()
     });
 
   Bind(
+    wxEVT_LEFT_DOWN,
+    [=, this](wxMouseEvent& event)
+    {
+      event.Skip();
+      m_margin_text_click = -1;
+    });
+
+  Bind(
     wxEVT_LEFT_DCLICK,
     [=, this](wxMouseEvent& event)
     {
@@ -334,7 +342,7 @@ void wex::stc::key_action(wxKeyEvent& event)
     m_auto_complete->on_char(event.GetUnicodeKey());
   }
 
-  if (m_vi->visual() == ex::OFF)
+  if (m_vi->visual() == ex::mode_t::OFF)
   {
     event.Skip();
   }
@@ -480,5 +488,6 @@ void wex::stc::mouse_action(wxMouseEvent& event)
   catch (std::exception& e)
   {
     log(e) << "mouse action";
+    event.Skip();
   }
 }

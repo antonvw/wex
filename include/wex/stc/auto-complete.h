@@ -2,7 +2,7 @@
 // Name:      auto_complete.h
 // Purpose:   Declaration of class wex::auto_complete
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -19,8 +19,8 @@ class stc;
 class auto_complete
 {
 public:
-  /// Constructor, provide stc and min size to trigger completion.
-  explicit auto_complete(stc* stc, size_t min_size = 2);
+  /// Constructor, provide stc to trigger completion.
+  explicit auto_complete(stc* stc);
 
   /// Destructor.
   ~auto_complete();
@@ -49,7 +49,8 @@ public:
 
   /// Takes care that auto complete scope is updated
   /// with level information on current stc position.
-  void sync() const;
+  /// Returns true if update was done.
+  bool sync() const;
 
   /// Returns true if active.
   bool use() const;
@@ -61,25 +62,18 @@ public:
   const std::string variable(const std::string& name) const;
 
 private:
-  struct actions
-  {
-    void reset();
-    bool m_show_inserts{true};
-    bool m_show_keywords{true};
-  };
-  
+  class actions;
+
   bool action_back();
   bool action_default(char c);
   bool action_request(char c, actions& a);
 
-  void clear_insert();
   bool determine_actions(char c, actions& a);
   bool show_ctags();
   bool show_inserts(bool show) const;
   bool show_keywords(bool show) const;
   void store_variable();
-
-  const size_t m_min_size;
+  void update_inserts();
 
   bool m_use{true};
 

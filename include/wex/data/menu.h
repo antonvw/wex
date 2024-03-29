@@ -23,7 +23,7 @@ public:
   typedef std::function<void(wxUpdateUIEvent&)> ui_t;
 
   /// Sets action.
-  menu& action(const action_t rhs);
+  menu& action(const action_t& rhs);
 
   /// Returns art.
   auto& art() const { return m_artid; }
@@ -41,7 +41,7 @@ public:
   menu& help_text(const std::string& rhs);
 
   /// Sets ui.
-  menu& ui(const ui_t rhs);
+  menu& ui(const ui_t& rhs);
 
 private:
   std::string m_help_text;

@@ -2,7 +2,7 @@
 // Name:      ctags-entry.cpp
 // Purpose:   Implementation of class wex::ctags_entry
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -11,6 +11,27 @@
 #include <wex/ctags/ctags-entry.h>
 #include <wx/artprov.h>
 #include <wx/stc/stc.h>
+
+namespace wex
+{
+enum class image_access_t
+{
+  NONE,
+  PUBLIC,
+  PROTECTED,
+  PRIVATE
+};
+}
+
+wex::ctags_entry::ctags_entry()
+  : m_reflect(
+      {REFLECT_ADD("access", m_access),
+       REFLECT_ADD("class", m_class),
+       REFLECT_ADD("kind", m_kind),
+       REFLECT_ADD("signature", m_signature)},
+      reflection::log_t::SKIP_EMPTY)
+{
+}
 
 wex::ctags_entry& wex::ctags_entry::access(const std::string& v)
 {
@@ -124,25 +145,27 @@ wex::ctags_entry& wex::ctags_entry::filter(const ctags_entry& entry)
 
 std::string wex::ctags_entry::image_string() const
 {
-  image_access_t image = IMAGE_NONE;
+  image_access_t image = image_access_t::NONE;
 
   if (const auto* value = tagsField(&m_entry, "access"); value != nullptr)
   {
     if (strcmp(value, "public") == 0)
     {
-      image = IMAGE_PUBLIC;
+      image = image_access_t::PUBLIC;
     }
     else if (strcmp(value, "protected") == 0)
     {
-      image = IMAGE_PROTECTED;
+      image = image_access_t::PROTECTED;
     }
     else if (strcmp(value, "private") == 0)
     {
-      image = IMAGE_PRIVATE;
+      image = image_access_t::PRIVATE;
     }
   }
 
-  return image != IMAGE_NONE ? "?" + std::to_string(image) : std::string();
+  return image != image_access_t::NONE ?
+           "?" + std::to_string(std::to_underlying(image)) :
+           std::string();
 }
 
 bool wex::ctags_entry::is_active() const
@@ -164,25 +187,17 @@ wex::ctags_entry& wex::ctags_entry::kind(const std::string& v)
   return *this;
 }
 
-const std::stringstream wex::ctags_entry::log() const
-{
-  std::stringstream ss;
-
-  ss << "'" << (!m_access.empty() ? "access: " + m_access + " " : std::string())
-     << (!m_class.empty() ? "class: " + m_class + " " : std::string())
-     << (!m_kind.empty() ? "kind: " + m_kind + " " : std::string())
-     << (!m_signature.empty() ? "signature: " + m_signature + " " :
-                                std::string())
-     << "'";
-
-  return ss;
-}
-
 void wex::ctags_entry::register_image(wxStyledTextCtrl* stc)
 {
-  stc->RegisterImage(IMAGE_PUBLIC, wxArtProvider::GetBitmap(wxART_PLUS));
-  stc->RegisterImage(IMAGE_PROTECTED, wxArtProvider::GetBitmap(wxART_MINUS));
-  stc->RegisterImage(IMAGE_PRIVATE, wxArtProvider::GetBitmap(wxART_TICK_MARK));
+  stc->RegisterImage(
+    std::to_underlying(image_access_t::PUBLIC),
+    wxArtProvider::GetBitmap(wxART_PLUS));
+  stc->RegisterImage(
+    std::to_underlying(image_access_t::PROTECTED),
+    wxArtProvider::GetBitmap(wxART_MINUS));
+  stc->RegisterImage(
+    std::to_underlying(image_access_t::PRIVATE),
+    wxArtProvider::GetBitmap(wxART_TICK_MARK));
 }
 
 wex::ctags_entry& wex::ctags_entry::signature(const std::string& v)

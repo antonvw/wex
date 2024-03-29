@@ -2,7 +2,7 @@
 // Name:      blame.h
 // Purpose:   Declaration of class wex::blame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2022 Anton van Wezenbeek
+// Copyright: (c) 2019-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -87,13 +87,13 @@ public:
     OTHER    ///< more than a year
   };
 
-  /// Static interface.
+  // Static interface.
 
   /// Returns a renamed path present in the stc margin,
   /// or empty string if no rename present.
   static std::string margin_renamed(const factory::stc* stc);
 
-  /// Other methods.
+  // Other methods.
 
   /// Default constructor using xml node.
   explicit blame(const pugi::xml_node& node = pugi::xml_node());

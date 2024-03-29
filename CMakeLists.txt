@@ -20,6 +20,10 @@ if (wexBUILD_GITHUB)
   add_definitions(-DGITHUB)
 endif ()
 
+if (APPLE)
+  find_package(LLVM REQUIRED CONFIG)
+endif ()
+
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 set(CMAKE_DISABLE_PRECOMPILE_HEADERS ON)
@@ -27,8 +31,6 @@ set(CMAKE_DISABLE_PRECOMPILE_HEADERS ON)
 find_package(Boost 1.81.0 COMPONENTS 
   log_setup log filesystem program_options date_time regex json url REQUIRED)
   
-set(WEX_CXX_STANDARD 23) # see also FindWEX.cmake, c_cpp_properties.json
-set(CMAKE_CXX_STANDARD ${WEX_CXX_STANDARD})
 set(user $ENV{USER} CACHE INTERNAL "keep user")
 
 include(cmake/options-wx.cmake)
@@ -83,6 +85,9 @@ set(wex_own_LIBRARIES
   wex-ui wex-common wex-data wex-syntax wex-factory wex-test wex-core)
 
 separate_arguments(wex_own_LIBRARIES)
+
+set(WEX_CXX_STANDARD 23) # see also FindWEX.cmake, c_cpp_properties.json
+set(CMAKE_CXX_STANDARD ${WEX_CXX_STANDARD})
 
 add_subdirectory(ci)
 add_subdirectory(src)

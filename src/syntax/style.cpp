@@ -2,7 +2,7 @@
 // Name:      style.cpp
 // Purpose:   Implementation of wex::style class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2010-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -10,31 +10,67 @@
 
 #include <wex/core/config.h>
 #include <wex/core/log.h>
+#include <wex/core/regex.h>
 #include <wex/syntax/lexers.h>
 #include <wex/syntax/style.h>
 #include <wx/stc/stc.h>
 
 #include <charconv>
 
-void wex::style::apply(wxStyledTextCtrl* stc) const
+namespace wex
 {
+bool check_style_spec(const std::string& spec, const std::string& colour)
+{
+  if (regex r(colour + ":(.*)"); r.match(spec) > 0)
+  {
+    if (!wxColour(r[0]).IsOk())
+    {
+      log("style " + colour + " colour") << r[0];
+      return false;
+    }
+  }
+
+  return true;
+}
+} // namespace wex
+
+bool wex::style::apply(wxStyledTextCtrl* stc) const
+{
+  if (stc->GetParent() == nullptr)
+  {
+    return false;
+  }
+
   // Currently, the default style is constructed using
   // default constructor.
   // If this is the only style, reset stc.
-  if (stc->GetParent() != nullptr)
+  if (m_no.empty())
   {
-    if (m_no.empty())
+    stc->StyleResetDefault();
+  }
+  else
+  {
+    if (const auto& tok(boost::tokenizer<boost::char_separator<char>>(
+          m_value,
+          boost::char_separator<char>(",")));
+        !std::all_of(
+          tok.begin(),
+          tok.end(),
+          [](const auto& it)
+          {
+            return check_style_spec(it, "back") && check_style_spec(it, "fore");
+          }))
     {
-      stc->StyleResetDefault();
+      return false;
     }
-    else
+
+    for (const auto& it : m_no)
     {
-      for (const auto& it : m_no)
-      {
-        stc->StyleSetSpec(it, m_value);
-      }
+      stc->StyleSetSpec(it, m_value);
     }
   }
+
+  return true;
 }
 
 void wex::style::clear()
@@ -60,14 +96,14 @@ void wex::style::set(const pugi::xml_node& node, const std::string& macro)
 
   set_no(lexers::get()->apply_macro(m_define, macro), macro, node);
 
-  const std::string text(std::string(node.text().get()));
-  const auto        font(config(_("stc.Default font"))
+  const auto text(std::string(node.text().get()));
+  const auto font(config(_("stc.Default font"))
                     .get(wxFont(
                       12,
                       wxFONTFAMILY_DEFAULT,
                       wxFONTSTYLE_NORMAL,
                       wxFONTWEIGHT_NORMAL)));
-  const auto        font_size(std::to_string(font.GetPointSize()));
+  const auto font_size(std::to_string(font.GetPointSize()));
 
   // The style is parsed using the themed macros, and
   // you can specify several styles separated by a + sign.

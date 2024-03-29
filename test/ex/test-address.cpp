@@ -28,7 +28,12 @@ TEST_CASE("wex::address")
 
   SUBCASE("constructor")
   {
-    REQUIRE(wex::address(ex).type() == wex::address::IS_SINGLE);
+    REQUIRE(wex::address().get_line() == 0);
+    REQUIRE(wex::address().type() == wex::address::address_t::IS_SINGLE);
+    REQUIRE(!wex::address().marker_add('x'));
+    REQUIRE(!wex::address().marker_delete());
+
+    REQUIRE(wex::address(ex).type() == wex::address::address_t::IS_SINGLE);
     REQUIRE(wex::address(ex).get_line() == 0);
     REQUIRE(wex::address(ex, 5).get_line() == 5);
 
@@ -65,8 +70,15 @@ TEST_CASE("wex::address")
   SUBCASE("flags_supported")
   {
     REQUIRE(wex::address::flags_supported(""));
+    REQUIRE(wex::address::flags_supported("-"));
+    REQUIRE(wex::address::flags_supported("+"));
+    REQUIRE(wex::address::flags_supported("p"));
+    REQUIRE(wex::address::flags_supported("l"));
+    REQUIRE(wex::address::flags_supported("lllll"));
     REQUIRE(wex::address::flags_supported("#"));
+
     REQUIRE(!wex::address::flags_supported("x"));
+    REQUIRE(!wex::address::flags_supported("lxllll"));
   }
 
   SUBCASE("get_line")

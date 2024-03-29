@@ -2,7 +2,7 @@
 // Name:      file.h
 // Purpose:   Declaration of class wex::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2023 Anton van Wezenbeek
+// Copyright: (c) 2010-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -12,6 +12,7 @@
 #include <fstream>
 #include <istream>
 #include <memory>
+#include <span>
 
 namespace wex
 {
@@ -42,7 +43,7 @@ public:
   file(const file& rhs);
 
   /// Destructor.
-  virtual ~file();
+  virtual ~file() = default;
 
   /// Assignment operator.
   file& operator=(const file& f);
@@ -83,10 +84,10 @@ public:
   bool open(const path& p, std::ios_base::openmode mode = std::ios_base::in);
 
   /// Returns the path.
-  const auto& path() const { return m_path; }
+  const wex::path& path() const { return m_path; }
 
   /// Returns the path.
-  auto& path() { return m_path; }
+  wex::path& path() { return m_path; }
 
   /// Reads this file into a buffer.
   const std::string* read(std::streampos seek_position = 0);
@@ -99,10 +100,13 @@ public:
   void use_stream(bool use = true) { m_use_stream = use; }
 
   /// Writes file from buffer.
-  bool write(const char* s, size_t n);
+  bool write(std::span<const char> buffer);
 
   /// Writes file from string.
-  bool write(const std::string& s) { return write(s.c_str(), s.size()); }
+  bool write(const std::string& s)
+  {
+    return write(std::span{s.c_str(), s.size()});
+  }
 
 public:
   /// Returns whether contents have been changed.

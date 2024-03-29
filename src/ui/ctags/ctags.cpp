@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::ctags
 //            https://github.com/universal-ctags/ctags
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2016-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -332,32 +332,35 @@ bool wex::ctags::next()
   return true;
 }
 
-void wex::ctags::open(const std::string& filename)
+bool wex::ctags::open(const std::string& filename)
 {
   if (m_file != nullptr)
   {
-    return;
+    log::trace("ctags file already active");
+    return false;
   }
 
   m_iterator = m_matches.begin();
 
   if (filename != DEFAULT_TAGFILE)
   {
-    do_open(filename);
-  }
-  else if (const std::vector<std::string> v{"./", config::dir().string() + "/"};
-           !std::any_of(
-             v.begin(),
-             v.end(),
-             [filename](const auto& p)
-             {
-               return do_open(p + filename);
-             }))
-  {
-    if (filename != DEFAULT_TAGFILE && m_file == nullptr)
+    const auto ret (do_open(filename));
+    if (!ret)
     {
       log("could not locate ctags file") << filename;
     }
+    return ret;
+  }
+  else
+  {
+    const std::vector<std::string> v{"./", config::dir().string() + "/"};
+    return std::any_of(
+      v.begin(),
+      v.end(),
+      [filename](const auto& p)
+      {
+        return do_open(p + filename);
+      });
   }
 }
 

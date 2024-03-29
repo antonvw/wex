@@ -6,17 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <pugixml.hpp>
-#include <wex/common/dir.h>
-#include <wex/common/util.h>
-#include <wex/core/chrono.h>
-#include <wex/core/config.h>
-#include <wex/core/log.h>
-#include <wex/del/defs.h>
-#include <wex/del/frame.h>
-#include <wex/del/listview-file.h>
-#include <wex/factory/bind.h>
-#include <wex/ui/listitem.h>
-#include <wex/ui/menu.h>
+#include <wex/wex.h>
 
 #include <thread>
 
@@ -192,9 +182,9 @@ bool wex::del::file::do_file_load(bool synced)
 
   interruptible::start();
 
-#ifdef FIX__WXMSW__
+#ifdef USE_THREAD
   std::thread t(
-    [=, this]
+    [=, this, &doc]
     {
 #endif
       for (const auto& child : doc.document_element().children())
@@ -224,15 +214,13 @@ bool wex::del::file::do_file_load(bool synced)
 
       interruptible::end();
       get_frame()->set_recent_project(path());
-
-#ifdef FIX__WXMSW__
+#ifdef USE_THREAD
     });
-  if (detached)
-    t.detach();
-  else
-    t.join();
+
+  t.detach();
 #endif
 
+  log::status(_("Opened")) << path();
   log::info("opened") << path();
 
   return true;
@@ -275,6 +263,7 @@ void wex::del::file::do_file_save(bool save_as)
 
   if (doc.save_file(path().string().c_str()))
   {
+    log::status(_("Saved")) << path();
     log::info("saved") << path();
   }
   else

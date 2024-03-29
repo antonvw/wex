@@ -2,7 +2,7 @@
 // Name:      bind.cpp
 // Purpose:   Implementation of class wex::bind
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/bind.h>
@@ -15,7 +15,7 @@ wex::bind::bind(wxEvtHandler* evt)
 }
 
 void wex::bind::command(
-  std::vector<std::pair<std::function<void(wxCommandEvent&)>, int>> v)
+  const std::vector<std::pair<std::function<void(wxCommandEvent&)>, int>>& v)
 {
   for (const auto& it : v)
   {
@@ -48,7 +48,8 @@ void wex::bind::command(
 }
 
 void wex::bind::command(
-  std::vector<std::tuple<std::function<void(wxCommandEvent&)>, int, int>> v)
+  const std::vector<std::tuple<std::function<void(wxCommandEvent&)>, int, int>>&
+    v)
 {
   for (const auto& it : v)
   {
@@ -58,8 +59,8 @@ void wex::bind::command(
 }
 
 void wex::bind::frd(
-  wxFindReplaceData*                            frd,
-  std::function<void(const std::string&, bool)> f)
+  wxFindReplaceData*                                   frd,
+  const std::function<void(const std::string&, bool)>& f)
 {
   m_handler->Bind(
     wxEVT_FIND,
@@ -77,7 +78,7 @@ void wex::bind::frd(
 }
 
 void wex::bind::ui(
-  std::vector<std::pair<std::function<void(wxUpdateUIEvent&)>, int>> v)
+  const std::vector<std::pair<std::function<void(wxUpdateUIEvent&)>, int>>& v)
 {
   for (const auto& it : v)
   {

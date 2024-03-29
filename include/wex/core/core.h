@@ -111,11 +111,4 @@ rfind_after(const std::string& text, const std::string& sequence);
 /// Returns the whole string if seq is not found.
 const std::string
 rfind_before(const std::string& text, const std::string& sequence);
-
-/// Presents a dialog to choose one string out of an array.
-bool single_choice_dialog(
-  wxWindow*                       parent,
-  const std::string&              title,
-  const std::vector<std::string>& v,
-  std::string&                    selection);
 } // namespace wex

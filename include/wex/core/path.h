@@ -2,7 +2,7 @@
 // Name:      path.h
 // Purpose:   Declaration of class wex::path
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2023 Anton van Wezenbeek
+// Copyright: (c) 2017-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -35,7 +35,7 @@ public:
   /// A typedef containing log flags.
   typedef std::bitset<3> log_t;
 
-  /// Static interface.
+  // Static interface.
 
   /// Returns current path.
   static wex::path current();
@@ -43,7 +43,7 @@ public:
   /// Sets current path.
   static void current(const wex::path& p);
 
-  /// Others.
+  // Others.
 
   /// Default constructor taking a std::filesystem::path.
   /// If path is empty, it saves the current path,

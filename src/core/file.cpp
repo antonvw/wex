@@ -59,8 +59,6 @@ wex::file::file(const file& rhs)
   *this = rhs;
 }
 
-wex::file::~file() {}
-
 wex::file& wex::file::operator=(const file& f)
 {
   if (this != &f)
@@ -86,7 +84,9 @@ void wex::file::assign(const wex::path& p)
 
 bool wex::file::check_sync()
 {
-  if (is_open() || !m_path.m_stat.is_ok() || !config("AllowSync").get(true))
+  if (
+    (!m_use_stream && is_open()) || !m_path.m_stat.is_ok() ||
+    !config("AllowSync").get(true))
   {
     return false;
   }
@@ -97,9 +97,12 @@ bool wex::file::check_sync()
 
     if (m_path.m_stat.get_modification_time() != m_stat.get_modification_time())
     {
-      // Do not check return value,
-      // we sync anyhow, to force nex time no sync.
-      file_load(true);
+      if (!m_use_stream)
+      {
+        // Do not check return value,
+        // we sync anyhow, to force nex time no sync.
+        file_load(true);
+      }
 
       sync_needed = true;
     }
@@ -278,6 +281,8 @@ const std::string* wex::file::read(std::streampos seek_position)
   m_buffer->resize(m_path.m_stat.get_size() - seek_position);
   m_fs.read(m_buffer->data(), m_buffer->size());
 #else
+  // For MSW the m_fs.read using stat size results in reading NULL chars.
+  // Last tested with VS 17.8.3. Therefore read by single char.
   char c;
   while (m_fs.get(c))
   {
@@ -294,7 +299,7 @@ const std::string* wex::file::read(std::streampos seek_position)
   return m_buffer.get();
 }
 
-bool wex::file::write(const char* s, size_t n)
+bool wex::file::write(std::span<const char> buffer)
 {
   if (!m_fs.is_open())
   {
@@ -305,11 +310,11 @@ bool wex::file::write(const char* s, size_t n)
     }
   }
 
-  m_fs.write(s, n);
+  m_fs.write(buffer.data(), buffer.size());
 
   if (!m_fs.good())
   {
-    log_stream_info("write", n);
+    log_stream_info("write", buffer.size());
   }
   else
   {

@@ -2,9 +2,10 @@
 // Name:      stc/test-vi.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <thread>
 #include <wex/core/config.h>
 #include <wex/core/log-none.h>
 #include <wex/core/log.h>
@@ -54,13 +55,13 @@ TEST_CASE("wex::vi")
 
     SUBCASE("selection")
     {
-      vi->command("v");
+      vi->mode().visual();
       vi->command("w");
       change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
       REQUIRE(stc->get_selected_text() == "aaaaa");
 
       vi->command("c");
-      REQUIRE(vi->mode().get() == wex::vi_mode::INSERT);
+      REQUIRE(vi->mode().get() == wex::vi_mode::state_t::INSERT);
       vi->command("OK");
       REQUIRE(
         stc->get_text() == "OK\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");
@@ -103,9 +104,13 @@ TEST_CASE("wex::vi")
       CAPTURE(go.first);
 
       if (go.first.back() != 'd')
+      {
         REQUIRE(vi->command(go.first));
+      }
       else
+      {
         REQUIRE(!vi->command(go.first));
+      }
 
       if (go.first[0] == '/' || go.first[0] == '?')
       {
@@ -187,10 +192,8 @@ TEST_CASE("wex::vi")
   {
     stc->set_text("XXXXX\nYYYYY  \nZZZZZ\n");
 
-    REQUIRE(vi->command("K"));
-    REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL_BLOCK);
-    REQUIRE(vi->command("j"));
-    REQUIRE(vi->command("j"));
+    start_block(vi);
+    REQUIRE(vi->command("2j"));
     REQUIRE(vi->command(" "));
     REQUIRE(vi->command("y"));
     REQUIRE(vi->mode().get() == wex::vi_mode::state_t::COMMAND);
@@ -222,24 +225,89 @@ TEST_CASE("wex::vi")
     REQUIRE(stc->get_text() == "test.h");
   }
 
+  SUBCASE("right-while-in-insert")
+  {
+    stc->set_text("this text contains xx");
+
+    wxKeyEvent event(wxEVT_CHAR);
+    event.m_uniChar = 'i';
+    REQUIRE(!vi->on_char(event));
+    REQUIRE(vi->mode().is_insert());
+
+    event.m_uniChar = WXK_NONE;
+    event.m_keyCode = WXK_RIGHT;
+    REQUIRE(vi->on_key_down(event));
+    REQUIRE(!stc->get_text().contains("l"));
+
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
+  }
+
+  SUBCASE("select")
+  {
+    stc->set_text("this text contains xx");
+
+    wxKeyEvent event(wxEVT_CHAR);
+    event.m_uniChar = WXK_NONE;
+    event.m_keyCode = WXK_RIGHT;
+
+    event.SetShiftDown(true);
+    REQUIRE(!vi->on_key_down(event));
+    REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL);
+    REQUIRE(stc->get_selected_text() == "t");
+
+    event.SetControlDown(true);
+    REQUIRE(!vi->on_key_down(event));
+    REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL);
+    REQUIRE(stc->get_selected_text() == "this ");
+
+    event.SetShiftDown(false);
+    event.SetControlDown(false);
+    REQUIRE(!vi->on_key_down(event));
+    REQUIRE(vi->mode().get() == wex::vi_mode::state_t::COMMAND);
+    REQUIRE(stc->get_selected_text().empty());
+  }
+
   SUBCASE("set")
   {
     stc->set_text("xx\nxx\nyy\nzz\n");
 
+    // Default setting.
+    REQUIRE(bool(vi->search_flags() & wxSTC_FIND_REGEXP));
+
     REQUIRE(vi->command(":set noaw"));
-    REQUIRE(vi->command(":set noic"));
     REQUIRE(vi->command(":set noreadonly"));
     REQUIRE(vi->command(":set nosws"));
     REQUIRE(vi->command(":set dir=./"));
 
-    // Default setting.
-    REQUIRE(bool(vi->search_flags() & wxSTC_FIND_REGEXP));
+    // Test noic.
+    REQUIRE(vi->command(":set noic"));
+    REQUIRE(bool(vi->search_flags() & wxSTC_FIND_MATCHCASE));
+    REQUIRE(wex::find_replace_data::get()->match_case());
+
+    // Test mw.
+    REQUIRE(vi->command(":set mw"));
+    REQUIRE(bool(vi->search_flags() & wxSTC_FIND_WHOLEWORD));
+    REQUIRE(wex::find_replace_data::get()->match_word());
 
     // Test nomagic.
     REQUIRE(vi->command(":set nomagic"));
     REQUIRE(bool(!(vi->search_flags() & wxSTC_FIND_REGEXP)));
 
+    // And, for new component, the search_flags are kept.
+    auto vi_2 = new wex::vi(stc);
+    CAPTURE(vi_2->search_flags());
+    REQUIRE(bool(vi_2->search_flags() & wxSTC_FIND_MATCHCASE));
+    REQUIRE(bool(vi_2->search_flags() & wxSTC_FIND_WHOLEWORD));
+
     // Back to default.
+    REQUIRE(vi->command(":set ic"));
+    REQUIRE(bool(!(vi->search_flags() & wxSTC_FIND_MATCHCASE)));
+    REQUIRE(!wex::find_replace_data::get()->match_case());
+
+    REQUIRE(vi->command(":set nomw"));
+    REQUIRE(bool(!(vi->search_flags() & wxSTC_FIND_WHOLEWORD)));
+    REQUIRE(!wex::find_replace_data::get()->match_word());
+
     REQUIRE(vi->command(":set magic"));
     REQUIRE(bool(vi->search_flags() & wxSTC_FIND_REGEXP));
 
@@ -252,10 +320,10 @@ TEST_CASE("wex::vi")
     REQUIRE(wex::config("stc.Reported lines").get(5) == 10);
 
     REQUIRE(vi->command(":set ve=5"));
-    REQUIRE(wex::log::get_level() == 5);
+    REQUIRE(std::to_underlying(wex::log::get_level()) == 5);
 
     REQUIRE(vi->command(":set ve=4"));
-    REQUIRE(wex::log::get_level() == 4);
+    REQUIRE(std::to_underlying(wex::log::get_level()) == 4);
   }
 
 #ifndef __WXMSW__
@@ -322,6 +390,17 @@ TEST_CASE("wex::vi")
     REQUIRE(stc->get_text() == "xxOK\nxxOK\nyyOK\nzzOK\n");
   }
 
+  SUBCASE("syntax")
+  {
+    REQUIRE(stc->open(wex::path("test.md")));
+    stc->get_lexer().set("markdown");
+    REQUIRE(stc->get_lexer().display_lexer() == "markdown");
+    REQUIRE(vi->command(":syntax off"));
+    REQUIRE(stc->get_lexer().display_lexer().empty());
+    REQUIRE(vi->command(":syntax on"));
+    REQUIRE(stc->get_lexer().display_lexer() == "markdown");
+  }
+
   SUBCASE("tab")
   {
     stc->clear();
@@ -355,7 +434,6 @@ TEST_CASE("wex::vi")
 
     for (const auto& visual : visuals())
     {
-      wxKeyEvent event(wxEVT_CHAR);
       change_mode(vi, visual.first, visual.second);
       change_mode(vi, "jjj", visual.second);
       change_mode(vi, visual.first, visual.second); // second has no effect
@@ -364,11 +442,37 @@ TEST_CASE("wex::vi")
       vi->command("j");
       change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
 
+      wxKeyEvent event(wxEVT_CHAR);
       event.m_uniChar = visual.first[0];
       REQUIRE(!vi->on_char(event));
       REQUIRE(vi->mode().get() == visual.second);
       change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     }
+
+    stc->set_text("this text contains xx\nand yy on other line");
+    REQUIRE(stc->get_selected_text().empty());
+
+    vi->mode().visual();
+    REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL);
+
+    wxKeyEvent event(wxEVT_CHAR);
+    event.m_uniChar = WXK_NONE;
+    event.m_keyCode = WXK_END;
+
+    REQUIRE(!vi->on_key_down(event));
+    REQUIRE(stc->get_selected_text() == "this text contains xx");
+
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
+
+    event.SetControlDown(true);
+    REQUIRE(vi->command("gg"));
+    REQUIRE(stc->get_selected_text().empty());
+    vi->mode().visual();
+    REQUIRE(vi->mode().get() == wex::vi_mode::state_t::VISUAL);
+    REQUIRE(!vi->on_key_down(event));
+    REQUIRE(
+      stc->get_selected_text() ==
+      "this text contains xx\nand yy on other line");
   }
 
   SUBCASE("others")
@@ -386,7 +490,9 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->mode().str() == "insert");
     // Second i (and more) all handled by vi.
     for (int i = 0; i < 10; i++)
+    {
       REQUIRE(!vi->on_char(event));
+    }
 
     // Test control keys.
     for (const auto& control_key : std::vector<int>{

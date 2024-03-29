@@ -13,5 +13,8 @@ void change_mode(
   const std::string&    command,
   wex::vi_mode::state_t mode);
 
+/// Starts a vi block.
+void start_block(wex::vi* vi);
+
 /// Returns vector containing commands to change to visual mode.
 std::vector<std::pair<std::string, wex::vi_mode::state_t>> visuals();

@@ -2,7 +2,7 @@
 // Name:      vi.h
 // Purpose:   Declaration of class wex::vi
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2023 Anton van Wezenbeek
+// Copyright: (c) 2009-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -35,7 +35,7 @@ public:
   enum class motion_t;
 
   /// Constructor.
-  explicit vi(wex::syntax::stc* stc, mode_t mode = VISUAL);
+  explicit vi(wex::syntax::stc* stc, mode_t mode = mode_t::VISUAL);
 
   /// Appends string to executed insert command.
   void append_insert_command(const std::string& s);
@@ -87,9 +87,10 @@ private:
   commands_t commands_motion();
   commands_t commands_other();
 
-  char convert_key_event(const wxKeyEvent& event) const;
-  bool delete_range(int start, int end);
-  void filter_count(std::string& command);
+  std::string convert_key_event(const wxKeyEvent& event) const;
+  bool        delete_range(int start, int end);
+  void        enter_visual_mode();
+  void        filter_count(std::string& command);
 
   size_t find_char(const std::string& command);
   size_t find_command(const std::string& command);
@@ -106,7 +107,10 @@ private:
   bool insert_mode_register(const std::string& text);
 
   bool motion_command(motion_t type, std::string& command);
-  bool motion_command_handle(motion_t type, std::string& command, function_t t);
+  bool motion_command_handle(
+    motion_t          type,
+    std::string&      command,
+    const function_t& t);
   bool other_command(std::string& command);
   bool parse_command(std::string& command);
   bool parse_command_handle(std::string& command);
@@ -128,14 +132,14 @@ private:
   static inline std::string m_last_find_char_command;
 
   bool m_control_down{false}, m_count_present{false}, m_dot{false},
-    m_search_forward{true};
+    m_search_forward{true}, m_visual_mode_from_shift{false};
 
   int m_count{1};
 
   std::string m_insert_command, m_insert_text;
 
   vi_mode          m_mode;
-  vi_mode::state_t m_mode_yank{vi_mode::COMMAND};
+  vi_mode::state_t m_mode_yank{vi_mode::state_t::COMMAND};
 
   const commands_t m_motion_commands, m_other_commands;
 

@@ -2,18 +2,12 @@
 // Name:      find-in-files.cpp
 // Purpose:   Implementation of wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
 
-#include <wex/common/dir.h>
-#include <wex/common/stream.h>
-#include <wex/core/log.h>
-#include <wex/del/frame.h>
-#include <wex/stc/stc.h>
-#include <wex/ui/frd.h>
-#include <wex/ui/item-dialog.h>
+#include <wex/wex.h>
 
 void wex::del::frame::find_in_files(wex::window_id dialogid)
 {
@@ -35,11 +29,14 @@ void wex::del::frame::find_in_files(wex::window_id dialogid)
     type.set(data::dir::HIDDEN);
   }
 
-  find_replace_data::get()->set_regex(
-    config(find_replace_data::get()->text_regex()).get(true));
+  find_replace_data::get()->set_match_case(
+    config(find_replace_data::get()->text_match_case()).get(true));
 
   find_replace_data::get()->set_match_word(
     config(find_replace_data::get()->text_match_word()).get(true));
+
+  find_replace_data::get()->set_regex(
+    config(find_replace_data::get()->text_regex()).get(true));
 
   wex::dir dir(
     path(config(m_text_in_folder).get_first_of()),

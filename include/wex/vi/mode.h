@@ -2,7 +2,7 @@
 // Name:      mode.h
 // Purpose:   Declaration of class wex::vi_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -40,7 +40,7 @@ class vi_mode
 {
 public:
   /// The possible vi mode states.
-  enum state_t
+  enum class state_t
   {
     COMMAND,      ///< command (or navigation) mode
     INSERT,       ///< pressing key inserts key
@@ -55,9 +55,9 @@ public:
     /// specify vi component
     vi* vi,
     /// method to be called when going into insert mode
-    std::function<void(const std::string& command)> insert = nullptr,
+    const std::function<void(const std::string& command)>& insert = nullptr,
     /// method to be called when going back to command mode
-    std::function<void()> f = nullptr);
+    const std::function<void()>& f = nullptr);
 
   /// Destructor.
   ~vi_mode();
@@ -65,14 +65,14 @@ public:
   /// Transitions to command mode.
   void command();
 
-  /// escapes current mode.
+  /// Escapes current mode.
   bool escape();
 
   /// Returns the state we are in.
   state_t get() const;
 
   /// Returns true if in command mode.
-  bool is_command() const { return get() == COMMAND; }
+  bool is_command() const { return get() == state_t::COMMAND; }
 
   /// Returns true if in insert mode.
   bool is_insert() const;
@@ -86,11 +86,14 @@ public:
   /// Returns mode as a string.
   const std::string str() const;
 
-  /// transitions to other mode depending on command.
+  /// Transitions to other mode depending on command.
   /// Returns true if command represents a mode change, otherwise false.
   /// If true is returned, it does not mean that mode was changed, in case
   /// of readonly doc.
   bool transition(std::string& command);
+
+  /// Transitions to visual mode.
+  void visual();
 
 private:
   bool transition_prep(const std::string& command);

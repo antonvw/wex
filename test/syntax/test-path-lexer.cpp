@@ -10,7 +10,32 @@
 
 TEST_CASE("wex::path_lexer")
 {
-  wex::path_lexer p(wex::test::get_path("test.h"));
+  SUBCASE("default-constructor")
+  {
+    wex::path_lexer p("build.ninja");
 
-  REQUIRE(p.lexer().scintilla_lexer() == "cpp");
+    REQUIRE(p.lexer().display_lexer() == "ninja");
+    REQUIRE(p.is_build());
+  }
+
+  SUBCASE("constructor-path")
+  {
+    wex::path_lexer p(wex::test::get_path("test.h"));
+
+    REQUIRE(p.lexer().scintilla_lexer() == "cpp");
+    REQUIRE(!p.is_build());
+  }
+}
+
+TEST_CASE("wex::build")
+{
+#ifdef __UNIX__
+  wex::path cwd; // as /usr/bin/git changes wd
+
+  REQUIRE(!wex::build(wex::path_lexer("Makefile"))); // no set_handler_out
+
+  REQUIRE(!wex::build(wex::path_lexer("xxx")));
+  REQUIRE(!wex::build(wex::path_lexer("make.tst")));
+  REQUIRE(!wex::build(wex::path_lexer("/usr/bin/git")));
+#endif
 }

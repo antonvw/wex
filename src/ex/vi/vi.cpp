@@ -33,6 +33,20 @@ bool is_block_insert(vi* vi)
 
 bool is_special_key(const wxKeyEvent& event, const vi_mode& mode)
 {
+  if (
+    !mode.is_insert() &&
+    (event.GetKeyCode() == WXK_HOME || event.GetKeyCode() == WXK_END))
+  {
+    return true;
+  }
+
+  if (
+    !mode.is_insert() && event.HasAnyModifiers() &&
+    (event.GetKeyCode() == WXK_LEFT || event.GetKeyCode() == WXK_RIGHT))
+  {
+    return true;
+  }
+
   return !event.HasAnyModifiers() &&
          (event.GetKeyCode() == WXK_ESCAPE || event.GetKeyCode() == WXK_BACK ||
           event.GetKeyCode() == WXK_RETURN ||
@@ -203,23 +217,24 @@ void wex::vi::command_reg(const std::string& reg)
         }
         else
         {
-          const auto sum = calculator(reg.substr(2));
-
-          if (m_mode.is_insert())
+          if (const auto& sum(calculator(reg.substr(2))); sum)
           {
-            if (m_last_command.contains('c'))
+            if (m_mode.is_insert())
             {
-              get_stc()->ReplaceSelection(wxEmptyString);
+              if (m_last_command.contains('c'))
+              {
+                get_stc()->ReplaceSelection(wxEmptyString);
+              }
+
+              get_stc()->add_text(std::to_string(*sum));
+
+              append_insert_command(reg);
             }
-
-            get_stc()->add_text(std::to_string(sum));
-
-            append_insert_command(reg);
-          }
-          else
-          {
-            set_register_yank(std::to_string(sum));
-            frame()->show_ex_message(std::to_string(sum));
+            else
+            {
+              set_register_yank(std::to_string(*sum));
+              frame()->show_ex_message(std::to_string(*sum));
+            }
           }
         }
       }
@@ -274,51 +289,59 @@ void wex::vi::command_reg(const std::string& reg)
   }
 }
 
-char wex::vi::convert_key_event(const wxKeyEvent& event) const
+std::string wex::vi::convert_key_event(const wxKeyEvent& event) const
 {
   if (event.GetKeyCode() == WXK_BACK)
-    return WXK_BACK;
+    return k_s(WXK_BACK);
   else if (event.GetKeyCode() == WXK_RETURN && !m_mode.is_insert())
-    return 'j';
-  else if (event.GetModifiers() & wxMOD_RAW_CONTROL)
-    return event.GetKeyCode();
+    return "j";
 
-  char c = event.GetUnicodeKey();
-
-  if (c == WXK_NONE)
+  if (auto c = event.GetUnicodeKey(); c != WXK_NONE)
   {
+    return std::string(1, c);
+  }
+  else
+  {
+    std::string cmd;
+
     switch (event.GetKeyCode())
     {
-      case WXK_LEFT:
-        c = 'h';
+      case WXK_DELETE:
+        cmd = "x";
         break;
       case WXK_DOWN:
-        c = 'j';
+        cmd = "j";
         break;
-      case WXK_UP:
-        c = 'k';
+      case WXK_END:
+        cmd = (event.ControlDown() || event.RawControlDown()) ? "G" : "$";
         break;
-      case WXK_RIGHT:
-        c = 'l';
+      case WXK_HOME:
+        cmd = (event.ControlDown() || event.RawControlDown()) ? "gg" : "0";
         break;
-      case WXK_DELETE:
-        c = 'x';
-        break;
-      case WXK_PAGEUP:
-        c = WXK_CONTROL_B;
-        break;
-      case WXK_PAGEDOWN:
-        c = WXK_CONTROL_F;
+      case WXK_LEFT:
+        cmd = (event.ControlDown() || event.RawControlDown()) ? "b" : "h";
         break;
       case WXK_NUMPAD_ENTER:
-        c = 'j';
+        cmd = "j";
+        break;
+      case WXK_PAGEDOWN:
+        cmd = WXK_CONTROL_F;
+        break;
+      case WXK_PAGEUP:
+        cmd = WXK_CONTROL_B;
+        break;
+      case WXK_RIGHT:
+        cmd = (event.ControlDown() || event.RawControlDown()) ? "w" : "l";
+        break;
+      case WXK_UP:
+        cmd = "k";
         break;
       default:
-        c = event.GetKeyCode();
+        cmd = event.GetKeyCode();
     }
-  }
 
-  return c;
+    return cmd;
+  }
 }
 
 bool wex::vi::delete_range(int start, int end)
@@ -703,7 +726,6 @@ bool wex::vi::on_char(const wxKeyEvent& event)
 #ifdef __WXOSX__
           if (event.GetModifiers() & wxMOD_RAW_CONTROL)
           {
-
             if (m_command.append_exec(event.GetKeyCode()))
             {
               m_command.clear();
@@ -753,7 +775,7 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
   else if (
     (event.GetModifiers() & wxMOD_CONTROL) && event.GetKeyCode() != WXK_NONE)
   {
-    return process_modifier(this, macros::key_t::KEY_CONTROL, event);
+    return process_modifier(this, macros::key_t::CONTROL, event);
   }
   else if ((event.GetModifiers() & wxMOD_ALT) && event.GetKeyCode() != WXK_NONE)
   {
@@ -762,7 +784,7 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
       command(esc());
     }
 
-    return process_modifier(this, macros::key_t::KEY_ALT, event);
+    return process_modifier(this, macros::key_t::ALT, event);
   }
   else
   {
@@ -789,6 +811,17 @@ bool wex::vi::process_macro_key(const wxKeyEvent& event)
 
 bool wex::vi::process_special_key(const wxKeyEvent& event)
 {
+  if (event.ShiftDown())
+  {
+    m_mode.visual();
+    m_visual_mode_from_shift = true;
+  }
+  else if (m_visual_mode_from_shift)
+  {
+    m_visual_mode_from_shift = false;
+    m_mode.escape();
+  }
+
   if (event.GetKeyCode() == WXK_BACK)
   {
     if (!m_insert_text.empty())
@@ -820,7 +853,7 @@ bool wex::vi::put(bool after)
 
   // do not trim
   const bool yanked_lines = (get_number_of_lines(register_text(), false) > 1) &&
-                            m_mode_yank != vi_mode::VISUAL_BLOCK;
+                            m_mode_yank != vi_mode::state_t::VISUAL_BLOCK;
 
   if (yanked_lines)
   {
@@ -837,7 +870,7 @@ bool wex::vi::put(bool after)
     get_stc()->Home();
   }
 
-  m_mode_yank == vi_mode::VISUAL_BLOCK ?
+  m_mode_yank == vi_mode::state_t::VISUAL_BLOCK ?
     get_stc()->add_text_block(register_text()) :
     get_stc()->add_text(register_text());
 

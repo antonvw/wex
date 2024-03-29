@@ -16,8 +16,25 @@ bool app::OnInit()
 
   if (wex::data::cmdline c(argc, argv);
       !wex::cmdline(
-         // --- boolean options ---
-         wex::cmdline::cmd_switches_t(),
+         {// --- boolean options ---
+          {{"ex", "ex mode"},
+           [&](bool on)
+           {
+             if (!on)
+               return;
+             m_data.flags(
+               wex::data::stc::window_t().set(wex::data::stc::WIN_EX),
+               wex::data::control::OR);
+           }},
+
+          {{"project,p", "open specified files as projects"},
+           [&](bool on)
+           {
+             m_data.flags(
+               wex::data::stc::window_t().set(wex::data::stc::WIN_IS_PROJECT),
+               wex::data::control::OR);
+           }}},
+
          {// --- options with arguments ---
           {{"scriptin,s", "script in (:so <arg> applied on any file opened)"},
            {wex::cmdline::STRING,
@@ -44,9 +61,9 @@ bool app::OnInit()
     return false;
   }
 
-  auto* f = new frame();
+  auto* f = new frame(this);
   f->Show(true);
-  f->update(this);
+  f->update();
 
   wex::log::status("Locale")
     << get_locale().GetName().ToStdString() << "dir" << get_catalog_dir();

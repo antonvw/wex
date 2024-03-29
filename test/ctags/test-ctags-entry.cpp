@@ -53,5 +53,5 @@ TEST_CASE("wex::ctags_entry")
 
   filter.clear();
   REQUIRE(!filter.is_active());
-  REQUIRE(!filter.log().str().empty());
+  REQUIRE(filter.log().str().empty());
 }

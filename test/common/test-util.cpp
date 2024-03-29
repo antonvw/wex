@@ -2,7 +2,7 @@
 // Name:      test-util.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/util.h>
@@ -19,15 +19,15 @@ TEST_CASE("wex::util" * doctest::may_fail())
 
   SUBCASE("auto_complete_filename")
   {
-    REQUIRE(std::get<0>(wex::auto_complete_filename("te")));
-    REQUIRE(std::get<1>(wex::auto_complete_filename("te")) == "st");
-    REQUIRE(!std::get<0>(wex::auto_complete_filename("XX")));
+    REQUIRE(wex::auto_complete_filename("te"));
+    REQUIRE(wex::auto_complete_filename("te")->expansion == "st");
+    REQUIRE(!wex::auto_complete_filename("XX"));
 
 #ifdef __UNIX__
-    REQUIRE(std::get<0>(wex::auto_complete_filename("/usr/local/l")));
+    REQUIRE(wex::auto_complete_filename("/usr/local/l"));
 
     // we are in wex/test/data
-    REQUIRE(std::get<0>(wex::auto_complete_filename("../../src/v")));
+    REQUIRE(wex::auto_complete_filename("../../src/v"));
 #endif
   }
 
@@ -53,16 +53,6 @@ TEST_CASE("wex::util" * doctest::may_fail())
     REQUIRE(wex::compare_file(
       wex::test::get_path("test.h"),
       wex::test::get_path("test.h")));
-  }
-#endif
-
-#ifdef __UNIX__
-  SUBCASE("make")
-  {
-    wex::path cwd; // as /usr/bin/git changes wd
-    REQUIRE(wex::make(wex::path("xxx")) != -1);
-    REQUIRE(wex::make(wex::path("make.tst")) != -1);
-    REQUIRE(wex::make(wex::path("/usr/bin/git")) != -1);
   }
 #endif
 

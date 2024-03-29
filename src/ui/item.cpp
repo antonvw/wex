@@ -2,7 +2,7 @@
 // Name:      item.cpp
 // Purpose:   Implementation of wex::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <charconv>
@@ -38,6 +38,14 @@ wex::item::item(
   , m_label_window(rfind_after(label, "."))
   , m_sizer_flags(
       m_type == GROUP ? wxSizerFlags().Left() : wxSizerFlags().Border().Left())
+  , m_reflect(
+      {REFLECT_ADD("label", m_label),
+       REFLECT_ADD("type", std::to_string(m_type)),
+       REFLECT_ADD("value", get_value()),
+       REFLECT_ADD("initial", m_data.initial()),
+       REFLECT_ADD("min", m_data.min()),
+       REFLECT_ADD("max", m_data.max()),
+       REFLECT_ADD("inc", m_data.inc())})
 {
   m_data.initial(value);
 
@@ -341,7 +349,7 @@ void wex::item::add_items(group_t& page, bool readonly)
     m_page      = page.first;
     int imageId = wxWithImages::NO_IMAGE;
 
-    if (const auto col = m_page.find(":"); col != std::string::npos)
+    if (const auto col = m_page.find(':'); col != std::string::npos)
     {
       std::from_chars(
         m_page.data() + col + 1,
@@ -437,16 +445,14 @@ void wex::item::add_items(data::layout& layout, std::vector<item>& v)
   }
 }
 
-wxFlexGridSizer* wex::item::add_static_text(wxSizer* sizer) const
+void wex::item::add_static_text(wxSizer* sizer) const
 {
-  assert(!m_label_window.empty());
-  assert(m_window != nullptr);
-
-  sizer->Add(
-    new wxStaticText(m_window->GetParent(), wxID_ANY, m_label_window + ":"),
-    wxSizerFlags().Right().Border().Align(wxALIGN_LEFT));
-
-  return nullptr;
+  if (!m_label_window.empty() && m_window != nullptr)
+  {
+    sizer->Add(
+      new wxStaticText(m_window->GetParent(), wxID_ANY, m_label_window + ":"),
+      wxSizerFlags().Right().Border().Align(wxALIGN_LEFT));
+  }
 }
 
 bool wex::item::apply(bool save) const
@@ -575,7 +581,7 @@ const std::any wex::item::get_value() const
           }
           else
           {
-            any = 0l;
+            any = 0L;
           }
           break;
 
@@ -708,18 +714,6 @@ wex::data::layout::sizer_t* wex::item::layout(data::layout& layout)
   }
 
   return nullptr;
-}
-
-std::stringstream wex::item::log() const
-{
-  std::stringstream ss;
-
-  ss << "item::LABEL: " << m_label << " "
-     << "TYPE: " << m_type << " " << str("VALUE: ", get_value())
-     << str("INITIAL: ", m_data.initial()) << str("MIN: ", m_data.min())
-     << str("MAX: ", m_data.max()) << str("INC: ", m_data.inc());
-
-  return ss;
 }
 
 void wex::item::set_dialog(item_template_dialog<item>* dlg)

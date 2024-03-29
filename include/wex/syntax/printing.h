@@ -2,7 +2,7 @@
 // Name:      printing.h
 // Purpose:   Include file for wex::printing class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -32,7 +32,7 @@ const std::string print_header(const path_lexer& filename);
 class printing
 {
 public:
-  /// Static interface.
+  // Static interface.
 
   /// Returns the printing object.
   static printing* get(bool createOnDemand = true);
@@ -42,7 +42,7 @@ public:
   /// returned value may be nullptr).
   static printing* set(printing* printing);
 
-  /// Other methods.
+  // Other methods.
 
   /// Returns the html printer.
   auto* get_html_printer() { return m_html_printer.get(); }

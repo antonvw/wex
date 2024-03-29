@@ -2,7 +2,7 @@
 // Name:      menu-command.h
 // Purpose:   Declaration of wex::menu_command class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2016-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -34,6 +34,7 @@ public:
   enum
   {
     IS_LINES = 0, ///< command supports lines
+    IS_ASKED,     ///< command is followed by an ellipses if asked
     IS_POPUP,     ///< command in popup menu
     IS_MAIN,      ///< command in main menu
     IS_SELECTED,  ///< command only shown if text selected
@@ -43,7 +44,7 @@ public:
   };
 
   /// A typedef containing type flags.
-  typedef std::bitset<7> type_t;
+  typedef std::bitset<8> type_t;
 
   /// Default constructor using xml node.
   menu_command(const pugi::xml_node& node = pugi::xml_node());
@@ -57,26 +58,26 @@ public:
   };
 
   /// Returns the control key.
-  const auto& control() const { return m_control; }
+  const std::string& control() const { return m_control; }
 
   /// Returns the flags.
-  const auto& flags() const { return m_flags; }
+  const std::string& flags() const { return m_flags; }
 
   /// Returns the command (and subcommand and accelerators if necessary).
   const std::string
   get_command(include_t type = include_t().set(INCLUDE_SUBCOMMAND)) const;
 
   /// Returns the submenu.
-  const auto& submenu() const { return m_submenu; }
+  const std::string& submenu() const { return m_submenu; }
 
   /// Returns true if this is a help like command.
   bool is_help() const { return get_command(0) == "help"; }
 
   /// Returns the type.
-  auto& type() const { return m_type; }
+  const type_t& type() const { return m_type; }
 
   /// Returns the menu text.
-  const auto& text() const { return m_text; }
+  const std::string& text() const { return m_text; }
 
   /// Returns true if a subcommand can be used for this command.
   bool use_subcommand() const;

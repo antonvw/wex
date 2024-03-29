@@ -2,7 +2,7 @@
 // Name:      shell.h
 // Purpose:   Declaration of class wex::shell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -46,7 +46,7 @@ public:
   /// Destructor, keeps the commands in the config, if required.
   ~shell() override;
 
-  /// Virtual interface
+  // Virtual interface
 
   /// Appends text, and updates the command start position.
   /// Only if the cursor was at the end, the cursor is
@@ -64,7 +64,7 @@ public:
   /// Returns true if char was processed.
   bool process_char(int c) override;
 
-  /// Other methods
+  // Other methods
 
   /// Enable/disable shell processing.
   /// Default (and after constructed) shell processing is enabled.

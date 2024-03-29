@@ -2,7 +2,7 @@
 // Name:      listitem.cpp
 // Purpose:   Implementation of class wex::listitem
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2009-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -15,18 +15,18 @@
 // Do not give an error if columns do not exist.
 // E.g. the LIST_PROCESS has none of the file columns.
 wex::listitem::listitem(listview* lv, long itemnumber)
-  : m_listview(lv)
-  , m_path(
-      (!lv->get_item_text(itemnumber, _("File Name")).empty() &&
-           !lv->get_item_text(itemnumber, _("In Folder")).empty() ?
-         wex::path(
-           wex::path(lv->get_item_text(itemnumber, _("In Folder"))),
-           lv->get_item_text(itemnumber, _("File Name")),
-           path::log_t().set(path::LOG_MOD)) :
-         wex::path(
-           lv->get_item_text(itemnumber),
-           path::log_t().set(path::LOG_MOD))))
-  , m_file_spec(lv->get_item_text(itemnumber, _("Type")))
+  : listitem(
+      lv,
+      !lv->get_item_text(itemnumber, _("File Name")).empty() &&
+          !lv->get_item_text(itemnumber, _("In Folder")).empty() ?
+        wex::path(
+          wex::path(lv->get_item_text(itemnumber, _("In Folder"))),
+          lv->get_item_text(itemnumber, _("File Name")),
+          path::log_t().set(path::LOG_MOD)) :
+        wex::path(
+          lv->get_item_text(itemnumber),
+          path::log_t().set(path::LOG_MOD)),
+      lv->get_item_text(itemnumber, _("Type")))
 {
   SetId(itemnumber);
 
@@ -43,7 +43,8 @@ wex::listitem::listitem(
   : m_listview(listview)
   , m_path(filename)
   , m_file_spec(filespec)
-  , m_is_readonly(false)
+  , m_reflect(
+      {REFLECT_ADD("path", m_path.string()), REFLECT_ADD("id", GetId())})
 {
   SetId(-1);
 }
@@ -84,15 +85,6 @@ void wex::listitem::insert(long index)
   }
 }
 
-std::stringstream wex::listitem::log() const
-{
-  std::stringstream ss;
-
-  ss << "PATH: " << m_path.string();
-
-  return ss;
-}
-
 bool wex::listitem::set_item(
   const std::string& col_name,
   const std::string& text)
@@ -101,7 +93,7 @@ bool wex::listitem::set_item(
   {
     if (!m_listview->SetItem(GetId(), col, text))
     {
-      log() << *this << "col:" << col << "id:" << GetId() << "text:" << text;
+      log() << *this << "col:" << col << "text:" << text;
       return false;
     }
   }
@@ -130,7 +122,7 @@ void wex::listitem::set_readonly(bool readonly)
     SetTextColour(config(_("list.Readonly colour")).get(*wxLIGHT_GREY));
   }
 
-  (reinterpret_cast<wxListView*>(m_listview))->SetItem(*this);
+  m_listview->SetItem(*this);
 
   // Using GetTextColour did not work, so keep state in boolean.
   m_is_readonly = readonly;
@@ -143,18 +135,16 @@ void wex::listitem::update()
   {
     SetImage(wxFileIconsTable::folder);
   }
-  else
+  else if (
+    m_listview->data().image() == data::listview::IMAGE_FILE_ICON &&
+    m_path.stat().is_ok())
   {
-    SetImage(
-      m_listview->data().image() == data::listview::IMAGE_FILE_ICON &&
-          m_path.stat().is_ok() ?
-        wxFileIconsTable::file :
-        -1);
+    SetImage(wxFileIconsTable::file);
   }
 
   set_readonly(m_path.stat().is_readonly());
 
-  (reinterpret_cast<wxListView*>(m_listview))->SetItem(*this);
+  m_listview->SetItem(*this);
 
   if (m_listview->InReportView() && m_path.stat().is_ok())
   {

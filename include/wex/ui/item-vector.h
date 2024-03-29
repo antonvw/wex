@@ -2,7 +2,7 @@
 // Name:      item-vector.h
 // Purpose:   Declaration of wex::item_vector class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -11,7 +11,6 @@
 #include <wex/core/core.h>
 #include <wex/ui/item.h>
 
-#include <any>
 #include <vector>
 
 namespace wex
@@ -40,12 +39,6 @@ private:
 };
 
 // implementation
-
-inline wex::item_vector::item_vector(const std::vector<item>* v)
-  : m_v(v)
-{
-  ;
-}
 
 template <typename T>
 const T wex::item_vector::find(const std::string& label) const

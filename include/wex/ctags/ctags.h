@@ -2,7 +2,7 @@
 // Name:      ctags.h
 // Purpose:   Declaration of class wex::ctags
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2016-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -22,13 +22,14 @@ namespace factory
 class stc;
 };
 
-const char DEFAULT_TAGFILE[] = "tags";
-
 /// Offers ctags handling.
 class ctags
 {
 public:
-  /// Static interface.
+  // Static interface.
+
+  /// Default tagfile.
+  static inline std::string DEFAULT_TAGFILE = "tags";
 
   /// Closes ctags file.
   /// Returns false if file was not opened.
@@ -39,7 +40,7 @@ public:
   /// and calls frame open_file if name matches and
   /// there is no next match in another file.
   /// If the name is empty, next is invoked.
-  /// Otherwise shows a dialog to select a file from the matches.
+  // Otherwise shows a dialog to select a file from the matches.
   /// Returns false if dialog was cancelled or ctags file not yet open.
   static bool find(
     /// tag to find
@@ -65,12 +66,13 @@ public:
   /// This file is searched for in the current dir, and if not found in the
   /// config dir.
   /// You can also specify an absolute filename.
-  static void open(const std::string& filename = DEFAULT_TAGFILE);
+  /// Returns false if no ctags file is opened.
+  static bool open(const std::string& filename = DEFAULT_TAGFILE);
 
   /// Jumps to previous match from a previous find.
   static bool previous();
 
-  /// Other methods.
+  // Other methods.
 
   /// Constructor.
   /// Uses stc component for presenting ctags results,

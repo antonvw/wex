@@ -39,7 +39,7 @@ public:
 
   /// Adds a search path.
   /// Returns false if path does not exist, or is already present.
-  /// Otherwise returns true and the path is added.
+  // Otherwise returns true and the path is added.
   bool add_path(const path& p);
 
   /// Sets paths with info from config.

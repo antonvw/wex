@@ -2,11 +2,12 @@
 // Name:      macro-mode.h
 // Purpose:   Implementation of class wex::macro_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <optional>
 #include <string>
 
 namespace wex
@@ -62,7 +63,7 @@ public:
   ///    existing macro if macro is single upper case character).
   /// \@: Playsback the macro.
   /// Returns number of characters processed from command.
-  int transition(
+  size_t transition(
     /// macro name after first character
     const std::string& command,
     /// ex component to use, required in case of playback
@@ -70,11 +71,12 @@ public:
     /// is the command complete
     bool complete = false,
     /// number of times this macro should be executed, in case of playback
-    int repeat = 1);
+    size_t repeat = 1);
 
 private:
-  int transition_q(std::string& macro, ex* ex, bool complete);
-  int transition_at(std::string& macro, ex* ex, bool complete, int repeat);
+  std::optional<size_t>
+       transition_at(std::string& macro, ex* ex, bool complete, size_t repeat);
+  bool transition_q(std::string& macro, ex* ex, bool complete);
 
   macro_fsm* m_fsm;
   macros*    m_macros;

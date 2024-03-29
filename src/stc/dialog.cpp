@@ -2,7 +2,7 @@
 // Name:      dialog.cpp
 // Purpose:   Implementation of class stc_entry_dialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2009-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
@@ -35,7 +35,7 @@ wex::stc_entry_dialog::stc_entry_dialog(
   m_stc->SetViewEOL(false);
   m_stc->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
   m_stc->SetWrapMode(wxSTC_WRAP_WORD);
-  m_stc->get_vi().use(ex::OFF);
+  m_stc->get_vi().use(ex::mode_t::OFF);
 
   add_user_sizer(m_stc);
 

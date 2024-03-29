@@ -2,7 +2,7 @@
 // Name:      ex-stream.cpp
 // Purpose:   Implementation of class wex::ex_stream
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -28,8 +28,8 @@
     m_stream->clear();                                                        \
     m_stream->seekg(0);                                                       \
                                                                               \
-    int  i = 0;                                                               \
-    char c;                                                                   \
+    size_t i = 0;                                                             \
+    char   c;                                                                 \
                                                                               \
     while (m_stream->get(c))                                                  \
     {                                                                         \
@@ -48,14 +48,7 @@
                                                                               \
     m_stream->clear();                                                        \
                                                                               \
-    if (sl.action() == ex_stream_line::ACTION_YANK)                           \
-    {                                                                         \
-      return true;                                                            \
-    }                                                                         \
-                                                                              \
-    if (                                                                      \
-      (sl.actions() > 0 || sl.action() == ex_stream_line::ACTION_WRITE) &&    \
-      !copy(m_temp, m_work))                                                  \
+    if (sl.actions() > 0 && sl.is_write() && !copy(m_temp, m_work))           \
     {                                                                         \
       return false;                                                           \
     }                                                                         \
@@ -69,6 +62,27 @@ wex::ex_stream::ex_stream(wex::ex* ex)
   , m_buffer(new char[m_buffer_size])
   , m_ex(ex)
   , m_stc(ex->get_stc())
+  , m_function_repeat(
+      "stream",
+      m_stc,
+      [this](wxTimerEvent&)
+      {
+        if (m_file != nullptr && m_file->check_sync())
+        {
+          if (m_is_modified)
+          {
+            log::status("Could not sync") << "file is modified";
+            m_function_repeat.activate(false);
+          }
+          else
+          {
+            m_file->close();
+            m_file->open(std::ios_base::in);
+            m_stream->clear();
+            m_stream->seekg(0);
+          }
+        }
+      })
 {
 }
 
@@ -142,7 +156,7 @@ void wex::ex_stream::filter_line(int start, int end, std::streampos spos)
   // and set the stream pointer
   const size_t sz(end - start);
 
-  strncpy(m_current_line, m_buffer + start + 1, sz);
+  memcpy(m_current_line, m_buffer + start + 1, sz);
   m_current_line[sz] = 0;
   m_stream->clear();
 
@@ -343,6 +357,19 @@ int wex::ex_stream::get_line_count_request()
   return m_last_line_no;
 }
 
+bool wex::ex_stream::get_lines(
+  const addressrange& range,
+  const std::string&  flags)
+{
+  ex_stream_line sl(m_temp, ex_stream_line::ACTION_GET, range, flags);
+
+  STREAM_LINE_ON_CHAR();
+
+  m_text = sl.copy();
+
+  return true;
+}
+
 bool wex::ex_stream::get_next_line()
 {
   if (!m_stream->getline(m_current_line, m_current_line_size))
@@ -411,7 +438,7 @@ bool wex::ex_stream::get_previous_line()
       }
     }
 
-    strncpy(m_current_line, m_buffer, m_stream->gcount());
+    memcpy(m_current_line, m_buffer, m_stream->gcount());
     m_current_line[m_stream->gcount()] = 0;
     m_stream->clear();
     m_stream->seekg((size_t)pos);
@@ -502,7 +529,7 @@ bool wex::ex_stream::insert_text(
   const std::string& text,
   loc_t              loc)
 {
-  const auto line(loc == INSERT_BEFORE ? a.get_line() : a.get_line() + 1);
+  const auto line(loc == loc_t::BEFORE ? a.get_line() : a.get_line() + 1);
   const addressrange range(
     m_ex,
     std::to_string(line) + "," + std::to_string(line));
@@ -624,7 +651,8 @@ void wex::ex_stream::stream(file& f, size_t default_line_size)
   m_current_line_size = default_line_size;
   m_current_line      = new char[m_current_line_size];
 
-  m_file   = &f;
+  m_file = &f;
+  m_function_repeat.activate();
   m_stream = &f.stream();
   f.use_stream();
 
@@ -656,7 +684,7 @@ bool wex::ex_stream::write()
 {
   log::trace("ex stream write");
 
-  if (!copy(m_work, m_file))
+  if (!m_is_modified || !copy(m_work, m_file))
   {
     return false;
   }

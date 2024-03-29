@@ -26,10 +26,10 @@ find_sed
 locs="../src/common/*.cpp ../src/core/*.cpp ../src/data/*.cpp ../src/del/*.cpp ../src/factory/*.cpp ../src/stc/*.cpp ../src/ui/*.cpp ../src/vi/*.cpp ../include/wex/*.h ../include/wex/data/*.h ../include/wex/del/*.h ../include/wex/factory/*.h"
 
 # create pot file
-xgettext -F -k_ -o wex.pot --no-location --copyright-holder="A.M. van Wezenbeek" $locs
+xgettext -F -k_ -o wex.pot --no-location --copyright-holder="A.M. van Wezenbeek" "$locs"
 
 # merge (-j join) all po files
 for f in *.po; do
-  xgettext -F -j -k_ -o "$f" --no-location --copyright-holder="A.M. van Wezenbeek" $locs
+  xgettext -F -j -k_ -o "$f" --no-location --copyright-holder="A.M. van Wezenbeek" "$locs"
   substitute "$f"
 done  

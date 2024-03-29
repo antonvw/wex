@@ -1,7 +1,8 @@
+////////////////////////////////////////////////////////////////////////////////
 // Name:      test.h
-// Purpose:   Test file for running cppunit testing
+// Purpose:   Test file for running unit tests
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2021 Anton van Wezenbeek
+// Copyright: (c) 2009-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 // The actual contents do not matter. This file is not compiled.
@@ -39,9 +40,9 @@ public:
 }; // namespace wex
 
 /*
- * this is a test for matching words.
- * this is a test for matching words.
- * this is a test for matching words.
+ * this is a TEST for matching words.
+ * this is a TEST for matching words.
+ * this is a TESTXXX for matching words.
  * this is a test for matching words.
  * this is a test for matching words.
  * this is a test for matching words.

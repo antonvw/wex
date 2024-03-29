@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      comands-ex.cpp
+// Name:      commands-ex.cpp
 // Purpose:   Implementation of class wex::ex::commands_ex
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <charconv>
@@ -20,20 +20,21 @@
 #include <wex/ex/macros.h>
 #include <wex/ex/util.h>
 #include <wex/syntax/lexers.h>
+#include <wex/syntax/path-lexer.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 #include <wx/app.h>
 
-#define POST_COMMAND(ID)                                      \
-  {                                                           \
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID);    \
-                                                              \
-    if (command.contains(" "))                                \
-    {                                                         \
-      event.SetString(command.substr(command.find(" ") + 1)); \
-    }                                                         \
-                                                              \
-    wxPostEvent(wxTheApp->GetTopWindow(), event);             \
+#define POST_COMMAND(ID)                                                       \
+  {                                                                            \
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID);                     \
+                                                                               \
+    if (command.contains(" "))                                                 \
+    {                                                                          \
+      event.SetString(command.substr(command.find(' ') + 1));                  \
+    }                                                                          \
+                                                                               \
+    wxPostEvent(wxTheApp->GetTopWindow(), event);                              \
   };
 
 namespace wex
@@ -95,7 +96,7 @@ bool source(ex* ex, const std::string& cmd)
            *buffer,
            boost::char_separator<char>("\r\n")))
     {
-      if (const std::string line(it); !line.empty())
+      if (const std::string & line(it); !line.empty())
       {
         if (line == cmd)
         {
@@ -133,7 +134,7 @@ wex::ex::commands_t wex::ex::commands_ex()
   // These are the commands without address specifier,
   // for these see address.cpp and addressrange.cpp.
   return {
-    {":ab(breviate)?\\b",
+    {"^:ab(breviate)?\\b",
      [&](const std::string& command)
      {
        return handle_container<std::string, macros::strings_map_t>(
@@ -146,7 +147,7 @@ wex::ex::commands_t wex::ex::commands_ex()
            return true;
          });
      }},
-    {":ar(gs)?\\b",
+    {"^:ar(gs)?\\b",
      [&](const std::string& command)
      {
        std::stringstream text;
@@ -155,10 +156,12 @@ wex::ex::commands_t wex::ex::commands_ex()
          text << wxTheApp->argv.GetArguments()[i] << "\n";
        }
        if (!text.str().empty())
+       {
          show_dialog("ar", text.str());
+       }
        return true;
      }},
-    {":chd(ir)?\\b|:cd\\b",
+    {"^:chd(ir)?\\b|:cd\\b",
      [&](const std::string& command)
      {
        if (!command.contains(" "))
@@ -174,23 +177,23 @@ wex::ex::commands_t wex::ex::commands_ex()
 
        return true;
      }},
-    {":close\\b",
+    {"^:close\\b",
      [&](const std::string& command)
      {
        POST_COMMAND(wxID_CLOSE) return true;
      }},
-    {":de\\b",
+    {"^:de\\b",
      [&](const std::string& command)
      {
        m_frame->debug_exe(wex::find_first_of(command, " "), get_stc());
        return true;
      }},
-    {":e(dit)?\\b",
+    {"^:e(dit)?\\b",
      [&](const std::string& command)
      {
        POST_COMMAND(wxID_OPEN) return true;
      }},
-    {":f\\b",
+    {"^:f\\b",
      [&](const std::string& command)
      {
        std::stringstream text;
@@ -204,22 +207,22 @@ wex::ex::commands_t wex::ex::commands_ex()
        m_frame->show_ex_message(text.str());
        return true;
      }},
-    {":grep\\b",
+    {"^:grep\\b",
      [&](const std::string& command)
      {
        POST_COMMAND(ID_TOOL_REPORT_FIND) return true;
      }},
-    {":gt\\b",
+    {"^:gt\\b",
      [&](const std::string& command)
      {
        return get_stc()->link_open();
      }},
-    {":help\\b",
+    {"^:help\\b",
      [&](const std::string& command)
      {
        POST_COMMAND(wxID_HELP) return true;
      }},
-    {":map\\b",
+    {"^:map\\b",
      [&](const std::string& command)
      {
        switch (get_command_arg(command))
@@ -246,10 +249,10 @@ wex::ex::commands_t wex::ex::commands_ex()
                  m_macros.get_keys_map()) +
                "[Alt key map]\n" +
                report_container<int, wex::macros::keys_map_t>(
-                 m_macros.get_keys_map(macros::KEY_ALT)) +
+                 m_macros.get_keys_map(macros::key_t::ALT)) +
                "[Control key map]\n" +
                report_container<int, wex::macros::keys_map_t>(
-                 m_macros.get_keys_map(macros::KEY_CONTROL)),
+                 m_macros.get_keys_map(macros::key_t::CONTROL)),
              lexer_props().scintilla_lexer());
            return true;
 
@@ -266,30 +269,30 @@ wex::ex::commands_t wex::ex::commands_ex()
        }
        return false;
      }},
-    {":new\\b",
+    {"^:new\\b",
      [&](const std::string& command)
      {
        POST_COMMAND(wxID_NEW) return true;
      }},
-    {":print\\b",
+    {"^:print\\b",
      [&](const std::string& command)
      {
-       get_stc()->print(!command.contains(" "));
+       get_stc()->print();
        return true;
      }},
-    {":pwd\\b",
+    {"^:pwd\\b",
      [&](const std::string& command)
      {
        wex::log::status(wex::path::current().string());
        return true;
      }},
-    {":q(uit)?!?\\b",
+    {"^:q(uit)?!?\\b",
      [&](const std::string& command)
      {
        POST_CLOSE(wxEVT_CLOSE_WINDOW, !command.contains("!"))
        return true;
      }},
-    {":reg\\b",
+    {"^:reg\\b",
      [&](const std::string& command)
      {
        const lexer_props l;
@@ -304,29 +307,29 @@ wex::ex::commands_t wex::ex::commands_ex()
        show_dialog("Registers", output, l.scintilla_lexer());
        return true;
      }},
-    {":sed\\b",
+    {"^:sed\\b",
      [&](const std::string& command)
      {
        POST_COMMAND(ID_TOOL_REPLACE) return true;
      }},
-    {":set?\\b",
+    {"^:set?\\b",
      [&](const std::string& command)
      {
        return command_set(command);
      }},
-    {":so(urce)?\\b",
+    {"^:so(urce)?\\b",
      [&](const std::string& cmd)
      {
        return source(this, cmd);
      }},
-    {":syntax\\b",
+    {"^:syntax\\b",
      [&](const std::string& command)
      {
        if (command.ends_with("on"))
        {
          wex::lexers::get()->restore_theme();
          get_stc()->get_lexer().set(
-           get_stc()->get_lexer().display_lexer(),
+           path_lexer(get_stc()->path()).lexer(),
            true); // allow folding
        }
        else if (command.ends_with("off"))
@@ -341,13 +344,13 @@ wex::ex::commands_t wex::ex::commands_ex()
        m_frame->statustext(wex::lexers::get()->theme(), "PaneTheme");
        return true;
      }},
-    {":tag?\\b",
+    {"^:tag?\\b",
      [&](const std::string& command)
      {
        ctags::find(wex::find_first_of(command, " "));
        return true;
      }},
-    {":una(bbrev)?\\b",
+    {"^:una(bbrev)?\\b",
      [&](const std::string& command)
      {
        if (command.contains(" "))
@@ -356,7 +359,7 @@ wex::ex::commands_t wex::ex::commands_ex()
        }
        return true;
      }},
-    {":unm(ap)?\\b",
+    {"^:unm(ap)?\\b",
      [&](const std::string& command)
      {
        if (command.contains(" "))
@@ -375,7 +378,7 @@ wex::ex::commands_t wex::ex::commands_ex()
        }
        return true;
      }},
-    {":ve(rsion)?\\b",
+    {"^:ve(rsion)?\\b",
      [&](const std::string& command)
      {
        show_dialog("Version", wex::get_version_info().get());

@@ -8,6 +8,7 @@
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
+#include <wex/factory/defs.h>
 #include <wex/ui/menus.h>
 
 void wex::menus::add_menu(const menu_command& mc, menu* menu)
@@ -35,13 +36,24 @@ void wex::menus::add_menu(const menu_command& mc, menu* menu)
 
   auto* usemenu = (submenu == nullptr ? menu : submenu);
 
+  // Update ellipse for some vs commands.
+  bool ellipse(mc.type().test(menu_command::ELLIPSES));
+
+  if (
+    m_id > ID_EDIT_VCS_LOWEST && m_id < ID_EDIT_VCS_HIGHEST &&
+    !config(_("vcs.Always ask flags")).get(true) &&
+    mc.type().test(menu_command::IS_ASKED))
+  {
+    ellipse = false;
+  }
+
   usemenu->append(
     {{m_id,
       ellipsed(
         mc.text().empty() ? mc.get_command(menu_command::INCLUDE_ACCELL) :
                             mc.text(),
         mc.control(),
-        mc.type().test(menu_command::ELLIPSES))}});
+        ellipse)}});
 
   if (mc.type().test(menu_command::SEPARATOR))
   {

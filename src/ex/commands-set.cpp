@@ -26,7 +26,9 @@ bool wex::ex::command_set(const std::string& command)
       [&](bool on)
       {
         if (!modeline)
+        {
           config(_("stc.Auto indent")).set(on);
+        }
       }},
      {{"aw", _("stc.Auto write")},
       [&](bool on)
@@ -38,42 +40,60 @@ bool wex::ex::command_set(const std::string& command)
       [&](bool on)
       {
         if (!modeline)
+        {
           config(_("stc.Edge line"))
             .set(on ? (long)wxSTC_EDGE_LINE : (long)wxSTC_EDGE_NONE);
+        }
         else
+        {
           get_stc()->SetEdgeMode(wxSTC_EDGE_LINE);
+        }
       }},
      {{"ignorecase,ic", "ex-set.ignorecase"},
       [&](bool on)
       {
         if (!on)
+        {
           m_search_flags |= wxSTC_FIND_MATCHCASE;
+        }
         else
+        {
           m_search_flags &= ~wxSTC_FIND_MATCHCASE;
+        }
         wex::find_replace_data::get()->set_match_case(!on);
       }},
      {{"magic", "ex-set.magic,1"},
       [&](bool on)
       {
         if (on)
+        {
           m_search_flags |= m_search_flags_regex;
+        }
         else
+        {
           m_search_flags &= ~m_search_flags_regex;
+        }
       }},
      {{"mw", "ex-set.matchwords"},
       [&](bool on)
       {
         if (on)
+        {
           m_search_flags |= wxSTC_FIND_WHOLEWORD;
+        }
         else
+        {
           m_search_flags &= ~wxSTC_FIND_WHOLEWORD;
+        }
         wex::find_replace_data::get()->set_match_word(on);
       }},
      {{"number,nu", _("stc.Line numbers")},
       [&](bool on)
       {
         if (modeline)
+        {
           get_stc()->show_line_numbers(on);
+        }
       }},
      {{"readonly", "ex-set.readonly"},
       [&](bool on)
@@ -110,10 +130,14 @@ bool wex::ex::command_set(const std::string& command)
       [&](bool on)
       {
         if (!modeline)
+        {
           config(_("stc.Wrap line"))
             .set(on ? wxSTC_WRAP_CHAR : wxSTC_WRAP_NONE);
+        }
         else
+        {
           get_stc()->SetWrapMode(wxSTC_WRAP_CHAR);
+        }
       }},
      {{"ws", _("stc.Wrap scan"), "1"}, nullptr}},
     // options
@@ -128,9 +152,13 @@ bool wex::ex::command_set(const std::string& command)
        [&](const std::any& val)
        {
          if (!modeline)
+         {
            config(_("stc.Edge column")).set(std::any_cast<int>(val));
+         }
          else
+         {
            get_stc()->SetEdgeColumn(std::any_cast<int>(val));
+         }
        }}},
      {{"report",
        "stc.Reported lines",
@@ -147,20 +175,28 @@ bool wex::ex::command_set(const std::string& command)
        [&](const std::any& val)
        {
          if (!modeline)
+         {
            config(_("stc.Indent")).set(std::any_cast<int>(val));
+         }
          else
+         {
            get_stc()->SetIndent(std::any_cast<int>(val));
+         }
        }}},
      {{"sy", "ex-set.syntax"},
       {cmdline::STRING,
        [&](const std::any& val)
        {
          if (std::any_cast<std::string>(val) != "off")
+         {
            get_stc()->get_lexer().set(
              std::any_cast<std::string>(val),
              true); // allow folding
+         }
          else
+         {
            get_stc()->get_lexer().clear();
+         }
        }}},
      {{"softtabstop,ts",
        _("stc.Tab width"),
@@ -169,7 +205,9 @@ bool wex::ex::command_set(const std::string& command)
        [&](const std::any& val)
        {
          if (modeline)
+         {
            get_stc()->SetTabWidth(std::any_cast<int>(val));
+         }
        }}},
      {{"ve",
        "ex-set.verbosity",
@@ -208,9 +246,9 @@ bool wex::ex::command_set(const std::string& command)
     }
   }
 
-  if (found)
+  if (!found)
   {
-    log::trace(":set") << command;
+    log(":set") << command;
   }
 
   return found;

@@ -8,7 +8,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Lint code base
         uses: docker://github/super-linter:v4
@@ -27,7 +27,7 @@ jobs:
           VALIDATE_SQLFLUFF: false
 
           # exclude xsl, all externals, 
-          FILTER_REGEX_EXCLUDE: .*data/*.xsl|external|src/syntac/wex|locale/po-sync.sh|ci/osx-script.sh
+          FILTER_REGEX_EXCLUDE: .*data/*.xsl|external|src/syntac/wex|locale/po-sync.sh
 
           # cpplint
           C_CPPLINT_ARGUMENTS: --quiet --filter=-build,-readability/fn_size,-readability/multiline_string,-runtime/explicit,-runtime/indentation_namespace,-runtime/int,-runtime/references,-whitespace

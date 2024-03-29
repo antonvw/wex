@@ -2,7 +2,7 @@
 // Name:      ctags-entry.h
 // Purpose:   Declaration of class wex::ctags_entry
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2022 Anton van Wezenbeek
+// Copyright: (c) 2019-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,6 +10,7 @@
 #include <string>
 
 #include <readtags.h>
+#include <wex/core/reflection.h>
 
 class wxStyledTextCtrl;
 
@@ -20,12 +21,15 @@ namespace wex
 class ctags_entry
 {
 public:
-  /// Static interface.
+  // Static interface.
 
   /// Register image on stc component.
   static void register_image(wxStyledTextCtrl* stc);
 
-  /// Other methods.
+  // Other methods.
+
+  /// Default constructor.
+  ctags_entry();
 
   /// Returns access member.
   const auto& access() const { return m_access; }
@@ -128,7 +132,7 @@ public:
   ctags_entry& kind(const std::string& v);
 
   /// Logs info about this entry.
-  const std::stringstream log() const;
+  const std::stringstream log() const { return m_reflect.log(); }
 
   /// Returns signature member.
   const auto& signature() const { return m_signature; }
@@ -137,14 +141,6 @@ public:
   ctags_entry& signature(const std::string& v);
 
 private:
-  enum image_access_t
-  {
-    IMAGE_NONE,
-    IMAGE_PUBLIC,
-    IMAGE_PROTECTED,
-    IMAGE_PRIVATE
-  };
-
   bool entry_equal(const std::string& text, const std::string& field) const;
   std::string image_string() const;
   std::string signature_and_image() const;
@@ -152,5 +148,7 @@ private:
   tagEntry m_entry{0};
 
   std::string m_access, m_class, m_kind, m_signature;
+
+  reflection m_reflect;
 };
 }; // namespace wex

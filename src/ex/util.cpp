@@ -2,10 +2,10 @@
 // Name:      util.cpp
 // Purpose:   Implementation of wex ex utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifdef __WXMSW__
+#ifndef __WXGTK__
 #include <format>
 #endif
 #include <regex>
@@ -15,6 +15,19 @@
 #include <wex/ex/macros.h>
 #include <wex/ex/util.h>
 #include <wex/syntax/stc.h>
+
+void wex::append_line_no(std::string& text, int line)
+{
+#ifndef __WXGTK__
+  // not yet for gcc 12
+  text += std::format("{:6} ", line + 1);
+#else
+  char buffer[8];
+  snprintf(buffer, sizeof(buffer), "%6d ", line + 1);
+
+  text += buffer;
+#endif
+}
 
 const std::string wex::esc()
 {
@@ -33,21 +46,18 @@ const std::string wex::find_first_of(
 std::string
 wex::get_lines(factory::stc* stc, int start, int end, const std::string& flags)
 {
+  if (start == end)
+  {
+    return std::string();
+  }
+
   std::string text;
 
   for (auto i = start; i < end && i < stc->get_line_count(); i++)
   {
     if (flags.contains("#"))
     {
-#ifdef __WXMSW__
-      // not yet for gcc 12, clang 16
-      text += std::format("{:6} ", i + 1);
-#else
-      char buffer[8];
-      snprintf(buffer, sizeof(buffer), "%6d ", i + 1);
-
-      text += buffer;
-#endif
+      append_line_no(text, i);
     }
 
     if (flags.contains("l"))
@@ -55,12 +65,17 @@ wex::get_lines(factory::stc* stc, int start, int end, const std::string& flags)
       text += stc->GetTextRange(
                 stc->PositionFromLine(i),
                 stc->GetLineEndPosition(i)) +
-              "$" + "\n";
+              "$\n";
     }
     else
     {
       text += stc->GetLine(i);
     }
+  }
+
+  if (!text.ends_with("\n"))
+  {
+    text += "\n";
   }
 
   return text;

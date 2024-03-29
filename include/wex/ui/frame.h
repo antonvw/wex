@@ -81,7 +81,7 @@ public:
   /// Destructor, uninits the aui manager.
   ~frame() override;
 
-  /// Virtual interface
+  // Virtual interface
 
   /// Returns true if the page can be closed.
   /// Default resets the find focus.
@@ -160,9 +160,6 @@ public:
     return false;
   };
 
-  /// Runs async process.
-  virtual bool process_async_system(const process_data& data) { return false; };
-
   /// Allows you to perform action for a (vi) command.
   /// This method is invoked after command is executed.
   virtual void record(const std::string& command);
@@ -205,7 +202,7 @@ public:
   /// Sets stc entry dialog title.
   virtual void stc_entry_dialog_title(const std::string& title) { ; }
 
-  /// Sets stc entry dialog vaildator.
+  /// Sets stc entry dialog validator.
   virtual void stc_entry_dialog_validator(const std::string& regex) { ; }
 
   /// Called after you checked the Sync checkbox on the options toolbar.
@@ -219,29 +216,29 @@ public:
   virtual void vcs_add_path(factory::link* l) { ; }
 
   /// Annotates commit.
-  virtual void
+  virtual bool
   vcs_annotate_commit(syntax::stc*, int line, const std::string& commit_id)
   {
-    ;
+    return false;
   };
 
   /// Blames the specified stc.
-  virtual void vcs_blame(syntax::stc*) { ; }
+  virtual bool vcs_blame(syntax::stc*) { return false; }
 
   /// Blames revision.
-  virtual void vcs_blame_revision(
+  virtual bool vcs_blame_revision(
     syntax::stc*,
     const std::string& renamed,
     const std::string& offset)
   {
-    ;
+    return false;
   }
 
   /// Returns true if dir exists.
   virtual bool vcs_dir_exists(const path& p) const { return false; };
 
   /// Executes vcs.
-  virtual void vcs_execute(
+  virtual bool vcs_execute(
     /// the vcs id
     int event_id,
     /// the paths
@@ -249,10 +246,10 @@ public:
     /// window data
     const data::window& arg = data::window())
   {
-    ;
+    return false;
   }
 
-  /// Other methods
+  // Other methods
 
   /// Can we browse backward?
   bool allow_browse_backward() const;
@@ -261,7 +258,7 @@ public:
   bool allow_browse_forward() const;
 
   /// Handles forward and backward click.
-  bool browse(wxCommandEvent& event);
+  bool browse(const wxCommandEvent& event);
 
   /// Returns current debugger.
   const auto* debug_entry() const { return m_debug_entry; }

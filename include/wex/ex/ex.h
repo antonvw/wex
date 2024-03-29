@@ -2,7 +2,7 @@
 // Name:      ex.h
 // Purpose:   Declaration of class wex::ex
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2012-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -15,12 +15,14 @@
 #include <wex/syntax/marker.h>
 
 #include <functional>
+#include <optional>
 #include <unordered_map>
 #include <utility>
 #include <vector>
 
 namespace wex
 {
+class addressrange;
 class ctags;
 class ex_stream;
 class macros;
@@ -49,7 +51,7 @@ class ex
   friend class macro_mode;
 
 public:
-  /// Static interface.
+  // Static interface.
 
   /// Returns the macros.
   static auto& get_macros() { return m_macros; }
@@ -66,10 +68,10 @@ public:
   /// Sets yank register.
   static void set_register_yank(const std::string& value);
 
-  /// Other methods.
+  // Other methods.
 
   /// The visual modes.
-  enum mode_t
+  enum class mode_t
   {
     OFF,    ///< not using ex or vi mode
     EX,     ///< ex mode, without vi keys, for reading large files
@@ -78,22 +80,22 @@ public:
 
   /// Constructor.
   /// Provide stc cpomponent and ex mode.
-  explicit ex(syntax::stc* stc, mode_t mode = VISUAL);
+  explicit ex(syntax::stc* stc, mode_t mode = mode_t::VISUAL);
 
   /// Destructor.
   virtual ~ex();
 
-  /// Virtual interface.
+  // Virtual interface.
 
   /// Executes ex: command that was entered on the command line,
   /// or present as modeline command inside a file.
   /// Returns true if the command was executed.
   virtual bool command(const std::string& command);
 
-  /// Other methods.
+  // Other methods.
 
   /// Returns calculated value of text.
-  int calculator(const std::string& text);
+  std::optional<int> calculator(const std::string& text);
 
   /// Copies data from other component.
   void copy(const ex* ex);
@@ -115,6 +117,9 @@ public:
   /// Returns command.
   const auto& get_command() const { return m_command; }
 
+  /// Returns last printed text.
+  const auto& get_print_text() const { return m_print_text; }
+
   /// Returns stc component.
   syntax::stc* get_stc() const;
 
@@ -122,7 +127,7 @@ public:
   void info_message(const std::string& text, info_message_t type) const;
 
   /// Returns whether ex is active.
-  auto is_active() const { return m_mode != OFF; }
+  auto is_active() const { return m_mode != mode_t::OFF; }
 
   /// Returns line data.
   const auto& line_data() const { return m_data; }
@@ -147,6 +152,12 @@ public:
   /// Returns LINE_NUMBER_UNKNOWN if marker does not exist.
   int marker_line(char marker) const;
 
+  /// Prints address range.
+  bool print(
+    const addressrange& ar,
+    const std::string&  flags     = std::string(),
+    bool                separator = false);
+
   /// Prints text in the dialog.
   void print(const std::string& text);
 
@@ -154,7 +165,7 @@ public:
   /// active).
   const std::string register_text() const;
 
-  /// Resets search flags.
+  /// Resets search flags, to what is available in config.
   void reset_search_flags();
 
   /// Returns search flags.
@@ -242,6 +253,8 @@ private:
     m_marker_identifiers,
     // relate a marker to mark number
     m_marker_numbers;
+
+  std::string m_print_text;
 };
 
 /// Expands all markers and registers in command.

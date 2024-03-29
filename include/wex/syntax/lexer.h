@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <wex/core/reflection.h>
 #include <wex/syntax/property.h>
 #include <wex/syntax/style.h>
 
@@ -133,7 +134,7 @@ public:
   size_t line_size() const;
 
   /// Logs info about this class.
-  std::stringstream log() const;
+  std::stringstream log() const { return m_reflect.log(); }
 
   /// Returns a lexer comment string with text formatted.
   const std::string make_comment(
@@ -179,6 +180,9 @@ public:
   size_t usable_chars_per_line() const;
 
 private:
+  /// Delegate constructor.
+  explicit lexer(const pugi::xml_node* node, syntax::stc* s);
+
   void              auto_match(const std::string& lexer);
   const std::string formatted_text(
     const std::string& lines,
@@ -212,5 +216,7 @@ private:
   bool m_is_ok{false}, m_previewable{false};
 
   syntax::stc* m_stc{nullptr};
+
+  reflection m_reflect;
 };
 }; // namespace wex

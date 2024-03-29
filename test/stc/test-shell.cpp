@@ -104,5 +104,6 @@ TEST_CASE("wex::shell")
   {
     event.m_keyCode = id;
     wxPostEvent(shell, event);
+    wxTheApp->ProcessPendingEvents();
   }
 }

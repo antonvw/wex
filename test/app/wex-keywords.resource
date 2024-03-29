@@ -24,6 +24,7 @@ ${APPL}	${EMPTY}
 ${file-contents}	contents.txt
 ${file-input}	input.txt
 ${file-output}	output.txt
+${file-project}	test.prj
 ${file-startup}	empty.txt
 ${file-stdout}	stdout.txt
 
@@ -35,7 +36,7 @@ Suite Setup
 	${version}=	Evaluate	robot.__version__
 	${result}=	Get Substring	${version}	0	1
 	${result}=	Convert To Integer	${result}
-	Should Be True	${result} >= 6
+	Should Be True	${result} >= 5
 
 Suite Teardown
 	IF	${level} > 0
@@ -44,6 +45,7 @@ Suite Teardown
 		Remove File	${file-input}
 		Remove File	${file-output}
 	END
+	Remove File	${file-startup}
 
 Test Setup
 	Create File	${file-input}
@@ -73,6 +75,19 @@ Contents Does Not Contain
 	${result}=	Get File	${file-contents}
 	Should Not Contain	${result}	${text}
 
+Ex Mode
+	[Documentation]	Runs appl in ex mode
+	[Arguments]	${quit}=0
+	Run Process
+	...	${APPL}
+	...	-q	${quit}
+	...	-s	${file-input}
+	...	-V	${level}
+	...	-X	${file-output}
+	...	--ex
+	...	${file-startup}
+	...	stdout=${file-stdout}
+
 Find Appl
 	[Documentation]	Set the APPL variable to correct binary
 	[Tags]	:private
@@ -100,10 +115,7 @@ Input Many
 	...	and does not end write output and does not end with quit
 	...	Normally, invoke this as often a you like, finish with
 	...	one other Input keyword.
-	FOR	${index}	IN RANGE	${count}
-		Append To File	${file-input}	${line}
-		Append To File	${file-input}	\n
-	END
+	REPEAT KEYWORD	${count}	Append To File	${file-input}	${line}\n
 
 Input No Write
 	[Documentation]	As Input, but does not write the file
@@ -126,6 +138,18 @@ Output Does Not Contain
 	[Arguments]	${text}
 	${result}=	Get File	${file-output}
 	Should Not Contain	${result}	${text}
+
+Project Mode
+	[Documentation]	Runs appl in project mode
+	[Arguments]	${quit}=0
+	Run Process
+	...	${APPL}
+	...	-q	${quit}
+	...	-s	${file-input}
+	...	-V	${level}
+	...	-X	${file-output}
+	...	-p	${file-project}
+	...	stdout=${file-stdout}
 
 Std Output Contains
 	[Documentation]	Verifies stdout does not contain text

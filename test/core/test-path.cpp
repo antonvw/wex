@@ -2,7 +2,7 @@
 // Name:      test-path.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/path.h>
@@ -22,7 +22,7 @@ TEST_CASE("wex::path")
   {
     REQUIRE(!wex::path::current().empty());
   }
-    
+
   SUBCASE("constructor")
   {
     REQUIRE(wex::path().empty());
@@ -121,9 +121,10 @@ TEST_CASE("wex::path")
 
   SUBCASE("mime")
   {
+    REQUIRE(!wex::path("XXXXX.md").open_mime());
     REQUIRE(!wex::path("XXXXX").open_mime());
 
-#ifdef __WXOSX__
+#ifndef GITHUB
     REQUIRE(wex::path("test.md").open_mime());
 #endif
   }

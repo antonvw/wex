@@ -2,11 +2,12 @@
 // Name:      item.h
 // Purpose:   Declaration of wex::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <wex/core/reflection.h>
 #include <wex/data/item.h>
 #include <wex/data/layout.h>
 #include <wex/data/listview.h>
@@ -288,20 +289,16 @@ public:
     const std::string& label,
     /// notebook items
     const notebook_t& v,
-  /// type of this item (kind of notebook):
-  /// - NOTEBOOK
-  /// - NOTEBOOK_AUI
-  /// - NOTEBOOK_CHOICE
-  /// - NOTEBOOK_LIST
-  /// - NOTEBOOK_SIMPLE
-  /// - NOTEBOOK_TOOL
-  /// - NOTEBOOK_TREE
-  /// - NOTEBOOK_WEX
-#ifdef __WXMSW__
+    /// type of this item (kind of notebook):
+    /// - NOTEBOOK
+    /// - NOTEBOOK_AUI
+    /// - NOTEBOOK_CHOICE
+    /// - NOTEBOOK_LIST
+    /// - NOTEBOOK_SIMPLE
+    /// - NOTEBOOK_TOOL
+    /// - NOTEBOOK_TREE
+    /// - NOTEBOOK_WEX
     type_t type = NOTEBOOK_LIST,
-#else
-    type_t type = NOTEBOOK,
-#endif
     /// item data
     const data::item& data = data::item().label_type(data::item::LABEL_NONE));
 
@@ -382,7 +379,7 @@ public:
     const data::item& data = data::item());
 
   /// If apply callback has been provided calls apply.
-  /// Otherwise returns false.
+  // Otherwise returns false.
   bool apply(bool save = true) const;
 
   /// Returns item data.
@@ -416,7 +413,7 @@ public:
   data::layout::sizer_t* layout(data::layout& layout);
 
   /// Logs info about this item.
-  std::stringstream log() const;
+  std::stringstream log() const { return m_reflect.log(); }
 
   /// Returns the page.
   const auto& page() const { return m_page; }
@@ -439,7 +436,7 @@ public:
   auto type() const { return m_type; }
 
   /// If validate callback has been provided calls validate.
-  /// Otherwise returns true.
+  // Otherwise returns true.
   bool validate() const;
 
   /// Validates current value against supplied regex.
@@ -463,7 +460,7 @@ private:
 
   data::layout::sizer_t* add(data::layout& layout) const;
   data::layout::sizer_t* add_browse_button(wxSizer* sizer) const;
-  data::layout::sizer_t* add_static_text(wxSizer* sizer) const;
+  void                   add_static_text(wxSizer* sizer) const;
 
   void add_items(group_t& page, bool readonly);
   void add_items(data::layout& layout, std::vector<item>& v);
@@ -488,6 +485,8 @@ private:
   wxWindow*    m_window{nullptr};
 
   create_t m_creators;
+
+  reflection m_reflect;
 
   static inline item_template_dialog<item>* m_dialog     = nullptr;
   static inline bool                        m_use_config = true;

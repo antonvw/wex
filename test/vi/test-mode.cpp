@@ -50,8 +50,17 @@ TEST_CASE("wex::vi_mode")
   get_stc()->SetReadOnly(true);
   command = "i";
   REQUIRE(mode.transition(command));
+  REQUIRE(!mode.is_insert());
   REQUIRE(mode.is_command());
   get_stc()->SetReadOnly(false);
+
+  // visuals
+  mode.visual();
+  REQUIRE(mode.is_visual());
+  mode.visual();
+  REQUIRE(mode.is_visual());
+  REQUIRE(mode.escape());
+  REQUIRE(mode.is_command());
 
   for (const auto& visual : visuals())
   {

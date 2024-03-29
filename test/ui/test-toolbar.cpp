@@ -2,9 +2,10 @@
 // Name:      test-toolbar.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2015-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/factory/defs.h>
 #include <wex/ui/toolbar.h>
 
 #include "test.h"
@@ -14,9 +15,8 @@ TEST_CASE("wex::toolbar")
   SUBCASE("controls")
   {
     frame()->get_toolbar()->add_standard(false);
-    frame()->get_toolbar()->add_tool({{wxID_FIND}});
-    frame()->get_toolbar()->add_tool({{wxID_CLEAR}});
-    frame()->get_toolbar()->add_tool({{wxID_PREFERENCES}});
+    frame()->get_toolbar()->add_tool(
+      {{wxID_CLEAR}, {wxID_FIND}, {wxID_PREFERENCES}, {wex::ID_CLEAR_FILES}});
     frame()->get_toolbar()->Realize();
 
     frame()->get_find_toolbar()->add_find();

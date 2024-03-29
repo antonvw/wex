@@ -2,9 +2,10 @@
 // Name:      test-ctags.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016-2023 Anton van Wezenbeek
+// Copyright: (c) 2016-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log-none.h>
 #include <wex/ctags/ctags.h>
 #include <wex/ui/frd.h>
 
@@ -30,11 +31,12 @@ TEST_CASE("wex::ctags")
     REQUIRE(wex::ctags(get_stc()).auto_complete("he", filter).empty());
 
     REQUIRE(wex::ctags(get_stc()).separator() != ' ');
+    REQUIRE(wex::ctags::close());
   }
 
   SUBCASE("existing-ctags")
   {
-    wex::ctags::open("test-ctags");
+    REQUIRE(wex::ctags::open("test-ctags"));
 
     auto* frd = wex::find_replace_data::get();
     frd->set_find_string("find-from-frd");
@@ -57,7 +59,8 @@ TEST_CASE("wex::ctags")
 
   SUBCASE("non-existing-ctags")
   {
-    wex::ctags::open("xxx");
+    wex::log_none off;
+    REQUIRE(!wex::ctags::open("xxx"));
 
     REQUIRE(!wex::ctags::close());
     REQUIRE(!wex::ctags::find("test_app"));

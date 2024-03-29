@@ -2,16 +2,10 @@
 // Name:      bind.cpp
 // Purpose:   Implementation of wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/del/frame.h>
-#include <wex/del/listview-file.h>
-#include <wex/factory/bind.h>
-#include <wex/stc/stc.h>
-#include <wex/ui/frd.h>
-#include <wex/vcs/debug.h>
-#include <wex/vcs/vcs.h>
+#include <wex/wex.h>
 
 #define IN_FILES(ACTION, DIALOG)                                         \
   {                                                                      \
@@ -46,7 +40,6 @@ void wex::del::frame::bind_all()
 
       config("show.MenuBar")
         .set(GetMenuBar() != nullptr && GetMenuBar()->IsShown());
-      delete m_debug;
 
       event.Skip();
     });

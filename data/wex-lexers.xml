@@ -163,6 +163,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
     <text no="sh"> #!/bin/sh </text>
     <text no="errorlist"> !_TAG_FILE_ </text>
     <text no="bash"> #!.*/bin/.* </text>
+    <text no="bash"> # Doxyfile </text>
     <text no="rfw"> \*+ Settings </text>
   </global>
 
@@ -179,7 +180,8 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       execute_process export file
       find_file find_library find_package find_path find_program fltk_wrap_ui
       function get_cmake_property get_directory_property get_filename_component get_property
-      get_source_file_property get_target_property get_test_property include_directories include_external_msproject
+      get_source_file_property get_target_property get_test_property gettext_process_po_files
+      include_directories include_external_msproject
       include_regular_expression include install link_directories list load_cache
       load_command mark_as_advanced math message option
       project qt_wrap_cpp qt_wrap_ui remove_definitions return separate_arguments
@@ -348,7 +350,10 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       domain_error double_t duration duration_cast dynamic_pointer_cast dynarray
       egrep emplace emplace_after emplace_back emplace_front emplace_hint
       empty enable_if enable_if_t enable_shared_from_this end endl
-      ends eof eofbit epsilon equal equal_range
+      ends eof 
+      ends_with
+      eofbit epsilon 
+      equal equal_range
       equal_to erase erase_after erf erfc error_backref
       error_badbrace error_badrepeat error_brace error_brack error_collate error_complexity
       error_ctype error_escape error_paren error_range error_space error_stack
@@ -637,6 +642,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
     </set>
     <set name="rfw-core">
       IN_RANGE 
+      REPEAT_KEYWORD
       Suite_Setup
       Suite_Teardown 
       Test_Setup 
@@ -852,7 +858,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     </keywords>
   </lexer>
   <lexer name="baan"/>
-  <lexer name="bash" extensions="*.bash;*.sh;Doxyfile"> 
+  <lexer name="bash" extensions="*.bash;*.sh">
     <keywords>    
       alias bg bind break builtin caller case cd command compgen complete
       cp diff do done echo elif else esac exit fg fi find 
@@ -912,10 +918,15 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   <lexer display="cisco" extensions="*.ios" name="fortran">
     <keywords set-0="cisco-0" set-1="cisco-1" set-2="cisco-2,cisco-3,cisco-4,cisco-5">
     </keywords>
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+    </properties>
   </lexer>
   <lexer name="clarion"/>
   <lexer name="clarionnocase" macro="clarion"/>
-  <lexer name="cmake" extensions="CMakeLists.txt;*.cmake">
+  <lexer name="cmake" extensions="CMakeLists.txt;*.cmake;meson.build">
     <styles>
       <style no="whiledef,foreachdef,ifdefinedef,macrodef"> fore:sky blue </style> 
     </styles> 
@@ -991,8 +1002,14 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   <lexer name="escript"/>
   <lexer name="flagship"/>
   <lexer name="forth"/>
-  <lexer name="fortran"/>
-  <lexer name="f77" macro="fortran"/>
+  <lexer name="fortran" extensions="*.f90;*.f95;*.f03">
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+    </properties>
+  </lexer>
+  <lexer name="f77" extensions="*.f;*.for" macro="fortran"/>
   <lexer name="freebasic" macro="vb"/>
   <lexer name="fsharp"/>
   <lexer name="gap"/>
@@ -1427,7 +1444,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <property name="fold.comment"> 1 </property>
     </properties>
   </lexer>
-  <lexer name="props" extensions="*.ini;*.conf;*.desktop;*.rc;.clang-format;hosts*" edgemode="none">
+  <lexer name="props" extensions="*.ini;*.conf;*.desktop;*.rc;hosts*" edgemode="none">
     <styles>
     <style no="section"> fore:sky blue </style>
     <style no="assignment"> fore:khaki</style>
@@ -1610,7 +1627,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     <keywords>
     </keywords>
   </lexer>
-  <lexer name="yaml" extensions="*.yml">
+  <lexer name="yaml" extensions="*.yml;.clang-*">
     <styles>
         <style no="identifier">bold</style>
     </styles>

@@ -2,7 +2,7 @@
 // Name:      commands-motion.cpp
 // Purpose:   Implementation of wex::vi::commands_motion
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -107,7 +107,7 @@ bool wex::vi::command_finish(bool user_input)
   }
   else if (!user_input)
   {
-    find_next(m_command_string.find("/") == 0 ? "n" : "N");
+    find_next(m_command_string.starts_with("/") ? "n" : "N");
   }
 
   m_count = 1;
@@ -611,9 +611,9 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
 }
 
 bool wex::vi::motion_command_handle(
-  motion_t     type,
-  std::string& command,
-  function_t   f_type)
+  motion_t          type,
+  std::string&      command,
+  const function_t& f_type)
 {
   size_t parsed = 0;
   auto   start  = get_stc()->GetCurrentPos();
@@ -662,11 +662,7 @@ bool wex::vi::motion_command_handle(
         break;
 
       case motion_t::YANK:
-        if (!m_mode.is_visual())
-        {
-          std::string visual("v");
-          m_mode.transition(visual);
-        }
+        m_mode.visual();
 
         if ((parsed = f_type(command)) == 0)
         {

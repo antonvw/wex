@@ -2,7 +2,7 @@
 // Name:      util.h
 // Purpose:   Include file for wex utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -13,6 +13,7 @@
 #include <wx/combobox.h>
 
 #include <list>
+#include <optional>
 #include <vector>
 
 namespace pugi
@@ -41,18 +42,19 @@ class stc;
 
 /*! \file */
 
-/// Tries to auto_complete filename,
-/// the result is stored in the tuple.
-std::tuple<
-  /// true if a match was found
-  bool,
+typedef struct
+{
   /// expansion of text to matching filename
   /// (if only 1 match exists)
   /// or common part of matching filenames
-  const std::string,
+  std::string expansion;
   /// vector containing completed file name(s)
-  const std::vector<std::string>>
-auto_complete_filename(
+  std::vector<std::string> vector;
+} auto_complete_filename_t;
+
+/// Tries to auto complete filename,
+/// the result is stored as a auto_complete_filename_t.
+std::optional<auto_complete_filename_t> auto_complete_filename(
   /// text containing start of a filename
   const std::string& text);
 
@@ -82,12 +84,6 @@ bool compare_file(const path& file1, const path& file2);
 /// Returns true and sets the lexer on the stc component if you selected
 /// one.
 bool lexers_dialog(syntax::stc* stc);
-
-/// Runs make on specified makefile.
-/// Returns value from executing the make process.
-bool make(
-  /// the makefile
-  const path& makefile);
 
 /// Opens all files specified by files.
 /// Returns number of files opened.

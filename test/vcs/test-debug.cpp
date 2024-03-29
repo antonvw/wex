@@ -2,7 +2,7 @@
 // Name:      test-debug.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016-2023 Anton van Wezenbeek
+// Copyright: (c) 2016-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -15,20 +15,15 @@
 
 TEST_CASE("wex::debug" * doctest::may_fail())
 {
-#ifdef __WXOSX__
-  wex::config("debug.debugger").set("lldb");
-#endif
+  wex::config("debug.debugger").set(wex::debug::default_exe());
 
   wex::process process;
   wex::debug   dbg(frame(), &process);
   wex::menu    menu;
   auto*        stc = get_stc();
 
-  if (stc != nullptr)
-  {
-    stc->EmptyUndoBuffer();
-    stc->SetSavePoint();
-  }
+  stc->EmptyUndoBuffer();
+  stc->SetSavePoint();
 
   SUBCASE("constructor")
   {
@@ -87,11 +82,7 @@ TEST_CASE("wex::debug" * doctest::may_fail())
     REQUIRE(!dbg.execute(item));
 #endif
 
-#ifndef __WXOSX__
-    dbg.execute("gdb a.out");
-#else
-    dbg.execute("lldb a.out");
-#endif
+    dbg.execute(wex::config("debug.debugger").get() + " a.out");
 
     REQUIRE(!dbg.debug_entry().name().empty());
 
@@ -100,6 +91,10 @@ TEST_CASE("wex::debug" * doctest::may_fail())
     REQUIRE(!dbg.toggle_breakpoint(1, nullptr));
     REQUIRE(dbg.toggle_breakpoint(1, stc));
     REQUIRE(!dbg.apply_breakpoints(stc));
+
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wex::ID_DEBUG_STDIN);
+    event.SetString("del 0");
+    wxPostEvent(&dbg, event);
 
     process.stop();
     process.async_sleep_for(std::chrono::milliseconds(10));
@@ -121,4 +116,9 @@ TEST_CASE("wex::debug" * doctest::may_fail())
     REQUIRE(remove("example.cc") == 0);
   }
 #endif
+
+  SUBCASE("static")
+  {
+    REQUIRE(!wex::debug::default_exe().empty());
+  }
 }

@@ -2,7 +2,7 @@
 // Name:      common/util.cpp
 // Purpose:   Implementation of wex common utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <numeric>
@@ -22,6 +22,7 @@
 #include <wex/syntax/lexer.h>
 #include <wex/syntax/lexers.h>
 #include <wex/syntax/stc.h>
+#include <wex/syntax/util.h>
 #include <wx/app.h>
 #include <wx/wupdlock.h>
 
@@ -62,7 +63,7 @@ bool wex::open_file_dir::on_file(const wex::path& file) const
   return true;
 }
 
-std::tuple<bool, const std::string, const std::vector<std::string>>
+std::optional<wex::auto_complete_filename_t>
 wex::auto_complete_filename(const std::string& text)
 {
   // E.g.:
@@ -82,6 +83,8 @@ wex::auto_complete_filename(const std::string& text)
     path.make_absolute();
   }
 
+  auto_complete_filename_t out;
+
   // alias to filename
   const auto& prefix(path.filename());
 
@@ -95,7 +98,7 @@ wex::auto_complete_filename(const std::string& text)
 
   if (v.empty())
   {
-    return {false, std::string(), v};
+    return {};
   }
   else if (v.size() > 1)
   {
@@ -127,11 +130,12 @@ wex::auto_complete_filename(const std::string& text)
         return a.empty() ? b : a + " " + b;
       });
 
-    return {true, v[0].substr(prefix.size(), rest_equal_size), v};
+    return {
+      auto_complete_filename_t(v[0].substr(prefix.size(), rest_equal_size), v)};
   }
   else
   {
-    return {true, v[0].substr(prefix.size()), v};
+    return {auto_complete_filename_t(v[0].substr(prefix.size()), v)};
   }
 }
 
@@ -184,8 +188,10 @@ bool wex::lexers_dialog(syntax::stc* stc)
       return i.display_lexer();
     });
 
-  if (auto lexer = stc->get_lexer().display_lexer();
-      !single_choice_dialog(stc, _("Enter Lexer"), s, lexer))
+  if (auto lexer = stc->get_lexer().display_lexer(); !single_choice_dialog(
+        data::window().parent(stc).title(_("Enter Lexer")),
+        s,
+        lexer))
   {
     return false;
   }
@@ -195,17 +201,6 @@ bool wex::lexers_dialog(syntax::stc* stc)
                     (void)stc->get_lexer().set(lexer, true);
     return true;
   }
-}
-
-bool wex::make(const path& makefile)
-{
-  auto* process = new wex::factory::process;
-
-  return process->async_system(process_data(
-                                 config("Make").get("make") + " " +
-                                 config("MakeSwitch").get("-f") + " " +
-                                 makefile.string())
-                                 .start_dir(makefile.parent_path()));
 }
 
 int wex::open_files(
@@ -320,8 +315,8 @@ void wex::xml_error(
   const pugi::xml_parse_result* result,
   syntax::stc*                  stc)
 {
-  log::status("xml error") << result->description();
   log(*result) << filename.name();
+  log::status("xml error") << result->description();
 
   // prevent recursion
   if (stc == nullptr && filename != lexers::get()->path())

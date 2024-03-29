@@ -59,6 +59,7 @@ public:
     SetTopWindow(m_frame);
 
     m_stc = new wex::stc();
+    m_frame->pane_add(m_stc);
     m_frame->Show();
 
     return true;

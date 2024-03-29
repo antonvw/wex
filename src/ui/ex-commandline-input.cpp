@@ -23,10 +23,12 @@ wex::ex_commandline_input::ex_commandline_input(
   , m_name(name)
   , m_values(config(m_name).get(values_t{}))
   , m_iterator(m_values.cbegin())
+  , m_reflect(
+      {REFLECT_ADD("name", m_name), REFLECT_ADD("size", m_values.size())})
 {
   if (!m_values.empty())
   {
-    log::trace("load") << m_name << "size:" << m_values.size();
+    log::trace("load") << m_reflect.log();
   }
 }
 
@@ -61,7 +63,7 @@ wex::ex_commandline_input::~ex_commandline_input()
     }
 
     wex::config(m_name).set(filtered);
-    log::trace("save") << m_name << "size:" << filtered.size() << info;
+    log::trace("save") << m_reflect.log() << info;
   }
 }
 

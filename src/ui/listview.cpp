@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of wex::listview and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -75,11 +75,17 @@ private:
 template <typename T> int compare(T x, T y)
 {
   if (x > y)
+  {
     return 1;
+  }
   else if (x < y)
+  {
     return -1;
+  }
   else
+  {
     return 0;
+  }
 }
 
 const std::vector<item> config_items()
@@ -113,8 +119,6 @@ const std::vector<item> config_items()
 
 wex::listview::listview(const data::listview& data)
   : factory::listview(data.window(), data.control())
-  , m_image_height(16) // not used if IMAGE_FILE_ICON is used, then 16 is fixed
-  , m_image_width(16)
   , m_col_event_id(1000)
   , m_data(data::listview(data)
              .image(
@@ -133,26 +137,11 @@ wex::listview::listview(const data::listview& data)
   // as list items can also be copied and pasted.
   SetDropTarget(new droptarget(this));
 
-  switch (m_data.image())
+  if (m_data.image() != data::listview::IMAGE_NONE)
   {
-    case data::listview::IMAGE_NONE:
-      break;
-
-    case data::listview::IMAGE_ART:
-    case data::listview::IMAGE_OWN:
-      AssignImageList(
-        new wxImageList(m_image_width, m_image_height, true, 0),
-        wxIMAGE_LIST_SMALL);
-      break;
-
-    case data::listview::IMAGE_FILE_ICON:
-      SetImageList(
-        wxTheFileIconsTable->GetSmallImageList(),
-        wxIMAGE_LIST_SMALL);
-      break;
-
-    default:
-      assert(0);
+    SetImageList(
+      wxTheFileIconsTable->GetSmallImageList(),
+      wxIMAGE_LIST_SMALL);
   }
 
   m_frame->update_statusbar(this);
@@ -363,7 +352,9 @@ void wex::listview::bind_other()
      {[=, this](wxCommandEvent& event)
       {
         if (!IsShown() || GetItemCount() == 0)
+        {
           return;
+        }
         if (const auto val(wxGetNumberFromUser(
               _("Input") + " (1 - " + std::to_string(GetItemCount()) + "):",
               wxEmptyString,
@@ -509,7 +500,9 @@ const std::string wex::listview::context(const std::string& line, int pos) const
   int context_size = config(_("list.Context size")).get(10);
 
   if (pos == -1 || context_size <= 0)
+  {
     return line;
+  }
 
   return (context_size > pos ? std::string(context_size - pos, ' ') :
                                std::string()) +
@@ -519,13 +512,17 @@ const std::string wex::listview::context(const std::string& line, int pos) const
 void wex::listview::copy_selection_to_clipboard()
 {
   if (GetSelectedItemCount() == 0)
+  {
     return;
+  }
 
   wxBusyCursor wait;
   std::string  clipboard;
 
   for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+  {
     clipboard += item_to_text(i) + "\n";
+  }
 
   clipboard_add(clipboard);
 }
@@ -533,7 +530,9 @@ void wex::listview::copy_selection_to_clipboard()
 void wex::listview::edit_delete()
 {
   if (GetSelectedItemCount() == 0)
+  {
     return;
+  }
 
   long old_item = -1;
 
@@ -545,7 +544,9 @@ void wex::listview::edit_delete()
   }
 
   if (old_item != -1 && old_item < GetItemCount())
+  {
     SetItemState(old_item, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+  }
 
   items_update();
 }
@@ -634,10 +635,7 @@ unsigned int wex::listview::get_art_id(const wxArtID& artid)
     else
     {
       m_art_ids.insert({artid, il->GetImageCount()});
-      return il->Add(wxArtProvider::GetBitmap(
-        artid,
-        wxART_OTHER,
-        wxSize(m_image_width, m_image_height)));
+      return il->Add(wxArtProvider::GetBitmap(artid, wxART_OTHER));
     }
   }
 }
@@ -697,8 +695,10 @@ bool wex::listview::insert_item(
         switch (m_columns[no].type())
         {
           case column::DATE:
-            if (const auto& [r, t] = chrono().get_time(col); !r)
+            if (const auto& r(chrono().get_time(col)); !r)
+            {
               return false;
+            }
             break;
 
           case column::FLOAT:
@@ -1106,7 +1106,9 @@ void wex::listview::process_list(wxListEvent& event, wxEventType type)
     // Start drag operation.
     std::string text;
     for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+    {
       text += item_to_text(i) + "\n";
+    }
 
     if (!text.empty())
     {
@@ -1137,13 +1139,19 @@ void wex::listview::process_mouse(wxMouseEvent& event)
   menu::menu_t style(menu::menu_t().set(menu::IS_POPUP).set(menu::IS_VISUAL));
 
   if (GetSelectedItemCount() > 0)
+  {
     style.set(menu::IS_SELECTED);
+  }
   if (GetItemCount() == 0)
+  {
     style.set(menu::IS_EMPTY);
+  }
   if (
     m_data.type() != data::listview::FIND &&
     m_data.type() != data::listview::FILE)
+  {
     style.set(menu::CAN_PASTE);
+  }
 
   if (GetSelectedItemCount() == 0 && GetItemCount() > 0)
   {
@@ -1183,7 +1191,9 @@ bool wex::listview::report_view(const std::string& text)
           col != find_column(_("Size")) && col != find_column(_("Modified")))
         {
           if (!set_item(item.GetId(), col, *tt))
+          {
             return false;
+          }
         }
 
         col++;
@@ -1248,13 +1258,15 @@ int wxCALLBACK compare_cb(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData)
   {
     case wex::column::DATE:
     {
-      const auto& [r1, t1] = wex::chrono().get_time(str1);
-      const auto& [r2, t2] = wex::chrono().get_time(str2);
-      if (!r1 || !r2)
+      const auto& t1(wex::chrono().get_time(str1));
+      const auto& t2(wex::chrono().get_time(str2));
+      if (!t1 || !t2)
+      {
         return 0;
+      }
 
-      return ascending ? wex::compare((unsigned long)t1, (unsigned long)t2) :
-                         wex::compare((unsigned long)t2, (unsigned long)t1);
+      return ascending ? wex::compare((unsigned long)*t1, (unsigned long)*t2) :
+                         wex::compare((unsigned long)*t2, (unsigned long)*t1);
     }
 
     case wex::column::FLOAT:
@@ -1283,22 +1295,22 @@ int wxCALLBACK compare_cb(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData)
   return 0;
 }
 
-bool wex::listview::set_item(
-  long               index,
-  int                column,
-  const std::string& text,
-  int                imageId)
+bool wex::listview::set_item(long index, int column, const std::string& text)
 {
   if (text.empty())
+  {
     return true;
+  }
 
   try
   {
     switch (m_columns[column].type())
     {
       case column::DATE:
-        if (const auto& [r, t] = chrono().get_time(text); !r)
+        if (const auto& r(chrono().get_time(text)); !r)
+        {
           return false;
+        }
         break;
 
       case column::FLOAT:
@@ -1316,7 +1328,7 @@ bool wex::listview::set_item(
         break;
     }
 
-    return SetItem(index, column, text, imageId);
+    return SetItem(index, column, text);
   }
   catch (std::exception& e)
   {

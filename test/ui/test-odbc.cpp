@@ -22,7 +22,7 @@ TEST_CASE("wex::odbc")
   SUBCASE("prep")
   {
     // Ensure we have a database and a table.
-    if (system("mysql test < odbc-create.sql") != 0)
+    if (system("mysql -u root test < odbc-create.sql") != 0)
     {
       // if no mysql or error just quit
       return;

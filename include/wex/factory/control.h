@@ -2,7 +2,7 @@
 // Name:      data/control.h
 // Purpose:   Declaration of wex::data::control
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -122,13 +122,13 @@ public:
   /// Returns true if data could be injected into the control.
   bool inject(
     /// callback to inject line number
-    std::function<bool(void)> line = nullptr,
+    const std::function<bool(void)>& line = nullptr,
     /// callback to inject column number
-    std::function<bool(void)> col = nullptr,
+    const std::function<bool(void)>& col = nullptr,
     /// callback to inject find text
-    std::function<bool(void)> find = nullptr,
+    const std::function<bool(void)>& find = nullptr,
     /// callback to inject vi command
-    std::function<bool(void)> command = nullptr) const;
+    const std::function<bool(void)>& command = nullptr) const;
 
   /// Returns required.
   const auto is_required() const { return m_is_required; }
@@ -168,7 +168,7 @@ public:
     return *this;
   };
 
-  /// Virtual overrides.
+  // Virtual overrides.
 
   void reset() override;
 

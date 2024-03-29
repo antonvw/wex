@@ -2,7 +2,7 @@
 // Name:      log.h
 // Purpose:   Declaration of wex::log class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2023 Anton van Wezenbeek
+// Copyright: (c) 2017-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -21,19 +21,19 @@ public:
   /// The log levels supported.
   /// The order should follow boost::log.
   /// See <boost/log/trivial.hpp>
-  enum level_t
+  enum class level_t
   {
-    LEVEL_TRACE,   ///< trace level logging (most verbose)
-    LEVEL_DEBUG,   ///< debug level
-    LEVEL_INFO,    ///< info level
-    LEVEL_WARNING, ///< warning level
-    LEVEL_ERROR,   ///< error level
-    LEVEL_FATAL,   ///< fatal level
-    LEVEL_STATUS,  ///< from wxLog
-    LEVEL_OFF,     ///< no logging
+    TRACE,   ///< trace level logging (most verbose)
+    DEBUG,   ///< debug level
+    INFO,    ///< info level
+    WARNING, ///< warning level
+    ERRORS,  ///< error level
+    FATAL,   ///< fatal level
+    STATUS,  ///< from wxLog
+    OFF,     ///< no logging
   };
 
-  /// Static methods.
+  // Static methods.
 
   /// Initializes logging, and optionally sets logfile.
   /// Should be called before constructing a log object.
@@ -45,7 +45,7 @@ public:
     const std::string& logfile = std::string());
 
   /// Return current filter log level.
-  static auto get_level() { return m_level_filter; }
+  static level_t get_level() { return m_level_filter; }
 
   /// Returns info for log levels.
   static std::string get_level_info();
@@ -77,7 +77,7 @@ public:
   /// Builds a warning level logger.
   static log warning(const std::string& topic = std::string());
 
-  /// Other methods.
+  // Other methods.
 
   /// Default constructor.
   /// This prepares a error level logging.

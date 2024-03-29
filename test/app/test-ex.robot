@@ -1,5 +1,5 @@
 *** Comments ***
-Copyright: (c) 2020-2023 Anton van Wezenbeek
+Copyright: (c) 2020-2024 Anton van Wezenbeek
 
 
 *** Settings ***
@@ -25,18 +25,18 @@ addressing
 	Appl
 	Output Contains	15
 
-empty
-	Input	:1000
-	...	:.=
-	Appl
-	Output Contains	1
-
 edit
 	Input	:e other.txt
 	...	:f
 	Appl
 	# the :e command is handled by event, so other.txt not yet active
 	Output Contains	${file-startup}
+
+empty
+	Input	:1000
+	...	:.=
+	Appl
+	Output Contains	1
 
 info
 	Input	:a|line has text
@@ -91,6 +91,12 @@ set-verbosity
 	Appl
 	Output Contains	ve=${level}
 
+stream
+	Input	:a|line has text
+	Input	:a|line has text
+	...	:f
+	Ex Mode
+
 substitute
 	Input	:a|line has text
 	...	:a|line has a tiger
@@ -119,3 +125,7 @@ substitute-global
 	Output Contains	2
 	Output Contains	simon
 	Contents Does Not Contain	simon
+
+visual
+	Input No Write	:vi
+	Appl

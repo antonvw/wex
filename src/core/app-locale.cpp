@@ -19,13 +19,15 @@ namespace fs = std::filesystem;
 
 void wex::file_translations_loader::add_catalogs(wxLanguage language)
 {
-  const std::vector<std::string> dirs{
+  std::vector<std::string> dirs{
     wxStandardPaths::Get().GetExecutablePath() + ".app/Contents/Resources/" +
       wxUILocale::GetLanguageCanonicalName(language) + ".lproj",
-    wxStandardPaths::Get().GetLocalizedResourcesDir(
-      wxUILocale::GetLanguageCanonicalName(language),
-      wxStandardPaths::ResourceCat_Messages),
-    wxStandardPaths::Get().GetResourcesDir()};
+    wxStandardPaths::Get()
+      .GetLocalizedResourcesDir(
+        wxUILocale::GetLanguageCanonicalName(language),
+        wxStandardPaths::ResourceCat_Messages)
+      .ToStdString(),
+    wxStandardPaths::Get().GetResourcesDir().ToStdString()};
 
   for (const auto& dir : dirs)
   {
@@ -57,7 +59,7 @@ void wex::file_translations_loader::add_catalogs(wxLanguage language)
     }
   }
 
-  log("no locale files")
+  log::trace("no locale files")
     << std::accumulate(dirs.begin(), dirs.end(), std::string());
 }
 

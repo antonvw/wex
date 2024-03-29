@@ -2,7 +2,7 @@
 // Name:      config.h
 // Purpose:   Declaration of class wex::config
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2023 Anton van Wezenbeek
+// Copyright: (c) 2018-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -42,7 +42,7 @@ public:
     int>>
     statusbar_t;
 
-  /// static interface
+  // Static interface
 
   /// Returns the config path for user data files.
   static const wex::path dir();
@@ -75,7 +75,7 @@ public:
   /// Returns number of top level entries.
   static size_t size();
 
-  /// other methods
+  // Other methods
 
   /// Default constructor.
   /// Optionally provide the item (key).

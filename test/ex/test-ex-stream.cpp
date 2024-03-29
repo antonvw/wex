@@ -65,7 +65,7 @@ TEST_CASE("wex::ex_stream")
 {
   auto* stc = get_stc();
   stc->set_text("\n\n\n\n\n\n");
-  wex::ex        ex(stc, wex::ex::EX);
+  wex::ex        ex(stc, wex::ex::mode_t::EX);
   wex::ex_stream exs(&ex);
 
   SUBCASE("constructor")
@@ -110,6 +110,26 @@ TEST_CASE("wex::ex_stream")
       write_file(exs, 3);
     }
 
+    SUBCASE("get_lines")
+    {
+      REQUIRE(exs.get_line_count_request() == 5);
+      REQUIRE(exs.get_line_count() == 5);
+
+      const wex::addressrange ar(&ex, "1,2");
+
+      REQUIRE(exs.get_lines(ar));
+      REQUIRE(exs.text() == "test1\ntest2\n");
+      REQUIRE(exs.get_lines(ar, "p"));
+      REQUIRE(exs.text() == "test1\ntest2\n");
+      REQUIRE(exs.get_lines(ar, "l"));
+      REQUIRE(exs.text() == "test1$\ntest2$\n");
+      REQUIRE(exs.get_lines(ar, "l#"));
+      REQUIRE(exs.text() == "     1 test1$\n     2 test2$\n");
+
+      REQUIRE(exs.get_line_count() == 5);
+      REQUIRE(!exs.is_modified());
+    }
+
     SUBCASE("insert")
     {
       REQUIRE(!exs.insert_text(wex::address(&ex, 0), "TEXT_BEFORE"));
@@ -125,7 +145,7 @@ TEST_CASE("wex::ex_stream")
       REQUIRE(exs.insert_text(
         wex::address(&ex, 3),
         "TEXT_AFTER",
-        wex::ex_stream::INSERT_AFTER));
+        wex::ex_stream::loc_t::AFTER));
       REQUIRE((*exs.get_work()).contains("TEXT_AFTER"));
 
       REQUIRE(exs.is_modified());
@@ -307,6 +327,7 @@ TEST_CASE("wex::ex_stream")
     exs.goto_line(3);
     REQUIRE(exs.get_current_line() == 3);
     REQUIRE(exs.get_line_count_request() == lines_test_md);
+    REQUIRE(!exs.write());
   }
 
   SUBCASE("write")

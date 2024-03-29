@@ -2,21 +2,12 @@
 // Name:      test-frame.cpp
 // Purpose:   Implementation for wex del unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
 
-#include <wex/core/log-none.h>
-#include <wex/core/path.h>
-#include <wex/del/defs.h>
-#include <wex/stc/link.h>
-#include <wex/syntax/blame.h>
-#include <wex/syntax/lexers.h>
-#include <wex/ui/frd.h>
-#include <wex/ui/menu.h>
-#include <wex/vcs/process.h>
-#include <wex/vcs/vcs.h>
+#include <wex/wex.h>
 
 #include "../vcs/test.h"
 #include "test.h"
@@ -26,6 +17,25 @@ TEST_CASE("wex::del::frame")
   SUBCASE("default_extensions")
   {
     REQUIRE(!del_frame()->default_extensions().empty());
+  }
+
+  SUBCASE("events")
+  {
+    for (auto id : std::vector<int>{
+           wxID_PREFERENCES,
+           wex::ID_CLEAR_FILES,
+           wex::ID_CLEAR_PROJECTS,
+           wex::ID_FIND_FIRST,
+           wex::ID_FIND_LAST,
+           wex::del::ID_PROJECT_SAVE,
+           // wex::ID_EDIT_VCS_LOWEST,
+           wex::ID_VIEW_MENUBAR,
+           wex::ID_VIEW_TITLEBAR})
+    {
+      auto* event = new wxCommandEvent(wxEVT_MENU, id);
+      wxQueueEvent(del_frame(), event);
+      wxTheApp->ProcessPendingEvents();
+    }
   }
 
   SUBCASE("find_in_files")
@@ -136,57 +146,84 @@ TEST_CASE("wex::del::frame")
 
   SUBCASE("vcs_add_path")
   {
-    auto*              stc = get_stc();
     wex::link          lnk;
     wex::data::control data;
     wex::config(_("vcs.Base folder"))
       .set(wex::config::strings_t{wxGetCwd().ToStdString()});
-    stc->get_lexer().clear();
+    get_stc()->get_lexer().clear();
     REQUIRE(wex::vcs::load_document());
-    REQUIRE(lnk.get_path("modified:  test/vcs/test-vcs.cpp", data, stc)
+    REQUIRE(lnk.get_path("modified:  test/vcs/test-vcs.cpp", data, get_stc())
               .file_exists());
   }
 
   SUBCASE("vcs_annotate_commit")
   {
-    auto*       stc = get_stc();
-    std::string commit_id;
+    wex::config("vcs.VCS").set(2);
+    const std::string commit_id("b6aae80e3ab4402c7930a9bd590d355641c74746");
 
-    del_frame()->vcs_annotate_commit(stc, 5, commit_id);
+    get_stc()->set_text("line 1\nline 2\nline 3\nline 4\nline 5\n");
+    {
+      wex::log_none off;
+      REQUIRE(!del_frame()->vcs_annotate_commit(get_stc(), 15, commit_id));
+      REQUIRE(!del_frame()->vcs_annotate_commit(get_stc(), 4, std::string()));
+    }
+
+#ifndef GITHUB
+    REQUIRE(del_frame()->vcs_annotate_commit(get_stc(), 4, commit_id));
+#endif
   }
 
   SUBCASE("vcs_blame")
   {
-    auto* stc = get_stc();
-    del_frame()->vcs_blame(stc);
+    get_stc()->set_text(std::string());
+    {
+      wex::config("vcs.VCS").set(-2);
+      wex::log_none off;
+      REQUIRE(!del_frame()->vcs_blame(get_stc()));
+    }
+    wex::config("vcs.VCS").set(2);
+    REQUIRE(get_stc()->open(wex::test::get_path("test.h")));
+    REQUIRE(del_frame()->vcs_blame(get_stc()));
+
+    get_stc()->SetFocus();
+    get_stc()->set_margin_text_click(2);
+    REQUIRE(get_stc()->get_margin_text_click() == 2);
+#ifndef GITHUB
+    REQUIRE(get_stc()->find("b6aae80e3a"));
+#endif
+    get_stc()->SetFocus();
+    wxMouseEvent event(wxEVT_LEFT_DOWN);
+    wxPostEvent(get_stc(), event);
+    wxYield();
+    REQUIRE(!get_stc()->find("b6aae80e3a"));
   }
 
   SUBCASE("vcs_blame_revision")
   {
-    auto*             stc = get_stc();
+    wex::config("vcs.VCS").set(2);
+    REQUIRE(get_stc()->open(wex::test::get_path("test.h")));
     const std::string renamed;
     const std::string offset;
 
-    del_frame()->vcs_blame_revision(stc, renamed, offset);
+    REQUIRE(del_frame()->vcs_blame_revision(get_stc(), renamed, offset));
   }
 
   SUBCASE("vcs_blame_show")
   {
-    auto*      stc = get_stc();
     wex::blame blame;
-    wex::lexers::get()->apply_margin_text_style(stc, &blame);
+    wex::lexers::get()->apply_margin_text_style(get_stc(), &blame);
     auto* entry(load_git_entry());
 
-    REQUIRE(!del_frame()->vcs_blame_show(entry, stc));
+    REQUIRE(!del_frame()->vcs_blame_show(entry, get_stc()));
 
 #ifndef __WXMSW__
     REQUIRE(
       entry->system(wex::process_data().args(
         "blame " + wex::test::get_path("test.h").string())) == 0);
-    REQUIRE(del_frame()->vcs_blame_show(entry, stc));
+    REQUIRE(del_frame()->vcs_blame_show(entry, get_stc()));
 #endif
 
-    stc->get_file().reset_contents_changed();
+    get_stc()->get_file().reset_contents_changed();
   }
 
   SUBCASE("vcs_dir_exists")
@@ -201,7 +238,7 @@ TEST_CASE("wex::del::frame")
   {
     wex::data::window data;
     data.button(wxOK | wxCANCEL | wxAPPLY);
-    del_frame()->vcs_execute(9, {wex::test::get_path("test.h")}, data);
+    REQUIRE(del_frame()->vcs_execute(9, {wex::test::get_path("test.h")}, data));
     del_frame()->vcs_destroy_dialog();
   }
 
@@ -221,7 +258,7 @@ TEST_CASE("wex::del::frame")
 
     del_frame()->debug_exe(100, get_stc());
 
-    del_frame()->debug_exe("gdb", get_stc());
+    del_frame()->debug_exe(wex::debug::default_exe(), get_stc());
 
     REQUIRE(del_frame()->debug_handler() != nullptr);
 
@@ -237,6 +274,10 @@ TEST_CASE("wex::del::frame")
 
     del_frame()->on_command_item_dialog(
       wxID_ADD,
+      wxCommandEvent(wxEVT_NULL, wxID_OK));
+
+    del_frame()->on_command_item_dialog(
+      wex::del::frame::id_find_in_files,
       wxCommandEvent(wxEVT_NULL, wxID_OK));
 
     del_frame()->on_notebook(100, nullptr);

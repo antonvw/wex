@@ -2,7 +2,7 @@
 // Name:      data/control.cpp
 // Purpose:   Implementation of wex::data::control
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/control.h>
@@ -16,10 +16,10 @@ wex::data::control& wex::data::control::find(const std::string& text, int flags)
 }
 
 bool wex::data::control::inject(
-  std::function<bool(void)> f_line,
-  std::function<bool(void)> f_col,
-  std::function<bool(void)> f_find,
-  std::function<bool(void)> f_command) const
+  const std::function<bool(void)>& f_line,
+  const std::function<bool(void)>& f_col,
+  const std::function<bool(void)>& f_find,
+  const std::function<bool(void)>& f_command) const
 {
   bool injected = false;
 

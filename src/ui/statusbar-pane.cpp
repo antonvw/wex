@@ -2,39 +2,31 @@
 // Name:      statusbar-pane.cpp
 // Purpose:   Implementation of wex::statusbar_pane class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ui/statusbar-pane.h>
 
+#include <map>
+
 namespace wex
 {
-std::string
-determine_help_text(const std::string& name, const std::string& text)
+std::string determine_help_text(const std::string& name)
 {
-  if (name == "PaneDBG")
+  const std::map<std::string, std::string> desc{
+    {"PaneDBG", _("Debugger")},
+    {"PaneFileType", _("File Type")},
+    {"PaneInfo", _("Lines or Items")},
+    {"PaneMode", "vi mode"},
+    {"PaneTheme", _("Theme")}};
+
+  if (const auto& search = desc.find(name); search != desc.end())
   {
-    return _("Debugger");
-  }
-  else if (name == "PaneFileType")
-  {
-    return _("File Type");
-  }
-  else if (name == "PaneInfo")
-  {
-    return _("Lines or Items");
-  }
-  else if (name == "PaneMode")
-  {
-    return "vi mode";
-  }
-  else if (name == "PaneTheme")
-  {
-    return _("Theme");
+    return search->second;
   }
   else
   {
-    return text.empty() ? name.substr(name.find('e') + 1) : text;
+    return name.substr(name.find('e') + 1);
   }
 }
 } // namespace wex
@@ -44,7 +36,7 @@ wex::statusbar_pane::statusbar_pane(
   int                width,
   bool               show)
   : wxStatusBarPane(wxSB_NORMAL, width)
-  , m_help_text(determine_help_text(name, std::string()))
+  , m_help_text(determine_help_text(name))
   , m_is_shown(show)
   , m_name(name)
 {

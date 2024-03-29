@@ -16,7 +16,7 @@ namespace wex::del
 class app : public wex::app
 {
 public:
-  /// Virtual interface
+  // Virtual interface
 
   /// Initializes vcs and loads the VCS file.
   /// In your own OnInit first set the app name,

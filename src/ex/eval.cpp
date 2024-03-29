@@ -2,7 +2,7 @@
 // Name:      eval.cpp
 // Purpose:   Implementation of class wex::evaluator
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -88,7 +88,7 @@ struct eval
     }
     else if (e.token == "$")
     {
-      if (m_ex->visual() == wex::ex::EX)
+      if (m_ex->visual() == wex::ex::mode_t::EX)
       {
         return m_ex->ex_stream()->get_line_count_request();
       }
@@ -215,7 +215,8 @@ using calculator_grammar::calculator;
 class evaluator_imp
 {
 public:
-  std::tuple<int, std::string> eval(const wex::ex* ex, const std::string& text)
+  std::optional<int>
+  eval(const wex::ex* ex, const std::string& text, std::string& error)
   {
     try
     {
@@ -229,16 +230,18 @@ public:
 
       if (r && iter == text.end())
       {
-        return {eval(program), std::string()};
+        return {eval(program)};
       }
       else
       {
-        return {0, std::string(iter, text.end())};
+        error = std::string(iter, text.end());
+        return {};
       }
     }
     catch (std::exception& e)
     {
-      return {0, e.what()};
+      error = e.what();
+      return {};
     }
   };
 };
@@ -259,21 +262,21 @@ wex::evaluator::~evaluator()
   delete m_eval;
 }
 
-std::tuple<int, std::string>
+std::optional<int>
 wex::evaluator::eval(const wex::ex* ex, const std::string& text) const
 {
   if (text == "-")
   {
-    return {ex->get_command().get_stc()->get_current_line(), ""};
+    return {ex->get_command().get_stc()->get_current_line()};
   }
   else if (text == "+")
   {
-    return {ex->get_command().get_stc()->get_current_line() + 2, ""};
+    return {ex->get_command().get_stc()->get_current_line() + 2};
   }
   else
   {
     std::string expanded(text);
     marker_and_register_expansion(ex, expanded);
-    return m_eval->eval(ex, expanded);
+    return m_eval->eval(ex, expanded, m_error);
   }
 }

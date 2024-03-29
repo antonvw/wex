@@ -1,0 +1,50 @@
+---
+Checks:
+  '-*,
+  modernize-avoid-c-arrays,
+  modernize-loop-convert,
+  modernize-make-shared,
+  modernize-make-unique,
+  modernize-use-bool-literals,
+  modernize-use-default-member-init,
+  modernize-use-emplace,
+  modernize-use-nullptr,
+  modernize-use-override,
+  modernize-use-std-print,
+  modernize-use-starts-ends-with,
+  modernize-use-uncaught-exceptions,
+  modernize-use-using,
+  performance-faster-string-find,
+  performance-for-range-copy,
+  performance-implicit-conversion-in-loop,
+  performance-inefficient-algorithm,
+  performance-inefficient-vector-operation,
+  performance-trivially-destructable,
+  performance-unnecessary-copy-initialization,
+  performance-unnecessary-value-param,
+  readability-uppercase-literal-suffix'
+
+WarningsAsErrors: '*'
+
+HeaderFileExtensions:
+  - ''
+  - h
+ImplementationFileExtensions:
+  - c
+  - cc
+  - cpp
+HeaderFilterRegex: ''
+
+FormatStyle: 'file'
+
+CheckOptions:
+  cert-dcl16-c.NewSuffixes: 'L;LL;LU;LLU'
+  google-readability-namespace-comments.ShortNamespaceLines: '10'
+  llvm-else-after-return.WarnOnUnfixable: 'false'
+  cert-str34-c.DiagnoseSignedUnsignedCharComparisons: 'false'
+  cppcoreguidelines-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic: 'true'
+  llvm-qualified-auto.AddConstToQualified: 'false'
+  llvm-else-after-return.WarnOnConditionVariables: 'false'
+  cert-oop54-cpp.WarnOnlyIfThisHasSuspiciousField: 'false'
+
+SystemHeaders: false

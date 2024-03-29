@@ -2,7 +2,7 @@
 // Name:      test.h
 // Purpose:   Declaration of classes for unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -26,13 +26,16 @@ class app
   , public doctester
 {
 public:
-  /// Virtual interface
+  // Virtual interface
 
   /// Prepare environment.
   bool OnInit() override;
 
   /// Start event loop and start testing.
   int OnRun() override;
+
+private:
+  wxLanguage get_default_language() const override;
 };
 
 /// Connects main proc and test app. All doctests will start.

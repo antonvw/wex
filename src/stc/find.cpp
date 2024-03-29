@@ -2,10 +2,12 @@
 // Name:      stc/find.cpp
 // Purpose:   Implementation of class wex::stc find methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2023 Anton van Wezenbeek
+// Copyright: (c) 2018-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/regex.hpp>
 #include <wex/core/config.h>
+#include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/data/find.h>
 #include <wex/ex/ex-stream.h>
@@ -14,6 +16,19 @@
 
 namespace wex
 {
+bool is_regex_valid(const std::string& text, int find_flags)
+{
+  if (const boost::regex r(text, boost::regex_constants::no_except);
+      (find_flags & (wxSTC_FIND_CXX11REGEX | wxSTC_FIND_REGEXP)) &&
+      r.status() != 0)
+  {
+    log::status("Incomplete regex");
+    return false;
+  }
+
+  return true;
+}
+
 bool find_margin(data::find& f)
 {
   if (int line = 0; f.find_margin(line))
@@ -125,6 +140,11 @@ bool wex::stc::find(const std::string& text, int find_flags, bool forward)
     }
   }
 
+  if (!is_regex_valid(text, find_flags))
+  {
+    return false;
+  }
+
   wex::data::find f(
     this,
     text,
@@ -134,11 +154,11 @@ bool wex::stc::find(const std::string& text, int find_flags, bool forward)
 
   switch (m_vi->visual())
   {
-    case ex::EX:
+    case ex::mode_t::EX:
       return m_file.ex_stream()->find_data(f);
 
-    case ex::OFF:
-    case ex::VISUAL:
+    case ex::mode_t::OFF:
+    case ex::mode_t::VISUAL:
       if (m_margin_text_click >= 0)
       {
         return find_margin(f);
@@ -162,4 +182,36 @@ bool wex::stc::find_next(bool stc_find_string)
     stc_find_string ? get_find_string() :
                       find_replace_data::get()->get_find_string(),
     -1);
+}
+
+const std::string wex::stc::get_find_string() const
+{
+  if (const auto selection =
+        const_cast<stc*>(this)->GetSelectedText().ToStdString();
+      !selection.empty() && get_number_of_lines(selection) == 1)
+  {
+    bool alnum = true;
+
+    // If regexp is true, then only use selected text if text does not
+    // contain special regexp characters.
+    if (GetSearchFlags() & wxSTC_FIND_REGEXP)
+    {
+      for (size_t i = 0; i < selection.size() && alnum; i++)
+      {
+        if (
+          !isalnum(selection[i]) && selection[i] != ' ' &&
+          selection[i] != '.' && selection[i] != '-' && selection[i] != '_')
+        {
+          alnum = false;
+        }
+      }
+    }
+
+    if (alnum)
+    {
+      find_replace_data::get()->set_find_string(selection);
+    }
+  }
+
+  return find_replace_data::get()->get_find_string();
 }

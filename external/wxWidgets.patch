@@ -8,19 +8,6 @@ index 1efa85e255..20ba26ac42 100644
  wx_add_library(wxqa ${QA_FILES})
 -wx_lib_link_libraries(wxqa PUBLIC wxxml)
 +wx_lib_link_libraries(wxqa PUBLIC)
-diff --git a/build/cmake/options.cmake b/build/cmake/options.cmake
-index 96f3c504c4..274f728a43 100644
---- a/build/cmake/options.cmake
-+++ b/build/cmake/options.cmake
-@@ -53,7 +53,7 @@ if(NOT MSVC OR MSVC_VERSION GREATER 1800)
-         set(wxCXX_STANDARD_DEFAULT COMPILER_DEFAULT)
-     endif()
-     wx_option(wxBUILD_CXX_STANDARD "C++ standard used to build wxWidgets targets"
--              ${wxCXX_STANDARD_DEFAULT} STRINGS COMPILER_DEFAULT 11 14 17 20)
-+              ${wxCXX_STANDARD_DEFAULT} STRINGS COMPILER_DEFAULT 11 14 17 20 23)
- endif()
- 
- if(UNIX)
 diff --git a/build/cmake/toolkit.cmake b/build/cmake/toolkit.cmake
 index 49a21c1fc8..5e10a1a3c8 100644
 --- a/build/cmake/toolkit.cmake

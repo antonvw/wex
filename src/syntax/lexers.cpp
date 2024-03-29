@@ -2,9 +2,10 @@
 // Name:      lexers.cpp
 // Purpose:   Implementation of wex::lexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2023 Anton van Wezenbeek
+// Copyright: (c) 2008-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
@@ -23,6 +24,19 @@ wex::lexers::lexers()
   : m_path(wex::path(config::dir(), "wex-lexers.xml"))
   , m_path_macro(wex::path(config::dir(), "wex-lexers-macro.xml"))
   , m_theme(config("theme").get())
+  , m_reflect(
+      {REFLECT_ADD("default colours", m_default_colours.size()),
+       REFLECT_ADD("global properties", m_global_properties.size()),
+       REFLECT_ADD("indicators", m_indicators.size()),
+       REFLECT_ADD("keywords", m_keywords.size()),
+       REFLECT_ADD("lexers", m_lexers.size()),
+       REFLECT_ADD("macros", m_macros.size()),
+       REFLECT_ADD("markers", m_markers.size()),
+       REFLECT_ADD("styles", m_styles.size()),
+       REFLECT_ADD("styles hex", m_styles_hex.size()),
+       REFLECT_ADD("texts", m_texts.size()),
+       REFLECT_ADD("theme colours", m_theme_colours.size()),
+       REFLECT_ADD("theme macros", m_theme_macros.size())})
 {
 }
 
@@ -45,8 +59,8 @@ void wex::lexers::apply(factory::stc* stc) const
 }
 
 void wex::lexers::apply_default_style(
-  std::function<void(const std::string&)> back,
-  std::function<void(const std::string&)> fore) const
+  const std::function<void(const std::string&)>& back,
+  const std::function<void(const std::string&)>& fore) const
 {
   if (regex r(",back:(.*),");
       back != nullptr && r.match(m_default_style.value()) > 0)
@@ -357,15 +371,7 @@ void wex::lexers::load_document_check()
     }
   }
 
-  log::trace("lexers info")
-    << "default colors:" << m_default_colours.size()
-    << "global properties:" << m_global_properties.size()
-    << "indicators:" << m_indicators.size() << "keywords:" << m_keywords.size()
-    << "lexers:" << m_lexers.size() << "macros:" << m_macros.size()
-    << "markers:" << m_markers.size() << "styles:" << m_styles.size()
-    << "styles hex:" << m_styles_hex.size() << "texts:" << m_texts.size()
-    << "theme colours:" << m_theme_colours.size()
-    << "theme macros:" << m_theme_macros.size();
+  log::trace("lexers info") << m_reflect.log();
 }
 
 bool wex::lexers::load_document_init()
@@ -393,7 +399,7 @@ bool wex::lexers::load_document_init()
     m_theme_colours.clear();
     m_theme_macros.clear();
 
-    m_lexers.push_back(lexer());
+    m_lexers.emplace_back();
   }
   else
   {
@@ -418,7 +424,7 @@ bool wex::lexers::load_document_init()
 
   m_indicators.insert(indicator());
   m_keywords[std::string()] = std::string();
-  m_macros[std::string()] = name_values_t{};
+  m_macros[std::string()]   = name_values_t{};
   m_markers.insert(marker());
   m_theme_colours[std::string()] = m_default_colours;
   m_theme_macros[std::string()]  = name_values_t{};
@@ -512,7 +518,7 @@ void wex::lexers::parse_node_global(const pugi::xml_node& node)
     }
     else if (strcmp(child.name(), "text") == 0)
     {
-      m_texts.push_back({child.attribute("no").value(), child.text().get()});
+      m_texts.emplace_back(child.attribute("no").value(), child.text().get());
     }
   }
 }
@@ -658,8 +664,22 @@ bool wex::lexers::show_theme_dialog(wxWindow* parent)
       return i.first;
     });
 
-  if (!single_choice_dialog(parent, _("Enter Theme"), v, m_theme))
+  if (!single_choice_dialog(
+        data::window()
+          .parent(parent)
+          .title(_("Enter Theme"))
+          .size(
+#ifdef __WXGTK__
+            wxSize(100, 250)
+#else
+            wxDefaultSize
+#endif
+              ),
+        v,
+        m_theme))
+  {
     return false;
+  }
 
   config("theme").set(m_theme);
 

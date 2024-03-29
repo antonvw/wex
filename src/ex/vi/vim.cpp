@@ -3,7 +3,7 @@
 // Purpose:   Implementation of wex::vim
 //            http://www.viemu.com/vi-vim-cheat-sheet.gif
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ctags/ctags.h>
@@ -188,7 +188,7 @@ bool wex::vim::is_special() const
          m_motion < vi::motion_t::G_special_end;
 }
 
-bool wex::vim::motion(int start_pos, size_t& parsed, vi::function_t f)
+bool wex::vim::motion(int start_pos, size_t& parsed, const vi::function_t& f)
 {
   if (!is_motion())
   {

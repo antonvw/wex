@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::ex
 //            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/ex.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2012-2023 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
@@ -13,10 +13,12 @@
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/ctags/ctags.h>
+#include <wex/ex/addressrange.h>
 #include <wex/ex/command-parser.h>
 #include <wex/ex/ex-stream.h>
 #include <wex/ex/ex.h>
 #include <wex/ex/macros.h>
+#include <wex/ex/util.h>
 #include <wex/factory/defs.h>
 #include <wex/syntax/lexers.h>
 #include <wex/syntax/stc.h>
@@ -26,6 +28,12 @@
 #include <wx/app.h>
 
 #include "eval.h"
+
+#define SEPARATE                                                              \
+  if (separator)                                                              \
+  {                                                                           \
+    output += std::string(config(_("stc.Edge column")).get(80l), '-') + "\n"; \
+  }
 
 wex::macros wex::ex::m_macros;
 
@@ -65,13 +73,14 @@ bool wex::ex::auto_write()
   return true;
 }
 
-int wex::ex::calculator(const std::string& text)
+std::optional<int> wex::ex::calculator(const std::string& text)
 {
-  const auto& [val, err] = evaluator().eval(this, text);
+  const auto& val(evaluator().eval(this, text));
 
-  if (!err.empty())
+  // e.g. in case text is empty there is no error
+  if (!val && !evaluator::error().empty())
   {
-    show_dialog("Calculate Error", err);
+    show_dialog("Calculate Error", evaluator::error());
   }
 
   return val;
@@ -81,7 +90,7 @@ bool wex::ex::command(const std::string& cmd)
 {
   auto command(cmd);
 
-  if (m_mode == OFF || command.empty() || command.front() != ':')
+  if (m_mode == mode_t::OFF || command.empty() || command.front() != ':')
     return false;
 
   log::trace("ex command") << cmd;
@@ -323,8 +332,44 @@ int wex::ex::marker_line(char marker) const
   return LINE_NUMBER_UNKNOWN;
 }
 
+bool wex::ex::print(
+  const addressrange& ar,
+  const std::string&  flags,
+  bool                separator)
+{
+  if (!ar.is_ok() || !address::flags_supported(flags))
+  {
+    return false;
+  }
+
+  std::string output;
+
+  SEPARATE;
+
+  if (m_mode == mode_t::VISUAL)
+  {
+    output += get_lines(
+      get_stc(),
+      ar.begin().get_line() - 1,
+      ar.end().get_line(),
+      flags);
+  }
+  else if (m_ex_stream->get_lines(ar, flags))
+  {
+    output += m_ex_stream->text();
+  }
+
+  SEPARATE;
+
+  print(output);
+
+  return true;
+}
+
 void wex::ex::print(const std::string& text)
 {
+  m_print_text = text;
+
   if (!m_frame->print_ex(get_stc(), text))
   {
     show_dialog("Print", text);
@@ -344,7 +389,18 @@ const std::string wex::ex::register_text() const
 
 void wex::ex::reset_search_flags()
 {
-  m_search_flags &= ~wxSTC_FIND_WHOLEWORD;
+  const auto ic(config("ex-set.ignorecase").get(true));
+  const auto mw(config("ex-set.matchwords").get(false));
+
+  if (!ic)
+    m_search_flags |= wxSTC_FIND_MATCHCASE;
+  else
+    m_search_flags &= ~wxSTC_FIND_MATCHCASE;
+
+  if (!mw)
+    m_search_flags &= ~wxSTC_FIND_WHOLEWORD;
+  else
+    m_search_flags |= wxSTC_FIND_WHOLEWORD;
 }
 
 void wex::ex::search_whole_word()

@@ -2,7 +2,7 @@
 // Name:      doctest.h
 // Purpose:   Declaration of classes for unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -21,14 +21,14 @@ namespace test
 class doctester
 {
 public:
-  /// Static methods
+  // Static methods
 
   /// Returns the test path.
   static path get_path(
     const std::string& file = std::string(),
     path::log_t        type = path::log_t());
 
-  /// Other methods.
+  // Other methods.
 
   /// Performs doctest init.
   bool on_init(wex::app* app);

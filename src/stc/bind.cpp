@@ -2,7 +2,7 @@
 // Name:      stc/bind.cpp
 // Purpose:   Implementation of class wex::stc method bind_all
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2023 Anton van Wezenbeek
+// Copyright: (c) 2018-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -549,10 +549,10 @@ void wex::stc::build_popup_menu_link(menu& menu)
     {
       menu.append({{}, {id::stc::open_mime, _("&Preview")}});
     }
-    else if (std::string filename;
-             link_open(link_t().set(LINK_OPEN).set(LINK_CHECK), &filename))
+    else if (std::string link;
+             link_open(link_t().set(LINK_OPEN).set(LINK_CHECK), &link))
     {
-      menu.append({{}, {id::stc::open_link, _("Open") + " " + filename}});
+      menu.append({{}, {id::stc::open_link, _("Open") + " " + link}});
     }
   }
 
@@ -827,7 +827,7 @@ void wex::stc::show_properties()
       std::string(),
       data::window().size({300, 450}).button(wxOK).title(_("Properties")));
     m_prop_dialog->get_stc()->get_lexer().set(l);
-    m_prop_dialog->get_stc()->get_vi().use(ex::VISUAL);
+    m_prop_dialog->get_stc()->get_vi().use(ex::mode_t::VISUAL);
   }
   else
   {

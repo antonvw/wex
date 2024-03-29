@@ -2,7 +2,7 @@
 // Name:      test-util.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex/util.h>
@@ -11,6 +11,15 @@
 
 TEST_CASE("wex::ex::utils")
 {
+  SUBCASE("append_line_no")
+  {
+    std::string text;
+    wex::append_line_no(text, 1);
+    wex::append_line_no(text, 300);
+    REQUIRE(text.contains("     2"));
+    REQUIRE(text.contains("   301"));
+  }
+
   SUBCASE("esc")
   {
     REQUIRE(wex::esc() == "\x1b");
@@ -33,7 +42,7 @@ TEST_CASE("wex::ex::utils")
     REQUIRE(wex::get_lines(stc, 0, 10000) == "xx\nxx\nyy\nzz\n");
     REQUIRE(
       wex::get_lines(stc, 0, 10000, "ADHJHJHJJKJK#") ==
-      "     1 xx\n     2 xx\n     3 yy\n     4 zz\n     5 ");
+      "     1 xx\n     2 xx\n     3 yy\n     4 zz\n     5 \n");
     REQUIRE(wex::get_lines(stc, 0, 10000, "l").contains("$"));
 
     const auto lines(wex::get_lines(stc, 0, 10000, "#l"));

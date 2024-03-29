@@ -35,6 +35,11 @@ int wex::test::app::OnRun()
   return wex::app::OnRun();
 }
 
+wxLanguage wex::test::app::get_default_language() const
+{
+  return wxLANGUAGE_DUTCH;
+}
+
 std::vector<std::pair<std::string, std::string>> wex::test::get_abbreviations()
 {
   return std::vector<std::pair<std::string, std::string>>{

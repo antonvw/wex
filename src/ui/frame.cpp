@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
@@ -221,7 +221,6 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
     [=, this](wxCloseEvent& event)
     {
       m_file_history.save();
-      m_ex_commandline->on_exit();
 
       delete find_replace_data::set(nullptr);
 
@@ -376,7 +375,7 @@ bool wex::frame::add_toolbar_panes(const panes_t& panes)
         .CaptionVisible(false);
     }
 
-    pns.push_back({it.first, pane});
+    pns.emplace_back(it.first, pane);
   }
 
   return pane_add(pns);
@@ -403,7 +402,7 @@ bool wex::frame::allow_close(wxWindowID id, wxWindow* page)
   return true;
 }
 
-bool wex::frame::browse(wxCommandEvent& event)
+bool wex::frame::browse(const wxCommandEvent& event)
 {
   if (m_file_history.size() <= 1)
   {

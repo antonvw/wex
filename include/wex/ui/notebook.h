@@ -2,7 +2,7 @@
 // Name:      notebook.h
 // Purpose:   Declaration of class wex::notebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -28,14 +28,14 @@ class item_dialog;
 class notebook : public wxAuiNotebook
 {
 public:
-  /// Static interface.
+  // Static interface.
 
   /// Shows a dialog with options, returns dialog return code.
   /// If used modeless, it uses the dialog id as specified,
   /// so you can use that id in frame::on_command_item_dialog.
   static int config_dialog(const data::window& data = data::window());
 
-  /// Other methods.
+  // Other methods.
 
   /// Default constructor.
   notebook(

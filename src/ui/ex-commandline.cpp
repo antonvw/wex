@@ -28,6 +28,9 @@ wex::ex_commandline::ex_commandline(
 {
 }
 
+// there is no on_exit or destructor for deleting the m_imp
+// when doing m_imp->Destroy(), the test-ex stream errors on exit
+
 wex::syntax::stc* wex::ex_commandline::control()
 {
   return m_imp;
@@ -36,11 +39,6 @@ wex::syntax::stc* wex::ex_commandline::control()
 const std::string wex::ex_commandline::get_text() const
 {
   return m_imp->get_text();
-}
-
-void wex::ex_commandline::on_exit()
-{
-  m_imp->Destroy();
 }
 
 void wex::ex_commandline::on_key_down(wxKeyEvent& event)

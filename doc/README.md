@@ -21,6 +21,22 @@ wex-stc     |           | stc     | stc classes
 wex-vcs     |           | vcs     | version control system classes
 wex-del     |           | del     | delivered classes
 
+To ensure proper implementation of c++ code there is the excellent
+tool clang-tidy that checks for several c++ topics and also
+has an option to fix anomalies. Run it:
+
+```bash
+  ./build-gen.sh -T -d tidy
+  cd tidy
+  run-clang-tidy -quiet
+```
+
+possibly followed by:
+
+```bash
+  run-clang-tidy -fix
+```
+
 It benefits from the following c++ features:
 
 ## c++ libraries
@@ -50,6 +66,20 @@ bool wex::global_env::for_each(const block_lines& match) const
                                return run(match, it);
                              });
 }
+```
+
+### Containers library
+
+```cpp
+  std::span
+```
+
+  This container is used e.g. to pass buffers around.
+  Example:
+
+```cpp
+  /// Writes file from buffer.
+  bool write(std::span<const char> buffer);
 ```
 
 ### Filesystem library (c++17)
@@ -329,6 +359,16 @@ bool wex::global_env::for_each(const block_lines& match) const
 ```
 
 ```cpp
+  std::optional (c++17)
+```
+
+  See e.g. chrono.h:
+
+```cpp
+  std::optional<time_t> get_time(const std::string& time) const;
+```
+
+```cpp
   std::to_underlying (c++23)
 ```
 
@@ -425,16 +465,16 @@ It benefits from the following boost libraries:
 
 lib  | info
 -----|------
-boost::algorithm lib | uses find_tail, icontains, iequals, replace_all, to_upper, trim
-boost::json lib | to implement wex::config
-boost::log lib | to implement wex::log
-boost::process lib | to implement wex::process
-boost::program_options lib | to implement wex::cmdline
-boost::regular expression lib | to implement the wex::regex_part
-boost::spirit lib | to implement the wex::evaluator
-boost::statechart lib | to implement the statemachine for vi mode and macro mode
-boost::tokenizer lib | to tokenize expressions
-boost::URL lib | to handle URLs
+boost::algorithm | uses find_tail, icontains, iequals, replace_all, to_upper, trim
+boost::json | to implement wex::config
+boost::log | to implement wex::log
+boost::process | to implement wex::process
+boost::program_options | to implement wex::cmdline
+boost::regular expression | to implement the wex::regex_part
+boost::spirit | to implement the wex::evaluator
+boost::statechart | to implement the statemachine for vi mode and macro mode
+boost::tokenizer | to tokenize expressions
+boost::URL | to handle URLs
 
 It benefits from the following wxWidgets libraries:
 

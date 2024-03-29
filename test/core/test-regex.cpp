@@ -2,7 +2,7 @@
 // Name:      test-regex.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -26,8 +26,12 @@ TEST_CASE("wex::regex")
     REQUIRE(wex::regex({"", "", ""}).size() == 0);
     REQUIRE(wex::regex("").match_no() == -1);
     REQUIRE(wex::regex("").match_data().text().empty());
+    REQUIRE(wex::regex("").back().empty());
     REQUIRE(wex::regex(wex::regex::data()).empty());
     REQUIRE(wex::regex(wex::regex::data()).match_no() == -1);
+
+    wex::regex r("");
+    REQUIRE(r[0].empty());
   }
 
   SUBCASE("match")

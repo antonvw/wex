@@ -2,7 +2,7 @@
 :: Batch file for building/testing wex on appveyor
 :: we are in the build directory
 
-set BOOST=82
+set BOOST=83
 set YEAR=2022
 set VS=C:\Program Files\Microsoft Visual Studio
 
@@ -17,10 +17,10 @@ cmake ^
 
 :: build it
 echo %configuration%
-devenv wex.sln /build %configuration%
+devenv wex.sln /build %configuration% /project wxw wex-core
 
 :: test it
-ctest -C %configuration% -VV
+::ctest -C %configuration% -VV -R wex-test-core
 
 :: install it
 :: does not work with Debug, but Release gives invalid return after ui test

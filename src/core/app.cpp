@@ -10,6 +10,7 @@
 #include <wex/core/log.h>
 #include <wex/core/version.h>
 #include <wx/clipbrd.h>
+#include <wxMaterialDesignArtProvider.hpp>
 
 #ifdef __WXGTK__
 #include <X11/Xlib.h>
@@ -90,9 +91,17 @@ bool wex::app::OnInit()
   // Necessary for auto_complete images.
   wxInitAllImageHandlers();
 
+  // Register art provider
+  wxArtProvider::Push(new wxMaterialDesignArtProvider);
+
   wxTheClipboard->UsePrimarySelection(true);
 
   return true; // do not call base class: we have our own cmd line processing
+}
+
+wxLanguage wex::app::get_default_language() const
+{
+  return wxLANGUAGE_DEFAULT;
 }
 
 void wex::app::set_language()
@@ -113,6 +122,6 @@ void wex::app::set_language()
   }
   else
   {
-    m_language = wxLANGUAGE_DEFAULT;
+    m_language = get_default_language();
   }
 }

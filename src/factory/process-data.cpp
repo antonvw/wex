@@ -2,7 +2,7 @@
 // Name:      process-data.cpp
 // Purpose:   Implementation of class wex::factory::process_data
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <filesystem>
@@ -29,7 +29,7 @@ const std::vector<std::string> wex::process_data::args() const
   {
     return to_vector_string(m_args).get();
   }
-  else if (const auto pos = m_exe.find(" "); pos == std::string::npos)
+  else if (const auto pos = m_exe.find(' '); pos == std::string::npos)
   {
     return std::vector<std::string>{};
   }
