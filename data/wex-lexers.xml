@@ -3,19 +3,19 @@
 <!--
 Name:    wex-lexers.xml
 Purpose: Lexers configuration for wex.
-         See scintilla 5.0.1 (https://www.scintilla.org/LexillaHistory.html)
+         See scintilla 5.3.1 (https://www.scintilla.org/LexillaHistory.html)
 Author:  Anton van Wezenbeek
-Copyright: (c) 2009-2023, Anton van Wezenbeek
+Copyright: (c) 2009-2024, Anton van Wezenbeek
 -->
 
 <lexers>
-  <!-- 
+  <!--
    The global section:
-   <themes>, <foldmargin>, <hex>, 
+   <themes>, <foldmargin>, <hex>,
    <indicator>, <marker>, <properties>, <style>,
    and <text> children are supported. -->
   <global>
-    <!-- These are the themes, including style macro's and colours. 
+    <!-- These are the themes, including style macro's and colours.
          The first theme is the default theme.
       -->
     <themes>
@@ -54,14 +54,14 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
         <def style ="styletextmargin"> back:gray 22</def>
         <def style ="tag"> fore:cadet blue </def>
         <def style ="variable"> fore:green </def>
-        
+
         <colour name="caretforeground"> white </colour>
         <colour name="caretlinebackground"> dark slate grey </colour>
         <colour name="edge"> dim grey </colour>
         <colour name="selforeground"> black </colour>
         <colour name="selbackground"> green </colour>
       </theme>
-      
+
       <!-- The light theme, resembles Visual Studio -->
       <theme name="light">
         <def style ="attribute"> fore:steel blue </def>
@@ -97,7 +97,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
         <def style ="styleindicatorfind"> red </def>
         <def style ="tag"> fore:dark slate blue </def>
         <def style ="variable"> fore:medium blue </def>
-        
+
         <colour name="caretforeground"> black </colour>
         <colour name="caretlinebackground"> wheat </colour>
         <colour name="edge"> light blue </colour>
@@ -108,12 +108,12 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
 
     <!-- checker board colours: background colour, foreground colour -->
     <foldmargin> foldmarginbackground,foldmarginforeground </foldmargin>
-    
+
     <hex no="style_bracelight"> back:red </hex>
 
     <!-- this indicator is used by global vi command, e.g. g/INDIC/ -->
     <indicator no="0"> indic_box,styleindicatorfind </indicator>
-    <!-- this indicator is used by python lexer to show inconsistent indentation 
+    <!-- this indicator is used by python lexer to show inconsistent indentation
          (if tab.timmy.whinge.level is set)
       -->
     <indicator no="1"> indic_squiggle,red </indicator>
@@ -129,14 +129,14 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
     <marker no="marknum_foldersub"> mark_vline,folder,folder-back</marker>
     <marker no="marknum_folder"> mark_plus,folder,folder-back </marker>
     <marker no="marknum_folderopen"> mark_minus,folder,folder-back </marker>
-    
+
     <!-- ex_marknum_change is used by stc to show changes -->
     <marker no="ex_marknum_change">mark_fullrect,green,light blue</marker>
     <!-- ex_marknum_vi is used by vi markers -->
     <marker no="ex_marknum_vi"> mark_character,blue,turquoise </marker>
     <!-- ex_marknum_break is used by debugging -->
     <marker no="ex_marknum_break"> mark_arrow,red,white </marker>
-    
+
     <!-- At this moment we do not have properties -->
     <properties/>
 
@@ -153,7 +153,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
     <!-- add automatic lexers if text starts with some special tokens, only first match is valid -->
     <text no="hypertext"> html </text>
     <text no="xml"> &lt;?xml </text>
-    <!--  cpp files like #include <map> really do not have a .h extension 
+    <!--  cpp files like #include <map> really do not have a .h extension
          (e.g. /usr/include/c++/3.3.5/map) so add here. -->
     <text no="cpp"> // </text>
     <text no="phpscript"> &lt;?php </text>
@@ -167,7 +167,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
     <text no="rfw"> \*+ Settings </text>
   </global>
 
-  <!-- 
+  <!--
    The keyword section:
    This allows you to share <set> of keywords, these can re referenced from
    a lexer -->
@@ -235,9 +235,9 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       CMAKE_TRY_COMPILE_CONFIGURATION CMAKE_TWEAK_VERSION CMAKE_USER_MAKE_RULES_OVERRIDE CMAKE_USER_MAKE_RULES_OVERRIDE_LANG CMAKE_USE_RELATIVE_PATHS CMAKE_VERBOSE_MAKEFILE
       CMAKE_VERSION CMAKE_VISIBILITY_INLINES_HIDDEN CMAKE_VS_DEVENV_COMMAND CMAKE_VS_INCLUDE_INSTALL_TO_DEFAULT_BUILD CMAKE_VS_INTEL_Fortran_PROJECT_VERSION CMAKE_VS_MSBUILD_COMMAND
       CMAKE_VS_MSDEV_COMMAND CMAKE_VS_NsightTegra_VERSION CMAKE_VS_PLATFORM_NAME CMAKE_VS_PLATFORM_TOOLSET CMAKE_WARN_DEPRECATED CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION
-      CMAKE_WIN32_EXECUTABLE CMAKE_XCODE_ATTRIBUTE_an-attribute CMAKE_XCODE_PLATFORM_TOOLSET 
-      COMMAND COMMANDS COMMAND_NAME 
-      COMMENT COMPARE COMPILE_FLAGS COPYONLY 
+      CMAKE_WIN32_EXECUTABLE CMAKE_XCODE_ATTRIBUTE_an-attribute CMAKE_XCODE_PLATFORM_TOOLSET
+      COMMAND COMMANDS COMMAND_NAME
+      COMMENT COMPARE COMPILE_FLAGS COPYONLY
       CPACK_ABSOLUTE_DESTINATION_FILES CPACK_CMAKE_GENERATOR CPACK_COMPONENT_INCLUDE_TOPLEVEL_DIRECTORY CPACK_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION CPACK_GENERATOR CPACK_INCLUDE_TOPLEVEL_DIRECTORY
       CPACK_INCLUDE_TOPLEVEL_DIRECTORY CPACK_INSTALLED_DIRECTORIES CPACK_INSTALL_CMAKE_PROJECTS CPACK_INSTALL_COMMANDS CPACK_INSTALL_SCRIPT CPACK_INSTALL_SCRIPT i
       CPACK_MONOLITHIC_INSTALL CPACK_OUTPUT_FILE_PREFIX CPACK_PACKAGE_DESCRIPTION_FILE CPACK_PACKAGE_DESCRIPTION_SUMMARY CPACK_PACKAGE_EXECUTABLES CPACK_PACKAGE_FILE_NAME
@@ -254,25 +254,25 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       CTEST_SITE CTEST_SOURCE_DIRECTORY CTEST_SVN_COMMAND CTEST_SVN_OPTIONS CTEST_SVN_UPDATE_OPTIONS CTEST_TEST_TIMEOUT
       CTEST_TRIGGER_SITE CTEST_UPDATE_COMMAND CTEST_UPDATE_OPTIONS CTEST_UPDATE_VERSION_ONLY CTEST_USE_LAUNCHERS CYGWIN
       CYGWIN  DEFINED DEFINE_SYMBOL DEPENDS DIRECTORY DOC ENV
-      EQUAL ESCAPE_QUOTES EXCLUDE EXCLUDE_FROM_ALL EXECUTABLE_OUTPUT_PATH EXISTS EXPORT_MACRO EXT 
-      EXTRA_INCLUDE FATAL_ERROR FILE FILES FORCE FUNCTION 
-      GENERATED GHS-MULTI GLOB GLOB_RECURSE GREATER GROUP_SIZE 
-      HEADER_FILE_ONLY HEADER_LOCATION IMMEDIATE INCLUDES INCLUDE_DIRECTORIES INCLUDE_INTERNALS 
-      INCLUDE_REGULAR_EXPRESSION LESS LIBRARY_OUTPUT_PATH LINK_DIRECTORIES LINK_FLAGS LOCATION 
-      MACOSX_BUNDLE MACROS MAIN_DEPENDENCY MAKE_DIRECTORY MATCH MATCHALL 
-      MATCHES MINGW MINGW MODULE MSVC MSVC 
-      MSVC10 MSVC11 MSVC12 MSVC14 MSVC15 MSVC60 MSVC60 
+      EQUAL ESCAPE_QUOTES EXCLUDE EXCLUDE_FROM_ALL EXECUTABLE_OUTPUT_PATH EXISTS EXPORT_MACRO EXT
+      EXTRA_INCLUDE FATAL_ERROR FILE FILES FORCE FUNCTION
+      GENERATED GHS-MULTI GLOB GLOB_RECURSE GREATER GROUP_SIZE
+      HEADER_FILE_ONLY HEADER_LOCATION IMMEDIATE INCLUDES INCLUDE_DIRECTORIES INCLUDE_INTERNALS
+      INCLUDE_REGULAR_EXPRESSION LESS LIBRARY_OUTPUT_PATH LINK_DIRECTORIES LINK_FLAGS LOCATION
+      MACOSX_BUNDLE MACROS MAIN_DEPENDENCY MAKE_DIRECTORY MATCH MATCHALL
+      MATCHES MINGW MINGW MODULE MSVC MSVC
+      MSVC10 MSVC11 MSVC12 MSVC14 MSVC15 MSVC60 MSVC60
       MSVC70 MSVC70 MSVC71 MSVC71 MSVC80 CMAKE_COMPILER_2005 MSVC80 MSVC90
-      MSVC_IDE MSVC_IDE MSVC_VERSION MSYS NAME NAME_WE 
-      NOT NOTEQUAL NO_SYSTEM_PATH OBJECT_DEPENDS OFF ON       OPTIONAL OR 
-      OUTPUT OUTPUT_VARIABLE PATH PATHS POST_BUILD POST_INSTALL_SCRIPT 
-      PREFIX PREORDER PRE_BUILD PRE_INSTALL_SCRIPT PRE_LINK PROGRAM 
+      MSVC_IDE MSVC_IDE MSVC_VERSION MSYS NAME NAME_WE
+      NOT NOTEQUAL NO_SYSTEM_PATH OBJECT_DEPENDS OFF ON       OPTIONAL OR
+      OUTPUT OUTPUT_VARIABLE PATH PATHS POST_BUILD POST_INSTALL_SCRIPT
+      PREFIX PREORDER PRE_BUILD PRE_INSTALL_SCRIPT PRE_LINK PROGRAM
       PROGRAM_ARGS PROJECT-NAME_BINARY_DIR PROJECT-NAME_SOURCE_DIR PROJECT-NAME_VERSION PROJECT-NAME_VERSION_MAJOR PROJECT-NAME_VERSION_MINOR
       PROJECT-NAME_VERSION_PATCH PROJECT-NAME_VERSION_TWEAK PROJECT_BINARY_DIR PROJECT_NAME PROJECT_SOURCE_DIR PROJECT_VERSION
-      PROJECT_VERSION_MAJOR PROJECT_VERSION_MINOR PROJECT_VERSION_PATCH PROJECT_VERSION_TWEAK PROPERTIES QUIET 
-      RANGE READ REGEX REGULAR_EXPRESSION REPLACE REQUIRED 
-      RETURN_VALUE RUNTIME_DIRECTORY SEND_ERROR SHARED SOURCES STATIC 
-      STATUS STREQUAL STRGREATER STRLESS SUFFIX TARGET 
+      PROJECT_VERSION_MAJOR PROJECT_VERSION_MINOR PROJECT_VERSION_PATCH PROJECT_VERSION_TWEAK PROPERTIES QUIET
+      RANGE READ REGEX REGULAR_EXPRESSION REPLACE REQUIRED
+      RETURN_VALUE RUNTIME_DIRECTORY SEND_ERROR SHARED SOURCES STATIC
+      STATUS STREQUAL STRGREATER STRLESS SUFFIX TARGET
       TOLOWER TOUPPER UNIX VAR VARIABLES VERSION SOVERSION DEBUG_POSTFIX
       WATCOM WIN32 WIN32 WINCE WINDOWS_PHONE WINDOWS_STORE
       WRAP_EXCLUDE WRITE XCODE_VERSION
@@ -350,9 +350,9 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       domain_error double_t duration duration_cast dynamic_pointer_cast dynarray
       egrep emplace emplace_after emplace_back emplace_front emplace_hint
       empty enable_if enable_if_t enable_shared_from_this end endl
-      ends eof 
+      ends eof
       ends_with
-      eofbit epsilon 
+      eofbit epsilon
       equal equal_range
       equal_to erase erase_after erf erfc error_backref
       error_badbrace error_badrepeat error_brace error_brack error_collate error_complexity
@@ -509,10 +509,10 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       wistream wistringstream wmemchr wmemcmp wmemcpy wmemmove
       wmemset wofstream wostream wostringstream wprintf wregex
       write ws wscanf wstreambuf wstring wstring_convert
-      wstringbuf wstringstream yield yocto yotta zepto zetta 
+      wstringbuf wstringstream yield yocto yotta zepto zetta
     </set>
     <set name="cpp-doc">
-    <!-- see: https://www.stack.nl/~dimitri/doxygen/manual/commands.html 
+    <!-- see: https://www.stack.nl/~dimitri/doxygen/manual/commands.html
       This doxygen 1.8.13.
       -->
       a addindex addtogroup anchor arg attention author authors b brief bug
@@ -534,7 +534,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
     </set>
     <set name="csh">
       <!-- http://sourceforge.net/p/zsh-nt/tcsh-nt/ci/master/tree/csh-mode.el#l159 -->
-      @ alias bg break breaksw case cd chdir 
+      @ alias bg break breaksw case cd chdir
       continue default dirs echo else end endif
       endsw eval exec exit fg foreach glob goto
       hashstat history if jobs kill limit login
@@ -568,7 +568,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       cursor outline outline-width outline-style outline-color
       volume speak pause-before pause-after pause cue-before cue-after cue
       play-during azimuth elevation speech-rate voice-family pitch pitch-range stress richness
-      speak-punctuation speak-numeral 
+      speak-punctuation speak-numeral
     </set>
     <set name="css3">
       background-size
@@ -578,11 +578,11 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       resize opacity word-wrap
     </set>
     <set name="javascript">
-      abstract  boolean  break  byte  case  char 
-      comment  continue  default  delete  do 
-      double  else  export  false  final  float 
-      for  function  goto  if  implements  import 
-      in  instanceOf  int  interface  label  long 
+      abstract  boolean  break  byte  case  char
+      comment  continue  default  delete  do
+      double  else  export  false  final  float
+      for  function  goto  if  implements  import
+      in  instanceOf  int  interface  label  long
       native  new  null  package  private protected
       public return short static switch synchronized
       this throws transient true typeof var
@@ -594,7 +594,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       end for function if in
       local nil not or repeat
       return then until while
-    </set> 
+    </set>
     <set name ="lua-basic-functions">
       _ALERT assert call collectgarbage copytagmethods
       dofile dostring error foreach foreachi
@@ -603,7 +603,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       setglobal settag settagmethod sort tag
       tonumber tostring tinsert tremove type
       _VERSION _ERRORMESSAGE
-    </set> 
+    </set>
     <set name ="lua-string-functions">
       strbyte strchar strfind strlen strlower
       strrep strsub strupper format gsub
@@ -612,7 +612,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       log log10 max min mod
       rad sin sqrt tan frexp
       ldexp random randomseed PI
-    </set> 
+    </set>
     <set name ="lua-io-functions">
       openfile closefile readfrom writeto appendto
       remove rename flush seek tmpname read write
@@ -620,18 +620,18 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       _INPUT _OUTPUT _STDIN _STDOUT _STDERR -- file descriptors
     </set>
     <set name="php">
-      abstract and array as bool boolean break case cfunction class const continue declare 
-      default die directory do double echo else elseif empty enddeclare endfor 
-      endforeach endif endswitch endwhile eval exit extends false float for 
-      foreach function global goto if include include_once int integer isset list namespace 
-      new null object old_function or parent print real require require_once resource 
-      return static stdclass string switch true unset use var while xor 
-      final implements interface php_user_filter 
+      abstract and array as bool boolean break case cfunction class const continue declare
+      default die directory do double echo else elseif empty enddeclare endfor
+      endforeach endif endswitch endwhile eval exit extends false float for
+      foreach function global goto if include include_once int integer isset list namespace
+      new null object old_function or parent print real require require_once resource
+      return static stdclass string switch true unset use var while xor
+      final implements interface php_user_filter
       private protected public this throw try
     </set>
     <set name="python">
-      and as assert break class continue def del elif 
-      else except exec finally for from global if import in is lambda None 
+      and as assert break class continue def del elif
+      else except exec finally for from global if import in is lambda None
       not or pass print raise return try while with yield
     </set>
     <set name="rfw-basic">
@@ -641,16 +641,16 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       BREAK CONTINUE ELSE END EXCEPT IF TRY WHILE
     </set>
     <set name="rfw-core">
-      IN_RANGE 
+      IN_RANGE
       REPEAT_KEYWORD
       Suite_Setup
-      Suite_Teardown 
-      Test_Setup 
+      Suite_Teardown
+      Test_Setup
     </set>
     <set name="sgml">
       ELEMENT DOCTYPE ATTLIST ENTITY NOTATION
     </set>
-    <set name="sql">    
+    <set name="sql">
       <!-- First line added manually -->
       <!-- Copied from scite, v1.68. -->
       auto_increment comment index exists
@@ -672,7 +672,7 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
       exception exec execute external
       false fetch first float for foreign found from free full
       function general get global go goto grant group grouping
-      having host hour identity if ignore immediate in indicator initialize 
+      having host hour identity if ignore immediate in indicator initialize
       initially inner inout input insert int integer intersect interval
       into is isolation iterate
       join key language large last lateral leading left less level like
@@ -729,10 +729,10 @@ Copyright: (c) 2009-2023, Anton van Wezenbeek
 www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 imap ident ftp-data sonet default log-input telnet ssh scp tcp http all auto-summary lacp pagp ospf bgp eigrp rip ping fragments
     </set>
   </keyword>
-  
+
   <!--
    The lexer section:
-   Each <lexer> has a name attribute (scintilla lexer). 
+   Each <lexer> has a name attribute (scintilla lexer).
    In addition it might contain the next attributes:
    - extensions. File extensions for files to be associated with this lexer.
      Extensions are separated by a semicolon (;).
@@ -745,8 +745,8 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
      including check on well formed doc, and autocomplete.
    - edgemode: none, line or background.
    - edgecolumns. Sets the location of the edge columns.
-   - preview. If this attribute is present, a Preview menu item 
-     appears in the stc context menu, to preview the document 
+   - preview. If this attribute is present, a Preview menu item
+     appears in the stc context menu, to preview the document
      using mime type application associated with the extension.
    - spacevisible: invisible, always, afterindent, onlyindent.
    - tabdrawmode: arrow or strike.
@@ -754,11 +754,11 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
    - tabwidth. Width of tabs.
    - wrapline: none, char, word, whitespace.
    Furthermore it might contain the next tags:
-   1) <styles>. Colouring styles for this lexer. 
+   1) <styles>. Colouring styles for this lexer.
       The attribute 'no' contains the scintilla styles.
-      This attribute lists all styles that will have the style specifier that 
+      This attribute lists all styles that will have the style specifier that
       follows, separated by a comma sign (,).
-      The value contains the scintilla style specifier. 
+      The value contains the scintilla style specifier.
       It can have the next values:
       - bold turns on bold
       - italic turns on italics
@@ -773,21 +773,21 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       Furthermore the value is parsed by the theme macros, so you
       can make the specifier themeable, and you can specify
       multiple specifiers separated by a + sign.
-   2) <keywords>. Keywords for this lexer. Default they are in set 0, but you can 
+   2) <keywords>. Keywords for this lexer. Default they are in set 0, but you can
       explicitly express the set by adding :<setno> after the keyword.
       You can share keyword sets by adding keyword sets in the keyword section above,
-      and specify the name of the set as attribute here. Default the 
+      and specify the name of the set as attribute here. Default the
       keywords in the set appear in keyword set 0, but you can specify
       any set as a number after a - sign in the attribute name (e.g. see cpp).
    3) <properties>. Properties for this lexer. This field
       is built of two fields, separated by an equal sign (=).
       The first field contains the scintilla property key.
-      The second field contains the scintilla property value. 
+      The second field contains the scintilla property value.
    4) A <comments> element.
    -->
-   
+
   <lexer name="a68k"/>
-  <lexer name="abaqus"/> 
+  <lexer name="abaqus"/>
   <lexer name="abl"/>
   <lexer name="ada" extensions="*.a;*.adb;*.ads">
     <properties>
@@ -795,18 +795,18 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <property name="fold.compact"> 1 </property>
       <property name="fold.ada.comment.multiline"> 1 </property>
     </properties>
-    <keywords>    
+    <keywords>
       abort abs abstract accept access aliased all and array at
       begin body case constant declare delay delta digits do else elsif
       end entry exception exit for function generic goto if in interface
       is limited loop mod new not null of or others out
-      overriding package pragma private procedure protected raise range record 
+      overriding package pragma private procedure protected raise range record
       rem renames requeue return reverse
-      select separate some subtype synchronized tagged task terminate then type 
+      select separate some subtype synchronized tagged task terminate then type
       until use when while with xor
 
       integer float duration character string boolean
-    </keywords>    
+    </keywords>
     <comments begin1="--" />
   </lexer>
   <lexer name="apdl"/>
@@ -818,30 +818,31 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <style no="directive"> italic </style>
       <style no="commentblock"> underline </style>
     </styles>
-    <keywords>    
-      adc adcb add ash ashc asl aslb asr asrb bcc bcs beq bge bgt bhi bhis bic 
+    <keywords>
+      adc adcb add ash ashc asl aslb asr asrb bcc bcs beq bge bgt bhi bhis bic
       bicb bis bisb bit bitb ble blo blos blt
-      bmi bne bpl bpt br bvc bvs clr clrb c ccc clc cln clv clz cmp cmpb com comb 
+      bmi bne bpl bpt br bvc bvs clr clrb c ccc clc cln clv clz cmp cmpb com comb
       csm dec decb df div emt halt inc
-      incb iot jmp jsr mark mfpd mfps mfpt mov movb mtpd mtpi mtps mul neg negb 
-      nop reset rol rolb ror rorb rti rts 
-      rtt sbc sbcb s scc sec sen sev sez sob spl sub swab sxt trap tst tstb 
+      incb iot jmp jsr mark mfpd mfps mfpt mov movb mtpd mtpi mtps mul neg negb
+      nop reset rol rolb ror rorb rti rts
+      rtt sbc sbcb s scc sec sen sev sez sob spl sub swab sxt trap tst tstb
       tstset wait wrtlck xor
-      ascii asciz asect blkb byte cross csect dsabl enabl end endc 
-      even flt2 flt4 globl ident if 
-      iff ift iftf iif include library 
-      limit list nlist nocross odd 
-      packed page psect rad50 radix rem 
+      ascii asciz asect blkb byte cross csect dsabl enabl end endc
+      even flt2 flt4 globl ident if
+      iff ift iftf iif include library
+      limit list nlist nocross odd
+      packed page psect rad50 radix rem
       restore sbttl title weak word
       mn so do pc ms cc sp r1 r2 r3 r4 r5
     </keywords>
     <comments begin1=";" />
   </lexer>
   <lexer name="as" extensions="*.s" macro="asm">
-    <keywords>    
+    <keywords>
       movq call push pop ret jmp je imul popq cmp pushq subq leaq dec cmp jle
     </keywords>
   </lexer>
+  <lexer name="asciidoc"/>
   <lexer name="asn1"/>
   <lexer name="asy"/>
   <lexer name="au3"/>
@@ -850,22 +851,22 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   <lexer display="awk" name="bash" extensions="*.awk">
     <keywords set-0="csh">
       <!-- https://www.computerhope.com/unix/ucsh.htm -->
-      ARGC ARGIND ARGV CONVFMT ENVIRON ERRNO FIELDWIDTHS FILENAME FNR FS 
+      ARGC ARGIND ARGV CONVFMT ENVIRON ERRNO FIELDWIDTHS FILENAME FNR FS
       IGNORECASE NF NR OFMT OFS ORS RLENGTH RSTART RS RT SUBSEP
-      BEGIN END if else while do for in break continue delete 
+      BEGIN END if else while do for in break continue delete
       next nextfile function func return exit
       length printf sprintf substr
     </keywords>
   </lexer>
   <lexer name="baan"/>
   <lexer name="bash" extensions="*.bash;*.sh">
-    <keywords>    
+    <keywords>
       alias bg bind break builtin caller case cd command compgen complete
-      cp diff do done echo elif else esac exit fg fi find 
+      cp diff do done echo elif else esac exit fg fi find
       compopt continue coproc declare dirs disown echo enable eval exec
       exit export false fc fg for function getopts hash help logout
       for function
-      help history if in jobs kill mount rm select sleep 
+      help history if in jobs kill mount rm select sleep
       mapfile popd printf pushd pwd read readarray readonly return select
       set shift shopt source suspend test time times trap true type typeset
       tail then time ulimit umount unalias umask unset until while
@@ -879,15 +880,15 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   <lexer name="batch" extensions="*.bat">
     <keywords>
-      assoc attrib bcdedit break break cacls call cd chcp chdir chkdsk chkntfs 
-      choice cls cmd color com comp compact con convert copy country ctty date 
-      defined del dir diskcomp diskcopy diskpart do doskey driverquery echo else 
-      endlocal erase errorlevel exist exit fc find findstr for format fsutil ftype goto 
-      gpresult graftabl help icacls if in label loadfix loadhigh lpt md mkdir 
-      mklink mode more move not nul open_files path pause popd print prompt pushd 
-      rd recover rem ren rename replace rmdir robocopy sc schtasks set setlocal shift 
-      shutdown sort start subst systeminfo taskkill tasklist time title tree type 
-      ver verify vol wmic xcopy 
+      assoc attrib bcdedit break break cacls call cd chcp chdir chkdsk chkntfs
+      choice cls cmd color com comp compact con convert copy country ctty date
+      defined del dir diskcomp diskcopy diskpart do doskey driverquery echo else
+      endlocal erase errorlevel exist exit fc find findstr for format fsutil ftype goto
+      gpresult graftabl help icacls if in label loadfix loadhigh lpt md mkdir
+      mklink mode more move not nul open_files path pause popd print prompt pushd
+      rd recover rem ren rename replace rmdir robocopy sc schtasks set setlocal shift
+      shutdown sort start subst systeminfo taskkill tasklist time title tree type
+      ver verify vol wmic xcopy
     </keywords>
   </lexer>
   <lexer name="bib" extensions="*.bib"/>
@@ -910,7 +911,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       struct    switch    this       throw     true
       try       typeof    uint       ulong     unchecked
       unsafe    ushort    using      virtual   void
-      volatile  while    
+      volatile  while
     </keywords>
   </lexer>
   <lexer name="caml"/>
@@ -928,8 +929,8 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   <lexer name="clarionnocase" macro="clarion"/>
   <lexer name="cmake" extensions="CMakeLists.txt;*.cmake;meson.build">
     <styles>
-      <style no="whiledef,foreachdef,ifdefinedef,macrodef"> fore:sky blue </style> 
-    </styles> 
+      <style no="whiledef,foreachdef,ifdefinedef,macrodef"> fore:sky blue </style>
+    </styles>
     <properties>
       <property name="fold"> 1 </property>
       <property name="fold.compact"> 1 </property>
@@ -939,15 +940,18 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   <lexer name="COBOL" macro="cpp">
     <keywords>
-      configuration data declaratives division environment environment-division file 
-      file-control function i-o i-o-control identification input input-output linkage 
-      local-storage output procedure program program-id receive-control section 
+      configuration data declaratives division environment environment-division file
+      file-control function i-o i-o-control identification input input-output linkage
+      local-storage output procedure program program-id receive-control section
       special-names working-storage
     </keywords>
   </lexer>
   <lexer name="coffeescript"/>
   <lexer name="conf" extensions="*.elp"/>
   <lexer name="cpp" extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">
+    <styles>
+      <style no="commentdockeyworderror"> comment </style>
+    </styles>
     <properties>
       <property name="lexer.cpp.track.preprocessor"> 0 </property>
       <property name="fold"> 1 </property>
@@ -962,22 +966,22 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     <keywords set-0="cpp" set-1="cpp-stl" set-2="cpp-doc"/>
   </lexer>
   <lexer name="csound"/>
-  <lexer display="csh" name="bash" extensions="*.csh"> 
+  <lexer display="csh" name="bash" extensions="*.csh">
     <keywords set="csh"/>
   </lexer>
   <lexer name="css" extensions="*.css">
     <keywords set-0="css1" set-2="css2" set-3="css3"/>
   </lexer>
-  <lexer name="d"/> 
+  <lexer name="d"/>
   <lexer name="dataflex"/>
   <lexer name="diff" extensions="*.diff;*.patch" edgemode="none">
     <styles>
-    <style no="header"> fore:grey </style> 
-    <style no="position"> fore:steel blue </style> 
-    <style no="deleted"> fore:orange </style> 
-    <style no="added"> fore:lime green </style> 
-    <style no="changed"> fore:yellow </style> 
-    </styles> 
+    <style no="header"> fore:grey </style>
+    <style no="position"> fore:steel blue </style>
+    <style no="deleted"> fore:orange </style>
+    <style no="added"> fore:lime green </style>
+    <style no="changed"> fore:yellow </style>
+    </styles>
     <properties>
       <property name="fold"> 1 </property>
       <property name="fold.compact"> 1 </property>
@@ -1013,40 +1017,41 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   <lexer name="freebasic" macro="vb"/>
   <lexer name="fsharp"/>
   <lexer name="gap"/>
-  <lexer display="gdb" name="ada"> 
+  <lexer display="gdb" name="ada">
     <keywords>
-      actions add-auto-load-safe-path add-auto-load-scripts-directory add-inferior add-symbol-file 
-      add-symbol-file-from-memory advance agent-printf alias append 
-      apropos attach awatch backtrace break 
-      break-range bt call catch cd 
-      checkpoint clear clone-inferior collect commands compare-sections 
-      compile complete condition continue core-file define 
-      delete demangle detach directory disable disassemble 
-      disconnect display document dont-repeat down down-silently 
-      dprintf dump echo edit enable end 
-      eval exec-file explore explore type explore value expression 
-      file find finish flash-erase flushregs forward-search 
-      frame ftrace function generate-core-file guile guile-repl 
-      handle hbreak help if ignore ignore-errors 
-      inferior info init-if-undefined interpreter-exec interrupt jit-reader-load 
-      jit-reader-unload jump kill kill inferiors list load 
-      macro maintenance make mem monitor new-ui 
-      next nexti ni nosharedlibrary output overlay 
-      passcount path print print-object printf ptype 
-      pwd python python-interactive queue-signal quit rbreak 
-      rc record remote remove-inferiors remove-symbol-file restart 
-      restore return reverse-continue reverse-finish reverse-next reverse-nexti 
-      reverse-search reverse-step reverse-stepi rni rsi run 
-      rwatch save search section select-frame set 
-      sharedlibrary shell show si signal skip 
-      source start starti step stepi stepping 
-      stop strace symbol-file target task tbreak 
-      tcatch tdump teval tfind thbreak thread 
-      tp trace tsave tstart tstatus tstop 
-      tty tvariable undisplay unset until up 
-      up-silently watch whatis where while while-stepping ws x 
+      actions add-auto-load-safe-path add-auto-load-scripts-directory add-inferior add-symbol-file
+      add-symbol-file-from-memory advance agent-printf alias append
+      apropos attach awatch backtrace break
+      break-range bt call catch cd
+      checkpoint clear clone-inferior collect commands compare-sections
+      compile complete condition continue core-file define
+      delete demangle detach directory disable disassemble
+      disconnect display document dont-repeat down down-silently
+      dprintf dump echo edit enable end
+      eval exec-file explore explore type explore value expression
+      file find finish flash-erase flushregs forward-search
+      frame ftrace function generate-core-file guile guile-repl
+      handle hbreak help if ignore ignore-errors
+      inferior info init-if-undefined interpreter-exec interrupt jit-reader-load
+      jit-reader-unload jump kill kill inferiors list load
+      macro maintenance make mem monitor new-ui
+      next nexti ni nosharedlibrary output overlay
+      passcount path print print-object printf ptype
+      pwd python python-interactive queue-signal quit rbreak
+      rc record remote remove-inferiors remove-symbol-file restart
+      restore return reverse-continue reverse-finish reverse-next reverse-nexti
+      reverse-search reverse-step reverse-stepi rni rsi run
+      rwatch save search section select-frame set
+      sharedlibrary shell show si signal skip
+      source start starti step stepi stepping
+      stop strace symbol-file target task tbreak
+      tcatch tdump teval tfind thbreak thread
+      tp trace tsave tstart tstatus tstop
+      tty tvariable undisplay unset until up
+      up-silently watch whatis where while while-stepping ws x
     </keywords>
   </lexer>
+  <lexer name="gdscript"/>
   <lexer name="gui4cli"/>
   <lexer name="haskell"/>
   <lexer name="hollywood"/>
@@ -1156,7 +1161,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <property name="asp.default.language"> 1 </property>
     </properties>
     <keywords set-1="javascript" set-2="vb" set-3="python" set-4="php" set-5="sgml">
-      <!-- See scintilla html.properties -->      
+      <!-- See scintilla html.properties -->
       a abbr acronym address applet area b base basefont
       bdo big blockquote body br button caption center
       cite code col colgroup dd del dfn dir div dl dt em
@@ -1190,7 +1195,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       valign value valuetype version vlink vspace width
       text password checkbox radio submit reset
       file hidden image
- 
+
       address article aside audio base canvas command details datalist embed
       figure figcaption footer header hgroup keygen mark menu meter nav output
       progress ruby rt rp section source time video wbr
@@ -1231,6 +1236,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       null, false, true
     </keywords>
   </lexer>
+  <lexer name="julia"/>
   <lexer name="kix"/>
   <lexer name="kvirc"/>
   <lexer name="latex" extensions="*.latex">
@@ -1253,7 +1259,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <property name="fold.compact"> 1 </property>
       <property name="fold.comment"> 1 </property>
     </properties>
-    <keywords> 
+    <keywords>
       eval apply funcall quote identity function complement backquote lambda set setq setf
       defun defmacro gensym make symbol intern symbol name symbol value symbol plist get
       getf putprop remprop hash make array aref car cdr caar cadr cdar cddr caaar caadr cadar
@@ -1267,9 +1273,9 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       random logand logior logxor lognot bignums logeqv lognand lognor
       logorc2 logtest logbitp logcount integer length nil
     </keywords>
-  </lexer>    
+  </lexer>
   <lexer name="literatehaskell" macro="haskell"/>
-  <lexer display="lldb" name="SML"> 
+  <lexer display="lldb" name="SML">
     <keywords>
       add-dsym apropos attach b breakpoint bt bugreport c call command continue
       detach di disassemble display down env exit expression f file finish
@@ -1281,15 +1287,15 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     </keywords>
   </lexer>
   <lexer display="log" extensions="*.log" edgemode="none" spacevisible="invisible" name="bash">
-    <keywords> 
+    <keywords>
       error warning
     </keywords>
   </lexer>
   <lexer name="lot"/>
   <lexer name="lout"/>
   <lexer name="lua" extensions="*.lua">
-    <keywords set-0="lua-keywords" set-1="lua-basic-functions" 
-              set-2="lua-string-functions" set-3="lua-io-functions"> 
+    <keywords set-0="lua-keywords" set-1="lua-basic-functions"
+              set-2="lua-string-functions" set-3="lua-io-functions">
     </keywords>
   </lexer>
   <lexer name="magiksf"/>
@@ -1316,7 +1322,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <style no="codebk"> fore:sky blue </style>
     </styles>
   </lexer>
-  
+
   <lexer name="matlab"/>
   <lexer name="maxima"/>
   <lexer name="metapost"/>
@@ -1343,13 +1349,13 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       match mid not_like not_regexp oct octet_length ord position quote
       regexp repeat replace reverse right rlike rpad rtrim soundex
       sounds_like space strcmp substr substring substring_index to_base64 trim ucase
-      unhex upper weight_string 
+      unhex upper weight_string
     </keywords>
   </lexer>
   <lexer name="nim"/>
   <lexer name="nimrod" macro="python"/>
   <lexer display="ninja" extensions="*.ninja" edgemode="none" spacevisible="invisible" name="bash">
-    <keywords> 
+    <keywords>
       build default include
     </keywords>
   </lexer>
@@ -1364,17 +1370,17 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <property name="fold.compact"> 1 </property>
       <property name="fold.comment"> 1 </property>
     </properties>
-    <keywords>    
-      absolute abstract and array as asm assembler automated begin case cdecl 
-      class const constructor contains default destructor dispid dispinterface 
-      div do downto dynamic else end except export exports external far file 
-      finalization finally for forward function goto if implementation 
+    <keywords>
+      absolute abstract and array as asm assembler automated begin case cdecl
+      class const constructor contains default destructor dispid dispinterface
+      div do downto dynamic else end except export exports external far file
+      finalization finally for forward function goto if implementation
       implements in index inherited initialization inline interface
-      is label library message mod name near nil nodefault not object of or out 
+      is label library message mod name near nil nodefault not object of or out
       overload
-      override package packed pascal private procedure program property protected 
+      override package packed pascal private procedure program property protected
       public published raise
-      read readonly record register reintroduce repeat requires resident 
+      read readonly record register reintroduce repeat requires resident
       resourcestring safecall set
       shl shr stdcall stored string then threadvar to try type unit until uses var
       virtual while with write writeln writeonly xor boolean char integer real
@@ -1383,31 +1389,31 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   <lexer name="perl" extensions="*.pl">
     <keywords>
-      abs accept 
-      alarm and atan2 bind binmode bless caller chdir chmod chomp chop 
-      chown chr chroot close closedir cmp connect continue cos crypt 
-      dbmclose dbmopen defined delete die do dump each else elsif endgrent 
-      endhostent endnetent endprotoent endpwent endservent eof eq eval 
-      exec exists exit exp fcntl fileno flock for foreach fork format 
-      formline ge getc getgrent getgrgid getgrnam gethostbyaddr gethostbyname 
-      gethostent getlogin getnetbyaddr getnetbyname getnetent getpeername 
-      getpgrp getppid getpriority getprotobyname getprotobynumber getprotoent 
-      getpwent getpwnam getpwuid getservbyname getservbyport getservent 
-      getsockname getsockopt glob gmtime goto grep gt hex if index 
-      int ioctl join keys kill last lc lcfirst le length link listen 
-      local localtime lock log lstat lt map mkdir msgctl msgget msgrcv 
-      msgsnd my ne next no not oct open opendir or ord our pack package 
-      pipe pop pos print printf prototype push quotemeta qu 
-      rand read readdir readline readlink readpipe recv redo 
-      ref rename require reset return reverse rewinddir rindex rmdir 
-      scalar seek seekdir select semctl semget semop send setgrent 
-      sethostent setnetent setpgrp setpriority setprotoent setpwent 
-      setservent setsockopt shift shmctl shmget shmread shmwrite shutdown 
-      sin sleep socket socketpair sort splice split sprintf sqrt srand 
-      stat study sub substr symlink syscall sysopen sysread sysseek 
-      system syswrite tell telldir tie tied time times truncate 
-      uc ucfirst umask undef unless unlink unpack unshift untie until 
-      use utime values vec wait waitpid wantarray warn while write 
+      abs accept
+      alarm and atan2 bind binmode bless caller chdir chmod chomp chop
+      chown chr chroot close closedir cmp connect continue cos crypt
+      dbmclose dbmopen defined delete die do dump each else elsif endgrent
+      endhostent endnetent endprotoent endpwent endservent eof eq eval
+      exec exists exit exp fcntl fileno flock for foreach fork format
+      formline ge getc getgrent getgrgid getgrnam gethostbyaddr gethostbyname
+      gethostent getlogin getnetbyaddr getnetbyname getnetent getpeername
+      getpgrp getppid getpriority getprotobyname getprotobynumber getprotoent
+      getpwent getpwnam getpwuid getservbyname getservbyport getservent
+      getsockname getsockopt glob gmtime goto grep gt hex if index
+      int ioctl join keys kill last lc lcfirst le length link listen
+      local localtime lock log lstat lt map mkdir msgctl msgget msgrcv
+      msgsnd my ne next no not oct open opendir or ord our pack package
+      pipe pop pos print printf prototype push quotemeta qu
+      rand read readdir readline readlink readpipe recv redo
+      ref rename require reset return reverse rewinddir rindex rmdir
+      scalar seek seekdir select semctl semget semop send setgrent
+      sethostent setnetent setpgrp setpriority setprotoent setpwent
+      setservent setsockopt shift shmctl shmget shmread shmwrite shutdown
+      sin sleep socket socketpair sort splice split sprintf sqrt srand
+      stat study sub substr symlink syscall sysopen sysread sysseek
+      system syswrite tell telldir tie tied time times truncate
+      uc ucfirst umask undef unless unlink unpack unshift untie until
+      use utime values vec wait waitpid wantarray warn while write
       xor given when default say state
     </keywords>
     <properties>
@@ -1417,8 +1423,8 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     </properties>
   </lexer>
   <lexer name="PL/M"/>
-  <lexer display="php" name="phpscript" macro="hypertext"/> 
-  <lexer name="phpscript" macro="hypertext"/> 
+  <lexer display="php" name="phpscript" macro="hypertext"/>
+  <lexer name="phpscript" macro="hypertext"/>
   <lexer name="po" extensions="*.po;*.pot">
     <styles>
       <style no ="msgid"> keyword1 </style>
@@ -1430,7 +1436,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <property name="fold.compact"> 1 </property>
       <property name="fold.comment"> 1 </property>
     </properties>
-    <keywords>    
+    <keywords>
       msgid msgstr
     </keywords>
   </lexer>
@@ -1492,7 +1498,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     <keywords set-0="rfw-basic" set-1="rfw-core">
     </keywords>
   </lexer>
-  <lexer name="rfw" 
+  <lexer name="rfw"
     extensions="*.robot;*.resource"
     edgemode="none"
     tabmode="use"
@@ -1516,7 +1522,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <property name="fold.compact"> 1 </property>
       <property name="fold.comment"> 1 </property>
     </properties>
-    <keywords> 
+    <keywords>
       and def end in or self unless __LINE__ begin
       defined? ensure module redo super until BEGIN break do false next rescue
       then when END case else for nil retry true while alias class elsif if
@@ -1526,8 +1532,8 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   <lexer name="rust" extensions="*.rs"/>
   <lexer name="sas"/>
   <lexer name="scriptol"/>
-  <lexer display="sh" name="bash"> 
-    <keywords>    
+  <lexer display="sh" name="bash">
+    <keywords>
       <!-- https://github.com/OutOfOrder/mod_highlight/blob/master/colorer/hrc/scripts/sh-keywords.hrc -->
       case do done echo elif else esac export fi for function if in
       select then until while time
@@ -1578,9 +1584,9 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     </keywords>
   </lexer>
   <lexer name="tcmd"/>
-  <lexer display="tcsh" name="bash" extensions="*.tcsh"> 
+  <lexer display="tcsh" name="bash" extensions="*.tcsh">
     <!-- see https://www.computerhope.com/unix/ucsh.htm -->
-    <keywords set ="csh">    
+    <keywords set ="csh">
       alias alloc bg break breaksw case
       cd chdir continue cputime datasize default
       dirs echo else end endif endsw
@@ -1612,7 +1618,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <style no="xmlstart,xmlend"> fore:sky blue,bold </style>
     </styles>
     <keywords set-5="sgml"/>
-    <!-- xml comments cannot be added, but don't need to, 
+    <!-- xml comments cannot be added, but don't need to,
          they are added in the source -->
   </lexer>
   <lexer display="xsd" name="hypertext" extensions="*.xsd" language = "xml">

@@ -2,7 +2,7 @@
 // Name:      test-lexer.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/syntax/lexer.h>
@@ -173,37 +173,49 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.set("xsl"));
     REQUIRE(lexer.language() == "xml");
 
-    REQUIRE(lexer.set("pascal"));
+    REQUIRE(!lexer.set(wex::lexer("XXXX")));
+    REQUIRE(lexer.display_lexer().empty());
+    REQUIRE(!lexer.is_ok());
+
+    // rfw should be the last one, used later on
+    for (const auto& lex : std::vector<std::string>{
+           "asciidoc",
+           "cpp",
+           "hypertext",
+           "julia",
+           "lilypond",
+           "pascal",
+           "rfw"})
+    {
+      REQUIRE(lexer.get_stc() == nullptr);
+      REQUIRE(lexer.set(lex));
+      REQUIRE(lexer.set(lexer, true));
+      REQUIRE(lexer.is_ok());
+      REQUIRE(lexer.display_lexer() == lex);
+      REQUIRE(lexer.scintilla_lexer() == lex);
+
+      if (lex == "hypertext")
+      {
+        REQUIRE(lexer.is_previewable());
+      }
+      else
+      {
+        REQUIRE(!lexer.is_previewable());
+
+        if (lex == "rfw")
+        {
+          REQUIRE(lexer.is_keyword("Documentation"));
+          REQUIRE(lexer.is_keyword("Test_Setup")); // a special keyword
+        }
+      }
+    }
+
     auto*      stc = new wex::test::stc();
-    wex::lexer l(stc);
     wex::lexer lexer2(stc);
     REQUIRE(lexer2.set(lexer));
     REQUIRE(lexer2.get_stc() == stc);
     REQUIRE(lexer2.set(lexer, true));
-    REQUIRE(lexer2.display_lexer() == "pascal");
-    REQUIRE(lexer2.scintilla_lexer() == "pascal");
-
-    REQUIRE(!lexer.set(wex::lexer("XXXX")));
-    REQUIRE(lexer.display_lexer().empty());
-    REQUIRE(!lexer.is_ok());
-    REQUIRE(lexer.set(wex::lexer("hypertext")));
-    REQUIRE(lexer.scintilla_lexer() == "hypertext");
-    REQUIRE(lexer.display_lexer() == "hypertext");
-    REQUIRE(lexer.is_previewable());
-    REQUIRE(lexer.set(wex::lexer("cpp")));
-    REQUIRE(lexer.is_ok());
-    REQUIRE(wex::lexer(lexer).is_ok());
-    REQUIRE(lexer.display_lexer() == "cpp");
-    REQUIRE(lexer.scintilla_lexer() == "cpp");
-
-    REQUIRE(lexer.set("lilypond"));
-    REQUIRE(lexer.display_lexer() == "lilypond");
-
-    REQUIRE(lexer.set("rfw"));
-    REQUIRE(lexer.display_lexer() == "rfw");
-    REQUIRE(lexer.is_keyword("Documentation"));
-    REQUIRE(lexer.is_keyword("Test_Setup")); // a special keyword
-
+    REQUIRE(lexer2.display_lexer() == "rfw");
     REQUIRE(lexer.set(lexer2));
     REQUIRE(lexer.get_stc() == stc);
   }
@@ -212,7 +224,6 @@ TEST_CASE("wex::lexer")
   {
     REQUIRE(lexer.set("cpp"));
     REQUIRE(lexer.display_lexer() == "cpp");
-    REQUIRE(lexer.scintilla_lexer() == "cpp");
     REQUIRE(lexer.usable_chars_per_line() > 0);
     REQUIRE(!lexer.extensions().empty());
     REQUIRE(!lexer.comment_begin().empty());

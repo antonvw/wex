@@ -282,6 +282,14 @@ TEST_CASE("wex::stc")
     stc->set_text("// a rust comment");
     REQUIRE(lexer_s.set("rust"));
     REQUIRE(lexer_s.scintilla_lexer() == "rust");
+
+    const auto keep(wex::config::path());
+    wex::config::set_path(wex::path("xxxx"));
+    auto* json = new wex::stc(wex::config::path());
+    frame()->pane_add(json);
+    REQUIRE(json->get_lexer().scintilla_lexer() == "json");
+
+    wex::config::set_path(keep);
   }
 
   SUBCASE("link")
@@ -307,13 +315,6 @@ TEST_CASE("wex::stc")
   SUBCASE("margin")
   {
     REQUIRE(stc->get_margin_text_click() == -1);
-
-    stc->show_line_numbers(false);
-    REQUIRE(!stc->is_shown_line_numbers());
-    stc->show_line_numbers(true);
-    REQUIRE(stc->is_shown_line_numbers());
-    stc->show_line_numbers(false);
-    REQUIRE(!stc->is_shown_line_numbers());
   }
 
   SUBCASE("marker")
@@ -380,6 +381,21 @@ TEST_CASE("wex::stc")
     event(stc, WXK_SHIFT, wxEVT_KEY_DOWN);
     event(stc, WXK_SHIFT, wxEVT_KEY_DOWN);
     // result is not yet checked
+  }
+
+  SUBCASE("show")
+  {
+    stc->show_line_numbers(false);
+    REQUIRE(!stc->is_shown_line_numbers());
+    stc->show_line_numbers(true);
+    REQUIRE(stc->is_shown_line_numbers());
+    stc->show_line_numbers(false);
+    REQUIRE(!stc->is_shown_line_numbers());
+
+    stc->show_whitespace(true);
+    REQUIRE(stc->GetViewEOL());
+    stc->show_whitespace(false);
+    REQUIRE(!stc->GetViewEOL());
   }
 
   SUBCASE("text")

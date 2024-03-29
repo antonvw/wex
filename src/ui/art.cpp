@@ -2,7 +2,7 @@
 // Name:      art.cpp
 // Purpose:   Implementation of wex::art class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2023 Anton van Wezenbeek
+// Copyright: (c) 2009-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/defs.h>
@@ -33,7 +33,7 @@ std::unordered_map<wxWindowID, wxArtID> wex::art::m_art_ids{
   {wxID_NEW, wxART_NEW},
   {wxID_OPEN, wxART_FILE_OPEN},
   {wxID_PASTE, wxART_PASTE},
-  {wxID_PREFERENCES, wxART_ROOM_PREFERENCES},
+  {wxID_PREFERENCES, wxART_SETTINGS},
   {wxID_PREVIEW, wxART_PREVIEW},
   {wxID_PRINT, wxART_PRINT},
   {wxID_REDO, wxART_REDO},
@@ -59,7 +59,6 @@ std::unordered_map<wxWindowID, wxArtID> wex::art::m_art_ids{
   {ID_TOOL_REPORT_FIND, wxART_FIND_IN_PAGE}};
 
 wxArtClient wex::art::m_client = wxART_CLIENT_MATERIAL_ROUND;
-std::string wex::art::m_colour = "light blue";
 
 wex::art::art(wxWindowID id)
   : m_id(id)
@@ -85,17 +84,9 @@ bool wex::art::default_colour(const wxColour& c)
     return false;
   }
 
-  m_colour = c.GetAsString();
+  m_colour = c;
 
   return true;
-}
-
-void wex::art::insert(const std::unordered_map<wxWindowID, wxArtID>& ids)
-{
-  for (const auto& id : ids)
-  {
-    m_art_ids.insert(id);
-  }
 }
 
 const wxBitmapBundle wex::art::get_bitmap(
@@ -126,7 +117,7 @@ const wxBitmapBundle wex::art::get_bitmap(
             art_it->second,
             m_client,
             bitmap_size,
-            colour.IsOk() ? colour : wxColour(m_colour)));
+            colour.IsOk() ? colour : m_colour));
           bitmap.IsOk())
       {
         return bitmap;
@@ -143,6 +134,14 @@ const wxBitmapBundle wex::art::get_bitmap(
   }
 
   return wxBitmapBundle();
+}
+
+void wex::art::insert(const std::unordered_map<wxWindowID, wxArtID>& ids)
+{
+  for (const auto& id : ids)
+  {
+    m_art_ids.insert(id);
+  }
 }
 
 void wex::art::type(art_t t)
