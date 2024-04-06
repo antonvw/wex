@@ -13,13 +13,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - upgrade to lexilla 5.3.1
-- updated default bitmap colour
+- updated art default bitmap colour
 
 ### Fixed
 
+- ex mode find and getting previous line
 - any file used for config uses json lexer
 
-## 24.04 - 2024-04-01
+## 24.04 - 2024-03-29
 
 ### Added
 
