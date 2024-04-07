@@ -2,10 +2,9 @@
 // Name:      test-hexmode.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2021 Anton van Wezenbeek
+// Copyright: (c) 2019-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/syntax/lexers.h>
 #include <wex/stc/hexmode.h>
 
 #include "test.h"
@@ -36,7 +35,7 @@ TEST_CASE("wex::hexmode")
 
   hm->set(true);
 
-  SUBCASE("append")
+  SUBCASE("append_text")
   {
     hm->append_text("0123456789");
     REQUIRE(hm->buffer() == "01234567890123456789");
@@ -53,23 +52,26 @@ TEST_CASE("wex::hexmode")
     REQUIRE(stc->get_text() == "01234567890123456789");
   }
 
-  SUBCASE("hex field")
+  SUBCASE("erase")
   {
-    REQUIRE(!hm->get_info().empty()); // 34 <- (ascii 4)
-    REQUIRE(!hm->replace('x', 13));
-    REQUIRE(!hm->replace('y', 13));
-    REQUIRE(!hm->replace('g', 13));
-    REQUIRE(hm->replace('a', 13));
-    REQUIRE(hm->replace('9', 13));
-    REQUIRE(hm->replace('2', 13));
-
-    REQUIRE(stc->get_file().file_save(wex::test::get_path("test.hex")));
-    hm->set(false);
-    REQUIRE(stc->get_text() == "0123256789");
-    REQUIRE(stc->get_file().file_save());
+    REQUIRE(hm->is_active());
+    REQUIRE(hm->buffer() == "0123456789");
+    REQUIRE(hm->erase(1, 13));
+    REQUIRE(stc->GetCurrentPos() == 48);
+    REQUIRE(hm->buffer() == "012356789");
   }
 
-  SUBCASE("ascii field")
+  SUBCASE("insert")
+  {
+    REQUIRE(hm->insert("30", 13)); // insert in hex field
+    REQUIRE(hm->buffer() == "01230456789");
+    REQUIRE(stc->GetCurrentPos() == 48);
+    REQUIRE(hm->insert("abc", 52)); // insert in ascii field
+    REQUIRE(hm->buffer() == "0123abc0456789");
+    REQUIRE(stc->GetCurrentPos() == 51);
+  }
+
+  SUBCASE("replace_ascii")
   {
     REQUIRE(!hm->get_info().empty());
     REQUIRE(hm->replace('x', 54)); // 6 <-
@@ -85,19 +87,23 @@ TEST_CASE("wex::hexmode")
     REQUIRE(!hm->is_active());
   }
 
-  SUBCASE("erase insert")
+  SUBCASE("replace_hex")
   {
-    REQUIRE(hm->is_active());
-    REQUIRE(hm->buffer() == "0123456789");
-    REQUIRE(hm->erase(1, 13));
-    REQUIRE(hm->buffer() == "012356789");
-    REQUIRE(hm->insert("30", 13)); // insert in hex field
-    REQUIRE(hm->buffer() == "0123056789");
-    REQUIRE(hm->insert("abc", 52)); // insert in ascii field
-    REQUIRE(hm->buffer() == "0123abc056789");
+    REQUIRE(!hm->get_info().empty()); // 34 <- (ascii 4)
+    REQUIRE(!hm->replace('x', 13));
+    REQUIRE(!hm->replace('y', 13));
+    REQUIRE(!hm->replace('g', 13));
+    REQUIRE(hm->replace('a', 13));
+    REQUIRE(hm->replace('9', 13));
+    REQUIRE(hm->replace('2', 13));
+
+    REQUIRE(stc->get_file().file_save(wex::test::get_path("test.hex")));
+    hm->set(false);
+    REQUIRE(stc->get_text() == "0123256789");
+    REQUIRE(stc->get_file().file_save());
   }
 
-  SUBCASE("replace target (replace in hex field)")
+  SUBCASE("replace_target)")
   {
     stc->SetTargetStart(wxSTC_INVALID_POSITION);
     REQUIRE(!hm->replace_target("AA"));
@@ -148,7 +154,7 @@ TEST_CASE("wex::hexmode")
     REQUIRE(hm->buffer() == "0999456789");
   }
 
-  SUBCASE("set text")
+  SUBCASE("set_text")
   {
     hm->set_text("hello world");
     REQUIRE(hm->buffer() == "hello world");
@@ -156,8 +162,6 @@ TEST_CASE("wex::hexmode")
 
     wxKeyEvent event(wxEVT_KEY_DOWN);
     hm->set_pos(event);
-
-    wex::lexers::get()->apply(stc);
   }
 
   SUBCASE("finish")

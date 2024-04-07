@@ -99,7 +99,9 @@ bool wex::hexmode_line::erase(int count, bool settext)
 
   if (settext)
   {
+    const auto pos(m_hex->get_stc()->GetCurrentPos());
     m_hex->set_text(std::string(m_hex->m_buffer));
+    m_hex->get_stc()->SetCurrentPos(pos);
   }
 
   return true;
@@ -138,6 +140,7 @@ bool wex::hexmode_line::insert(const std::string& text)
 
   if (m_column_no >= m_start_ascii_field)
   {
+    const auto pos(m_hex->get_stc()->GetCurrentPos());
     m_hex->m_buffer.insert(index, text);
     m_hex->set_text(m_hex->m_buffer);
 
@@ -145,7 +148,7 @@ bool wex::hexmode_line::insert(const std::string& text)
       m_column_no + text.size() >=
       m_hex->bytes_per_line() + m_start_ascii_field)
     {
-      int line_no =
+      const int line_no =
         m_hex->get_stc()->LineFromPosition(m_hex->get_stc()->GetCurrentPos()) +
         1;
       m_hex->get_stc()->SetCurrentPos(
@@ -153,8 +156,7 @@ bool wex::hexmode_line::insert(const std::string& text)
     }
     else
     {
-      m_hex->get_stc()->SetCurrentPos(
-        m_hex->get_stc()->GetCurrentPos() + text.size());
+      m_hex->get_stc()->SetCurrentPos(pos + text.size());
     }
 
     m_hex->get_stc()->SelectNone();
@@ -169,8 +171,10 @@ bool wex::hexmode_line::insert(const std::string& text)
     int val = 0;
     std::from_chars(text.data(), text.data() + 2, val, 16);
 
+    const auto pos(m_hex->get_stc()->GetCurrentPos());
     m_hex->m_buffer.insert(index, 1, val);
     m_hex->set_text(m_hex->m_buffer);
+    m_hex->get_stc()->SetCurrentPos(pos);
   }
 
   return true;

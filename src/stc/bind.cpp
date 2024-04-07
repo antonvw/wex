@@ -36,11 +36,15 @@ namespace wex
 void edit_control_char(stc* stc)
 {
   if (stc->GetSelectedText().length() > 2)
+  {
     return;
+  }
 
   const std::string& caption = _("Enter Control Character");
   if (stc->is_hexmode())
+  {
     return stc->get_hexmode().control_char_dialog(caption);
+  }
 
   if (stc->GetReadOnly())
   {
@@ -56,7 +60,9 @@ void edit_control_char(stc* stc)
 
   static int value = ' '; // don't use 0 as default as nullptr is not handled
   if (stc->GetSelectedText().length() == 1)
+  {
     value = stc->GetSelectedText().GetChar(0);
+  }
   int new_value;
   if (
     (new_value = static_cast<int>(wxGetNumberFromUser(
@@ -67,7 +73,9 @@ void edit_control_char(stc* stc)
        0,
        255,
        stc))) < 0)
+  {
     return;
+  }
 
   if (stc->GetSelectedText().length() == 1)
   {
@@ -269,7 +277,9 @@ void wex::stc::bind_all()
      {[=, this](wxCommandEvent& event)
       {
         for (int i = 0; i < get_line_count(); i++)
+        {
           EnsureVisible(i);
+        }
       },
       id::stc::unfold_all},
 
@@ -610,9 +620,13 @@ void wex::stc::eol_action(const wxCommandEvent& event)
     {
       int eol_mode = wxSTC_EOL_LF; // default id::stc::eol_unix
       if (event.GetId() == id::stc::eol_dos)
+      {
         eol_mode = wxSTC_EOL_CRLF;
+      }
       else if (event.GetId() == id::stc::eol_mac)
+      {
         eol_mode = wxSTC_EOL_CR;
+      }
 
       ConvertEOLs(eol_mode);
       SetEOLMode(eol_mode);
@@ -628,7 +642,7 @@ void wex::stc::file_action(const wxCommandEvent& event)
     case stc_file::FILE_LOAD:
       if (
         get_lexer().scintilla_lexer().empty() &&
-        GetLength() < config("stc.max.Size lexer").get(10000000))
+        GetLength() < config("stc.max.Size lexer").get(1000000))
       {
         auto l(path_lexer(path()).lexer());
 
@@ -735,7 +749,9 @@ void wex::stc::jump_action()
 void wex::stc::show_ascii_value()
 {
   if (CallTipActive())
+  {
     CallTipCancel();
+  }
 
   const auto pos = GetCurrentPos();
 
@@ -782,11 +798,17 @@ void wex::stc::show_ascii_value()
     if (base10_ok || base16_ok)
     {
       if (base10_ok && !base16_ok)
+      {
         stream << "hex: " << std::hex << base10_val;
+      }
       else if (!base10_ok && base16_ok)
+      {
         stream << "dec: " << base16_val;
+      }
       else if (base10_ok && base16_ok)
+      {
         stream << "dec: " << base16_val << " hex: " << std::hex << base10_val;
+      }
     }
   }
 

@@ -2,7 +2,7 @@
 // Name:      stc/file.cpp
 // Purpose:   Implementation of class wex::stc_file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -66,7 +66,7 @@ bool wex::stc_file::do_file_load(bool synced)
 
   if (
     m_stc->path().stat().get_size() >
-    config("stc.max.Size visual").get(10000000))
+    config("stc.max.Size visual").get(1000000))
   {
     m_stc->visual(false);
   }

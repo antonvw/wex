@@ -256,10 +256,8 @@ void wex::stc::on_init()
           {_("<i>Max:</i>")},
           {_("stc.max.Size visual"),
            item::TEXTCTRL_INT,
-           std::string("10000000")},
-          {_("stc.max.Size lexer"),
-           item::TEXTCTRL_INT,
-           std::string("10000000")},
+           std::string("1000000")},
+          {_("stc.max.Size lexer"), item::TEXTCTRL_INT, std::string("1000000")},
           {_("Repeater"), item::TEXTCTRL_INT, std::string("1000")}}},
         {_("Folding"),
          {{_("stc.Indentation guide"), item::CHECKBOX},
@@ -294,7 +292,8 @@ void wex::stc::on_init()
              .window(data::window().size({200, 200})),
            // First try to find "..", then <..>, as in next example:
            // <A HREF="http://www.scintilla.org">scintilla</A> component.
-           config::strings_t({"\"\t\"", "`\t`", "<\t>", "[\t]", "'\t'", "{\t}"})}}},
+           config::strings_t(
+             {"\"\t\"", "`\t`", "<\t>", "[\t]", "'\t'", "{\t}"})}}},
       }}});
 
   if (item_vector(m_config_items).find<bool>(_("stc.Keep zoom")))
