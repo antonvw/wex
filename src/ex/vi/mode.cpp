@@ -291,7 +291,7 @@ wex::vi_mode::vi_mode(
   m_fsm->initiate();
 }
 
-wex::vi_mode::~vi_mode() {}
+wex::vi_mode::~vi_mode() = default;
 
 void wex::vi_mode::command()
 {

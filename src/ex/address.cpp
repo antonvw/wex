@@ -377,7 +377,7 @@ bool wex::address::read(const std::string& arg) const
       {
         m_ex->get_stc()->insert_text(
           m_ex->get_stc()->PositionFromLine(get_line()),
-          buffer->data());
+          *buffer);
       }
       return true;
     }

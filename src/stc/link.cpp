@@ -13,11 +13,6 @@
 #include <wex/ui/item-vector.h>
 #include <wx/app.h>
 
-wex::link::link()
-  : factory::link()
-{
-}
-
 std::string wex::link::get_link_pairs(const std::string& text) const
 {
   for (const auto& p : item_vector(stc::config_items())

@@ -2,7 +2,7 @@
 // Name:      vcs-entry.cpp
 // Purpose:   Implementation of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2023 Anton van Wezenbeek
+// Copyright: (c) 2010-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -16,8 +16,7 @@
 #include <wex/vcs/vcs-entry.h>
 
 wex::vcs_entry::vcs_entry(const pugi::xml_node& node)
-  : process()
-  , menu_commands(node)
+  : menu_commands(node)
   , m_admin_dir(node.attribute("admin-dir").value())
   , m_flags_location(
       (strcmp(node.attribute("flags-location").value(), "prefix") == 0 ?

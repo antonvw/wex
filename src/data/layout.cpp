@@ -2,7 +2,7 @@
 // Name:      data/layout.cpp
 // Purpose:   Implementation of wex::data::layout
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/layout.h>
@@ -58,12 +58,7 @@ bool wex::data::layout::sizer_layout_create(sizer_t* rhs)
 {
   m_fgz = rhs;
 
-  if (rhs == nullptr)
-  {
-    return false;
-  }
-
-  return true;
+  return rhs != nullptr;
 }
 
 bool wex::data::layout::sizer_layout_grow_col()

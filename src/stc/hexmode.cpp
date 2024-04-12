@@ -284,10 +284,6 @@ void wex::hexmode::set_text(const std::string& text)
     return;
   }
 
-  // hexmode_line invokes set_text it with m_buffer as argument,
-  // so m_buffer.clear clears text as well!
-  const auto keep(text);
-
   m_buffer.clear();
   m_buffer_original.clear();
 
@@ -295,7 +291,13 @@ void wex::hexmode::set_text(const std::string& text)
   stc_undo(get_stc(), stc_undo::undo_t().set(stc_undo::UNDO_POS));
   get_stc()->clear(false);
 
-  append_text(keep);
+  append_text(text);
+}
+
+void wex::hexmode::set_text_from_buffer()
+{
+  const auto keep(m_buffer); // prevent m_buffer.clear to clear text
+  set_text(keep);
 }
 
 bool wex::hexmode::sync()
