@@ -11,7 +11,7 @@
 #include <wex/syntax/indicator.h>
 #include <wex/syntax/stc.h>
 
-wex::data::stc::stc() {}
+wex::data::stc::stc() = default;
 
 wex::data::stc::stc(const data::control& data)
   : m_data(data)

@@ -164,6 +164,16 @@ TEST_CASE("wex::hexmode")
     hm->set_pos(event);
   }
 
+  SUBCASE("set_text_from_buffer")
+  {
+    REQUIRE(hm->buffer() == "0123456789");
+    REQUIRE(hm->erase(1, 13));
+    REQUIRE(stc->GetCurrentPos() == 48);
+
+    hm->set_text_from_buffer();
+    REQUIRE(hm->buffer() == "012356789");
+  }
+
   SUBCASE("finish")
   {
     REQUIRE(remove("test.hex") == 0);

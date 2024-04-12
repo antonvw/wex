@@ -147,7 +147,7 @@ wex::regex::data::data(const regex_c_t& regex, std::regex::flag_type flags)
   init(regex, flags);
 }
 
-wex::regex::data::data() {}
+wex::regex::data::data() = default;
 
 void wex::regex::data::init(const regex_c_t& regex, std::regex::flag_type flags)
 {

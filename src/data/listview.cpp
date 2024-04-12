@@ -9,7 +9,7 @@
 #include <wex/factory/listview.h>
 #include <wex/syntax/lexer.h>
 
-wex::data::listview::listview() {}
+wex::data::listview::listview() = default;
 
 wex::data::listview::listview(data::control& data)
   : m_data(data)

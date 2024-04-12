@@ -71,7 +71,7 @@ wex::shell::shell(
   bind_other();
 }
 
-wex::shell::~shell() {}
+wex::shell::~shell() = default;
 
 void wex::shell::AppendText(const wxString& text)
 {

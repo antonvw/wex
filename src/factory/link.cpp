@@ -73,7 +73,7 @@ wex::factory::link::link()
 {
 }
 
-wex::factory::link::~link() {}
+wex::factory::link::~link() = default;
 
 bool wex::factory::link::add_path(const path& p)
 {
@@ -133,7 +133,7 @@ const wex::path wex::factory::link::find_filename(
     return path();
   }
 
-  std::string text_filter(text);
+  const std::string& text_filter(text);
 
   // The harddrive letter is filtered, it does not work
   // when adding it to match.

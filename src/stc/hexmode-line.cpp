@@ -100,7 +100,7 @@ bool wex::hexmode_line::erase(int count, bool settext)
   if (settext)
   {
     const auto pos(m_hex->get_stc()->GetCurrentPos());
-    m_hex->set_text(std::string(m_hex->m_buffer));
+    m_hex->set_text_from_buffer();
     m_hex->get_stc()->SetCurrentPos(pos);
   }
 
@@ -142,7 +142,7 @@ bool wex::hexmode_line::insert(const std::string& text)
   {
     const auto pos(m_hex->get_stc()->GetCurrentPos());
     m_hex->m_buffer.insert(index, text);
-    m_hex->set_text(m_hex->m_buffer);
+    m_hex->set_text_from_buffer();
 
     if (
       m_column_no + text.size() >=
@@ -173,7 +173,7 @@ bool wex::hexmode_line::insert(const std::string& text)
 
     const auto pos(m_hex->get_stc()->GetCurrentPos());
     m_hex->m_buffer.insert(index, 1, val);
-    m_hex->set_text(m_hex->m_buffer);
+    m_hex->set_text_from_buffer();
     m_hex->get_stc()->SetCurrentPos(pos);
   }
 
@@ -271,7 +271,7 @@ void wex::hexmode_line::replace(const std::string& hex, bool settext)
 
   if (settext)
   {
-    m_hex->set_text(m_hex->m_buffer);
+    m_hex->set_text_from_buffer();
   }
 }
 

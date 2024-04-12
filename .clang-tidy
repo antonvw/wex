@@ -1,13 +1,14 @@
 ---
 Checks:
   '-*,
-  modernize-avoid-c-arrays,
   modernize-loop-convert,
   modernize-make-shared,
   modernize-make-unique,
   modernize-use-bool-literals,
   modernize-use-default-member-init,
   modernize-use-emplace,
+  modernize-use-equals-default,
+  modernize-use-equals-delete,
   modernize-use-nullptr,
   modernize-use-override,
   modernize-use-std-print,
@@ -22,7 +23,18 @@ Checks:
   performance-trivially-destructable,
   performance-unnecessary-copy-initialization,
   performance-unnecessary-value-param,
-  readability-uppercase-literal-suffix'
+  readability-container-contains,
+  readability-duplicate-include,
+  readability-redundant-casting,
+  readability-redundant-control-flow,
+  readability-redundant-member-init,
+  readability-redundant-string-cstr,
+  readability-redundant-string-init,
+  readability-reference-to-constructed-temporary,
+  readability-simplify-boolean-expr,
+  readability-string-compare,
+  readability-uppercase-literal-suffix,
+  readability-use-std-min-max'
 
 WarningsAsErrors: '*'
 
