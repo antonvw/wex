@@ -2,14 +2,12 @@
 // Name:      link.h
 // Purpose:   Declaration of class wex::link
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/factory/link.h>
-
-#include <string>
 
 namespace wex
 {

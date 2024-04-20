@@ -2,7 +2,7 @@
 // Name:      link.h
 // Purpose:   Declaration of class wex::factory::link
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2022 Anton van Wezenbeek
+// Copyright: (c) 2011-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -57,7 +57,7 @@ public:
     factory::stc* stc = nullptr);
 
 protected:
-  /// Returns link pairs.
+  /// Returns text between link pairs, or empty string if none found.
   virtual std::string get_link_pairs(const std::string& text) const
   {
     return std::string();

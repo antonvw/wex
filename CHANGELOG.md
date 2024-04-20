@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - ex mode find and getting previous line
 - any file used for config uses json lexer
+- fixed a possible File name too long exception when trying opening links
 
 ## 24.04 - 2024-03-29
 
