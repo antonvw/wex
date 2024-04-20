@@ -12,6 +12,7 @@
 #include <bitset>
 #include <filesystem>
 #include <sstream>
+#include <string>
 #include <vector>
 
 namespace wex

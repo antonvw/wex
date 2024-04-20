@@ -2,7 +2,7 @@
 // Name:      test-link.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-20222 Anton van Wezenbeek
+// Copyright: (c) 2021-20224 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -15,6 +15,29 @@ TEST_CASE("wex::link")
 {
   auto*     stc = get_stc();
   wex::link lnk;
+
+  SUBCASE("large-line")
+  {
+    auto*       vi = &stc->get_vi();
+    std::string line("\"xxxxxx\" ");
+    for (int i = 0; i < 500; i++)
+    {
+      line.append("a large line ");
+
+      if (i == 250)
+      {
+        line.append("\"" + wex::path("test.sh").string() + "\" ");
+      }
+    }
+
+    vi->mode().escape();
+    stc->SetReadOnly(false);
+    REQUIRE(vi->command(":a|xx"));
+    REQUIRE(vi->command(":a|" + line));
+    REQUIRE(vi->command("/test"));
+    REQUIRE(vi->command(" "));
+    REQUIRE(stc->link_open());
+  }
 
   SUBCASE("mime")
   {

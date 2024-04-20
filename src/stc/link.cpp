@@ -13,6 +13,43 @@
 #include <wex/ui/item-vector.h>
 #include <wx/app.h>
 
+// prevent very long lines to be returned, e.g. by json config files,
+// as that causes:
+// std::exception:filesystem error: in posix_stat:
+// failed to determine attributes for the specified path: File name too long
+std::string get_current_line_text(wex::link* link, wex::factory::stc* stc)
+{
+  const std::string& line(stc->GetCurLine().ToStdString());
+
+  if (const size_t mp(500); line.size() >= mp)
+  {
+    const auto pos(stc->GetCurrentPos());
+    const auto start(
+      stc->FindText(pos, stc->PositionFromLine(stc->get_current_line()), "\""));
+    const auto end(stc->FindText(
+      pos,
+      stc->GetLineEndPosition(stc->get_current_line()),
+      "\""));
+
+    if (start != wxSTC_INVALID_POSITION && end != wxSTC_INVALID_POSITION)
+    {
+      const auto& word(stc->GetTextRange(start + 1, end));
+
+      // So if this word is a valid path, return it.
+      wex::line_data data;
+      if (const auto& ok(link->get_path(word, data)); !ok.empty())
+      {
+        return ok.string();
+      }
+    }
+
+    // Otherwise just return the max allowed size.
+    return line.substr(0, mp - 1);
+  }
+
+  return line;
+}
+
 std::string wex::link::get_link_pairs(const std::string& text) const
 {
   for (const auto& p : item_vector(stc::config_items())
@@ -49,12 +86,12 @@ bool wex::stc::link_open(link_t mode, std::string* link)
 {
   const auto& sel(get_selected_text());
 
-  if (const auto max_link_size = 10000; sel.size() > max_link_size)
+  if (const size_t max_link_size = 10000; sel.size() > max_link_size)
   {
     return false;
   }
 
-  const auto& text(!sel.empty() ? sel : GetCurLine().ToStdString());
+  const auto& text(!sel.empty() ? sel : get_current_line_text(m_link, this));
   bool        found(false);
 
   for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
