@@ -58,11 +58,9 @@ bool wex::browser_search(const std::string& text)
   {
     return browser(search_engine + "?q=" + text);
   }
-  else
-  {
-    log("browser_search engine empty") << text;
-    return false;
-  }
+
+  log("browser_search engine empty") << text;
+  return false;
 }
 
 bool wex::clipboard_add(const std::string& text)
@@ -80,20 +78,18 @@ bool wex::clipboard_add(const std::string& text)
     log("clipboard lock");
     return false;
   }
+  /* NOLINTNEXTLINE */
+  else if (wxTheClipboard->SetData(new wxTextDataObject(text)))
+  {
+    // Take care that clipboard data remain after exiting
+    // This is a boolean method as well, we don't check it, as
+    // clipboard data is copied.
+    wxTheClipboard->Flush();
+  }
   else
   {
-    if (wxTheClipboard->SetData(new wxTextDataObject(text)))
-    {
-      // Take care that clipboard data remain after exiting
-      // This is a boolean method as well, we don't check it, as
-      // clipboard data is copied.
-      wxTheClipboard->Flush();
-    }
-    else
-    {
-      log("clipboard add");
-      return false;
-    }
+    log("clipboard add");
+    return false;
   }
 
   return true;
@@ -106,6 +102,7 @@ const std::string wex::clipboard_get()
     log("clipboard lock");
     return std::string();
   }
+  /* NOLINTNEXTLINE */
   else if (wxTheClipboard->IsSupported(wxDF_TEXT))
   {
     if (wxTextDataObject data; wxTheClipboard->GetData(data))
@@ -149,10 +146,8 @@ const std::string wex::find_tail(const std::string& text, size_t max_chars)
     return (corr ? "..." : std::string()) +
            std::string(tail.begin(), tail.end());
   }
-  else
-  {
-    return text;
-  }
+
+  return text;
 }
 
 int wex::get_number_of_lines(const std::string& text, bool trim)
@@ -246,9 +241,13 @@ bool wex::matches_one_of(
   const std::string& pattern)
 {
   if (pattern == "*")
+  {
     return true; // asterix matches always
+  }
   if (filename.empty())
+  {
     return false; // empty string never matches
+  }
 
   // Make a regex of pattern matching chars.
   auto re(pattern);
@@ -261,7 +260,9 @@ bool wex::matches_one_of(
          boost::char_separator<char>(";")))
   {
     if (std::regex_match(filename, std::regex(it)))
+    {
       return true;
+    }
   }
 
   return false;

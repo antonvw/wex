@@ -597,11 +597,9 @@ bool wex::stc::check_brace(int pos)
     BraceHighlight(pos, brace_match);
     return true;
   }
-  else
-  {
-    BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
-    return false;
-  }
+
+  BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
+  return false;
 }
 
 void wex::stc::eol_action(const wxCommandEvent& event)

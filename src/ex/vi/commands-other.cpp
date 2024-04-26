@@ -2,7 +2,7 @@
 // Name:      comands-other.cpp
 // Purpose:   Implementation of wex::vi::commands_other
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -25,10 +25,10 @@
 
 #include "util.h"
 
-#define REPEAT_WITH_UNDO(TEXT) \
-  {                            \
-    stc_undo undo(get_stc());  \
-    REPEAT(TEXT);              \
+#define REPEAT_WITH_UNDO(TEXT)                                                 \
+  {                                                                            \
+    stc_undo undo(get_stc());                                                  \
+    REPEAT(TEXT);                                                              \
   }
 
 namespace wex
@@ -36,7 +36,9 @@ namespace wex
 size_t fold(wex::syntax::stc* stc, const std::string& command)
 {
   if (command.size() <= 1)
+  {
     return (size_t)0;
+  }
 
   const auto level = stc->GetFoldLevel(stc->get_current_line());
 
@@ -51,11 +53,15 @@ size_t fold(wex::syntax::stc* stc, const std::string& command)
       if (
         stc->GetFoldExpanded(line_to_fold) &&
         boost::algorithm::trim_copy(command) == "zc")
+      {
         stc->ToggleFold(line_to_fold);
+      }
       else if (
         !stc->GetFoldExpanded(line_to_fold) &&
         boost::algorithm::trim_copy(command) == "zo")
+      {
         stc->ToggleFold(line_to_fold);
+      }
       break;
 
     case 'f':
@@ -76,7 +82,9 @@ size_t fold(wex::syntax::stc* stc, const std::string& command)
 
     case 'R':
       for (int i = 0; i < stc->get_line_count(); i++)
+      {
         stc->EnsureVisible(i);
+      }
       break;
   }
 
@@ -237,7 +245,9 @@ wex::vi::commands_t wex::vi::commands_other()
      [&](const std::string& command)
      {
        if (get_stc()->CanUndo())
+       {
          get_stc()->Undo();
+       }
        else
        {
          if (config(_("Error bells")).get(true))
@@ -408,7 +418,9 @@ wex::vi::commands_t wex::vi::commands_other()
      [&](const std::string& command)
      {
        if (!get_stc()->GetReadOnly() && !get_stc()->is_hexmode())
+       {
          get_stc()->DeleteBack();
+       }
        return command.size();
      }},
     {k_s(WXK_CONTROL_J) + k_s(WXK_CONTROL_L),
@@ -424,8 +436,7 @@ wex::vi::commands_t wex::vi::commands_other()
          command_reg(command);
          return command.size();
        }
-       else if (
-         command.size() == 2 && register_after(k_s(WXK_CONTROL_R), command))
+       if (command.size() == 2 && register_after(k_s(WXK_CONTROL_R), command))
        {
          command_reg(command);
          return command.size();
@@ -505,10 +516,8 @@ bool wex::vi::other_command(std::string& command)
                 return p == command.front();
               });
           }
-          else
-          {
-            return e.first == command.substr(0, e.first.size());
-          }
+
+          return e.first == command.substr(0, e.first.size());
         });
       it != m_other_commands.end())
   {

@@ -2,7 +2,7 @@
 // Name:      path.cpp
 // Purpose:   Implementation of class wex::path
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2023 Anton van Wezenbeek
+// Copyright: (c) 2017-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -161,31 +161,31 @@ bool wex::path::open_mime() const
     {
       return browser(m_path.string());
     }
-    else
-    {
-      return false;
-    }
+
+    return false;
   }
-  else if (auto* type(
-             wxTheMimeTypesManager->GetFileTypeFromExtension(extension()));
-           type == nullptr)
+
+  const auto* type(
+    wxTheMimeTypesManager->GetFileTypeFromExtension(extension()));
+
+  if (type == nullptr)
   {
     return false;
   }
-  else if (const std::string command(type->GetOpenCommand(string()));
-           command.empty())
+
+  const std::string command(type->GetOpenCommand(string()));
+
+  if (command.empty())
   {
     return false;
   }
-  else
+
+  // wex:: process, boost::process::system, std::system all do not work
+  // so use wx
+  if (wxExecute(command) == -1)
   {
-    // wex:: process, boost::process::system, std::system all do not work
-    // so use wx
-    if (wxExecute(command) == -1)
-    {
-      wex::log("open_mime execute") << command;
-      return false;
-    }
+    wex::log("open_mime execute") << command;
+    return false;
   }
 
   return true;

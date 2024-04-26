@@ -2,7 +2,7 @@
 // Name:      scope.cpp
 // Purpose:   Implementation of class wex::scope
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
@@ -69,10 +69,8 @@ const std::string wex::scope::class_name(const std::string& name) const
   {
     return it->second.class_name();
   }
-  else
-  {
-    return std::string();
-  }
+
+  return std::string();
 }
 
 bool wex::scope::end() const

@@ -52,15 +52,12 @@ command_arg_t get_command_arg(const std::string& command)
   {
     return command_arg_t::NONE;
   }
+  /* NOLINTNEXTLINE */
   else if (int val;
            std::from_chars(post.data(), post.data() + post.size(), val).ec ==
            std::errc())
   {
     return command_arg_t::INT;
-  }
-  else
-  {
-    return command_arg_t::OTHER;
   }
 
   return command_arg_t::OTHER;

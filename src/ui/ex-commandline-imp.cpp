@@ -276,15 +276,14 @@ void wex::ex_commandline_imp::init()
 
 bool wex::ex_commandline_imp::input_mode_finish() const
 {
-  if (const auto& text(get_text()); m_input == 0 || text.size() < 2)
+  const auto& text(get_text());
+  if (m_input == 0 || text.size() < 2)
   {
     return false;
   }
-  else
-  {
-    const auto& last_two(text.substr(text.size() - 2, 2));
-    return text == ":." || last_two == "\n." || last_two == "\r.";
-  }
+
+  const auto& last_two(text.substr(text.size() - 2, 2));
+  return text == ":." || last_two == "\n." || last_two == "\r.";
 }
 
 bool wex::ex_commandline_imp::is_ex_mode() const

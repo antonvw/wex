@@ -2,7 +2,7 @@
 // Name:      addressrange-mark.cpp
 // Purpose:   Implementation of class wex::addressrange_mark
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex/addressrange.h>
@@ -88,13 +88,9 @@ bool wex::addressrange_mark::search(const data::substitute& data)
       'T',
       m_stc->LineFromPosition(m_stc->GetTargetEnd()) + 1);
   }
-  else
-  {
-    return m_stc->SearchInTarget(data.pattern()) != -1 &&
-           m_ex->marker_add(
-             'T',
-             m_stc->LineFromPosition(m_stc->GetTargetEnd()));
-  }
+
+  return m_stc->SearchInTarget(data.pattern()) != -1 &&
+         m_ex->marker_add('T', m_stc->LineFromPosition(m_stc->GetTargetEnd()));
 }
 
 bool wex::addressrange_mark::set()

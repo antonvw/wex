@@ -37,11 +37,9 @@ int convert_int_attrib(
   {
     return it->second;
   }
-  else
-  {
-    log("unsupported attrib") << text;
-    return -1;
-  }
+
+  log("unsupported attrib") << text;
+  return -1;
 }
 
 /// Tokenizes the complete string into a vector of integers (size_t).
@@ -146,15 +144,16 @@ bool wex::lexer::add_keywords(const std::string& value, int setno)
 
       try
       {
-        if (int new_setno = 0;
-            std::from_chars(a_l.data(), a_l.data() + a_l.size(), new_setno)
-                .ec != std::errc() ||
-            new_setno <= 0 || new_setno >= wxSTC_KEYWORDSET_MAX)
+        int new_setno = 0;
+        if (
+          std::from_chars(a_l.data(), a_l.data() + a_l.size(), new_setno).ec !=
+            std::errc() ||
+          new_setno <= 0 || new_setno >= wxSTC_KEYWORDSET_MAX)
         {
           wex::log("invalid keyword set") << new_setno << a_l;
           return false;
         }
-        else if (new_setno != setno)
+        if (new_setno != setno)
         {
           if (!keywords_set.empty())
           {
@@ -261,9 +260,13 @@ bool wex::lexer::apply() const
     lexers::get()->apply(m_stc);
 
     for (const auto& p : m_properties)
+    {
       p.apply(m_stc);
+    }
     for (const auto& s : m_styles)
+    {
       s.apply(m_stc);
+    }
   }
 
   // And finally colour the entire document.
@@ -389,18 +392,19 @@ void wex::lexer::clear()
 const std::string wex::lexer::comment_complete(const std::string& comment) const
 {
   if (m_command_end.empty())
+  {
     return std::string();
+  }
 
   // Fill out rest of comment with spaces, and comment end string.
-  if (const int n = line_size() - comment.size() - m_command_end.size(); n <= 0)
+  const int n = line_size() - comment.size() - m_command_end.size();
+  if (n <= 0)
   {
     return std::string();
   }
-  else
-  {
-    const auto& blanks = std::string(n, ' ');
-    return blanks + m_command_end;
-  }
+
+  const auto& blanks = std::string(n, ' ');
+  return blanks + m_command_end;
 }
 
 const std::string wex::lexer::formatted_text(
@@ -449,13 +453,11 @@ const std::string wex::lexer::keywords_string(
   {
     return get_string_set(m_keywords, min_size, prefix);
   }
-  else
+
+  if (const auto& it = m_keywords_set.find(keyword_set);
+      it != m_keywords_set.end())
   {
-    if (const auto& it = m_keywords_set.find(keyword_set);
-        it != m_keywords_set.end())
-    {
-      return get_string_set(it->second, min_size, prefix);
-    }
+    return get_string_set(it->second, min_size, prefix);
   }
 
   return std::string();
@@ -522,12 +524,18 @@ const std::string wex::lexer::make_single_line_comment(
     if (text.empty())
     {
       if (m_comment_begin == m_command_end)
+      {
         fill_out_character = '-';
+      }
       else
+      {
         fill_out_character = m_comment_begin[m_comment_begin.size() - 1];
+      }
     }
     else
+    {
       fill_out_character = ' ';
+    }
   }
 
   std::string out = m_comment_begin + fill_out_character + std::string(text);
@@ -543,7 +551,9 @@ const std::string wex::lexer::make_single_line_comment(
   }
 
   if (!m_command_end.empty())
+  {
     out += fill_out_character + m_command_end;
+  }
 
   return out;
 }
@@ -579,108 +589,114 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
 
   if (const std::string v(node->attribute("edgemode").value()); !v.empty())
   {
-    m_attribs.emplace_back(_("Edge line"),
-       convert_int_attrib(
-         {{"none", wxSTC_EDGE_NONE},
-          {"line", wxSTC_EDGE_LINE},
-          {"background", wxSTC_EDGE_BACKGROUND}},
-         v),
-       [&](syntax::stc* stc, int attrib)
-       {
-         switch (attrib)
-         {
-           case -1:
-             break;
+    m_attribs.emplace_back(
+      _("Edge line"),
+      convert_int_attrib(
+        {{"none", wxSTC_EDGE_NONE},
+         {"line", wxSTC_EDGE_LINE},
+         {"background", wxSTC_EDGE_BACKGROUND}},
+        v),
+      [&](syntax::stc* stc, int attrib)
+      {
+        switch (attrib)
+        {
+          case -1:
+            break;
 
-           case wxSTC_EDGE_LINE:
-             stc->SetEdgeMode(
-               m_edge_columns.size() <= 1 ? wxSTC_EDGE_LINE :
-                                            wxSTC_EDGE_MULTILINE);
-             break;
+          case wxSTC_EDGE_LINE:
+            stc->SetEdgeMode(
+              m_edge_columns.size() <= 1 ? wxSTC_EDGE_LINE :
+                                           wxSTC_EDGE_MULTILINE);
+            break;
 
-           default:
-             stc->SetEdgeMode(attrib);
-             break;
-         }
-       });
+          default:
+            stc->SetEdgeMode(attrib);
+            break;
+        }
+      });
   }
 
   if (const std::string v(node->attribute("spacevisible").value()); !v.empty())
   {
-    m_attribs.emplace_back(_("Whitespace visible"),
-       convert_int_attrib(
-         {{"invisible", wxSTC_WS_INVISIBLE},
-          {"always", wxSTC_WS_VISIBLEALWAYS},
-          {"afterindent", wxSTC_WS_VISIBLEAFTERINDENT},
-          {"onlyindent", wxSTC_WS_VISIBLEONLYININDENT}},
-         v),
-       [&](syntax::stc* stc, int attrib)
-       {
-         if (attrib >= 0)
-         {
-           stc->SetViewWhiteSpace(attrib);
-         }
-       });
+    m_attribs.emplace_back(
+      _("Whitespace visible"),
+      convert_int_attrib(
+        {{"invisible", wxSTC_WS_INVISIBLE},
+         {"always", wxSTC_WS_VISIBLEALWAYS},
+         {"afterindent", wxSTC_WS_VISIBLEAFTERINDENT},
+         {"onlyindent", wxSTC_WS_VISIBLEONLYININDENT}},
+        v),
+      [&](syntax::stc* stc, int attrib)
+      {
+        if (attrib >= 0)
+        {
+          stc->SetViewWhiteSpace(attrib);
+        }
+      });
   }
 
   if (const std::string v(node->attribute("tabdrawmode").value()); !v.empty())
   {
-    m_attribs.emplace_back(_("Tab draw mode"),
-       convert_int_attrib(
-         {{"arrow", wxSTC_TD_LONGARROW}, {"strike", wxSTC_TD_STRIKEOUT}},
-         v),
-       [&](syntax::stc* stc, int attrib)
-       {
-         if (attrib >= 0)
-         {
-           stc->SetTabDrawMode(attrib);
-         }
-       });
+    m_attribs.emplace_back(
+      _("Tab draw mode"),
+      convert_int_attrib(
+        {{"arrow", wxSTC_TD_LONGARROW}, {"strike", wxSTC_TD_STRIKEOUT}},
+        v),
+      [&](syntax::stc* stc, int attrib)
+      {
+        if (attrib >= 0)
+        {
+          stc->SetTabDrawMode(attrib);
+        }
+      });
   }
 
   if (const std::string v(node->attribute("tabmode").value()); !v.empty())
   {
-    m_attribs.emplace_back(_("Expand tabs"),
-       convert_int_attrib({{"use", 1}, {"off", 0}}, v),
-       [&](syntax::stc* stc, int attrib)
-       {
-         if (attrib >= 0)
-         {
-           stc->SetUseTabs(attrib);
-         }
-       });
+    m_attribs.emplace_back(
+      _("Expand tabs"),
+      convert_int_attrib({{"use", 1}, {"off", 0}}, v),
+      [&](syntax::stc* stc, int attrib)
+      {
+        if (attrib >= 0)
+        {
+          stc->SetUseTabs(attrib);
+        }
+      });
   }
 
   if (const auto v(node->attribute("tabwidth").as_int(0)); v > 0)
   {
-    m_attribs.emplace_back(_("Tab width"),
-       v,
-       [&](syntax::stc* stc, int attrib)
-       {
-         if (attrib >= 0)
-         {
-           stc->SetIndent(attrib);
-           stc->SetTabWidth(attrib);
-         }
-       });
+    m_attribs.emplace_back(
+      _("Tab width"),
+      v,
+      [&](syntax::stc* stc, int attrib)
+      {
+        if (attrib >= 0)
+        {
+          stc->SetIndent(attrib);
+          stc->SetTabWidth(attrib);
+        }
+      });
   }
 
   if (const std::string v(node->attribute("wrapline").value()); !v.empty())
   {
-    m_attribs.emplace_back(_("Wrap line"),
-       convert_int_attrib(
-         {{"none", wxSTC_WRAP_NONE},
-          {"word", wxSTC_WRAP_WORD},
-          {"char", wxSTC_WRAP_CHAR},
-          {"whitespace", wxSTC_WRAP_WHITESPACE}},
-         v),
-       [&](syntax::stc* stc, int attrib)
-       {
-         if (attrib >= 0)
-         {
-           stc->SetWrapMode(attrib);
-         }
-       });
+    m_attribs.emplace_back(
+      _("Wrap line"),
+      convert_int_attrib(
+        {{"none", wxSTC_WRAP_NONE},
+         {"word", wxSTC_WRAP_WORD},
+         {"char", wxSTC_WRAP_CHAR},
+         {"whitespace", wxSTC_WRAP_WHITESPACE}},
+        v),
+      [&](syntax::stc* stc, int attrib)
+      {
+        if (attrib >= 0)
+        {
+          stc->SetWrapMode(attrib);
+        }
+      });
   }
 }
 
@@ -807,9 +823,13 @@ void wex::lexer::set_property(const std::string& name, const std::string& value)
           return e.name() == name;
         });
       it != m_properties.end())
+  {
     it->set(value);
+  }
   else
+  {
     m_properties.emplace_back(name, value);
+  }
 }
 
 size_t wex::lexer::usable_chars_per_line() const

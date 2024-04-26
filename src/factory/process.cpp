@@ -2,7 +2,7 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wex::factory::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
@@ -34,10 +34,8 @@ bool wex::factory::process::async_system(const process_data& data)
     m_imp->async_system(this, data); // this is a void
     return true;
   }
-  else
-  {
-    log::trace("async_system needs set_handler_out");
-  }
+
+  log::trace("async_system needs set_handler_out");
 
   return false;
 }

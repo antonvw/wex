@@ -125,14 +125,18 @@ void wex::data::find::set_pos()
       m_end_pos   = m_stc->GetCurrentPos();
 
       if (m_stc->GetSelectionStart() != -1)
+      {
         m_end_pos = m_stc->GetSelectionStart();
+      }
     }
     else
     {
       m_start_pos = m_stc->GetCurrentPos();
 
       if (m_stc->GetSelectionStart() != -1)
+      {
         m_start_pos = m_stc->GetSelectionStart();
+      }
 
       m_end_pos = 0;
     }
@@ -150,16 +154,14 @@ const std::string wex::data::find::get_find_result() const
            quoted(boost::algorithm::trim_copy(text())) + " " +
            _("hit").ToStdString() + " " + where;
   }
-  else
-  {
-    if (config(_("Error bells")).get(true))
-    {
-      wxBell();
-    }
 
-    return quoted(boost::algorithm::trim_copy(text())) + " " +
-           _("not found").ToStdString();
+  if (config(_("Error bells")).get(true))
+  {
+    wxBell();
   }
+
+  return quoted(boost::algorithm::trim_copy(text())) + " " +
+         _("not found").ToStdString();
 }
 
 void wex::data::find::statustext() const

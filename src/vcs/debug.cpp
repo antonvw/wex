@@ -60,8 +60,8 @@ private:
 }; // namespace wex
 #endif
 
-#define MATCH(REGEX)                                          \
-  regex v(m_entry.regex_stdout(debug_entry::regex_t::REGEX)); \
+#define MATCH(REGEX)                                                           \
+  regex v(m_entry.regex_stdout(debug_entry::regex_t::REGEX));                  \
   v.search(m_stdout)
 
 std::string wex::debug::default_exe()
@@ -179,41 +179,40 @@ wex::path wex::debug::complete_path(const std::string& text) const
 
 bool wex::debug::execute(const std::string& action, wex::stc* stc)
 {
-  if (const auto& r(get_args(action, stc)); !r)
+  const auto& r(get_args(action, stc));
+  if (!r)
   {
     return false;
   }
-  else
+
+  const auto& exe(
+    m_entry.name() + (!m_entry.flags().empty() ?
+                        std::string(1, ' ') + m_entry.flags() :
+                        std::string()));
+
+  log::trace("debug exe") << exe << *r;
+
+  if (
+    m_process == nullptr &&
+    ((m_process = m_frame->get_process(exe)) == nullptr))
   {
-    const auto& exe(
-      m_entry.name() + (!m_entry.flags().empty() ?
-                          std::string(1, ' ') + m_entry.flags() :
-                          std::string()));
-
-    log::trace("debug exe") << exe << *r;
-
-    if (
-      m_process == nullptr &&
-      ((m_process = m_frame->get_process(exe)) == nullptr))
-    {
-      log("debug") << m_entry.name() << "no process";
-      return false;
-    }
-
-    if (!m_process->is_running() && !m_process->async_system(exe))
-    {
-      log("debug") << m_entry.name() << "process no execute" << exe;
-      return false;
-    }
-
-    if (regex v(" +([a-zA-Z0-9_./-]*)"); v.search(*r) == 1)
-    {
-      m_path = path(v[0]);
-    }
-
-    return m_process->write(
-      action == "interrupt" ? std::string(1, 3) : action + *r);
+    log("debug") << m_entry.name() << "no process";
+    return false;
   }
+
+  if (!m_process->is_running() && !m_process->async_system(exe))
+  {
+    log("debug") << m_entry.name() << "process no execute" << exe;
+    return false;
+  }
+
+  if (regex v(" +([a-zA-Z0-9_./-]*)"); v.search(*r) == 1)
+  {
+    m_path = path(v[0]);
+  }
+
+  return m_process->write(
+    action == "interrupt" ? std::string(1, 3) : action + *r);
 }
 
 bool wex::debug::execute(int item, stc* stc)
@@ -293,7 +292,7 @@ wex::debug::get_args(const std::string& command, stc* stc)
              std::nullopt :
              std::optional<std::string>{args};
   }
-  else if (regex r("^(b|break)"); r.search(command) == 1)
+  if (regex r("^(b|break)"); r.search(command) == 1)
   {
     if (stc == nullptr)
     {
@@ -341,7 +340,9 @@ wex::debug::get_args(const std::string& command, stc* stc)
                    [&](wxWindow* user, const std::any& value, bool save)
                    {
                      if (save)
+                     {
                        args += " " + std::any_cast<wxArrayString>(value)[0];
+                     }
                    })},
               {"debug." + m_entry.name(), item::FILEPICKERCTRL}},
              data::window().title(_("Debug")).parent(m_frame))
@@ -585,19 +586,18 @@ bool wex::debug::show_dialog(wxWindow* parent)
       return i.name();
     });
 
-  if (auto debugger = m_entry.name(); !single_choice_dialog(
+  auto debugger = m_entry.name();
+  if (!single_choice_dialog(
         data::window().parent(parent).title(_("Enter Debugger")),
         s,
         debugger))
   {
     return false;
   }
-  else
-  {
-    config("debug.debugger").set(debugger);
-    set_entry(debugger);
-    return true;
-  }
+
+  config("debug.debugger").set(debugger);
+  set_entry(debugger);
+  return true;
 }
 
 bool wex::debug::toggle_breakpoint(int line, stc* stc)

@@ -137,17 +137,25 @@ wex::addressrange::build_replacement(const std::string& text) const
     {
       case '&':
         if (!backslash)
+        {
           replacement += target;
+        }
         else
+        {
           replacement += c;
+        }
         backslash = false;
         break;
 
       case '0':
         if (backslash)
+        {
           replacement += target;
+        }
         else
+        {
           replacement += c;
+        }
         backslash = false;
         break;
 
@@ -158,13 +166,17 @@ wex::addressrange::build_replacement(const std::string& text) const
           convert_case(m_stc, target, c);
         }
         else
+        {
           replacement += c;
+        }
         backslash = false;
         break;
 
       case '\\':
         if (backslash)
+        {
           replacement += c;
+        }
         backslash = !backslash;
         break;
 
@@ -218,10 +230,8 @@ bool wex::addressrange::copy(const command_parser& cp)
     {
       return change(find_after(cp.text(), "|"));
     }
-    else
-    {
-      return m_ex->frame()->show_ex_input(m_ex->get_stc(), cp.command()[0]);
-    }
+
+    return m_ex->frame()->show_ex_input(m_ex->get_stc(), cp.command()[0]);
   }
 
   return false;
@@ -272,17 +282,16 @@ bool wex::addressrange::escape(const std::string& command)
 
   if (m_begin.m_address.empty() && m_end.m_address.empty())
   {
-    if (auto expanded(command);
-        !marker_and_register_expansion(m_ex, expanded) ||
-        !shell_expansion(expanded))
+    auto expanded(command);
+    if (
+      !marker_and_register_expansion(m_ex, expanded) ||
+      !shell_expansion(expanded))
     {
       return false;
     }
-    else
-    {
-      return m_ex->frame()->process_async_system(
-        process_data(expanded).start_dir(m_stc->path().parent_path()));
-    }
+
+    return m_ex->frame()->process_async_system(
+      process_data(expanded).start_dir(m_stc->path().parent_path()));
   }
 
   if (!is_ok())
@@ -294,9 +303,9 @@ bool wex::addressrange::escape(const std::string& command)
   {
     return false;
   }
-  else if (factory::process process;
-           process.system(wex::process_data(command).std_in(
-             m_stc->get_selected_text())) == 0)
+  if (factory::process process;
+      process.system(
+        wex::process_data(command).std_in(m_stc->get_selected_text())) == 0)
   {
     if (const auto& out(process.std_out()); !out.empty())
     {
@@ -309,7 +318,7 @@ bool wex::addressrange::escape(const std::string& command)
 
       return true;
     }
-    else if (const auto& err(process.std_err()); !err.empty())
+    if (const auto& err(process.std_err()); !err.empty())
     {
       m_ex->frame()->show_ex_message(err);
       log("escape") << err;
@@ -342,7 +351,7 @@ bool wex::addressrange::execute(const std::string& reg) const
 }
 
 bool wex::addressrange::general(
-  const address&        destination,
+  const address&               destination,
   const std::function<bool()>& f) const
 {
   const auto dest_line = destination.get_line();
@@ -392,11 +401,15 @@ bool wex::addressrange::global(const command_parser& cp) const
   if (g.hits() > 0)
   {
     if (g.has_commands())
+    {
       m_ex->frame()->show_ex_message(
         "executed: " + std::to_string(g.hits()) + " commands");
+    }
     else
+    {
       m_ex->frame()->show_ex_message(
         "found: " + std::to_string(g.hits()) + " matches");
+    }
   }
 
   return true;
@@ -588,11 +601,9 @@ bool wex::addressrange::parse(const command_parser& cp, info_message_t& im)
   {
     return it->second(cp, im);
   }
-  else
-  {
-    log::status("Unknown range command") << cp.command();
-    return false;
-  }
+
+  log::status("Unknown range command") << cp.command();
+  return false;
 }
 
 bool wex::addressrange::print(const command_parser& cp)
@@ -663,21 +674,21 @@ bool wex::addressrange::set_range(const std::string& range)
   {
     return set("1", "$");
   }
-  else if (range == "*")
+
+  if (range == "*")
   {
     set(
       m_stc->GetFirstVisibleLine() + 1,
       m_stc->GetFirstVisibleLine() + m_stc->LinesOnScreen() + 1);
     return true;
   }
-  else if (const auto comma(range.find(',')); comma != std::string::npos)
+
+  if (const auto comma(range.find(',')); comma != std::string::npos)
   {
     return set(range.substr(0, comma), range.substr(comma + 1));
   }
-  else
-  {
-    return set(range, range);
-  }
+
+  return set(range, range);
 }
 
 bool wex::addressrange::set_selection() const
@@ -686,17 +697,15 @@ bool wex::addressrange::set_selection() const
   {
     return true;
   }
-  else if (!is_ok())
+  if (!is_ok())
   {
     return false;
   }
-  else
-  {
-    m_stc->SetSelection(
-      m_stc->PositionFromLine(m_begin.get_line() - 1),
-      m_stc->PositionFromLine(m_end.get_line()));
-    return true;
-  }
+
+  m_stc->SetSelection(
+    m_stc->PositionFromLine(m_begin.get_line() - 1),
+    m_stc->PositionFromLine(m_end.get_line()));
+  return true;
 }
 
 bool wex::addressrange::set_single(const std::string& line, address& addr)
@@ -711,11 +720,9 @@ bool wex::addressrange::set_single(const std::string& line, address& addr)
     addr.set_line(line_no);
     return true;
   }
-  else
-  {
-    log::debug("addressrange line") << line;
-    return false;
-  }
+
+  log::debug("addressrange line") << line;
+  return false;
 }
 
 bool wex::addressrange::sort(const std::string& parameters) const
@@ -753,9 +760,13 @@ bool wex::addressrange::sort(const std::string& parameters) const
     }
 
     if (parameters.contains("r"))
+    {
       sort_t.set(factory::sort::SORT_DESCENDING);
+    }
     if (parameters.contains("u"))
+    {
       sort_t.set(factory::sort::SORT_UNIQUE);
+    }
 
     std::string filter; // filter r, u
     std::copy_if(
@@ -777,19 +788,19 @@ bool wex::addressrange::sort(const std::string& parameters) const
 
       if (const auto co = filter.find(','); co != std::string::npos)
       {
-        if (size_t end; std::from_chars(
-                          filter.data() + co + 1,
-                          filter.data() + filter.size(),
-                          end)
-                            .ec != std::errc() ||
-                        end <= pos)
+        size_t end;
+        if (
+          std::from_chars(
+            filter.data() + co + 1,
+            filter.data() + filter.size(),
+            end)
+              .ec != std::errc() ||
+          end <= pos)
         {
           return false;
         }
-        else
-        {
-          len = end - pos;
-        }
+
+        len = end - pos;
       }
     }
   }
@@ -832,13 +843,15 @@ bool wex::addressrange::substitute(const command_parser& cp)
   {
     return m_ex->ex_stream()->substitute(*this, data);
   }
-  else if (m_stc->GetReadOnly())
+  if (m_stc->GetReadOnly())
   {
     return false;
   }
 
   if (data.is_ignore_case())
+  {
     searchFlags &= ~wxSTC_FIND_MATCHCASE;
+  }
 
   addressrange_mark am(*this, data);
 
@@ -916,19 +929,18 @@ bool wex::addressrange::write(const command_parser& cp)
       stc_undo::undo_t().set(stc_undo::UNDO_POS).set(stc_undo::UNDO_SEL_NONE));
     return write(cp.text());
   }
-  else if (!m_stc->is_visual())
+
+  if (!m_stc->is_visual())
   {
     return m_ex->ex_stream()->write();
   }
-  else
-  {
-    wxCommandEvent event(
-      wxEVT_COMMAND_MENU_SELECTED,
-      cp.text().empty() ? wxID_SAVE : wxID_SAVEAS);
-    event.SetString(boost::algorithm::trim_left_copy(cp.text()));
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
-    return true;
-  }
+
+  wxCommandEvent event(
+    wxEVT_COMMAND_MENU_SELECTED,
+    cp.text().empty() ? wxID_SAVE : wxID_SAVEAS);
+  event.SetString(boost::algorithm::trim_left_copy(cp.text()));
+  wxPostEvent(wxTheApp->GetTopWindow(), event);
+  return true;
 }
 
 bool wex::addressrange::write(const std::string& text) const
@@ -952,14 +964,12 @@ bool wex::addressrange::write(const std::string& text) const
   {
     return m_ex->ex_stream()->write(*this, filename, text.contains(">>"));
   }
-  else
-  {
-    return file(
-             path(filename),
-             text.contains(">>") ? std::ios::out | std::ios_base::app :
-                                   std::ios::out)
-      .write(m_stc->get_selected_text());
-  }
+
+  return file(
+           path(filename),
+           text.contains(">>") ? std::ios::out | std::ios_base::app :
+                                 std::ios::out)
+    .write(m_stc->get_selected_text());
 }
 
 bool wex::addressrange::yank(const command_parser& cp)
@@ -973,8 +983,6 @@ bool wex::addressrange::yank(char name) const
   {
     return m_ex->ex_stream()->yank(*this, name);
   }
-  else
-  {
-    return set_selection() && m_ex->yank(name);
-  }
+
+  return set_selection() && m_ex->yank(name);
 }

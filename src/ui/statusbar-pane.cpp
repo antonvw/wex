@@ -2,7 +2,7 @@
 // Name:      statusbar-pane.cpp
 // Purpose:   Implementation of wex::statusbar_pane class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ui/statusbar-pane.h>
@@ -24,10 +24,8 @@ std::string determine_help_text(const std::string& name)
   {
     return search->second;
   }
-  else
-  {
-    return name.substr(name.find('e') + 1);
-  }
+
+  return name.substr(name.find('e') + 1);
 }
 } // namespace wex
 

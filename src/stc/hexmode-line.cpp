@@ -69,11 +69,13 @@ int wex::hexmode_line::buffer_index() const
   {
     return wxSTC_INVALID_POSITION;
   }
-  else if (m_column_no >= m_start_ascii_field)
+
+  if (m_column_no >= m_start_ascii_field)
   {
     return convert(m_column_no - m_start_ascii_field);
   }
-  else if (m_column_no >= 0)
+
+  if (m_column_no >= 0)
   {
     if (m_line[m_column_no] != ' ')
     {

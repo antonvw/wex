@@ -789,6 +789,7 @@ bool wex::del::frame::vcs_annotate_commit(
 
     return true;
   }
+  /* NOLINTNEXTLINE */
   else
   {
     log::trace("annotate commit failed") << vcs.name();

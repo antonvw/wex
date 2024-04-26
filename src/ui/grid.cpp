@@ -447,13 +447,11 @@ bool wex::grid::find_next(const data::find& f)
 
     return result;
   }
-  else
-  {
-    f.recursive(false);
-    SetGridCursor(match.GetRow(), match.GetCol());
-    MakeCellVisible(match); // though docs say this isn't necessary, it is
-    return true;
-  }
+
+  f.recursive(false);
+  SetGridCursor(match.GetRow(), match.GetCol());
+  MakeCellVisible(match); // though docs say this isn't necessary, it is
+  return true;
 }
 
 const std::string wex::grid::get_cells_value() const
