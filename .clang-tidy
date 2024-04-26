@@ -25,6 +25,7 @@ Checks:
   performance-unnecessary-value-param,
   readability-container-contains,
   readability-duplicate-include,
+  readability-else-after-return,
   readability-redundant-casting,
   readability-redundant-control-flow,
   readability-redundant-member-init,

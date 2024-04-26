@@ -2,7 +2,7 @@
 // Name:      common/util.cpp
 // Purpose:   Implementation of wex common utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <numeric>
@@ -100,7 +100,8 @@ wex::auto_complete_filename(const std::string& text)
   {
     return {};
   }
-  else if (v.size() > 1)
+
+  if (v.size() > 1)
   {
     auto rest_equal_size = 0;
     auto all_ok          = true;
@@ -133,10 +134,8 @@ wex::auto_complete_filename(const std::string& text)
     return {
       auto_complete_filename_t(v[0].substr(prefix.size(), rest_equal_size), v)};
   }
-  else
-  {
-    return {auto_complete_filename_t(v[0].substr(prefix.size()), v)};
-  }
+
+  return {auto_complete_filename_t(v[0].substr(prefix.size()), v)};
 }
 
 void wex::combobox_from_list(wxComboBox* cb, const strings_t& text)
@@ -158,21 +157,20 @@ bool wex::compare_file(const path& file1, const path& file2)
     return false;
   }
 
-  if (const auto arguments =
-        (file1.stat().get_modification_time() <
-         file2.stat().get_modification_time()) ?
-          quoted_find(file1.string()) + " " + quoted_find(file2.string()) :
-          quoted_find(file2.string()) + " " + quoted_find(file1.string());
-      factory::process().system(
-        config(_("list.Comparator")).get() + " " + arguments) != 0)
+  const auto arguments =
+    (file1.stat().get_modification_time() <
+     file2.stat().get_modification_time()) ?
+      quoted_find(file1.string()) + " " + quoted_find(file2.string()) :
+      quoted_find(file2.string()) + " " + quoted_find(file1.string());
+  if (
+    factory::process().system(
+      config(_("list.Comparator")).get() + " " + arguments) != 0)
   {
     return false;
   }
-  else
-  {
-    log::status(_("Compared")) << arguments;
-    return true;
-  }
+
+  log::status(_("Compared")) << arguments;
+  return true;
 }
 
 bool wex::lexers_dialog(syntax::stc* stc)
@@ -188,19 +186,18 @@ bool wex::lexers_dialog(syntax::stc* stc)
       return i.display_lexer();
     });
 
-  if (auto lexer = stc->get_lexer().display_lexer(); !single_choice_dialog(
+  auto lexer = stc->get_lexer().display_lexer();
+  if (!single_choice_dialog(
         data::window().parent(stc).title(_("Enter Lexer")),
         s,
         lexer))
   {
     return false;
   }
-  else
-  {
-    lexer.empty() ? stc->get_lexer().clear() :
-                    (void)stc->get_lexer().set(lexer, true);
-    return true;
-  }
+
+  lexer.empty() ? stc->get_lexer().clear() :
+                  (void)stc->get_lexer().set(lexer, true);
+  return true;
 }
 
 int wex::open_files(
@@ -271,14 +268,13 @@ bool wex::shell_expansion(std::string& command)
 
   while (r.search(command) > 0)
   {
-    if (factory::process process; process.system(r[0]) != 0)
+    factory::process process;
+    if (process.system(r[0]) != 0)
     {
       return false;
     }
-    else
-    {
-      r.replace(command, process.std_out());
-    }
+
+    r.replace(command, process.std_out());
   }
 
   return true;

@@ -171,11 +171,9 @@ bool wex::del::file::do_file_load(bool synced)
       clear();
       return true;
     }
-    else
-    {
-      xml_error(path(), &result);
-      return false;
-    }
+
+    xml_error(path(), &result);
+    return false;
   }
 
   clear();

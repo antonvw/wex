@@ -16,14 +16,13 @@ namespace wex
 {
 const std::vector<path> paths(factory::stc* stc)
 {
-  if (const auto& p(stc->get_data()->head_path()); p.empty())
+  const auto& p(stc->get_data()->head_path());
+  if (p.empty())
   {
     return {{stc->path()}};
   }
-  else
-  {
-    return {{p}};
-  }
+
+  return {{p}};
 }
 } // namespace wex
 

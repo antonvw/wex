@@ -71,18 +71,18 @@ saveas
 	Remove File	copy.txt
 
 set
-	Input	:set all *
+	Input	:set all
 	Appl
 	Output Contains	ec=
 
 set-bool
-	Input	:set nosws *
-	...	:set sws ? *
+	Input	:set nosws
+	...	:set sws ?
 	Appl
 	Output Contains	nosws
 
 set-info
-	Input	:set ts ? *
+	Input	:set ts ?
 	Appl
 	Output Contains	tabstop=
 

@@ -177,6 +177,7 @@ const wex::path wex::factory::link::find_filename(
     {
       return p.make_absolute();
     }
+    /* NOLINTNEXTLINE */
     else if (const path r(m_paths->find(q.string())); !r.empty())
     {
       return r;
@@ -265,6 +266,7 @@ const wex::path wex::factory::link::get_path(
   {
     return file.make_absolute();
   }
+  /* NOLINTNEXTLINE */
   else if (file.is_relative() && stc != nullptr && stc->path().file_exists())
   {
     if (wex::path path(stc->path().parent_path());

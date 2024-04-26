@@ -38,15 +38,14 @@ build_system_t check_build_system(const path_lexer& p)
   {
     return build_system_t::MAKE;
   }
-  else if (p.lexer().display_lexer() == "ninja")
+  if (p.lexer().display_lexer() == "ninja")
   {
     return build_system_t::NINJA;
   }
-  else
-  {
-    log("unsupported build system") << p.lexer().scintilla_lexer();
+  
+      log("unsupported build system") << p.lexer().scintilla_lexer();
     return build_system_t::OTHER;
-  }
+ 
 }
 
 bool build(const path_lexer& p)

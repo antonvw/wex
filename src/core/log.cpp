@@ -46,10 +46,8 @@ std::string quote(const std::string& r, log::level_t level)
   {
     return "";
   }
-  else
-  {
-    return r.contains(" ") ? "\"" : "";
-  }
+
+  return r.contains(" ") ? "\"" : "";
 }
 
 std::string ws2s(const std::wstring& wstr)

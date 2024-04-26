@@ -125,7 +125,7 @@ TEST_CASE("wex::path")
     REQUIRE(!wex::path("XXXXX").open_mime());
 
 #ifndef GITHUB
-    REQUIRE(wex::path("test.md").open_mime());
+    REQUIRE(wex::path("test-source.txt").open_mime());
 #endif
   }
 

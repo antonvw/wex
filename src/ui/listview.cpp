@@ -62,10 +62,8 @@ public:
 
       return true;
     }
-    else
-    {
-      return false;
-    }
+
+    return false;
   };
 
 private:
@@ -78,14 +76,13 @@ template <typename T> int compare(T x, T y)
   {
     return 1;
   }
-  else if (x < y)
+
+  if (x < y)
   {
     return -1;
   }
-  else
-  {
-    return 0;
-  }
+
+  return 0;
 }
 
 const std::vector<item> config_items()
@@ -139,9 +136,7 @@ wex::listview::listview(const data::listview& data)
 
   if (m_data.image() != data::listview::IMAGE_NONE)
   {
-    SetImageList(
-      wxTheFileIconsTable->GetSmallImageList(),
-      wxIMAGE_LIST_SMALL);
+    SetImageList(wxTheFileIconsTable->GetSmallImageList(), wxIMAGE_LIST_SMALL);
   }
 
   m_frame->update_statusbar(this);
@@ -604,19 +599,17 @@ bool wex::listview::find_next(const std::string& text, bool forward)
 
     return true;
   }
-  else
+
+  find.statustext();
+
+  if (!find.recursive())
   {
-    find.statustext();
-
-    if (!find.recursive())
-    {
-      data::find::recursive(true);
-      find_next(text, forward);
-      data::find::recursive(false);
-    }
-
-    return false;
+    data::find::recursive(true);
+    find_next(text, forward);
+    data::find::recursive(false);
   }
+
+  return false;
 }
 
 unsigned int wex::listview::get_art_id(const wxArtID& artid)
@@ -625,19 +618,16 @@ unsigned int wex::listview::get_art_id(const wxArtID& artid)
   {
     return it->second;
   }
-  else
+
+  auto* il = GetImageList(wxIMAGE_LIST_SMALL);
+  if (il == nullptr)
   {
-    if (auto* il = GetImageList(wxIMAGE_LIST_SMALL); il == nullptr)
-    {
-      assert(0);
-      return 0;
-    }
-    else
-    {
-      m_art_ids.insert({artid, il->GetImageCount()});
-      return il->Add(wxArtProvider::GetBitmap(artid, wxART_OTHER));
-    }
+    assert(0);
+    return 0;
   }
+
+  m_art_ids.insert({artid, il->GetImageCount()});
+  return il->Add(wxArtProvider::GetBitmap(artid, wxART_OTHER));
 }
 
 wex::column wex::listview::get_column(const std::string& name) const
@@ -726,8 +716,8 @@ bool wex::listview::insert_item(
             log("listview insert") << "index:" << index << "col:" << col;
             return false;
           }
-          else if (regex v(",fore:(.*)");
-                   v.match(lexers::get()->get_default_style().value()) > 0)
+          if (regex v(",fore:(.*)");
+              v.match(lexers::get()->get_default_style().value()) > 0)
           {
             SetItemTextColour(index, wxColour(v[0]));
           }
@@ -1245,11 +1235,11 @@ int wxCALLBACK compare_cb(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData)
   {
     return 0;
   }
-  else if (str1.empty())
+  if (str1.empty())
   {
     return -1;
   }
-  else if (str2.empty())
+  if (str2.empty())
   {
     return 1;
   }

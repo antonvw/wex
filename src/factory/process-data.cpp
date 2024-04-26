@@ -29,14 +29,15 @@ const std::vector<std::string> wex::process_data::args() const
   {
     return to_vector_string(m_args).get();
   }
-  else if (const auto pos = m_exe.find(' '); pos == std::string::npos)
+
+  const auto pos = m_exe.find(' ');
+
+  if (pos == std::string::npos)
   {
     return std::vector<std::string>{};
   }
-  else
-  {
-    return to_vector_string(m_exe.substr(pos + 1)).get();
-  }
+
+  return to_vector_string(m_exe.substr(pos + 1)).get();
 }
 
 wex::process_data& wex::process_data::args(const std::string& rhs)
@@ -59,16 +60,14 @@ const std::string wex::process_data::exe_path() const
   {
     throw std::invalid_argument("Cannot execute empty string");
   }
-  else if (!p.file_exists())
+  if (!p.file_exists())
   {
     if (const auto& bop(bp::search_path(p.string())); !bop.empty())
     {
       return bop.string();
     }
-    else
-    {
-      throw std::invalid_argument("Could not find: " + p.string());
-    }
+
+    throw std::invalid_argument("Could not find: " + p.string());
   }
 
   return p.string();

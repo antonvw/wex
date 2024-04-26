@@ -357,25 +357,26 @@ bool wex::statusbar::set_statustext(
   const std::string& text,
   const std::string& pane)
 {
-  if (const auto& r(pane_info(m_panes, pane)); !r)
+  const auto& r(pane_info(m_panes, pane));
+
+  if (!r)
   {
     // Do not show error, as you might explicitly want to ignore messages.
     return false;
   }
-  else if (r->shown_no == FIELD_NOT_SHOWN)
+
+  if (r->shown_no == FIELD_NOT_SHOWN)
   {
     m_panes[r->no].hidden_text(text);
     return false;
   }
-  else
-  {
-    m_panes[r->no].SetText(text);
 
-    // wxStatusBar checks whether new text differs from current,
-    // and does nothing if the same to avoid flicker.
-    SetStatusText(text, r->shown_no);
-    return true;
-  }
+  m_panes[r->no].SetText(text);
+
+  // wxStatusBar checks whether new text differs from current,
+  // and does nothing if the same to avoid flicker.
+  SetStatusText(text, r->shown_no);
+  return true;
 }
 
 wex::statusbar* wex::statusbar::setup(

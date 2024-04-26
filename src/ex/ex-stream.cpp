@@ -377,11 +377,9 @@ bool wex::ex_stream::get_next_line()
 
       return false;
     }
-    else
-    {
-      m_stream->clear();
-      m_block_mode = true;
-    }
+
+    m_stream->clear();
+    m_block_mode = true;
   }
 
   m_line_no++;
@@ -456,10 +454,8 @@ bool wex::ex_stream::get_previous_line()
       m_block_mode = true;
       return static_cast<int>(m_stream->gcount()) > m_current_line_size - 1;
     }
-    else
-    {
-      return static_cast<int>(m_stream->gcount()) > m_current_line_size;
-    }
+
+    return static_cast<int>(m_stream->gcount()) > m_current_line_size;
   }
 
   return false;

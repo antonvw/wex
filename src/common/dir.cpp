@@ -133,10 +133,8 @@ int wex::dir::find_files()
 
     return 1;
   }
-  else
-  {
-    return run();
-  }
+
+  return run();
 }
 
 bool wex::dir::find_files(const tool& tool)
@@ -255,10 +253,8 @@ int wex::dir::run() const
                 rdi.disable_recursion_pending();
                 return true;
               }
-              else
-              {
-                return traverse(p);
-              }
+
+              return traverse(p);
             }))
       {
         log::trace("iterating aborted");

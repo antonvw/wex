@@ -139,40 +139,38 @@ wex::vi::motion_t wex::vim::get_motion(const std::string& command)
   {
     return wex::vi::motion_t::G;
   }
-  else
+
+  switch (command[1])
   {
-    switch (command[1])
-    {
-      case 'a':
-        return wex::vi::motion_t::G_a;
+    case 'a':
+      return wex::vi::motion_t::G_a;
 
-      case 'd':
-        return wex::vi::motion_t::G_d;
+    case 'd':
+      return wex::vi::motion_t::G_d;
 
-      case 'f':
-        return wex::vi::motion_t::G_f;
+    case 'f':
+      return wex::vi::motion_t::G_f;
 
-      case '*':
-        return wex::vi::motion_t::G_star;
+    case '*':
+      return wex::vi::motion_t::G_star;
 
-      case '#':
-        return wex::vi::motion_t::G_hash;
+    case '#':
+      return wex::vi::motion_t::G_hash;
 
-      case 't':
-        return wex::vi::motion_t::G_t;
+    case 't':
+      return wex::vi::motion_t::G_t;
 
-      case 'U':
-        return wex::vi::motion_t::G_U;
+    case 'U':
+      return wex::vi::motion_t::G_U;
 
-      case 'u':
-        return wex::vi::motion_t::G_u;
+    case 'u':
+      return wex::vi::motion_t::G_u;
 
-      case '~':
-        return wex::vi::motion_t::G_tilde;
+    case '~':
+      return wex::vi::motion_t::G_tilde;
 
-      default:
-        return wex::vi::motion_t::G;
-    }
+    default:
+      return wex::vi::motion_t::G;
   }
 }
 
@@ -218,8 +216,6 @@ bool wex::vim::special()
     command_special();
     return true;
   }
-  else
-  {
-    return false;
-  }
+
+  return false;
 }

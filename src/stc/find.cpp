@@ -78,36 +78,33 @@ bool find_other(const vi& vi, data::find& f)
 
     return found;
   }
+
+  if (!f.recursive())
+  {
+    log::status(std::string());
+  }
+
+  f.recursive(false);
+
+  if (!vi.is_active() || vi.mode().is_command() || vi.mode().is_insert())
+  {
+    f.stc()->SetSelection(f.stc()->GetTargetStart(), f.stc()->GetTargetEnd());
+  }
+  else if (f.is_forward())
+  {
+    vi.visual_extend(f.stc()->GetSelectionStart(), f.stc()->GetTargetEnd());
+  }
   else
   {
-    if (!f.recursive())
-    {
-      log::status(std::string());
-    }
-
-    f.recursive(false);
-
-    if (!vi.is_active() || vi.mode().is_command() || vi.mode().is_insert())
-    {
-      f.stc()->SetSelection(f.stc()->GetTargetStart(), f.stc()->GetTargetEnd());
-    }
-    else if (f.is_forward())
-    {
-      vi.visual_extend(f.stc()->GetSelectionStart(), f.stc()->GetTargetEnd());
-    }
-    else
-    {
-      vi.visual_extend(f.stc()->GetTargetStart(), f.stc()->GetSelectionEnd());
-    }
-
-    f.stc()->EnsureVisible(
-      f.stc()->LineFromPosition(f.stc()->GetTargetStart()));
-    f.stc()->EnsureCaretVisible();
-
-    log::trace(f.stc()->path().filename()) << "found text:" << f.text();
-
-    return true;
+    vi.visual_extend(f.stc()->GetTargetStart(), f.stc()->GetSelectionEnd());
   }
+
+  f.stc()->EnsureVisible(f.stc()->LineFromPosition(f.stc()->GetTargetStart()));
+  f.stc()->EnsureCaretVisible();
+
+  log::trace(f.stc()->path().filename()) << "found text:" << f.text();
+
+  return true;
 }
 } // namespace wex
 

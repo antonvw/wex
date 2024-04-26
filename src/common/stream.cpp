@@ -46,7 +46,9 @@ bool wex::stream::process(std::string& text, size_t line_no)
     {
       count = m_frd->regex_replace(text);
       if (!m_modified)
+      {
         m_modified = (count > 0);
+      }
     }
   }
   else
@@ -86,7 +88,9 @@ bool wex::stream::process(std::string& text, size_t line_no)
 
       match = (count > 0);
       if (!m_modified)
+      {
         m_modified = match;
+      }
     }
   }
 
@@ -110,10 +114,8 @@ bool wex::stream::process(std::string& text, size_t line_no)
       {
         return false;
       }
-      else
-      {
-        m_asked = true;
-      }
+
+      m_asked = true;
     }
   }
 
@@ -180,55 +182,59 @@ int wex::stream::replace_all(std::string& text, int* match_pos)
 
 bool wex::stream::run_tool()
 {
-  if (std::fstream fs(m_path.data(), std::ios_base::in); !fs.is_open())
+  std::fstream fs(m_path.data(), std::ios_base::in);
+  if (!fs.is_open())
   {
     log("stream::open") << m_path;
     return false;
   }
-  else if (!process_begin())
+
+  if (!process_begin())
   {
     return false;
   }
-  else
+
+  m_asked = false;
+  std::string s;
+  int         line_no = 0;
+
+  for (std::string line; std::getline(fs, line);)
   {
-    m_asked = false;
-    std::string s;
-    int         line_no = 0;
-
-    for (std::string line; std::getline(fs, line);)
+    if (!process(line, line_no++))
     {
-      if (!process(line, line_no++))
-      {
-        return false;
-      }
-
-      if (m_write)
-      {
-        s += line + "\n";
-      }
-    }
-
-    if (m_write && s.empty())
-    {
-      log("stream processing error") << m_path;
       return false;
     }
-    else if (m_modified && m_write)
-    {
-      fs.close();
-      fs.open(m_path.data(), std::ios_base::out);
-      if (!fs.is_open())
-        return false;
-      fs.write(s.c_str(), s.size());
 
-      if (factory::beautify b;
-          b.is_active() && b.is_auto() && b.is_supported(m_path))
-      {
-        fs.close();
-        b.file(m_path);
-      }
+    if (m_write)
+    {
+      s += line + "\n";
+    }
+  }
+
+  if (m_write && s.empty())
+  {
+    log("stream processing error") << m_path;
+    return false;
+  }
+
+  if (m_modified && m_write)
+  {
+    fs.close();
+    fs.open(m_path.data(), std::ios_base::out);
+    if (!fs.is_open())
+    {
+      return false;
     }
 
-    return true;
+    fs.write(s.c_str(), s.size());
+
+    if (factory::beautify b;
+        b.is_active() && b.is_auto() && b.is_supported(m_path))
+    {
+      fs.close();
+      b.file(m_path);
+    }
   }
+
+  return true;
 }

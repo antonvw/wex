@@ -134,23 +134,21 @@ const std::string wex::hexmode::get_info()
 
 bool wex::hexmode::goto_dialog()
 {
-  if (const auto val(wxGetNumberFromUser(
-        _("Input") + " 0 - " + std::to_string(m_buffer.size() - 1) + ":",
-        wxEmptyString,
-        _("Enter Byte Offset"),
-        m_goto, // initial value
-        0,
-        m_buffer.size() - 1,
-        get_stc()));
-      val < 0)
+  const auto val(wxGetNumberFromUser(
+    _("Input") + " 0 - " + std::to_string(m_buffer.size() - 1) + ":",
+    wxEmptyString,
+    _("Enter Byte Offset"),
+    m_goto, // initial value
+    0,
+    m_buffer.size() - 1,
+    get_stc()));
+  if (val < 0)
   {
     return false;
   }
-  else
-  {
-    m_goto = val;
-    return hexmode_line(this, val, false).set_pos();
-  }
+
+  m_goto = val;
+  return hexmode_line(this, val, false).set_pos();
 }
 
 bool wex::hexmode::highlight_other()
@@ -159,6 +157,7 @@ bool wex::hexmode::highlight_other()
   {
     return true;
   }
+  /* NOLINTNEXTLINE */
   else if (get_stc()->PositionFromLine(pos) != pos)
   {
     return highlight_other(pos - 1);
@@ -178,11 +177,9 @@ bool wex::hexmode::highlight_other(int pos)
         brace_match);
     return true;
   }
-  else
-  {
-    get_stc()->BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
-    return false;
-  }
+
+  get_stc()->BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
+  return false;
 }
 
 bool wex::hexmode::insert(const std::string& text, int pos)

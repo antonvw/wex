@@ -2,7 +2,7 @@
 // Name:      config.cpp
 // Purpose:   Implementation of class wex::config
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -97,15 +97,12 @@ const wex::path wex::config::dir()
   {
     return p;
   }
-  else if (const wex::path p({wxGetHomeDir(), ".config", "wex"});
-           p.dir_exists())
+  if (const wex::path p({wxGetHomeDir(), ".config", "wex"}); p.dir_exists())
   {
     return p;
   }
-  else
-  {
-    return wex::path(wxPathOnly(wxStandardPaths::Get().GetExecutablePath()));
-  }
+
+  return wex::path(wxPathOnly(wxStandardPaths::Get().GetExecutablePath()));
 }
 
 bool wex::config::empty() const

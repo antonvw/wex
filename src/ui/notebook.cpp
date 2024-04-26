@@ -166,10 +166,8 @@ bool wex::notebook::delete_page(const std::string& key)
 
     return true;
   }
-  else
-  {
-    return false;
-  }
+
+  return false;
 }
 
 const std::string wex::notebook::current_page_key()
@@ -204,51 +202,47 @@ bool wex::notebook::set_page_text(
   const std::string&    caption,
   const wxBitmapBundle& bitmap)
 {
-  if (const auto index = page_index_by_key(key);
-      index == wxNOT_FOUND || !SetPageText(index, caption))
+  const auto index = page_index_by_key(key);
+  if (index == wxNOT_FOUND || !SetPageText(index, caption))
   {
     return false;
   }
-  else
+
+  auto* page = m_keys[key];
+  m_keys.erase(key);
+  m_keys[new_key] = page;
+  m_windows[page] = new_key;
+
+  if (bitmap.IsOk())
   {
-    auto* page = m_keys[key];
-    m_keys.erase(key);
-    m_keys[new_key] = page;
-    m_windows[page] = new_key;
-
-    if (bitmap.IsOk())
-    {
-      SetPageBitmap(index, bitmap);
-    }
-
-    return true;
+    SetPageBitmap(index, bitmap);
   }
+
+  return true;
 }
 
 wxWindow* wex::notebook::set_selection(const std::string& key)
 {
-  if (const auto index = page_index_by_key(key); index == wxNOT_FOUND)
+  const auto index = page_index_by_key(key);
+  if (index == wxNOT_FOUND)
   {
     return nullptr;
   }
-  else
-  {
-    wxAuiNotebook::SetSelection(index);
-    auto* page = GetPage(index);
-    page->SetFocus();
-    return page;
-  }
+
+  wxAuiNotebook::SetSelection(index);
+  auto* page = GetPage(index);
+  page->SetFocus();
+  return page;
 }
 
 bool wex::notebook::split(const std::string& key, int direction)
 {
-  if (const auto index = page_index_by_key(key); index == wxNOT_FOUND)
+  const auto index = page_index_by_key(key);
+  if (index == wxNOT_FOUND)
   {
     return false;
   }
-  else
-  {
-    wxAuiNotebook::Split(index, direction);
-    return true;
-  }
+
+  wxAuiNotebook::Split(index, direction);
+  return true;
 }

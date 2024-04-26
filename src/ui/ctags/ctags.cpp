@@ -187,66 +187,64 @@ bool wex::ctags::do_open(const std::string& path)
 
 bool wex::ctags::find(const std::string& tag, factory::stc* stc)
 {
-  if (ctags_entry entry; !find_init(tag, entry))
+  ctags_entry entry;
+  if (!find_init(tag, entry))
   {
     return false;
   }
-  else
+
+  try
   {
-    try
+    if (tag.empty())
     {
-      if (tag.empty())
+      return true; // next already invoked
+    }
+
+    m_matches.clear();
+
+    do
+    {
+      if (const ctags_info ct(entry.entry());
+          ct.is_path_valid() &&
+          (stc == nullptr || (ct.name() != tag_name(stc->path()))))
       {
-        return true; // next already invoked
+        m_matches.insert({ct.name(), ct});
       }
+    } while (tagsFindNext(m_file, &entry.entry()) == TagSuccess);
 
-      m_matches.clear();
+    m_iterator = m_matches.begin();
 
-      do
-      {
-        if (const ctags_info ct(entry.entry());
-            ct.is_path_valid() &&
-            (stc == nullptr || (ct.name() != tag_name(stc->path()))))
-        {
-          m_matches.insert({ct.name(), ct});
-        }
-      } while (tagsFindNext(m_file, &entry.entry()) == TagSuccess);
-
-      m_iterator = m_matches.begin();
-
-      log::trace("ctags::find matches") << m_matches.size();
-    }
-    catch (const std::exception& e)
-    {
-      log(e) << "find tag:" << tag;
-    }
-
-    return find_exit(tag, stc);
+    log::trace("ctags::find matches") << m_matches.size();
   }
+  catch (const std::exception& e)
+  {
+    log(e) << "find tag:" << tag;
+  }
+
+  return find_exit(tag, stc);
 }
 
 bool wex::ctags::find(const std::string& tag, wex::ctags_entry& filter)
 {
-  if (ctags_entry entry; !find_init(tag, entry))
+  ctags_entry entry;
+  if (!find_init(tag, entry))
   {
     return false;
   }
-  else
-  {
-    filter.clear();
 
-    do
+  filter.clear();
+
+  do
+  {
+    if (entry.is_master())
     {
-      if (entry.is_master())
-      {
-        filter.filter(entry);
-        return true;
-      }
-    } while (!entry.is_master() &&
-             tagsFindNext(m_file, &entry.entry()) == TagSuccess);
+      filter.filter(entry);
+      return true;
+    }
+  } while (!entry.is_master() &&
+           tagsFindNext(m_file, &entry.entry()) == TagSuccess);
 
-    return false;
-  }
+  return false;
 }
 
 bool wex::ctags::find_exit(const std::string& tag, factory::stc* stc)
@@ -269,7 +267,9 @@ bool wex::ctags::find_exit(const std::string& tag, factory::stc* stc)
       wxArrayString as;
 
       for (const auto& it : m_matches)
+      {
         as.Add(it.second.name());
+      }
 
       wxMultiChoiceDialog dialog(
         get_frame(),
@@ -278,7 +278,9 @@ bool wex::ctags::find_exit(const std::string& tag, factory::stc* stc)
         as);
 
       if (dialog.ShowModal() != wxID_OK)
+      {
         return false;
+      }
 
       for (const auto& sel : dialog.GetSelections())
       {
@@ -344,24 +346,22 @@ bool wex::ctags::open(const std::string& filename)
 
   if (filename != DEFAULT_TAGFILE)
   {
-    const auto ret (do_open(filename));
+    const auto ret(do_open(filename));
     if (!ret)
     {
       log("could not locate ctags file") << filename;
     }
     return ret;
   }
-  else
-  {
-    const std::vector<std::string> v{"./", config::dir().string() + "/"};
-    return std::any_of(
-      v.begin(),
-      v.end(),
-      [filename](const auto& p)
-      {
-        return do_open(p + filename);
-      });
-  }
+
+  const std::vector<std::string> v{"./", config::dir().string() + "/"};
+  return std::any_of(
+    v.begin(),
+    v.end(),
+    [filename](const auto& p)
+    {
+      return do_open(p + filename);
+    });
 }
 
 bool wex::ctags::previous()

@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::ex
 //            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/ex.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012-2023 Anton van Wezenbeek
+// Copyright: (c) 2012-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
@@ -29,10 +29,10 @@
 
 #include "eval.h"
 
-#define SEPARATE                                                              \
-  if (separator)                                                              \
-  {                                                                           \
-    output += std::string(config(_("stc.Edge column")).get(80l), '-') + "\n"; \
+#define SEPARATE                                                               \
+  if (separator)                                                               \
+  {                                                                            \
+    output += std::string(config(_("stc.Edge column")).get(80l), '-') + "\n";  \
   }
 
 wex::macros wex::ex::m_macros;
@@ -91,7 +91,9 @@ bool wex::ex::command(const std::string& cmd)
   auto command(cmd);
 
   if (m_mode == mode_t::OFF || command.empty() || command.front() != ':')
+  {
     return false;
+  }
 
   log::trace("ex command") << cmd;
 
@@ -104,24 +106,23 @@ bool wex::ex::command(const std::string& cmd)
     m_command.clear();
     return auto_write();
   }
-  else if (
+
+  if (
     command == ":" || command == ":" + ex_command::selection_range() ||
     command == ":!")
   {
     return m_frame->show_ex_command(get_stc(), command);
   }
-  else if (
+
+  if (
     !command_handle(command) &&
     !command_parser(this, command.substr(1)).is_ok())
   {
     m_command.clear();
     return false;
   }
-  else
-  {
-    m_macros.record(command);
-  }
 
+  m_macros.record(command);
   m_command.clear();
 
   return auto_write();
@@ -188,7 +189,9 @@ void wex::ex::info_message(const std::string& text, wex::info_message_t type)
 bool wex::ex::marker_add(char marker, int line)
 {
   if (m_copy)
+  {
     return false;
+  }
 
   if (!get_stc()->is_visual())
   {
@@ -393,14 +396,22 @@ void wex::ex::reset_search_flags()
   const auto mw(config("ex-set.matchwords").get(false));
 
   if (!ic)
+  {
     m_search_flags |= wxSTC_FIND_MATCHCASE;
+  }
   else
+  {
     m_search_flags &= ~wxSTC_FIND_MATCHCASE;
+  }
 
   if (!mw)
+  {
     m_search_flags &= ~wxSTC_FIND_WHOLEWORD;
+  }
   else
+  {
     m_search_flags |= wxSTC_FIND_WHOLEWORD;
+  }
 }
 
 void wex::ex::search_whole_word()
@@ -495,7 +506,7 @@ bool wex::ex::yank(char name) const
   {
     return false;
   }
-  else if (register_name())
+  if (register_name())
   {
     m_macros.set_register(register_name(), range);
   }

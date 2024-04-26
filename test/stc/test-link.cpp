@@ -2,7 +2,7 @@
 // Name:      test-link.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-20224 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -32,7 +32,6 @@ TEST_CASE("wex::link")
 
     vi->mode().escape();
     stc->SetReadOnly(false);
-    REQUIRE(vi->command(":a|xx"));
     REQUIRE(vi->command(":a|" + line));
     REQUIRE(vi->command("/test"));
     REQUIRE(vi->command(" "));

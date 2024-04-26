@@ -261,10 +261,8 @@ int wex::stc::get_current_line() const
   {
     return m_file.ex_stream()->get_current_line();
   }
-  else
-  {
-    return syntax::stc::get_current_line();
-  }
+
+  return syntax::stc::get_current_line();
 }
 
 bool wex::stc::get_hexmode_erase(int begin, int end)
@@ -305,10 +303,8 @@ int wex::stc::get_line_count() const
   {
     return m_file.ex_stream()->get_line_count();
   }
-  else
-  {
-    return syntax::stc::get_line_count();
-  }
+
+  return syntax::stc::get_line_count();
 }
 
 int wex::stc::get_line_count_request()
@@ -317,10 +313,8 @@ int wex::stc::get_line_count_request()
   {
     return m_file.ex_stream()->get_line_count_request();
   }
-  else
-  {
-    return syntax::stc::get_line_count_request();
-  }
+
+  return syntax::stc::get_line_count_request();
 }
 
 const wex::vi& wex::stc::get_vi() const

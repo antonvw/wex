@@ -2,7 +2,7 @@
 // Name:      ctags-entry.cpp
 // Purpose:   Implementation of class wex::ctags_entry
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -216,22 +216,23 @@ std::string skip_args_and_const(const std::string& text)
   {
     return std::string();
   }
-  else if (text == "()")
+
+  if (text == "()")
   {
     return text;
   }
-  else if (wex::regex v("\\(\\).+"); v.match(text) == 0)
+
+  if (wex::regex v("\\(\\).+"); v.match(text) == 0)
   {
     return "()";
   }
-  else if (wex::regex v("(\\(.+\\)).*"); v.match(text) == 1)
+
+  if (wex::regex v("(\\(.+\\)).*"); v.match(text) == 1)
   {
     return "(";
   }
-  else
-  {
-    return text;
-  }
+
+  return text;
 }
 
 std::string wex::ctags_entry::signature_and_image() const

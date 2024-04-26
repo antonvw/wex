@@ -139,15 +139,13 @@ bool wex::blame::parse(const path& p, const std::string& text)
       {
         return parse_compact(text, r);
       }
-      else if (r.size() == 6)
+
+      if (r.size() == 6)
       {
         return parse_full(text, r);
       }
-      else
-      {
-        log("blame parsing") << m_name << r.size();
-        return false;
-      }
+
+      log("blame parsing") << m_name << r.size();
     }
   }
   catch (std::exception& e)
@@ -212,8 +210,6 @@ bool wex::blame::parse_full(const std::string& line, const regex& r)
 
     return true;
   }
-  else
-  {
-    return false;
-  }
+
+  return false;
 }
