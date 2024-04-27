@@ -5,6 +5,7 @@
 // Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log-none.h>
 #include <wex/syntax/lexer.h>
 
 #include <regex>
@@ -46,20 +47,56 @@ TEST_CASE("wex::lexer")
   {
     pugi::xml_document doc;
 
-    REQUIRE(doc.load_string("<lexer name=\"xyz\" tabwidth=\"12\">\
+    SUBCASE("valid")
+    {
+      REQUIRE(doc.load_string("<lexer name=\"cpp\" tabwidth=\"12\">\
+        <keywords set-0=\"cpp\" set-1=\"cpp-stl\">\
+        </keywords>\
+      </lexer>"));
+
+      wex::log_none off;
+      auto          node = doc.document_element();
+      wex::lexer    lexer(&node);
+      REQUIRE(lexer.is_ok());
+      REQUIRE(lexer.scintilla_lexer() == "cpp");
+      REQUIRE(lexer.display_lexer() == "cpp");
+      REQUIRE(lexer.attrib(_("Tab width")) == 12);
+      REQUIRE(lexer.is_keyword("reinterpret_cast"));
+      REQUIRE(lexer.is_keyword("ATOMIC_VAR_INIT"));
+    }
+
+#ifdef __WXGTK__
+    SUBCASE("exclude")
+    {
+      REQUIRE(doc.load_string("<lexer name=\"pascal\" exclude=\"Unix\">\
+      </lexer>"));
+
+      auto       node = doc.document_element();
+      wex::lexer lexer(&node);
+      REQUIRE(!lexer.is_ok());
+      REQUIRE(lexer.scintilla_lexer() == "pascal");
+      REQUIRE(lexer.display_lexer() == "pascal");
+    }
+#endif
+
+    SUBCASE("no-macros")
+    {
+      REQUIRE(doc.load_string("<lexer name=\"xyz\" tabwidth=\"12\">\
         <keywords set-0=\"cisco-0\" set-1=\"cisco-1\" set-2=\"cisco-2,cisco-3\">\
         </keywords>\
       </lexer>"));
 
-    auto       node = doc.document_element();
-    wex::lexer lexer(&node);
-    REQUIRE(lexer.is_ok());
-    REQUIRE(lexer.scintilla_lexer() == "xyz");
-    REQUIRE(lexer.display_lexer() == "xyz");
-    REQUIRE(lexer.attrib(_("Tab width")) == 12);
-    REQUIRE(lexer.is_keyword("nonegotiate"));
-    REQUIRE(lexer.is_keyword("startup-config"));
-    REQUIRE(lexer.is_keyword("violation"));
+      wex::log_none off;
+      auto          node = doc.document_element();
+      wex::lexer    lexer(&node);
+      REQUIRE(!lexer.is_ok());
+      REQUIRE(lexer.scintilla_lexer() == "xyz");
+      REQUIRE(lexer.display_lexer() == "xyz");
+      REQUIRE(lexer.attrib(_("Tab width")) == 12);
+      REQUIRE(lexer.is_keyword("nonegotiate"));
+      REQUIRE(lexer.is_keyword("startup-config"));
+      REQUIRE(lexer.is_keyword("violation"));
+    }
   }
 
   SUBCASE("align_text")

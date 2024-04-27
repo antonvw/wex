@@ -91,19 +91,22 @@ wex::lexer::lexer(const pugi::xml_node* node)
   {
     parse_attrib(node);
 
-    auto_match(
-      (!node->attribute("macro").empty() ? node->attribute("macro").value() :
-                                           m_scintilla_lexer));
-
-    if (m_scintilla_lexer == "hypertext")
+    if (m_is_ok)
     {
-      // As our lexers.xml files cannot use xml comments,
-      // add them here.
-      m_comment_begin = "<!--";
-      m_command_end   = "-->";
-    }
+      auto_match(
+        (!node->attribute("macro").empty() ? node->attribute("macro").value() :
+                                             m_scintilla_lexer));
 
-    parse_childen(node);
+      if (m_scintilla_lexer == "hypertext")
+      {
+        // As our lexers.xml files cannot use xml comments,
+        // add them here.
+        m_comment_begin = "<!--";
+        m_command_end   = "-->";
+      }
+
+      parse_childen(node);
+    }
   }
 }
 
@@ -316,32 +319,35 @@ void wex::lexer::auto_match(const std::string& lexer)
 {
   if (const auto& l(lexers::get()->find(lexer)); l.m_scintilla_lexer.empty())
   {
-    if (lexers::get()->get_macros(lexer).empty())
+    if (const auto& macros(lexers::get()->get_macros(lexer)); macros.empty())
     {
-      wex::log::warning("no macros provided") << lexer;
+      wex::log("no macros provided") << lexer;
+      m_is_ok = false;
     }
-
-    for (const auto& it : lexers::get()->get_macros(lexer))
+    else
     {
-      // First try exact match.
-      if (const auto& macro = lexers::get()->theme_macros().find(it.first);
-          macro != lexers::get()->theme_macros().end())
+      for (const auto& it : macros)
       {
-        m_styles.emplace_back(it.second, macro->second);
-      }
-      else
-      {
-        // Then, a partial using find_if.
-        if (const auto& style = std::find_if(
-              lexers::get()->theme_macros().begin(),
-              lexers::get()->theme_macros().end(),
-              [&](auto const& e)
-              {
-                return it.first.contains(e.first);
-              });
-            style != lexers::get()->theme_macros().end())
+        // First try exact match.
+        if (const auto& macro = lexers::get()->theme_macros().find(it.first);
+            macro != lexers::get()->theme_macros().end())
         {
-          m_styles.emplace_back(it.second, style->second);
+          m_styles.emplace_back(it.second, macro->second);
+        }
+        else
+        {
+          // Then, a partial using find_if.
+          if (const auto& style = std::find_if(
+                lexers::get()->theme_macros().begin(),
+                lexers::get()->theme_macros().end(),
+                [&](auto const& e)
+                {
+                  return it.first.contains(e.first);
+                });
+              style != lexers::get()->theme_macros().end())
+          {
+            m_styles.emplace_back(it.second, style->second);
+          }
         }
       }
     }
