@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - right click on File Type enables or disables showing whitespace
+- Go lexer
 
 ### Changed
 
@@ -22,6 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - ex mode find and getting previous line
 - any file used for config uses json lexer
 - fixed a possible filename too long exception when trying opening links
+- show error if no macros present for a laexer
 
 ## 24.04 - 2024-03-29
 

@@ -899,6 +899,26 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
       <def no ="stringeol"/>
     </def>
 
+    <def name = "gdscript">
+      <def no ="default"/>
+      <def no ="commentline"/>
+      <def no ="number"/>
+      <def no ="string"/>
+      <def no ="character"/>
+      <def no ="word"/>
+      <def no ="triple"/>
+      <def no ="tripledouble"/>
+      <def no ="classname"/>
+      <def no ="funcname"/>
+      <def no ="operator"/>
+      <def no ="identifier"/>
+      <def no ="commentblock"/>
+      <def no ="stringeol"/>
+      <def no ="word2"/>
+      <def no ="annotation"/>
+      <def no ="nodepath"/>
+    </def>
+
     <def name = "gui4cli">
       <def no ="default"/>
       <def no ="commentline"/>
