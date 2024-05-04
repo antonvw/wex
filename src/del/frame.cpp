@@ -283,7 +283,8 @@ wex::del::frame::entry_dialog(const std::string& title, const std::string& text)
     m_entry_dialog = new stc_entry_dialog(
       text,
       std::string(),
-      data::window().title(title).size({450, 450}));
+      data::window().title(title),
+      data::stc(data::window().size({350, 250})));
   }
   else
   {

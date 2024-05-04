@@ -845,7 +845,8 @@ void wex::stc::show_properties()
     m_prop_dialog = new stc_entry_dialog(
       properties,
       std::string(),
-      data::window().size({300, 450}).button(wxOK).title(_("Properties")));
+      data::window().button(wxOK).title(_("Properties")),
+      data::stc(data::window().size({400, 550})));
     m_prop_dialog->get_stc()->get_lexer().set(l);
     m_prop_dialog->get_stc()->get_vi().use(ex::mode_t::VISUAL);
   }

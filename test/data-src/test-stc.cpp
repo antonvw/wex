@@ -2,7 +2,7 @@
 // Name:      data/test-stc.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/stc.h>
@@ -16,6 +16,7 @@ TEST_CASE("wex::data::stc")
     wex::data::stc data;
 
     REQUIRE(data.control().line() == 0);
+    REQUIRE(data.flags().none());
     REQUIRE(data.head_path().empty());
     REQUIRE(data.recent());
     REQUIRE(!data.event(true).event().is_pos_at_end());
@@ -43,9 +44,22 @@ TEST_CASE("wex::data::stc")
       wex::data::stc(wex::data::window().name("XX")).window().name() == "XX");
   }
 
+  SUBCASE("copy-constructor")
+  {
+    wex::data::stc data;
+    REQUIRE(data.flags().none());
+    REQUIRE(!data.flags().test(wex::data::stc::WIN_SINGLE_LINE));
+    data.flags(wex::data::stc::window_t().set(wex::data::stc::WIN_SINGLE_LINE));
+    CAPTURE(data.flags());
+    REQUIRE(data.flags().test(wex::data::stc::WIN_SINGLE_LINE));
+    REQUIRE(wex::data::stc(data).flags().test(wex::data::stc::WIN_SINGLE_LINE));
+  }
+
   SUBCASE("window-constructor")
   {
-    // TODO
+    REQUIRE(
+      wex::data::stc(wex::data::window().button(wxID_OK)).window().button() ==
+      wxID_OK);
   }
 
   SUBCASE("inject")
