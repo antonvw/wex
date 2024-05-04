@@ -160,7 +160,7 @@ endif()
 include_directories(${Boost_INCLUDE_DIRS})
 
 # these should be the same as WEX_VERSION_INCLUDE in common.cmake
-set(wex_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/wex/24.04")
+set(wex_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/wex/24.10")
 set(wex_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib")
 
 set(wex_LIBRARIES

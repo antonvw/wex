@@ -2,7 +2,7 @@
 // Name:      dialog.cpp
 // Purpose:   Implementation of class stc_entry_dialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2023 Anton van Wezenbeek
+// Copyright: (c) 2009-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
@@ -14,12 +14,31 @@
 #include <wex/stc/stc.h>
 #include <wex/ui/file-dialog.h>
 
+namespace wex
+{
+wxSize set_size(const data::stc& data)
+{
+  if (data.flags().test(data::stc::WIN_SINGLE_LINE))
+  {
+    return wxSize({100, 20});
+  }
+  else
+  {
+    return data.window().size();
+  }
+}
+} // namespace wex
+
 wex::stc_entry_dialog::stc_entry_dialog(
   const std::string&  text,
   const std::string&  prompt,
-  const data::window& data)
+  const data::window& data,
+  const data::stc&    stc_data)
   : dialog(data)
-  , m_stc(new wex::stc(text, data::stc().window(data::window().parent(this))))
+  , m_stc(new wex::stc(
+      text,
+      data::stc(stc_data).window(
+        data::window(data).parent(this).size(set_size(stc_data)))))
 {
   if (!prompt.empty())
   {
@@ -50,6 +69,20 @@ wex::stc_entry_dialog::stc_entry_dialog(
     },
     wxID_OK,
     wxID_CANCEL);
+
+  Bind(
+    wxEVT_KEY_DOWN,
+    [=, this](wxKeyEvent& event)
+    {
+      if (event.GetKeyCode() == WXK_RETURN)
+      {
+        EndModal(wxID_OK);
+      }
+      else
+      {
+        event.Skip();
+      }
+    });
 
   Bind(
     wxEVT_UPDATE_UI,
@@ -99,7 +132,7 @@ bool wex::stc_entry_dialog::set_validator(const std::string& regex, bool ic)
   }
   catch (std::regex_error& e)
   {
-    log::trace("validator") << e.what() << regex;
+    log("validator") << e.what() << regex;
     return false;
   }
 }
@@ -123,12 +156,16 @@ void wex::open_files_dialog(
     if (ask_for_continue)
     {
       if (dlg.show_modal_if_changed(true) == wxID_CANCEL)
+      {
         return;
+      }
     }
     else
     {
       if (dlg.ShowModal() == wxID_CANCEL)
+      {
         return;
+      }
     }
 
     dlg.GetPaths(paths);
@@ -139,7 +176,9 @@ void wex::open_files_dialog(
     file_dialog dlg(nullptr, data::window(data.window()).title(caption));
 
     if (dlg.ShowModal() == wxID_CANCEL)
+    {
       return;
+    }
 
     dlg.GetPaths(paths);
     hexmode = dlg.is_hexmode();

@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of wex::data::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2023 Anton van Wezenbeek
+// Copyright: (c) 2017-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -46,18 +46,19 @@ public:
     WIN_HEX,           ///< window in hex mode
     WIN_NO_INDICATOR,  ///< a change indicator is not used
     WIN_IS_PROJECT,    ///< open as project
-    WIN_EX             ///< window in ex mode, instead of vi
+    WIN_EX,            ///< window in ex mode, instead of vi
+    WIN_SINGLE_LINE    ///< window has only a single line
   };
 
   /// A typedef containing window flags.
-  typedef std::bitset<5> window_t;
+  typedef std::bitset<6> window_t;
 
   /// Indicator type.
   enum indicator_t
   {
-    IND_LINE = 0, ///< line indicatr
-    IND_ERR,      ///< error indicatr
-    IND_DEBUG     ///< debug indicatr
+    IND_LINE = 0, ///< line indicator
+    IND_ERR,      ///< error indicator
+    IND_DEBUG     ///< debug indicator
   };
 
   /// Support class for client data stored at the event.

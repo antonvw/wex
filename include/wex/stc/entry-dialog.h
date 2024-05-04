@@ -2,12 +2,12 @@
 // Name:      stc-entry-dialog.h
 // Purpose:   Declaration of class wex::stc_entry_dialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2023 Anton van Wezenbeek
+// Copyright: (c) 2009-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wex/factory/window.h>
+#include <wex/data/stc.h>
 #include <wex/ui/dialog.h>
 
 #include <regex>
@@ -29,8 +29,12 @@ public:
     const std::string& text = std::string(),
     /// prompt (as with wxTextEntryDialog)
     const std::string& prompt = std::string(),
-    /// data
-    const data::window& data = data::window());
+    /// dialog data with style:
+    /// default wxDEFAULT_DIALOG_STYLE wxRESIZE_BORDER (set in dialog.cpp)
+    const data::window& data = data::window(),
+    /// stc data
+    /// default multi line component
+    const data::stc& stc_data = data::stc());
 
   /// Returns stc component.
   auto* get_stc() { return m_stc; }
