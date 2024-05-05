@@ -2,7 +2,7 @@
 #
 # Usage of this module as follows:
 #
-#     find_package(WEX)
+#     find_package(wex [version] [EXACT] [QUIET])
 #
 # Variables defined by this module:
 #
@@ -10,6 +10,9 @@
 #  wex_INCLUDE_DIR    The wex include directory.
 #  wex_LIB_DIR        The wex lib directory.
 #  wex_LIBRARIES      The wex libraries.
+#  wex_VERSION        The wex version.
+
+include(FindPackageHandleStandardArgs)
 
 if (wexBUILD_SHARED)
   add_definitions(-DBOOST_LOG_DYN_LINK)
@@ -159,28 +162,44 @@ endif()
 
 include_directories(${Boost_INCLUDE_DIRS})
 
-# these should be the same as WEX_VERSION_INCLUDE in common.cmake
-set(wex_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/wex/24.10")
-set(wex_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib")
+file(GLOB wex_INCLUDES "${CMAKE_INSTALL_PREFIX}/include/wex/*.*")
 
-set(wex_LIBRARIES
-  wex-del${USE_DEBUG}
-  wex-vcs${USE_DEBUG}
-  wex-stc${USE_DEBUG}
-  wex-vi${USE_DEBUG}
-  wex-ex${USE_DEBUG}
-  wex-ctags${USE_DEBUG}
-  wex-ui${USE_DEBUG}
-  wex-common${USE_DEBUG}
-  wex-data${USE_DEBUG}
-  wex-syntax${USE_DEBUG}
-  wex-factory${USE_DEBUG}
-  wex-test${USE_DEBUG}
-  wex-core${USE_DEBUG}
-  ${wx_LIBRARIES}
-  ${apple_LIBRARIES}
-  ${Boost_LIBRARIES}
-  ${cpp_LIBRARIES}
-  ${ODBC_LIBRARIES})
+foreach(dir ${wex_INCLUDES})
+  cmake_path(GET dir FILENAME wex_VERSION)
 
-set(wex_FOUND ON)
+  set(wex_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/wex/${wex_VERSION}")
+  set(wex_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib")
+
+  find_package_handle_standard_args(wex
+    REQUIRED_VARS wex_LIB_DIR wex_INCLUDE_DIR
+    VERSION_VAR wex_VERSION)
+
+  if (${wex_FOUND})
+    message("Found wex: " ${wex_VERSION})
+    break()
+  endif ()
+endforeach()
+
+if (${wex_FOUND})
+  set(wex_LIBRARIES
+    wex-del${USE_DEBUG}
+    wex-vcs${USE_DEBUG}
+    wex-stc${USE_DEBUG}
+    wex-vi${USE_DEBUG}
+    wex-ex${USE_DEBUG}
+    wex-ctags${USE_DEBUG}
+    wex-ui${USE_DEBUG}
+    wex-common${USE_DEBUG}
+    wex-data${USE_DEBUG}
+    wex-syntax${USE_DEBUG}
+    wex-factory${USE_DEBUG}
+    wex-test${USE_DEBUG}
+    wex-core${USE_DEBUG}
+    ${wx_LIBRARIES}
+    ${apple_LIBRARIES}
+    ${Boost_LIBRARIES}
+    ${cpp_LIBRARIES}
+    ${ODBC_LIBRARIES})
+else ()
+    message(FATAL_ERROR "No suitable version found")
+endif ()
