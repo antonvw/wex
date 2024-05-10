@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex sample class frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/generic/numdlgg.h>
@@ -516,7 +516,6 @@ void frame::open_file_same_page(const wex::path& p)
   m_stc->open(p, wex::data::stc().recent(false).flags(m_app->data().flags()));
   m_stc->get_lexer().set(wex::path_lexer(p).lexer().display_lexer(), true);
   m_stc->properties_message();
-  set_recent_file(m_stc->path());
 }
 
 void frame::update()
