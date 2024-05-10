@@ -25,7 +25,7 @@ jobs:
           # https://github.com/actions/boost-versions/blob/main/versions-manifest.json
           boost_version: 1.83.0
 
-      - name: Add msbuild to enable devenv
+      - name: Add msbuild
         uses: microsoft/setup-msbuild@v2
 
       - name: Configure
@@ -37,7 +37,7 @@ jobs:
       - name: Build
         working-directory: build
         run: |
-          devenv wex.sln /build Release
+          msbuild /noLogo /m /p:Configuration=Release ALL_BUILD.vcxproj
 
       - name: Run tests
         working-directory: build
