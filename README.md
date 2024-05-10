@@ -41,7 +41,6 @@ An example is the [syncped editor](https://gitlab.kitware.com/antonvw/syncped).
 
 ## Build process
 
-  [![Appveyor](https://ci.appveyor.com/api/projects/status/a346d8537whyrjev?svg=true)](https://ci.appveyor.com/project/antonvw/wex)
   [![Codacy Badge](https://app.codacy.com/project/badge/Grade/2fcaabd94e984dfc97740fe9f53472f5)](https://app.codacy.com/gh/antonvw/wex/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
   [![Coverage Status](https://coveralls.io/repos/github/antonvw/wex/badge.svg?branch=develop)](https://coveralls.io/github/antonvw/wex?branch=develop)
 

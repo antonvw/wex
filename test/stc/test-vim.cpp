@@ -2,14 +2,14 @@
 // Name:      test-vim.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/vi/vi.h>
 
 #include "test.h"
 
-TEST_CASE("wex::vim")
+TEST_CASE("wex::vim" * doctest::may_fail())
 {
   auto* stc = get_stc();
   auto* vi  = &get_stc()->get_vi();

@@ -17,7 +17,7 @@ function(wex_config)
   set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
   set(CPACK_PACKAGE_VERSION "${WEX_VERSION}")
 
-  # See appveyor.yml (artifact).
+  # For artifacts, not yet used.
   set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-v${CPACK_PACKAGE_VERSION}")
 
   if (MSVC)
