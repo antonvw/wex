@@ -37,9 +37,9 @@ cmake ..
 cmake -P cmake_install.cmake
 ```
 
-### check FindWEX location
+### check Findwex location
 
-- FindWEX as used by building sp, and should be installed in the actual
+- Findwex as used by building sp, and should be installed in the actual
   cmake share Modules as used by Visual Studio
 
 ## build syncped

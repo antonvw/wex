@@ -56,8 +56,8 @@ function(wex_install)
   set(WEX_INSTALL_DIR "include/wex/${WEX_VERSION_INCLUDE}")
   set(MODULE_INSTALL_DIR ${CMAKE_ROOT}/Modules)
 
-  # install FindWEX.cmake
-  install(FILES ${CMAKE_SOURCE_DIR}/cmake/FindWEX.cmake
+  # install Findwex.cmake
+  install(FILES ${CMAKE_SOURCE_DIR}/cmake/Findwex.cmake
     DESTINATION ${MODULE_INSTALL_DIR})
 
   # install some wxWidgets cmake files
@@ -65,7 +65,7 @@ function(wex_install)
     DESTINATION ${MODULE_INSTALL_DIR})
 
   # install include files
-  # this should be the same dir as in FindWEX.cmake
+  # this should be the same dir as in Findwex.cmake
   install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/wex
     DESTINATION ${WEX_INSTALL_DIR})
 
@@ -96,7 +96,7 @@ function(wex_install)
     DESTINATION ${WEX_INSTALL_DIR}/wx)
 
   # install libraries
-  # this should be the same dir as in FindWEX.cmake
+  # this should be the same dir as in Findwex.cmake
   if (MSVC)
     file(GLOB_RECURSE wex_own_LIBRARIES ${CMAKE_BINARY_DIR}/*.lib)
   else ()
