@@ -1,4 +1,5 @@
-name: github-ci
+name: github-ci-ubuntu
+
 on: [push]
 
 jobs:

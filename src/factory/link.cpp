@@ -133,10 +133,9 @@ const wex::path wex::factory::link::find_filename(
     return path();
   }
 
-  const std::string& text_filter(text);
-
   // The harddrive letter is filtered, it does not work
   // when adding it to match.
+  std::string text_filter(text);
   std::string prefix;
 
 #ifdef __WXMSW__

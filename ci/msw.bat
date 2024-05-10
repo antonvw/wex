@@ -1,6 +1,7 @@
 @echo off
-:: Batch file for building/testing wex on appveyor
+:: Batch file for building/testing wex
 :: we are in the build directory
+:: Should use msbuild
 
 set BOOST=83
 set YEAR=2022
@@ -17,7 +18,7 @@ cmake ^
 
 :: build it
 echo %configuration%
-devenv wex.sln /build %configuration% /project wxw wex-core
+devenv wex.sln /build %configuration%
 
 :: test it
 ::ctest -C %configuration% -VV -R wex-test-core
