@@ -2,7 +2,7 @@
 // Name:      test-frame.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/defs.h>
@@ -66,11 +66,13 @@ TEST_CASE("wex::frame")
     frame()->set_recent_file(wex::path(wex::test::get_path("test.bin")));
     REQUIRE(frame()->file_history().size() == 3);
 
+    // bools:: allow backward, allow forward, browse
     browse_check(false, true, true, forward);
     browse_check(true, true, true, forward);
     browse_check(true, false, false, forward);
     browse_check(true, false, true, backward);
     browse_check(true, true, true, backward);
+    browse_check(false, true, false, backward);
   }
 
   SUBCASE("coverage")

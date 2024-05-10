@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2010-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
@@ -384,7 +384,7 @@ bool wex::frame::add_toolbar_panes(const panes_t& panes)
 bool wex::frame::allow_browse_backward() const
 {
   return m_browse_index < m_file_history.size() && m_file_history.size() > 1 &&
-         m_browse_index != 0;
+         m_browse_index > 0;
 }
 
 bool wex::frame::allow_browse_forward() const
@@ -418,11 +418,6 @@ bool wex::frame::browse(const wxCommandEvent& event)
       }
       else
       {
-        if (m_browse_index > m_file_history.size() - 1)
-        {
-          m_browse_index = m_file_history.size() - 1;
-        }
-
         return false;
       }
       break;
@@ -434,11 +429,6 @@ bool wex::frame::browse(const wxCommandEvent& event)
       }
       else
       {
-        if (m_browse_index > m_file_history.size() - 1)
-        {
-          m_browse_index = m_file_history.size() - 1;
-        }
-
         return false;
       }
       break;
