@@ -21,7 +21,7 @@ if (NOT WIN32)
       COMMENT "ctags sync" VERBATIM)
 
   add_custom_target(codespell
-    COMMAND codespell ${INCLUDES} ${SRCS}
+    COMMAND codespell ${INCLUDES} ${SRCS} ${MDS}
       -L nd,te,INOUT,inout,defint,iif,hel -S "*.po,*.png,*.ico,*.icns,*.bin"
     COMMENT "codespell" VERBATIM)
 

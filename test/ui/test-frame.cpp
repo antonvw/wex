@@ -5,6 +5,8 @@
 // Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wx/listctrl.h>
+
 #include <wex/factory/defs.h>
 #include <wex/factory/process-data.h>
 #include <wex/ui/menu.h>
@@ -36,7 +38,7 @@ TEST_CASE("wex::frame")
     frame()->SetMenuBar(bar);
 
     frame()->setup_statusbar(std::vector<wex::statusbar_pane>{
-      {{"Pane0"}, {"Pane1"}, {"Pane2"}, {"Pane3"}, {"Pane4"}}});
+      {{"Pane0"}, {"Pane1"}, {"Pane2"}, {"Pane3"}, {"Pane4"}, {"PaneInfo"}}});
 
     frame()->statusbar_clicked_right("test");
     frame()->statusbar_clicked_right("Pane1");
@@ -49,6 +51,14 @@ TEST_CASE("wex::frame")
     REQUIRE(frame()->statustext("hello2", "Pane2"));
     REQUIRE(frame()->get_statustext("Pane1") == "hello1");
     REQUIRE(frame()->get_statustext("Pane2") == "hello2");
+
+    REQUIRE(!frame()->update_statusbar(get_stc(), "PaneX"));
+    REQUIRE(!frame()->update_statusbar(get_stc(), "Pane1"));
+    REQUIRE(frame()->update_statusbar(get_stc(), "PaneInfo"));
+
+    auto* lv = new wxListView(frame());
+    lv->Show();
+    REQUIRE(frame()->update_statusbar(lv));
   }
 
   SUBCASE("browse")

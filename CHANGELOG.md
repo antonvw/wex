@@ -18,14 +18,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - updated art default bitmap colour
 - hexmode insert or erase keeps position
 - clang-tidy updated
-- Renamed FindWEX into Findwex and supports adding a version
+- renamed FindWEX into Findwex and supports adding a version
+- used wrapline none for rfw lexer
 
 ### Fixed
 
 - ex mode find and getting previous line
 - any file used for config uses json lexer
 - fixed a possible filename too long exception when trying opening links
-- show error if no macros present for a laexer
+- show error if no macros present for a lexer
 
 ## 24.04 - 2024-03-29
 
