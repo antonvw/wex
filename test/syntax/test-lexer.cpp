@@ -49,9 +49,15 @@ TEST_CASE("wex::lexer")
 
     SUBCASE("valid")
     {
-      REQUIRE(doc.load_string("<lexer name=\"cpp\" tabwidth=\"12\">\
-        <keywords set-0=\"cpp\" set-1=\"cpp-stl\">\
-        </keywords>\
+      REQUIRE(doc.load_string("\
+      <lexer name=\"cpp\"\
+        edgecolumns=\"2 4 6\"\
+        edgemode=\"line\"\
+        spacevisible=\"always\"\
+        tabdrawmode=\"arrow\" wrapline=\"char\"\
+        tabmode=\"use\"\
+        tabwidth=\"12\">\
+        <keywords set-0=\"cpp\" set-1=\"cpp-stl\"></keywords>\
       </lexer>"));
 
       wex::log_none off;
@@ -60,9 +66,20 @@ TEST_CASE("wex::lexer")
       REQUIRE(lexer.is_ok());
       REQUIRE(lexer.scintilla_lexer() == "cpp");
       REQUIRE(lexer.display_lexer() == "cpp");
+      REQUIRE(lexer.attrib(_("Edge line")) == wxSTC_EDGE_LINE);
+      REQUIRE(lexer.attrib(_("Expand tabs")) == 1);
+      REQUIRE(lexer.attrib(_("Tab draw mode")) == wxSTC_TD_LONGARROW);
       REQUIRE(lexer.attrib(_("Tab width")) == 12);
+      REQUIRE(lexer.attrib(_("Wrap line")) == wxSTC_WRAP_CHAR);
+      REQUIRE(lexer.attrib(_("Whitespace visible")) == wxSTC_WS_VISIBLEALWAYS);
+      REQUIRE(lexer.attrib("xxxxx") == -1);
       REQUIRE(lexer.is_keyword("reinterpret_cast"));
       REQUIRE(lexer.is_keyword("ATOMIC_VAR_INIT"));
+
+      auto*      stc = new wex::test::stc();
+      wex::lexer lexer_with_stc(stc);
+      REQUIRE(lexer_with_stc.set(lexer));
+      REQUIRE(stc->GetEdgeMode() == wxSTC_EDGE_MULTILINE);
     }
 
 #ifdef __WXGTK__

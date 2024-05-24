@@ -1493,6 +1493,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   <lexer display="rfwv" name="rfw"
     extensions="*vi.robot;*.resource"
     edgemode="none"
+    wrapline="none"
     tabmode="use"
     tabwidth="8">
     <styles>
@@ -1512,6 +1513,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   <lexer name="rfw"
     extensions="*.robot;*.resource"
     edgemode="none"
+    wrapline="none"
     tabmode="use"
     tabwidth="8">
     <styles>

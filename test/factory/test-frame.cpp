@@ -2,9 +2,10 @@
 // Name:      factory/test-frame.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wx/listctrl.h>
 #include <wx/menu.h>
 
 #include "test.h"
@@ -36,6 +37,10 @@ TEST_CASE("wex::factory::frame")
     REQUIRE(!frame()->update_statusbar(stc, "test"));
     REQUIRE(!frame()->update_statusbar(stc, "Pane1"));
     REQUIRE(!frame()->update_statusbar(stc, "Pane2"));
+
+    auto* lv = new wxListView(frame());
+    lv->Show();
+    REQUIRE(!frame()->update_statusbar(lv));
   }
 
   SUBCASE("closing")
