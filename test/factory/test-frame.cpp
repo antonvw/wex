@@ -34,12 +34,14 @@ TEST_CASE("wex::factory::frame")
     REQUIRE(frame()->get_statustext("Pane1").empty());
     REQUIRE(frame()->get_statustext("Pane2").empty());
 
+    REQUIRE(!frame()->update_statusbar(nullptr, "test"));
     REQUIRE(!frame()->update_statusbar(stc, "test"));
     REQUIRE(!frame()->update_statusbar(stc, "Pane1"));
     REQUIRE(!frame()->update_statusbar(stc, "Pane2"));
 
     auto* lv = new wxListView(frame());
     lv->Show();
+    REQUIRE(!frame()->update_statusbar(nullptr));
     REQUIRE(!frame()->update_statusbar(lv));
   }
 

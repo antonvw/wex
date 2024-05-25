@@ -125,7 +125,12 @@ void wex::factory::frame::statusbar_clicked(const std::string& pane)
 
 bool wex::factory::frame::update_statusbar(const wxListView* lv)
 {
-  if (!m_is_closing && lv->IsShown())
+  if (lv == nullptr || m_is_closing)
+  {
+    return false;
+  }
+
+  if (lv->IsShown())
   {
     const auto text = std::to_string(lv->GetItemCount()) +
                       (lv->GetSelectedItemCount() > 0 ?
@@ -134,8 +139,11 @@ bool wex::factory::frame::update_statusbar(const wxListView* lv)
 
     return statustext(text, "PaneInfo");
   }
-
-  return false;
+  else
+  {
+    return statustext(std::string(), std::string()) &&
+           statustext(std::string(), "PaneInfo");
+  }
 }
 
 // Do not make it const, too many const_casts needed,
