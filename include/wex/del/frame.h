@@ -103,6 +103,16 @@ public:
     /// normally grep does not replace, by setting sed, it can
     bool sed = false);
 
+  /// Opens file from action with a possible extension to move.
+  /// If file not empty returns false if an error occurred or no files opened,
+  /// and true if at least one file was opened (does not need to exist).
+  /// Otherwise always returns true.
+  bool open_from_action(
+    /// the file, might contain wildcards (* or ?), if empty a dialog is shown
+    const std::string& file,
+    /// possible extension
+    const std::string& move_ext);
+
   /// Sed (replace in files).
   /// The base directory is the directory for the current stc
   /// component, if available.
@@ -194,10 +204,6 @@ protected:
   /// if you use this as a page in a notebook,
   /// you might want prevent closing it.
   auto* file_history_list() { return m_file_history_listview; }
-
-  /// Opens from event with a possible extension to move.
-  void
-  open_from_event(const wxCommandEvent& event, const std::string& move_ext);
 
 private:
   listview* activate_and_clear(const wex::tool& tool);

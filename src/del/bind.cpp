@@ -7,27 +7,27 @@
 
 #include <wex/wex.h>
 
-#define IN_FILES(ACTION, DIALOG)                                         \
-  {                                                                      \
-    if (!event.GetString().empty())                                      \
-    {                                                                    \
-      ACTION(event.GetString());                                         \
-    }                                                                    \
-    else                                                                 \
-    {                                                                    \
-      if (get_stc() != nullptr && !get_stc()->get_find_string().empty()) \
-      {                                                                  \
-        DIALOG->reload();                                                \
-      }                                                                  \
-      DIALOG->Show();                                                    \
-    }                                                                    \
+#define IN_FILES(ACTION, DIALOG)                                               \
+  {                                                                            \
+    if (!event.GetString().empty())                                            \
+    {                                                                          \
+      ACTION(event.GetString());                                               \
+    }                                                                          \
+    else                                                                       \
+    {                                                                          \
+      if (get_stc() != nullptr && !get_stc()->get_find_string().empty())       \
+      {                                                                        \
+        DIALOG->reload();                                                      \
+      }                                                                        \
+      DIALOG->Show();                                                          \
+    }                                                                          \
   }
 
-#define TOOL_ACTION(TOOL, DIALOG, ACTION) \
-  {[=, this](wxCommandEvent& event)       \
-   {                                      \
-     IN_FILES(ACTION, DIALOG)             \
-   },                                     \
+#define TOOL_ACTION(TOOL, DIALOG, ACTION)                                      \
+  {[=, this](wxCommandEvent& event)                                            \
+   {                                                                           \
+     IN_FILES(ACTION, DIALOG)                                                  \
+   },                                                                          \
    TOOL},
 
 void wex::del::frame::bind_all()
@@ -60,7 +60,7 @@ void wex::del::frame::bind_all()
     {{[=, this](const wxCommandEvent& event)
       {
         m_is_command = true;
-        open_from_event(event, std::string());
+        open_from_action(event.GetString(), std::string());
       },
       wxID_OPEN},
 

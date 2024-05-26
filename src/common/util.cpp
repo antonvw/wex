@@ -216,10 +216,25 @@ int wex::open_files(
   {
     if (it.string().contains("*") || it.string().contains("?"))
     {
-      count += open_file_dir(
-                 path::current(),
-                 data::dir().file_spec(it.string()).type(type))
-                 .find_files();
+      if (it.paths().size() > 1)
+      {
+        count +=
+          open_file_dir(
+            wex::path(path::current()).append(it.data().parent_path()),
+            data::dir()
+              .file_spec(it.filename())
+              .type(
+                it.string().starts_with(".") ? data::dir::type_t().set() :
+                                               type))
+            .find_files();
+      }
+      else
+      {
+        count += open_file_dir(
+                   path::current(),
+                   data::dir().file_spec(it.string()).type(type))
+                   .find_files();
+      }
     }
     else if (it.dir_exists())
     {
@@ -249,7 +264,8 @@ int wex::open_files(
 
         if (!fn.file_exists())
         {
-          log::debug("open file") << fn;
+          // this is not an error
+          log::debug("file does not exist") << fn;
         }
       }
       catch (std::exception& e)

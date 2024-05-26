@@ -93,6 +93,17 @@ TEST_CASE("wex::del::frame")
       std::string::npos);
   }
 
+  SUBCASE("open_from_action")
+  {
+    REQUIRE(del_frame()->open_from_action(
+      wex::test::get_path("test.h").string(),
+      "ext"));
+    REQUIRE(del_frame()->open_from_action("xxx", "ext"));
+    REQUIRE(del_frame()->open_from_action("test.h", "ext"));
+    REQUIRE(del_frame()->open_from_action("test.*", "ext"));
+    REQUIRE(del_frame()->open_from_action("../del/test.*", "ext"));
+  }
+
   SUBCASE("prepare_output")
   {
     wex::process::prepare_output(del_frame());

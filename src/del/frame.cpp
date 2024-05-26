@@ -119,7 +119,7 @@ wex::del::frame::frame(
      data::control().is_required(true)},
     {m_text_in_folder,
      item::COMBOBOX_DIR,
-     config::strings_t{wxGetHomeDir().ToStdString()},
+     config::strings_t{wxGetHomeDir()},
      data::control().is_required(true)},
     {info}};
 
@@ -477,12 +477,12 @@ void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
   }
 }
 
-void wex::del::frame::open_from_event(
-  const wxCommandEvent& event,
-  const std::string&    move_ext)
+bool wex::del::frame::open_from_action(
+  const std::string& file,
+  const std::string& move_ext)
 {
   // :e [+command] [file]
-  if (auto text(event.GetString().ToStdString()); !text.empty())
+  if (auto text(file); !text.empty())
   {
     if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
     {
@@ -490,13 +490,13 @@ void wex::del::frame::open_from_event(
 
       if (!marker_and_register_expansion(&stc->get_vi(), text))
       {
-        return;
+        return false;
       }
     }
 
     if (!shell_expansion(text))
     {
-      return;
+      return false;
     }
 
     std::string cmd;
@@ -506,7 +506,10 @@ void wex::del::frame::open_from_event(
       text = v[1];
     }
 
-    open_files(this, to_vector_path(text).get(), data::control().command(cmd));
+    return open_files(
+      this,
+      to_vector_path(text).get(),
+      data::control().command(cmd));
   }
   else
   {
@@ -514,6 +517,7 @@ void wex::del::frame::open_from_event(
     data.style(wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR | wxFD_HEX_MODE)
       .allow_move_path_extension(move_ext);
     open_files_dialog(this, false, data::stc(data));
+    return true;
   }
 }
 
