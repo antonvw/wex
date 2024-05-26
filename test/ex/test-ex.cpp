@@ -108,6 +108,11 @@ TEST_CASE("wex::ex")
     REQUIRE(!wex::ctags::find("xest_app"));
   }
 
+  SUBCASE("edit")
+  {
+    REQUIRE(ex->command(":e test.txt"));
+  }
+
   SUBCASE("general")
   {
     REQUIRE(ex->frame() == frame());
@@ -121,7 +126,9 @@ TEST_CASE("wex::ex")
     // Test global delete (previous delete was on found text).
     const int max = 10;
     for (int i = 0; i < max; i++)
+    {
       stc->AppendText("line xxxx added\n");
+    }
     const int lines = stc->get_line_count();
     REQUIRE(ex->command(":g/xxxx/d"));
     REQUIRE(stc->get_line_count() == lines - max);
