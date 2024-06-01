@@ -2,11 +2,11 @@
 // Name:      test-version-dialog.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/test/test.h>
 #include <wex/del/version-dialog.h>
+#include <wex/test/test.h>
 
 TEST_CASE("wex::about_info")
 {
@@ -42,10 +42,20 @@ TEST_CASE("wex::version_info_dialog")
   SUBCASE("constructor")
   {
     wex::about_info about;
-    about.description("hello");
-    const wex::version_info_dialog info(about);
 
-    REQUIRE(info.about().GetDescription().find("hello") != std::string::npos);
+    SUBCASE("description")
+    {
+      about.description("hello");
+      const wex::version_info_dialog info(about);
+      REQUIRE(info.about().GetDescription().find("hello") != std::string::npos);
+    }
+
+    SUBCASE("no-description")
+    {
+      const wex::version_info_dialog info(about);
+      REQUIRE(
+        info.about().GetDescription().find("offers") != std::string::npos);
+    }
   }
 
   SUBCASE("constructor-other")

@@ -14,7 +14,6 @@
 
 #include <wx/artprov.h> // for wxArtID
 
-#include <list>
 #include <unordered_map>
 
 namespace wex
