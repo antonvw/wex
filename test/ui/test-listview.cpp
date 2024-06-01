@@ -10,6 +10,8 @@
 #include <wex/ui/listitem.h>
 #include <wex/ui/listview.h>
 
+#include <wx/uiaction.h>
+
 #include "test.h"
 
 TEST_CASE("wex::listview")
@@ -102,6 +104,38 @@ TEST_CASE("wex::listview")
     REQUIRE(!lv->item_to_text(0).empty());
     REQUIRE(!lv->item_to_text(-1).empty());
   }
+
+#ifndef GITHUB
+  SUBCASE("popup_menu")
+  {
+    REQUIRE(lv->append_columns(
+      {{"Int", wex::column::INT},
+       {"Date", wex::column::DATE},
+       {"Float", wex::column::FLOAT},
+       {"String", wex::column::STRING}}));
+
+    REQUIRE(lv->insert_item({"95", "", "", "hello"}));
+
+    lv->SetFocus();
+    lv->Select(0);
+
+    wxUIActionSimulator sim;
+
+    // Add some extra distance to take account of window decorations
+    wxRect pos;
+    lv->GetItemRect(0, pos);
+    // We move in slightly so we are not on the edge
+    const auto& p(lv->ClientToScreen(pos.GetPosition()) + wxPoint(10, 10));
+    REQUIRE(sim.MouseMove(p));
+    wxYield();
+
+    REQUIRE(sim.MouseClick(wxMOUSE_BTN_RIGHT));
+    REQUIRE(sim.Char(WXK_RETURN));
+    wxYield();
+
+    REQUIRE(lv->GetItemCount() == 0);
+  }
+#endif
 
   SUBCASE("set_item_image")
   {
