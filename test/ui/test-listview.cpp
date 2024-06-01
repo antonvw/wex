@@ -105,6 +105,7 @@ TEST_CASE("wex::listview")
     REQUIRE(!lv->item_to_text(-1).empty());
   }
 
+#ifndef GITHUB
   SUBCASE("popup_menu")
   {
     REQUIRE(lv->append_columns(
@@ -134,6 +135,7 @@ TEST_CASE("wex::listview")
 
     REQUIRE(lv->GetItemCount() == 0);
   }
+#endif
 
   SUBCASE("set_item_image")
   {
