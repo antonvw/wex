@@ -358,6 +358,7 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
       error_badbrace error_badrepeat error_brace error_brack error_collate error_complexity
       error_ctype error_escape error_paren error_range error_space error_stack
       error_type exa exception exit exp exp2
+      expected unexpected
       expm1 exponential_distribution extended extent extreme_value_distribution fabs
       fail failbit failure false_type fclose fdim
       femto feof ferror fflush fgetc fgetpos
