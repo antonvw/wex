@@ -219,8 +219,8 @@ using calculator_grammar::calculator;
 class evaluator_imp
 {
 public:
-  std::optional<int>
-  eval(const wex::ex* ex, const std::string& text, std::string& error)
+  std::expected<int, std::string>
+  eval(const wex::ex* ex, const std::string& text)
   {
     try
     {
@@ -234,16 +234,14 @@ public:
 
       if (r && iter == text.end())
       {
-        return {eval(program)};
+        return eval(program);
       }
 
-      error = std::string(iter, text.end());
-      return {};
+      return std::unexpected{std::string(iter, text.end())};
     }
     catch (std::exception& e)
     {
-      error = e.what();
-      return {};
+      return std::unexpected{e.what()};
     }
   };
 };
@@ -264,7 +262,7 @@ wex::evaluator::~evaluator()
   delete m_eval;
 }
 
-std::optional<int>
+std::expected<int, std::string>
 wex::evaluator::eval(const wex::ex* ex, const std::string& text) const
 {
   if (text == "-")
@@ -279,5 +277,5 @@ wex::evaluator::eval(const wex::ex* ex, const std::string& text) const
 
   std::string expanded(text);
   marker_and_register_expansion(ex, expanded);
-  return m_eval->eval(ex, expanded, m_error);
+  return m_eval->eval(ex, expanded);
 }

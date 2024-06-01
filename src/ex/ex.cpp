@@ -77,13 +77,15 @@ std::optional<int> wex::ex::calculator(const std::string& text)
 {
   const auto& val(evaluator().eval(this, text));
 
-  // e.g. in case text is empty there is no error
-  if (!val && !evaluator::error().empty())
+  if (!val)
   {
-    show_dialog("Calculate Error", evaluator::error());
+    show_dialog("Calculate Error", val.error());
+    return {};
   }
-
-  return val;
+  else
+  {
+    return val.value();
+  }
 }
 
 bool wex::ex::command(const std::string& cmd)
