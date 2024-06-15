@@ -41,49 +41,6 @@ enum
   VCS_START = 0   // number where fixed VCS start (index in vector)
 };
 
-/// Offers several vcs admin support methods.
-class vcs_admin
-{
-public:
-  /// Constructor.
-  vcs_admin(const std::string& dir, const path& p)
-    : m_dir(dir)
-    , m_path(p)
-  {
-  }
-
-  /// Returns true if admin dir exists for path.
-  bool exists() const
-  {
-    return !m_dir.empty() && !m_path.empty() &&
-           path(m_path).append(path(m_dir)).dir_exists();
-  }
-
-  /// Returns true if toplevel is not empty.
-  bool is_toplevel() const { return !toplevel().empty(); }
-
-  /// Return toplevel dir.
-  path toplevel() const
-  {
-    // .git
-    // /home/user/wex/src/src/vi.cpp
-    // should return -> /home/user/wex
-    for (path root; const auto& part : m_path.data())
-    {
-      if (vcs_admin(m_dir, root.append(part)).exists())
-      {
-        return root;
-      }
-    }
-
-    return path();
-  }
-
-private:
-  const std::string m_dir;
-  const path        m_path;
-};
-
 vcs::store_t::iterator find_entry(vcs::store_t* store, const path& p)
 {
   if (auto vcs = config("vcs.VCS").get(VCS_AUTO); vcs == VCS_AUTO)
@@ -95,7 +52,7 @@ vcs::store_t::iterator find_entry(vcs::store_t* store, const path& p)
             store->end(),
             [p](const auto& i)
             {
-              const vcs_admin va(i.admin_dir(), p);
+              const factory::vcs_admin va(i.admin_dir(), p);
               return va.is_toplevel() || va.exists();
             });
           it != store->end())
@@ -133,8 +90,9 @@ wex::vcs::vcs(const std::vector<wex::path>& files, int command_no)
     if (m_files.size() == 1 && !m_files[0].file_exists())
     {
       config(_("vcs.Base folder"))
-        .set_first_of(
-          vcs_admin(m_entry->admin_dir(), m_files[0]).toplevel().string());
+        .set_first_of(factory::vcs_admin(m_entry->admin_dir(), m_files[0])
+                        .toplevel()
+                        .string());
     }
 
     if (m_entry->set_command(command_no))
@@ -191,7 +149,10 @@ int wex::vcs::config_dialog(const data::window& par) const
   std::vector<item> v{{"vcs.VCS", choices, true, data::item().columns(cols)}};
 
   config(_("vcs.Always ask flags")).get(true);
+  config(_("vcs.Find includes submodules")).get(false);
+
   v.emplace_back(_("vcs.Always ask flags"), item::CHECKBOX);
+  v.emplace_back(_("vcs.Find includes submodules"), item::CHECKBOX);
 
   std::transform(
     m_store->begin(),
@@ -233,23 +194,20 @@ void wex::vcs::destroy_dialog()
 
 bool wex::vcs::dir_exists(const wex::path& filename)
 {
-  const auto entry(find_entry(m_store, filename));
-  if (vcs_admin(entry->admin_dir(), filename).is_toplevel())
+  if (const auto& entry(find_entry(m_store, filename));
+      factory::vcs_admin(entry->admin_dir(), filename).is_toplevel())
   {
     return true;
   }
-
-  return vcs_admin(entry->admin_dir(), filename).exists();
+  else
+  {
+    return factory::vcs_admin(entry->admin_dir(), filename).exists();
+  }
 }
 
 bool wex::vcs::empty()
 {
   return m_store->empty();
-}
-
-size_t wex::vcs::size()
-{
-  return m_store->size();
 }
 
 bool wex::vcs::execute()
@@ -311,6 +269,30 @@ const std::string wex::vcs::get_branch() const
            m_entry->get_branch(
              current_path().file_exists() ? current_path().parent_path() :
                                             current_path().string());
+}
+
+bool wex::vcs::is_dir_excluded(const path& p) const
+{
+  if (!is_setup())
+  {
+    return false;
+  }
+
+  for (const auto& e : m_excludes)
+  {
+    if (e == p)
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool wex::vcs::is_file_excluded(const path& p) const
+{
+  // not yet implemented
+  return false;
 }
 
 bool wex::vcs::load_document()
@@ -395,6 +377,14 @@ wxStandardID wex::vcs::request(const data::window& data)
   return wxID_OK;
 }
 
+void wex::vcs::set(const wex::path& p)
+{
+  m_files.clear();
+  m_files.emplace_back(p);
+
+  m_entry = find_entry(m_store, current_path());
+}
+
 bool wex::vcs::set_entry_from_base(wxWindow* parent)
 {
   if (!use())
@@ -423,6 +413,28 @@ bool wex::vcs::set_entry_from_base(wxWindow* parent)
   }
 
   return !m_entry->name().empty();
+}
+
+bool wex::vcs::setup_exclude(const path& dir)
+{
+  if (config(_("vcs.Find includes submodules")).get(false))
+  {
+    return false;
+  }
+
+  const auto& s(m_entry->setup_exclude(toplevel(), dir));
+
+  if (!s)
+  {
+    return false;
+  }
+
+  m_excludes = *s;
+  set(dir);
+
+  log::trace("vcs setup on") << dir.string() << "excludes" << m_excludes.size();
+
+  return is_setup(true);
 }
 
 int wex::vcs::show_dialog(const data::window& arg)
@@ -517,9 +529,14 @@ int wex::vcs::show_dialog(const data::window& arg)
                                      m_item_dialog->ShowModal();
 }
 
+size_t wex::vcs::size()
+{
+  return m_store->size();
+}
+
 wex::path wex::vcs::toplevel() const
 {
-  return vcs_admin(
+  return factory::vcs_admin(
            m_entry->admin_dir(),
            m_files.empty() ? current_path() : m_files[0])
     .toplevel();

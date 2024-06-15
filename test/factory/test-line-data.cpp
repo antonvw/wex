@@ -2,11 +2,10 @@
 // Name:      test-line-data.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/line-data.h>
-
 #include <wex/test/test.h>
 
 TEST_CASE("wex::line_data")

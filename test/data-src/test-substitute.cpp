@@ -2,11 +2,10 @@
 // Name:      data/test-substitute.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/substitute.h>
-
 #include <wex/test/test.h>
 
 TEST_CASE("wex::data::substitute")

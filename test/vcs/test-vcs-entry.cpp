@@ -2,7 +2,7 @@
 // Name:      test-vcs-entry.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -10,13 +10,25 @@
 #include <wex/factory/defs.h>
 #include <wex/syntax/lexers.h>
 #include <wex/vcs/vcs-entry.h>
+#include <wex/vcs/vcs.h>
 
 #include "test.h"
 
 TEST_CASE("wex::vcs_entry")
 {
+  pugi::xml_document doc;
+
+  REQUIRE(doc.load_string("<vcs name=\"git\" admin-dir=\"./\" log-flags=\"-n "
+                          "1\" blame-format=\" yyyy\">"
+                          "  <commands>"
+                          "     <command> help </command>"
+                          "     <command> blame </command>"
+                          "  </commands>"
+                          "</vcs>"));
+
   SUBCASE("default constructor")
   {
+    REQUIRE(wex::vcs_entry().admin_dir().empty());
     REQUIRE(wex::vcs_entry().get_commands().empty());
     REQUIRE(
       wex::vcs_entry().flags_location() ==
@@ -25,16 +37,6 @@ TEST_CASE("wex::vcs_entry")
 
   SUBCASE("constructor using xml")
   {
-    pugi::xml_document doc;
-
-    REQUIRE(doc.load_string("<vcs name=\"git\" admin-dir=\"./\" log-flags=\"-n "
-                            "1\" blame-format=\" yyyy\">"
-                            "  <commands>"
-                            "     <command> help </command>"
-                            "     <command> blame </command>"
-                            "  </commands>"
-                            "</vcs>"));
-
     wex::vcs_entry entry(doc.document_element());
     REQUIRE(entry.name() == "git");
 
@@ -96,5 +98,27 @@ TEST_CASE("wex::vcs_entry")
 #endif
 
     stc->get_file().reset_contents_changed();
+  }
+
+  SUBCASE("setup_exclude")
+  {
+    REQUIRE(wex::vcs::load_document());
+    wex::vcs       vcs(std::vector<wex::path>{wex::test::get_path("test.h")});
+    wex::vcs_entry entry(doc.document_element());
+    const auto&    v(entry.setup_exclude(vcs.toplevel(), wex::path::current()));
+
+    REQUIRE(v.has_value());
+    REQUIRE(v->size() > 5);
+    REQUIRE(
+      std::find(
+        v->begin(),
+        v->end(),
+        wex::path(vcs.toplevel()).append(wex::path("external/wxWidgets"))) !=
+      v->end());
+    REQUIRE(
+      std::find(
+        v->begin(),
+        v->end(),
+        wex::path(vcs.toplevel()).append(wex::path("build"))) != v->end());
   }
 }

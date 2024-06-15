@@ -2,12 +2,13 @@
 // Name:      data/dir.h
 // Purpose:   Declaration of class wex::data::dir
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/factory/frd.h>
+#include <wex/factory/vcs.h>
 
 #include <bitset>
 #include <string>
@@ -84,8 +85,19 @@ public:
     return *this;
   }
 
+  /// Returns vcs.
+  auto* vcs() const { return m_vcs; }
+
+  /// Sets vcs.
+  dir& vcs(factory::vcs* rhs)
+  {
+    m_vcs = rhs;
+    return *this;
+  }
+
 private:
   factory::find_replace_data* m_frd{nullptr};
+  factory::vcs*               m_vcs{nullptr};
 
   int         m_max_matches{-1};
   std::string m_dir_spec, m_file_spec;

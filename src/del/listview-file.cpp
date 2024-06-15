@@ -2,7 +2,7 @@
 // Name:      listview-file.cpp
 // Purpose:   Implementation of class wex::del::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2023 Anton van Wezenbeek
+// Copyright: (c) 2010-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <pugixml.hpp>
@@ -125,7 +125,7 @@ void wex::del::file::add_items(
 
   wex::dir dir(
     wex::path(folder),
-    data::dir().file_spec(files).type(flags),
+    data::dir().file_spec(files).type(flags).vcs(get_frame()->vcs()),
     this);
 
   dir.find_files();

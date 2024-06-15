@@ -2,12 +2,11 @@
 // Name:      factory/test-beautify.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/beautify.h>
-
-#include "test.h"
+#include <wex/test/test.h>
 
 TEST_CASE("wex::factory::beautify")
 {

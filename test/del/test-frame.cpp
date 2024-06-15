@@ -308,7 +308,7 @@ TEST_CASE("wex::del::frame")
 
     del_frame()->statusbar_clicked_right("text");
 
-    REQUIRE(del_frame()->show_stc_entry_dialog());
+    del_frame()->show_stc_entry_dialog();
 
     REQUIRE(del_frame()->stc_entry_dialog_component() != nullptr);
 

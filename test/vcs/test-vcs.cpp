@@ -2,15 +2,14 @@
 // Name:      test-vcs.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
 #include <wex/core/log-none.h>
+#include <wex/test/test.h>
 #include <wex/ui/menu.h>
 #include <wex/vcs/vcs.h>
-
-#include "test.h"
 
 #include <vector>
 
@@ -25,6 +24,17 @@ TEST_CASE("wex::vcs")
     REQUIRE(wex::vcs::dir_exists(file));
     REQUIRE(!wex::vcs::empty());
     REQUIRE(wex::vcs::size() > 0);
+  }
+
+  SUBCASE("constructor")
+  {
+    wex::vcs vcs(std::vector<wex::path>{file});
+    REQUIRE(vcs.name() == "Auto");
+    REQUIRE(vcs.entry().admin_dir() == ".git");
+
+    vcs.set(wex::path("/tmp/xxx"));
+    REQUIRE(vcs.name() == "Auto");
+    REQUIRE(vcs.entry().admin_dir() != ".git"); // should be empty??
   }
 
   SUBCASE("others")
@@ -62,6 +72,21 @@ TEST_CASE("wex::vcs")
     REQUIRE(vcs.set_entry_from_base());
 
     REQUIRE(vcs.use());
+
+    auto tl(vcs.toplevel());
+
+    REQUIRE(!tl.string().empty());
+
+    REQUIRE(vcs.setup_exclude(vcs.toplevel()));
+
+    REQUIRE(vcs.is_setup());
+
+    REQUIRE(!vcs.is_dir_excluded(file.data().parent_path()));
+
+    REQUIRE(vcs.is_dir_excluded(
+      wex::path(tl).append(wex::path("external/wxWidgets"))));
+
+    REQUIRE(!vcs.is_file_excluded(file));
 #endif
   }
 }

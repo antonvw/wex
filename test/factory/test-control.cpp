@@ -2,11 +2,10 @@
 // Name:      data/test-control.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/control.h>
-
 #include <wex/test/test.h>
 
 TEST_CASE("wex::data::control")
