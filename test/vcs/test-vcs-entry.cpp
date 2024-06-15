@@ -119,6 +119,6 @@ TEST_CASE("wex::vcs_entry")
       std::find(
         v->begin(),
         v->end(),
-        wex::path(vcs.toplevel()).append(wex::path("build/"))) != v->end());
+        wex::path(vcs.toplevel()).append(wex::path("build"))) != v->end());
   }
 }

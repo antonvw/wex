@@ -768,7 +768,7 @@ void wex::del::frame::vcs_add_path(factory::link* l)
 {
   if (wex::vcs v; v.use() && v.toplevel().dir_exists())
   {
-    l->add_path(m_vcs->toplevel());
+    l->add_path(v.toplevel());
   }
 }
 
