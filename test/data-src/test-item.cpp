@@ -2,12 +2,11 @@
 // Name:      data/test-item.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
 #include <wex/data/item.h>
-
 #include <wex/test/test.h>
 
 TEST_CASE("wex::data::item")

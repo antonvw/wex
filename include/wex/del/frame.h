@@ -14,6 +14,7 @@
 #include <wex/ui/file-history.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/item.h>
+#include <wex/vcs/vcs.h>
 
 #include <set>
 
@@ -43,6 +44,9 @@ public:
     size_t              maxFiles    = 9,
     size_t              maxProjects = 0,
     const data::window& data = data::window().style(wxDEFAULT_FRAME_STYLE));
+
+  /// Destructor.
+  ~frame() override;
 
   // Virtual interface
 
@@ -138,6 +142,9 @@ public:
   /// to the list.
   void use_file_history_list(listview* list);
 
+  /// Returns the vcs.
+  wex::vcs* vcs() { return m_vcs; };
+
   /// Shows blame info for vcs in the text margin.
   /// Returns true if info was added.
   bool vcs_blame_show(vcs_entry* vcs, syntax::stc*);
@@ -218,11 +225,11 @@ private:
 
   item_dialog *     m_fif_dialog{nullptr}, *m_rif_dialog{nullptr};
   stc_entry_dialog* m_entry_dialog{nullptr};
+  debug*            m_debug{nullptr};
+  process*          m_process{nullptr};
+  listview*         m_file_history_listview{nullptr};
+  class vcs*        m_vcs{nullptr};
 
-  debug*   m_debug{nullptr};
-  process* m_process{nullptr};
-
-  listview*          m_file_history_listview{nullptr};
   class file_history m_project_history;
 
   function_repeat m_function_repeat;

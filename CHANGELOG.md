@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - right click on File Type enables or disables showing whitespace
 - Go lexer
 - a WIN_SINGLE_LINE to data::stc, used in e.g. stc_entry_dialog
+- factory::vcs and support exclude find in git submodules
 
 ### Changed
 
@@ -20,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - clang-tidy updated
 - renamed FindWEX into Findwex and supports adding a version
 - used wrapline none for rfw lexer
+- moved vcs_admin to factory lib
 
 ### Fixed
 

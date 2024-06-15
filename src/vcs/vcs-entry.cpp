@@ -10,10 +10,42 @@
 #include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
+#include <wex/core/log.h>
+#include <wex/core/regex.h>
 #include <wex/stc/shell.h>
 #include <wex/ui/menu.h>
 #include <wex/ui/menus.h>
 #include <wex/vcs/vcs-entry.h>
+
+namespace wex
+{
+std::vector<wex::path>
+parse(const path& toplevel, const std::string& file, const std::string& regex)
+{
+  std::vector<wex::path> v;
+  std::fstream fs(path(toplevel).append(path(file)).data(), std::ios_base::in);
+
+  if (!fs.is_open())
+  {
+    wex::log::trace(file) << "not opened";
+    return v;
+  }
+
+  for (std::string line; std::getline(fs, line);)
+  {
+    if (!line.empty())
+    {
+      if (wex::regex r(regex); r.match(line) > 0)
+      {
+        v.emplace_back(path(toplevel).append(
+          path(r[0].ends_with("/") ? r[0].substr(0, r[0].size() - 1) : r[0])));
+      }
+    }
+  }
+
+  return v;
+}
+} // namespace wex
 
 wex::vcs_entry::vcs_entry(const pugi::xml_node& node)
   : menu_commands(node)
@@ -144,14 +176,31 @@ const std::string wex::vcs_entry::get_flags() const
 
 bool wex::vcs_entry::log(const path& p, const std::string& id)
 {
-  std::string command   = bin() + " log ";
-  std::string separator = (!m_log_flags.empty() ? " " : std::string());
+  const std::string separator = (!m_log_flags.empty() ? " " : std::string());
+  std::string       command   = bin() + " log ";
 
   command += m_flags_location == flags_location_t::PREFIX || name() == "svn" ?
                m_log_flags + separator + id :
                id + separator + m_log_flags;
 
   return process::system(process_data(command).start_dir(p.parent_path())) == 0;
+}
+
+std::optional<std::vector<wex::path>>
+wex::vcs_entry::setup_exclude(const path& toplevel, const path& p)
+{
+  if (name() != "git")
+  {
+    return {};
+  }
+
+  const auto& x(parse(toplevel, ".gitmodules", "\t+path = ([0-9A-Za-z\\/]+)"));
+  const auto& y(parse(toplevel, ".gitignore", "([0-9A-Za-z\\/]+)"));
+
+  auto v(x);
+  std::move(y.begin(), y.end(), std::back_inserter(v));
+
+  return std::optional<std::vector<wex::path>>{v};
 }
 
 void wex::vcs_entry::show_output(const std::string& caption) const

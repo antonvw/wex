@@ -58,6 +58,7 @@ wex::del::frame::frame(
        find_replace_data::get()->text_regex(),
        m_text_recursive + ",1",
        m_text_hidden})
+  , m_vcs(new wex::vcs())
   , m_function_repeat(
       "frame",
       this,
@@ -155,6 +156,8 @@ wex::del::frame::frame(
 
   bind_all();
 }
+
+wex::del::frame::~frame() {}
 
 wex::del::listview* wex::del::frame::activate_and_clear(const wex::tool& tool)
 {
@@ -375,8 +378,11 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
 
   wex::dir dir(
     path(arg1),
-    data::dir().file_spec(arg2).type(arg3).find_replace_data(
-      find_replace_data::get()),
+    data::dir()
+      .file_spec(arg2)
+      .type(arg3)
+      .find_replace_data(find_replace_data::get())
+      .vcs(m_vcs),
     activate_and_clear(tool));
 
   dir.find_files(tool);
@@ -707,15 +713,15 @@ void wex::del::frame::statusbar_clicked_right(const std::string& pane)
 
 void wex::del::frame::statustext_vcs(factory::stc* stc)
 {
-  const vcs v({stc->path()});
+  m_vcs->set(stc->path());
 
-  if (const auto& text(v.get_branch()); !text.empty())
+  if (const auto& text(m_vcs->get_branch()); !text.empty())
   {
     statustext(text, "PaneVCS");
   }
   else
   {
-    statustext(v.name(), "PaneVCS");
+    statustext(m_vcs->name(), "PaneVCS");
   }
 }
 
@@ -760,9 +766,9 @@ void wex::del::frame::use_file_history_list(listview* list)
 
 void wex::del::frame::vcs_add_path(factory::link* l)
 {
-  if (vcs v; v.use() && v.toplevel().dir_exists())
+  if (wex::vcs v; v.use() && v.toplevel().dir_exists())
   {
-    l->add_path(v.toplevel());
+    l->add_path(m_vcs->toplevel());
   }
 }
 
