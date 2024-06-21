@@ -300,7 +300,8 @@ std::string wex::vi::convert_key_event(const wxKeyEvent& event) const
     return "j";
   }
 
-  if (auto c = event.GetUnicodeKey(); c != WXK_NONE)
+  if (auto c = event.GetUnicodeKey();
+      c != WXK_NONE && !(event.ControlDown() || event.RawControlDown()))
   {
     return std::string(1, c);
   }
@@ -451,6 +452,7 @@ bool wex::vi::insert_mode(const std::string& command)
     command_reg(command);
     return true;
   }
+
   if (command.contains(k_s(WXK_CONTROL_R)))
   {
     return insert_mode_register(command);

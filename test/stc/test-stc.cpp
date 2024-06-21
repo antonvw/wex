@@ -416,9 +416,12 @@ TEST_CASE("wex::stc")
   {
     REQUIRE(stc->vi_command(wex::line_data().command("G")));
     REQUIRE(stc->vi_command_finish(false));
+    REQUIRE(!stc->vi_is_recording());
 
     stc->vi_record("xx");
+    REQUIRE(!stc->vi_is_recording());
     REQUIRE(!stc->vi_is_visual());
+
     REQUIRE(stc->vi_register('c').empty());
     REQUIRE((stc->vi_search_flags() & wxSTC_FIND_REGEXP) > 0);
     REQUIRE(stc->vi_mode().empty());

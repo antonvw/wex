@@ -680,6 +680,11 @@ bool wex::stc::vi_command_finish(bool user_input)
   return m_vi->command_finish(user_input);
 }
 
+bool wex::stc::vi_is_recording() const
+{
+  return ex::get_macros().mode().is_recording();
+}
+
 bool wex::stc::vi_is_visual() const
 {
   return m_vi->mode().is_visual();

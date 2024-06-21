@@ -36,26 +36,19 @@ void wex::ex_commandline_imp::on_char(wxKeyEvent& event)
 
   if (m_control_r)
   {
-    skip             = false;
-    const char     c = event.GetUnicodeKey();
-    wxCommandEvent ce(wxEVT_MENU, m_id_register);
+    skip = false;
 
-    if (c == '%')
+    if (wxCommandEvent ce(wxEVT_MENU, m_id_register); m_cl->stc() != nullptr)
     {
-      if (m_cl->stc() != nullptr)
-      {
-        ce.SetString(m_cl->stc()->path().filename());
-      }
-    }
-    else
-    {
-      ce.SetString(m_cl->stc()->vi_register(c));
-    }
+      const char c = event.GetUnicodeKey();
+      ce.SetString(
+        (c == '%') ? m_cl->stc()->path().filename() :
+                     m_cl->stc()->vi_register(c));
 
-    if (!ce.GetString().empty())
-    {
       wxPostEvent(this, ce);
     }
+
+    m_text_not_expanded += std::string(1, WXK_CONTROL_R);
   }
 
   m_user_input = true;
@@ -65,6 +58,8 @@ void wex::ex_commandline_imp::on_char(wxKeyEvent& event)
   {
     event.Skip();
   }
+
+  m_text_not_expanded += std::string(1, event.GetUnicodeKey());
 }
 
 void wex::ex_commandline_imp::on_key_down(wxKeyEvent& event)
@@ -215,18 +210,22 @@ void wex::ex_commandline_imp::on_text()
 
 void wex::ex_commandline_imp::on_text_enter(wxEvent& event)
 {
-  if (!on_text_enter_prep())
+  if (m_cl->stc() == nullptr || !on_text_enter_prep())
   {
     return;
   }
 
   if (input_mode_finish())
   {
-    if (const auto& text(get_text().substr(0, get_text().size() - 2));
+    if (const auto& text(
+          m_cl->stc()->vi_is_recording() ?
+            m_text_not_expanded :
+            get_text().substr(0, get_text().size() - 2));
         text != ":." && !text.empty())
     {
       m_cl->stc()->vi_command(line_data().command(
         ":" + std::string(1, m_input) + "|" + text + m_cl->stc()->eol()));
+      m_text_not_expanded.clear();
     }
 
     m_cl->get_frame()->show_ex_bar();
@@ -244,7 +243,9 @@ void wex::ex_commandline_imp::on_text_enter(wxEvent& event)
   }
   else if (
     (m_command.type() == ex_command::type_t::FIND) ||
-    m_command.reset(get_text()).exec())
+    m_command
+      .reset(m_cl->stc()->vi_is_recording() ? m_text_not_expanded : get_text())
+      .exec())
   {
     on_text_enter_do();
   }

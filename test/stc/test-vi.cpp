@@ -223,6 +223,16 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command(ctrl_r + "0"));
     change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     REQUIRE(stc->get_text() == "test.h");
+
+    stc->set_text("no control r");
+    REQUIRE(vi->command("i"));
+    wxKeyEvent event(wxEVT_CHAR);
+    event.m_keyCode = WXK_CONTROL_R;
+    event.SetControlDown(true);
+    REQUIRE(vi->on_key_down(event));
+    REQUIRE(!vi->on_char(event));
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
+    REQUIRE(stc->get_text() == "no control r");
   }
 
   SUBCASE("right-while-in-insert")

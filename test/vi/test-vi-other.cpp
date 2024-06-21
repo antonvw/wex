@@ -2,7 +2,7 @@
 // Name:      test-vi-other.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -112,6 +112,7 @@ TEST_CASE("wex::vi-other")
     REQUIRE(vi->command("/abc"));
     REQUIRE(vi->command("q"));
     REQUIRE(!wex::ex::get_macros().mode().is_recording());
+    REQUIRE(!wex::ex::get_macros().get_macro_commands("a").empty());
     REQUIRE(vi->command("@a"));
     REQUIRE(vi->command(" "));
     REQUIRE(vi->command("qb"));
@@ -121,6 +122,10 @@ TEST_CASE("wex::vi-other")
     REQUIRE(!wex::ex::get_macros().mode().is_recording());
     REQUIRE(vi->command("@b"));
     REQUIRE(vi->command(" "));
+    REQUIRE(vi->command("qc"));
+    REQUIRE(vi->command("\"x"));
+    REQUIRE(vi->command("yw"));
+    REQUIRE(vi->command("q"));
   }
 
   SUBCASE("variable")

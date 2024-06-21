@@ -243,6 +243,7 @@ public:
   bool        vi_command(const line_data& data) override;
   bool        vi_command_finish(bool user_input) override;
   void        vi_record(const std::string& command) override;
+  bool        vi_is_recording() const override;
   bool        vi_is_visual() const override;
   std::string vi_register(char c) const override;
   int         vi_search_flags() const override { return m_vi->search_flags(); }
