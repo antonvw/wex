@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "test.h"
+#include <wex/factory/line-data.h>
 
 TEST_CASE("wex::factory::stc")
 {
@@ -113,5 +114,20 @@ TEST_CASE("wex::factory::stc")
 
     stc->append_text("baan");
     REQUIRE(stc->get_text() == "baanbaan");
+  }
+
+  SUBCASE("virtual")
+  {
+    REQUIRE(!stc->vi_command(wex::line_data()));
+
+    REQUIRE(!stc->vi_command_finish(true));
+
+    REQUIRE(!stc->vi_is_recording());
+
+    REQUIRE(!stc->vi_is_visual());
+
+    REQUIRE(stc->vi_mode().empty());
+
+    stc->vi_record("xxx");
   }
 }

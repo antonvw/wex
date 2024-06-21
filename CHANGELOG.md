@@ -30,6 +30,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - fixed a possible filename too long exception when trying opening links
 - show error if no macros present for a lexer
 - improved cleaning when history view is closed
+- register calculator used in insert mode
 
 ## 24.04 - 2024-03-29
 

@@ -43,6 +43,9 @@ public:
   /// Handles keydown event.
   void on_key_down(wxKeyEvent& event);
 
+  /// Text not expanded.
+  auto text_not_expanded() const { return m_text_not_expanded; };
+
   // Virtual interface
 
   bool Destroy() override;
@@ -80,6 +83,8 @@ private:
   char m_input{0};
 
   bool m_control_r{false}, m_mode_visual{false}, m_user_input{false};
+
+  std::string m_text_not_expanded;
 
   std::vector<ex_commandline_input*> m_clis;
 

@@ -26,6 +26,7 @@ bool wex::vi::parse_command(std::string& command)
     m_count = 1;
   }
 
+  // if this is a register, wait for next char for register name
   if (command.front() == '"')
   {
     if (command.size() < 2)
@@ -33,8 +34,8 @@ bool wex::vi::parse_command(std::string& command)
       return false;
     }
     set_register(command[1]);
-    get_macros().record(command);
     command.erase(0, 2);
+    return true;
   }
   else if (command.front() == ':')
   {
@@ -90,9 +91,8 @@ bool wex::vi::parse_command_handle(std::string& command)
     {
       return parse_command(command);
     }
-    
-          return false;
-   
+
+    return false;
   }
 
   return true;
