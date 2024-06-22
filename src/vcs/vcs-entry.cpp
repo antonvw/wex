@@ -19,10 +19,10 @@
 
 namespace wex
 {
-std::vector<wex::path>
+std::set<wex::path>
 parse(const path& toplevel, const std::string& file, const std::string& regex)
 {
-  std::vector<wex::path> v;
+  std::set<wex::path> v;
   std::fstream fs(path(toplevel).append(path(file)).data(), std::ios_base::in);
 
   if (!fs.is_open())
@@ -37,7 +37,7 @@ parse(const path& toplevel, const std::string& file, const std::string& regex)
     {
       if (wex::regex r(regex); r.match(line) > 0)
       {
-        v.emplace_back(path(toplevel).append(
+        v.emplace(path(toplevel).append(
           path(r[0].ends_with("/") ? r[0].substr(0, r[0].size() - 1) : r[0])));
       }
     }
@@ -186,7 +186,7 @@ bool wex::vcs_entry::log(const path& p, const std::string& id)
   return process::system(process_data(command).start_dir(p.parent_path())) == 0;
 }
 
-std::optional<std::vector<wex::path>>
+std::optional<std::set<wex::path>>
 wex::vcs_entry::setup_exclude(const path& toplevel, const path& p)
 {
   if (name() != "git")
@@ -194,13 +194,13 @@ wex::vcs_entry::setup_exclude(const path& toplevel, const path& p)
     return {};
   }
 
-  const auto& x(parse(toplevel, ".gitmodules", "\t+path = ([0-9A-Za-z\\/]+)"));
-  const auto& y(parse(toplevel, ".gitignore", "([0-9A-Za-z\\/]+)"));
+  const std::string allowed("[0-9A-Za-z_\\-\\/]+");
+  auto x(parse(toplevel, ".gitmodules", "\t+path = (" + allowed + ")"));
+  auto y(parse(toplevel, ".gitignore", "(" + allowed + ")"));
 
-  auto v(x);
-  std::move(y.begin(), y.end(), std::back_inserter(v));
+  x.merge(y);
 
-  return std::optional<std::vector<wex::path>>{v};
+  return std::optional<std::set<wex::path>>{x};
 }
 
 void wex::vcs_entry::show_output(const std::string& caption) const

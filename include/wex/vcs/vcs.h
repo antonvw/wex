@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <set>
 #include <wex/factory/vcs.h>
 #include <wex/vcs/vcs-entry.h>
 
@@ -134,7 +135,8 @@ private:
 
   store_t::iterator m_entry;
 
-  std::vector<wex::path> m_files, m_excludes;
+  std::vector<wex::path> m_files;
+  std::set<wex::path>    m_excludes;
   std::string            m_title;
 
   static inline item_dialog* m_item_dialog{nullptr};

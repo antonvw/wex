@@ -73,11 +73,11 @@ public:
   /// Destructor.
   ~path();
 
+  /// Spaceship operator.
+  auto operator<=>(const path& r) const { return data() <=> r.data(); }
+
   /// == Operator.
   bool operator==(const path& r) const { return data() == r.data(); }
-
-  /// != Operator.
-  bool operator!=(const path& r) const { return !operator==(r); }
 
   /// Appends path.
   path& append(const path& path);
