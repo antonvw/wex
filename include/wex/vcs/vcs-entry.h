@@ -9,6 +9,7 @@
 
 #include <optional>
 #include <pugixml.hpp>
+#include <set>
 #include <wex/core/vcs-command.h>
 #include <wex/syntax/blame.h>
 #include <wex/syntax/lexer.h>
@@ -97,7 +98,7 @@ public:
 
   /// Sets up the exclude dir.
   /// Returns vector with paths to be excluded.
-  std::optional<std::vector<wex::path>>
+  std::optional<std::set<wex::path>>
   setup_exclude(const path& toplevel, const path& p);
 
   // Virtual interface

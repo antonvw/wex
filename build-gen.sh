@@ -83,6 +83,7 @@ while getopts ":B:d:D:abcghilopstT" opt; do
 
     i)
       option_swig="-DwexBUILD_BINDINGS=ON"
+      option_dir=swig
     ;;
 
     l)

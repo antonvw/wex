@@ -1,3 +1,4 @@
 build/
+swig/
 *.html
 *.xml

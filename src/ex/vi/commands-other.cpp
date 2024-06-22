@@ -257,7 +257,7 @@ wex::vi::commands_t wex::vi::commands_other()
        }
        return 1;
      }},
-    {"x",
+    {k_s(WXK_DELETE) + "x",
      [&](const std::string& command)
      {
        delete_range(
@@ -442,15 +442,6 @@ wex::vi::commands_t wex::vi::commands_other()
          return command.size();
        }
        return (size_t)0;
-     }},
-    // delete char
-    {"\x7F",
-     [&](const std::string& command)
-     {
-       delete_range(
-         get_stc()->GetCurrentPos(),
-         get_stc()->GetCurrentPos() + m_count);
-       return 1;
      }}};
 }
 

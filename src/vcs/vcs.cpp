@@ -273,20 +273,7 @@ const std::string wex::vcs::get_branch() const
 
 bool wex::vcs::is_dir_excluded(const path& p) const
 {
-  if (!is_setup())
-  {
-    return false;
-  }
-
-  for (const auto& e : m_excludes)
-  {
-    if (e == p)
-    {
-      return true;
-    }
-  }
-
-  return false;
+  return is_setup() && m_excludes.contains(p);
 }
 
 bool wex::vcs::is_file_excluded(const path& p) const

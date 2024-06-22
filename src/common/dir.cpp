@@ -244,8 +244,6 @@ int wex::dir::run() const
            (m_data.vcs() != nullptr &&
             m_data.vcs()->is_dir_excluded(i->path()))))
         {
-          // Check the extra code in allow_hidden,
-          // as this works, now that should not be necessary.
           i.disable_recursion_pending();
         }
         else
@@ -308,10 +306,8 @@ bool wex::dir::traverse(const fs::directory_entry& e) const
     }
   }
   else if (
-    m_data.type().test(data::dir::DIRS) && fs::is_directory(e.path()) &&
-    allow_hidden(e.path(), m_data) &&
-    (m_data.dir_spec().empty() ||
-     matches_one_of(e.path().filename().string(), m_data.dir_spec())))
+    m_data.dir_spec().empty() ||
+    matches_one_of(e.path().filename().string(), m_data.dir_spec()))
   {
     on_dir(e.path());
 
