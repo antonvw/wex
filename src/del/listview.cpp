@@ -34,25 +34,25 @@ wex::del::listview::listview(const data::listview& data)
     .set(this);
 
   bind(this).command(
-    {{[=, this](wxCommandEvent& event)
+    {{[=, this](const wxCommandEvent& event)
       {
         on_compare();
       },
       ID_LIST_COMPARE},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         build(path_lexer(listitem(this, GetFirstSelected()).path()));
       },
       ID_LIST_RUN_BUILD},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         on_tool(event);
       },
       ID_TOOL_LOWEST},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         std::vector<path> files;
         for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))

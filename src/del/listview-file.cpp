@@ -55,7 +55,7 @@ wex::del::file::file(const wex::path& p, const data::listview& data)
 
   Bind(
     wxEVT_MENU,
-    [=, this](wxCommandEvent& event)
+    [=, this](const wxCommandEvent& event)
     {
       // Force at least one of the checkboxes to be checked.
       m_add_items_dialog->force_checkbox_checked(_("Add"));

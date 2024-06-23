@@ -171,28 +171,28 @@ void wex::stc::bind_other()
 
   Bind(
     wxEVT_FIND,
-    [=, this](wxFindDialogEvent& event)
+    [=, this](const wxFindDialogEvent& event)
     {
       find_next(false);
     });
 
   Bind(
     wxEVT_FIND_NEXT,
-    [=, this](wxFindDialogEvent& event)
+    [=, this](const wxFindDialogEvent& event)
     {
       find_next(false);
     });
 
   Bind(
     wxEVT_FIND_REPLACE,
-    [=, this](wxFindDialogEvent& event)
+    [=, this](const wxFindDialogEvent& event)
     {
       replace_next(true);
     });
 
   Bind(
     wxEVT_FIND_REPLACE_ALL,
-    [=, this](wxFindDialogEvent& event)
+    [=, this](const wxFindDialogEvent& event)
     {
       auto* frd = find_replace_data::get();
       replace_all(frd->get_find_string(), frd->get_replace_string());
@@ -312,7 +312,7 @@ void wex::stc::bind_other()
 
   Bind(
     wxEVT_STC_DWELLEND,
-    [=, this](wxStyledTextEvent& event)
+    [=, this](const wxStyledTextEvent& event)
     {
       if (CallTipActive())
       {

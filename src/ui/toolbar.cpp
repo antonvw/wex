@@ -2,7 +2,7 @@
 // Name:      toolbar.cpp
 // Purpose:   Implementation of wex::toolbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2023 Anton van Wezenbeek
+// Copyright: (c) 2010-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -57,7 +57,9 @@ void find_popup_menu(
         (it.size() >= max_size - 3 ? it.substr(0, max_size) + "..." : it)}});
 
     if (i >= wex::FIND_MAX_FINDS)
+    {
       break;
+    }
   }
 
   if (menu->GetMenuItemCount() > 0)
@@ -220,12 +222,12 @@ void wex::toolbar::add_find(bool realize)
   }
 
   bind(this).command(
-    {{[=, this](wxCommandEvent& event)
+    {{[=, this](const wxCommandEvent& event)
       {
         findCtrl->find(true);
       },
       wxID_DOWN},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         findCtrl->find(false);
       },
@@ -267,7 +269,9 @@ void wex::toolbar::add_standard(bool realize)
     [=, this](wxAuiToolBarEvent& event)
     {
       if (!prep_dropdown(this, event))
+      {
         return;
+      }
 
       find_popup_menu(
         this,
@@ -283,7 +287,9 @@ void wex::toolbar::add_standard(bool realize)
     [=, this](wxAuiToolBarEvent& event)
     {
       if (!prep_dropdown(this, event))
+      {
         return;
+      }
 
       m_frame->file_history().popup_menu(
         this,

@@ -64,14 +64,14 @@ void wex::bind::frd(
 {
   m_handler->Bind(
     wxEVT_FIND,
-    [=, this](wxFindDialogEvent& event)
+    [=, this](const wxFindDialogEvent& event)
     {
       f(frd->GetFindString(), (frd->GetFlags() & wxFR_DOWN) > 0);
     });
 
   m_handler->Bind(
     wxEVT_FIND_NEXT,
-    [=, this](wxFindDialogEvent& event)
+    [=, this](const wxFindDialogEvent& event)
     {
       f(frd->GetFindString(), (frd->GetFlags() & wxFR_DOWN) > 0);
     });

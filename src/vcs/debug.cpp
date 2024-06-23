@@ -81,17 +81,17 @@ wex::debug::debug(wex::frame* frame, wex::factory::process* debug)
   set_entry(config("debug.debugger").get(default_exe()));
 
   bind(this).command(
-    {{[=, this](wxCommandEvent& event)
+    {{[=, this](const wxCommandEvent& event)
       {
         is_finished();
       },
       ID_DEBUG_EXIT},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         process_stdin(event.GetString());
       },
       ID_DEBUG_STDIN},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         process_stdout(event.GetString());
       },

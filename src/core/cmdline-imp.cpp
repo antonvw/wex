@@ -253,7 +253,7 @@ void wex::cmdline_imp::parse_quit()
 
     wxTheApp->Bind(
       wxEVT_TIMER,
-      [=, this](wxTimerEvent& event)
+      [=, this](const wxTimerEvent& event)
       {
         if (auto* win = wxTheApp->GetTopWindow(); win != nullptr)
         {

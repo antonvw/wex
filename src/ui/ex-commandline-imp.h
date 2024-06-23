@@ -2,7 +2,7 @@
 // Name:      ex-commandline-imp.h
 // Purpose:   Declaration of wex::ex-commandline-imp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -44,7 +44,7 @@ public:
   void on_key_down(wxKeyEvent& event);
 
   /// Text not expanded.
-  auto text_not_expanded() const { return m_text_not_expanded; };
+  const auto& text_not_expanded() const { return m_text_not_expanded; };
 
   // Virtual interface
 

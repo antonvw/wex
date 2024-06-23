@@ -25,49 +25,49 @@ wex::factory::stc::stc(const wex::data::window& data)
 void wex::factory::stc::bind_wx()
 {
   wex::bind(this).command(
-    {{[=, this](wxCommandEvent& event)
+    {{[=, this](const wxCommandEvent& event)
       {
         Copy();
       },
       wxID_COPY},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         Cut();
       },
       wxID_CUT},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         // do nothing, to eat the event (for ex commandline)
       },
       wxID_JUMP_TO},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         Paste();
       },
       wxID_PASTE},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         Undo();
       },
       wxID_UNDO},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         Redo();
       },
       wxID_REDO},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         SelectAll();
       },
       wxID_SELECTALL},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         if (!GetReadOnly() && !is_hexmode())
         {

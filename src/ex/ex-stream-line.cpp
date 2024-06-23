@@ -221,7 +221,8 @@ wex::ex_stream_line::handle(char* line, size_t& pos)
   return HANDLE_CONTINUE;
 }
 
-void wex::ex_stream_line::handle_substitute(char* line, size_t& pos)
+// cppcheck gives incorrect warning here
+void wex::ex_stream_line::handle_substitute(char* line, size_t pos)
 {
   std::string text(line, pos);
 

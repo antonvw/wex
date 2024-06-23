@@ -2,7 +2,7 @@
 // Name:      menu.cpp
 // Purpose:   Implementation of wex::menu class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tool.h>
@@ -15,24 +15,22 @@
 #include <wex/ui/menu.h>
 #include <wx/app.h>
 
-#define PRINT_COMPONENT(ID, ACTION)                                  \
-  {                                                                  \
-    ID, "",                                                          \
-      data::menu().action(                                           \
-        [=, this](wxCommandEvent& event)                             \
-        {                                                            \
-          if (auto* frame =                                          \
-                dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()); \
-              frame->get_stc() != nullptr)                           \
-          {                                                          \
-            frame->get_stc()->ACTION();                              \
-          }                                                          \
-          else if (frame->get_listview() != nullptr)                 \
-          {                                                          \
-            frame->get_listview()->ACTION();                         \
-          }                                                          \
-        })                                                           \
-  }
+#define PRINT_COMPONENT(ID, ACTION)                                            \
+  {ID,                                                                         \
+   "",                                                                         \
+   data::menu().action(                                                        \
+     [=, this](const wxCommandEvent& event)                                    \
+     {                                                                         \
+       if (auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());  \
+           frame->get_stc() != nullptr)                                        \
+       {                                                                       \
+         frame->get_stc()->ACTION();                                           \
+       }                                                                       \
+       else if (frame->get_listview() != nullptr)                              \
+       {                                                                       \
+         frame->get_listview()->ACTION();                                      \
+       }                                                                       \
+     })}
 
 wex::menu::menu(menu_t style, const menu_items_t& items)
   : m_style(style)
@@ -73,7 +71,7 @@ size_t wex::menu::append(const menu_items_t& items)
           {{wxID_EXIT,
             "",
             data::menu().action(
-              [=, this](wxCommandEvent& event)
+              [=, this](const wxCommandEvent& event)
               {
                 wxTheApp->GetTopWindow()->Close(true);
               })}});
@@ -146,7 +144,7 @@ void wex::menu::append_print()
     {{wxID_PRINT_SETUP,
       ellipsed(_("Page &Setup")),
       data::menu().action(
-        [=, this](wxCommandEvent& event)
+        [=, this](const wxCommandEvent& event)
         {
           wex::printing::get()->get_html_printer()->PageSetup();
         })},

@@ -82,11 +82,6 @@ const wex::macros::commands_t wex::macros::get() const
   return v;
 }
 
-const wex::path wex::macros::path() const
-{
-  return wex::path(config::dir(), "wex-macros.xml");
-}
-
 const wex::macros::keys_map_t& wex::macros::get_keys_map(key_t type) const
 {
   switch (type)
@@ -204,7 +199,7 @@ bool wex::macros::load_document()
     }
   }
 
-  log::trace("macros info") << m_reflect.log();
+  log::trace("macros info") << path().string() << m_reflect.log();
 
   m_is_loaded = true;
 
@@ -301,6 +296,11 @@ void wex::macros::parse_node_variable(const pugi::xml_node& node)
   {
     m_variables.insert({variable.get_name(), variable});
   }
+}
+
+const wex::path wex::macros::path() const
+{
+  return wex::path(config::dir(), "wex-macros.xml");
 }
 
 bool wex::macros::record(const std::string& text, bool new_command)

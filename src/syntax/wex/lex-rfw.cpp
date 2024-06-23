@@ -97,9 +97,13 @@ void Scintilla::lex_rfw::parse_keyword(
     if (cmd_state == RFW_CMD_WORD && cmd_state_new != RFW_CMD_SKW_PARTIAL)
     {
       if (strcmp(s, "IN") == 0 && keywordEnds)
+      {
         cmd_state_new = RFW_CMD_BODY;
+      }
       else
+      {
         sc.ChangeState(SCE_SH_IDENTIFIER);
+      }
 
       sc.SetState(SCE_SH_DEFAULT);
       return;
@@ -109,34 +113,48 @@ void Scintilla::lex_rfw::parse_keyword(
     if (rfwStruct.InList(s))
     {
       if (cmd_state == RFW_CMD_START && keywordEnds)
+      {
         cmd_state_new = RFW_CMD_START;
+      }
       else if (cmd_state_new != RFW_CMD_SKW_PARTIAL)
+      {
         sc.ChangeState(SCE_SH_IDENTIFIER);
+      }
     }
     // ':FOR' needs 'IN' to be highlighted later
     else if (rfwStruct_in.InList(s))
     {
       if (cmd_state == RFW_CMD_START && keywordEnds)
+      {
         cmd_state_new = RFW_CMD_WORD;
+      }
       else if (cmd_state_new != RFW_CMD_SKW_PARTIAL)
+      {
         sc.ChangeState(SCE_SH_IDENTIFIER);
+      }
     }
     // disambiguate option items and file test operators
     else if (s[0] == '-')
     {
       if (cmd_state != RFW_CMD_TEST && cmd_state_new != RFW_CMD_SKW_PARTIAL)
+      {
         sc.ChangeState(SCE_SH_IDENTIFIER);
+      }
     }
     // disambiguate keywords and identifiers
     else if (
       cmd_state != RFW_CMD_START || !(m_keywords1.InList(s) && keywordEnds))
     {
       if (cmd_state_new != RFW_CMD_SKW_PARTIAL)
+      {
         sc.ChangeState(SCE_SH_IDENTIFIER);
+      }
     }
 
     if (cmd_state_new != RFW_CMD_SKW_PARTIAL)
+    {
       sc.SetState(SCE_SH_DEFAULT);
+    }
   }
 }
 
@@ -228,9 +246,13 @@ void Scintilla::lex_rfw::state_check(
       sc.SetState(SCE_SH_DEFAULT);
       if (cmd_state == RFW_CMD_DELIM) // if command delimiter, start new
                                       // command
+      {
         cmd_state_new = RFW_CMD_START;
+      }
       else if (sc.chPrev == '\\') // propagate command state if line continued
+      {
         cmd_state_new = cmd_state;
+      }
       break;
 
     case SCE_SH_TESTCASE:
@@ -271,20 +293,28 @@ void Scintilla::lex_rfw::state_check(
           sc.GetCurrent(s, sizeof(s));
           numBase = lex_rfw_access(*m_accessor).number_base(s);
           if (numBase != RFW_BASE_ERROR)
+          {
             break;
+          }
         }
         else if (IsADigit(sc.ch))
+        {
           break;
+        }
       }
       else if (numBase == RFW_BASE_HEX)
       {
         if (IsADigit(sc.ch, 16))
+        {
           break;
+        }
       }
       else if (numBase == RFW_BASE_ERROR)
       {
         if (digit <= 9)
+        {
           break;
+        }
       }
       else
       { // DD#DDDD number style handling
@@ -294,10 +324,14 @@ void Scintilla::lex_rfw::state_check(
           {
             // case-insensitive if base<=36
             if (digit >= 36)
+            {
               digit -= 26;
+            }
           }
           if (digit < numBase)
+          {
             break;
+          }
           if (digit <= 9)
           {
             numBase = RFW_BASE_ERROR;
@@ -319,7 +353,9 @@ void Scintilla::lex_rfw::state_check(
         if (m_section.id() == SECTION_COMMENT)
         {
           if (sc.chPrev != '\n' && sc.GetRelative(-2) != '\n')
+          {
             return;
+          }
         }
 
         sc.SetState(SCE_SH_DEFAULT);
@@ -347,7 +383,9 @@ void Scintilla::lex_rfw::state_check(
       if (sc.ch == '\\' && m_quote_stack->up() != '\\')
       {
         if (m_quote_stack->style() != RFW_DELIM_LITERAL)
+        {
           sc.Forward();
+        }
       }
       else if (sc.ch == m_quote_stack->down())
       {
@@ -360,7 +398,9 @@ void Scintilla::lex_rfw::state_check(
             m_quote_stack->pop();
           }
           else
+          {
             sc.ForwardSetState(SCE_SH_DEFAULT);
+          }
         }
       }
       else if (sc.ch == m_quote_stack->up())
@@ -465,14 +505,14 @@ bool Scintilla::lex_rfw::state_check_continue(StyleContext& sc, int& cmd_state)
   const CharacterSet setSingleCharOp(
     CharacterSet::setNone,
     "rwxoRWXOezsfdlpSbctugkTBMACahGLNn");
-  int testExprType = 0;
-
   if (sc.ch == '\\')
   {
     // RFW can escape any non-newline as a literal
     sc.SetState(SCE_SH_IDENTIFIER);
     if (sc.chNext == '\r' || sc.chNext == '\n')
+    {
       sc.SetState(SCE_SH_OPERATOR);
+    }
   }
   else if (setWordStartTSV.Contains(sc.ch))
   {
@@ -601,6 +641,9 @@ bool Scintilla::lex_rfw::state_check_continue(StyleContext& sc, int& cmd_state)
         return true;
       }
     }
+
+    int testExprType = 0;
+
     // handle opening delimiters for test/arithmetic expressions - ((,[[,[
     if (cmd_state == RFW_CMD_START || cmd_state == RFW_CMD_BODY)
     {
@@ -611,7 +654,8 @@ bool Scintilla::lex_rfw::state_check_continue(StyleContext& sc, int& cmd_state)
       }
       else if (sc.Match('[', '[') && IsASpace(sc.GetRelative(2)))
       {
-        cmd_state    = RFW_CMD_TEST;
+        cmd_state = RFW_CMD_TEST;
+
         testExprType = 1;
         sc.Forward();
       }
@@ -645,7 +689,9 @@ bool Scintilla::lex_rfw::state_check_continue(StyleContext& sc, int& cmd_state)
         s[2]       = '\0';
         isCmdDelim = m_cmd_delimiter.InList(s);
         if (isCmdDelim)
+        {
           sc.Forward();
+        }
       }
       if (!isCmdDelim)
       {
@@ -710,36 +756,52 @@ void SCI_METHOD Scintilla::lex_rfw::Fold(
     if (m_options.fold_comment() && atEOL && rfw.is_comment_line())
     {
       if (!rfw.is_comment_line(-1) && rfw.is_comment_line(1))
+      {
         levelCurrent++;
+      }
       else if (rfw.is_comment_line(-1) && !rfw.is_comment_line(1))
+      {
         levelCurrent--;
+      }
     }
 
     // Pipe folding
     if (m_options.fold_pipes() && atEOL && rfw.is_pipe_line())
     {
       if (!rfw.is_pipe_line(-1) && rfw.is_pipe_line(1))
+      {
         levelCurrent++;
+      }
       else if (rfw.is_pipe_line(-1) && !rfw.is_pipe_line(1))
+      {
         levelCurrent--;
+      }
     }
 
     // Tab folding
     if (m_options.fold_tabs() && atEOL && rfw.is_tab_line())
     {
       if (!rfw.is_tab_line(-1) && rfw.is_tab_line(1))
+      {
         levelCurrent++;
+      }
       else if (rfw.is_tab_line(-1) && !rfw.is_tab_line(1))
+      {
         levelCurrent--;
+      }
     }
 
     if (atEOL)
     {
       int lev = levelPrev;
       if (visibleChars == 0 && m_options.fold_compact())
+      {
         lev |= SC_FOLDLEVELWHITEFLAG;
+      }
       if ((levelCurrent > levelPrev) && (visibleChars > 0))
+      {
         lev |= SC_FOLDLEVELHEADERFLAG;
+      }
       if (lev != m_accessor->LevelAt(lineCurrent))
       {
         m_accessor->SetLevel(lineCurrent, lev);
@@ -750,7 +812,9 @@ void SCI_METHOD Scintilla::lex_rfw::Fold(
     }
 
     if (!isspacechar(ch))
+    {
       visibleChars++;
+    }
   }
 
   // Fill in the real level of the next line, keeping the current flags as
@@ -811,7 +875,9 @@ void SCI_METHOD Scintilla::lex_rfw::Lex(
             // retain last line's state
           }
           else
+          {
             cmd_state = RFW_CMD_START;
+          }
         }
         m_accessor->SetLineState(ln, cmd_state);
       }
@@ -824,7 +890,9 @@ void SCI_METHOD Scintilla::lex_rfw::Lex(
     if (
       cmd_state == RFW_CMD_TEST || cmd_state == RFW_CMD_ARITH ||
       cmd_state == RFW_CMD_WORD)
+    {
       cmd_state_new = cmd_state;
+    }
 
     m_style_prev = sc.state;
 
