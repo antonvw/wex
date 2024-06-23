@@ -135,7 +135,7 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
 
   Bind(
     wxEVT_FIND,
-    [=, this](wxFindDialogEvent& event)
+    [=, this](const wxFindDialogEvent& event)
     {
       if (m_find_focus != nullptr)
       {
@@ -144,7 +144,7 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
     });
   Bind(
     wxEVT_FIND_NEXT,
-    [=, this](wxFindDialogEvent& event)
+    [=, this](const wxFindDialogEvent& event)
     {
       if (m_find_focus != nullptr)
       {
@@ -153,7 +153,7 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
     });
   Bind(
     wxEVT_FIND_REPLACE,
-    [=, this](wxFindDialogEvent& event)
+    [=, this](const wxFindDialogEvent& event)
     {
       if (m_find_focus != nullptr)
       {
@@ -162,7 +162,7 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
     });
   Bind(
     wxEVT_FIND_REPLACE_ALL,
-    [=, this](wxFindDialogEvent& event)
+    [=, this](const wxFindDialogEvent& event)
     {
       if (m_find_focus != nullptr)
       {
@@ -172,7 +172,7 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
 
   Bind(
     wxEVT_FIND_CLOSE,
-    [=, this](wxFindDialogEvent& event)
+    [=, this](const wxFindDialogEvent& event)
     {
       assert(m_find_replace_dialog != nullptr);
       // Hiding instead of destroying, does not
@@ -182,7 +182,7 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
     });
 
   bind(this).command(
-    {{[=, this](wxCommandEvent& event)
+    {{[=, this](const wxCommandEvent& event)
       {
         if (GetStatusBar() != nullptr)
         {
@@ -191,12 +191,12 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
         }
       },
       ID_VIEW_STATUSBAR},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         FIND_REPLACE(_("Find"), 0);
       },
       wxID_FIND},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         FIND_REPLACE(_("Replace"), wxFR_REPLACEDIALOG);
       },
@@ -284,7 +284,7 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
 
     Bind(
       wxEVT_MENU,
-      [=, this](wxCommandEvent& event)
+      [=, this](const wxCommandEvent& event)
       {
         pane_toggle(it.first.first);
       },
@@ -293,7 +293,7 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
 
   Bind(
     wxEVT_MENU,
-    [=, this](wxCommandEvent& event)
+    [=, this](const wxCommandEvent& event)
     {
       on_menu_history(
         m_file_history,

@@ -2,7 +2,7 @@
 // Name:      test-configitem.h
 // Purpose:   Declaration and implementation of class test_config_item
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -44,7 +44,7 @@ inline const std::vector<wex::item> test_config_item::vector(int rows, int cols)
          wex::data::item()
            .label_type(wex::data::item::LABEL_LEFT)
            .apply(
-             [=](wxWindow* user, const std::any& value, bool save)
+             [=](const wxWindow* user, const std::any& value, bool save)
              {
                // wex::log::status("Click on lambda");
              })}}},
@@ -153,9 +153,11 @@ inline const std::vector<wex::item> test_config_item::vector(int rows, int cols)
              [=](wxWindow* user, bool save)
              {
                if (save)
+               {
                  wex::config("mytext").set((reinterpret_cast<wxTextCtrl*>(user))
                                              ->GetValue()
                                              .ToStdString());
+               }
                return true;
              })
            .apply(

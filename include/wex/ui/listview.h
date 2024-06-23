@@ -155,12 +155,12 @@ private:
   unsigned int get_art_id(const wxArtID& artid);
   column       get_column(const std::string& name) const;
   void         item_activated(long item_number);
-  bool         on_command(wxCommandEvent& event);
+  bool         on_command(const wxCommandEvent& event);
 
   void process_idle(wxIdleEvent& event);
-  void process_list(wxListEvent& event, wxEventType type);
-  void process_match(wxCommandEvent& event);
-  void process_mouse(wxMouseEvent& event);
+  void process_list(const wxListEvent& event, wxEventType type);
+  void process_match(const wxCommandEvent& event);
+  void process_mouse(const wxMouseEvent& event);
 
   bool report_view(const std::string& text);
   bool set_item_image(long item_number, int iconid)

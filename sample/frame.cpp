@@ -169,13 +169,13 @@ void frame::bind_all()
   Bind(wxEVT_MENU, &frame::on_command, this, ID_STC_SPLIT);
 
   wex::bind(this).command(
-    {{[=, this](wxCommandEvent& event)
+    {{[=, this](const wxCommandEvent& event)
       {
         m_statistics->inc(std::to_string(event.GetId()));
         wex::version_info_dialog().show();
       },
       wxID_ABOUT},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         const auto val = wxGetNumberFromUser(
           "Input columns:",
@@ -197,7 +197,7 @@ void frame::bind_all()
         }
       },
       ID_DLG_CONFIG_ITEM_COL},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         auto* dlg = new wex::item_dialog(
           wex::test_config_item().vector(0, 1),
@@ -213,7 +213,7 @@ void frame::bind_all()
         dlg->ShowModal();
       },
       ID_DLG_CONFIG_ITEM},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         wex::item_dialog(
           wex::test_config_item().vector(0, 1),
@@ -227,7 +227,7 @@ void frame::bind_all()
           .ShowModal();
       },
       ID_DLG_CONFIG_ITEM_READONLY},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         wex::item_dialog(
           wex::test_item().vector(),
@@ -235,18 +235,18 @@ void frame::bind_all()
           .ShowModal();
       },
       ID_DLG_ITEM},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         m_listview->config_dialog();
       },
       ID_DLG_LISTVIEW},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         wex::stc::config_dialog(
           wex::data::window().id(wxID_PREFERENCES).button(wxAPPLY | wxCANCEL));
       },
       wxID_PREFERENCES},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         std::stringstream text;
         for (auto i = 0; i < 100; i++)
@@ -261,7 +261,7 @@ void frame::bind_all()
       },
       ID_DLG_STC_ENTRY},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         const std::string project_wildcard{
           _("Project Files") + " (*.prj)|*.prj"};
@@ -297,18 +297,18 @@ void frame::bind_all()
       },
       ID_PROJECT_OPEN},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         wex::vcs().config_dialog();
       },
       ID_DLG_VCS},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         m_shell->prompt(
           "\nHello '" + event.GetString().ToStdString() + "' from the shell");
       },
       wex::ID_SHELL_COMMAND},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         wxFileDialog dlg(
           this,
@@ -325,7 +325,7 @@ void frame::bind_all()
       },
       ID_SHOW_VCS},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         if (m_notebook->set_selection("Statistics") == nullptr)
         {
@@ -337,7 +337,7 @@ void frame::bind_all()
         }
       },
       ID_STATISTICS_SHOW},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         if (const auto value = wxGetNumberFromUser(
               "Input:",
@@ -352,7 +352,7 @@ void frame::bind_all()
         }
       },
       ID_STC_FLAGS},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         m_process->async_system(wex::process_data());
       },
@@ -369,7 +369,7 @@ wex::stc* frame::get_stc()
   return m_stc;
 }
 
-void frame::on_command(wxCommandEvent& event)
+void frame::on_command(const wxCommandEvent& event)
 {
   m_statistics->inc(std::to_string(event.GetId()));
 

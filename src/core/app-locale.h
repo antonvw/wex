@@ -2,7 +2,7 @@
 // Name:      app-locale.h
 // Purpose:   Declaration of wex::file_translations_loader class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -16,7 +16,7 @@ class file_translations_loader : public wxFileTranslationsLoader
 {
 public:
   /// Returns the catalog dir found.
-  static auto catalog_dir() { return m_catalog_dir; }
+  static auto& catalog_dir() { return m_catalog_dir; }
 
   /// Adds catalogs.
   void add_catalogs(wxLanguage language);

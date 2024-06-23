@@ -169,21 +169,21 @@ wex::listview::listview(const data::listview& data)
 
   Bind(
     wxEVT_LIST_ITEM_DESELECTED,
-    [=, this](wxListEvent& event)
+    [=, this](const wxListEvent& event)
     {
       m_frame->update_statusbar(this);
     });
 
   Bind(
     wxEVT_LIST_ITEM_SELECTED,
-    [=, this](wxListEvent& event)
+    [=, this](const wxListEvent& event)
     {
       process_list(event, wxEVT_LIST_ITEM_SELECTED);
     });
 
   Bind(
     wxEVT_LIST_COL_CLICK,
-    [=, this](wxListEvent& event)
+    [=, this](const wxListEvent& event)
     {
       sort_column(
         event.GetColumn(),
@@ -192,7 +192,7 @@ wex::listview::listview(const data::listview& data)
 
   Bind(
     wxEVT_LIST_COL_RIGHT_CLICK,
-    [=, this](wxListEvent& event)
+    [=, this](const wxListEvent& event)
     {
       m_to_be_sorted_column_no = event.GetColumn();
 
@@ -264,48 +264,48 @@ void wex::listview::bind_other()
     });
 
   bind(this).command(
-    {{[=, this](wxCommandEvent& event)
+    {{[=, this](const wxCommandEvent& event)
       {
         clear();
       },
       wxID_CLEAR},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         copy_selection_to_clipboard();
       },
       wxID_COPY},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         edit_delete();
       },
       wxID_DELETE},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         item_from_text(clipboard_get());
       },
       wxID_PASTE},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         SetItemState(-1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
       },
       wxID_SELECTALL},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         sort_column(m_to_be_sorted_column_no, SORT_ASCENDING);
       },
       wxID_SORT_ASCENDING},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         sort_column(m_to_be_sorted_column_no, SORT_DESCENDING);
       },
       wxID_SORT_DESCENDING},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         copy_selection_to_clipboard();
         edit_delete();
       },
       wxID_CUT},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         for (auto i = 0; i < GetItemCount(); i++)
         {
@@ -313,7 +313,7 @@ void wex::listview::bind_other()
         }
       },
       ID_EDIT_SELECT_INVERT},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         for (auto i = 0; i < GetItemCount(); i++)
         {
@@ -321,7 +321,7 @@ void wex::listview::bind_other()
         }
       },
       ID_EDIT_SELECT_NONE},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         if (on_command(event))
         {
@@ -330,13 +330,13 @@ void wex::listview::bind_other()
       },
       wxID_ADD},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         process_match(event);
       },
       ID_LIST_MATCH},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
         {
@@ -344,7 +344,7 @@ void wex::listview::bind_other()
         }
       },
       ID_EDIT_OPEN},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         if (!IsShown() || GetItemCount() == 0)
         {
@@ -967,7 +967,7 @@ bool wex::listview::load(const strings_t& l)
   return true;
 }
 
-bool wex::listview::on_command(wxCommandEvent& event)
+bool wex::listview::on_command(const wxCommandEvent& event)
 {
   switch (const long new_index =
             GetSelectedItemCount() > 0 ? GetFirstSelected() : 0;
@@ -1074,7 +1074,7 @@ void wex::listview::process_idle(wxIdleEvent& event)
   }
 }
 
-void wex::listview::process_list(wxListEvent& event, wxEventType type)
+void wex::listview::process_list(const wxListEvent& event, wxEventType type)
 {
   if (type == wxEVT_LIST_ITEM_SELECTED)
   {
@@ -1111,7 +1111,7 @@ void wex::listview::process_list(wxListEvent& event, wxEventType type)
   m_frame->update_statusbar(this);
 }
 
-void wex::listview::process_match(wxCommandEvent& event)
+void wex::listview::process_match(const wxCommandEvent& event)
 {
   const auto* m = static_cast<path_match*>(event.GetClientData());
   listitem    item(this, m->path());
@@ -1124,7 +1124,7 @@ void wex::listview::process_match(wxCommandEvent& event)
   delete m;
 }
 
-void wex::listview::process_mouse(wxMouseEvent& event)
+void wex::listview::process_mouse(const wxMouseEvent& event)
 {
   menu::menu_t style(menu::menu_t().set(menu::IS_POPUP).set(menu::IS_VISUAL));
 

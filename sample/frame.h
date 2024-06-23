@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of wex sample class frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -24,7 +24,7 @@ public:
 
 private:
   void bind_all();
-  void on_command(wxCommandEvent& event);
+  void on_command(const wxCommandEvent& event);
 
   wex::del::listview* activate(
     wex::data::listview::type_t type,

@@ -2,19 +2,19 @@
 // Name:      dirctrl.cpp
 // Purpose:   Implementation of class wex::del::dirctrl
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2023 Anton van Wezenbeek
+// Copyright: (c) 2010-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/wex.h>
 #include <wx/stockitem.h> // for wxGetStockLabel
 
-#define GET_VECTOR_FILES                              \
-  const auto files(wex::to_vector_path(*this).get()); \
-  /* NOLINTNEXTLINE */                                \
-  if (files.empty())                                  \
-  {                                                   \
-    event.Skip();                                     \
-    return;                                           \
+#define GET_VECTOR_FILES                                                       \
+  const auto files(wex::to_vector_path(*this).get());                          \
+  /* NOLINTNEXTLINE */                                                         \
+  if (files.empty())                                                           \
+  {                                                                            \
+    event.Skip();                                                              \
+    return;                                                                    \
   }
 
 #include <numeric>
@@ -49,7 +49,7 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
     });
 
   bind(this).command(
-    {{[=, this](wxCommandEvent& event)
+    {{[=, this](const wxCommandEvent& event)
       {
         vcs_execute(
           frame,
@@ -57,7 +57,7 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
           to_vector_path(*this).get());
       },
       ID_EDIT_VCS_LOWEST},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         const auto v(to_vector_string(*this).get());
         clipboard_add(std::accumulate(
@@ -70,7 +70,7 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
           }));
       },
       ID_TREE_COPY},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         open_files(
           frame,
@@ -86,21 +86,21 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
         build(path_lexer(files[0]));
       },
       ID_TREE_RUN_BUILD},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         frame->find_in_files(
           to_vector_path(*this).get(),
           tool((wex::window_id)event.GetId()));
       },
       ID_TOOL_REPORT_FIND},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         frame->find_in_files(
           to_vector_path(*this).get(),
           tool((wex::window_id)event.GetId()));
       },
       ID_TOOL_REPLACE},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         ShowHidden(!config(_("Show hidden")).get(false));
         config(_("Show hidden")).set(!config(_("Show hidden")).get(false));

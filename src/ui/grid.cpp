@@ -117,33 +117,33 @@ wex::grid::grid(const data::window& data)
     });
 
   bind(this).command(
-    {{[=, this](wxCommandEvent& event)
+    {{[=, this](const wxCommandEvent& event)
       {
         empty_selection();
       },
       wxID_DELETE},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         SelectAll();
       },
       wxID_SELECTALL},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         ClearSelection();
       },
       ID_EDIT_SELECT_NONE},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         copy_selected_cells_to_clipboard();
       },
       wxID_COPY},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         copy_selected_cells_to_clipboard();
         empty_selection();
       },
       wxID_CUT},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         paste_cells_from_clipboard();
       },
@@ -214,7 +214,7 @@ wex::grid::grid(const data::window& data)
 
   Bind(
     wxEVT_GRID_CELL_RIGHT_CLICK,
-    [=, this](wxGridEvent& event)
+    [=, this](const wxGridEvent& event)
     {
       menu::menu_t style(menu::menu_t().set(menu::IS_POPUP));
 
