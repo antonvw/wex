@@ -2,7 +2,7 @@
 // Name:      menu.cpp
 // Purpose:   Implementation of wex::menu_item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/defs.h>
@@ -168,5 +168,5 @@ void wex::menu_item::append_panes(wex::menu* menu) const
 
 void wex::menu_item::append_vcs(wex::menu* menu) const
 {
-  m_frame->append_vcs(menu, this);
+  m_frame->vcs_append(menu, this);
 }

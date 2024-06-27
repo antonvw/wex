@@ -190,36 +190,6 @@ void append_submenu(const wex::menu_item* item, wex::menu* menu)
   }
 }
 
-void wex::del::frame::append_vcs(wex::menu* menu, const menu_item* item) const
-{
-  if (!item->path().file_exists())
-  {
-    if (item->path().dir_exists())
-    {
-      append_submenu(item, menu);
-    }
-    else
-    {
-      wex::vcs vcs;
-
-      if (vcs.set_entry_from_base(
-            item->is_modal() ? wxTheApp->GetTopWindow() : nullptr))
-      {
-        auto* submenu = new wex::menu(menu->style());
-
-        if (vcs.entry().build_menu(ID_EDIT_VCS_LOWEST + 1, submenu))
-        {
-          menu->append({{submenu, vcs.entry().name()}});
-        }
-      }
-    }
-  }
-  else
-  {
-    append_submenu(item, menu);
-  }
-}
-
 void wex::del::frame::bind_accelerators(
   wxWindow*                              parent,
   const std::vector<wxAcceleratorEntry>& v,
@@ -608,11 +578,6 @@ void wex::del::frame::show_ex_message(const std::string& text)
   log::status(text);
 }
 
-int wex::del::frame::show_stc_entry_dialog(bool modal)
-{
-  return modal ? entry_dialog()->ShowModal() : entry_dialog()->Show();
-}
-
 void wex::del::frame::statusbar_clicked(const std::string& pane)
 {
   if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); pane == "PaneDBG")
@@ -730,6 +695,11 @@ wex::syntax::stc* wex::del::frame::stc_entry_dialog_component()
   return entry_dialog()->get_stc();
 }
 
+int wex::del::frame::stc_entry_dialog_show(bool modal)
+{
+  return modal ? entry_dialog()->ShowModal() : entry_dialog()->Show();
+}
+
 std::string wex::del::frame::stc_entry_dialog_title() const
 {
   return m_entry_dialog == nullptr ? std::string() :
@@ -807,6 +777,36 @@ bool wex::del::frame::vcs_annotate_commit(
   }
 
   return false;
+}
+
+void wex::del::frame::vcs_append(wex::menu* menu, const menu_item* item) const
+{
+  if (!item->path().file_exists())
+  {
+    if (item->path().dir_exists())
+    {
+      append_submenu(item, menu);
+    }
+    else
+    {
+      wex::vcs vcs;
+
+      if (vcs.set_entry_from_base(
+            item->is_modal() ? wxTheApp->GetTopWindow() : nullptr))
+      {
+        auto* submenu = new wex::menu(menu->style());
+
+        if (vcs.entry().build_menu(ID_EDIT_VCS_LOWEST + 1, submenu))
+        {
+          menu->append({{submenu, vcs.entry().name()}});
+        }
+      }
+    }
+  }
+  else
+  {
+    append_submenu(item, menu);
+  }
 }
 
 bool wex::del::frame::vcs_blame(syntax::stc* stc)

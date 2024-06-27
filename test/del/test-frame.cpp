@@ -260,8 +260,6 @@ TEST_CASE("wex::del::frame")
 
     wex::log_none off;
 
-    del_frame()->append_vcs(menu, &item);
-
     const std::vector<wxAcceleratorEntry> v{};
     del_frame()->bind_accelerators(del_frame(), v);
 
@@ -308,7 +306,7 @@ TEST_CASE("wex::del::frame")
 
     del_frame()->statusbar_clicked_right("text");
 
-    del_frame()->show_stc_entry_dialog();
+    del_frame()->stc_entry_dialog_show();
 
     REQUIRE(del_frame()->stc_entry_dialog_component() != nullptr);
 
@@ -317,6 +315,8 @@ TEST_CASE("wex::del::frame")
     REQUIRE(del_frame()->stc_entry_dialog_title() == "hello world");
 
     del_frame()->stc_entry_dialog_validator("choose [0-9]");
+
+    del_frame()->vcs_append(menu, &item);
   }
 
   SUBCASE("visual")

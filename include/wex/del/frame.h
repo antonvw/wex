@@ -157,7 +157,6 @@ public:
   static inline const int id_find_in_files    = ID_FREE_LOWEST;
   static inline const int id_replace_in_files = ID_FREE_LOWEST + 1;
 
-  void append_vcs(menu*, const menu_item* i) const override;
   void bind_accelerators(
     wxWindow*                              parent,
     const std::vector<wxAcceleratorEntry>& v,
@@ -186,8 +185,8 @@ public:
   void statusbar_clicked(const std::string&) override;
   void statusbar_clicked_right(const std::string&) override;
 
-  int          show_stc_entry_dialog(bool modal = false) override;
   syntax::stc* stc_entry_dialog_component() override;
+  int          stc_entry_dialog_show(bool modal = false) override;
   std::string  stc_entry_dialog_title() const override;
   void         stc_entry_dialog_title(const std::string& title) override;
   void         stc_entry_dialog_validator(const std::string& regex) override;
@@ -195,6 +194,7 @@ public:
   void vcs_add_path(factory::link*) override;
   bool vcs_annotate_commit(syntax::stc*, int line, const std::string& commit_id)
     override;
+  void vcs_append(menu*, const menu_item* i) const override;
   bool vcs_blame(syntax::stc*) override;
   bool vcs_blame_revision(
     syntax::stc*,

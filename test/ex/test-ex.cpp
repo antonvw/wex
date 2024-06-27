@@ -46,7 +46,7 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->marker_add('t', 1));
     REQUIRE(ex->marker_add('u', 2));
 
-    std::vector<std::pair<std::string, int>> calcs{
+    const std::vector<std::pair<std::string, int>> calcs{
       {"", 0},      {"  ", 0},    {"1 + 1", 2},  {"5+5", 10},  {"1 * 1", 1},
       {"1 - 1", 0}, {"2 / 1", 2}, {"2 / 0", 0},  {"2 < 2", 8}, {"2 > 1", 1},
       {"2 | 1", 3}, {"2 & 1", 0}, {"~0", -1},    {"4 % 3", 1}, {".", 1},

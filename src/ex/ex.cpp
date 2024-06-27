@@ -75,11 +75,12 @@ bool wex::ex::auto_write()
 
 std::optional<int> wex::ex::calculator(const std::string& text)
 {
-  const auto& val(evaluator().eval(this, text));
-
-  if (!val)
+  if (const auto& val(evaluator().eval(this, text)); !val)
   {
-    show_dialog("Calculate Error", val.error());
+    if (!val.error().empty())
+    {
+      show_dialog("Calculate Error", val.error());
+    }
     return {};
   }
   else
@@ -481,7 +482,7 @@ void wex::ex::show_dialog(
   m_frame->stc_entry_dialog_component()->get_lexer().set(
     !lexer.empty() ? wex::lexer(lexer) : get_stc()->get_lexer());
 
-  m_frame->show_stc_entry_dialog();
+  m_frame->stc_entry_dialog_show();
 }
 
 void wex::ex::use(mode_t mode)
