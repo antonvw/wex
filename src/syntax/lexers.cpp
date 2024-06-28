@@ -405,7 +405,7 @@ void wex::lexers::load_document_check()
     }
   }
 
-  log::trace("lexers info") << m_reflect.log();
+  log::info("lexers") << m_path.string() << m_reflect.log();
 }
 
 bool wex::lexers::load_document_init()
