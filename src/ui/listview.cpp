@@ -772,7 +772,7 @@ void wex::listview::item_activated(long item_number)
       m_frame->stc_entry_dialog_component()->set_text(
         item_to_text(item_number));
 
-      if (m_frame->show_stc_entry_dialog(true) == wxID_OK)
+      if (m_frame->stc_entry_dialog_show(true) == wxID_OK)
       {
         int col = 0;
 
@@ -810,7 +810,7 @@ void wex::listview::item_activated(long item_number)
         m_frame->stc_entry_dialog_component()->set_text(
           get_item_text(item_number, _("Type")));
 
-        if (m_frame->show_stc_entry_dialog(true) == wxID_OK)
+        if (m_frame->stc_entry_dialog_show(true) == wxID_OK)
         {
           item.set_item(
             _("Type"),
@@ -977,7 +977,7 @@ bool wex::listview::on_command(const wxCommandEvent& event)
       m_frame->stc_entry_dialog_title(_("Item"));
       m_frame->stc_entry_dialog_component()->set_text(item_to_text(new_index));
 
-      if (m_frame->show_stc_entry_dialog(true) == wxID_OK)
+      if (m_frame->stc_entry_dialog_show(true) == wxID_OK)
       {
         return insert_item(
           tokenize<std::vector<std::string>>(

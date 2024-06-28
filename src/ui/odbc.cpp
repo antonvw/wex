@@ -153,7 +153,7 @@ bool wex::odbc::logon(const wex::data::window& par)
     {
       frame->stc_entry_dialog_title("Cannot logon to " + datasource());
       stc->set_text(std::string(reinterpret_cast<const char*>(p.msg)));
-      frame->show_stc_entry_dialog(true);
+      frame->stc_entry_dialog_show(true);
     }
     else
     {

@@ -91,9 +91,6 @@ public:
     /// page
     wxWindow* page);
 
-  /// Appends vcs menu.
-  virtual void append_vcs(menu*, const menu_item* i) const { ; }
-
   /// Binds accelerators.
   virtual void bind_accelerators(
     wxWindow*                              parent,
@@ -190,11 +187,11 @@ public:
   /// Shows text in ex bar.
   virtual void show_ex_message(const std::string& text) { ; }
 
-  /// Shows or updates stc entry dialog.
-  virtual int show_stc_entry_dialog(bool modal = false) { return wxID_CANCEL; }
-
   /// Returns stc component for stc entry dialog.
   virtual syntax::stc* stc_entry_dialog_component() { return nullptr; }
+
+  /// Shows or updates stc entry dialog.
+  virtual int stc_entry_dialog_show(bool modal = false) { return wxID_CANCEL; }
 
   /// Returns stc entry dialog title.
   virtual std::string stc_entry_dialog_title() const { return std::string(); }
@@ -221,6 +218,9 @@ public:
   {
     return false;
   };
+
+  /// Appends vcs menu.
+  virtual void vcs_append(menu*, const menu_item* i) const { ; }
 
   /// Blames the specified stc.
   virtual bool vcs_blame(syntax::stc*) { return false; }

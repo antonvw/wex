@@ -40,6 +40,37 @@ TEST_CASE("wex::vi")
   auto* vi = &stc->get_vi();
   stc->set_text("");
 
+  // see also ex/test-ex.cpp
+  SUBCASE("calculator")
+  {
+    stc->set_text("aaaaa\nbbbbb\nccccc\n");
+
+    REQUIRE(vi->marker_add('a', 1));
+    REQUIRE(vi->marker_add('t', 1));
+    REQUIRE(vi->marker_add('u', 2));
+  
+    frame()->entry_dialog_calls_reset();
+
+    // Only calculations that are not empty should 
+    // cause calling entry dialog.
+    const std::vector<std::pair<std::string, int>> calcs{
+      {"", 0},      {"  ", 0},    {"1 + 1", 2},  {"5+5", 10},  {"1 * 1", 1},
+      {"1 - 1", 0}, {"2 / 1", 2}, {"2 / 0", 0},  {"2 < 2", 8}, {"2 > 1", 1},
+      {"2 | 1", 3}, {"2 & 1", 0}, {"~0", -1},    {"4 % 3", 1}, {".", 1},
+      {"xxx", 0},   {"%s", 0},    {"%s/xx/", 0}, {"'a", 2},    {"'t", 2},
+      {"'u", 3},    {"$", 4}};
+
+    for (const auto& calc : calcs)
+    {
+      if (const auto& val(vi->calculator(calc.first)); val)
+      {
+        REQUIRE(*val == calc.second);
+      }
+    }
+    
+    REQUIRE(frame()->entry_dialog_calls() == 4);
+  }
+
   SUBCASE("change")
   {
     stc->set_text("aaaaa\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");

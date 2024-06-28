@@ -94,8 +94,6 @@ TEST_CASE("wex::frame")
     wex::ex_command           command;
     const wex::frame::panes_t panes;
 
-    frame()->append_vcs(menu, &i);
-
     frame()->bind_accelerators(frame(), ve, false);
 
     frame()->debug_add_menu(*menu, true);
@@ -138,7 +136,7 @@ TEST_CASE("wex::frame")
 
     frame()->show_ex_message("this is a message");
 
-    frame()->show_stc_entry_dialog();
+    frame()->stc_entry_dialog_show();
 
     REQUIRE(frame()->stc_entry_dialog_component() == nullptr);
 
@@ -155,6 +153,8 @@ TEST_CASE("wex::frame")
     frame()->vcs_add_path(nullptr);
 
     frame()->vcs_annotate_commit(get_stc(), 100, "a898989aaabbb");
+
+    frame()->vcs_append(menu, &i);
 
     frame()->vcs_blame(get_stc());
 
