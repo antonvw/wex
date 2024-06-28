@@ -2,7 +2,7 @@
 // Name:      menus.h
 // Purpose:   Declaration of wex::menus class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -51,6 +51,7 @@ private:
 
   static void add_menu(const menu_command& mc, menu* menu);
   static bool allow_add_menu(const menu_command& mc, const menu* menu);
+  static bool load_doc(pugi::xml_document& doc);
   static void no_commands_added(const pugi::xml_node& node);
 
   static inline int m_id{0};
@@ -98,27 +99,6 @@ size_t wex::menus::build_menu(const T& commands, int base_id, menu* menu)
   return menu->GetMenuItemCount();
 }
 
-template <typename T> bool wex::menus::load(const std::string& name, T& entries)
-{
-  pugi::xml_document doc;
-  if (
-    !path().file_exists() || !doc.load_file(
-                               path().string().c_str(),
-                               pugi::parse_default | pugi::parse_trim_pcdata))
-  {
-    return false;
-  }
-  entries.clear();
-  for (const auto& child : doc.document_element().children())
-  {
-    if (strcmp(child.name(), name.c_str()) == 0)
-    {
-      entries.push_back({child});
-    }
-  }
-  return !entries.empty();
-}
-
 template <typename T>
 void wex::menus::add_command(const pugi::xml_node& node, T& commands)
 {
@@ -130,4 +110,23 @@ void wex::menus::add_command(const pugi::xml_node& node, T& commands)
     }
   }
 };
+
+template <typename T> bool wex::menus::load(const std::string& name, T& entries)
+{
+  pugi::xml_document doc;
+  if (!load_doc(doc))
+  {
+    return false;
+  }
+
+  entries.clear();
+  for (const auto& child : doc.document_element().children())
+  {
+    if (strcmp(child.name(), name.c_str()) == 0)
+    {
+      entries.push_back({child});
+    }
+  }
+  return !entries.empty();
+}
 }; // namespace wex

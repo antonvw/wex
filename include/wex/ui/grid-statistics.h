@@ -134,7 +134,9 @@ protected:
     menu.style().reset();
     menu.style().set(menu::ALLOW_CLEAR);
     if (IsSelection())
+    {
       menu.style().set(menu::IS_SELECTED);
+    }
     grid::build_popup_menu(menu);
   };
 

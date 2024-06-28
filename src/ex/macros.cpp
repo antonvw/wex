@@ -199,7 +199,7 @@ bool wex::macros::load_document()
     }
   }
 
-  log::trace("macros info") << path().string() << m_reflect.log();
+  log::info("macros") << path().string() << m_reflect.log();
 
   m_is_loaded = true;
 

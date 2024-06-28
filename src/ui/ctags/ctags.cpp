@@ -178,7 +178,7 @@ bool wex::ctags::do_open(const std::string& path)
 {
   if (tagFileInfo info; (m_file = tagsOpen(path.c_str(), &info)) != nullptr)
   {
-    log::trace("ctags file") << path;
+    log::info("ctags") << path;
     return true;
   }
 
@@ -338,7 +338,6 @@ bool wex::ctags::open(const std::string& filename)
 {
   if (m_file != nullptr)
   {
-    log::trace("ctags file already active");
     return false;
   }
 

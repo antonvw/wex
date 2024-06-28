@@ -2,7 +2,7 @@
 // Name:      menus.cpp
 // Purpose:   Implementation of wex::menus class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -104,6 +104,21 @@ bool wex::menus::allow_add_menu(const menu_command& mc, const menu* menu)
   }
 
   return add;
+}
+
+bool wex::menus::load_doc(pugi::xml_document& doc)
+{
+  const bool res(
+    path().file_exists() && doc.load_file(
+                              path().string().c_str(),
+                              pugi::parse_default | pugi::parse_trim_pcdata));
+
+  if (res)
+  {
+    log::info("menus") << path().string();
+  }
+
+  return res;
 }
 
 void wex::menus::no_commands_added(const pugi::xml_node& node)
