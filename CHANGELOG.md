@@ -31,6 +31,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - show error if no macros present for a lexer
 - improved cleaning when history view is closed
 - register calculator used in insert mode
+- reporting matches when doing replace in files
 
 ## 24.04 - 2024-03-29
 

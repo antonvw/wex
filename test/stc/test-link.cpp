@@ -32,10 +32,32 @@ TEST_CASE("wex::link")
 
     vi->mode().escape();
     stc->SetReadOnly(false);
+
     REQUIRE(vi->command(":a|" + line));
     REQUIRE(vi->command("/test"));
     REQUIRE(vi->command(" "));
     REQUIRE(stc->link_open());
+
+    std::string* name = nullptr;
+    REQUIRE(vi->command("/test"));
+    REQUIRE(vi->command(" "));
+    REQUIRE(stc->link_open(
+      wex::stc::link_t().set(wex::stc::LINK_OPEN).set(wex::stc::LINK_OPEN_MIME),
+      name));
+    REQUIRE(name == nullptr);
+
+    std::string name_ok;
+    REQUIRE(stc->link_open(
+      wex::stc::link_t().set(wex::stc::LINK_OPEN).set(wex::stc::LINK_OPEN_MIME),
+      &name_ok));
+    REQUIRE(name_ok == "test.sh");
+
+    name_ok = std::string(50, 'c');
+    REQUIRE(vi->command("gg"));
+    REQUIRE(!stc->link_open(
+      wex::stc::link_t().set(wex::stc::LINK_OPEN).set(wex::stc::LINK_OPEN_MIME),
+      &name_ok));
+    REQUIRE(name_ok == std::string(50, 'c'));
   }
 
   SUBCASE("mime")

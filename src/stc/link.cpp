@@ -155,7 +155,7 @@ bool wex::stc::link_open(link_t mode, std::string* link)
     }
   }
 
-  if (link != nullptr)
+  if (link != nullptr && found)
   {
     *link = find_tail(*link, 25);
   }

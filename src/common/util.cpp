@@ -278,6 +278,13 @@ int wex::open_files(
   return count;
 }
 
+void wex::process_match(const path_match& m, wxEvtHandler* eh)
+{
+  wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_LIST_MATCH);
+  event.SetClientData(new path_match(m));
+  wxPostEvent(eh, event);
+}
+
 bool wex::shell_expansion(std::string& command)
 {
   regex r("`(.*?)`"); // non-greedy
