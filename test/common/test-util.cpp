@@ -81,6 +81,14 @@ TEST_CASE("wex::util" * doctest::may_fail())
         std::vector<wex::path>{wex::path("../../data/wex-menus.xml")}) == 1);
   }
 
+  SUBCASE("process_match")
+  {
+    const auto   p(wex::test::get_path("test.h"));
+    wxEvtHandler e;
+
+    process_match(p, &e);
+  }
+
 #ifdef __UNIX__
   SUBCASE("shell_expansion")
   {

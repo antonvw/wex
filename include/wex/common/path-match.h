@@ -2,11 +2,12 @@
 // Name:      path-match.h
 // Purpose:   Declaration of class wex::path_match
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <wex/common/tool.h>
 #include <wex/core/path.h>
 
 namespace wex
@@ -26,6 +27,8 @@ public:
   explicit path_match(
     /// path containing match
     const path& p,
+    /// tool that caused the match
+    const tool& t,
     /// matching line
     const std::string& line,
     /// line number containing match
@@ -36,6 +39,7 @@ public:
     , m_path(p)
     , m_pos(pos)
     , m_line_no(line_no)
+    , m_tool(t)
   {
     ;
   };
@@ -52,10 +56,14 @@ public:
   /// Returns start pos of match.
   auto pos() const { return m_pos; }
 
+  /// Returns tool.
+  auto& tool() const { return m_tool; }
+
 private:
   const wex::path   m_path;
   const std::string m_line;
   const int         m_pos{-1};
   const size_t      m_line_no{0};
+  const wex::tool   m_tool;
 };
 }; // namespace wex

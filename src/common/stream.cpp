@@ -7,6 +7,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <wex/common/stream.h>
+#include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
 #include <wex/factory/beautify.h>
@@ -96,9 +97,9 @@ bool wex::stream::process(std::string& text, size_t line_no)
 
   if (match)
   {
-    if (m_tool.id() == ID_TOOL_REPORT_FIND && m_eh != nullptr)
+    if (m_tool.is_find_type() && m_eh != nullptr)
     {
-      process_match(path_match(path(), text, line_no, pos));
+      process_match(path_match(path(), m_tool, text, line_no, pos), m_eh);
     }
 
     const auto ac = m_stats.inc_actions_completed(count);
@@ -147,13 +148,6 @@ bool wex::stream::process_begin()
   }
 
   return true;
-}
-
-void wex::stream::process_match(const path_match& m)
-{
-  wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_LIST_MATCH);
-  event.SetClientData(new path_match(m));
-  wxPostEvent(m_eh, event);
 }
 
 int wex::stream::replace_all(std::string& text, int* match_pos)

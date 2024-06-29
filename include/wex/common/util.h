@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <wex/common/path-match.h>
 #include <wex/core/types.h>
 #include <wex/data/dir.h>
 #include <wex/data/stc.h>
@@ -97,6 +98,13 @@ int open_files(
   const data::stc& data = data::stc(),
   /// flags to be used with open_file_dir
   const data::dir::type_t& type = data::dir::type_t_def());
+
+/// Processes a match.
+void process_match(
+  /// the match path
+  const path_match& m,
+  ///  the event handler that will receive the match (ID_LIST_MATCH)
+  wxEvtHandler* eh);
 
 /// Executes all process between backquotes in command,
 /// and changes command with replaced match with output from process.

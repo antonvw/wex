@@ -7,6 +7,7 @@
 
 #include <wex/common/dir.h>
 #include <wex/common/stream.h>
+#include <wex/common/util.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/core/reflection.h>
@@ -177,7 +178,7 @@ bool wex::dir::on_dir(const path& p) const
     if (!m_tool.is_find_type() && m_data.type().test(data::dir::DIRS))
     {
       m_statistics.get_elements().inc(_("Folders"));
-      post_event(p);
+      process_match(p, m_eh);
     }
   }
 
@@ -202,18 +203,11 @@ bool wex::dir::on_file(const path& p) const
     }
     else
     {
-      post_event(p);
+      process_match(p, m_eh);
     }
   }
 
   return true;
-}
-
-void wex::dir::post_event(const path& p) const
-{
-  wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_LIST_MATCH);
-  event.SetClientData(new wex::path_match(p));
-  wxPostEvent(m_eh, event);
 }
 
 int wex::dir::run() const

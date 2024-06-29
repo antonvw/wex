@@ -43,6 +43,16 @@ class frame;
 class stc : public syntax::stc
 {
 public:
+  enum
+  {
+    LINK_CHECK     = 0, ///< only check link
+    LINK_OPEN      = 1, ///< open link as stc component
+    LINK_OPEN_MIME = 2, ///< open link by mime
+  };
+
+  /// A typedef containing lnk flags.
+  typedef std::bitset<3> link_t;
+
   // Static interface
 
   /// Shows a dialog with options, returns dialog return code.
@@ -131,6 +141,10 @@ public:
 
   /// Keeps event data.
   void keep_event_data(bool synced) { m_data.event(synced); }
+
+  /// Returns true if selected text (or a link on the current line
+  /// can be opened, and fills the filename with the link.
+  bool link_open(link_t mode, std::string* filename = nullptr);
 
   /// Deletes all change markers.
   /// Returns false if marker change is not loaded.
@@ -251,15 +265,6 @@ public:
   void              visual(bool on) override;
 
 private:
-  enum
-  {
-    LINK_CHECK     = 0,
-    LINK_OPEN      = 1,
-    LINK_OPEN_MIME = 2,
-  };
-
-  typedef std::bitset<3> link_t;
-
   void bind_all();
   void bind_other();
   void blame_revision(const std::string& offset = std::string());
@@ -274,7 +279,6 @@ private:
   void guess_type_and_modeline();
   void jump_action();
   void key_action(wxKeyEvent& event);
-  bool link_open(link_t mode, std::string* filename = nullptr);
   void margin_action(wxStyledTextEvent& event);
   void mouse_action(wxMouseEvent& event);
   void mark_modified(const wxStyledTextEvent& event);
