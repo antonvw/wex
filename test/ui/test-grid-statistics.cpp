@@ -57,6 +57,5 @@ TEST_CASE("wex::grid_statistics")
   REQUIRE(statistics2->inc("xx") == 1);
   REQUIRE(statistics2->get_items().size() == 1);
 
-  delete statistics1;
-  delete statistics2;
+  // do not delete the staticstis, they are aded as panes
 }
