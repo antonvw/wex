@@ -51,7 +51,7 @@ void wex::test::doctester::on_run(wex::app* app)
 
   app->Bind(
     wxEVT_TIMER,
-    [&, this](const wxTimerEvent& event)
+    [=, this](const wxTimerEvent& event)
     {
       if (m_context != nullptr)
       {
