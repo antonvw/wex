@@ -2,7 +2,7 @@
 // Name:      test-printout.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/syntax/printout.h>
@@ -20,4 +20,6 @@ TEST_CASE("wex::printout")
   printout->GetPageInfo(&min, &max, &from, &to);
   REQUIRE(!printout->HasPage(5));
   REQUIRE(!printout->OnPrintPage(5));
+
+  delete printout;
 }
