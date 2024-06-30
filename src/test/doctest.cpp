@@ -55,6 +55,8 @@ void wex::test::doctester::on_run(wex::app* app)
     {
       if (m_context != nullptr)
       {
+        delete timer_start;
+
         m_context->run();
 
         config("AllowSync").set(false);

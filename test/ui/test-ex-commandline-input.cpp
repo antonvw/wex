@@ -122,4 +122,6 @@ TEST_CASE("wex::ex_commandline_input")
     wex::ex_commandline_input tst(wex::ex_command::type_t::FIND);
     REQUIRE(tst.values().size() == 5);
   }
+
+  delete cl;
 }

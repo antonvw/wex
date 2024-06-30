@@ -2,7 +2,7 @@
 // Name:      test-grid-statistics.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ui/grid-statistics.h>
@@ -56,4 +56,6 @@ TEST_CASE("wex::grid_statistics")
   statistics2->clear();
   REQUIRE(statistics2->inc("xx") == 1);
   REQUIRE(statistics2->get_items().size() == 1);
+
+  // do not delete the staticstis, they are aded as panes
 }

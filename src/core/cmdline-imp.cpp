@@ -255,6 +255,8 @@ void wex::cmdline_imp::parse_quit()
       wxEVT_TIMER,
       [=, this](const wxTimerEvent& event)
       {
+        delete timer_start;
+
         if (auto* win = wxTheApp->GetTopWindow(); win != nullptr)
         {
           win->Destroy();

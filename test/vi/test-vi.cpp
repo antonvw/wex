@@ -346,4 +346,6 @@ TEST_CASE("wex::vi")
     // README: This should pass, but selection is not ok.
     // REQUIRE(stc->GetSelectedText().size() == 33);
   }
+
+  delete vi;
 }

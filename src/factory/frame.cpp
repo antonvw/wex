@@ -38,6 +38,11 @@ wex::factory::frame::frame(
 {
 }
 
+wex::factory::frame::~frame()
+{
+  m_is_closing = true;
+}
+
 wex::factory::grid* wex::factory::frame::get_grid()
 {
   wxCAST_TO(wex::factory::grid);
@@ -125,7 +130,7 @@ void wex::factory::frame::statusbar_clicked(const std::string& pane)
 
 bool wex::factory::frame::update_statusbar(const wxListView* lv)
 {
-  if (lv == nullptr || m_is_closing)
+  if (m_is_closing || lv == nullptr)
   {
     return false;
   }
@@ -149,7 +154,7 @@ bool wex::factory::frame::update_statusbar(const wxListView* lv)
 // Do not make it const, too many const_casts needed,
 bool wex::factory::frame::update_statusbar(stc* stc, const std::string& pane)
 {
-  if (stc == nullptr || m_is_closing)
+  if (m_is_closing || stc == nullptr)
   {
     return false;
   }

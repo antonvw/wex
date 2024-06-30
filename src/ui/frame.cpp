@@ -475,7 +475,8 @@ bool wex::frame::Destroy()
 std::string wex::frame::get_statustext(const std::string& pane) const
 {
   return (
-    m_statusbar == nullptr ? std::string() : m_statusbar->get_statustext(pane));
+    m_is_closing || m_statusbar == nullptr ? std::string() :
+                                             m_statusbar->get_statustext(pane));
 }
 
 wxStatusBar* wex::frame::OnCreateStatusBar(

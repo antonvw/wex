@@ -171,9 +171,9 @@ void wex::toolbar::add_checkboxes_standard(bool realize)
 
 void wex::toolbar::add_find(bool realize)
 {
-  auto* findCtrl = new find_bar(m_frame, data::window().parent(this));
+  m_find_bar = new find_bar(m_frame, data::window().parent(this));
 
-  AddControl(findCtrl->control());
+  AddControl(m_find_bar->control());
 
   add_tool(
     {data::toolbar_item(wxID_DOWN)
@@ -224,24 +224,24 @@ void wex::toolbar::add_find(bool realize)
   bind(this).command(
     {{[=, this](const wxCommandEvent& event)
       {
-        findCtrl->find(true);
+        m_find_bar->find(true);
       },
       wxID_DOWN},
      {[=, this](const wxCommandEvent& event)
       {
-        findCtrl->find(false);
+        m_find_bar->find(false);
       },
       wxID_UP}});
 
   bind(this).ui(
     {{[=, this](wxUpdateUIEvent& event)
       {
-        event.Enable(!findCtrl->get_text().empty());
+        event.Enable(!m_find_bar->get_text().empty());
       },
       wxID_DOWN},
      {[=, this](wxUpdateUIEvent& event)
       {
-        event.Enable(!findCtrl->get_text().empty());
+        event.Enable(!m_find_bar->get_text().empty());
       },
       wxID_UP}});
 }
@@ -367,6 +367,13 @@ bool wex::toolbar::add_tool(
   }
 
   return true;
+}
+
+bool wex::toolbar::Destroy()
+{
+  delete m_find_bar;
+
+  return wxAuiToolBar::Destroy();
 }
 
 bool wex::toolbar::set_checkbox(const std::string& name, bool show) const

@@ -196,7 +196,9 @@ TEST_CASE("wex::vi-other")
     for (auto& other_command : vi->other_commands())
     {
       if (other_command.first == "ZZ")
+      {
         continue;
+      }
 
       if (vi->mode().is_insert())
       {
@@ -219,9 +221,13 @@ TEST_CASE("wex::vi-other")
           }
 
           if (c != '\t')
+          {
             REQUIRE(vi->command(std::string(1, c)));
+          }
           else
+          {
             REQUIRE(!vi->command(std::string(1, c)));
+          }
         }
       }
       else
@@ -250,4 +256,6 @@ TEST_CASE("wex::vi-other")
       vi->command("q");
     }
   }
+
+  delete vi;
 }
