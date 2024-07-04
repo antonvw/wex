@@ -293,7 +293,7 @@ bool wex::vcs::load_document()
     return false;
   }
 
-  log::trace("vcs store") << size();
+  log::info("vcs entries") << size() << "from" << menus::path().string();
 
   if (old_store == 0)
   {

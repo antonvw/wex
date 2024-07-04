@@ -567,7 +567,8 @@ void wex::debug::set_entry(const std::string& debugger)
 
     m_frame->set_debug_entry(&m_entry);
 
-    log::trace("debug entries") << v.size() << "debugger:" << m_entry.name();
+    log::info("debug entries") << v.size() << "from" << menus::path().string()
+                               << "debugger:" << m_entry.name();
   }
 }
 
