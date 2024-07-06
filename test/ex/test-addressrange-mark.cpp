@@ -32,10 +32,10 @@ TEST_CASE("wex::addressrange_mark")
     arm->end();
     arm->end(false);
 
-    delete arm;
-
     REQUIRE(ex->marker_line('#') == wex::LINE_NUMBER_UNKNOWN);
     REQUIRE(ex->marker_line('$') == wex::LINE_NUMBER_UNKNOWN);
+
+    delete arm;
   }
 
   delete ex;
