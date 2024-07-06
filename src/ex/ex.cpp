@@ -103,7 +103,7 @@ bool wex::ex::command(const std::string& cmd)
   const auto& it = m_macros.get_map().find(command);
   command        = (it != m_macros.get_map().end() ? it->second : command);
 
-  if (m_frame->exec_ex_command(m_command.set(command)))
+  if (m_frame->vi_exec_command(m_command.set(command)))
   {
     m_macros.record(command);
     m_command.clear();
@@ -187,6 +187,13 @@ void wex::ex::info_message(const std::string& text, wex::info_message_t type)
 
     m_frame->show_ex_message(msg.str());
   }
+}
+
+bool wex::ex::is_address(const std::string& text)
+{
+  const command_parser cp(this, text, command_parser::parse_t::CHECK);
+
+  return cp.type() != command_parser::address_t::NO_ADDR;
 }
 
 bool wex::ex::marker_add(char marker, int line)

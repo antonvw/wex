@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of wex::frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -127,21 +127,6 @@ public:
     return false;
   };
 
-  /// Executes a ex command. Returns true if
-  /// this command is handled. This method is invoked
-  /// at the beginning of the ex command handling,
-  /// allowing you to override any command.
-  virtual bool exec_ex_command(ex_command& command) { return false; }
-
-  /// Allows you to override is_address, it is overridden in
-  /// del frame, returning true if text specifies
-  /// a one or two address based ex address (including command).
-  /// e.g. 1,5y, %y, etc.
-  virtual bool is_address(syntax::stc* stc, const std::string& text)
-  {
-    return false;
-  };
-
   /// Moves to next page. If none or only one page present, returns false.
   virtual bool next_page() { return false; }
 
@@ -248,6 +233,21 @@ public:
   {
     return false;
   }
+
+  /// Executes a ex command. Returns true if
+  /// this command is handled. This method is invoked
+  /// at the beginning of the ex command handling,
+  /// allowing you to override any command.
+  virtual bool vi_exec_command(ex_command& command) { return false; }
+
+  /// Allows you to override vi_is_address, it is overridden in
+  /// del frame, returning true if text specifies
+  /// a one or two address based ex address (including command).
+  /// e.g. 1,5y, %y, etc.
+  virtual bool vi_is_address(syntax::stc* stc, const std::string& text) const
+  {
+    return false;
+  };
 
   // Other methods
 

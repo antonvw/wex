@@ -112,9 +112,9 @@ TEST_CASE("wex::frame")
 
     REQUIRE(!frame()->debug_toggle_breakpoint(1000, get_stc()));
 
-    REQUIRE(!frame()->exec_ex_command(command));
+    REQUIRE(!frame()->vi_exec_command(command));
 
-    REQUIRE(!frame()->is_address(get_stc(), "pppp"));
+    REQUIRE(!frame()->vi_is_address(get_stc(), "pppp"));
 
     frame()->on_notebook(100, nullptr);
 
@@ -261,7 +261,7 @@ TEST_CASE("wex::frame::bars")
   get_stc()->Show();
 
   wex::ex_command command(":n");
-  REQUIRE(!frame()->exec_ex_command(command));
+  REQUIRE(!frame()->vi_exec_command(command));
 
   REQUIRE(!frame()->show_ex_command(get_stc(), ""));
   REQUIRE(!frame()->show_ex_command(get_stc(), "x"));

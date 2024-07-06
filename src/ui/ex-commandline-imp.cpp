@@ -224,11 +224,11 @@ bool wex::ex_commandline_imp::handle_type(
       }
       else if (const auto& current(cli()->get()); !current.empty())
       {
-        const auto is_address(
-          m_cl->get_frame()->is_address(m_cl->stc(), current));
+        const auto vi_is_address(
+          m_cl->get_frame()->vi_is_address(m_cl->stc(), current));
 
         set_text(
-          m_mode_visual && current.find(range) != 0 && is_address ?
+          m_mode_visual && current.find(range) != 0 && vi_is_address ?
             range + current :
             current);
         SelectAll();

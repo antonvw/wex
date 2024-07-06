@@ -16,10 +16,10 @@ wex::addressrange_mark::addressrange_mark(
   const addressrange&     ar,
   const data::substitute& subs)
   : m_ar(ar)
-  , m_type(get_type(subs))
   , m_ex(ar.get_ex())
   , m_stc(ar.get_ex()->get_stc())
   , m_undo(m_stc)
+  , m_data(subs)
 {
   m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
 }
@@ -56,24 +56,27 @@ wex::block_lines wex::addressrange_mark::get_block_lines() const
   return block_lines(m_ex).single();
 }
 
-wex::addressrange_mark::mark_t
-wex::addressrange_mark::get_type(const data::substitute& data) const
+wex::addressrange_mark::mark_t wex::addressrange_mark::get_type() const
 {
-  if (data.is_global_command())
+  if (m_data.is_global_command())
   {
-    if (data.commands() == "d")
+    if (m_data.commands() == "d")
     {
-      return data.is_inverse() ? MARK_GLOBAL_DELETE_INVERSE :
-                                 MARK_GLOBAL_DELETE;
+      return m_data.is_inverse() ? MARK_GLOBAL_DELETE_INVERSE :
+                                   MARK_GLOBAL_DELETE;
     }
   }
 
   return MARK_NORMAL;
 }
 
-bool wex::addressrange_mark::search(const data::substitute& data)
+bool wex::addressrange_mark::search()
 {
-  if (data.pattern() == "$")
+  if (m_data.pattern().empty())
+  {
+    return false;
+  }
+  else if (m_data.pattern() == "$")
   {
     if (m_ex->marker_line('T') == m_ex->marker_line('$'))
     {
@@ -89,7 +92,7 @@ bool wex::addressrange_mark::search(const data::substitute& data)
       m_stc->LineFromPosition(m_stc->GetTargetEnd()) + 1);
   }
 
-  return m_stc->SearchInTarget(data.pattern()) != -1 &&
+  return m_stc->SearchInTarget(m_data.pattern()) != -1 &&
          m_ex->marker_add('T', m_stc->LineFromPosition(m_stc->GetTargetEnd()));
 }
 
@@ -124,7 +127,7 @@ bool wex::addressrange_mark::update()
 {
   int begin_pos;
 
-  switch (m_type)
+  switch (get_type())
   {
     case MARK_GLOBAL_DELETE:
       begin_pos = m_stc->PositionFromLine(m_ex->marker_line('T'));

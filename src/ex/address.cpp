@@ -85,7 +85,7 @@ bool wex::address::add(add_t type, const std::string& text) const
   if (!m_ex->get_stc()->is_visual())
   {
     m_ex->ex_stream()->insert_text(
-      *this,
+      m_line,
       text + m_ex->get_stc()->eol(),
       type == add_t::APPEND ? ex_stream::loc_t::AFTER :
                               ex_stream::loc_t::BEFORE);
@@ -367,7 +367,7 @@ bool wex::address::read(const std::string& arg) const
   {
     if (!m_ex->get_stc()->is_visual())
     {
-      m_ex->ex_stream()->insert_text(*this, *buffer);
+      m_ex->ex_stream()->insert_text(m_line, *buffer);
     }
     else if (m_address == ".")
     {

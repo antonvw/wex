@@ -8,7 +8,6 @@
 #include <wex/core/config.h>
 #include <wex/core/log.h>
 #include <wex/core/path.h>
-#include <wex/ex/address.h>
 #include <wex/ex/ex-stream.h>
 #include <wex/ex/macros.h>
 #include <wex/factory/stc-undo.h>
@@ -152,7 +151,7 @@ void wex::stc::add_text(const std::string& text)
   if (m_vi->visual() == ex::mode_t::EX)
   {
     m_file.ex_stream()->insert_text(
-      address(m_vi, m_file.ex_stream()->get_current_line()),
+      m_file.ex_stream()->get_current_line(),
       text,
       ex_stream::loc_t::AFTER);
   }
@@ -394,7 +393,7 @@ void wex::stc::insert_text(int pos, const std::string& text)
 {
   if (m_vi->visual() == ex::mode_t::EX)
   {
-    m_file.ex_stream()->insert_text(address(m_vi, LineFromPosition(pos)), text);
+    m_file.ex_stream()->insert_text(LineFromPosition(pos), text);
   }
   else
   {

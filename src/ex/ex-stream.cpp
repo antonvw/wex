@@ -57,7 +57,7 @@
 #include <regex>
 
 wex::ex_stream::ex_stream(wex::ex* ex)
-  : m_context_lines(50)
+  : m_context_lines(40)
   , m_buffer_size(1000000)
   , m_buffer(new char[m_buffer_size])
   , m_ex(ex)
@@ -534,12 +534,14 @@ void wex::ex_stream::goto_line(int no)
   }
 }
 
-bool wex::ex_stream::insert_text(
-  const address&     a,
-  const std::string& text,
-  loc_t              loc)
+bool wex::ex_stream::insert_text(int a, const std::string& text, loc_t loc)
 {
-  const auto line(loc == loc_t::BEFORE ? a.get_line() : a.get_line() + 1);
+  if (a < 0)
+  {
+    return false;
+  }
+
+  const auto         line(loc == loc_t::BEFORE ? a : a + 1);
   const addressrange range(
     m_ex,
     std::to_string(line) + "," + std::to_string(line));
