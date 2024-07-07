@@ -2,7 +2,7 @@
 // Name:      global-env.h
 // Purpose:   Declaration of class wex::global_env
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2021 Anton van Wezenbeek
+// Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -18,7 +18,7 @@ class global_env
 {
 public:
   /// Constructor.
-  explicit global_env(const addressrange* ar);
+  explicit global_env(const addressrange& ar);
 
   /// Runs the global commands using specified data.
   bool global(const data::substitute& data);
@@ -35,7 +35,7 @@ private:
   bool process_inverse(const block_lines& block, block_lines& inverse);
   bool run(const block_lines& block, const std::string& command) const;
 
-  const addressrange* m_ar;
+  const addressrange& m_ar;
 
   std::vector<std::string> m_commands;
 

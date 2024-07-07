@@ -71,13 +71,13 @@ TEST_CASE("wex::ex_stream")
   SUBCASE("constructor")
   {
     REQUIRE(exs.get_current_line() == 0);
-    REQUIRE(exs.get_line_count() == LINE_COUNT_UNKNOWN);
-    REQUIRE(exs.get_line_count_request() == LINE_COUNT_UNKNOWN);
+    REQUIRE(exs.get_line_count() == wex::LINE_COUNT_UNKNOWN);
+    REQUIRE(exs.get_line_count_request() == wex::LINE_COUNT_UNKNOWN);
 
     exs.goto_line(5);
     REQUIRE(exs.get_current_line() == 0);
-    REQUIRE(exs.get_line_count() == LINE_COUNT_UNKNOWN);
-    REQUIRE(exs.get_line_count_request() == LINE_COUNT_UNKNOWN);
+    REQUIRE(exs.get_line_count() == wex::LINE_COUNT_UNKNOWN);
+    REQUIRE(exs.get_line_count_request() == wex::LINE_COUNT_UNKNOWN);
   }
 
   SUBCASE("actions")
@@ -130,11 +130,12 @@ TEST_CASE("wex::ex_stream")
       REQUIRE(!exs.is_modified());
     }
 
-    SUBCASE("insert")
+    SUBCASE("insert_text")
     {
-      REQUIRE(!exs.insert_text(wex::address(&ex, 0), "TEXT_BEFORE"));
+      REQUIRE(!exs.insert_text(0, "TEXT_BEFORE"));
+      REQUIRE(!exs.insert_text(-4, "TEXT_BEFORE"));
 
-      REQUIRE(exs.insert_text(wex::address(&ex, 1), "TEXT_BEFORE"));
+      REQUIRE(exs.insert_text(1, "TEXT_BEFORE"));
       REQUIRE(exs.get_line_count_request() == 5);
       CAPTURE(*exs.get_work());
       REQUIRE((*exs.get_work()).find("TEXT_BEFORE") == 0);
@@ -142,10 +143,7 @@ TEST_CASE("wex::ex_stream")
       REQUIRE(exs.get_line_count_request() == 5);
       REQUIRE(wex::get_number_of_lines(*exs.get_work()) == 6);
 
-      REQUIRE(exs.insert_text(
-        wex::address(&ex, 3),
-        "TEXT_AFTER",
-        wex::ex_stream::loc_t::AFTER));
+      REQUIRE(exs.insert_text(3, "TEXT_AFTER", wex::ex_stream::loc_t::AFTER));
       REQUIRE((*exs.get_work()).contains("TEXT_AFTER"));
 
       REQUIRE(exs.is_modified());
@@ -310,7 +308,7 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(!exs.marker_delete('y'));
     REQUIRE(exs.marker_delete('x'));
     REQUIRE(!exs.marker_delete('x'));
-    REQUIRE(exs.marker_line('x') == LINE_NUMBER_UNKNOWN);
+    REQUIRE(exs.marker_line('x') == wex::LINE_NUMBER_UNKNOWN);
   }
 
   SUBCASE("request")

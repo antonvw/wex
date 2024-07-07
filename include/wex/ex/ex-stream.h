@@ -82,12 +82,10 @@ public:
   /// Returns content of work file.
   const std::string* get_work() const;
 
-  /// Inserts text at specified address.
-  /// Returns false if no stream, of address is invalid.
-  bool insert_text(
-    const address&     address,
-    const std::string& text,
-    loc_t              loc = loc_t::BEFORE);
+  /// Inserts text at specified line.
+  /// Returns false if no stream, or address is invalid.
+  bool
+  insert_text(int line, const std::string& text, loc_t loc = loc_t::BEFORE);
 
   /// Returns true if we are in block mode.
   /// Block mode implies that no eols were found when

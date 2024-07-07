@@ -277,9 +277,9 @@ TEST_CASE("wex::del::frame")
 
     REQUIRE(!del_frame()->debug_toggle_breakpoint(100, get_stc()));
 
-    REQUIRE(!del_frame()->is_address(get_stc(), "xx"));
-    REQUIRE(del_frame()->is_address(get_stc(), "1,5ya"));
-    REQUIRE(del_frame()->is_address(get_stc(), "%ya"));
+    REQUIRE(!del_frame()->vi_is_address(get_stc(), "xx"));
+    REQUIRE(del_frame()->vi_is_address(get_stc(), "1,5ya"));
+    REQUIRE(del_frame()->vi_is_address(get_stc(), "%ya"));
 
     del_frame()->on_command_item_dialog(
       wxID_ADD,

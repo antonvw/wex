@@ -360,20 +360,6 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
   return true;
 }
 
-bool wex::del::frame::is_address(syntax::stc* stc, const std::string& text)
-{
-  if (auto* wexstc = dynamic_cast<wex::stc*>(stc); wexstc != nullptr)
-  {
-    const command_parser cp(
-      &wexstc->get_vi(),
-      text,
-      command_parser::parse_t::CHECK);
-    return cp.type() != command_parser::address_t::NO_ADDR;
-  }
-
-  return false;
-}
-
 void wex::del::frame::on_command_item_dialog(
   wxWindowID            dialogid,
   const wxCommandEvent& event)
@@ -920,4 +906,15 @@ bool wex::del::frame::vcs_execute(
 
 {
   return wex::vcs_execute(this, event_id, paths, data);
+}
+
+bool wex::del::frame::vi_is_address(syntax::stc* stc, const std::string& text)
+  const
+{
+  if (auto* wexstc = dynamic_cast<wex::stc*>(stc); wexstc != nullptr)
+  {
+    return wexstc->get_vi().is_address(text);
+  }
+
+  return false;
 }

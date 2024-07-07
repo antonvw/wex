@@ -22,6 +22,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - renamed FindWEX into Findwex and supports adding a version
 - used wrapline none for rfw lexer
 - moved vcs_admin to factory lib
+- renamed frame::is_address into vi_is_address and frame::exec_ex_command into
+  vi_exec_command
 
 ### Fixed
 

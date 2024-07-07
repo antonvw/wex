@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      ex-commandline-imp.h
-// Purpose:   Declaration of wex::ex-commandline-imp class
+// Purpose:   Declaration of wex::ex_commandline_imp class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -31,8 +31,6 @@ public:
     ex_commandline*     cl,
     const std::string&  value = std::string(),
     const data::window& data  = data::window());
-
-  // other methods
 
   /// Handles string command.
   bool handle(const std::string& command);

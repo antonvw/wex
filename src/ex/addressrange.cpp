@@ -391,7 +391,7 @@ bool wex::addressrange::global(const command_parser& cp) const
   /// normally performs command on each match, if inverse
   /// performs (v) command if line does not match
 
-  global_env g(this);
+  global_env g(*this);
 
   if (!g.global(m_substitute))
   {
@@ -870,7 +870,7 @@ bool wex::addressrange::substitute(const command_parser& cp)
     (data.replacement().find_first_of("&0LU\\") != std::string::npos);
   auto replacement(data.replacement());
 
-  while (am.search(data) && result != wxID_CANCEL)
+  while (am.search() && result != wxID_CANCEL)
   {
     if (do_build)
     {

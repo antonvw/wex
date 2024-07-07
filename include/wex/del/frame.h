@@ -169,8 +169,6 @@ public:
   bool          debug_print(const std::string& text) override;
   bool          debug_toggle_breakpoint(int line, syntax::stc* stc) override;
 
-  bool is_address(syntax::stc* stc, const std::string& text) override;
-
   void on_command_item_dialog(wxWindowID dialogid, const wxCommandEvent& event)
     override;
   void on_notebook(wxWindowID id, wxWindow* page) override;
@@ -205,6 +203,8 @@ public:
     int                           event_id,
     const std::vector<wex::path>& paths,
     const data::window&           arg = data::window()) override;
+
+  bool vi_is_address(syntax::stc* stc, const std::string& text) const override;
 
 protected:
   /// Access to file history list,

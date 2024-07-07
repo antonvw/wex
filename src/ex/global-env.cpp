@@ -2,7 +2,7 @@
 // Name:      global-env.cpp
 // Purpose:   Implementation of class wex::global_env
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2022 Anton van Wezenbeek
+// Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -16,8 +16,8 @@
 #include "block-lines.h"
 #include "global-env.h"
 
-wex::global_env::global_env(const addressrange* ar)
-  : m_ex(ar->get_ex())
+wex::global_env::global_env(const addressrange& ar)
+  : m_ex(ar.get_ex())
   , m_ar(ar)
   , m_stc(m_ex->get_stc())
 {
@@ -42,7 +42,7 @@ wex::global_env::global_env(const addressrange* ar)
 
 bool wex::global_env::for_each(const block_lines& match) const
 {
-  return !has_commands() ? m_stc->set_indicator(m_ar->find_indicator()) :
+  return !has_commands() ? m_stc->set_indicator(m_ar.find_indicator()) :
                            std::all_of(
                              m_commands.begin(),
                              m_commands.end(),
@@ -77,7 +77,7 @@ pp14
 // clang-format on
 bool wex::global_env::global(const data::substitute& data)
 {
-  addressrange_mark am(*m_ar, data);
+  addressrange_mark am(m_ar, data);
 
   if (!am.set())
   {
@@ -92,7 +92,7 @@ bool wex::global_env::global(const data::substitute& data)
   block_lines ib(m_ex, -1);
   block_lines mb(m_ex);
 
-  while (am.search(data))
+  while (am.search())
   {
     if (mb = am.get_block_lines(); data.is_inverse())
     {
