@@ -14,12 +14,12 @@
 
 #include "process-imp.h"
 
-#define WEX_POST(ID, TEXT, DEST)                           \
-  if (DEST != nullptr)                                     \
-  {                                                        \
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID); \
-    event.SetString(TEXT);                                 \
-    wxPostEvent(DEST, event);                              \
+#define WEX_POST(ID, TEXT, DEST)                                               \
+  if (DEST != nullptr)                                                         \
+  {                                                                            \
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID);                     \
+    event.SetString(TEXT);                                                     \
+    wxPostEvent(DEST, event);                                                  \
   }
 
 wex::factory::process_imp::process_imp()
