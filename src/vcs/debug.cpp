@@ -18,6 +18,8 @@
 #include <fstream>
 
 #ifdef __WXGTK__
+#include <wex/common/dir.h>
+
 namespace wex
 {
 // This class adds name and pid of running processes to
