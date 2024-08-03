@@ -2,7 +2,7 @@
 // Name:      core/util.cpp
 // Purpose:   Implementation of wex core utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -238,12 +238,14 @@ bool wex::is_codeword_separator(int c)
 
 bool wex::matches_one_of(
   const std::string& filename,
-  const std::string& pattern)
+  const std::string& pattern,
+  bool               is_regex)
 {
-  if (pattern == "*")
+  if (!is_regex && pattern == "*")
   {
     return true; // asterix matches always
   }
+
   if (filename.empty())
   {
     return false; // empty string never matches
@@ -251,17 +253,31 @@ bool wex::matches_one_of(
 
   // Make a regex of pattern matching chars.
   auto re(pattern);
-  boost::algorithm::replace_all(re, ".", "\\.");
-  boost::algorithm::replace_all(re, "*", ".*");
-  boost::algorithm::replace_all(re, "?", ".?");
+
+  if (!is_regex)
+  {
+    boost::algorithm::replace_all(re, ".", "\\.");
+    boost::algorithm::replace_all(re, "*", ".*");
+    boost::algorithm::replace_all(re, "?", ".?");
+  }
 
   for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
          re,
          boost::char_separator<char>(";")))
   {
-    if (std::regex_match(filename, std::regex(it)))
+    try
     {
-      return true;
+      if (
+        !is_regex && std::regex_match(filename, std::regex(it)) ||
+        is_regex && std::regex_search(filename, std::regex(it)))
+      {
+        return true;
+      }
+    }
+    catch (std::regex_error& e)
+    {
+      log::status() << e.what();
+      return false;
     }
   }
 

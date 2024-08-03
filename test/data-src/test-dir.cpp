@@ -20,6 +20,8 @@ TEST_CASE("wex::data::dir")
     REQUIRE(dir.dir_spec("xx").dir_spec() == "xx");
     REQUIRE(dir.file_spec().empty());
     REQUIRE(dir.file_spec("yy").file_spec() == "yy");
+    REQUIRE(!dir.file_spec("yy").is_regex());
+    REQUIRE(dir.file_spec("yy", true).is_regex());
     REQUIRE(dir.find_replace_data() == nullptr);
     REQUIRE(dir.max_matches() == -1);
     REQUIRE(dir.max_matches(3).max_matches() == 3);
