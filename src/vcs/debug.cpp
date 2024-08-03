@@ -6,13 +6,20 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
-#include <wex/wex.h>
+#include <wex/core/wex.h>
+#include <wex/factory/wex.h>
+#include <wex/stc/stc.h>
+#include <wex/syntax/util.h>
+#include <wex/ui/wex.h>
+#include <wex/vcs/debug.h>
 
 #include <algorithm>
 #include <charconv>
 #include <fstream>
 
 #ifdef __WXGTK__
+#include <wex/common/dir.h>
+
 namespace wex
 {
 // This class adds name and pid of running processes to
