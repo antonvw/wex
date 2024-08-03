@@ -291,7 +291,10 @@ bool wex::dir::traverse(const fs::directory_entry& e) const
        (m_data.vcs() != nullptr &&
         !m_data.vcs()->is_file_excluded(e.path()))) &&
       m_data.type().test(data::dir::FILES) && allow_hidden(e.path(), m_data) &&
-      matches_one_of(e.path().filename().string(), m_data.file_spec()))
+      matches_one_of(
+        e.path().filename().string(),
+        m_data.file_spec(),
+        m_data.is_regex()))
     {
       if (on_file(e.path()))
       {
@@ -300,8 +303,10 @@ bool wex::dir::traverse(const fs::directory_entry& e) const
     }
   }
   else if (
-    m_data.dir_spec().empty() ||
-    matches_one_of(e.path().filename().string(), m_data.dir_spec()))
+    m_data.dir_spec().empty() || matches_one_of(
+                                   e.path().filename().string(),
+                                   m_data.dir_spec(),
+                                   m_data.is_regex()))
   {
     on_dir(e.path());
 
