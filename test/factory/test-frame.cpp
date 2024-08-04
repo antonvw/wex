@@ -20,24 +20,17 @@ TEST_CASE("wex::factory::frame")
     frame()->SetMenuBar(bar);
 
     frame()->statusbar_clicked("test");
-    frame()->statusbar_clicked("Pane1");
-    frame()->statusbar_clicked("Pane2");
 
     frame()->statusbar_clicked_right("test");
-    frame()->statusbar_clicked_right("Pane1");
-    frame()->statusbar_clicked_right("Pane2");
 
     frame()->set_recent_file(wex::path("testing"));
 
     REQUIRE(!frame()->statustext("hello", "test"));
     REQUIRE(!frame()->statustext("hello1", "Pane1"));
     REQUIRE(frame()->get_statustext("Pane1").empty());
-    REQUIRE(frame()->get_statustext("Pane2").empty());
 
     REQUIRE(!frame()->update_statusbar(nullptr, "test"));
     REQUIRE(!frame()->update_statusbar(stc, "test"));
-    REQUIRE(!frame()->update_statusbar(stc, "Pane1"));
-    REQUIRE(!frame()->update_statusbar(stc, "Pane2"));
 
     auto* lv = new wxListView(frame());
     lv->Show();

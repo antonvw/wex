@@ -10,6 +10,7 @@
 #include <wex/ex/ex.h>
 #include <wex/ex/macros.h>
 
+#include "test-defs.h"
 #include "test.h"
 
 // See stc/test-vi.cpp and test-ex-mode for testing goto and :set
@@ -46,20 +47,7 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->marker_add('t', 1));
     REQUIRE(ex->marker_add('u', 2));
 
-    const std::vector<std::pair<std::string, int>> calcs{
-      {"", 0},      {"  ", 0},    {"1 + 1", 2},  {"5+5", 10},  {"1 * 1", 1},
-      {"1 - 1", 0}, {"2 / 1", 2}, {"2 / 0", 0},  {"2 < 2", 8}, {"2 > 1", 1},
-      {"2 | 1", 3}, {"2 & 1", 0}, {"~0", -1},    {"4 % 3", 1}, {".", 1},
-      {"xxx", 0},   {"%s", 0},    {"%s/xx/", 0}, {"'a", 2},    {"'t", 2},
-      {"'u", 3},    {"$", 4}};
-
-    for (const auto& calc : calcs)
-    {
-      if (const auto& val(ex->calculator(calc.first)); val)
-      {
-        REQUIRE(*val == calc.second);
-      }
-    }
+    EX_CALC(ex)
   }
 
 #ifdef __UNIX__

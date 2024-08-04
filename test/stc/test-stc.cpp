@@ -98,29 +98,6 @@ TEST_CASE("wex::stc")
     stc->Undo();
     stc->use_modification_markers(true);
     stc->use_modification_markers(false);
-
-    stc->BigWordLeft();
-    stc->BigWordLeftExtend();
-    stc->BigWordLeftRectExtend();
-    stc->BigWordRight();
-    stc->BigWordRightEnd();
-    stc->BigWordRightEndExtend();
-    stc->BigWordRightEndRectExtend();
-    stc->BigWordRightExtend();
-    stc->BigWordRightRectExtend();
-
-    stc->LineHome();
-    stc->LineHomeExtend();
-    stc->LineHomeRectExtend();
-    stc->LineScrollDownExtend();
-    stc->LineScrollDownRectExtend();
-    stc->LineScrollUpExtend();
-    stc->LineScrollUpRectExtend();
-    stc->ParaUpRectExtend();
-    stc->ParaDownRectExtend();
-    stc->WordLeftRectExtend();
-    stc->WordRightRectExtend();
-    stc->WordRightEndRectExtend();
   }
 
   SUBCASE("eol")

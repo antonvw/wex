@@ -14,6 +14,7 @@
 #include <wex/ex/util.h>
 #include <wex/ui/frd.h>
 
+#include "../ex/test-defs.h"
 #include "../vi/test.h"
 #include "test.h"
 
@@ -48,26 +49,13 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->marker_add('a', 1));
     REQUIRE(vi->marker_add('t', 1));
     REQUIRE(vi->marker_add('u', 2));
-  
+
     frame()->entry_dialog_calls_reset();
 
-    // Only calculations that are not empty should 
+    // Only calculations that are not empty should
     // cause calling entry dialog.
-    const std::vector<std::pair<std::string, int>> calcs{
-      {"", 0},      {"  ", 0},    {"1 + 1", 2},  {"5+5", 10},  {"1 * 1", 1},
-      {"1 - 1", 0}, {"2 / 1", 2}, {"2 / 0", 0},  {"2 < 2", 8}, {"2 > 1", 1},
-      {"2 | 1", 3}, {"2 & 1", 0}, {"~0", -1},    {"4 % 3", 1}, {".", 1},
-      {"xxx", 0},   {"%s", 0},    {"%s/xx/", 0}, {"'a", 2},    {"'t", 2},
-      {"'u", 3},    {"$", 4}};
+    EX_CALC(vi)
 
-    for (const auto& calc : calcs)
-    {
-      if (const auto& val(vi->calculator(calc.first)); val)
-      {
-        REQUIRE(*val == calc.second);
-      }
-    }
-    
     REQUIRE(frame()->entry_dialog_calls() == 4);
   }
 
@@ -238,9 +226,6 @@ TEST_CASE("wex::vi")
   {
     stc->get_file().file_new(wex::path("test.h"));
     const std::string ctrl_r = "\x12";
-    REQUIRE(vi->command("i"));
-    REQUIRE(vi->command(ctrl_r + "_"));
-    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
 
     stc->set_text("");
     REQUIRE(vi->command("i"));

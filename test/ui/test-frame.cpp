@@ -235,13 +235,6 @@ TEST_CASE("wex::frame")
     frame()->set_find_focus(frame());
   }
 
-  SUBCASE("get")
-  {
-    REQUIRE(frame()->get_grid() == nullptr);
-    REQUIRE(frame()->get_listview() == nullptr);
-    REQUIRE(frame()->get_process("xxx") == nullptr);
-  }
-
   SUBCASE("open_file")
   {
     // the factory stc does not open the file

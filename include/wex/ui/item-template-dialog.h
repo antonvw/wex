@@ -2,7 +2,7 @@
 // Name:      item-template-dialog.h
 // Purpose:   Declaration of wex::item_template_dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -20,16 +20,16 @@
 #include <wx/textctrl.h>
 #include <wx/tglbtn.h> // for wxEVT_TOGGLEBUTTON
 
-#define PICKER_HANDLE(COMPONENT)                              \
-  if (auto* pc = reinterpret_cast<COMPONENT*>(item.window()); \
-      item.data().control().is_required())                    \
-  {                                                           \
-    if (pc->GetPath().empty())                                \
-    {                                                         \
-      event.Enable(false);                                    \
-      return true;                                            \
-    }                                                         \
-  }                                                           \
+#define PICKER_HANDLE(COMPONENT)                                               \
+  if (auto* pc = reinterpret_cast<COMPONENT*>(item.window());                  \
+      item.data().control().is_required())                                     \
+  {                                                                            \
+    if (pc->GetPath().empty())                                                 \
+    {                                                                          \
+      event.Enable(false);                                                     \
+      return true;                                                             \
+    }                                                                          \
+  }                                                                            \
   return false;
 
 #include <vector>
@@ -103,6 +103,7 @@ private:
   bool process_dirpickerctrl(const T& item, wxUpdateUIEvent& event);
   bool process_filepickerctrl(const T& item, wxUpdateUIEvent& event);
   bool process_textctrl(const T& item, wxUpdateUIEvent& event);
+  bool validate(const T& item, wxTextEntry* te, wxUpdateUIEvent& event);
 
   std::vector<T> m_items, m_items_tmp;
 
@@ -136,7 +137,9 @@ wex::item_template_dialog<T>::item_template_dialog(
 template <class T> bool wex::item_template_dialog<T>::bind_button(const T& item)
 {
   if (item.window() == nullptr)
+  {
     return false;
+  }
 
   switch (item.type())
   {
@@ -147,7 +150,9 @@ template <class T> bool wex::item_template_dialog<T>::bind_button(const T& item)
         [&, this](const wxCommandEvent& event)
         {
           if (!item.apply())
+          {
             click(event);
+          }
         },
         item.window()->GetId());
       break;
@@ -158,7 +163,9 @@ template <class T> bool wex::item_template_dialog<T>::bind_button(const T& item)
         [&, this](const wxCommandEvent& event)
         {
           if (!item.apply())
+          {
             click(event);
+          }
         },
         item.window()->GetId());
       break;
@@ -226,7 +233,9 @@ template <class T> void wex::item_template_dialog<T>::layout(int rows, int cols)
   for (auto& item : m_items)
   {
     if (item.empty())
+    {
       continue;
+    }
 
     // If this item has the same type as previous type use previous sizer,
     // otherwise use no sizer (layout will create a new one).
@@ -355,21 +364,32 @@ void wex::item_template_dialog<T>::process_checklistbox(const T& item)
 }
 
 template <class T>
+bool wex::item_template_dialog<T>::validate(
+  const T&         item,
+  wxTextEntry*     te,
+  wxUpdateUIEvent& event)
+{
+  if (
+    !item.validate() ||
+    (!item.data().validate_re().empty() &&
+     !item.validate(item.data().validate_re())) ||
+    (item.data().control().is_required() && te->GetValue().empty()))
+  {
+    event.Enable(false);
+    return true;
+  }
+
+  return false;
+}
+
+template <class T>
 bool wex::item_template_dialog<T>::process_combobox(
   const T&         item,
   wxUpdateUIEvent& event)
 {
   if (auto* cb = reinterpret_cast<wxComboBox*>(item.window()); cb != nullptr)
   {
-    if (
-      !item.validate() ||
-      (!item.data().validate_re().empty() &&
-       !item.validate(item.data().validate_re())) ||
-      (item.data().control().is_required() && cb->GetValue().empty()))
-    {
-      event.Enable(false);
-      return true;
-    }
+    return validate(item, cb, event);
   }
 
   return false;

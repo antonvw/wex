@@ -19,6 +19,12 @@ TEST_CASE("wex::listview")
   auto* lv = new wex::listview();
   frame()->pane_add(lv);
 
+  const std::vector<wex::column> common_cols{
+    {"Int", wex::column::INT},
+    {"Date", wex::column::DATE},
+    {"Float", wex::column::FLOAT},
+    {"String", wex::column::STRING}};
+
   SUBCASE("general")
   {
     REQUIRE(lv->data().type() == wex::data::listview::NONE);
@@ -108,12 +114,7 @@ TEST_CASE("wex::listview")
 #ifndef GITHUB
   SUBCASE("popup_menu")
   {
-    REQUIRE(lv->append_columns(
-      {{"Int", wex::column::INT},
-       {"Date", wex::column::DATE},
-       {"Float", wex::column::FLOAT},
-       {"String", wex::column::STRING}}));
-
+    REQUIRE(lv->append_columns(common_cols));
     REQUIRE(lv->insert_item({"95", "", "", "hello"}));
 
     lv->SetFocus();
@@ -167,11 +168,7 @@ TEST_CASE("wex::listview")
 
   SUBCASE("sorting")
   {
-    REQUIRE(lv->append_columns(
-      {{"Int", wex::column::INT},
-       {"Date", wex::column::DATE},
-       {"Float", wex::column::FLOAT},
-       {"String", wex::column::STRING}}));
+    REQUIRE(lv->append_columns(common_cols));
 
     for (int i = 0; i < 10; i++)
     {
