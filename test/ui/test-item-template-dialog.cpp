@@ -2,7 +2,7 @@
 // Name:      test-item-template-dialog.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/defs.h>
@@ -11,8 +11,6 @@
 #include <wex/ui/item-template-dialog.h>
 #include <wex/ui/item.h>
 
-#include <vector>
-
 namespace wex
 {
 class testitem : public item
@@ -20,11 +18,7 @@ class testitem : public item
 public:
   static void set_dialog(item_template_dialog<testitem>* dlg) { ; }
 
-  testitem()
-    : item()
-  {
-    ;
-  };
+  testitem() = default;
 
   testitem(const std::string& label)
     : item(label, std::string())
@@ -54,17 +48,16 @@ TEST_CASE("wex::item_template_dialog")
 
   SUBCASE("basic")
   {
-    wex::item_template_dialog<wex::testitem>* dlg =
-      new wex::item_template_dialog<wex::testitem>(
-        std::vector<wex::testitem>{
-          {"fruit", "apple"},
-          {"button", wex::item::BUTTON},
-          {"string1"},
-          {"string2"},
-          {"more fruit", "citron"}},
-        wex::data::window().title("3 columns"),
-        0,
-        3);
+    auto* dlg = new wex::item_template_dialog<wex::testitem>(
+      std::vector<wex::testitem>{
+        {"fruit", "apple"},
+        {"button", wex::item::BUTTON},
+        {"string1"},
+        {"string2"},
+        {"more fruit", "citron"}},
+      wex::data::window().title("3 columns"),
+      0,
+      3);
 
     REQUIRE(
       wex::testitem("test", wex::item::BUTTON).type() == wex::item::BUTTON);
@@ -94,10 +87,9 @@ TEST_CASE("wex::item_template_dialog")
 
   SUBCASE("dialog_checkbox")
   {
-    wex::item_template_dialog<wex::testitem>* dlg =
-      new wex::item_template_dialog<wex::testitem>(
-        std::vector<wex::testitem>{{"checkbox", wex::item::CHECKBOX}},
-        wex::data::window().title("checkbox items"));
+    auto* dlg = new wex::item_template_dialog<wex::testitem>(
+      std::vector<wex::testitem>{{"checkbox", wex::item::CHECKBOX}},
+      wex::data::window().title("checkbox items"));
 
     dlg->force_checkbox_checked();
     dlg->Show();
@@ -105,28 +97,25 @@ TEST_CASE("wex::item_template_dialog")
 
   SUBCASE("dialog_no_buttons")
   {
-    wex::item_template_dialog<wex::testitem>* dlg =
-      new wex::item_template_dialog<wex::testitem>(
-        std::vector<wex::testitem>{{"string1"}, {"string2"}},
-        wex::data::window().button(0).title("no buttons"));
+    auto* dlg = new wex::item_template_dialog<wex::testitem>(
+      std::vector<wex::testitem>{{"string1"}, {"string2"}},
+      wex::data::window().button(0).title("no buttons"));
     dlg->Show();
   }
 
   SUBCASE("dialog_no_items")
   {
-    wex::item_template_dialog<wex::testitem>* dlg =
-      new wex::item_template_dialog<wex::testitem>(
-        std::vector<wex::testitem>(),
-        wex::data::window().title("no items"));
+    auto* dlg = new wex::item_template_dialog<wex::testitem>(
+      std::vector<wex::testitem>(),
+      wex::data::window().title("no items"));
     dlg->Show();
   }
 
   SUBCASE("dialog_empty_items")
   {
-    wex::item_template_dialog<wex::testitem>* dlg =
-      new wex::item_template_dialog<wex::testitem>(
-        std::vector<wex::testitem>{{}, {}, {}},
-        wex::data::window().title("empty items"));
+    auto* dlg = new wex::item_template_dialog<wex::testitem>(
+      std::vector<wex::testitem>{{}, {}, {}},
+      wex::data::window().title("empty items"));
     dlg->Show();
   }
 }
