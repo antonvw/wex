@@ -364,25 +364,6 @@ void wex::item_template_dialog<T>::process_checklistbox(const T& item)
 }
 
 template <class T>
-bool wex::item_template_dialog<T>::validate(
-  const T&         item,
-  wxTextEntry*     te,
-  wxUpdateUIEvent& event)
-{
-  if (
-    !item.validate() ||
-    (!item.data().validate_re().empty() &&
-     !item.validate(item.data().validate_re())) ||
-    (item.data().control().is_required() && te->GetValue().empty()))
-  {
-    event.Enable(false);
-    return true;
-  }
-
-  return false;
-}
-
-template <class T>
 bool wex::item_template_dialog<T>::process_combobox(
   const T&         item,
   wxUpdateUIEvent& event)
@@ -418,15 +399,7 @@ bool wex::item_template_dialog<T>::process_textctrl(
 {
   if (auto* tc = reinterpret_cast<wxTextCtrl*>(item.window()); tc != nullptr)
   {
-    if (
-      !item.validate() ||
-      (!item.data().validate_re().empty() &&
-       !item.validate(item.data().validate_re())) ||
-      (item.data().control().is_required() && tc->GetValue().empty()))
-    {
-      event.Enable(false);
-      return true;
-    }
+    return validate(item, tc, event);
   }
 
   return false;
@@ -447,4 +420,23 @@ bool wex::item_template_dialog<T>::set_item_value(
 
   return false;
 };
+
+template <class T>
+bool wex::item_template_dialog<T>::validate(
+  const T&         item,
+  wxTextEntry*     te,
+  wxUpdateUIEvent& event)
+{
+  if (
+    !item.validate() ||
+    (!item.data().validate_re().empty() &&
+     !item.validate(item.data().validate_re())) ||
+    (item.data().control().is_required() && te->GetValue().empty()))
+  {
+    event.Enable(false);
+    return true;
+  }
+
+  return false;
+}
 }; // namespace wex

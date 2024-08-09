@@ -43,6 +43,7 @@ TEST_CASE("wex::path")
     wex::path path(wex::test::get_path("test.h"));
 
     REQUIRE(!path.dir_exists());
+    REQUIRE(path.exists());
     REQUIRE(path.file_exists());
     REQUIRE(path.extension() == ".h");
     REQUIRE(path.filename() == "test.h");

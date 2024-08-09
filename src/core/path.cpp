@@ -113,6 +113,11 @@ bool wex::path::file_exists() const
   return filename().size() < 255 && fs::is_regular_file(m_path);
 }
 
+bool wex::path::exists() const
+{
+  return fs::exists(m_path);
+}
+
 std::stringstream wex::path::log() const
 {
   std::stringstream ss;

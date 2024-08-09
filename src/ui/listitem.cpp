@@ -60,9 +60,7 @@ void wex::listitem::insert(long index)
   {
     col = m_listview->find_column(_("File Name"));
     assert(col >= 0);
-    filename =
-      (m_path.file_exists() || m_path.dir_exists() ? m_path.filename() :
-                                                     m_path.string());
+    filename = (m_path.exists() ? m_path.filename() : m_path.string());
   }
   else
   {
