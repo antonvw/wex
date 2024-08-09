@@ -62,12 +62,12 @@ class vcs_admin
 public:
   /// Constructor.
   vcs_admin(
-    /// the vcs admin dir
-    const std::string& dir,
+    /// the vcs admin dir or file
+    const std::string& admin,
     /// the current path
     const path& p);
 
-  /// Returns true if admin dir exists for path.
+  /// Returns true if admin component exists for path.
   bool exists() const;
 
   /// Returns true if toplevel is not empty.
@@ -77,7 +77,7 @@ public:
   path toplevel() const;
 
 private:
-  const std::string m_dir;
+  const std::string m_admin;
   const path        m_path;
 };
 }; // namespace factory

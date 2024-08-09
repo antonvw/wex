@@ -38,6 +38,20 @@ TEST_CASE("wex::factory::vcs_admin")
     const auto&                   tl(vcsa.toplevel());
 
     REQUIRE(!tl.string().empty());
+    REQUIRE(!tl.string().contains("wxWidgets"));
+    REQUIRE(!vcsa.exists());
+    REQUIRE(vcsa.is_toplevel());
+  }
+
+  SUBCASE("constructor-subproject")
+  {
+    const wex::factory::vcs_admin vcsa(
+      ".git",
+      wex::path("../../external/wxWidgets/README.md"));
+    const auto& tl(vcsa.toplevel());
+
+    CAPTURE(tl.string());
+    REQUIRE(!tl.string().contains("wxWidgets"));
     REQUIRE(!vcsa.exists());
     REQUIRE(vcsa.is_toplevel());
   }
