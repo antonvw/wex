@@ -16,6 +16,20 @@
 
 #include "ex-commandline-imp.h"
 
+// see also commands-motion.cpp
+#define MOTION(DIRECTION)                                                      \
+  if (event.ControlDown() || event.RawControlDown())                           \
+  {                                                                            \
+    if (event.ShiftDown())                                                     \
+      Word##DIRECTION##Extend();                                               \
+    else                                                                       \
+      Word##DIRECTION();                                                       \
+  }                                                                            \
+  else                                                                         \
+  {                                                                            \
+    event.Skip();                                                              \
+  }
+
 void wex::ex_commandline_imp::ex_mode()
 {
   ClearAll();
@@ -85,6 +99,15 @@ void wex::ex_commandline_imp::on_key_down(wxKeyEvent& event)
       {
         event.Skip();
       }
+      break;
+
+    case WXK_LEFT:
+      // see also vi convert_key_event
+      MOTION(Left);
+      break;
+
+    case WXK_RIGHT:
+      MOTION(Right);
       break;
 
     case WXK_DOWN:
