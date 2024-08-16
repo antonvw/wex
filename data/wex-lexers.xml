@@ -1647,7 +1647,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     <keywords>
     </keywords>
   </lexer>
-  <lexer name="yaml" extensions="*.yml;.clang-*">
+  <lexer name="yaml" extensions="*.yml;.clang-*;.gersemi*">
     <styles>
         <style no="identifier">bold</style>
     </styles>

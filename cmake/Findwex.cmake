@@ -14,42 +14,48 @@
 
 include(FindPackageHandleStandardArgs)
 
-if (wexBUILD_SHARED)
+if(wexBUILD_SHARED)
   add_definitions(-DBOOST_LOG_DYN_LINK)
 
   if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    set(CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS
-      "${CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS} -undefined dynamic_lookup")
+    set(
+      CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS
+      "${CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS} -undefined dynamic_lookup"
+    )
   endif()
-else ()
+else()
   set(Boost_USE_STATIC_LIBS ON)
-endif ()
+endif()
 
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
 set(CMAKE_CXX_STANDARD 23)
 
-find_package(Boost 1.81.0 COMPONENTS
-  log_setup log filesystem program_options date_time regex json url REQUIRED)
+find_package(
+  Boost
+  1.81.0
+  COMPONENTS log_setup log filesystem program_options date_time regex json url
+  REQUIRED
+)
 
 find_package(ODBC QUIET)
 
-if (ODBC_FOUND)
+if(ODBC_FOUND)
   add_definitions(-DwexUSE_ODBC)
-else ()
+else()
   set(ODBC_LIBRARIES "")
-endif ()
+endif()
 
-if (WIN32)
+if(WIN32)
   add_definitions(-D__WXMSW__)
 
   set(PLATFORM "msw")
-elseif (APPLE AND IPHONE)
+elseif(APPLE AND IPHONE)
   add_definitions(-D__WXOSX_IPHONE__)
 
   set(PLATFORM "osx_iphone")
-elseif (APPLE)
+elseif(APPLE)
   find_package(ICONV)
   find_package(ZLIB)
   add_definitions(-D__WXOSX_COCOA__)
@@ -58,32 +64,29 @@ elseif (APPLE)
 
   set(cpp_LIBRARIES stdc++)
 
-  set(apple_LIBRARIES
-    wxjpeg-3.3
-    wxpng-3.3
-    ${ICONV_LIBRARIES}
-    ${ZLIB_LIBRARIES})
-elseif (UNIX)
+  set(apple_LIBRARIES wxjpeg-3.3 wxpng-3.3 ${ICONV_LIBRARIES} ${ZLIB_LIBRARIES})
+elseif(UNIX)
   add_definitions(-D__WXGTK3__ -D__WXGTK__)
 
   set(PLATFORM "gtk3")
 
-  if (CENTOS)
-    set (cpp_std_LIBRARIES
+  if(CENTOS)
+    set(
+      cpp_std_LIBRARIES
       /usr/gnat/lib64/libstdc++.a
-      /usr/gnat/lib64/libstdc++fs.a)
-  else ()
-    set (cpp_std_LIBRARIES
-      stdc++
-      stdc++fs)
-  endif ()
+      /usr/gnat/lib64/libstdc++fs.a
+    )
+  else()
+    set(cpp_std_LIBRARIES stdc++ stdc++fs)
+  endif()
 
   find_package(JPEG)
   find_package(PNG)
   find_package(X11)
   find_package(ZLIB)
 
-  set(cpp_LIBRARIES
+  set(
+    cpp_LIBRARIES
     ${cpp_std_LIBRARIES}
     ${JPEG_LIBRARIES}
     ${PNG_LIBRARIES}
@@ -103,31 +106,39 @@ elseif (UNIX)
     -lpango-1.0
     -lcairo
     -lgobject-2.0
-    -lglib-2.0)
+    -lglib-2.0
+  )
 else()
   message(FATAL_ERROR "Unsupported platform")
 endif()
 
-if (APPLE)
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} \
+if(APPLE)
+  set(
+    CMAKE_EXE_LINKER_FLAGS
+    "${CMAKE_EXE_LINKER_FLAGS} \
     -framework AudioToolbox \
     -framework WebKit \
     -framework CoreFoundation \
     -framework Security \
     -framework Cocoa \
-    -framework IOKit")
+    -framework IOKit"
+  )
 endif()
 
-if (MSVC)
-  if ("${CMAKE_BUILD_TYPE}" STREQUAL Debug)
+if(MSVC)
+  if("${CMAKE_BUILD_TYPE}" STREQUAL Debug)
     set(USE_DEBUG "d")
   endif()
 
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+  set(
+    CMAKE_CXX_FLAGS
+    "${CMAKE_CXX_FLAGS} \
     /D_CRT_SECURE_NO_WARNINGS /D_CRT_SECURE_NO_DEPRECATE /D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS \
-    /Zc:__cplusplus")
+    /Zc:__cplusplus"
+  )
 
-  set(wx_LIBRARIES
+  set(
+    wx_LIBRARIES
     wx${PLATFORM}33u${USE_DEBUG}_aui
     wx${PLATFORM}33u${USE_DEBUG}_stc
     wx${PLATFORM}33u${USE_DEBUG}_html
@@ -143,17 +154,20 @@ if (MSVC)
     wxlexilla${USE_DEBUG}
     wxregexu${USE_DEBUG}
     comctl32.lib
-    Rpcrt4.lib)
+    Rpcrt4.lib
+  )
 else()
-  set(wx_LIBRARIES
+  set(
+    wx_LIBRARIES
     wx_${PLATFORM}u_aui-3.3
     wx_${PLATFORM}u_stc-3.3
     wx_${PLATFORM}u_html-3.3
     wx_${PLATFORM}u_core-3.3
     wx_baseu-3.3
-    wx_baseu_net-3.3)
+    wx_baseu_net-3.3
+  )
 
-  if (NOT APPLE AND NOT wexBUILD_SHARED)
+  if(NOT APPLE AND NOT wexBUILD_SHARED)
     set(wx_LIBRARIES ${wx_LIBRARIES} wxscintilla-3.3)
   endif()
 
@@ -170,18 +184,21 @@ foreach(dir ${wex_INCLUDES})
   set(wex_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/wex/${wex_VERSION}")
   set(wex_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib")
 
-  find_package_handle_standard_args(wex
+  find_package_handle_standard_args(
+    wex
     REQUIRED_VARS wex_LIB_DIR wex_INCLUDE_DIR
-    VERSION_VAR wex_VERSION)
+    VERSION_VAR wex_VERSION
+  )
 
-  if (${wex_FOUND})
+  if(${wex_FOUND})
     message("Found wex: " ${wex_VERSION})
     break()
-  endif ()
+  endif()
 endforeach()
 
-if (${wex_FOUND})
-  set(wex_LIBRARIES
+if(${wex_FOUND})
+  set(
+    wex_LIBRARIES
     wex-del${USE_DEBUG}
     wex-vcs${USE_DEBUG}
     wex-stc${USE_DEBUG}
@@ -199,7 +216,8 @@ if (${wex_FOUND})
     ${apple_LIBRARIES}
     ${Boost_LIBRARIES}
     ${cpp_LIBRARIES}
-    ${ODBC_LIBRARIES})
-else ()
-    message(FATAL_ERROR "No suitable version found")
-endif ()
+    ${ODBC_LIBRARIES}
+  )
+else()
+  message(FATAL_ERROR "No suitable version found")
+endif()

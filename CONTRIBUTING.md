@@ -10,6 +10,9 @@
 
 - use style as indicated by .clang-format
 
+- use cmake file style as indicated by
+  [gersemi](https://github.com/blankspruce/gersemi)
+
 - use STL whenever possible
 
 - doxy document sources

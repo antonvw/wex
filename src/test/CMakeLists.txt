@@ -1,5 +1,3 @@
 file(GLOB SRCS "*.cpp")
 
-add_library(
-  wex-test
-  ${SRCS})
+add_library(wex-test ${SRCS})

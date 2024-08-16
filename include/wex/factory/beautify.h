@@ -2,7 +2,7 @@
 // Name:      factory/beautify.h
 // Purpose:   Declaration of wex::factory::beautify class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -20,6 +20,24 @@ namespace factory
 class beautify
 {
 public:
+  /// The supported beautify types.
+  enum beautify_t
+  {
+    CMAKE,   ///< cmake
+    SOURCE,  ///< source code (c, c#)
+    UNKNOWN, ///< type will be set later on
+  };
+
+  /// Default constructor, specify the beautify type.
+  beautify(beautify_t = UNKNOWN);
+
+  /// Constructor, the path is used to set the beautify type.
+  beautify(const path& p);
+
+  /// Checks if a beautifier exists for specified path
+  /// and sets type if so.
+  bool check(const path& p);
+
   /// Beautifies the specified file
   /// (the auto beautifier should explicitly be enabled).
   /// Return false if it did not succeed.
@@ -39,6 +57,12 @@ public:
 
   /// Returns the actual beautifier, or empty string if none selected.
   const std::string name() const;
+
+  /// Returns the beautify type.
+  beautify_t type() const { return m_type; };
+
+private:
+  beautify_t m_type{UNKNOWN};
 };
 }; // namespace factory
 }; // namespace wex

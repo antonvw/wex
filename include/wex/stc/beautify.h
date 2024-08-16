@@ -2,7 +2,7 @@
 // Name:      beautify.h
 // Purpose:   Declaration of wex::beautify class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -17,6 +17,12 @@ namespace wex
 class beautify : public factory::beautify
 {
 public:
+  /// Default constructor.
+  beautify(beautify_t = SOURCE);
+
+  /// Constructor using a path.
+  beautify(const path& p);
+
   /// Returns true if specified lexer can be beautified.
   bool is_supported(const lexer& l) const;
 
