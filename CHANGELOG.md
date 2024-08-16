@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- gersemi support, and wex cmake code follows these guidelines
 - right click on File Type enables or disables showing whitespace
 - Go lexer
 - a WIN_SINGLE_LINE to data::stc, used in e.g. stc_entry_dialog

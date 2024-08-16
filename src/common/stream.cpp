@@ -222,7 +222,7 @@ bool wex::stream::run_tool()
 
     fs.write(s.c_str(), s.size());
 
-    if (factory::beautify b;
+    if (factory::beautify b(m_path);
         b.is_active() && b.is_auto() && b.is_supported(m_path))
     {
       fs.close();

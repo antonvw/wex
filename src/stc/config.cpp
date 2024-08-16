@@ -168,6 +168,7 @@ void wex::stc::on_init()
                 def(_("stc.vi mode")),
                 _("stc.vi tag fullpath")}},
               {_("stc.Beautifier"), item::COMBOBOX, beautify().list()},
+              {_("stc.Beautifier cmake"), item::COMBOBOX, beautify().list()},
               {_("stc.Search engine"),
                item::COMBOBOX,
                config::strings_t{{"https://duckduckgo.com"}}}}},

@@ -1,10 +1,10 @@
 project(wex-test)
 
 include_directories(../include/)
-  
-if (wexBUILD_SAMPLES)
+
+if(wexBUILD_SAMPLES)
   add_subdirectory(app)
-endif ()
+endif()
 
 add_subdirectory(core)
 add_subdirectory(factory)
@@ -19,17 +19,20 @@ add_subdirectory(stc)
 add_subdirectory(vcs)
 add_subdirectory(del)
 
-if (WIN32)
+if(WIN32)
   set(CONFIG_INSTALL_DIR /Users/$ENV{USERNAME}/.config/${PROJECT_NAME})
-elseif (APPLE)
+elseif(APPLE)
   set(CONFIG_INSTALL_DIR /Users/$ENV{USER}/.config/${PROJECT_NAME})
-else ()
+else()
   set(CONFIG_INSTALL_DIR /home/${user}/.config/${PROJECT_NAME})
-endif ()
+endif()
 
 file(MAKE_DIRECTORY ${CONFIG_INSTALL_DIR})
-file(GLOB_RECURSE pattern_files RELATIVE
- "${CMAKE_CURRENT_SOURCE_DIR}/" "../data/*.xml" )
+file(
+  GLOB_RECURSE pattern_files
+  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/"
+  "../data/*.xml"
+)
 
 foreach(p ${pattern_files})
   file(COPY ${p} DESTINATION ${CONFIG_INSTALL_DIR})
