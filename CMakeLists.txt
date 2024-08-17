@@ -54,6 +54,11 @@ execute_process(
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(external/doctest/doctest)
 
+set(
+  CMAKE_MODULE_PATH
+  "${CMAKE_SOURCE_DIR}/external/wxWidgets/build/cmake/modules"
+)
+
 add_subdirectory(external)
 
 include(external/wxWidgets/build/cmake/toolkit.cmake)
@@ -84,11 +89,6 @@ if(wexENABLE_ODBC)
 endif()
 
 enable_testing()
-
-set(
-  CMAKE_MODULE_PATH
-  "${CMAKE_SOURCE_DIR}/external/wxWidgets/build/cmake/modules"
-)
 
 include(cmake/options.cmake)
 include(cmake/common.cmake)
