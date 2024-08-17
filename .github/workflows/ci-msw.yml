@@ -41,3 +41,5 @@ jobs:
 
       - name: Run tests
         uses: threeal/ctest-action@v1.1.0
+        with:
+          build-config: Release
