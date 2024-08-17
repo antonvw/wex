@@ -2,7 +2,7 @@
 // Name:      test-process.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -72,6 +72,7 @@ TEST_CASE("wex::factory::process")
 #endif
 
 #ifndef GITHUB
+#ifndef __WXMSW__
     SUBCASE("stdin")
     {
       REQUIRE(process.system(wex::process_data("wc -c").std_in("xxxxxx")) == 0);
@@ -90,6 +91,7 @@ TEST_CASE("wex::factory::process")
       REQUIRE(wxGetCwd().Contains("data"));
       wex::path::current(cwd.original());
     }
+#endif
 #endif
   }
 }

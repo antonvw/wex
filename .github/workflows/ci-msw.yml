@@ -39,7 +39,5 @@ jobs:
         run: |
           msbuild /noLogo /m /p:Configuration=Release ALL_BUILD.vcxproj
 
-#      - name: Run tests
-#        working-directory: build
-#        run: |
-#          ctest -C Release -V
+      - name: Run tests
+        uses: threeal/ctest-action@v1.1.0

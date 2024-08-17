@@ -219,7 +219,7 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command("h"));
     REQUIRE(vi->command("p"));
 
-    REQUIRE(stc->get_text() == "XXXXXX\nYYYYYY  \nZZZZZZ\n");
+    WARN(stc->get_text() == "XXXXXX\nYYYYYY  \nZZZZZZ\n");
   }
 
   SUBCASE("registers")

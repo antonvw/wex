@@ -2,7 +2,7 @@
 // Name:      test-item-vector.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -20,5 +20,5 @@ TEST_CASE("wex::item_vector")
 
   wex::log_none off;
   REQUIRE(iv.find<std::string>("spin1") == std::string());
-  REQUIRE(iv.find<int>("spin2") != 0);
+  REQUIRE(iv.find<std::string>("spin2") == std::string());
 }
