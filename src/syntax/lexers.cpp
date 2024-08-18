@@ -88,8 +88,7 @@ void wex::lexers::apply_global_styles(factory::stc* stc)
 {
   if (m_default_colours.empty())
   {
-    m_default_colours["caretforeground"] =
-      stc->GetCaretForeground().GetAsString();
+    m_default_colours["caretforeground"] = "grey"; // otherwise white was chosen
     m_default_colours["caretlinebackground"] =
       stc->GetCaretLineBackground().GetAsString();
     m_default_colours["edge"] = stc->GetEdgeColour().GetAsString();
