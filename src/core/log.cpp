@@ -95,7 +95,14 @@ wex::log::log(const std::string& topic, level_t level)
 
 wex::log::~log()
 {
-  flush();
+  try
+  {
+    flush();
+  }
+  catch (const std::exception& e)
+  {
+    std::cerr << e.what() << "\n";
+  }
 }
 
 wex::log& wex::log::operator<<(char r)
