@@ -58,7 +58,7 @@ if ( -not (Test-Path -Path $boost_dir -PathType Container) )
   Exit
 }
 
-$boost_names = @((Get-ChildItem -Path $boost_dir -Filter "*85*" -Directory).Fullname)
+$boost_names = @((Get-ChildItem -Path $boost_dir -Filter "*boost*" -Directory).Fullname)
 
 if ( -not ($boost_names))
 {
