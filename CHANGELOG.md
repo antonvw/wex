@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- added msw build script build-gen.ps1 for building wex on windows
 - gersemi support, and wex cmake code follows these guidelines
 - right click on File Type enables or disables showing whitespace
 - Go lexer

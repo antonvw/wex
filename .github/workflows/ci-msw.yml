@@ -29,10 +29,9 @@ jobs:
         uses: microsoft/setup-msbuild@v2
 
       - name: Configure
+        shell: pwsh
         run: |
-          mkdir build
-          pushd build
-          cmake -DBOOST_ROOT=${{steps.install-boost.outputs.BOOST_ROOT}} -DCMAKE_BUILD_TYPE=Release -DwexBUILD_TESTS=ON ..
+          .\build-gen.ps1 -boost_dir=${{steps.install-boost.outputs.BOOST_ROOT}} -tests
 
       - name: Build
         working-directory: build
