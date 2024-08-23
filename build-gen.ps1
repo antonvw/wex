@@ -67,9 +67,11 @@ if ( -not ($boost_names))
 }
 
 $boost=$boost_names[-1]
+$option_boost="-DBOOST_ROOT="$boost `
 $option_mingw=
 $option_shared=
 $option_tests=
+$option_type="-DCMAKE_BUILD_TYPE="$configuration `
 
 if ($mingw)
 {
@@ -95,13 +97,13 @@ mkdir -p $dir
 
 cmake `
   -B $dir `
-  -DBOOST_ROOT=$boost `
-  -DCMAKE_BUILD_TYPE=$configuration `
   -DCMAKE_INSTALL_PREFIX="c:\program files (x86)\wex" `
+  $option_boost `
   $option_mingw `
   $option_samples `
   $option_shared `
-  $option_tests
+  $option_tests `
+  $option_type
 
 if ( -not ($prepare))
 {
