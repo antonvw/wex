@@ -71,8 +71,6 @@ $option_mingw=
 $option_shared=
 $option_tests=
 
-Write-Host "found boost libraries:" $boost
-
 if ($mingw)
 {
   $option_mingw="-G MinGW Makefiles"
