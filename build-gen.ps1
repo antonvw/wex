@@ -66,11 +66,12 @@ if ( -not ($boost_names))
   Exit
 }
 
-Write-Host "found boost libraries:" $boost_names[-1]
-
+$boost=$boost_names[-1]
 $option_mingw=
 $option_shared=
 $option_tests=
+
+Write-Host "found boost libraries:" $boost
 
 if ($mingw)
 {
@@ -96,7 +97,7 @@ mkdir -p $dir
 
 cmake `
   -B $dir `
-  -DBOOST_ROOT=$boost_names[-1] `
+  -DBOOST_ROOT=$boost `
   -DCMAKE_BUILD_TYPE=$configuration `
   -DCMAKE_INSTALL_PREFIX="c:\program files (x86)\wex" `
   $option_mingw `
