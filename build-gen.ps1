@@ -96,7 +96,7 @@ mkdir -p $dir
 
 cmake `
   -B $dir `
-  -DBOOST_ROOT=$boost_names `
+  -DBOOST_ROOT=$boost_names[-1] `
   -DCMAKE_BUILD_TYPE=$configuration `
   -DCMAKE_INSTALL_PREFIX="c:\program files (x86)\wex" `
   $option_mingw `
