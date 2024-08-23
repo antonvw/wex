@@ -105,7 +105,7 @@ cmake `
 
 if ( -not ($prepare))
 {
-  cd $dir
+  Set-Location $dir
   msbuild /noLogo /m /p:Configuration=$configuration ALL_BUILD.vcxproj
 }
 
