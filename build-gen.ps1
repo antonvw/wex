@@ -67,11 +67,11 @@ if ( -not ($boost_names))
 }
 
 $boost=$boost_names[-1]
-$option_boost="-DBOOST_ROOT="$boost `
+$option_boost="-DBOOST_ROOT=$boost"
 $option_mingw=
 $option_shared=
 $option_tests=
-$option_type="-DCMAKE_BUILD_TYPE="$configuration `
+$option_type="-DCMAKE_BUILD_TYPE=$configuration"
 
 if ($mingw)
 {
@@ -108,6 +108,7 @@ cmake `
 if ( -not ($prepare))
 {
   Set-Location $dir
+  # $msbuild = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe"
   msbuild /noLogo /m /p:Configuration=$configuration ALL_BUILD.vcxproj
 }
 
