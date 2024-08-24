@@ -60,7 +60,7 @@ if ( -not (Test-Path -Path $boost_dir -PathType Container) )
 
 $boost=$boost_dir
 
-if (-not ($boost_dir = "c:\libraries"))
+if (-not ($boost_dir -eq "c:\libraries"))
 {
   $boost_names = @((Get-ChildItem -Path $boost_dir -Filter "*boost*" -Directory).Fullname)
 
