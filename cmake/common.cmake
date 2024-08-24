@@ -165,12 +165,21 @@ function(wex_install)
 
   install(FILES ${wex_own_LIBRARIES} DESTINATION "lib")
 
-  install(
-    FILES ${CMAKE_SOURCE_DIR}/build-gen.sh
-    DESTINATION bin
-    RENAME wex-build-gen.sh
-    PERMISSIONS WORLD_EXECUTE WORLD_WRITE WORLD_READ
-  )
+  if(WIN32)
+    install(
+      FILES ${CMAKE_SOURCE_DIR}/build-gen.ps1
+      DESTINATION bin
+      RENAME wex-build-gen.ps1
+      PERMISSIONS WORLD_EXECUTE WORLD_WRITE WORLD_READ
+    )
+  else()
+    install(
+      FILES ${CMAKE_SOURCE_DIR}/build-gen.sh
+      DESTINATION bin
+      RENAME wex-build-gen.sh
+      PERMISSIONS WORLD_EXECUTE WORLD_WRITE WORLD_READ
+    )
+  endif()
 endfunction()
 
 function(wex_process_po_files)

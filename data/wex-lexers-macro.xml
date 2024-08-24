@@ -1717,9 +1717,9 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
       <def no ="operator"/>
       <def no ="identifier"/>
       <def no ="keyword1"/>
-      <def no ="cmdlet"/>
-      <def no ="alias"/>
-      <def no ="function"/>
+      <def no ="keyword2"/>
+      <def no ="keyword3"/>
+      <def no ="keyword4"/>
       <def no ="user1"/>
       <def no ="commentstream"/>
       <def no ="here_string"/>
