@@ -58,15 +58,21 @@ if ( -not (Test-Path -Path $boost_dir -PathType Container) )
   Exit
 }
 
-$boost_names = @((Get-ChildItem -Path $boost_dir -Filter "*boost*" -Directory).Fullname)
+$boost=$boost_dir
 
-if ( -not ($boost_names))
+if (-not ($boost_dir = "c:\libraries"))
 {
-  Write-Output "No boost libraries found in: $boost_dir"
-  Exit
+  $boost_names = @((Get-ChildItem -Path $boost_dir -Filter "*boost*" -Directory).Fullname)
+
+  if ( -not ($boost_names))
+  {
+    Write-Output "No boost libraries found in: $boost_dir"
+    Exit
+  }
+
+  $boost=$boost_names[-1]
 }
 
-$boost=$boost_names[-1]
 $option_boost="-DBOOST_ROOT=$boost"
 $option_mingw=
 $option_shared=
@@ -108,8 +114,8 @@ cmake `
 if ( -not ($prepare))
 {
   Set-Location $dir
-  # $msbuild = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe"
-  msbuild /noLogo /m /p:Configuration=$configuration ALL_BUILD.vcxproj
+  $msbuild = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe"
+  &$msbuild /noLogo /m /p:Configuration=$configuration ALL_BUILD.vcxproj
 }
 
 if ($install)

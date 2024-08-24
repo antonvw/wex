@@ -31,7 +31,7 @@ jobs:
       - name: Configure
         shell: pwsh
         run: |
-          .\build-gen.ps1 -boost_dir ${{steps.install-boost.outputs.BOOST_ROOT}} -tests
+          .\build-gen.ps1 -boost_dir ${{steps.install-boost.outputs.BOOST_ROOT}} -tests -prepare
 
       - name: Build
         working-directory: build
