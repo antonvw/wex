@@ -54,7 +54,7 @@ if ($help)
 
 if ( -not (Test-Path -Path $boost_dir -PathType Container) )
 {
-  Write-Output "Boost dir:" $boost_dir "does not exist"
+  Write-Output "Boost dir: $boost_dir does not exist"
   Exit
 }
 
@@ -62,7 +62,7 @@ $boost_names = @((Get-ChildItem -Path $boost_dir -Filter "*boost*" -Directory).F
 
 if ( -not ($boost_names))
 {
-  Write-Output "No boost libraries found in:" $boost_dir
+  Write-Output "No boost libraries found in: $boost_dir"
   Exit
 }
 
