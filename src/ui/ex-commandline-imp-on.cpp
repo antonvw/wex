@@ -91,7 +91,7 @@ void wex::ex_commandline_imp::on_key_down(wxKeyEvent& event)
 
     case WXK_END:
     case WXK_HOME:
-      if (event.HasAnyModifiers())
+      if (!event.ShiftDown() && event.HasAnyModifiers())
       {
         on_key_down_page(event);
       }

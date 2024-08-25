@@ -36,6 +36,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - improved cleaning when history view is closed
 - register calculator used in insert mode
 - reporting matches when doing replace in files
+- handling shift home, end key in commandline
 
 ## 24.04 - 2024-03-29
 
