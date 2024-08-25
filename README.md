@@ -24,9 +24,7 @@ git clone --recursive https://github.com/antonvw/wex.git
 
 ### for Visual Studio
 
-`./build-gen.ps1`
-
-and for mingw add `-G "MinGW Makefiles"` and do `mingw32-make`.
+`.\build-gen.ps1`
 
 ## Use wex lib in your own application
 
