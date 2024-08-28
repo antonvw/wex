@@ -2,7 +2,7 @@
 // Name:      config_item.cpp
 // Purpose:   Implementation of wex::item class config methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
@@ -11,17 +11,19 @@
 #include <wex/ui/frd.h>
 #include <wx/settings.h>
 
-#define PERSISTENT(TYPE, DEFAULT)                            \
-  {                                                          \
-    if (save)                                                \
-      config(m_label).set(std::any_cast<TYPE>(get_value())); \
-    else                                                     \
-      set_value((TYPE)config(m_label).get(DEFAULT));         \
+#include <boost/process/v2.hpp>
+
+#define PERSISTENT(TYPE, DEFAULT)                                              \
+  {                                                                            \
+    if (save)                                                                  \
+      config(m_label).set(std::any_cast<TYPE>(get_value()));                   \
+    else                                                                       \
+      set_value((TYPE)config(m_label).get(DEFAULT));                           \
   }
 
-#define PERSISTENT_FOR(ITEM_TYPE, ITEM_CAST, METHOD) \
-  case ITEM_TYPE:                                    \
-    PERSISTENT(ITEM_CAST, METHOD);                   \
+#define PERSISTENT_FOR(ITEM_TYPE, ITEM_CAST, METHOD)                           \
+  case ITEM_TYPE:                                                              \
+    PERSISTENT(ITEM_CAST, METHOD);                                             \
     break;
 
 #include <filesystem>
@@ -74,9 +76,13 @@ void persistent_checkbox(const wex::item* item, bool save)
       if (!persistent_checkbox_frd(clb, i, save))
       {
         if (save)
+        {
           config(find_before(c, ",")).set(clb->IsChecked(i));
+        }
         else
+        {
           clb->Check(i, config(find_before(c, ",")).get(clb->IsChecked(i)));
+        }
       }
 
       i++;
@@ -124,17 +130,12 @@ void persistent_filepicker(const wex::item* item, bool save)
   }
   else
   {
-    std::string initial;
-
-#ifdef __WXGTK__
-    initial = "/usr/bin/" + item->label();
-
-    if (!std::filesystem::is_regular_file(initial))
+    if (const auto initial = boost::process::v2::environment::find_executable(
+          item->label_window());
+        !initial.empty())
     {
-      initial.clear();
+      item->set_value(config(item->label()).get(initial.string()));
     }
-#endif
-    item->set_value(config(item->label()).get(initial));
   }
 }
 
@@ -237,19 +238,27 @@ bool wex::item::to_config(bool save) const
 
       case GRID:
         if (save)
+        {
           config(m_label).set(std::any_cast<std::string>(get_value()));
+        }
         else
+        {
           set_value(config(m_label).get());
+        }
         break;
 
       case LISTVIEW:
         if (save)
+        {
           config(m_label).set(std::any_cast<config::strings_t>(get_value()));
+        }
         else
+        {
           set_value(config(m_label).get(
             !m_data.initial().has_value() ?
               config::strings_t{} :
               std::any_cast<config::strings_t>(m_data.initial())));
+        }
         break;
 
       case RADIOBOX:
