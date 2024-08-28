@@ -92,6 +92,7 @@ void wex::lexers::apply_global_styles(factory::stc* stc)
     m_default_colours["caretlinebackground"] =
       stc->GetCaretLineBackground().GetAsString();
     m_default_colours["edge"] = stc->GetEdgeColour().GetAsString();
+    m_theme_colours[std::string()] = m_default_colours;
   }
 
   m_default_style.apply(stc);
