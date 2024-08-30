@@ -9,6 +9,7 @@
 #include <boost/tokenizer.hpp>
 #include <wex/stc/link.h>
 #include <wex/stc/stc.h>
+#include <wex/syntax/path-lexer.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/item-vector.h>
 #include <wx/app.h>
@@ -126,18 +127,19 @@ bool wex::stc::link_open(link_t mode, std::string* link)
     // Open at most one mime link.
     if (!found && mode[LINK_OPEN_MIME])
     {
-      if (const wex::path path(m_link->get_path(
+      if (const wex::path_lexer path(m_link->get_path(
             it,
             data::control().line(link::LINE_OPEN_URL),
             this));
           !path.string().empty())
       {
-        if (!mode[LINK_CHECK])
+        if (!mode[LINK_CHECK] && path.lexer().display_lexer() == "hypertext")
         {
-          browser(path.string());
+          if (browser(path.string()))
+          {
+            found = true;
+          }
         }
-
-        found = true;
       }
       else if (const wex::path mime(m_link->get_path(
                  it,

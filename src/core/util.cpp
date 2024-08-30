@@ -7,6 +7,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
+#include <boost/url.hpp>
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
@@ -40,14 +41,20 @@ bool wex::auto_complete_text(
 
 bool wex::browser(const std::string& url)
 {
-  if (!wxLaunchDefaultBrowser(url))
+  if (const boost::urls::url_view view(url);
+      (view.has_scheme() || view.is_path_absolute()))
   {
-    return false;
+    if (!wxLaunchDefaultBrowser(url))
+    {
+      log("browser launch") << url;
+      return false;
+    }
+
+    log::info("browse") << url;
+    return true;
   }
 
-  log::info("browse") << url;
-
-  return true;
+  return false;
 }
 
 bool wex::browser_search(const std::string& text)

@@ -31,11 +31,11 @@ bool auto_complete_text(
   std::string& s);
 
 /// Launch default browser.
-/// Returns false if no browser configured.
+/// Returns false if no browser configured or url could not be opened.
 bool browser(const std::string& url);
 
 /// Browse and search for text.
-/// Returns false if search engine is empty.
+/// Returns false if search engine is empty or browse returns false.
 bool browser_search(const std::string& text);
 
 /// Adds data to the clipboard.

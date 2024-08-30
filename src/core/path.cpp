@@ -6,9 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
-#include <boost/url.hpp>
 
-#include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/core/path.h>
 #include <wx/mimetype.h>
@@ -162,11 +160,6 @@ bool wex::path::open_mime() const
 {
   if (extension().empty())
   {
-    if (boost::urls::url_view view(m_path.string()); view.has_scheme())
-    {
-      return browser(m_path.string());
-    }
-
     return false;
   }
 
