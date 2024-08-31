@@ -30,7 +30,7 @@ git clone --recursive https://github.com/antonvw/wex.git
 
 install wex
 (on windows as administrator `cmake.exe -P cmake_install.cmake`)
-and do `find_package(WEX)` in your CMakeLists.txt. This will provide the
+and do `find_package(wex)` in your CMakeLists.txt. This will provide the
 `wex_FOUND`, `wex_INCLUDE_DIR`, `wex_LIB_DIR` and `wex_LIBRARIES` variables.
 An example is the [syncped editor](https://gitlab.kitware.com/antonvw/syncped).
 

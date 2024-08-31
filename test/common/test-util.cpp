@@ -7,6 +7,7 @@
 
 #include <wex/common/util.h>
 #include <wex/core/config.h>
+#include <wex/core/log-none.h>
 #include <wex/core/vcs-command.h>
 
 #include "test.h"
@@ -71,8 +72,14 @@ TEST_CASE("wex::util" * doctest::may_fail())
 
     get_stc()->SetFocus();
     get_stc()->DiscardEdits();
+  
+    wex::log_none off;
 
     REQUIRE(wex::open_files(get_frame(), std::vector<wex::path>()) == 0);
+    REQUIRE(
+      wex::open_files(
+        get_frame(),
+        std::vector<wex::path>{wex::test::get_path()}) == 0); // dir
     REQUIRE(
       wex::open_files(
         get_frame(),
@@ -83,11 +90,15 @@ TEST_CASE("wex::util" * doctest::may_fail())
     REQUIRE(
       wex::open_files(
         get_frame(),
-        std::vector<wex::path>{wex::test::get_path("test.h").data()}) == 1);
+        std::vector<wex::path>{wex::test::get_path("test.h")}) == 1);
     REQUIRE(
       wex::open_files(
         get_frame(),
         std::vector<wex::path>{wex::path("../../data/wex-menus.xml")}) == 1);
+    REQUIRE(
+      wex::open_files(
+        get_frame(),
+        std::vector<wex::path>{wex::path("../../data-xxx/yy.cpp")}) == 0);
   }
 
   SUBCASE("process_match")

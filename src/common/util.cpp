@@ -258,14 +258,22 @@ int wex::open_files(
         }
 
         fn.make_absolute();
-        count++;
-
-        frame->open_file(fn, data);
-
-        if (!fn.file_exists())
+      
+        if (!fn.empty())
         {
-          // this is not an error
-          log::debug("file does not exist") << fn;
+          count++;
+
+          frame->open_file(fn, data);
+
+          if (!fn.file_exists())
+          {
+            // this is not an error
+            log::debug("file does not exist") << fn.string();
+          }
+        }
+        else
+        {
+          log("file is illegal") << it.string();
         }
       }
       catch (std::exception& e)
