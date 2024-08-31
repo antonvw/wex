@@ -7,6 +7,7 @@
 
 #include <wex/common/statistics.h>
 #include <wex/common/tool.h>
+#include <wex/core/log-none.h>
 #include <wex/test/test.h>
 
 TEST_CASE("wex::tool")
@@ -15,6 +16,8 @@ TEST_CASE("wex::tool")
   {
     wex::tool tool;
     REQUIRE(tool.id() == wex::ID_LOWEST);
+  
+    wex::log_none off;
     REQUIRE(tool.info().empty());
   }
 
@@ -34,5 +37,24 @@ TEST_CASE("wex::tool")
 
     REQUIRE(wex::tool(wex::ID_TOOL_REPORT_FIND).is_find_type());
     REQUIRE(wex::tool(wex::ID_TOOL_REPLACE).is_find_type());
+  }
+}
+
+TEST_CASE("wex::tool_info")
+{
+  SUBCASE("default-constructor")
+  {
+    wex::tool_info info;
+    REQUIRE(info.help_text().empty());
+    REQUIRE(info.info().empty());
+    REQUIRE(info.text().empty());
+  }
+
+  SUBCASE("constructor")
+  {
+    wex::tool_info info("x", "y", "z");
+    REQUIRE(info.help_text() == "z");
+    REQUIRE(info.info() == "x");
+    REQUIRE(info.text() == "y");
   }
 }

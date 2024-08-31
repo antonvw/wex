@@ -114,8 +114,7 @@ cmake `
 if ( -not ($prepare))
 {
   Set-Location $dir
-  $msbuild = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe"
-  &$msbuild /noLogo /m /p:Configuration=$configuration ALL_BUILD.vcxproj
+  msbuild /noLogo /m /p:Configuration=$configuration ALL_BUILD.vcxproj
 }
 
 if ($install)

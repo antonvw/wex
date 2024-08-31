@@ -26,6 +26,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - moved vcs_admin to factory lib
 - renamed frame::is_address into vi_is_address and frame::exec_ex_command into
   vi_exec_command
+- boost::process::v2 lib used for find_executable
+- used small browse buttons in dialogs
 
 ### Fixed
 
@@ -37,6 +39,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - register calculator used in insert mode
 - reporting matches when doing replace in files
 - handling shift home, end key in command-line
+- initializing item combobox with empty value, and file pickerctrl
+  can be initalized with executable
 
 ## 24.04 - 2024-03-29
 

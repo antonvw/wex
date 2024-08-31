@@ -2,7 +2,7 @@
 // Name:      util.h
 // Purpose:   Include file for wex utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -13,7 +13,6 @@
 #include <wex/data/stc.h>
 #include <wx/combobox.h>
 
-#include <list>
 #include <optional>
 #include <vector>
 
@@ -59,13 +58,13 @@ std::optional<auto_complete_filename_t> auto_complete_filename(
   /// text containing start of a filename
   const std::string& text);
 
-/// Adds entries to a combobox from a container.
+/// Sets entries for a combobox from a container.
 template <typename T> void combobox_as(wxComboBox* cb, const T& t)
 {
+  cb->Clear();
+
   if (!t.empty())
   {
-    cb->Clear();
-
     wxArrayString as;
     as.resize(t.size());
     std::copy(t.begin(), t.end(), as.begin());
@@ -73,9 +72,13 @@ template <typename T> void combobox_as(wxComboBox* cb, const T& t)
     cb->Append(as);
     cb->SetValue(cb->GetString(0));
   }
+  else
+  {
+    cb->SetValue(std::string());
+  }
 }
 
-/// Adds entries to a combobox from a list with strings.
+/// Sets entries for a combobox from a list with strings.
 void combobox_from_list(wxComboBox* cb, const strings_t& text);
 
 /// Compares the files, using comparator set in the config.

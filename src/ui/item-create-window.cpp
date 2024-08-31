@@ -240,7 +240,7 @@ void create_file_picker_control(
     PII,
     wxFileSelectorPromptStr,
     wc,
-    PSS == data::NUMBER_NOT_SET ? wxFLP_DEFAULT_STYLE :
+    PSS == data::NUMBER_NOT_SET ? wxFLP_DEFAULT_STYLE | wxFLP_SMALL :
                                   item.data().window().style());
 
   finish_picker(pc, item, window);

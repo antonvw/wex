@@ -2,7 +2,7 @@
 // Name:      test-util.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/util.h>
@@ -15,7 +15,7 @@
 
 TEST_CASE("wex::util" * doctest::may_fail())
 {
-  wex::strings_t l{"x", "y", "z"};
+  const wex::strings_t l{"x", "y", "z"};
 
   SUBCASE("auto_complete_filename")
   {
@@ -43,6 +43,15 @@ TEST_CASE("wex::util" * doctest::may_fail())
 
     wex::combobox_from_list(cb, l);
     REQUIRE(cb->GetCount() == 3);
+    REQUIRE(cb->GetValue() == "x");
+
+    wex::combobox_from_list(cb, wex::strings_t{"", "xx", "yy"});
+    REQUIRE(cb->GetCount() == 3);
+    REQUIRE(cb->GetValue().empty());
+
+    wex::combobox_from_list(cb, wex::strings_t{});
+    REQUIRE(cb->GetCount() == 0);
+    REQUIRE(cb->GetValue().empty());
   }
 
 #ifndef __WXMSW__

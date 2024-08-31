@@ -16,15 +16,15 @@
 #include "item.h"
 #include "ui.h"
 
-#define DO_DIALOG                                                       \
-  {                                                                     \
-    /* NOLINTNEXTLINE */                                                \
-    if (dlg.ShowModal() == wxID_OK)                                     \
-    {                                                                   \
-      const auto value = dlg.GetPath();                                 \
-      const int  item  = cb->FindString(value);                         \
-      cb->SetSelection(item == wxNOT_FOUND ? cb->Append(value) : item); \
-    }                                                                   \
+#define DO_DIALOG                                                              \
+  {                                                                            \
+    /* NOLINTNEXTLINE */                                                       \
+    if (dlg.ShowModal() == wxID_OK)                                            \
+    {                                                                          \
+      const auto value = dlg.GetPath();                                        \
+      const int  item  = cb->FindString(value);                                \
+      cb->SetSelection(item == wxNOT_FOUND ? cb->Append(value) : item);        \
+    }                                                                          \
   }
 
 wex::item::item(
@@ -275,9 +275,14 @@ wxFlexGridSizer* wex::item::add_browse_button(wxSizer* sizer) const
   auto* browse = new wxButton(
     m_window->GetParent(),
     m_window->GetId(),
-    _(wxDirPickerWidgetLabel));
+    // see generic/filepickerg.cpp and wxPB_SMALL,
+    // as we use wxFLP_SMALL do the same as there
+    _("..."),
+    wxDefaultPosition,
+    wxDefaultSize,
+    wxBU_EXACTFIT);
 
-  fgz->Add(browse, wxSizerFlags().Center().Border());
+  fgz->Add(browse, wxSizerFlags().Center());
 
   sizer->Add(fgz, wxSizerFlags().Left().Expand()); // no border
 
