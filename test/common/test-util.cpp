@@ -72,7 +72,7 @@ TEST_CASE("wex::util" * doctest::may_fail())
 
     get_stc()->SetFocus();
     get_stc()->DiscardEdits();
-  
+
     wex::log_none off;
 
     REQUIRE(wex::open_files(get_frame(), std::vector<wex::path>()) == 0);

@@ -258,7 +258,7 @@ int wex::open_files(
         }
 
         fn.make_absolute();
-      
+
         if (!fn.empty())
         {
           count++;
