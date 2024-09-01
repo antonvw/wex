@@ -50,7 +50,7 @@ bool wex::browser(const std::string& url)
       return false;
     }
 
-    log::info("browse") << url;
+    log::info("browser") << url;
     return true;
   }
 

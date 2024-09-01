@@ -223,8 +223,16 @@ const wex::path wex::factory::link::find_url_or_mime(
     }
   }
 
-  // previewable (MIME) file
-  return (stc != nullptr && stc->lexer_is_previewable()) ? stc->path() : path();
+  if (data.line() == LINE_OPEN_MIME)
+  {
+    // previewable (MIME) file
+    return (stc != nullptr && stc->lexer_is_previewable()) ? stc->path() :
+                                                             path();
+  }
+  else
+  {
+    return path();
+  }
 }
 
 // text contains selected text, or current line
