@@ -133,7 +133,7 @@ bool wex::stc::link_open(link_t mode, std::string* link)
             this));
           !path.string().empty())
       {
-        if (!mode[LINK_CHECK] && path.lexer().display_lexer() == "hypertext")
+        if (!mode[LINK_CHECK])
         {
           if (browser(path.string()))
           {
@@ -147,12 +147,7 @@ bool wex::stc::link_open(link_t mode, std::string* link)
                  this));
                !mime.string().empty())
       {
-        if (!mode[LINK_CHECK])
-        {
-          mime.open_mime();
-        }
-
-        found = true;
+        found = (!mode[LINK_CHECK]) ? mime.open_mime(): true;
       }
     }
   }
