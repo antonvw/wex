@@ -29,9 +29,9 @@ jobs:
           sudo apt-get update -qq &&
           sudo apt-get install liblzma5 libjbig0 libgtk-3-dev
 
-      - name: Install gcc, lcov, gdb
+      - name: Install gcc, lcov, gdb, theme-icon
         # gcov uses similar version, see build-gen.sh -c
-        run: sudo apt-get install -yq gcc-12 g++-12 lcov gdb
+        run: sudo apt-get install -yq gcc-12 g++-12 lcov gdb yaru-theme-icon
 
       - name: Install xvfb to allow headless tests
         run: sudo apt-get install xvfb
