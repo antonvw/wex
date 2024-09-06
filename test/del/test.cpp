@@ -2,10 +2,11 @@
 // Name:      test.cpp
 // Purpose:   Implementation for wex del unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/dir.h>
+#include <wex/core/log-none.h>
 #include <wex/ui/frd.h>
 #include <wex/vcs/vcs.h>
 
@@ -37,6 +38,8 @@ TEST_CASE("wex::del")
   // This string should occur only once, that is here!
   frd->set_regex(false);
   frd->set_find_string("@@@@@@@@@@@@@@@@@@@");
+
+  wex::log_none off; // to prevent [error] unsupported build system: cpp
 
   find_in_files(files, lv);
 

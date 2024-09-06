@@ -2,9 +2,10 @@
 // Name:      test-beautify.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log-none.h>
 #include <wex/stc/beautify.h>
 
 #include "test.h"
@@ -26,6 +27,8 @@ TEST_CASE("wex::beautify")
 
     REQUIRE(stc->get_lexer().set("cpp", true));
     stc->set_text("if (x) {}\n");
+
+    wex::log_none off;
 
     if (wex::beautify().stc(*stc))
     {

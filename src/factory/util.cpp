@@ -2,9 +2,10 @@
 // Name:      util.cpp
 // Purpose:   Implementation of wex factory utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log.h>
 #include <wex/factory/frame.h>
 #include <wex/factory/util.h>
 #include <wx/app.h>
@@ -21,5 +22,9 @@ void wex::bind_set_focus(wxWindow* win)
         frame->set_find_focus(win);
         event.Skip();
       });
+  }
+  else
+  {
+    log("no frame available");
   }
 }

@@ -51,6 +51,7 @@ TEST_CASE("wex::factory::process")
 
     SUBCASE("invalid")
     {
+      wex::log_none off;
       REQUIRE(process.async_system(wex::process_data("xxxx")));
       process.set_handler_out(nullptr);
       process.stop();
