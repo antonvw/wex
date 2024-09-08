@@ -14,6 +14,7 @@ class ex;
 class block_lines;
 
 /// This class offers a class to do global commands on an ex component.
+/// All changes can be undone in a single Undo (see addressrange_mark).
 class global_env
 {
 public:

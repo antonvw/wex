@@ -57,6 +57,11 @@ TEST_CASE("wex::global_env")
     REQUIRE(ge.has_commands());
     REQUIRE(ge.global(wex::addressrange::data()));
     REQUIRE(ge.hits() == 3);
+
+    // and check whether undo works
+    REQUIRE(ex->get_stc()->get_text().contains("<XXX>"));
+    ex->get_stc()->Undo();
+    REQUIRE(!ex->get_stc()->get_text().contains("<XXX>"));
   }
 
   SUBCASE("commands-insert")
