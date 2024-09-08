@@ -465,7 +465,7 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->command(":insert|before\n"));
     REQUIRE(stc->get_text() == "xyz\nbefore\n" + eol + "extra" + eol);
     stc->set_text("xyz\n");
-    REQUIRE(ex->command(":c|new\n"));
+    REQUIRE(ex->command(":c|new"));
     REQUIRE(stc->get_text() == "new\n");
   }
 

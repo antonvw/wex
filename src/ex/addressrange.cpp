@@ -196,7 +196,7 @@ bool wex::addressrange::change(const std::string& text) const
     return false;
   }
 
-  m_stc->add_text(text);
+  m_stc->add_text(text + m_stc->eol());
 
   return true;
 }
@@ -391,7 +391,7 @@ bool wex::addressrange::global(const command_parser& cp) const
   /// normally performs command on each match, if inverse
   /// performs (v) command if line does not match
 
-  global_env g(*this);
+  global_env g(m_ex);
 
   if (!g.global(m_substitute))
   {
@@ -511,12 +511,12 @@ const wex::addressrange::commands_t wex::addressrange::init_commands()
     {">",
      [&](const command_parser& cp, info_message_t& msg)
      {
-       return shift_right();
+       return cp.text().empty() && shift_right();
      }},
     {"<",
      [&](const command_parser& cp, info_message_t& msg)
      {
-       return shift_left();
+       return cp.text().empty() && shift_left();
      }},
     {"!",
      [&](const command_parser& cp, info_message_t& msg)

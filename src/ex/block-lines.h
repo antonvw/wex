@@ -2,7 +2,7 @@
 // Name:      block-lines.h
 // Purpose:   Declaration of class wex::block_lines
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -21,6 +21,7 @@ class block_lines
 {
 public:
   /// Constructor, specify ex component, and start and end line.
+  /// If start is -1, then this is an inverse block.
   block_lines(ex* ex, int start = 0, int end = 0);
 
   /// Spaceship operator.

@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## 24.10 - 2024-10-01 [Unreleased]
+## 24.10 - 2024-09-22
 
 ### Added
 
@@ -40,7 +40,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - reporting matches when doing replace in files
 - handling shift home, end key in command-line
 - initializing item combobox with empty value, and file pickerctrl
-  can be initalized with executable
+  can be initialized with executable
+- ex global command and append or change of insert
 
 ## 24.04 - 2024-03-29
 

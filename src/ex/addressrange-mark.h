@@ -49,6 +49,7 @@ public:
 private:
   enum mark_t
   {
+    MARK_CHANGE,
     MARK_GLOBAL_DELETE,
     MARK_GLOBAL_DELETE_INVERSE,
     MARK_NORMAL,
