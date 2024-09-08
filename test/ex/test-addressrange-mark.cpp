@@ -21,7 +21,7 @@ TEST_CASE("wex::addressrange_mark" * doctest::may_fail())
 
   SUBCASE("constructor")
   {
-    wex::addressrange ar(ex, "1,2");
+    const wex::addressrange ar(ex, "1,2");
     auto* arm = new wex::addressrange_mark(ar, wex::data::substitute());
 
     REQUIRE(arm->set());

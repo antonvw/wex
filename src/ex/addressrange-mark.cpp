@@ -5,6 +5,7 @@
 // Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log.h>
 #include <wex/ex/addressrange.h>
 #include <wex/ex/ex.h>
 #include <wex/syntax/stc.h>
@@ -64,6 +65,11 @@ wex::addressrange_mark::mark_t wex::addressrange_mark::get_type() const
     {
       return m_data.is_inverse() ? MARK_GLOBAL_DELETE_INVERSE :
                                    MARK_GLOBAL_DELETE;
+    }
+
+    if (m_data.commands().starts_with("c"))
+    {
+      return MARK_CHANGE;
     }
   }
 
@@ -125,27 +131,36 @@ bool wex::addressrange_mark::set()
 
 bool wex::addressrange_mark::update()
 {
-  int begin_pos;
+  int target_start;
 
   switch (get_type())
   {
+    case MARK_CHANGE:
+      target_start = m_ar.data().is_global() ?
+                       m_stc->GetTargetEnd() :
+                       m_stc->GetLineEndPosition(m_ex->marker_line('T') - 1);
+      break;
+
     case MARK_GLOBAL_DELETE:
-      begin_pos = m_stc->PositionFromLine(m_ex->marker_line('T'));
+      target_start = m_stc->PositionFromLine(m_ex->marker_line('T'));
       break;
 
     case MARK_GLOBAL_DELETE_INVERSE:
-      begin_pos = m_stc->GetLineEndPosition(m_ex->marker_line('T'));
+      target_start = m_stc->GetLineEndPosition(m_ex->marker_line('T'));
       break;
 
     default:
-      begin_pos = m_ar.data().is_global() ?
-                    m_stc->GetTargetEnd() :
-                    m_stc->GetLineEndPosition(m_ex->marker_line('T'));
+      target_start = m_ar.data().is_global() ?
+                       m_stc->GetTargetEnd() :
+                       m_stc->GetLineEndPosition(m_ex->marker_line('T'));
   }
 
   m_stc->SetTargetRange(
-    begin_pos,
+    target_start,
     m_stc->GetLineEndPosition(m_ex->marker_line('$')));
+
+  log::trace("addressrange_mark")
+    << m_stc->GetTargetStart() << m_stc->GetTargetEnd();
 
   return m_stc->GetTargetStart() < m_stc->GetTargetEnd();
 }

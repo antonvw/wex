@@ -13,14 +13,16 @@ class addressrange;
 class ex;
 class block_lines;
 
-/// This class offers a class to do global commands on a addressrange.
+/// This class offers a class to do global commands on an ex component.
 class global_env
 {
 public:
-  /// Constructor.
-  explicit global_env(const addressrange& ar);
+  /// Constructor. Specify ex component.
+  /// It uses the addressrange static data commands.
+  explicit global_env(ex* e);
 
   /// Runs the global commands using specified data.
+  /// Returns false if an error occurred.
   bool global(const data::substitute& data);
 
   // Returns true if commands were found.
@@ -30,12 +32,12 @@ public:
   auto hits() const { return m_hits; }
 
 private:
+  bool command(const block_lines& block, const std::string& text) const;
   bool for_each(const block_lines& match) const;
   bool process(const block_lines& block);
   bool process_inverse(const block_lines& block, block_lines& inverse);
-  bool run(const block_lines& block, const std::string& command) const;
 
-  const addressrange& m_ar;
+  const addressrange m_ar;
 
   std::vector<std::string> m_commands;
 

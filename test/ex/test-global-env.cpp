@@ -22,18 +22,47 @@ TEST_CASE("wex::global_env")
   SUBCASE("constructor")
   {
     wex::addressrange::data().set_global("g/xx/");
-    wex::addressrange ar(ex, "1,2");
-    wex::global_env   ge(ar);
+    wex::global_env ge(ex);
 
     REQUIRE(!ge.has_commands());
+    REQUIRE(ge.global(wex::addressrange::data()));
     REQUIRE(ge.hits() == 0);
   }
 
   SUBCASE("commands")
   {
     wex::addressrange::data().set_global("g/he/d");
-    wex::addressrange ar(ex, "1,2");
-    wex::global_env   ge(ar);
+    wex::global_env ge(ex);
+
+    REQUIRE(ge.has_commands());
+    REQUIRE(ge.global(wex::addressrange::data()));
+    REQUIRE(ge.hits() == 3);
+  }
+
+  SUBCASE("commands-append")
+  {
+    wex::addressrange::data().set_global("g/he/a|<XXX>");
+    wex::global_env ge(ex);
+
+    REQUIRE(ge.has_commands());
+    REQUIRE(ge.global(wex::addressrange::data()));
+    REQUIRE(ge.hits() == 3);
+  }
+
+  SUBCASE("commands-change")
+  {
+    wex::addressrange::data().set_global("g/he/c|<XXX>");
+    wex::global_env ge(ex);
+
+    REQUIRE(ge.has_commands());
+    REQUIRE(ge.global(wex::addressrange::data()));
+    REQUIRE(ge.hits() == 3);
+  }
+
+  SUBCASE("commands-insert")
+  {
+    wex::addressrange::data().set_global("g/he/i|<XXX>");
+    wex::global_env ge(ex);
 
     REQUIRE(ge.has_commands());
     REQUIRE(ge.global(wex::addressrange::data()));
