@@ -22,6 +22,7 @@ class stc;
 }; // namespace factory
 
 /// This class offers a class to handle markers on an addressrange.
+/// And if offers the stc_undo.
 class addressrange_mark
 {
 public:
