@@ -179,7 +179,7 @@ void wex::ex_commandline_imp::on_key_down_page(wxKeyEvent& event)
       event.GetKeyCode(),
       m_cl->control());
   }
-  else if (m_input == 0)
+  else if (m_text_input == 0)
   {
     if (m_clis.empty())
     {
@@ -238,16 +238,16 @@ void wex::ex_commandline_imp::on_text_enter(wxEvent& event)
     return;
   }
 
-  if (input_mode_finish())
+  if (text_input_mode_finish())
   {
     if (const auto& text(
           m_cl->stc()->vi_is_recording() ?
             m_text_not_expanded :
             get_text().substr(0, get_text().size() - 2));
-        text != ":." && !text.empty())
+        text != "." && !text.empty())
     {
-      m_cl->stc()->vi_command(line_data().command(
-        ":" + std::string(1, m_input) + "|" + text + m_cl->stc()->eol()));
+      m_cl->stc()->vi_command(
+        line_data().command(":" + std::string(1, m_text_input) + "|" + text));
       m_text_not_expanded.clear();
     }
 
@@ -260,7 +260,7 @@ void wex::ex_commandline_imp::on_text_enter(wxEvent& event)
       m_cl->get_frame()->show_ex_bar(wex::frame::SHOW_BAR);
     }
   }
-  else if (m_input != 0)
+  else if (m_text_input != 0)
   {
     event.Skip();
   }
@@ -312,7 +312,7 @@ void wex::ex_commandline_imp::on_text_enter_do()
     ex_mode();
   }
 
-  if (m_input == 0 && !is_ex_mode())
+  if (m_text_input == 0 && !is_ex_mode())
   {
     m_cl->get_frame()->show_ex_bar(focus);
   }

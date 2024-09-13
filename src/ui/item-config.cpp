@@ -11,6 +11,7 @@
 #include <wex/ui/frd.h>
 #include <wx/settings.h>
 
+#define BOOST_PROCESS_V2_HEADER_ONLY ON
 #include <boost/process/v2.hpp>
 
 #define PERSISTENT(TYPE, DEFAULT)                                              \

@@ -58,8 +58,8 @@ private:
 
   void ex_mode();
   void init();
-  bool input_mode_finish() const;
   bool is_ex_mode() const;
+  bool text_input_mode_finish() const;
 
   void on_char(wxKeyEvent& event);
   void on_key_down_control_r(wxKeyEvent& event);
@@ -78,7 +78,7 @@ private:
   wxControl*      m_prefix{nullptr};
   ex_commandline* m_cl;
 
-  char m_input{0};
+  char m_text_input{0};
 
   bool m_control_r{false}, m_mode_visual{false}, m_user_input{false};
 

@@ -45,15 +45,18 @@ public:
   bool set();
 
   /// Updates target.
-  bool update();
+  /// The lines_changed indicates number of lines that was
+  /// changed since last update.
+  bool update(int lines_changed = 0);
 
 private:
-  enum mark_t
+  enum class mark_t
   {
-    MARK_CHANGE,
-    MARK_GLOBAL_DELETE,
-    MARK_GLOBAL_DELETE_INVERSE,
-    MARK_NORMAL,
+    GLOBAL_APPEND,
+    GLOBAL_CHANGE,
+    GLOBAL_DELETE,
+    GLOBAL_DELETE_INVERSE,
+    NORMAL,
   };
 
   mark_t get_type() const;

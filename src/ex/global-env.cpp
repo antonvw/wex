@@ -48,11 +48,17 @@ wex::global_env::global_env(ex* e)
         command_arg = false;
       }
 
-      if (it[0] == 'a' || it[0] == 'c' || it[0] == 'i')
+      if (it == "a" || it == "c" || it == "i")
       {
         command_arg = true;
       }
     }
+  }
+
+  if (command_arg)
+  {
+    log("global command") << m_commands.back() << "missing argument";
+    m_commands.clear();
   }
 }
 
@@ -122,6 +128,8 @@ bool wex::global_env::global(const data::substitute& data)
 
   while (am.search())
   {
+    const auto lines(m_stc->get_line_count());
+
     if (mb = am.get_block_lines(); data.is_inverse())
     {
       if (!process_inverse(mb, ib))
@@ -144,7 +152,7 @@ bool wex::global_env::global(const data::substitute& data)
       return false;
     }
 
-    if (!am.update())
+    if (!am.update(m_stc->get_line_count() - lines))
     {
       break;
     }
