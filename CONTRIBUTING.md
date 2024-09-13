@@ -16,6 +16,7 @@
 - use STL whenever possible
 
 - doxy document sources
+
   API documentation is generated from the sources
   using [Doxygen](http://www.stack.nl/~dimitri/doxygen/)
 

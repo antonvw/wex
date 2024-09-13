@@ -153,7 +153,7 @@ bool wex::ex_commandline_imp::handle(const std::string& command)
 
   m_command.set_stc(m_cl->stc());
 
-  m_input       = 0;
+  m_text_input  = 0;
   m_mode_visual = !range.empty();
   m_control_r   = false;
 
@@ -181,8 +181,8 @@ bool wex::ex_commandline_imp::handle(char command)
     return false;
   }
 
-  m_control_r = false;
-  m_input     = command;
+  m_control_r  = false;
+  m_text_input = command;
 
   get_lexer().set(
     m_cl->stc() != nullptr ? m_cl->stc()->get_lexer().display_lexer() :
@@ -274,18 +274,6 @@ void wex::ex_commandline_imp::init()
   reset_margins();
 }
 
-bool wex::ex_commandline_imp::input_mode_finish() const
-{
-  const auto& text(get_text());
-  if (m_input == 0 || text.size() < 2)
-  {
-    return false;
-  }
-
-  const auto& last_two(text.substr(text.size() - 2, 2));
-  return text == ":." || last_two == "\n." || last_two == "\r.";
-}
-
 bool wex::ex_commandline_imp::is_ex_mode() const
 {
   return m_cl->stc() != nullptr && !m_cl->stc()->is_visual();
@@ -306,4 +294,27 @@ void wex::ex_commandline_imp::set_prefix()
         m_command.str() :
         std::string(1, m_command.str().back()));
   }
+}
+
+bool wex::ex_commandline_imp::text_input_mode_finish() const
+{
+  if (m_text_input == 0)
+  {
+    return false;
+  }
+
+  const auto& text(get_text());
+
+  if (text == ".")
+  {
+    return true;
+  }
+
+  if (text.size() < 2)
+  {
+    return false;
+  }
+
+  const auto& last_two(text.substr(text.size() - 2, 2));
+  return last_two == "\n." || last_two == "\r.";
 }

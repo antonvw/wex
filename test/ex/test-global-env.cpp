@@ -5,6 +5,7 @@
 // Copyright: (c) 2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log-none.h>
 #include <wex/ex/addressrange.h>
 #include <wex/ex/ex.h>
 
@@ -41,12 +42,20 @@ TEST_CASE("wex::global_env")
 
   SUBCASE("commands-append")
   {
-    wex::addressrange::data().set_global("g/he/a|<XXX>");
+    wex::addressrange::data().set_global("g/he/a|added he <XXX>|a|other");
     wex::global_env ge(ex);
 
     REQUIRE(ge.has_commands());
     REQUIRE(ge.global(wex::addressrange::data()));
     REQUIRE(ge.hits() == 3);
+
+    wex::log_none off;
+    wex::addressrange::data().set_global("g/he/a");
+    wex::global_env ge_error(ex);
+    REQUIRE(!ge_error.has_commands());
+    // now it acts as g/he/, fix for 25.04
+    REQUIRE(ge_error.global(wex::addressrange::data()));
+    REQUIRE(ge_error.hits() == 9);
   }
 
   SUBCASE("commands-change")

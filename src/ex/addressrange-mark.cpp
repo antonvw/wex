@@ -61,19 +61,24 @@ wex::addressrange_mark::mark_t wex::addressrange_mark::get_type() const
 {
   if (m_data.is_global_command())
   {
+    if (m_data.commands().starts_with("a"))
+    {
+      return mark_t::GLOBAL_APPEND;
+    }
+
     if (m_data.commands() == "d")
     {
-      return m_data.is_inverse() ? MARK_GLOBAL_DELETE_INVERSE :
-                                   MARK_GLOBAL_DELETE;
+      return m_data.is_inverse() ? mark_t::GLOBAL_DELETE_INVERSE :
+                                   mark_t::GLOBAL_DELETE;
     }
 
     if (m_data.commands().starts_with("c"))
     {
-      return MARK_CHANGE;
+      return mark_t::GLOBAL_CHANGE;
     }
   }
 
-  return MARK_NORMAL;
+  return mark_t::NORMAL;
 }
 
 bool wex::addressrange_mark::search()
@@ -129,23 +134,30 @@ bool wex::addressrange_mark::set()
   return true;
 }
 
-bool wex::addressrange_mark::update()
+bool wex::addressrange_mark::update(int lines_changed)
 {
   int target_start;
 
   switch (get_type())
   {
-    case MARK_CHANGE:
+    case mark_t::GLOBAL_APPEND:
+      target_start =
+        m_ar.data().is_global() ?
+          m_stc->GetTargetEnd() :
+          m_stc->GetLineEndPosition(m_ex->marker_line('T') + lines_changed);
+      break;
+
+    case mark_t::GLOBAL_CHANGE:
       target_start = m_ar.data().is_global() ?
                        m_stc->GetTargetEnd() :
                        m_stc->GetLineEndPosition(m_ex->marker_line('T') - 1);
       break;
 
-    case MARK_GLOBAL_DELETE:
+    case mark_t::GLOBAL_DELETE:
       target_start = m_stc->PositionFromLine(m_ex->marker_line('T'));
       break;
 
-    case MARK_GLOBAL_DELETE_INVERSE:
+    case mark_t::GLOBAL_DELETE_INVERSE:
       target_start = m_stc->GetLineEndPosition(m_ex->marker_line('T'));
       break;
 
