@@ -11,8 +11,10 @@
 #include <wex/ui/frd.h>
 #include <wx/settings.h>
 
+#ifndef __WXMSW__
 #define BOOST_PROCESS_V2_HEADER_ONLY ON
 #include <boost/process/v2.hpp>
+#endif
 
 #define PERSISTENT(TYPE, DEFAULT)                                              \
   {                                                                            \
@@ -131,12 +133,16 @@ void persistent_filepicker(const wex::item* item, bool save)
   }
   else
   {
+#ifndef __WXMSW__
     if (const auto initial = boost::process::v2::environment::find_executable(
           item->label_window());
         !initial.empty())
     {
       item->set_value(config(item->label()).get(initial.string()));
     }
+#else
+      item->set_value(config(item->label()).get(std::string()));
+#endif
   }
 }
 
