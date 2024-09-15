@@ -622,7 +622,7 @@ void wex::ex_stream::set_text()
 
   if (!m_stc->is_hexmode())
   {
-    m_stc->AppendText(m_current_line);
+    m_stc->append_text(std::string(m_current_line, m_stream->gcount()));
   }
   else
   {

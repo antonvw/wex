@@ -99,6 +99,11 @@ void wex::ex_commandline_imp::bind()
     {
       event.Skip();
 
+      if (m_cl->get_frame()->is_closing())
+      {
+        return;
+      }
+
       m_cl->get_frame()->set_find_focus(this);
 
       if (m_cl->stc() != nullptr)

@@ -141,7 +141,7 @@ void persistent_filepicker(const wex::item* item, bool save)
       item->set_value(config(item->label()).get(initial.string()));
     }
 #else
-      item->set_value(config(item->label()).get(std::string()));
+    item->set_value(config(item->label()).get(std::string()));
 #endif
   }
 }
