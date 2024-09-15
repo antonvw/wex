@@ -41,7 +41,7 @@ wex::listitem::listitem(
   const wex::path&   filename,
   const std::string& filespec)
   : m_listview(listview)
-  , m_path(wex::path(filename).make_absolute())
+  , m_path(filename)
   , m_file_spec(filespec)
   , m_reflect(
       {REFLECT_ADD("path", m_path.string()), REFLECT_ADD("id", GetId())})
