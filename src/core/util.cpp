@@ -291,14 +291,16 @@ bool wex::matches_one_of(
   return false;
 }
 
-const std::string wex::quoted(const std::string& text)
+const std::string wex::quoted(const std::string& text, char delim)
 {
-  return "'" + text + "'";
+  std::ostringstream ss;
+  ss << std::quoted(text, delim);
+  return ss.str();
 }
 
 const std::string wex::quoted_find(const std::string& text, char c)
 {
-  return text.contains(c) ? "\"" + text + "\"" : text;
+  return text.contains(c) ? quoted(text, '"') : text;
 }
 
 const std::string

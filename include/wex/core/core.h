@@ -101,10 +101,10 @@ bool matches_one_of(
   /// default the pattern is not a regex, but you can change it
   bool is_regex = false);
 
-/// Returns quotes around the text.
-const std::string quoted(const std::string& text);
+/// Returns delimiter around the text.
+const std::string quoted(const std::string& text, char delim = '\'');
 
-/// Returns double quotes around the text,
+/// Returns double quotes around the text if text contains c,
 /// otherwise returns text.
 const std::string quoted_find(const std::string& text, char c = ' ');
 

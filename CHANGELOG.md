@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## 25.04 - 2025-04 [Unreleased]
+
+### Changed
+
+- wex::quoted uses std::quoted and includes a delim character
+
 ## 24.10 - 2024-09-22
 
 ### Added
