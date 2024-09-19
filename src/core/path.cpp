@@ -108,7 +108,15 @@ bool wex::path::dir_exists() const
 
 bool wex::path::file_exists() const
 {
-  return filename().size() < 255 && fs::is_regular_file(m_path);
+  try
+  {
+    return filename().size() < 255 && fs::is_regular_file(m_path);
+  }
+  catch (std::exception& e)
+  {
+    wex::log(e) << "path::file_exists";
+    return false;
+  }
 }
 
 bool wex::path::exists() const
