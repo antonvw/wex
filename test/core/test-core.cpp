@@ -162,6 +162,7 @@ TEST_CASE("wex::core")
   SUBCASE("quoted")
   {
     REQUIRE(wex::quoted("test") == "'test'");
+    REQUIRE(wex::quoted("test", '%') == "%test%");
     REQUIRE(wex::quoted("%d") == "'%d'");
   }
 
