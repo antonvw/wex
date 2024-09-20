@@ -132,16 +132,15 @@ bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
           }
           else
           {
-            if (const auto next(std::next(it)); next == text.end())
+            const auto next(std::next(it));
+            if (next == text.end())
             {
               log("missing register") << text;
               return false;
             }
-            else
-            {
-              const auto& reg(ex->get_macros().get_register(*(next)));
-              output += reg;
-            }
+
+            const auto& reg(ex->get_macros().get_register(*(next)));
+            output += reg;
           }
 
           ++it;

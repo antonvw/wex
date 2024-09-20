@@ -18,13 +18,7 @@ option(wxUSE_RIBBON "Use ribbon" OFF)
 option(wxUSE_RICHTEXT "Use richtext" OFF)
 set(wxUSE_REGEX builtin)
 
-# should be fixed?
-if (MSVC)
-  option(wxUSE_STD_STRING_CONV_IN_WXSTRING "Use std::string" OFF)
-else ()
-  option(wxUSE_STD_STRING_CONV_IN_WXSTRING "Use std::string" ON)
-endif ()
-
+option(wxUSE_STD_STRING_CONV_IN_WXSTRING "Use std::string" ON)
 option(wxUSE_UNICODE "Use Unicode" ON)
 option(wxUSE_WEBVIEW "Use webview" OFF)
 option(wxUSE_WEBVIEW_WEBKIT "Use webviewkit" OFF)

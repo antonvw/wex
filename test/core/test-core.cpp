@@ -153,6 +153,10 @@ TEST_CASE("wex::core")
     REQUIRE(!wex::matches_one_of("test.txt", "*.cpp"));
     REQUIRE(wex::matches_one_of("test.txt", "*.txt"));
     REQUIRE(wex::matches_one_of("test.txt", "*.cpp;*.txt"));
+
+    REQUIRE(!wex::matches_one_of("test.txt", "*.txt", true));
+    REQUIRE(wex::matches_one_of("test.txt", ".*.txt", true));
+    REQUIRE(wex::matches_one_of("test.txt", "est.txt", true));
   }
 
   SUBCASE("quoted")

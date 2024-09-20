@@ -2,7 +2,7 @@
 // Name:      command-parse.cpp
 // Purpose:   Implementation of class wex::vi::parse_command
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex/macros.h>
@@ -26,13 +26,16 @@ bool wex::vi::parse_command(std::string& command)
     m_count = 1;
   }
 
+  // if this is a register, wait for next char for register name
   if (command.front() == '"')
   {
     if (command.size() < 2)
+    {
       return false;
+    }
     set_register(command[1]);
-    get_macros().record(command);
     command.erase(0, 2);
+    return true;
   }
   else if (command.front() == ':')
   {
@@ -75,10 +78,8 @@ bool wex::vi::parse_command_handle(std::string& command)
   {
     return false;
   }
-  else
-  {
-    set_register(0);
-  }
+
+  set_register(0);
 
   if (!command.empty())
   {
@@ -86,14 +87,12 @@ bool wex::vi::parse_command_handle(std::string& command)
     {
       return insert_mode(command);
     }
-    else if (command != m_command_string)
+    if (command != m_command_string)
     {
       return parse_command(command);
     }
-    else
-    {
-      return false;
-    }
+
+    return false;
   }
 
   return true;
@@ -117,12 +116,10 @@ bool wex::vi::parse_command_handle_single(
       command.erase(0, 1);
       return true;
     }
-    else
-    {
-      command.erase(0, 1);
-      m_mode_yank = m_mode.get();
-      m_mode.escape();
-    }
+
+    command.erase(0, 1);
+    m_mode_yank = m_mode.get();
+    m_mode.escape();
   }
   else if (m_mode.transition(command))
   {

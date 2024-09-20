@@ -83,4 +83,6 @@ TEST_CASE("wex::ex_commandline")
     cl->select_all();
     REQUIRE(cl->control()->get_selected_text() == "abc");
   }
+
+  delete cl;
 }

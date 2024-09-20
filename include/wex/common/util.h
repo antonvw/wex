@@ -2,17 +2,17 @@
 // Name:      util.h
 // Purpose:   Include file for wex utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <wex/common/path-match.h>
 #include <wex/core/types.h>
 #include <wex/data/dir.h>
 #include <wex/data/stc.h>
 #include <wx/combobox.h>
 
-#include <list>
 #include <optional>
 #include <vector>
 
@@ -58,13 +58,13 @@ std::optional<auto_complete_filename_t> auto_complete_filename(
   /// text containing start of a filename
   const std::string& text);
 
-/// Adds entries to a combobox from a container.
+/// Sets entries for a combobox from a container.
 template <typename T> void combobox_as(wxComboBox* cb, const T& t)
 {
+  cb->Clear();
+
   if (!t.empty())
   {
-    cb->Clear();
-
     wxArrayString as;
     as.resize(t.size());
     std::copy(t.begin(), t.end(), as.begin());
@@ -72,9 +72,13 @@ template <typename T> void combobox_as(wxComboBox* cb, const T& t)
     cb->Append(as);
     cb->SetValue(cb->GetString(0));
   }
+  else
+  {
+    cb->SetValue(std::string());
+  }
 }
 
-/// Adds entries to a combobox from a list with strings.
+/// Sets entries for a combobox from a list with strings.
 void combobox_from_list(wxComboBox* cb, const strings_t& text);
 
 /// Compares the files, using comparator set in the config.
@@ -97,6 +101,13 @@ int open_files(
   const data::stc& data = data::stc(),
   /// flags to be used with open_file_dir
   const data::dir::type_t& type = data::dir::type_t_def());
+
+/// Processes a match.
+void process_match(
+  /// the match path
+  const path_match& m,
+  ///  the event handler that will receive the match (ID_LIST_MATCH)
+  wxEvtHandler* eh);
 
 /// Executes all process between backquotes in command,
 /// and changes command with replaced match with output from process.

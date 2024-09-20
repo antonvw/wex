@@ -2,12 +2,13 @@
 // Name:      data/dir.h
 // Purpose:   Declaration of class wex::data::dir
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/factory/frd.h>
+#include <wex/factory/vcs.h>
 
 #include <bitset>
 #include <string>
@@ -48,9 +49,10 @@ public:
   const auto& file_spec() const { return m_file_spec; }
 
   /// Sets file specs.
-  dir& file_spec(const std::string& rhs)
+  dir& file_spec(const std::string& rhs, bool is_regex = false)
   {
     m_file_spec = rhs;
+    m_is_regex  = is_regex;
     return *this;
   }
 
@@ -63,6 +65,9 @@ public:
     m_frd = rhs;
     return *this;
   }
+
+  /// Returns whether file_spec is a regex.
+  bool is_regex() const { return m_is_regex; }
 
   /// Returns max matches to find, or -1 if no max.
   int max_matches() const { return m_max_matches; }
@@ -84,9 +89,21 @@ public:
     return *this;
   }
 
+  /// Returns vcs.
+  auto* vcs() const { return m_vcs; }
+
+  /// Sets vcs.
+  dir& vcs(factory::vcs* rhs)
+  {
+    m_vcs = rhs;
+    return *this;
+  }
+
 private:
   factory::find_replace_data* m_frd{nullptr};
+  factory::vcs*               m_vcs{nullptr};
 
+  bool        m_is_regex{false};
   int         m_max_matches{-1};
   std::string m_dir_spec, m_file_spec;
   type_t      m_flags{type_t_def()};

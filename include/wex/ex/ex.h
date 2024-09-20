@@ -129,6 +129,9 @@ public:
   /// Returns whether ex is active.
   auto is_active() const { return m_mode != mode_t::OFF; }
 
+  /// Returns whether text specifies an address.
+  bool is_address(const std::string& text);
+
   /// Returns line data.
   const auto& line_data() const { return m_data; }
 

@@ -2,7 +2,7 @@
 // Name:      ex-command.cpp
 // Purpose:   Implementation of class wex::ex_command
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2023 Anton van Wezenbeek
+// Copyright: (c) 2018-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/ex-command.h>
@@ -71,27 +71,25 @@ std::string wex::ex_command::str() const
   {
     return m_text;
   }
-  else
+
+  switch (type())
   {
-    switch (type())
-    {
-      case type_t::NONE:
-        return std::string();
+    case type_t::NONE:
+      return std::string();
 
-      case type_t::CALC:
-        return m_text.substr(0, 2);
+    case type_t::CALC:
+      return m_text.substr(0, 2);
 
-      // : + selection_range
-      case type_t::COMMAND_RANGE:
-        return m_text.substr(0, selection_range().size() + 1);
+    // : + selection_range
+    case type_t::COMMAND_RANGE:
+      return m_text.substr(0, selection_range().size() + 1);
 
-      // : + selection_range + !
-      case type_t::ESCAPE_RANGE:
-        return m_text.substr(0, selection_range().size() + 2);
+    // : + selection_range + !
+    case type_t::ESCAPE_RANGE:
+      return m_text.substr(0, selection_range().size() + 2);
 
-      default:
-        return m_text.substr(0, 1);
-    }
+    default:
+      return m_text.substr(0, 1);
   }
 }
 
@@ -101,41 +99,40 @@ wex::ex_command::type_t wex::ex_command::type() const
   {
     return type_t::NONE;
   }
-  else
-    switch (m_text[0])
-    {
-      case WXK_CONTROL_R:
-        return m_text.size() > 1 && m_text[1] == '=' ? type_t::CALC :
-                                                       type_t::NONE;
+  switch (m_text[0])
+  {
+    case WXK_CONTROL_R:
+      return m_text.size() > 1 && m_text[1] == '=' ? type_t::CALC :
+                                                     type_t::NONE;
 
-      case ':':
-        if (m_stc != nullptr && !m_stc->is_visual())
-        {
-          return type_t::COMMAND_EX;
-        }
-        else if (m_text.starts_with(":" + selection_range() + "!"))
-        {
-          return type_t::ESCAPE_RANGE;
-        }
-        else if (m_text.starts_with(":" + selection_range()))
-        {
-          return type_t::COMMAND_RANGE;
-        }
-        else
-        {
-          return type_t::COMMAND;
-        }
+    case ':':
+      if (m_stc != nullptr && !m_stc->is_visual())
+      {
+        return type_t::COMMAND_EX;
+      }
+      else if (m_text.starts_with(":" + selection_range() + "!"))
+      {
+        return type_t::ESCAPE_RANGE;
+      }
+      else if (m_text.starts_with(":" + selection_range()))
+      {
+        return type_t::COMMAND_RANGE;
+      }
+      else
+      {
+        return type_t::COMMAND;
+      }
 
-      case '!':
-        return type_t::ESCAPE;
+    case '!':
+      return type_t::ESCAPE;
 
-      case '/':
-      case '?':
-        return m_stc != nullptr && m_stc->get_margin_text_click() > 0 ?
-                 type_t::FIND_MARGIN :
-                 type_t::FIND;
+    case '/':
+    case '?':
+      return m_stc != nullptr && m_stc->get_margin_text_click() > 0 ?
+               type_t::FIND_MARGIN :
+               type_t::FIND;
 
-      default:
-        return type_t::VI;
-    }
+    default:
+      return type_t::VI;
+  }
 }

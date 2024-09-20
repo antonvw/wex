@@ -2,13 +2,11 @@
 // Name:      path.cpp
 // Purpose:   Implementation of class wex::path
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2023 Anton van Wezenbeek
+// Copyright: (c) 2017-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
-#include <boost/url.hpp>
 
-#include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/core/path.h>
 #include <wx/mimetype.h>
@@ -110,7 +108,20 @@ bool wex::path::dir_exists() const
 
 bool wex::path::file_exists() const
 {
-  return filename().size() < 255 && fs::is_regular_file(m_path);
+  try
+  {
+    return filename().size() < 255 && fs::is_regular_file(m_path);
+  }
+  catch (std::exception& e)
+  {
+    wex::log(e) << "path::file_exists";
+    return false;
+  }
+}
+
+bool wex::path::exists() const
+{
+  return fs::exists(m_path);
 }
 
 std::stringstream wex::path::log() const
@@ -157,35 +168,30 @@ bool wex::path::open_mime() const
 {
   if (extension().empty())
   {
-    if (boost::urls::url_view view(m_path.string()); view.has_scheme())
-    {
-      return browser(m_path.string());
-    }
-    else
-    {
-      return false;
-    }
+    return false;
   }
-  else if (auto* type(
-             wxTheMimeTypesManager->GetFileTypeFromExtension(extension()));
-           type == nullptr)
+
+  const auto* type(
+    wxTheMimeTypesManager->GetFileTypeFromExtension(extension()));
+
+  if (type == nullptr)
   {
     return false;
   }
-  else if (const std::string command(type->GetOpenCommand(string()));
-           command.empty())
+
+  const std::string command(type->GetOpenCommand(string()));
+
+  if (command.empty())
   {
     return false;
   }
-  else
+
+  // wex:: process, boost::process::system, std::system all do not work
+  // so use wx
+  if (wxExecute(command) == -1)
   {
-    // wex:: process, boost::process::system, std::system all do not work
-    // so use wx
-    if (wxExecute(command) == -1)
-    {
-      wex::log("open_mime execute") << command;
-      return false;
-    }
+    wex::log("open_mime execute") << command;
+    return false;
   }
 
   return true;

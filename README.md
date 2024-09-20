@@ -24,24 +24,18 @@ git clone --recursive https://github.com/antonvw/wex.git
 
 ### for Visual Studio
 
-```bash
-mkdir build && cd build && cmake ..
-devenv wex.sln /build Release
-```
-
-and for mingw add `-G "MinGW Makefiles"` and do `mingw32-make`.
+`.\build-gen.ps1`
 
 ## Use wex lib in your own application
 
 install wex
 (on windows as administrator `cmake.exe -P cmake_install.cmake`)
-and do `find_package(WEX)` in your CMakeLists.txt. This will provide the
+and do `find_package(wex)` in your CMakeLists.txt. This will provide the
 `wex_FOUND`, `wex_INCLUDE_DIR`, `wex_LIB_DIR` and `wex_LIBRARIES` variables.
 An example is the [syncped editor](https://gitlab.kitware.com/antonvw/syncped).
 
 ## Build process
 
-  [![Appveyor](https://ci.appveyor.com/api/projects/status/a346d8537whyrjev?svg=true)](https://ci.appveyor.com/project/antonvw/wex)
   [![Codacy Badge](https://app.codacy.com/project/badge/Grade/2fcaabd94e984dfc97740fe9f53472f5)](https://app.codacy.com/gh/antonvw/wex/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
   [![Coverage Status](https://coveralls.io/repos/github/antonvw/wex/badge.svg?branch=develop)](https://coveralls.io/github/antonvw/wex?branch=develop)
 

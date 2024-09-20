@@ -177,6 +177,9 @@ public:
   /// Shows or hides line numbers.
   virtual void show_line_numbers(bool show) { ; }
 
+  /// Shows or hides whitespace.
+  virtual void show_whitespace(bool show) { ; }
+
   /// Starts or stops syncing.
   /// Default syncing is started during construction.
   virtual void sync(bool start = true) { ; }
@@ -190,6 +193,9 @@ public:
 
   /// Finish last vi command (default false).
   virtual bool vi_command_finish(bool user_input) { return false; }
+
+  /// Returns true if we are recording.
+  virtual bool vi_is_recording() const { return false; }
 
   /// Returns true if we are in vi visual mode (default false).
   virtual bool vi_is_visual() const { return false; }

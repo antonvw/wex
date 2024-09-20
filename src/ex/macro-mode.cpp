@@ -209,9 +209,13 @@ std::optional<size_t> wex::macro_mode::transition_at(
   }
 
   if (m_macros->is_recorded_macro(macro))
+  {
     m_fsm->playback(macro, ex, repeat);
+  }
   else
+  {
     m_fsm->expand_variable(macro, ex);
+  }
 
   return std::nullopt;
 }
@@ -230,7 +234,7 @@ bool wex::macro_mode::transition_q(std::string& macro, ex* ex, bool complete)
       frame->stc_entry_dialog_validator("[A-Za-z0-9][a-z0-9]*");
 
       if (
-        frame->show_stc_entry_dialog(true) != wxID_OK ||
+        frame->stc_entry_dialog_show(true) != wxID_OK ||
         (macro = frame->stc_entry_dialog_component()->get_text()) ==
           std::string())
       {

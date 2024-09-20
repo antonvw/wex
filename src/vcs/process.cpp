@@ -2,7 +2,7 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wex::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -100,10 +100,8 @@ int wex::process::config_dialog(const data::window& par)
     auto* dlg = new item_dialog(v, data);
     return dlg->Show();
   }
-  else
-  {
-    return item_dialog(v, data).ShowModal();
-  }
+
+  return item_dialog(v, data).ShowModal();
 }
 
 wex::shell* wex::process::prepare_output(wxWindow* parent)

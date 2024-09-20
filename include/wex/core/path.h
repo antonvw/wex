@@ -12,6 +12,7 @@
 #include <bitset>
 #include <filesystem>
 #include <sstream>
+#include <string>
 #include <vector>
 
 namespace wex
@@ -72,11 +73,11 @@ public:
   /// Destructor.
   ~path();
 
+  /// Spaceship operator.
+  auto operator<=>(const path& r) const { return data() <=> r.data(); }
+
   /// == Operator.
   bool operator==(const path& r) const { return data() == r.data(); }
-
-  /// != Operator.
-  bool operator!=(const path& r) const { return !operator==(r); }
 
   /// Appends path.
   path& append(const path& path);
@@ -90,6 +91,9 @@ public:
 
   /// Returns true if path is empty.
   bool empty() const { return m_path.empty(); }
+
+  /// Returns true if path corresponds to an existing file or directory.
+  bool exists() const;
 
   /// Returns path extension component (including the .).
   const std::string extension() const { return m_path.extension().string(); }

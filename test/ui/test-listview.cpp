@@ -10,12 +10,20 @@
 #include <wex/ui/listitem.h>
 #include <wex/ui/listview.h>
 
+#include <wx/uiaction.h>
+
 #include "test.h"
 
 TEST_CASE("wex::listview")
 {
   auto* lv = new wex::listview();
   frame()->pane_add(lv);
+
+  const std::vector<wex::column> common_cols{
+    {"Int", wex::column::INT},
+    {"Date", wex::column::DATE},
+    {"Float", wex::column::FLOAT},
+    {"String", wex::column::STRING}};
 
   SUBCASE("general")
   {
@@ -103,6 +111,38 @@ TEST_CASE("wex::listview")
     REQUIRE(!lv->item_to_text(-1).empty());
   }
 
+#ifndef GITHUB
+#ifndef __WXMSW__
+  SUBCASE("popup_menu")
+  {
+    auto* other = new wex::listview();
+    frame()->pane_add(lv);
+    other->clear();
+    REQUIRE(other->append_columns(common_cols));
+    REQUIRE(other->insert_item({"95", "", "", "hello"}));
+
+    other->SetFocus();
+    other->Select(0);
+
+    wxUIActionSimulator sim;
+
+    // Add some extra distance to take account of window decorations
+    wxRect pos;
+    other->GetItemRect(0, pos);
+    // We move in slightly so we are not on the edge
+    const auto& p(other->ClientToScreen(pos.GetPosition()) + wxPoint(10, 10));
+    REQUIRE(sim.MouseMove(p));
+    wxYield();
+
+    REQUIRE(sim.MouseClick(wxMOUSE_BTN_RIGHT));
+    REQUIRE(sim.Char(WXK_RETURN));
+    wxYield();
+
+    WARN(other->GetItemCount() == 0);
+  }
+#endif
+#endif
+
   SUBCASE("set_item_image")
   {
     REQUIRE(lv->data().image() == wex::data::listview::IMAGE_ART);
@@ -133,11 +173,7 @@ TEST_CASE("wex::listview")
 
   SUBCASE("sorting")
   {
-    REQUIRE(lv->append_columns(
-      {{"Int", wex::column::INT},
-       {"Date", wex::column::DATE},
-       {"Float", wex::column::FLOAT},
-       {"String", wex::column::STRING}}));
+    REQUIRE(lv->append_columns(common_cols));
 
     for (int i = 0; i < 10; i++)
     {

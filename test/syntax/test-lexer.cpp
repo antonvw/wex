@@ -2,9 +2,10 @@
 // Name:      test-lexer.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log-none.h>
 #include <wex/syntax/lexer.h>
 
 #include <regex>
@@ -46,20 +47,73 @@ TEST_CASE("wex::lexer")
   {
     pugi::xml_document doc;
 
-    REQUIRE(doc.load_string("<lexer name=\"xyz\" tabwidth=\"12\">\
+    SUBCASE("valid")
+    {
+      REQUIRE(doc.load_string("\
+      <lexer name=\"cpp\"\
+        edgecolumns=\"2 4 6\"\
+        edgemode=\"line\"\
+        spacevisible=\"always\"\
+        tabdrawmode=\"arrow\" wrapline=\"char\"\
+        tabmode=\"use\"\
+        tabwidth=\"12\">\
+        <keywords set-0=\"cpp\" set-1=\"cpp-stl\"></keywords>\
+      </lexer>"));
+
+      wex::log_none off;
+      auto          node = doc.document_element();
+      wex::lexer    lexer(&node);
+      REQUIRE(lexer.is_ok());
+      REQUIRE(lexer.scintilla_lexer() == "cpp");
+      REQUIRE(lexer.display_lexer() == "cpp");
+      REQUIRE(lexer.attrib(_("Edge line")) == wxSTC_EDGE_LINE);
+      REQUIRE(lexer.attrib(_("Expand tabs")) == 1);
+      REQUIRE(lexer.attrib(_("Tab draw mode")) == wxSTC_TD_LONGARROW);
+      REQUIRE(lexer.attrib(_("Tab width")) == 12);
+      REQUIRE(lexer.attrib(_("Wrap line")) == wxSTC_WRAP_CHAR);
+      REQUIRE(lexer.attrib(_("Whitespace visible")) == wxSTC_WS_VISIBLEALWAYS);
+      REQUIRE(lexer.attrib("xxxxx") == -1);
+      REQUIRE(lexer.is_keyword("reinterpret_cast"));
+      REQUIRE(lexer.is_keyword("ATOMIC_VAR_INIT"));
+
+      auto*      stc = new wex::test::stc();
+      wex::lexer lexer_with_stc(stc);
+      REQUIRE(lexer_with_stc.set(lexer));
+      REQUIRE(stc->GetEdgeMode() == wxSTC_EDGE_MULTILINE);
+    }
+
+#ifdef __WXGTK__
+    SUBCASE("exclude")
+    {
+      REQUIRE(doc.load_string("<lexer name=\"pascal\" exclude=\"Unix\">\
+      </lexer>"));
+
+      auto       node = doc.document_element();
+      wex::lexer lexer(&node);
+      REQUIRE(!lexer.is_ok());
+      REQUIRE(lexer.scintilla_lexer() == "pascal");
+      REQUIRE(lexer.display_lexer() == "pascal");
+    }
+#endif
+
+    SUBCASE("no-macros")
+    {
+      REQUIRE(doc.load_string("<lexer name=\"xyz\" tabwidth=\"12\">\
         <keywords set-0=\"cisco-0\" set-1=\"cisco-1\" set-2=\"cisco-2,cisco-3\">\
         </keywords>\
       </lexer>"));
 
-    auto       node = doc.document_element();
-    wex::lexer lexer(&node);
-    REQUIRE(lexer.is_ok());
-    REQUIRE(lexer.scintilla_lexer() == "xyz");
-    REQUIRE(lexer.display_lexer() == "xyz");
-    REQUIRE(lexer.attrib(_("Tab width")) == 12);
-    REQUIRE(lexer.is_keyword("nonegotiate"));
-    REQUIRE(lexer.is_keyword("startup-config"));
-    REQUIRE(lexer.is_keyword("violation"));
+      wex::log_none off;
+      auto          node = doc.document_element();
+      wex::lexer    lexer(&node);
+      REQUIRE(!lexer.is_ok());
+      REQUIRE(lexer.scintilla_lexer() == "xyz");
+      REQUIRE(lexer.display_lexer() == "xyz");
+      REQUIRE(lexer.attrib(_("Tab width")) == 12);
+      REQUIRE(lexer.is_keyword("nonegotiate"));
+      REQUIRE(lexer.is_keyword("startup-config"));
+      REQUIRE(lexer.is_keyword("violation"));
+    }
   }
 
   SUBCASE("align_text")
@@ -173,37 +227,49 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.set("xsl"));
     REQUIRE(lexer.language() == "xml");
 
-    REQUIRE(lexer.set("pascal"));
+    REQUIRE(!lexer.set(wex::lexer("XXXX")));
+    REQUIRE(lexer.display_lexer().empty());
+    REQUIRE(!lexer.is_ok());
+
+    // rfw should be the last one, used later on
+    for (const auto& lex : std::vector<std::string>{
+           "asciidoc",
+           "cpp",
+           "hypertext",
+           "julia",
+           "lilypond",
+           "pascal",
+           "rfw"})
+    {
+      REQUIRE(lexer.get_stc() == nullptr);
+      REQUIRE(lexer.set(lex));
+      REQUIRE(lexer.set(lexer, true));
+      REQUIRE(lexer.is_ok());
+      REQUIRE(lexer.display_lexer() == lex);
+      REQUIRE(lexer.scintilla_lexer() == lex);
+
+      if (lex == "hypertext")
+      {
+        REQUIRE(lexer.is_previewable());
+      }
+      else
+      {
+        REQUIRE(!lexer.is_previewable());
+
+        if (lex == "rfw")
+        {
+          REQUIRE(lexer.is_keyword("Documentation"));
+          REQUIRE(lexer.is_keyword("Test_Setup")); // a special keyword
+        }
+      }
+    }
+
     auto*      stc = new wex::test::stc();
-    wex::lexer l(stc);
     wex::lexer lexer2(stc);
     REQUIRE(lexer2.set(lexer));
     REQUIRE(lexer2.get_stc() == stc);
     REQUIRE(lexer2.set(lexer, true));
-    REQUIRE(lexer2.display_lexer() == "pascal");
-    REQUIRE(lexer2.scintilla_lexer() == "pascal");
-
-    REQUIRE(!lexer.set(wex::lexer("XXXX")));
-    REQUIRE(lexer.display_lexer().empty());
-    REQUIRE(!lexer.is_ok());
-    REQUIRE(lexer.set(wex::lexer("hypertext")));
-    REQUIRE(lexer.scintilla_lexer() == "hypertext");
-    REQUIRE(lexer.display_lexer() == "hypertext");
-    REQUIRE(lexer.is_previewable());
-    REQUIRE(lexer.set(wex::lexer("cpp")));
-    REQUIRE(lexer.is_ok());
-    REQUIRE(wex::lexer(lexer).is_ok());
-    REQUIRE(lexer.display_lexer() == "cpp");
-    REQUIRE(lexer.scintilla_lexer() == "cpp");
-
-    REQUIRE(lexer.set("lilypond"));
-    REQUIRE(lexer.display_lexer() == "lilypond");
-
-    REQUIRE(lexer.set("rfw"));
-    REQUIRE(lexer.display_lexer() == "rfw");
-    REQUIRE(lexer.is_keyword("Documentation"));
-    REQUIRE(lexer.is_keyword("Test_Setup")); // a special keyword
-
+    REQUIRE(lexer2.display_lexer() == "rfw");
     REQUIRE(lexer.set(lexer2));
     REQUIRE(lexer.get_stc() == stc);
   }
@@ -212,7 +278,6 @@ TEST_CASE("wex::lexer")
   {
     REQUIRE(lexer.set("cpp"));
     REQUIRE(lexer.display_lexer() == "cpp");
-    REQUIRE(lexer.scintilla_lexer() == "cpp");
     REQUIRE(lexer.usable_chars_per_line() > 0);
     REQUIRE(!lexer.extensions().empty());
     REQUIRE(!lexer.comment_begin().empty());

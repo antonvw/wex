@@ -21,9 +21,9 @@
 #include <sstream>
 #include <utility>
 
-#define WEX_CALLBACK(TYPE, FIELD)        \
-  v->second.FIELD(it.second.as<TYPE>()); \
-  if (data.save())                       \
+#define WEX_CALLBACK(TYPE, FIELD)                                              \
+  v->second.FIELD(it.second.as<TYPE>());                                       \
+  if (data.save())                                                             \
     m_cfg.item(find_before(it.first, ",")).set(it.second.as<TYPE>());
 
 wex::cmdline_imp::function_t::function_t(
@@ -49,8 +49,7 @@ wex::cmdline_imp::function_t::function_t(
 }
 
 wex::cmdline_imp::cmdline_imp(bool add_standard_options, config& cfg)
-  : m_desc()
-  , m_cfg(cfg)
+  : m_cfg(cfg)
 {
   if (add_standard_options)
   {
@@ -217,10 +216,14 @@ void wex::cmdline_imp::parse_help(data::cmdline& data)
   if (data.av() != nullptr)
   {
     if (m_vm.count("help"))
+    {
       std::cout << m_desc;
+    }
     else
+    {
       std::cout << wxTheApp->GetAppName() << " " << get_version_info().get()
                 << "\n";
+    }
   }
   else
   {
@@ -250,8 +253,10 @@ void wex::cmdline_imp::parse_quit()
 
     wxTheApp->Bind(
       wxEVT_TIMER,
-      [=, this](wxTimerEvent& event)
+      [=, this](const wxTimerEvent& event)
       {
+        delete timer_start;
+
         if (auto* win = wxTheApp->GetTopWindow(); win != nullptr)
         {
           win->Destroy();

@@ -2,7 +2,7 @@
 // Name:      grid-statistics.h
 // Purpose:   Include file for class wex::grid_statistics
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -124,7 +124,7 @@ public:
     }
 
     AutoSizeColumn(0);
-    Show();
+    Show(true);
     return reinterpret_cast<grid*>(this);
   };
 
@@ -134,7 +134,9 @@ protected:
     menu.style().reset();
     menu.style().set(menu::ALLOW_CLEAR);
     if (IsSelection())
+    {
       menu.style().set(menu::IS_SELECTED);
+    }
     grid::build_popup_menu(menu);
   };
 

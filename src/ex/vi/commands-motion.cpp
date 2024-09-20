@@ -29,65 +29,65 @@ constexpr int c_strcmp(char const* lhs, char const* rhs)
 
 } // namespace wex
 
-#define MOTION(SCOPE, DIRECTION, COND, WRAP)                                \
-  {                                                                         \
-    for (auto i = 0; i < m_count; i++)                                      \
-    {                                                                       \
-      switch (m_mode.get())                                                 \
-      {                                                                     \
-        case wex::vi_mode::state_t::COMMAND:                                \
-        case wex::vi_mode::state_t::INSERT:                                 \
-          /* NOLINTNEXTLINE */                                              \
-          if (WRAP && c_strcmp((#SCOPE), "Line") == 0)                      \
-          {                                                                 \
-            if (c_strcmp((#DIRECTION), "Down") == 0)                        \
-              get_stc()->LineEnd();                                         \
-            else                                                            \
-              get_stc()->Home();                                            \
-          }                                                                 \
-          get_stc()->SCOPE##DIRECTION();                                    \
-          break;                                                            \
-        case wex::vi_mode::state_t::VISUAL:                                 \
-          get_stc()->SCOPE##DIRECTION##Extend();                            \
-          break;                                                            \
-        case wex::vi_mode::state_t::VISUAL_LINE:                            \
-          if (                                                              \
-            c_strcmp((#SCOPE), "Char") != 0 &&                              \
-            c_strcmp((#SCOPE), "Word") != 0)                                \
-            get_stc()->SCOPE##DIRECTION##Extend();                          \
-          break;                                                            \
-        case wex::vi_mode::state_t::VISUAL_BLOCK:                           \
-        case wex::vi_mode::state_t::INSERT_BLOCK:                           \
-          get_stc()->SCOPE##DIRECTION##RectExtend();                        \
-          break;                                                            \
-        default:                                                            \
-          break;                                                            \
-      }                                                                     \
-    }                                                                       \
-    /* NOLINTNEXTLINE */                                                    \
-    if (c_strcmp((#SCOPE), "Line") == 0)                                    \
-    {                                                                       \
-      switch (m_mode.get())                                                 \
-      {                                                                     \
-        case wex::vi_mode::state_t::COMMAND:                                \
-        case wex::vi_mode::state_t::INSERT:                                 \
-          if (                                                              \
-            (COND) &&                                                       \
-            get_stc()->GetColumn(get_stc()->GetCurrentPos()) !=             \
-              get_stc()->GetLineIndentation(get_stc()->get_current_line())) \
-            get_stc()->VCHome();                                            \
-          break;                                                            \
-        case wex::vi_mode::state_t::VISUAL:                                 \
-          if (COND)                                                         \
-            get_stc()->VCHomeExtend();                                      \
-          break;                                                            \
-        default:                                                            \
-          break;                                                            \
-      }                                                                     \
-    }                                                                       \
-    m_count         = 1;                                                    \
-    m_count_present = false;                                                \
-    return 1;                                                               \
+#define MOTION(SCOPE, DIRECTION, COND, WRAP)                                   \
+  {                                                                            \
+    for (auto i = 0; i < m_count; i++)                                         \
+    {                                                                          \
+      switch (m_mode.get())                                                    \
+      {                                                                        \
+        case wex::vi_mode::state_t::COMMAND:                                   \
+        case wex::vi_mode::state_t::INSERT:                                    \
+          /* NOLINTNEXTLINE */                                                 \
+          if (WRAP && c_strcmp((#SCOPE), "Line") == 0)                         \
+          {                                                                    \
+            if (c_strcmp((#DIRECTION), "Down") == 0)                           \
+              get_stc()->LineEnd();                                            \
+            else                                                               \
+              get_stc()->Home();                                               \
+          }                                                                    \
+          get_stc()->SCOPE##DIRECTION();                                       \
+          break;                                                               \
+        case wex::vi_mode::state_t::VISUAL:                                    \
+          get_stc()->SCOPE##DIRECTION##Extend();                               \
+          break;                                                               \
+        case wex::vi_mode::state_t::VISUAL_LINE:                               \
+          if (                                                                 \
+            c_strcmp((#SCOPE), "Char") != 0 &&                                 \
+            c_strcmp((#SCOPE), "Word") != 0)                                   \
+            get_stc()->SCOPE##DIRECTION##Extend();                             \
+          break;                                                               \
+        case wex::vi_mode::state_t::VISUAL_BLOCK:                              \
+        case wex::vi_mode::state_t::INSERT_BLOCK:                              \
+          get_stc()->SCOPE##DIRECTION##RectExtend();                           \
+          break;                                                               \
+        default:                                                               \
+          break;                                                               \
+      }                                                                        \
+    }                                                                          \
+    /* NOLINTNEXTLINE */                                                       \
+    if (c_strcmp((#SCOPE), "Line") == 0)                                       \
+    {                                                                          \
+      switch (m_mode.get())                                                    \
+      {                                                                        \
+        case wex::vi_mode::state_t::COMMAND:                                   \
+        case wex::vi_mode::state_t::INSERT:                                    \
+          if (                                                                 \
+            (COND) &&                                                          \
+            get_stc()->GetColumn(get_stc()->GetCurrentPos()) !=                \
+              get_stc()->GetLineIndentation(get_stc()->get_current_line()))    \
+            get_stc()->VCHome();                                               \
+          break;                                                               \
+        case wex::vi_mode::state_t::VISUAL:                                    \
+          if (COND)                                                            \
+            get_stc()->VCHomeExtend();                                         \
+          break;                                                               \
+        default:                                                               \
+          break;                                                               \
+      }                                                                        \
+    }                                                                          \
+    m_count         = 1;                                                       \
+    m_count_present = false;                                                   \
+    return 1;                                                                  \
   }
 
 bool wex::vi::command_finish(bool user_input)
@@ -122,7 +122,9 @@ wex::vi::commands_t wex::vi::commands_motion()
      [&](const std::string& command)
      {
        if (get_stc()->GetColumn(get_stc()->GetCurrentPos()) > 0)
+       {
          MOTION(Char, Left, false, false);
+       }
        return 1;
      }},
     {"j",
@@ -142,7 +144,9 @@ wex::vi::commands_t wex::vi::commands_motion()
          command == "l" &&
          get_stc()->GetCurrentPos() >=
            get_stc()->GetLineEndPosition(get_stc()->get_current_line()))
+       {
          return 1;
+       }
        MOTION(Char, Right, false, false);
      }},
     {"b",
@@ -328,7 +332,7 @@ wex::vi::commands_t wex::vi::commands_motion()
          ex::command(":" + command);
          return command.size();
        }
-       else if (get_stc()->is_visual())
+       if (get_stc()->is_visual())
        {
          if (!get_stc()->get_selected_text().empty())
          {
@@ -340,12 +344,9 @@ wex::vi::commands_t wex::vi::commands_motion()
          {
            frame()->show_ex_command(get_stc(), command);
          }
-         return (size_t)1;
        }
-       else
-       {
-         return (size_t)1;
-       }
+
+       return (size_t)1;
      }},
     {"\n\r_",
      [&](const std::string& command)
@@ -357,7 +358,9 @@ wex::vi::commands_t wex::vi::commands_motion()
 
        get_stc()->Home();
        if (command.front() == '_')
+       {
          m_count--;
+       }
        MOTION(Line, Down, false, false);
      }},
     {k_s(WXK_CONTROL_B),
@@ -416,7 +419,9 @@ size_t wex::vi::find_char(const std::string& command)
     if (command[0] == ';' || command[0] == ',')
     {
       if (m_last_find_char_command.empty())
+      {
         return (size_t)0;
+      }
       c = m_last_find_char_command.back();
     }
     else
@@ -439,15 +444,23 @@ size_t wex::vi::find_char(const std::string& command)
     case ',':
       d = m_last_find_char_command.front();
       if (islower(d))
+      {
         d = toupper(d);
+      }
       else
+      {
         d = tolower(d);
+      }
       break;
     default:
       if (command.size() > 1)
+      {
         d = command.front();
+      }
       else
+      {
         d = m_last_find_char_command.front();
+      }
   }
 
   // clang-format off
@@ -488,7 +501,9 @@ size_t wex::vi::find_command(const std::string& command)
             get_macros().get_register(command[2]),
             search_flags(),
             m_search_forward))
+      {
         return (size_t)0;
+      }
 
       find_replace_data::get()->set_find_string(
         get_macros().get_register(command[2]));
@@ -508,21 +523,21 @@ size_t wex::vi::find_command(const std::string& command)
     });
 
     if (get_stc()->get_margin_text_click() == -1)
+    {
       find_replace_data::get()->set_find_string(text);
+    }
 
     return command.size();
   }
-  else
-  {
-    reset_search_flags();
-    return get_stc()->is_visual() &&
-               frame()->show_ex_command(
-                 get_stc(),
-                 command +
-                   (m_mode.is_visual() ? ex_command::selection_range() : "")) ?
-             command.size() :
-             (size_t)0;
-  }
+
+  reset_search_flags();
+  return get_stc()->is_visual() &&
+             frame()->show_ex_command(
+               get_stc(),
+               command +
+                 (m_mode.is_visual() ? ex_command::selection_range() : "")) ?
+           command.size() :
+           (size_t)0;
 }
 
 size_t wex::vi::find_next(const std::string& direction)
@@ -554,7 +569,7 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
     {
       return addressrange(this, m_count).yank();
     }
-    else if (type == motion_t::DEL || type == motion_t::CHANGE)
+    if (type == motion_t::DEL || type == motion_t::CHANGE)
     {
       const auto result(addressrange(this, m_count).erase());
 
@@ -582,32 +597,30 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
     filter_count(command);
   }
 
-  if (const auto& it = std::find_if(
-        m_motion_commands.begin(),
-        m_motion_commands.end(),
-        [&](auto const& e)
+  const auto& it = std::find_if(
+    m_motion_commands.begin(),
+    m_motion_commands.end(),
+    [&](auto const& e)
+    {
+      return std::any_of(
+        e.first.begin(),
+        e.first.end(),
+        [command](const auto& p)
         {
-          return std::any_of(
-            e.first.begin(),
-            e.first.end(),
-            [command](const auto& p)
-            {
-              return p == command[0];
-            });
+          return p == command[0];
         });
-      it == m_motion_commands.end())
+    });
+  if (it == m_motion_commands.end())
   {
     return false;
   }
-  else if (type < motion_t::NAVIGATE && get_stc()->GetReadOnly())
+  if (type < motion_t::NAVIGATE && get_stc()->GetReadOnly())
   {
     command.clear();
     return true;
   }
-  else
-  {
-    return motion_command_handle(type, command, it->second);
-  }
+
+  return motion_command_handle(type, command, it->second);
 }
 
 bool wex::vi::motion_command_handle(
@@ -647,7 +660,9 @@ bool wex::vi::motion_command_handle(
 
       case motion_t::DEL:
         if ((parsed = f_type(command)) == 0)
+        {
           return false;
+        }
 
         delete_range(start, get_stc()->GetCurrentPos());
         break;
@@ -658,7 +673,9 @@ bool wex::vi::motion_command_handle(
 
       case motion_t::NAVIGATE:
         if ((parsed = f_type(command)) == 0)
+        {
           return false;
+        }
         break;
 
       case motion_t::YANK:

@@ -2,7 +2,7 @@
 // Name:      auto-complete.cpp
 // Purpose:   Implementation of class wex::auto_complete
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -70,21 +70,19 @@ bool wex::auto_complete::action_default(char c)
 
     return false;
   }
+
+  m_request_members.clear();
+
+  if (is_codeword_separator(m_stc->GetCharAt(m_stc->GetCurrentPos() - 1)))
+  {
+    m_insert = c;
+  }
   else
   {
-    m_request_members.clear();
-
-    if (is_codeword_separator(m_stc->GetCharAt(m_stc->GetCurrentPos() - 1)))
-    {
-      m_insert = c;
-    }
-    else
-    {
-      m_insert += c;
-    }
-
-    return true;
+    m_insert += c;
   }
+
+  return true;
 }
 
 bool wex::auto_complete::action_request(char c, actions& ac)

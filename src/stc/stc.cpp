@@ -8,7 +8,6 @@
 #include <wex/core/config.h>
 #include <wex/core/log.h>
 #include <wex/core/path.h>
-#include <wex/ex/address.h>
 #include <wex/ex/ex-stream.h>
 #include <wex/ex/macros.h>
 #include <wex/factory/stc-undo.h>
@@ -23,7 +22,6 @@
 #include <wex/ui/frd.h>
 #include <wex/ui/item-vector.h>
 #include <wx/app.h>
-#include <wx/settings.h>
 
 #include <algorithm>
 
@@ -123,6 +121,13 @@ wex::stc::stc(const wex::path& p, const data::stc& data)
     m_file.file_new(p);
     m_data.inject();
   }
+
+  if (p == config::path())
+  {
+    lexer l(this);
+    l.set("json");
+    get_lexer().set(l);
+  }
 }
 
 wex::stc::stc(const std::string& text, const data::stc& data)
@@ -146,7 +151,7 @@ void wex::stc::add_text(const std::string& text)
   if (m_vi->visual() == ex::mode_t::EX)
   {
     m_file.ex_stream()->insert_text(
-      address(m_vi, m_file.ex_stream()->get_current_line()),
+      m_file.ex_stream()->get_current_line(),
       text,
       ex_stream::loc_t::AFTER);
   }
@@ -255,10 +260,8 @@ int wex::stc::get_current_line() const
   {
     return m_file.ex_stream()->get_current_line();
   }
-  else
-  {
-    return syntax::stc::get_current_line();
-  }
+
+  return syntax::stc::get_current_line();
 }
 
 bool wex::stc::get_hexmode_erase(int begin, int end)
@@ -299,10 +302,8 @@ int wex::stc::get_line_count() const
   {
     return m_file.ex_stream()->get_line_count();
   }
-  else
-  {
-    return syntax::stc::get_line_count();
-  }
+
+  return syntax::stc::get_line_count();
 }
 
 int wex::stc::get_line_count_request()
@@ -311,10 +312,8 @@ int wex::stc::get_line_count_request()
   {
     return m_file.ex_stream()->get_line_count_request();
   }
-  else
-  {
-    return syntax::stc::get_line_count_request();
-  }
+
+  return syntax::stc::get_line_count_request();
 }
 
 const wex::vi& wex::stc::get_vi() const
@@ -366,13 +365,21 @@ void wex::stc::guess_type_and_modeline()
   }
 
   if (head.contains("\r\n"))
+  {
     SetEOLMode(wxSTC_EOL_CRLF);
+  }
   else if (head.contains("\n"))
+  {
     SetEOLMode(wxSTC_EOL_LF);
+  }
   else if (head.contains("\r"))
+  {
     SetEOLMode(wxSTC_EOL_CR);
+  }
   else
+  {
     return; // do nothing
+  }
 
   m_frame->update_statusbar(this, "PaneFileType");
 }
@@ -386,7 +393,7 @@ void wex::stc::insert_text(int pos, const std::string& text)
 {
   if (m_vi->visual() == ex::mode_t::EX)
   {
-    m_file.ex_stream()->insert_text(address(m_vi, LineFromPosition(pos)), text);
+    m_file.ex_stream()->insert_text(LineFromPosition(pos), text);
   }
   else
   {
@@ -592,13 +599,19 @@ void wex::stc::set_search_flags(int flags)
     auto* frd = find_replace_data::get();
 
     if (frd->is_regex())
+    {
       flags |= wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX;
+    }
 
     if (frd->match_word() && !frd->is_regex())
+    {
       flags |= wxSTC_FIND_WHOLEWORD;
+    }
 
     if (frd->match_case())
+    {
       flags |= wxSTC_FIND_MATCHCASE;
+    }
   }
 
   SetSearchFlags(flags);
@@ -628,6 +641,16 @@ void wex::stc::show_line_numbers(bool show)
   }
 }
 
+void wex::stc::show_whitespace(bool show)
+{
+  SetViewWhiteSpace(show ? wxSTC_WS_VISIBLEALWAYS : wxSTC_WS_INVISIBLE);
+  SetViewEOL(show);
+
+  config(_("stc.Whitespace visible"))
+    .set(show ? wxSTC_WS_VISIBLEALWAYS : wxSTC_WS_INVISIBLE);
+  config(_("stc.End of line")).set(show);
+}
+
 void wex::stc::Undo()
 {
   syntax::stc::Undo();
@@ -654,6 +677,11 @@ bool wex::stc::vi_command(const line_data& data)
 bool wex::stc::vi_command_finish(bool user_input)
 {
   return m_vi->command_finish(user_input);
+}
+
+bool wex::stc::vi_is_recording() const
+{
+  return ex::get_macros().mode().is_recording();
 }
 
 bool wex::stc::vi_is_visual() const

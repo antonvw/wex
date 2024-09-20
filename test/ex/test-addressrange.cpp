@@ -2,7 +2,7 @@
 // Name:      test-addressrange.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex/addressrange.h>
@@ -69,8 +69,10 @@ TEST_CASE("wex::addressrange")
   SUBCASE("change")
   {
     stc->set_text("a\nb\nc\nd\ne\nf\ng\n");
+    REQUIRE(stc->get_line_count() == 8);
     REQUIRE(ex->command(":1,4c|changed"));
     REQUIRE(stc->get_text().contains("changed"));
+    REQUIRE(stc->get_line_count() == 5);
   }
 
   SUBCASE("data")
@@ -88,8 +90,11 @@ TEST_CASE("wex::addressrange")
 
   SUBCASE("erase")
   {
+    REQUIRE(stc->get_line_count() == 9);
     REQUIRE(wex::addressrange(ex, "1,3").erase());
+    REQUIRE(stc->get_line_count() == 6);
     REQUIRE(wex::addressrange(ex, "1,3").erase());
+    REQUIRE(stc->get_line_count() == 3);
 
     stc->set_text("a\nb\nc\nd\ne\nf\ng\n");
     stc->GotoLine(1);
@@ -244,6 +249,9 @@ TEST_CASE("wex::addressrange")
   SUBCASE("shift")
   {
     stc->set_text(contents);
+    REQUIRE(!ex->command(":<SOH>"));
+    REQUIRE(!ex->command(":<>"));
+
     REQUIRE(wex::addressrange(ex, 5).shift_right());
     REQUIRE(wex::addressrange(ex, 5).shift_left());
   }

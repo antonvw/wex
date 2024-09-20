@@ -149,10 +149,17 @@ bool wex::odbc::logon(const wex::data::window& par)
   {
     auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
 
-    frame->stc_entry_dialog_title("Cannot logon to " + datasource());
-    frame->stc_entry_dialog_component()->set_text(
-      std::string(reinterpret_cast<const char*>(p.msg)));
-    frame->show_stc_entry_dialog(true);
+    if (auto* stc = frame->stc_entry_dialog_component(); stc != nullptr)
+    {
+      frame->stc_entry_dialog_title("Cannot logon to " + datasource());
+      stc->set_text(std::string(reinterpret_cast<const char*>(p.msg)));
+      frame->stc_entry_dialog_show(true);
+    }
+    else
+    {
+      log("Cannot login to")
+        << datasource() << reinterpret_cast<const char*>(p.msg);
+    }
   }
 
   return is_connected();
@@ -321,7 +328,9 @@ long wex::odbc::query(
     {
       stc->AppendText(desc[n].name);
       if (n < desc_len - 1)
+      {
         stc->AppendText('\t');
+      }
     }
   }
   catch (otl_exception& e)
@@ -362,7 +371,9 @@ long wex::odbc::query(
       }
 
       if (n < desc_len - 1)
+      {
         line += '\t';
+      }
     }
 
     stc->AppendText(line);

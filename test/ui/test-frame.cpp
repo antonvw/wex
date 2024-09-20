@@ -2,8 +2,10 @@
 // Name:      test-frame.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
+
+#include <wx/listctrl.h>
 
 #include <wex/factory/defs.h>
 #include <wex/factory/process-data.h>
@@ -36,7 +38,7 @@ TEST_CASE("wex::frame")
     frame()->SetMenuBar(bar);
 
     frame()->setup_statusbar(std::vector<wex::statusbar_pane>{
-      {{"Pane0"}, {"Pane1"}, {"Pane2"}, {"Pane3"}, {"Pane4"}}});
+      {{"Pane0"}, {"Pane1"}, {"Pane2"}, {"Pane3"}, {"Pane4"}, {"PaneInfo"}}});
 
     frame()->statusbar_clicked_right("test");
     frame()->statusbar_clicked_right("Pane1");
@@ -49,6 +51,14 @@ TEST_CASE("wex::frame")
     REQUIRE(frame()->statustext("hello2", "Pane2"));
     REQUIRE(frame()->get_statustext("Pane1") == "hello1");
     REQUIRE(frame()->get_statustext("Pane2") == "hello2");
+
+    REQUIRE(!frame()->update_statusbar(get_stc(), "PaneX"));
+    REQUIRE(!frame()->update_statusbar(get_stc(), "Pane1"));
+    REQUIRE(frame()->update_statusbar(get_stc(), "PaneInfo"));
+
+    auto* lv = new wxListView(frame());
+    lv->Show();
+    REQUIRE(frame()->update_statusbar(lv));
   }
 
   SUBCASE("browse")
@@ -66,11 +76,13 @@ TEST_CASE("wex::frame")
     frame()->set_recent_file(wex::path(wex::test::get_path("test.bin")));
     REQUIRE(frame()->file_history().size() == 3);
 
+    // bools:: allow backward, allow forward, browse
     browse_check(false, true, true, forward);
     browse_check(true, true, true, forward);
     browse_check(true, false, false, forward);
     browse_check(true, false, true, backward);
     browse_check(true, true, true, backward);
+    browse_check(false, true, false, backward);
   }
 
   SUBCASE("coverage")
@@ -81,8 +93,6 @@ TEST_CASE("wex::frame")
 
     wex::ex_command           command;
     const wex::frame::panes_t panes;
-
-    frame()->append_vcs(menu, &i);
 
     frame()->bind_accelerators(frame(), ve, false);
 
@@ -102,9 +112,9 @@ TEST_CASE("wex::frame")
 
     REQUIRE(!frame()->debug_toggle_breakpoint(1000, get_stc()));
 
-    REQUIRE(!frame()->exec_ex_command(command));
+    REQUIRE(!frame()->vi_exec_command(command));
 
-    REQUIRE(!frame()->is_address(get_stc(), "pppp"));
+    REQUIRE(!frame()->vi_is_address(get_stc(), "pppp"));
 
     frame()->on_notebook(100, nullptr);
 
@@ -126,7 +136,7 @@ TEST_CASE("wex::frame")
 
     frame()->show_ex_message("this is a message");
 
-    frame()->show_stc_entry_dialog();
+    frame()->stc_entry_dialog_show();
 
     REQUIRE(frame()->stc_entry_dialog_component() == nullptr);
 
@@ -143,6 +153,8 @@ TEST_CASE("wex::frame")
     frame()->vcs_add_path(nullptr);
 
     frame()->vcs_annotate_commit(get_stc(), 100, "a898989aaabbb");
+
+    frame()->vcs_append(menu, &i);
 
     frame()->vcs_blame(get_stc());
 
@@ -223,13 +235,6 @@ TEST_CASE("wex::frame")
     frame()->set_find_focus(frame());
   }
 
-  SUBCASE("get")
-  {
-    REQUIRE(frame()->get_grid() == nullptr);
-    REQUIRE(frame()->get_listview() == nullptr);
-    REQUIRE(frame()->get_process("xxx") == nullptr);
-  }
-
   SUBCASE("open_file")
   {
     // the factory stc does not open the file
@@ -249,7 +254,7 @@ TEST_CASE("wex::frame::bars")
   get_stc()->Show();
 
   wex::ex_command command(":n");
-  REQUIRE(!frame()->exec_ex_command(command));
+  REQUIRE(!frame()->vi_exec_command(command));
 
   REQUIRE(!frame()->show_ex_command(get_stc(), ""));
   REQUIRE(!frame()->show_ex_command(get_stc(), "x"));

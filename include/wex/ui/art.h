@@ -34,6 +34,9 @@ public:
   /// Returns false if client if not valid for material art.
   static bool default_client(const wxArtClient& c);
 
+  /// Returns the default bitmap colour (for material art).
+  static wxColour default_colour() { return m_colour; }
+
   /// Sets the default bitmap colour (for material art).
   /// Returns false if colour is not valid.
   static bool default_colour(const wxColour& c);
@@ -64,8 +67,8 @@ private:
 
   static std::unordered_map<wxWindowID, wxArtID> m_art_ids;
 
-  static wxArtClient  m_client;
-  static std::string  m_colour;
-  static inline art_t m_type{art_t::BOTH};
+  static wxArtClient     m_client;
+  static inline wxColour m_colour{};
+  static inline art_t    m_type{art_t::BOTH};
 };
 }; // namespace wex

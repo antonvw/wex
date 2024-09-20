@@ -2,7 +2,7 @@
 // Name:      variable.cpp
 // Purpose:   Implementation of class wex::variable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2018-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/chrono.h>
@@ -233,6 +233,7 @@ bool wex::variable::expand(std::string& value, ex* ex) const
       {
         return false;
       }
+      /* NOLINTNEXTLINE */
       else
       {
         value = p.std_out();
@@ -365,7 +366,7 @@ bool wex::variable::expand_input(std::string& expanded) const
       wxEndBusyCursor();
     }
 
-    const int result = frame->show_stc_entry_dialog(true);
+    const int result = frame->stc_entry_dialog_show(true);
 
     if (ended)
     {

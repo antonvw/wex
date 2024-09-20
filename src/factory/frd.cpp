@@ -2,7 +2,7 @@
 // Name:      frd.cpp
 // Purpose:   Implementation of wex::factory::find_replace_data class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -85,10 +85,13 @@ int wex::factory::find_replace_data::regex_replace(std::string& text) const
 
 int wex::factory::find_replace_data::regex_search(const std::string& text) const
 {
-  if (std::smatch m; !std::regex_search(text, m, m_regex))
+  std::smatch m;
+  if (!std::regex_search(text, m, m_regex))
+  {
     return -1;
-  else
-    return m.position();
+  }
+
+  return m.position();
 }
 
 bool wex::factory::find_replace_data::search_down() const
@@ -109,9 +112,13 @@ void wex::factory::find_replace_data::set_match_case(bool value)
   auto flags = m_frd->GetFlags();
 
   if (value)
+  {
     flags |= wxFR_MATCHCASE;
+  }
   else
+  {
     flags &= ~wxFR_MATCHCASE;
+  }
 
   m_frd->SetFlags(flags);
 
@@ -123,9 +130,13 @@ void wex::factory::find_replace_data::set_match_word(bool value)
   auto flags = m_frd->GetFlags();
 
   if (value)
+  {
     flags |= wxFR_WHOLEWORD;
+  }
   else
+  {
     flags &= ~wxFR_WHOLEWORD;
+  }
 
   m_frd->SetFlags(flags);
 
@@ -178,9 +189,13 @@ void wex::factory::find_replace_data::set_search_down(bool value)
   auto flags = m_frd->GetFlags();
 
   if (value)
+  {
     flags |= wxFR_DOWN;
+  }
   else
+  {
     flags &= ~wxFR_DOWN;
+  }
 
   m_frd->SetFlags(flags);
 

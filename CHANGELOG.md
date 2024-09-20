@@ -4,7 +4,46 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## 24.04 - 2024-04-01 [Unreleased]
+## 24.10 - 2024-09-22
+
+### Added
+
+- added msw build script build-gen.ps1 for building wex on windows
+- gersemi support, and wex cmake code follows these guidelines
+- right click on File Type enables or disables showing whitespace
+- Go lexer
+- a WIN_SINGLE_LINE to data::stc, used in e.g. stc_entry_dialog
+- factory::vcs and support exclude find in git submodules
+
+### Changed
+
+- upgrade to lexilla 5.3.1
+- updated art default bitmap colour
+- hexmode insert or erase keeps position
+- clang-tidy updated
+- renamed FindWEX into Findwex and supports adding a version
+- used wrapline none for rfw lexer
+- moved vcs_admin to factory lib
+- renamed frame::is_address into vi_is_address and frame::exec_ex_command into
+  vi_exec_command
+- boost::process::v2 lib used for find_executable
+- used small browse buttons in dialogs
+
+### Fixed
+
+- ex mode find and getting previous line
+- any file used for config uses json lexer
+- fixed a possible filename too long exception when trying opening links
+- show error if no macros present for a lexer
+- improved cleaning when history view is closed
+- register calculator used in insert mode
+- reporting matches when doing replace in files
+- handling shift home, end key in command-line
+- initializing item combobox with empty value, and file pickerctrl
+  can be initialized with executable
+- ex global command and append or change of insert
+
+## 24.04 - 2024-03-29
 
 ### Added
 
@@ -40,7 +79,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - wex-test lib
-- python bindings
+- python bindings using swig
 
 ### Changed
 

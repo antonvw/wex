@@ -2,11 +2,12 @@
 // Name:      core/util.cpp
 // Purpose:   Implementation of wex core utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
+#include <boost/url.hpp>
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
@@ -40,14 +41,20 @@ bool wex::auto_complete_text(
 
 bool wex::browser(const std::string& url)
 {
-  if (!wxLaunchDefaultBrowser(url))
+  if (const boost::urls::url_view view(url);
+      (view.has_scheme() || view.is_path_absolute()))
   {
-    return false;
+    if (!wxLaunchDefaultBrowser(url))
+    {
+      log("browser launch") << url;
+      return false;
+    }
+
+    log::info("browser") << url;
+    return true;
   }
 
-  log::info("browse") << url;
-
-  return true;
+  return false;
 }
 
 bool wex::browser_search(const std::string& text)
@@ -58,11 +65,9 @@ bool wex::browser_search(const std::string& text)
   {
     return browser(search_engine + "?q=" + text);
   }
-  else
-  {
-    log("browser_search engine empty") << text;
-    return false;
-  }
+
+  log("browser_search engine empty") << text;
+  return false;
 }
 
 bool wex::clipboard_add(const std::string& text)
@@ -80,20 +85,18 @@ bool wex::clipboard_add(const std::string& text)
     log("clipboard lock");
     return false;
   }
+  /* NOLINTNEXTLINE */
+  else if (wxTheClipboard->SetData(new wxTextDataObject(text)))
+  {
+    // Take care that clipboard data remain after exiting
+    // This is a boolean method as well, we don't check it, as
+    // clipboard data is copied.
+    wxTheClipboard->Flush();
+  }
   else
   {
-    if (wxTheClipboard->SetData(new wxTextDataObject(text)))
-    {
-      // Take care that clipboard data remain after exiting
-      // This is a boolean method as well, we don't check it, as
-      // clipboard data is copied.
-      wxTheClipboard->Flush();
-    }
-    else
-    {
-      log("clipboard add");
-      return false;
-    }
+    log("clipboard add");
+    return false;
   }
 
   return true;
@@ -106,6 +109,7 @@ const std::string wex::clipboard_get()
     log("clipboard lock");
     return std::string();
   }
+  /* NOLINTNEXTLINE */
   else if (wxTheClipboard->IsSupported(wxDF_TEXT))
   {
     if (wxTextDataObject data; wxTheClipboard->GetData(data))
@@ -149,10 +153,8 @@ const std::string wex::find_tail(const std::string& text, size_t max_chars)
     return (corr ? "..." : std::string()) +
            std::string(tail.begin(), tail.end());
   }
-  else
-  {
-    return text;
-  }
+
+  return text;
 }
 
 int wex::get_number_of_lines(const std::string& text, bool trim)
@@ -243,25 +245,47 @@ bool wex::is_codeword_separator(int c)
 
 bool wex::matches_one_of(
   const std::string& filename,
-  const std::string& pattern)
+  const std::string& pattern,
+  bool               is_regex)
 {
-  if (pattern == "*")
+  if (!is_regex && pattern == "*")
+  {
     return true; // asterix matches always
+  }
+
   if (filename.empty())
+  {
     return false; // empty string never matches
+  }
 
   // Make a regex of pattern matching chars.
   auto re(pattern);
-  boost::algorithm::replace_all(re, ".", "\\.");
-  boost::algorithm::replace_all(re, "*", ".*");
-  boost::algorithm::replace_all(re, "?", ".?");
+
+  if (!is_regex)
+  {
+    boost::algorithm::replace_all(re, ".", "\\.");
+    boost::algorithm::replace_all(re, "*", ".*");
+    boost::algorithm::replace_all(re, "?", ".?");
+  }
 
   for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
          re,
          boost::char_separator<char>(";")))
   {
-    if (std::regex_match(filename, std::regex(it)))
-      return true;
+    try
+    {
+      if (
+        !is_regex && std::regex_match(filename, std::regex(it)) ||
+        is_regex && std::regex_search(filename, std::regex(it)))
+      {
+        return true;
+      }
+    }
+    catch (std::regex_error& e)
+    {
+      log::status() << e.what();
+      return false;
+    }
   }
 
   return false;

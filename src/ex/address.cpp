@@ -76,37 +76,36 @@ wex::address::address(ex* ex, const std::string& address)
 
 bool wex::address::add(add_t type, const std::string& text) const
 {
-  if (const auto line = get_line(); line <= 0)
+  const auto line = get_line();
+  if (line <= 0)
   {
     return false;
   }
-  else if (!m_ex->get_stc()->is_visual())
+
+  if (!m_ex->get_stc()->is_visual())
   {
     m_ex->ex_stream()->insert_text(
-      *this,
+      m_line,
       text + m_ex->get_stc()->eol(),
       type == add_t::APPEND ? ex_stream::loc_t::AFTER :
                               ex_stream::loc_t::BEFORE);
     return true;
   }
-  else if (m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode())
+
+  if (m_ex->get_stc()->GetReadOnly() || m_ex->get_stc()->is_hexmode())
   {
     return false;
   }
-  else
+  m_ex->get_stc()->insert_text(
+    m_ex->get_stc()->PositionFromLine(type == add_t::APPEND ? line : line - 1),
+    text + m_ex->get_stc()->eol());
+
+  if (type == add_t::APPEND)
   {
-    m_ex->get_stc()->insert_text(
-      m_ex->get_stc()->PositionFromLine(
-        type == add_t::APPEND ? line : line - 1),
-      text + m_ex->get_stc()->eol());
-
-    if (type == add_t::APPEND)
-    {
-      m_ex->get_stc()->goto_line(line + get_number_of_lines(text) - 1);
-    }
-
-    return true;
+    m_ex->get_stc()->goto_line(line + get_number_of_lines(text) - 1);
   }
+
+  return true;
 }
 
 bool wex::address::adjust_window(const std::string& text) const
@@ -218,25 +217,27 @@ int wex::address::get_line(int start_pos) const
 
     return result;
   }
+
   // Try address calculation.
-  else if (const auto& sum(m_ex->calculator(m_address)); !sum)
+  const auto& sum(m_ex->calculator(m_address));
+  if (!sum)
   {
     return 0;
   }
-  else if (*sum < 0)
+
+  if (*sum < 0)
   {
     return 1;
   }
-  else if (*sum > m_ex->get_stc()->get_line_count())
+
+  if (*sum > m_ex->get_stc()->get_line_count())
   {
     return m_ex->get_stc()->get_line_count() == LINE_COUNT_UNKNOWN ?
              *sum :
              m_ex->get_stc()->get_line_count();
   }
-  else
-  {
-    return *sum;
-  }
+
+  return *sum;
 }
 
 bool wex::address::insert(const std::string& text) const
@@ -324,13 +325,11 @@ bool wex::address::put(char name) const
   {
     return false;
   }
-  else
-  {
-    m_ex->get_stc()->insert_text(
-      m_ex->get_stc()->PositionFromLine(get_line()),
-      m_ex->get_macros().get_register(name));
-    return true;
-  }
+
+  m_ex->get_stc()->insert_text(
+    m_ex->get_stc()->PositionFromLine(get_line()),
+    m_ex->get_macros().get_register(name));
+  return true;
 }
 
 bool wex::address::read(const std::string& arg) const
@@ -354,38 +353,37 @@ bool wex::address::read(const std::string& arg) const
 
     return append(process.std_out());
   }
-  else
-  {
-    path::current(m_ex->get_stc()->path().data().parent_path());
 
-    if (file file(path(arg), std::ios_base::in); !file.is_open())
+  path::current(m_ex->get_stc()->path().data().parent_path());
+
+  file file(path(arg), std::ios_base::in);
+  if (!file.is_open())
+  {
+    log::status(_("File")) << file.path() << "open error";
+    return false;
+  }
+
+  if (const auto buffer(file.read()); buffer != nullptr)
+  {
+    if (!m_ex->get_stc()->is_visual())
     {
-      log::status(_("File")) << file.path() << "open error";
-      return false;
+      m_ex->ex_stream()->insert_text(m_line, *buffer);
     }
-    else if (const auto buffer(file.read()); buffer != nullptr)
+    else if (m_address == ".")
     {
-      if (!m_ex->get_stc()->is_visual())
-      {
-        m_ex->ex_stream()->insert_text(*this, *buffer);
-      }
-      else if (m_address == ".")
-      {
-        m_ex->get_stc()->add_text(*buffer);
-      }
-      else
-      {
-        m_ex->get_stc()->insert_text(
-          m_ex->get_stc()->PositionFromLine(get_line()),
-          buffer->data());
-      }
-      return true;
+      m_ex->get_stc()->add_text(*buffer);
     }
     else
     {
-      return false;
+      m_ex->get_stc()->insert_text(
+        m_ex->get_stc()->PositionFromLine(get_line()),
+        *buffer);
     }
+
+    return true;
   }
+
+  return false;
 }
 
 const std::string wex::address::regex_commands() const
@@ -424,9 +422,7 @@ bool wex::address::write_line_number() const
   {
     return false;
   }
-  else
-  {
-    m_ex->frame()->show_ex_message(std::to_string(get_line()));
-    return true;
-  }
+
+  m_ex->frame()->show_ex_message(std::to_string(get_line()));
+  return true;
 }

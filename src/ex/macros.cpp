@@ -2,7 +2,7 @@
 // Name:      macros.cpp
 // Purpose:   Implementation of class wex::macros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -47,14 +47,13 @@ const wex::macros::commands_t wex::macros::find(const std::string& macro) const
   {
     return it->second;
   }
-  else if (const auto& it = m_variables.find(macro); it != m_variables.end())
+
+  if (const auto& it = m_variables.find(macro); it != m_variables.end())
   {
     return {it->second.get_value()};
   }
-  else
-  {
-    return {};
-  }
+
+  return {};
 }
 
 const wex::macros::commands_t wex::macros::get() const
@@ -81,11 +80,6 @@ const wex::macros::commands_t wex::macros::get() const
   std::sort(v.begin(), v.end());
 
   return v;
-}
-
-const wex::path wex::macros::path() const
-{
-  return wex::path(config::dir(), "wex-macros.xml");
 }
 
 const wex::macros::keys_map_t& wex::macros::get_keys_map(key_t type) const
@@ -205,7 +199,7 @@ bool wex::macros::load_document()
     }
   }
 
-  log::trace("macros info") << m_reflect.log();
+  log::info("macros") << path().string() << m_reflect.log();
 
   m_is_loaded = true;
 
@@ -302,6 +296,11 @@ void wex::macros::parse_node_variable(const pugi::xml_node& node)
   {
     m_variables.insert({variable.get_name(), variable});
   }
+}
+
+const wex::path wex::macros::path() const
+{
+  return wex::path(config::dir(), "wex-macros.xml");
 }
 
 bool wex::macros::record(const std::string& text, bool new_command)

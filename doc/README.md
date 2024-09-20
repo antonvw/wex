@@ -259,6 +259,21 @@ bool wex::global_env::for_each(const block_lines& match) const
   gui elements.
 
 ```cpp
+  std::expected (c++23)
+```
+
+  See e.g. eval.h:
+
+```cpp
+  /// Returns calculated value.
+  std::expected<int, std::string> eval(
+    /// the ex component, e.g. for line number (.) if present in text
+    const ex* ex,
+    /// text containing the expression to be evaluated
+    const std::string& text) const;
+```
+
+```cpp
   std::function (c++11)
 ```
 

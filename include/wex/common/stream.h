@@ -2,12 +2,11 @@
 // Name:      stream.h
 // Purpose:   Declaration of wex::stream class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wex/common/path-match.h>
 #include <wex/common/stream-statistics.h>
 #include <wex/common/tool.h>
 #include <wex/syntax/path-lexer.h>
@@ -49,7 +48,6 @@ private:
 
   bool process(std::string& text, size_t line_no);
   bool process_begin();
-  void process_match(const path_match& m);
 
   int replace_all(std::string& text, int* match_pos);
 

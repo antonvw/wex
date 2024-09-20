@@ -80,12 +80,7 @@ void wex::dialog::layout_sizers(bool add_separator_line)
   // The top sizer ends with a spacer as well.
   m_top_sizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
 
-  if (m_data.size() == wxDefaultSize)
-  {
-    SetSizerAndFit(m_top_sizer);
-  }
-  else
-  {
-    SetSizer(m_top_sizer);
-  }
+  SetSizerAndFit(m_top_sizer);
+
+  m_top_sizer->SetSizeHints(this);
 }

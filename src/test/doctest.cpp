@@ -2,7 +2,7 @@
 // Name:      doctest.cpp
 // Purpose:   Implementation of general test functions.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #define DOCTEST_CONFIG_IMPLEMENT
@@ -51,10 +51,12 @@ void wex::test::doctester::on_run(wex::app* app)
 
   app->Bind(
     wxEVT_TIMER,
-    [=, this](wxTimerEvent& event)
+    [=, this](const wxTimerEvent& event)
     {
       if (m_context != nullptr)
       {
+        delete timer_start;
+
         m_context->run();
 
         config("AllowSync").set(false);

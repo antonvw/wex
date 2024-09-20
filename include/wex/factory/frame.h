@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of wex::factory::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -41,6 +41,9 @@ public:
 
   /// Constructor for wxFrame.
   frame(wxWindow* parent, wxWindowID winid, const std::string& title);
+
+  /// Destructor.
+  ~frame();
 
   // Virtual interface
 

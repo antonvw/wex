@@ -3,12 +3,11 @@
 // Purpose:   Implementation of wex::app class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2009-2023 Anton van Wezenbeek
-////////////////////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/app.h>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
-#include <wex/core/version.h>
 #include <wx/clipbrd.h>
 #include <wxMaterialDesignArtProvider.hpp>
 
@@ -69,8 +68,6 @@ int wex::app::OnExit()
 bool wex::app::OnInit()
 {
   log::on_init();
-  log::info("started") << GetAppName().ToStdString()
-                       << get_version_info().get(false);
 
   config::on_init();
 

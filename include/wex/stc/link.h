@@ -2,14 +2,12 @@
 // Name:      link.h
 // Purpose:   Declaration of class wex::link
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2011-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/factory/link.h>
-
-#include <string>
 
 namespace wex
 {
@@ -18,9 +16,6 @@ namespace wex
 class link : public factory::link
 {
 public:
-  /// Default constructor.
-  link();
-
   /// Adds opening link from vcs output text.
   const path get_path(
     /// (vcs) text containing a path somewhere

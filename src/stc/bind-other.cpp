@@ -94,19 +94,29 @@ menu::menu_t get_style(stc* stc)
   menu::menu_t style(menu::menu_t().set(menu::IS_POPUP).set(menu::IS_LINES));
 
   if (stc->GetReadOnly() || stc->is_hexmode())
+  {
     style.set(menu::IS_READ_ONLY);
+  }
 
   if (!stc->GetSelectedText().empty())
+  {
     style.set(menu::IS_SELECTED);
+  }
 
   if (stc->GetTextLength() == 0)
+  {
     style.set(menu::IS_EMPTY);
+  }
 
   if (stc->get_vi().visual() == ex::mode_t::VISUAL)
+  {
     style.set(menu::IS_VISUAL);
+  }
 
   if (stc->CanPaste())
+  {
     style.set(menu::CAN_PASTE);
+  }
 
   return style;
 }
@@ -161,28 +171,28 @@ void wex::stc::bind_other()
 
   Bind(
     wxEVT_FIND,
-    [=, this](wxFindDialogEvent& event)
+    [=, this](const wxFindDialogEvent& event)
     {
       find_next(false);
     });
 
   Bind(
     wxEVT_FIND_NEXT,
-    [=, this](wxFindDialogEvent& event)
+    [=, this](const wxFindDialogEvent& event)
     {
       find_next(false);
     });
 
   Bind(
     wxEVT_FIND_REPLACE,
-    [=, this](wxFindDialogEvent& event)
+    [=, this](const wxFindDialogEvent& event)
     {
       replace_next(true);
     });
 
   Bind(
     wxEVT_FIND_REPLACE_ALL,
-    [=, this](wxFindDialogEvent& event)
+    [=, this](const wxFindDialogEvent& event)
     {
       auto* frd = find_replace_data::get();
       replace_all(frd->get_find_string(), frd->get_replace_string());
@@ -202,7 +212,16 @@ void wex::stc::bind_other()
 
       if (m_vi->on_key_down(event))
       {
-        event.Skip();
+        if (
+          event.GetKeyCode() == WXK_RETURN &&
+          m_data.flags().test(data::stc::WIN_SINGLE_LINE))
+        {
+          wxPostEvent(m_data.window().parent(), event);
+        }
+        else
+        {
+          event.Skip();
+        }
       }
 
       if (event.GetKeyCode() == WXK_BACK || event.GetKeyCode() == WXK_RETURN)
@@ -293,7 +312,7 @@ void wex::stc::bind_other()
 
   Bind(
     wxEVT_STC_DWELLEND,
-    [=, this](wxStyledTextEvent& event)
+    [=, this](const wxStyledTextEvent& event)
     {
       if (CallTipActive())
       {
@@ -477,7 +496,9 @@ void wex::stc::mouse_action(wxMouseEvent& event)
       if (
         GetCurLine().Contains("href") &&
         link_open(link_t().set(LINK_OPEN_MIME)))
+      {
         return;
+      }
 
       if (!link_open(link_t().set(LINK_OPEN).set(LINK_OPEN_MIME)))
       {

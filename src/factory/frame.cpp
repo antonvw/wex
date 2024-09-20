@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::factory::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -13,25 +13,22 @@
 #include <wex/factory/listview.h>
 #include <wex/factory/stc.h>
 
-#define wxCAST_TO(classname)                                     \
-  /* NOLINTNEXTLINE */                                           \
-  if (m_find_focus != nullptr && m_find_focus->IsShown())        \
-  {                                                              \
-    if (classname* win = dynamic_cast<classname*>(m_find_focus); \
-        win != nullptr)                                          \
-    {                                                            \
-      return win;                                                \
-    }                                                            \
-  }                                                              \
-                                                                 \
-  wxWindow*  win = wxWindow::FindFocus();                        \
-  classname* cl  = dynamic_cast<classname*>(win);                \
+#define wxCAST_TO(classname)                                                   \
+  /* NOLINTNEXTLINE */                                                         \
+  if (m_find_focus != nullptr && m_find_focus->IsShown())                      \
+  {                                                                            \
+    if (classname* win = dynamic_cast<classname*>(m_find_focus);               \
+        win != nullptr)                                                        \
+    {                                                                          \
+      return win;                                                              \
+    }                                                                          \
+  }                                                                            \
+                                                                               \
+  wxWindow*  win = wxWindow::FindFocus();                                      \
+  classname* cl  = dynamic_cast<classname*>(win);                              \
   return cl;
 
-wex::factory::frame::frame()
-  : wxFrame()
-{
-}
+wex::factory::frame::frame() = default;
 
 wex::factory::frame::frame(
   wxWindow*          parent,
@@ -39,6 +36,11 @@ wex::factory::frame::frame(
   const std::string& title)
   : wxFrame(parent, winid, title)
 {
+}
+
+wex::factory::frame::~frame()
+{
+  m_is_closing = true;
 }
 
 wex::factory::grid* wex::factory::frame::get_grid()
@@ -115,7 +117,9 @@ void wex::factory::frame::statusbar_clicked(const std::string& pane)
     else
     {
       if (auto* lv = get_listview(); lv != nullptr)
+      {
         wxPostEvent(lv, wxCommandEvent(wxEVT_MENU, wxID_JUMP_TO));
+      }
     }
   }
   else
@@ -126,7 +130,12 @@ void wex::factory::frame::statusbar_clicked(const std::string& pane)
 
 bool wex::factory::frame::update_statusbar(const wxListView* lv)
 {
-  if (!m_is_closing && lv->IsShown())
+  if (m_is_closing || lv == nullptr)
+  {
+    return false;
+  }
+
+  if (lv->IsShown())
   {
     const auto text = std::to_string(lv->GetItemCount()) +
                       (lv->GetSelectedItemCount() > 0 ?
@@ -135,14 +144,17 @@ bool wex::factory::frame::update_statusbar(const wxListView* lv)
 
     return statustext(text, "PaneInfo");
   }
-
-  return false;
+  else
+  {
+    return statustext(std::string(), std::string()) &&
+           statustext(std::string(), "PaneInfo");
+  }
 }
 
 // Do not make it const, too many const_casts needed,
 bool wex::factory::frame::update_statusbar(stc* stc, const std::string& pane)
 {
-  if (stc == nullptr || m_is_closing)
+  if (m_is_closing || stc == nullptr)
   {
     return false;
   }
@@ -188,9 +200,13 @@ bool wex::factory::frame::update_statusbar(stc* stc, const std::string& pane)
           if (const auto number_of_lines =
                 get_number_of_lines(stc->get_selected_text());
               number_of_lines <= 1)
+          {
             text << line << show_pos << "," << len;
+          }
           else
+          {
             text << line << "," << number_of_lines << "," << len;
+          }
         }
       }
     }

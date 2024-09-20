@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2023 Anton van Wezenbeek
+// Copyright: (c) 2009-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -11,6 +11,19 @@
 #include <wx/timer.h>
 
 #include "blaming.h"
+
+#define POPUPMENU_DO(ON, ACTION)                                               \
+  if (stc != nullptr)                                                          \
+  {                                                                            \
+    PopupMenu(new wex::menu(                                                   \
+      {{wxWindow::NewControlId(),                                              \
+        stc->ON() ? "&Hide" : "&Show",                                         \
+        data::menu().action(                                                   \
+          [=, this](wxCommandEvent&)                                           \
+          {                                                                    \
+            stc->ACTION(!stc->ON());                                           \
+          })}}));                                                              \
+  }
 
 namespace wex::del
 {
@@ -45,6 +58,7 @@ wex::del::frame::frame(
        find_replace_data::get()->text_regex(),
        m_text_recursive + ",1",
        m_text_hidden})
+  , m_vcs(new wex::vcs())
   , m_function_repeat(
       "frame",
       this,
@@ -106,7 +120,7 @@ wex::del::frame::frame(
      data::control().is_required(true)},
     {m_text_in_folder,
      item::COMBOBOX_DIR,
-     config::strings_t{wxGetHomeDir().ToStdString()},
+     config::strings_t{wxGetHomeDir()},
      data::control().is_required(true)},
     {info}};
 
@@ -143,6 +157,8 @@ wex::del::frame::frame(
   bind_all();
 }
 
+wex::del::frame::~frame() {}
+
 wex::del::listview* wex::del::frame::activate_and_clear(const wex::tool& tool)
 {
   auto* lv = activate(listview::type_tool(tool));
@@ -171,36 +187,6 @@ void append_submenu(const wex::menu_item* item, wex::menu* menu)
     {
       menu->append({{submenu, vcs.entry().name()}});
     }
-  }
-}
-
-void wex::del::frame::append_vcs(wex::menu* menu, const menu_item* item) const
-{
-  if (!item->path().file_exists())
-  {
-    if (item->path().dir_exists())
-    {
-      append_submenu(item, menu);
-    }
-    else
-    {
-      wex::vcs vcs;
-
-      if (vcs.set_entry_from_base(
-            item->is_modal() ? wxTheApp->GetTopWindow() : nullptr))
-      {
-        auto* submenu = new wex::menu(menu->style());
-
-        if (vcs.entry().build_menu(ID_EDIT_VCS_LOWEST + 1, submenu))
-        {
-          menu->append({{submenu, vcs.entry().name()}});
-        }
-      }
-    }
-  }
-  else
-  {
-    append_submenu(item, menu);
   }
 }
 
@@ -270,7 +256,8 @@ wex::del::frame::entry_dialog(const std::string& title, const std::string& text)
     m_entry_dialog = new stc_entry_dialog(
       text,
       std::string(),
-      data::window().title(title).size({450, 450}));
+      data::window().title(title),
+      data::stc(data::window().size({350, 250})));
   }
   else
   {
@@ -322,7 +309,9 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
             if (sed)
             {
               if (v.size() <= i)
+              {
                 return;
+              }
               find_replace_data::get()->set_replace_string(v[i++]);
             }
             arg2 =
@@ -359,27 +348,16 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
 
   wex::dir dir(
     path(arg1),
-    data::dir().file_spec(arg2).type(arg3).find_replace_data(
-      find_replace_data::get()),
+    data::dir()
+      .file_spec(arg2)
+      .type(arg3)
+      .find_replace_data(find_replace_data::get())
+      .vcs(m_vcs),
     activate_and_clear(tool));
 
   dir.find_files(tool);
 
   return true;
-}
-
-bool wex::del::frame::is_address(syntax::stc* stc, const std::string& text)
-{
-  if (auto* wexstc = dynamic_cast<wex::stc*>(stc); wexstc != nullptr)
-  {
-    const command_parser cp(
-      &wexstc->get_vi(),
-      text,
-      command_parser::parse_t::CHECK);
-    return cp.type() != command_parser::address_t::NO_ADDR;
-  }
-
-  return false;
 }
 
 void wex::del::frame::on_command_item_dialog(
@@ -406,11 +384,17 @@ void wex::del::frame::on_command_item_dialog(
             data::dir::type_t flags = 0;
 
             if (config(p->text_addfiles()).get(true))
+            {
               flags.set(data::dir::FILES);
+            }
             if (config(p->text_addrecursive()).get(true))
+            {
               flags.set(data::dir::RECURSIVE);
+            }
             if (config(p->text_addfolders()).get(true))
+            {
               flags.set(data::dir::DIRS);
+            }
 
             p->add_items(
               config(p->text_infolder()).get_first_of(),
@@ -455,12 +439,12 @@ void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
   }
 }
 
-void wex::del::frame::open_from_event(
-  const wxCommandEvent& event,
-  const std::string&    move_ext)
+bool wex::del::frame::open_from_action(
+  const std::string& file,
+  const std::string& move_ext)
 {
   // :e [+command] [file]
-  if (auto text(event.GetString().ToStdString()); !text.empty())
+  if (auto text(file); !text.empty())
   {
     if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
     {
@@ -468,13 +452,13 @@ void wex::del::frame::open_from_event(
 
       if (!marker_and_register_expansion(&stc->get_vi(), text))
       {
-        return;
+        return false;
       }
     }
 
     if (!shell_expansion(text))
     {
-      return;
+      return false;
     }
 
     std::string cmd;
@@ -484,7 +468,10 @@ void wex::del::frame::open_from_event(
       text = v[1];
     }
 
-    open_files(this, to_vector_path(text).get(), data::control().command(cmd));
+    return open_files(
+      this,
+      to_vector_path(text).get(),
+      data::control().command(cmd));
   }
   else
   {
@@ -492,6 +479,7 @@ void wex::del::frame::open_from_event(
     data.style(wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR | wxFD_HEX_MODE)
       .allow_move_path_extension(move_ext);
     open_files_dialog(this, false, data::stc(data));
+    return true;
   }
 }
 
@@ -576,11 +564,6 @@ void wex::del::frame::show_ex_message(const std::string& text)
   log::status(text);
 }
 
-int wex::del::frame::show_stc_entry_dialog(bool modal)
-{
-  return modal ? entry_dialog()->ShowModal() : entry_dialog()->Show();
-}
-
 void wex::del::frame::statusbar_clicked(const std::string& pane)
 {
   if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); pane == "PaneDBG")
@@ -642,17 +625,11 @@ void wex::del::frame::statusbar_clicked_right(const std::string& pane)
 {
   if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); pane == "PaneInfo")
   {
-    if (stc != nullptr)
-    {
-      PopupMenu(new wex::menu(
-        {{wxWindow::NewControlId(),
-          stc->is_shown_line_numbers() ? "&Hide" : "&Show",
-          data::menu().action(
-            [=, this](wxCommandEvent&)
-            {
-              stc->show_line_numbers(!stc->is_shown_line_numbers());
-            })}}));
-    }
+    POPUPMENU_DO(is_shown_line_numbers, show_line_numbers);
+  }
+  else if (pane == "PaneFileType")
+  {
+    POPUPMENU_DO(GetViewEOL, show_whitespace);
   }
   else if (pane == "PaneMacro")
   {
@@ -687,21 +664,26 @@ void wex::del::frame::statusbar_clicked_right(const std::string& pane)
 
 void wex::del::frame::statustext_vcs(factory::stc* stc)
 {
-  const vcs v({stc->path()});
+  m_vcs->set(stc->path());
 
-  if (const auto& text(v.get_branch()); !text.empty())
+  if (const auto& text(m_vcs->get_branch()); !text.empty())
   {
     statustext(text, "PaneVCS");
   }
   else
   {
-    statustext(v.name(), "PaneVCS");
+    statustext(m_vcs->name(), "PaneVCS");
   }
 }
 
 wex::syntax::stc* wex::del::frame::stc_entry_dialog_component()
 {
   return entry_dialog()->get_stc();
+}
+
+int wex::del::frame::stc_entry_dialog_show(bool modal)
+{
+  return modal ? entry_dialog()->ShowModal() : entry_dialog()->Show();
 }
 
 std::string wex::del::frame::stc_entry_dialog_title() const
@@ -740,7 +722,7 @@ void wex::del::frame::use_file_history_list(listview* list)
 
 void wex::del::frame::vcs_add_path(factory::link* l)
 {
-  if (vcs v; v.use() && v.toplevel().dir_exists())
+  if (wex::vcs v; v.use() && v.toplevel().dir_exists())
   {
     l->add_path(v.toplevel());
   }
@@ -774,12 +756,43 @@ bool wex::del::frame::vcs_annotate_commit(
 
     return true;
   }
+  /* NOLINTNEXTLINE */
   else
   {
     log::trace("annotate commit failed") << vcs.name();
   }
 
   return false;
+}
+
+void wex::del::frame::vcs_append(wex::menu* menu, const menu_item* item) const
+{
+  if (!item->path().file_exists())
+  {
+    if (item->path().dir_exists())
+    {
+      append_submenu(item, menu);
+    }
+    else
+    {
+      wex::vcs vcs;
+
+      if (vcs.set_entry_from_base(
+            item->is_modal() ? wxTheApp->GetTopWindow() : nullptr))
+      {
+        auto* submenu = new wex::menu(menu->style());
+
+        if (vcs.entry().build_menu(ID_EDIT_VCS_LOWEST + 1, submenu))
+        {
+          menu->append({{submenu, vcs.entry().name()}});
+        }
+      }
+    }
+  }
+  else
+  {
+    append_submenu(item, menu);
+  }
 }
 
 bool wex::del::frame::vcs_blame(syntax::stc* stc)
@@ -893,4 +906,15 @@ bool wex::del::frame::vcs_execute(
 
 {
   return wex::vcs_execute(this, event_id, paths, data);
+}
+
+bool wex::del::frame::vi_is_address(syntax::stc* stc, const std::string& text)
+  const
+{
+  if (auto* wexstc = dynamic_cast<wex::stc*>(stc); wexstc != nullptr)
+  {
+    return wexstc->get_vi().is_address(text);
+  }
+
+  return false;
 }

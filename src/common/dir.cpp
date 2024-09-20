@@ -2,11 +2,12 @@
 // Name:      dir.cpp
 // Purpose:   Implementation of class wex::dir
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/dir.h>
 #include <wex/common/stream.h>
+#include <wex/common/util.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/core/reflection.h>
@@ -121,6 +122,11 @@ int wex::dir::find_files()
 
   m_statistics.clear();
 
+  if (m_data.vcs() != nullptr)
+  {
+    m_data.vcs()->setup_exclude(m_dir);
+  }
+
   if (m_eh != nullptr)
   {
     std::thread t(
@@ -133,10 +139,8 @@ int wex::dir::find_files()
 
     return 1;
   }
-  else
-  {
-    return run();
-  }
+
+  return run();
 }
 
 bool wex::dir::find_files(const tool& tool)
@@ -174,7 +178,7 @@ bool wex::dir::on_dir(const path& p) const
     if (!m_tool.is_find_type() && m_data.type().test(data::dir::DIRS))
     {
       m_statistics.get_elements().inc(_("Folders"));
-      post_event(p);
+      process_match(p, m_eh);
     }
   }
 
@@ -199,18 +203,11 @@ bool wex::dir::on_file(const path& p) const
     }
     else
     {
-      post_event(p);
+      process_match(p, m_eh);
     }
   }
 
   return true;
-}
-
-void wex::dir::post_event(const path& p) const
-{
-  wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_LIST_MATCH);
-  event.SetClientData(new wex::path_match(p));
-  wxPostEvent(m_eh, event);
 }
 
 int wex::dir::run() const
@@ -230,38 +227,27 @@ int wex::dir::run() const
   {
     if (m_data.type().test(data::dir::RECURSIVE))
     {
-      if (fs::recursive_directory_iterator rdi(
-            m_dir.data(),
-#ifdef __WXMSW__
-            fs::directory_options::none),
-          end;
-#else
-            fs::directory_options::skip_permission_denied),
-          end;
-#endif
-
-          !std::all_of(
-            rdi,
-            end,
-            [&](const fs::directory_entry& p)
-            {
-              if (
-                p.path().filename().string().starts_with(".") &&
-                fs::is_directory(p.path()) &&
-                !m_data.type().test(data::dir::HIDDEN))
-              {
-                // This does not really work, there extra code in allow_hidden,
-                // but that should not be necessary.
-                rdi.disable_recursion_pending();
-                return true;
-              }
-              else
-              {
-                return traverse(p);
-              }
-            }))
+      for (auto i = fs::recursive_directory_iterator(m_dir.data());
+           i != fs::recursive_directory_iterator();
+           ++i)
       {
-        log::trace("iterating aborted");
+        if (
+          fs::is_directory(i->path()) &&
+          ((i->path().filename().string().starts_with(".") &&
+            !m_data.type().test(data::dir::HIDDEN)) ||
+           (m_data.vcs() != nullptr &&
+            m_data.vcs()->is_dir_excluded(i->path()))))
+        {
+          i.disable_recursion_pending();
+        }
+        else
+        {
+          if (!traverse(*i))
+          {
+            log::trace("iterating aborted");
+            return matches();
+          }
+        }
       }
     }
     else
@@ -301,8 +287,14 @@ bool wex::dir::traverse(const fs::directory_entry& e) const
   if (fs::is_regular_file(e.path()))
   {
     if (
+      (m_data.vcs() == nullptr ||
+       (m_data.vcs() != nullptr &&
+        !m_data.vcs()->is_file_excluded(e.path()))) &&
       m_data.type().test(data::dir::FILES) && allow_hidden(e.path(), m_data) &&
-      matches_one_of(e.path().filename().string(), m_data.file_spec()))
+      matches_one_of(
+        e.path().filename().string(),
+        m_data.file_spec(),
+        m_data.is_regex()))
     {
       if (on_file(e.path()))
       {
@@ -311,10 +303,10 @@ bool wex::dir::traverse(const fs::directory_entry& e) const
     }
   }
   else if (
-    m_data.type().test(data::dir::DIRS) && fs::is_directory(e.path()) &&
-    allow_hidden(e.path(), m_data) &&
-    (m_data.dir_spec().empty() ||
-     matches_one_of(e.path().filename().string(), m_data.dir_spec())))
+    m_data.dir_spec().empty() || matches_one_of(
+                                   e.path().filename().string(),
+                                   m_data.dir_spec(),
+                                   m_data.is_regex()))
   {
     on_dir(e.path());
 

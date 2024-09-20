@@ -2,12 +2,14 @@
 // Name:      vcs-entry.h
 // Purpose:   Declaration of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2023 Anton van Wezenbeek
+// Copyright: (c) 2010-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <optional>
 #include <pugixml.hpp>
+#include <set>
 #include <wex/core/vcs-command.h>
 #include <wex/syntax/blame.h>
 #include <wex/syntax/lexer.h>
@@ -93,6 +95,11 @@ public:
     const path& p,
     /// id to be retrieved
     const std::string& id);
+
+  /// Sets up the exclude dir.
+  /// Returns vector with paths to be excluded.
+  std::optional<std::set<wex::path>>
+  setup_exclude(const path& toplevel, const path& p);
 
   // Virtual interface
 

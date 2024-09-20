@@ -134,23 +134,21 @@ const std::string wex::hexmode::get_info()
 
 bool wex::hexmode::goto_dialog()
 {
-  if (const auto val(wxGetNumberFromUser(
-        _("Input") + " 0 - " + std::to_string(m_buffer.size() - 1) + ":",
-        wxEmptyString,
-        _("Enter Byte Offset"),
-        m_goto, // initial value
-        0,
-        m_buffer.size() - 1,
-        get_stc()));
-      val < 0)
+  const auto val(wxGetNumberFromUser(
+    _("Input") + " 0 - " + std::to_string(m_buffer.size() - 1) + ":",
+    wxEmptyString,
+    _("Enter Byte Offset"),
+    m_goto, // initial value
+    0,
+    m_buffer.size() - 1,
+    get_stc()));
+  if (val < 0)
   {
     return false;
   }
-  else
-  {
-    m_goto = val;
-    return hexmode_line(this, val, false).set_pos();
-  }
+
+  m_goto = val;
+  return hexmode_line(this, val, false).set_pos();
 }
 
 bool wex::hexmode::highlight_other()
@@ -159,6 +157,7 @@ bool wex::hexmode::highlight_other()
   {
     return true;
   }
+  /* NOLINTNEXTLINE */
   else if (get_stc()->PositionFromLine(pos) != pos)
   {
     return highlight_other(pos - 1);
@@ -178,11 +177,9 @@ bool wex::hexmode::highlight_other(int pos)
         brace_match);
     return true;
   }
-  else
-  {
-    get_stc()->BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
-    return false;
-  }
+
+  get_stc()->BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
+  return false;
 }
 
 bool wex::hexmode::insert(const std::string& text, int pos)
@@ -284,10 +281,6 @@ void wex::hexmode::set_text(const std::string& text)
     return;
   }
 
-  // hexmode_line invokes set_text it with m_buffer as argument,
-  // so m_buffer.clear clears text as well!
-  const auto keep(text);
-
   m_buffer.clear();
   m_buffer_original.clear();
 
@@ -295,7 +288,13 @@ void wex::hexmode::set_text(const std::string& text)
   stc_undo(get_stc(), stc_undo::undo_t().set(stc_undo::UNDO_POS));
   get_stc()->clear(false);
 
-  append_text(keep);
+  append_text(text);
+}
+
+void wex::hexmode::set_text_from_buffer()
+{
+  const auto keep(m_buffer); // prevent m_buffer.clear to clear text
+  set_text(keep);
 }
 
 bool wex::hexmode::sync()

@@ -2,7 +2,7 @@
 // Name:      config-imp.cpp
 // Purpose:   Implementation of class wex::config_imp
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/json/src.hpp>
@@ -67,41 +67,38 @@ bool wex::config_imp::exists(const std::string& item) const
   {
     return m_json.contains(item);
   }
-  else if (const auto& v(tokenize<std::vector<std::string>>(item, "."));
-           v.size() == 0)
+
+  const auto& v(tokenize<std::vector<std::string>>(item, "."));
+
+  if (v.size() == 0)
   {
     return m_json.contains(item);
   }
-  else
+
+  const auto& it = m_json.find(v[0]);
+
+  if (it == m_json.end())
   {
-    const auto& it = m_json.find(v[0]);
+    return false;
+  }
+  const auto* jv(&it->value());
 
-    if (it == m_json.end())
+  for (size_t i = 1; i < v.size(); i++)
+  {
+    if (!jv->is_null() && jv->is_object())
     {
-      return false;
-    }
-    else
-    {
-      const auto* jv(&it->value());
+      const auto& it = jv->as_object().find(v[i]);
 
-      for (size_t i = 1; i < v.size(); i++)
+      if (it == jv->as_object().end())
       {
-        if (!jv->is_null() && jv->is_object())
-        {
-          const auto& it = jv->as_object().find(v[i]);
-
-          if (it == jv->as_object().end())
-          {
-            return false;
-          }
-
-          jv = &it->value();
-        }
+        return false;
       }
 
-      return !jv->is_null();
+      jv = &it->value();
     }
   }
+
+  return !jv->is_null();
 }
 
 void wex::config_imp::read()
@@ -119,8 +116,8 @@ void wex::config_imp::read()
       {
         m_json = json::parse(*buffer).as_object();
 
-        log::trace("config") << m_path.string() << "top size:" << m_json.size()
-                             << "elements:" << elements();
+        log::info("config") << m_path.string() << "top size:" << m_json.size()
+                            << "elements:" << elements();
       }
     }
     catch (std::exception& e)

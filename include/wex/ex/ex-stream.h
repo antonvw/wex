@@ -2,7 +2,7 @@
 // Name:      ex-stream.h
 // Purpose:   Declaration of class wex::ex_stream
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -60,7 +60,7 @@ public:
   bool erase(const addressrange& range);
 
   /// Finds the data,
-  bool find_data(data::find& f);
+  bool find_data(const data::find& f);
 
   /// Returns context lines.
   size_t get_context_lines() const { return m_context_lines; }
@@ -73,15 +73,19 @@ public:
     /// flags to specify behaviour, see get_lines at ex/util.h
     const std::string& flags = "");
 
+  /// Goes to the next line.
+  bool get_next_line();
+
+  /// Goes to the previous line.
+  bool get_previous_line();
+
   /// Returns content of work file.
   const std::string* get_work() const;
 
-  /// Inserts text at specified address.
-  /// Returns false if no stream, of address is invalid.
-  bool insert_text(
-    const address&     address,
-    const std::string& text,
-    loc_t              loc = loc_t::BEFORE);
+  /// Inserts text at specified line.
+  /// Returns false if no stream, or address is invalid.
+  bool
+  insert_text(int line, const std::string& text, loc_t loc = loc_t::BEFORE);
 
   /// Returns true if we are in block mode.
   /// Block mode implies that no eols were found when
@@ -149,12 +153,10 @@ public:
 private:
   bool copy(file* from, file* to);
   void filter_line(int start, int end, std::streampos spos);
-  bool find_finish(data::find& f, bool& found);
-  bool get_next_line();
-  bool get_previous_line();
+  bool find_finish(const data::find& f, bool& found);
   void set_text();
 
-  bool m_block_mode{false}, m_is_modified{false}, m_pos_to_bol{false};
+  bool m_block_mode{false}, m_is_modified{false};
 
   const size_t m_buffer_size, m_context_lines;
 

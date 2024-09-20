@@ -2,11 +2,12 @@
 // Name:      test-util.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/util.h>
 #include <wex/core/config.h>
+#include <wex/core/log-none.h>
 #include <wex/core/vcs-command.h>
 
 #include "test.h"
@@ -15,7 +16,7 @@
 
 TEST_CASE("wex::util" * doctest::may_fail())
 {
-  wex::strings_t l{"x", "y", "z"};
+  const wex::strings_t l{"x", "y", "z"};
 
   SUBCASE("auto_complete_filename")
   {
@@ -43,6 +44,15 @@ TEST_CASE("wex::util" * doctest::may_fail())
 
     wex::combobox_from_list(cb, l);
     REQUIRE(cb->GetCount() == 3);
+    REQUIRE(cb->GetValue() == "x");
+
+    wex::combobox_from_list(cb, wex::strings_t{"", "xx", "yy"});
+    REQUIRE(cb->GetCount() == 3);
+    REQUIRE(cb->GetValue().empty());
+
+    wex::combobox_from_list(cb, wex::strings_t{});
+    REQUIRE(cb->GetCount() == 0);
+    REQUIRE(cb->GetValue().empty());
   }
 
 #ifndef __WXMSW__
@@ -63,7 +73,13 @@ TEST_CASE("wex::util" * doctest::may_fail())
     get_stc()->SetFocus();
     get_stc()->DiscardEdits();
 
+    wex::log_none off;
+
     REQUIRE(wex::open_files(get_frame(), std::vector<wex::path>()) == 0);
+    REQUIRE(
+      wex::open_files(
+        get_frame(),
+        std::vector<wex::path>{wex::test::get_path()}) == 0); // dir
     REQUIRE(
       wex::open_files(
         get_frame(),
@@ -74,11 +90,23 @@ TEST_CASE("wex::util" * doctest::may_fail())
     REQUIRE(
       wex::open_files(
         get_frame(),
-        std::vector<wex::path>{wex::test::get_path("test.h").data()}) == 1);
+        std::vector<wex::path>{wex::test::get_path("test.h")}) == 1);
     REQUIRE(
       wex::open_files(
         get_frame(),
         std::vector<wex::path>{wex::path("../../data/wex-menus.xml")}) == 1);
+    REQUIRE(
+      wex::open_files(
+        get_frame(),
+        std::vector<wex::path>{wex::path("../../data-xxx/yy.cpp")}) == 0);
+  }
+
+  SUBCASE("process_match")
+  {
+    const auto   p(wex::test::get_path("test.h"));
+    wxEvtHandler e;
+
+    process_match(p, &e);
   }
 
 #ifdef __UNIX__

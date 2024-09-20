@@ -7,27 +7,27 @@
 
 #include <wex/wex.h>
 
-#define IN_FILES(ACTION, DIALOG)                                         \
-  {                                                                      \
-    if (!event.GetString().empty())                                      \
-    {                                                                    \
-      ACTION(event.GetString());                                         \
-    }                                                                    \
-    else                                                                 \
-    {                                                                    \
-      if (get_stc() != nullptr && !get_stc()->get_find_string().empty()) \
-      {                                                                  \
-        DIALOG->reload();                                                \
-      }                                                                  \
-      DIALOG->Show();                                                    \
-    }                                                                    \
+#define IN_FILES(ACTION, DIALOG)                                               \
+  {                                                                            \
+    if (!event.GetString().empty())                                            \
+    {                                                                          \
+      ACTION(event.GetString());                                               \
+    }                                                                          \
+    else                                                                       \
+    {                                                                          \
+      if (get_stc() != nullptr && !get_stc()->get_find_string().empty())       \
+      {                                                                        \
+        DIALOG->reload();                                                      \
+      }                                                                        \
+      DIALOG->Show();                                                          \
+    }                                                                          \
   }
 
-#define TOOL_ACTION(TOOL, DIALOG, ACTION) \
-  {[=, this](wxCommandEvent& event)       \
-   {                                      \
-     IN_FILES(ACTION, DIALOG)             \
-   },                                     \
+#define TOOL_ACTION(TOOL, DIALOG, ACTION)                                      \
+  {[=, this](wxCommandEvent& event)                                            \
+   {                                                                           \
+     IN_FILES(ACTION, DIALOG)                                                  \
+   },                                                                          \
    TOOL},
 
 void wex::del::frame::bind_all()
@@ -60,11 +60,11 @@ void wex::del::frame::bind_all()
     {{[=, this](const wxCommandEvent& event)
       {
         m_is_command = true;
-        open_from_event(event, std::string());
+        open_from_action(event.GetString(), std::string());
       },
       wxID_OPEN},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         stc::config_dialog(data::window()
                              .id(wxID_PREFERENCES)
@@ -74,25 +74,25 @@ void wex::del::frame::bind_all()
       },
       wxID_PREFERENCES},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         find_replace_data::get()->set_find_strings(config::strings_t{});
       },
       ID_CLEAR_FINDS},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         file_history().clear();
       },
       ID_CLEAR_FILES},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         m_project_history.clear();
       },
       ID_CLEAR_PROJECTS},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
         {
@@ -108,7 +108,7 @@ void wex::del::frame::bind_all()
       },
       ID_FIND_FIRST},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         if (auto* project = get_project(); project != nullptr)
         {
@@ -122,7 +122,7 @@ void wex::del::frame::bind_all()
      TOOL_ACTION(ID_TOOL_REPORT_FIND, m_fif_dialog, grep)
      // clang-format on
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         // this code handles the PaneVCS statusbar_clicked
         wex::vcs(
@@ -132,13 +132,13 @@ void wex::del::frame::bind_all()
       },
       wex::ID_EDIT_VCS_LOWEST},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         SetMenuBar(GetMenuBar() != nullptr ? nullptr : m_menubar);
       },
       ID_VIEW_MENUBAR},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         SetWindowStyleFlag(
           !(GetWindowStyleFlag() & wxCAPTION) ?

@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wex::factory::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -25,52 +25,54 @@ wex::factory::stc::stc(const wex::data::window& data)
 void wex::factory::stc::bind_wx()
 {
   wex::bind(this).command(
-    {{[=, this](wxCommandEvent& event)
+    {{[=, this](const wxCommandEvent& event)
       {
         Copy();
       },
       wxID_COPY},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         Cut();
       },
       wxID_CUT},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         // do nothing, to eat the event (for ex commandline)
       },
       wxID_JUMP_TO},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         Paste();
       },
       wxID_PASTE},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         Undo();
       },
       wxID_UNDO},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         Redo();
       },
       wxID_REDO},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         SelectAll();
       },
       wxID_SELECTALL},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         if (!GetReadOnly() && !is_hexmode())
+        {
           Clear();
+        }
       },
       wxID_DELETE}});
 }
@@ -113,19 +115,19 @@ const std::string wex::factory::stc::eol() const
   return "\r\n";
 }
 
-#define FIND_TEXT(FROM, TO)                                               \
-  if (const auto pos = FindText(GetCurrentPos(), TO, text, find_flags);   \
-      pos != wxSTC_INVALID_POSITION)                                      \
-  {                                                                       \
-    SetSelection(pos, pos + text.size());                                 \
-    return true;                                                          \
-  }                                                                       \
-                                                                          \
-  if (const auto pos = FindText(FROM, GetCurrentPos(), text, find_flags); \
-      pos != wxSTC_INVALID_POSITION)                                      \
-  {                                                                       \
-    SetSelection(pos, pos + text.size());                                 \
-    return true;                                                          \
+#define FIND_TEXT(FROM, TO)                                                    \
+  if (const auto pos = FindText(GetCurrentPos(), TO, text, find_flags);        \
+      pos != wxSTC_INVALID_POSITION)                                           \
+  {                                                                            \
+    SetSelection(pos, pos + text.size());                                      \
+    return true;                                                               \
+  }                                                                            \
+                                                                               \
+  if (const auto pos = FindText(FROM, GetCurrentPos(), text, find_flags);      \
+      pos != wxSTC_INVALID_POSITION)                                           \
+  {                                                                            \
+    SetSelection(pos, pos + text.size());                                      \
+    return true;                                                               \
   }
 
 bool wex::factory::stc::find(
@@ -154,10 +156,8 @@ size_t wex::factory::stc::get_fold_level() const
   {
     return level;
   }
-  else
-  {
-    return 0;
-  }
+
+  return 0;
 }
 
 const std::string wex::factory::stc::get_selected_text() const
@@ -181,12 +181,10 @@ const std::string wex::factory::stc::get_word_at_pos(int pos) const
 
     return !isspace(word[0]) ? word : std::string();
   }
-  else
-  {
-    return const_cast<stc*>(this)
-      ->GetTextRange(word_start, word_end)
-      .ToStdString();
-  }
+
+  return const_cast<stc*>(this)
+    ->GetTextRange(word_start, word_end)
+    .ToStdString();
 }
 
 void wex::factory::stc::goto_line(int line)
@@ -251,20 +249,20 @@ void wex::factory::stc::reset_margins(margin_t type)
   }
 }
 
-#define BIGWORD(DIRECTION)                                     \
-  int c      = GetCharAt(GetCurrentPos());                     \
-  int offset = strncmp((#DIRECTION), "Left", 4) == 0 ? -1 : 0; \
-  while (isspace(c) && GetCurrentPos() > 0 &&                  \
-         GetCurrentPos() < GetTextLength())                    \
-  {                                                            \
-    Char##DIRECTION();                                         \
-    c = GetCharAt(GetCurrentPos() + offset);                   \
-  }                                                            \
-  while (!isspace(c) && GetCurrentPos() > 0 &&                 \
-         GetCurrentPos() < GetTextLength())                    \
-  {                                                            \
-    Char##DIRECTION();                                         \
-    c = GetCharAt(GetCurrentPos() + offset);                   \
+#define BIGWORD(DIRECTION)                                                     \
+  int c      = GetCharAt(GetCurrentPos());                                     \
+  int offset = strncmp((#DIRECTION), "Left", 4) == 0 ? -1 : 0;                 \
+  while (isspace(c) && GetCurrentPos() > 0 &&                                  \
+         GetCurrentPos() < GetTextLength())                                    \
+  {                                                                            \
+    Char##DIRECTION();                                                         \
+    c = GetCharAt(GetCurrentPos() + offset);                                   \
+  }                                                                            \
+  while (!isspace(c) && GetCurrentPos() > 0 &&                                 \
+         GetCurrentPos() < GetTextLength())                                    \
+  {                                                                            \
+    Char##DIRECTION();                                                         \
+    c = GetCharAt(GetCurrentPos() + offset);                                   \
   }
 
 void wex::factory::stc::BigWordLeft()

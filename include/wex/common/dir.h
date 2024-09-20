@@ -82,7 +82,6 @@ public:
 
 private:
   int  matches() const;
-  void post_event(const path& p) const;
   int  run() const;
   bool traverse(const std::filesystem::directory_entry& e) const;
 

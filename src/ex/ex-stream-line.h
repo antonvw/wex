@@ -96,7 +96,7 @@ public:
   int lines() const { return m_line; }
 
 private:
-  void handle_substitute(char* line, size_t& pos);
+  void handle_substitute(char* line, size_t pos);
 
   const action_t         m_action;
   const data::substitute m_data;

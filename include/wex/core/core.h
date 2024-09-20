@@ -2,7 +2,7 @@
 // Name:      core.h
 // Purpose:   Include file for wex core utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -31,11 +31,11 @@ bool auto_complete_text(
   std::string& s);
 
 /// Launch default browser.
-/// Returns false if no browser configured.
+/// Returns false if no browser configured or url could not be opened.
 bool browser(const std::string& url);
 
 /// Browse and search for text.
-/// Returns false if search engine is empty.
+/// Returns false if search engine is empty or browse returns false.
 bool browser_search(const std::string& text);
 
 /// Adds data to the clipboard.
@@ -92,8 +92,14 @@ bool is_brace(int c);
 bool is_codeword_separator(int c);
 
 /// Returns true if filename (fullname) matches one of the
-/// fields in specified pattern (fields separated by ; sign).
-bool matches_one_of(const std::string& fullname, const std::string& patterns);
+/// fields in the specified pattern
+bool matches_one_of(
+  /// the fullname
+  const std::string& fullname,
+  /// the pattern to match, fields separated by ; sign
+  const std::string& patterns,
+  /// default the pattern is not a regex, but you can change it
+  bool is_regex = false);
 
 /// Returns quotes around the text.
 const std::string quoted(const std::string& text);

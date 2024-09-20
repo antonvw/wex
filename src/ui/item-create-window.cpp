@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      item.cpp
+// Name:      item-create-window.cpp
 // Purpose:   Implementation of wex::item::create_window and wex::item::creators
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021-2024 Anton van Wezenbeek
@@ -10,39 +10,39 @@
 #include "item.h"
 #include "ui.h"
 
-#define CREATE_CTRL(CONTROL)                                       \
-  {[&](wxWindow* parent, wxWindow*& window, const wex::item& item) \
-   {                                                               \
-     CONTROL(parent, window, item);                                \
+#define CREATE_CTRL(CONTROL)                                                   \
+  {[&](wxWindow* parent, wxWindow*& window, const wex::item& item)             \
+   {                                                                           \
+     CONTROL(parent, window, item);                                            \
    }},
 
-#define DET_TEXT()                                       \
-  std::string text;                                      \
-                                                         \
-  if constexpr (std::is_same_v<T, wex::item::choices_t>) \
-  {                                                      \
-    text = it.second;                                    \
-  }                                                      \
-  else                                                   \
-  {                                                      \
-    text = it;                                           \
+#define DET_TEXT()                                                             \
+  std::string text;                                                            \
+                                                                               \
+  if constexpr (std::is_same_v<T, wex::item::choices_t>)                       \
+  {                                                                            \
+    text = it.second;                                                          \
+  }                                                                            \
+  else                                                                         \
+  {                                                                            \
+    text = it;                                                                 \
   }
 
-#define IPS                                              \
-  item.data().window().id(), item.data().window().pos(), \
+#define IPS                                                                    \
+  item.data().window().id(), item.data().window().pos(),                       \
     item.data().window().size()
 
-#define PII                              \
-  parent, item.data().window().id(),     \
-    !item.data().initial().has_value() ? \
-      std::string() :                    \
+#define PII                                                                    \
+  parent, item.data().window().id(),                                           \
+    !item.data().initial().has_value() ?                                       \
+      std::string() :                                                          \
       std::any_cast<std::string>(item.data().initial())
 
 #define PIL parent, item.data().window().id(), item.label_window()
 
-#define PSS                                                \
-  item.data().window().pos(), item.data().window().size(), \
-    item.data().window().style()
+#define PS item.data().window().pos(), item.data().window().size()
+
+#define PSS PS, item.data().window().style()
 
 namespace wex
 {
@@ -102,8 +102,8 @@ void create_checkbox(wxWindow* parent, wxWindow*& window, const wex::item& item)
 }
 
 auto* create_checklistbox(
-  wxWindow*                              parent,
-  const wex::item&                       item,
+  wxWindow*                                     parent,
+  const wex::item&                              item,
   const std::function<void(wxArrayString& as)>& f)
 {
   return new wxCheckListBox(
@@ -160,11 +160,8 @@ void create_checklistbox_bool(
 void create_combobox(wxWindow* parent, wxWindow*& window, const wex::item& item)
 {
   window = new wxComboBox(
-    parent,
-    item.data().window().id(),
-    wxEmptyString,
-    item.data().window().pos(),
-    item.data().window().size(),
+    PIL,
+    PS,
     initial(
       item.data(),
       [&](wxArrayString& as)
@@ -243,7 +240,7 @@ void create_file_picker_control(
     PII,
     wxFileSelectorPromptStr,
     wc,
-    PSS == data::NUMBER_NOT_SET ? wxFLP_DEFAULT_STYLE :
+    PSS == data::NUMBER_NOT_SET ? wxFLP_DEFAULT_STYLE | wxFLP_SMALL :
                                   item.data().window().style());
 
   finish_picker(pc, item, window);
@@ -300,8 +297,7 @@ void create_radiobox(wxWindow* parent, wxWindow*& window, const wex::item& item)
 {
   auto* rb = new wxRadioBox(
     PIL,
-    item.data().window().pos(),
-    item.data().window().size(),
+    PS,
     initial(
       item.data(),
       [&](wxArrayString& as)

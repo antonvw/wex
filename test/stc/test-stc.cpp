@@ -98,29 +98,6 @@ TEST_CASE("wex::stc")
     stc->Undo();
     stc->use_modification_markers(true);
     stc->use_modification_markers(false);
-
-    stc->BigWordLeft();
-    stc->BigWordLeftExtend();
-    stc->BigWordLeftRectExtend();
-    stc->BigWordRight();
-    stc->BigWordRightEnd();
-    stc->BigWordRightEndExtend();
-    stc->BigWordRightEndRectExtend();
-    stc->BigWordRightExtend();
-    stc->BigWordRightRectExtend();
-
-    stc->LineHome();
-    stc->LineHomeExtend();
-    stc->LineHomeRectExtend();
-    stc->LineScrollDownExtend();
-    stc->LineScrollDownRectExtend();
-    stc->LineScrollUpExtend();
-    stc->LineScrollUpRectExtend();
-    stc->ParaUpRectExtend();
-    stc->ParaDownRectExtend();
-    stc->WordLeftRectExtend();
-    stc->WordRightRectExtend();
-    stc->WordRightEndRectExtend();
   }
 
   SUBCASE("eol")
@@ -282,6 +259,14 @@ TEST_CASE("wex::stc")
     stc->set_text("// a rust comment");
     REQUIRE(lexer_s.set("rust"));
     REQUIRE(lexer_s.scintilla_lexer() == "rust");
+
+    const auto keep(wex::config::path());
+    wex::config::set_path(wex::path("xxxx"));
+    auto* json = new wex::stc(wex::config::path());
+    frame()->pane_add(json);
+    REQUIRE(json->get_lexer().scintilla_lexer() == "json");
+
+    wex::config::set_path(keep);
   }
 
   SUBCASE("link")
@@ -307,13 +292,6 @@ TEST_CASE("wex::stc")
   SUBCASE("margin")
   {
     REQUIRE(stc->get_margin_text_click() == -1);
-
-    stc->show_line_numbers(false);
-    REQUIRE(!stc->is_shown_line_numbers());
-    stc->show_line_numbers(true);
-    REQUIRE(stc->is_shown_line_numbers());
-    stc->show_line_numbers(false);
-    REQUIRE(!stc->is_shown_line_numbers());
   }
 
   SUBCASE("marker")
@@ -382,6 +360,21 @@ TEST_CASE("wex::stc")
     // result is not yet checked
   }
 
+  SUBCASE("show")
+  {
+    stc->show_line_numbers(false);
+    REQUIRE(!stc->is_shown_line_numbers());
+    stc->show_line_numbers(true);
+    REQUIRE(stc->is_shown_line_numbers());
+    stc->show_line_numbers(false);
+    REQUIRE(!stc->is_shown_line_numbers());
+
+    stc->show_whitespace(true);
+    REQUIRE(stc->GetViewEOL());
+    stc->show_whitespace(false);
+    REQUIRE(!stc->GetViewEOL());
+  }
+
   SUBCASE("text")
   {
     stc->set_text("hello stc");
@@ -400,9 +393,12 @@ TEST_CASE("wex::stc")
   {
     REQUIRE(stc->vi_command(wex::line_data().command("G")));
     REQUIRE(stc->vi_command_finish(false));
+    REQUIRE(!stc->vi_is_recording());
 
     stc->vi_record("xx");
+    REQUIRE(!stc->vi_is_recording());
     REQUIRE(!stc->vi_is_visual());
+
     REQUIRE(stc->vi_register('c').empty());
     REQUIRE((stc->vi_search_flags() & wxSTC_FIND_REGEXP) > 0);
     REQUIRE(stc->vi_mode().empty());

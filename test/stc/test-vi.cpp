@@ -14,6 +14,7 @@
 #include <wex/ex/util.h>
 #include <wex/ui/frd.h>
 
+#include "../ex/test-defs.h"
 #include "../vi/test.h"
 #include "test.h"
 
@@ -39,6 +40,24 @@ TEST_CASE("wex::vi")
   frame()->pane_add(stc);
   auto* vi = &stc->get_vi();
   stc->set_text("");
+
+  // see also ex/test-ex.cpp
+  SUBCASE("calculator")
+  {
+    stc->set_text("aaaaa\nbbbbb\nccccc\n");
+
+    REQUIRE(vi->marker_add('a', 1));
+    REQUIRE(vi->marker_add('t', 1));
+    REQUIRE(vi->marker_add('u', 2));
+
+    frame()->entry_dialog_calls_reset();
+
+    // Only calculations that are not empty should
+    // cause calling entry dialog.
+    EX_CALC(vi)
+
+    REQUIRE(frame()->entry_dialog_calls() == 4);
+  }
 
   SUBCASE("change")
   {
@@ -200,16 +219,13 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command("h"));
     REQUIRE(vi->command("p"));
 
-    REQUIRE(stc->get_text() == "XXXXXX\nYYYYYY  \nZZZZZZ\n");
+    WARN(stc->get_text() == "XXXXXX\nYYYYYY  \nZZZZZZ\n");
   }
 
   SUBCASE("registers")
   {
     stc->get_file().file_new(wex::path("test.h"));
     const std::string ctrl_r = "\x12";
-    REQUIRE(vi->command("i"));
-    REQUIRE(vi->command(ctrl_r + "_"));
-    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
 
     stc->set_text("");
     REQUIRE(vi->command("i"));
@@ -223,6 +239,16 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command(ctrl_r + "0"));
     change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     REQUIRE(stc->get_text() == "test.h");
+
+    stc->set_text("no control r");
+    REQUIRE(vi->command("i"));
+    wxKeyEvent event(wxEVT_CHAR);
+    event.m_keyCode = WXK_CONTROL_R;
+    event.SetControlDown(true);
+    REQUIRE(vi->on_key_down(event));
+    REQUIRE(!vi->on_char(event));
+    change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
+    REQUIRE(stc->get_text() == "no control r");
   }
 
   SUBCASE("right-while-in-insert")

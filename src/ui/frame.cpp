@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2010-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
@@ -27,48 +27,48 @@
 #include <wx/panel.h>
 #include <wx/stattext.h>
 
-#define FIND_REPLACE(text, dlg)                                          \
-  {                                                                      \
-    if (m_find_replace_dialog != nullptr)                                \
-    {                                                                    \
-      m_find_replace_dialog->Destroy();                                  \
-    }                                                                    \
-                                                                         \
-    auto* win = wxWindow::FindFocus();                                   \
-                                                                         \
-    if (auto* cl = dynamic_cast<wex::syntax::stc*>(win); cl != nullptr)  \
-    {                                                                    \
-      m_find_focus = cl;                                                 \
-    }                                                                    \
-    /* NOLINTNEXTLINE */                                                 \
-    else                                                                 \
-    {                                                                    \
-      if (auto* cl = dynamic_cast<wex::factory::listview*>(win);         \
-          cl != nullptr)                                                 \
-      {                                                                  \
-        m_find_focus = cl;                                               \
-      }                                                                  \
-      /* NOLINTNEXTLINE */                                               \
-      else                                                               \
-      {                                                                  \
-        if (auto* grid = dynamic_cast<wex::grid*>(win); grid != nullptr) \
-        {                                                                \
-          m_find_focus = grid;                                           \
-        }                                                                \
-      }                                                                  \
-    }                                                                    \
-                                                                         \
-    if (auto* stc = get_stc(); stc != nullptr)                           \
-    {                                                                    \
-      stc->get_find_string();                                            \
-    }                                                                    \
-                                                                         \
-    m_find_replace_dialog = new wxFindReplaceDialog(                     \
-      this,                                                              \
-      wex::find_replace_data::get()->data(),                             \
-      text,                                                              \
-      dlg);                                                              \
-    m_find_replace_dialog->Show();                                       \
+#define FIND_REPLACE(text, dlg)                                                \
+  {                                                                            \
+    if (m_find_replace_dialog != nullptr)                                      \
+    {                                                                          \
+      m_find_replace_dialog->Destroy();                                        \
+    }                                                                          \
+                                                                               \
+    auto* win = wxWindow::FindFocus();                                         \
+                                                                               \
+    if (auto* cl = dynamic_cast<wex::syntax::stc*>(win); cl != nullptr)        \
+    {                                                                          \
+      m_find_focus = cl;                                                       \
+    }                                                                          \
+    /* NOLINTNEXTLINE */                                                       \
+    else                                                                       \
+    {                                                                          \
+      if (auto* cl = dynamic_cast<wex::factory::listview*>(win);               \
+          cl != nullptr)                                                       \
+      {                                                                        \
+        m_find_focus = cl;                                                     \
+      }                                                                        \
+      /* NOLINTNEXTLINE */                                                     \
+      else                                                                     \
+      {                                                                        \
+        if (auto* grid = dynamic_cast<wex::grid*>(win); grid != nullptr)       \
+        {                                                                      \
+          m_find_focus = grid;                                                 \
+        }                                                                      \
+      }                                                                        \
+    }                                                                          \
+                                                                               \
+    if (auto* stc = get_stc(); stc != nullptr)                                 \
+    {                                                                          \
+      stc->get_find_string();                                                  \
+    }                                                                          \
+                                                                               \
+    m_find_replace_dialog = new wxFindReplaceDialog(                           \
+      this,                                                                    \
+      wex::find_replace_data::get()->data(),                                   \
+      text,                                                                    \
+      dlg);                                                                    \
+    m_find_replace_dialog->Show();                                             \
   };
 
 namespace wex
@@ -135,7 +135,7 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
 
   Bind(
     wxEVT_FIND,
-    [=, this](wxFindDialogEvent& event)
+    [=, this](const wxFindDialogEvent& event)
     {
       if (m_find_focus != nullptr)
       {
@@ -144,7 +144,7 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
     });
   Bind(
     wxEVT_FIND_NEXT,
-    [=, this](wxFindDialogEvent& event)
+    [=, this](const wxFindDialogEvent& event)
     {
       if (m_find_focus != nullptr)
       {
@@ -153,7 +153,7 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
     });
   Bind(
     wxEVT_FIND_REPLACE,
-    [=, this](wxFindDialogEvent& event)
+    [=, this](const wxFindDialogEvent& event)
     {
       if (m_find_focus != nullptr)
       {
@@ -162,7 +162,7 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
     });
   Bind(
     wxEVT_FIND_REPLACE_ALL,
-    [=, this](wxFindDialogEvent& event)
+    [=, this](const wxFindDialogEvent& event)
     {
       if (m_find_focus != nullptr)
       {
@@ -172,7 +172,7 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
 
   Bind(
     wxEVT_FIND_CLOSE,
-    [=, this](wxFindDialogEvent& event)
+    [=, this](const wxFindDialogEvent& event)
     {
       assert(m_find_replace_dialog != nullptr);
       // Hiding instead of destroying, does not
@@ -182,7 +182,7 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
     });
 
   bind(this).command(
-    {{[=, this](wxCommandEvent& event)
+    {{[=, this](const wxCommandEvent& event)
       {
         if (GetStatusBar() != nullptr)
         {
@@ -191,12 +191,12 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
         }
       },
       ID_VIEW_STATUSBAR},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         FIND_REPLACE(_("Find"), 0);
       },
       wxID_FIND},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         FIND_REPLACE(_("Replace"), wxFR_REPLACEDIALOG);
       },
@@ -284,7 +284,7 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
 
     Bind(
       wxEVT_MENU,
-      [=, this](wxCommandEvent& event)
+      [=, this](const wxCommandEvent& event)
       {
         pane_toggle(it.first.first);
       },
@@ -293,7 +293,7 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
 
   Bind(
     wxEVT_MENU,
-    [=, this](wxCommandEvent& event)
+    [=, this](const wxCommandEvent& event)
     {
       on_menu_history(
         m_file_history,
@@ -384,7 +384,7 @@ bool wex::frame::add_toolbar_panes(const panes_t& panes)
 bool wex::frame::allow_browse_backward() const
 {
   return m_browse_index < m_file_history.size() && m_file_history.size() > 1 &&
-         m_browse_index != 0;
+         m_browse_index > 0;
 }
 
 bool wex::frame::allow_browse_forward() const
@@ -418,11 +418,6 @@ bool wex::frame::browse(const wxCommandEvent& event)
       }
       else
       {
-        if (m_browse_index > m_file_history.size() - 1)
-        {
-          m_browse_index = m_file_history.size() - 1;
-        }
-
         return false;
       }
       break;
@@ -434,11 +429,6 @@ bool wex::frame::browse(const wxCommandEvent& event)
       }
       else
       {
-        if (m_browse_index > m_file_history.size() - 1)
-        {
-          m_browse_index = m_file_history.size() - 1;
-        }
-
         return false;
       }
       break;
@@ -485,7 +475,8 @@ bool wex::frame::Destroy()
 std::string wex::frame::get_statustext(const std::string& pane) const
 {
   return (
-    m_statusbar == nullptr ? std::string() : m_statusbar->get_statustext(pane));
+    m_is_closing || m_statusbar == nullptr ? std::string() :
+                                             m_statusbar->get_statustext(pane));
 }
 
 wxStatusBar* wex::frame::OnCreateStatusBar(
@@ -599,66 +590,62 @@ wxWindow* wex::frame::pane_get(const std::string& pane)
 
 bool wex::frame::pane_maximize(const std::string& pane)
 {
-  if (auto& info = m_manager.GetPane(pane); !info.IsOk())
+  auto& info = m_manager.GetPane(pane);
+  if (!info.IsOk())
   {
     return false;
   }
-  else
-  {
-    info.Maximize();
-    m_manager.Update();
-    return true;
-  }
+
+  info.Maximize();
+  m_manager.Update();
+  return true;
 }
 
 bool wex::frame::pane_restore(const std::string& pane)
 {
-  if (auto& info = m_manager.GetPane(pane); !info.IsOk())
+  auto& info = m_manager.GetPane(pane);
+  if (!info.IsOk())
   {
     return false;
   }
-  else
-  {
-    info.Restore();
-    m_manager.Update();
-    return true;
-  }
+
+  info.Restore();
+  m_manager.Update();
+  return true;
 }
 
 bool wex::frame::pane_set(const std::string& pane, const wxAuiPaneInfo& info)
 {
-  if (auto& current = m_manager.GetPane(pane); !current.IsOk())
+  auto& current = m_manager.GetPane(pane);
+  if (!current.IsOk())
   {
     return false;
   }
-  else
-  {
-    if (info.best_size != wxDefaultSize)
-    {
-      current.BestSize(info.best_size);
-    }
 
-    m_manager.Update();
-    return true;
+  if (info.best_size != wxDefaultSize)
+  {
+    current.BestSize(info.best_size);
   }
+
+  m_manager.Update();
+  return true;
 }
 
 bool wex::frame::pane_show(const std::string& pane, bool show)
 {
-  if (auto& info = m_manager.GetPane(pane); !info.IsOk())
+  auto& info = m_manager.GetPane(pane);
+  if (!info.IsOk())
   {
     return false;
   }
-  else
-  {
-    show ? info.Show() : info.Hide();
 
-    // ignore result, e.g. VIBAR
-    m_optionsbar->set_checkbox(pane, show);
+  show ? info.Show() : info.Hide();
 
-    m_manager.Update();
-    return true;
-  }
+  // ignore result, e.g. VIBAR
+  m_optionsbar->set_checkbox(pane, show);
+
+  m_manager.Update();
+  return true;
 }
 
 size_t wex::frame::panes() const

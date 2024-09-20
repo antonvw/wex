@@ -1,5 +1,5 @@
 *** Comments ***
-Copyright: (c) 2020-2023 Anton van Wezenbeek
+Copyright: (c) 2020-2024 Anton van Wezenbeek
 
 
 *** Settings ***
@@ -101,19 +101,19 @@ macro
 
 macro-record
 	Input	:a|10 1123
+	...	:a|10 1500
 	...	:1
 	...	qb
 	...	w
 	...	"x
 	...	yw
 	...	b
-	...	cw
-	...	=x+100
+	...	ce=x + 100
 	...	
 	...	0
 	...	j
 	...	q
-	...	:1
+	...	:2
 	...	@b
 	Appl
 	Contents Contains	1223

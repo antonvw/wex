@@ -43,7 +43,8 @@ void wex::del::frame::find_in_files(wex::window_id dialogid)
     data::dir()
       .find_replace_data(find_replace_data::get())
       .file_spec(config(m_text_in_files).get_first_of())
-      .type(type),
+      .type(type)
+      .vcs(m_vcs),
     activate_and_clear(tool));
 
   dir.find_files(tool);

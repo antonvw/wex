@@ -69,8 +69,9 @@ public:
 
   // Other methods.
 
-  /// Default constructor, specify the toolid to use.
-  explicit tool(window_id id)
+  /// Default constructor, specify the toolid to use, default
+  /// uses ID_LOWEST.
+  explicit tool(window_id id = ID_LOWEST)
     : m_id(id)
   {
     ;

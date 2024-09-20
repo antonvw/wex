@@ -2,7 +2,7 @@
 // Name:      toolbar.cpp
 // Purpose:   Implementation of wex::toolbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2023 Anton van Wezenbeek
+// Copyright: (c) 2010-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -57,7 +57,9 @@ void find_popup_menu(
         (it.size() >= max_size - 3 ? it.substr(0, max_size) + "..." : it)}});
 
     if (i >= wex::FIND_MAX_FINDS)
+    {
       break;
+    }
   }
 
   if (menu->GetMenuItemCount() > 0)
@@ -169,9 +171,9 @@ void wex::toolbar::add_checkboxes_standard(bool realize)
 
 void wex::toolbar::add_find(bool realize)
 {
-  auto* findCtrl = new find_bar(m_frame, data::window().parent(this));
+  m_find_bar = new find_bar(m_frame, data::window().parent(this));
 
-  AddControl(findCtrl->control());
+  AddControl(m_find_bar->control());
 
   add_tool(
     {data::toolbar_item(wxID_DOWN)
@@ -220,26 +222,26 @@ void wex::toolbar::add_find(bool realize)
   }
 
   bind(this).command(
-    {{[=, this](wxCommandEvent& event)
+    {{[=, this](const wxCommandEvent& event)
       {
-        findCtrl->find(true);
+        m_find_bar->find(true);
       },
       wxID_DOWN},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
-        findCtrl->find(false);
+        m_find_bar->find(false);
       },
       wxID_UP}});
 
   bind(this).ui(
     {{[=, this](wxUpdateUIEvent& event)
       {
-        event.Enable(!findCtrl->get_text().empty());
+        event.Enable(!m_find_bar->get_text().empty());
       },
       wxID_DOWN},
      {[=, this](wxUpdateUIEvent& event)
       {
-        event.Enable(!findCtrl->get_text().empty());
+        event.Enable(!m_find_bar->get_text().empty());
       },
       wxID_UP}});
 }
@@ -267,7 +269,9 @@ void wex::toolbar::add_standard(bool realize)
     [=, this](wxAuiToolBarEvent& event)
     {
       if (!prep_dropdown(this, event))
+      {
         return;
+      }
 
       find_popup_menu(
         this,
@@ -283,7 +287,9 @@ void wex::toolbar::add_standard(bool realize)
     [=, this](wxAuiToolBarEvent& event)
     {
       if (!prep_dropdown(this, event))
+      {
         return;
+      }
 
       m_frame->file_history().popup_menu(
         this,
@@ -361,6 +367,13 @@ bool wex::toolbar::add_tool(
   }
 
   return true;
+}
+
+bool wex::toolbar::Destroy()
+{
+  delete m_find_bar;
+
+  return wxAuiToolBar::Destroy();
 }
 
 bool wex::toolbar::set_checkbox(const std::string& name, bool show) const

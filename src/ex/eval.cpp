@@ -2,7 +2,7 @@
 // Name:      eval.cpp
 // Purpose:   Implementation of class wex::evaluator
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -86,22 +86,24 @@ struct eval
     {
       return m_ex->get_command().get_stc()->get_current_line() + 1;
     }
-    else if (e.token == "$")
+
+    if (e.token == "$")
     {
       if (m_ex->visual() == wex::ex::mode_t::EX)
       {
         return m_ex->ex_stream()->get_line_count_request();
       }
-      else
-      {
-        return m_ex->get_command().get_stc()->get_line_count_request();
-      }
+
+      return m_ex->get_command().get_stc()->get_line_count_request();
     }
-    else if (e.token[0] == '\'' && e.token.size() == 2)
+
+    if (e.token[0] == '\'' && e.token.size() == 2)
     {
       const int line = m_ex->marker_line(e.token[1]);
       if (line == -1)
+      {
         throw std::overflow_error("no marker");
+      }
       return line + 1;
     }
 
@@ -136,7 +138,9 @@ struct eval
         return lhs >> rhs;
       case '/':
         if (rhs == 0)
+        {
           throw std::overflow_error("divide by zero");
+        }
         return lhs / rhs;
     }
     BOOST_ASSERT(0);
@@ -215,8 +219,8 @@ using calculator_grammar::calculator;
 class evaluator_imp
 {
 public:
-  std::optional<int>
-  eval(const wex::ex* ex, const std::string& text, std::string& error)
+  std::expected<int, std::string>
+  eval(const wex::ex* ex, const std::string& text)
   {
     try
     {
@@ -230,18 +234,14 @@ public:
 
       if (r && iter == text.end())
       {
-        return {eval(program)};
+        return eval(program);
       }
-      else
-      {
-        error = std::string(iter, text.end());
-        return {};
-      }
+
+      return std::unexpected{std::string(iter, text.end())};
     }
     catch (std::exception& e)
     {
-      error = e.what();
-      return {};
+      return std::unexpected{e.what()};
     }
   };
 };
@@ -262,21 +262,20 @@ wex::evaluator::~evaluator()
   delete m_eval;
 }
 
-std::optional<int>
+std::expected<int, std::string>
 wex::evaluator::eval(const wex::ex* ex, const std::string& text) const
 {
   if (text == "-")
   {
     return {ex->get_command().get_stc()->get_current_line()};
   }
-  else if (text == "+")
+
+  if (text == "+")
   {
     return {ex->get_command().get_stc()->get_current_line() + 2};
   }
-  else
-  {
-    std::string expanded(text);
-    marker_and_register_expansion(ex, expanded);
-    return m_eval->eval(ex, expanded, m_error);
-  }
+
+  std::string expanded(text);
+  marker_and_register_expansion(ex, expanded);
+  return m_eval->eval(ex, expanded);
 }

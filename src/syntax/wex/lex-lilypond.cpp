@@ -2,18 +2,33 @@
 // Name:      lex-lilypond.cpp
 // Purpose:   Implementation of Scintilla::lex_lillypond
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "lex-lilypond.h"
 #include "lex-lilypond-util.h"
 
-#define STATE_ERROR()              \
-  styler.ColourTo(i, SCE_L_ERROR); \
-  state = mode_to_state(mode);     \
-  ch    = styler.SafeGetCharAt(i); \
-  if (ch == '\r' || ch == '\n')    \
+#define STATE_ERROR()                                                          \
+  styler.ColourTo(i, SCE_L_ERROR);                                             \
+  state = mode_to_state(mode);                                                 \
+  ch    = styler.SafeGetCharAt(i);                                             \
+  if (ch == '\r' || ch == '\n')                                                \
     set_modes(styler.GetLine(i), mode);
+
+bool check_common(char chNext, Sci_Position& i, LexAccessor& styler)
+{
+  if (lilypond(styler).is_special(chNext, i))
+  {
+    return true;
+  }
+  else if (chNext == '\r' || chNext == '\n')
+  {
+    styler.ColourTo(i, SCE_L_ERROR);
+    return true;
+  }
+
+  return false;
+}
 
 void handle_math(
   int           lengthDoc,
@@ -39,12 +54,8 @@ void handle_math(
     }
     state = SCE_L_COMMAND;
   }
-  else if (lilypond(styler).is_special(chNext, i))
+  else if (check_common(chNext, i, styler))
   {
-  }
-  else if (chNext == '\r' || chNext == '\n')
-  {
-    styler.ColourTo(i, SCE_L_ERROR);
   }
   else if (IsASCII(chNext))
   {
@@ -70,19 +81,27 @@ lex_lilypond::lex_lilypond()
 void lex_lilypond::fold_dec(int& lev, fold_save& save) const
 {
   while (save.m_level > 0 && save.m_open_begins[save.m_level] == 0)
+  {
     --save.m_level;
+  }
 
   if (lev < 0)
+  {
     lev = save.to_int();
+  }
 
   if (save.m_open_begins[save.m_level] > 0)
+  {
     --save.m_open_begins[save.m_level];
+  }
 }
 
 void lex_lilypond::fold_inc(int& lev, fold_save& save, bool& need) const
 {
   if (lev < 0)
+  {
     lev = save.to_int();
+  }
 
   ++save.m_open_begins[save.m_level];
   need = true;
@@ -137,7 +156,9 @@ void SCI_METHOD lex_lilypond::Fold(
     {
       const char ch = styler.SafeGetCharAt(i);
       if (ch == '\r' || ch == '\n')
+      {
         break;
+      }
       if (ch == '{')
       {
         fold_inc(lev, save, needFold);
@@ -147,13 +168,17 @@ void SCI_METHOD lex_lilypond::Fold(
         fold_dec(lev, save);
       }
       else if (ch != '\\' || styler.StyleAt(i) != SCE_L_COMMAND)
+      {
         continue;
+      }
 
       for (j = 0; j < 15 && i + 1 < static_cast<Sci_Position>(endPos); ++j, ++i)
       {
         buf[j] = styler.SafeGetCharAt(i + 1);
         if (!lilypond::is_letter(buf[j]))
+        {
           break;
+        }
       }
       buf[j] = '\0';
       if (strcmp(buf, "begin") == 0)
@@ -167,10 +192,16 @@ void SCI_METHOD lex_lilypond::Fold(
       else
       {
         for (j = 0; j < (int)structWords.size(); ++j)
+        {
           if (strcmp(buf, structWords[j].c_str()) == 0)
+          {
             break;
+          }
+        }
         if (j >= (int)structWords.size())
+        {
           continue;
+        }
         save.m_level = j; // level before the command
         for (j = save.m_level + 1; j < (int)save.m_open_begins.size(); ++j)
         {
@@ -178,15 +209,21 @@ void SCI_METHOD lex_lilypond::Fold(
           save.m_open_begins[j] = 0;
         }
         if (lev < 0)
+        {
           lev = save.to_int();
+        }
         ++save.m_level; // level after the command
         needFold = true;
       }
     }
     if (lev < 0)
+    {
       lev = save.to_int();
+    }
     if (needFold)
+    {
       lev |= SC_FOLDLEVELHEADERFLAG;
+    }
     styler.SetLevel(curLine, lev);
     set_saves(curLine, save);
     ++curLine;
@@ -220,7 +257,9 @@ void SCI_METHOD lex_lilypond::Lex(
   if (
     state == SCE_L_ERROR || state == SCE_L_SHORTCMD ||
     state == SCE_L_SPECIAL) // should not happen
+  {
     state = mode_to_state(mode);
+  }
 
   char chNext          = styler.SafeGetCharAt(startPos);
   char chVerbatimDelim = '\0';
@@ -240,7 +279,9 @@ void SCI_METHOD lex_lilypond::Lex(
     }
 
     if (ch == '\r' || ch == '\n')
+    {
       set_modes(styler.GetLine(i), mode);
+    }
 
     switch (state)
     {
@@ -253,12 +294,8 @@ void SCI_METHOD lex_lilypond::Lex(
             {
               state = SCE_L_COMMAND;
             }
-            else if (lilypond(styler).is_special(chNext, i))
+            else if (check_common(chNext, i, styler))
             {
-            }
-            else if (chNext == '\r' || chNext == '\n')
-            {
-              styler.ColourTo(i, SCE_L_ERROR);
             }
             else if (IsASCII(chNext))
             {

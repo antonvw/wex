@@ -101,7 +101,7 @@ TEST_CASE("wex::macros" * doctest::may_fail())
   SUBCASE("load")
   {
     REQUIRE(macros.size() > 0);
-    REQUIRE(!macros.is_recorded("x"));
+    REQUIRE(!macros.is_recorded("d"));
     REQUIRE(!macros.get_keys_map().empty());
   }
 

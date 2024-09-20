@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <set>
+#include <wex/factory/vcs.h>
 #include <wex/vcs/vcs-entry.h>
 
 namespace wex
@@ -22,7 +24,7 @@ class frame;
 /// This class collects all vcs handling.
 /// The VCS entries are loaded from menus.xml, this is done
 /// during app startup.
-class vcs
+class vcs : public factory::vcs
 {
 public:
   /// The store is a vector of vcs entries.
@@ -101,6 +103,9 @@ public:
   ///   to check whether the output contains errors or normal info).
   wxStandardID request(const data::window& data = data::window());
 
+  /// Sets the vector of paths to specified path.
+  void set(const wex::path& p);
+
   /// Sets the vcs entry using base folder.
   /// If not, it will show
   /// a dialog for selecting a vcs folder (if parent is not nullptr).
@@ -119,12 +124,19 @@ public:
   /// Returns true if vcs usage is set in the config.
   bool use() const;
 
+  // Overridden methods.
+
+  bool is_dir_excluded(const path& p) const override;
+  bool is_file_excluded(const path& p) const override;
+  bool setup_exclude(const path& dir) override;
+
 private:
   const wex::path current_path() const;
 
   store_t::iterator m_entry;
 
   std::vector<wex::path> m_files;
+  std::set<wex::path>    m_excludes;
   std::string            m_title;
 
   static inline item_dialog* m_item_dialog{nullptr};

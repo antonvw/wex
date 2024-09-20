@@ -2,7 +2,7 @@
 // Name:      stc/auto-indent.cpp
 // Purpose:   Implementation of class wex::auto_indent
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -56,7 +56,7 @@ bool wex::auto_indent::find_indented_line(int start_line)
         << line << "indent" << m_indent;
       return true;
     }
-    else if (!m_stc->GetLineText(line).empty())
+    if (!m_stc->GetLineText(line).empty())
     {
       log::trace("auto_indent::find_indented_line") << line << "not empty";
       m_indent = 0;

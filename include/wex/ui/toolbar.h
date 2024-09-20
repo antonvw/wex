@@ -2,7 +2,7 @@
 // Name:      toolbar.h
 // Purpose:   Declaration of wex::toolbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2023 Anton van Wezenbeek
+// Copyright: (c) 2010-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -18,6 +18,7 @@ class wxCheckBox;
 
 namespace wex
 {
+class find_bar;
 class frame;
 
 /// Offers a toolbar together with wex art.
@@ -74,8 +75,14 @@ public:
     /// value
     bool value) const;
 
+  /// overridden methods
+
+  bool Destroy() override;
+
 private:
-  frame*                   m_frame;
+  find_bar* m_find_bar;
+  frame*    m_frame;
+
   std::vector<wxCheckBox*> m_checkboxes;
 };
 }; // namespace wex

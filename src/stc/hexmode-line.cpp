@@ -69,11 +69,13 @@ int wex::hexmode_line::buffer_index() const
   {
     return wxSTC_INVALID_POSITION;
   }
-  else if (m_column_no >= m_start_ascii_field)
+
+  if (m_column_no >= m_start_ascii_field)
   {
     return convert(m_column_no - m_start_ascii_field);
   }
-  else if (m_column_no >= 0)
+
+  if (m_column_no >= 0)
   {
     if (m_line[m_column_no] != ' ')
     {
@@ -99,7 +101,9 @@ bool wex::hexmode_line::erase(int count, bool settext)
 
   if (settext)
   {
-    m_hex->set_text(std::string(m_hex->m_buffer));
+    const auto pos(m_hex->get_stc()->GetCurrentPos());
+    m_hex->set_text_from_buffer();
+    m_hex->get_stc()->SetCurrentPos(pos);
   }
 
   return true;
@@ -138,14 +142,15 @@ bool wex::hexmode_line::insert(const std::string& text)
 
   if (m_column_no >= m_start_ascii_field)
   {
+    const auto pos(m_hex->get_stc()->GetCurrentPos());
     m_hex->m_buffer.insert(index, text);
-    m_hex->set_text(m_hex->m_buffer);
+    m_hex->set_text_from_buffer();
 
     if (
       m_column_no + text.size() >=
       m_hex->bytes_per_line() + m_start_ascii_field)
     {
-      int line_no =
+      const int line_no =
         m_hex->get_stc()->LineFromPosition(m_hex->get_stc()->GetCurrentPos()) +
         1;
       m_hex->get_stc()->SetCurrentPos(
@@ -153,8 +158,7 @@ bool wex::hexmode_line::insert(const std::string& text)
     }
     else
     {
-      m_hex->get_stc()->SetCurrentPos(
-        m_hex->get_stc()->GetCurrentPos() + text.size());
+      m_hex->get_stc()->SetCurrentPos(pos + text.size());
     }
 
     m_hex->get_stc()->SelectNone();
@@ -169,8 +173,10 @@ bool wex::hexmode_line::insert(const std::string& text)
     int val = 0;
     std::from_chars(text.data(), text.data() + 2, val, 16);
 
+    const auto pos(m_hex->get_stc()->GetCurrentPos());
     m_hex->m_buffer.insert(index, 1, val);
-    m_hex->set_text(m_hex->m_buffer);
+    m_hex->set_text_from_buffer();
+    m_hex->get_stc()->SetCurrentPos(pos);
   }
 
   return true;
@@ -267,7 +273,7 @@ void wex::hexmode_line::replace(const std::string& hex, bool settext)
 
   if (settext)
   {
-    m_hex->set_text(m_hex->m_buffer);
+    m_hex->set_text_from_buffer();
   }
 }
 

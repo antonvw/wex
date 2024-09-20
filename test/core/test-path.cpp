@@ -43,6 +43,7 @@ TEST_CASE("wex::path")
     wex::path path(wex::test::get_path("test.h"));
 
     REQUIRE(!path.dir_exists());
+    REQUIRE(path.exists());
     REQUIRE(path.file_exists());
     REQUIRE(path.extension() == ".h");
     REQUIRE(path.filename() == "test.h");
@@ -125,7 +126,7 @@ TEST_CASE("wex::path")
     REQUIRE(!wex::path("XXXXX").open_mime());
 
 #ifndef GITHUB
-    REQUIRE(wex::path("test.md").open_mime());
+    REQUIRE(wex::path("test-source.txt").open_mime());
 #endif
   }
 

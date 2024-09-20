@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      ex-commandline-imp.h
-// Purpose:   Declaration of wex::ex-commandline-imp class
+// Purpose:   Declaration of wex::ex_commandline_imp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -32,8 +32,6 @@ public:
     const std::string&  value = std::string(),
     const data::window& data  = data::window());
 
-  // other methods
-
   /// Handles string command.
   bool handle(const std::string& command);
 
@@ -42,6 +40,9 @@ public:
 
   /// Handles keydown event.
   void on_key_down(wxKeyEvent& event);
+
+  /// Text not expanded.
+  const auto& text_not_expanded() const { return m_text_not_expanded; };
 
   // Virtual interface
 
@@ -57,8 +58,8 @@ private:
 
   void ex_mode();
   void init();
-  bool input_mode_finish() const;
   bool is_ex_mode() const;
+  bool text_input_mode_finish() const;
 
   void on_char(wxKeyEvent& event);
   void on_key_down_control_r(wxKeyEvent& event);
@@ -77,9 +78,11 @@ private:
   wxControl*      m_prefix{nullptr};
   ex_commandline* m_cl;
 
-  char m_input{0};
+  char m_text_input{0};
 
   bool m_control_r{false}, m_mode_visual{false}, m_user_input{false};
+
+  std::string m_text_not_expanded;
 
   std::vector<ex_commandline_input*> m_clis;
 

@@ -2,9 +2,10 @@
 // Name:      addressrange-mark.cpp
 // Purpose:   Implementation of class wex::addressrange_mark
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log.h>
 #include <wex/ex/addressrange.h>
 #include <wex/ex/ex.h>
 #include <wex/syntax/stc.h>
@@ -16,10 +17,10 @@ wex::addressrange_mark::addressrange_mark(
   const addressrange&     ar,
   const data::substitute& subs)
   : m_ar(ar)
-  , m_type(get_type(subs))
   , m_ex(ar.get_ex())
   , m_stc(ar.get_ex()->get_stc())
   , m_undo(m_stc)
+  , m_data(subs)
 {
   m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
 }
@@ -56,24 +57,37 @@ wex::block_lines wex::addressrange_mark::get_block_lines() const
   return block_lines(m_ex).single();
 }
 
-wex::addressrange_mark::mark_t
-wex::addressrange_mark::get_type(const data::substitute& data) const
+wex::addressrange_mark::mark_t wex::addressrange_mark::get_type() const
 {
-  if (data.is_global_command())
+  if (m_data.is_global_command())
   {
-    if (data.commands() == "d")
+    if (m_data.commands().starts_with("a"))
     {
-      return data.is_inverse() ? MARK_GLOBAL_DELETE_INVERSE :
-                                 MARK_GLOBAL_DELETE;
+      return mark_t::GLOBAL_APPEND;
+    }
+
+    if (m_data.commands() == "d")
+    {
+      return m_data.is_inverse() ? mark_t::GLOBAL_DELETE_INVERSE :
+                                   mark_t::GLOBAL_DELETE;
+    }
+
+    if (m_data.commands().starts_with("c"))
+    {
+      return mark_t::GLOBAL_CHANGE;
     }
   }
 
-  return MARK_NORMAL;
+  return mark_t::NORMAL;
 }
 
-bool wex::addressrange_mark::search(const data::substitute& data)
+bool wex::addressrange_mark::search()
 {
-  if (data.pattern() == "$")
+  if (m_data.pattern().empty())
+  {
+    return false;
+  }
+  else if (m_data.pattern() == "$")
   {
     if (m_ex->marker_line('T') == m_ex->marker_line('$'))
     {
@@ -88,13 +102,9 @@ bool wex::addressrange_mark::search(const data::substitute& data)
       'T',
       m_stc->LineFromPosition(m_stc->GetTargetEnd()) + 1);
   }
-  else
-  {
-    return m_stc->SearchInTarget(data.pattern()) != -1 &&
-           m_ex->marker_add(
-             'T',
-             m_stc->LineFromPosition(m_stc->GetTargetEnd()));
-  }
+
+  return m_stc->SearchInTarget(m_data.pattern()) != -1 &&
+         m_ex->marker_add('T', m_stc->LineFromPosition(m_stc->GetTargetEnd()));
 }
 
 bool wex::addressrange_mark::set()
@@ -124,29 +134,45 @@ bool wex::addressrange_mark::set()
   return true;
 }
 
-bool wex::addressrange_mark::update()
+bool wex::addressrange_mark::update(int lines_changed)
 {
-  int begin_pos;
+  int target_start;
 
-  switch (m_type)
+  switch (get_type())
   {
-    case MARK_GLOBAL_DELETE:
-      begin_pos = m_stc->PositionFromLine(m_ex->marker_line('T'));
+    case mark_t::GLOBAL_APPEND:
+      target_start =
+        m_ar.data().is_global() ?
+          m_stc->GetTargetEnd() :
+          m_stc->GetLineEndPosition(m_ex->marker_line('T') + lines_changed);
       break;
 
-    case MARK_GLOBAL_DELETE_INVERSE:
-      begin_pos = m_stc->GetLineEndPosition(m_ex->marker_line('T'));
+    case mark_t::GLOBAL_CHANGE:
+      target_start = m_ar.data().is_global() ?
+                       m_stc->GetTargetEnd() :
+                       m_stc->GetLineEndPosition(m_ex->marker_line('T') - 1);
+      break;
+
+    case mark_t::GLOBAL_DELETE:
+      target_start = m_stc->PositionFromLine(m_ex->marker_line('T'));
+      break;
+
+    case mark_t::GLOBAL_DELETE_INVERSE:
+      target_start = m_stc->GetLineEndPosition(m_ex->marker_line('T'));
       break;
 
     default:
-      begin_pos = m_ar.data().is_global() ?
-                    m_stc->GetTargetEnd() :
-                    m_stc->GetLineEndPosition(m_ex->marker_line('T'));
+      target_start = m_ar.data().is_global() ?
+                       m_stc->GetTargetEnd() :
+                       m_stc->GetLineEndPosition(m_ex->marker_line('T'));
   }
 
   m_stc->SetTargetRange(
-    begin_pos,
+    target_start,
     m_stc->GetLineEndPosition(m_ex->marker_line('$')));
+
+  log::trace("addressrange_mark")
+    << m_stc->GetTargetStart() << m_stc->GetTargetEnd();
 
   return m_stc->GetTargetStart() < m_stc->GetTargetEnd();
 }

@@ -2,7 +2,7 @@
 // Name:      log.cpp
 // Purpose:   Implementation of class wex::log
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2023 Anton van Wezenbeek
+// Copyright: (c) 2017-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/log/core.hpp>
@@ -14,6 +14,7 @@
 #include <wex/core/config.h>
 #include <wex/core/log.h>
 #include <wex/core/path.h>
+#include <wex/core/version.h>
 #include <wx/app.h>
 #include <wx/log.h>
 
@@ -46,10 +47,8 @@ std::string quote(const std::string& r, log::level_t level)
   {
     return "";
   }
-  else
-  {
-    return r.contains(" ") ? "\"" : "";
-  }
+
+  return r.contains(" ") ? "\"" : "";
 }
 
 std::string ws2s(const std::wstring& wstr)
@@ -96,7 +95,14 @@ wex::log::log(const std::string& topic, level_t level)
 
 wex::log::~log()
 {
-  flush();
+  try
+  {
+    flush();
+  }
+  catch (const std::exception& e)
+  {
+    std::cerr << e.what() << "\n";
+  }
 }
 
 wex::log& wex::log::operator<<(char r)
@@ -327,6 +333,9 @@ void wex::log::on_init(level_t loglevel, const std::string& default_logfile)
     logging::keywords::format    = "%TimeStamp% [%Severity%] %Message%");
 
   m_initialized = true;
+
+  log::info("started") << wxTheApp->GetAppName().ToStdString()
+                       << get_version_info().get(false) << m_logfile;
 }
 
 const std::string wex::log::path()

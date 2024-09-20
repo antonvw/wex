@@ -8,18 +8,3 @@ index 1efa85e255..20ba26ac42 100644
  wx_add_library(wxqa ${QA_FILES})
 -wx_lib_link_libraries(wxqa PUBLIC wxxml)
 +wx_lib_link_libraries(wxqa PUBLIC)
-diff --git a/build/cmake/toolkit.cmake b/build/cmake/toolkit.cmake
-index 49a21c1fc8..5e10a1a3c8 100644
---- a/build/cmake/toolkit.cmake
-+++ b/build/cmake/toolkit.cmake
-@@ -78,7 +78,9 @@ if(WXGTK)
-         set(gtk_lib GTK2)
-     endif()
- 
--    find_package(${gtk_lib} REQUIRED)
-+    #find_package(${gtk_lib} REQUIRED)
-+    FIND_PACKAGE(PkgConfig REQUIRED)
-+    PKG_CHECK_MODULES(GTK3 REQUIRED gtk+-3.0)
-     list(APPEND wxTOOLKIT_INCLUDE_DIRS ${${gtk_lib}_INCLUDE_DIRS})
-     list(APPEND wxTOOLKIT_LIBRARIES ${${gtk_lib}_LIBRARIES})
-     list(APPEND wxTOOLKIT_DEFINITIONS ${${gtk_lib}_DEFINITIONS})

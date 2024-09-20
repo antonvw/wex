@@ -45,16 +45,24 @@ void wex::lexers::apply(factory::stc* stc) const
   m_default_style.apply(stc);
 
   for (const auto& i : m_indicators)
+  {
     i.apply(stc);
+  }
   for (const auto& p : m_global_properties)
+  {
     p.apply(stc);
+  }
   for (const auto& m : m_markers)
+  {
     m.apply(stc);
+  }
 
   if (stc->is_hexmode())
   {
     for (const auto& s : m_styles_hex)
+    {
       s.apply(stc);
+    }
   }
 }
 
@@ -80,11 +88,11 @@ void wex::lexers::apply_global_styles(factory::stc* stc)
 {
   if (m_default_colours.empty())
   {
-    m_default_colours["caretforeground"] =
-      stc->GetCaretForeground().GetAsString();
+    m_default_colours["caretforeground"] = "grey"; // otherwise white was chosen
     m_default_colours["caretlinebackground"] =
       stc->GetCaretLineBackground().GetAsString();
     m_default_colours["edge"] = stc->GetEdgeColour().GetAsString();
+    m_theme_colours[std::string()] = m_default_colours;
   }
 
   m_default_style.apply(stc);
@@ -92,7 +100,9 @@ void wex::lexers::apply_global_styles(factory::stc* stc)
   stc->StyleClearAll();
 
   for (const auto& s : m_styles)
+  {
     s.apply(stc);
+  }
 
   stc->SetFoldMarginHiColour(
     true,
@@ -113,19 +123,33 @@ void wex::lexers::apply_global_styles(factory::stc* stc)
     for (const auto& it : colour_it->second)
     {
       if (it.first == "caretforeground")
+      {
         stc->SetCaretForeground(it.second.c_str());
+      }
       else if (it.first == "caretlinebackground")
+      {
         stc->SetCaretLineBackground(it.second.c_str());
+      }
       else if (it.first == "selbackground")
+      {
         stc->SetSelBackground(true, it.second.c_str());
+      }
       else if (it.first == "selforeground")
+      {
         stc->SetSelForeground(true, it.second.c_str());
+      }
       else if (it.first == "calltipbackground")
+      {
         stc->CallTipSetBackground(it.second.c_str());
+      }
       else if (it.first == "calltipforeground")
+      {
         stc->CallTipSetForeground(it.second.c_str());
+      }
       else if (it.first == "edge")
+      {
         stc->SetEdgeColour(it.second.c_str());
+      }
     }
   }
 }
@@ -136,12 +160,16 @@ const std::string wex::lexers::apply_macro(
 {
   if (const auto& it = get_macros(lexer).find(text);
       it != get_macros(lexer).end())
+  {
     return it->second;
-  else if (const auto& it = theme_macros().find(text);
-           it != theme_macros().end())
+  }
+
+  if (const auto& it = theme_macros().find(text); it != theme_macros().end())
+  {
     return it->second;
-  else
-    return text;
+  }
+
+  return text;
 }
 
 void wex::lexers::apply_margin_text_style(factory::stc* stc, const blame* blame)
@@ -246,7 +274,9 @@ const wex::lexer& wex::lexers::find_by_text(const std::string& text) const
     for (const auto& t : m_texts)
     {
       if (std::regex_search(filtered, std::regex(t.second)))
+      {
         return find(t.first);
+      }
     }
   }
   catch (std::exception& e)
@@ -351,9 +381,13 @@ void wex::lexers::load_document_check()
   if (!m_lexers.empty() && !m_theme.empty())
   {
     if (!m_default_style.is_ok())
+    {
       log() << "default style not ok";
+    }
     if (!m_default_style.contains_default_style())
+    {
       log() << "default style does not contain default style";
+    }
   }
 
   if (m_theme_macros.size() <= 1)
@@ -371,7 +405,7 @@ void wex::lexers::load_document_check()
     }
   }
 
-  log::trace("lexers info") << m_reflect.log();
+  log::info("lexers") << m_path.string() << m_reflect.log();
 }
 
 bool wex::lexers::load_document_init()
@@ -470,7 +504,9 @@ void wex::lexers::parse_node_global(const pugi::xml_node& node)
     else if (strcmp(child.name(), "marker") == 0)
     {
       if (const wex::marker marker(child); marker.is_ok())
+      {
         m_markers.insert(marker);
+      }
     }
     else if (strcmp(child.name(), "properties") == 0)
     {
@@ -641,7 +677,9 @@ void wex::lexers::parse_node_theme(const pugi::xml_node& node)
 void wex::lexers::parse_node_themes(const pugi::xml_node& node)
 {
   for (const auto& child : node.children())
+  {
     parse_node_theme(child);
+  }
 }
 
 wex::lexers* wex::lexers::set(wex::lexers* lexers)

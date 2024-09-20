@@ -2,7 +2,7 @@
 // Name:      grid.cpp
 // Purpose:   Implementation of wex::grid class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -35,8 +35,7 @@ private:
 };
 
 text_droptarget::text_droptarget(grid* grid)
-  : wxTextDropTarget()
-  , m_grid(grid)
+  : m_grid(grid)
 {
 }
 
@@ -118,33 +117,33 @@ wex::grid::grid(const data::window& data)
     });
 
   bind(this).command(
-    {{[=, this](wxCommandEvent& event)
+    {{[=, this](const wxCommandEvent& event)
       {
         empty_selection();
       },
       wxID_DELETE},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         SelectAll();
       },
       wxID_SELECTALL},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         ClearSelection();
       },
       ID_EDIT_SELECT_NONE},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         copy_selected_cells_to_clipboard();
       },
       wxID_COPY},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         copy_selected_cells_to_clipboard();
         empty_selection();
       },
       wxID_CUT},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         paste_cells_from_clipboard();
       },
@@ -215,14 +214,18 @@ wex::grid::grid(const data::window& data)
 
   Bind(
     wxEVT_GRID_CELL_RIGHT_CLICK,
-    [=, this](wxGridEvent& event)
+    [=, this](const wxGridEvent& event)
     {
       menu::menu_t style(menu::menu_t().set(menu::IS_POPUP));
 
       if (!IsEditable())
+      {
         style.set(wex::menu::IS_READ_ONLY);
+      }
       if (IsSelection())
+      {
         style.set(wex::menu::IS_SELECTED);
+      }
 
       wex::menu menu(style);
       build_popup_menu(menu);
@@ -275,9 +278,13 @@ const std::string wex::grid::build_page()
   text << "<TABLE ";
 
   if (GridLinesEnabled())
+  {
     text << "border=1";
+  }
   else
+  {
     text << "border=0";
+  }
 
   text << " cellpadding=4 cellspacing=0 >\n";
   text << "<tr>\n";
@@ -440,13 +447,11 @@ bool wex::grid::find_next(const data::find& f)
 
     return result;
   }
-  else
-  {
-    f.recursive(false);
-    SetGridCursor(match.GetRow(), match.GetCol());
-    MakeCellVisible(match); // though docs say this isn't necessary, it is
-    return true;
-  }
+
+  f.recursive(false);
+  SetGridCursor(match.GetRow(), match.GetCol());
+  MakeCellVisible(match); // though docs say this isn't necessary, it is
+  return true;
 }
 
 const std::string wex::grid::get_cells_value() const

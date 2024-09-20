@@ -2,7 +2,7 @@
 // Name:      listview-file.cpp
 // Purpose:   Implementation of class wex::del::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2023 Anton van Wezenbeek
+// Copyright: (c) 2010-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <pugixml.hpp>
@@ -55,7 +55,7 @@ wex::del::file::file(const wex::path& p, const data::listview& data)
 
   Bind(
     wxEVT_MENU,
-    [=, this](wxCommandEvent& event)
+    [=, this](const wxCommandEvent& event)
     {
       // Force at least one of the checkboxes to be checked.
       m_add_items_dialog->force_checkbox_checked(_("Add"));
@@ -125,7 +125,7 @@ void wex::del::file::add_items(
 
   wex::dir dir(
     wex::path(folder),
-    data::dir().file_spec(files).type(flags),
+    data::dir().file_spec(files).type(flags).vcs(get_frame()->vcs()),
     this);
 
   dir.find_files();
@@ -171,11 +171,9 @@ bool wex::del::file::do_file_load(bool synced)
       clear();
       return true;
     }
-    else
-    {
-      xml_error(path(), &result);
-      return false;
-    }
+
+    xml_error(path(), &result);
+    return false;
   }
 
   clear();

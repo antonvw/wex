@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of class wex::del::listview
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/wex.h>
@@ -34,25 +34,25 @@ wex::del::listview::listview(const data::listview& data)
     .set(this);
 
   bind(this).command(
-    {{[=, this](wxCommandEvent& event)
+    {{[=, this](const wxCommandEvent& event)
       {
         on_compare();
       },
       ID_LIST_COMPARE},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         build(path_lexer(listitem(this, GetFirstSelected()).path()));
       },
       ID_LIST_RUN_BUILD},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         on_tool(event);
       },
       ID_TOOL_LOWEST},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         std::vector<path> files;
         for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
@@ -194,14 +194,18 @@ void wex::del::listview::on_compare()
     const wex::path* filename = &li.path();
 
     if (!filename->file_exists())
+    {
       continue;
+    }
 
     if (GetSelectedItemCount() == 1)
     {
       list = m_frame->activate(data::listview::FILE);
 
       if (list == nullptr)
+      {
         return;
+      }
 
       const int main_selected = list->GetFirstSelected();
       compare_file(listitem(list, main_selected).path(), *filename);
@@ -219,7 +223,9 @@ void wex::del::listview::on_compare()
         file2 = filename->string();
       }
       if (first)
+      {
         compare_file(path(file1), path(file2));
+      }
     }
   }
 }

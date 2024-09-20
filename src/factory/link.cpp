@@ -73,7 +73,7 @@ wex::factory::link::link()
 {
 }
 
-wex::factory::link::~link() {}
+wex::factory::link::~link() = default;
 
 bool wex::factory::link::add_path(const path& p)
 {
@@ -133,10 +133,9 @@ const wex::path wex::factory::link::find_filename(
     return path();
   }
 
-  std::string text_filter(text);
-
   // The harddrive letter is filtered, it does not work
   // when adding it to match.
+  std::string text_filter(text);
   std::string prefix;
 
 #ifdef __WXMSW__
@@ -177,6 +176,7 @@ const wex::path wex::factory::link::find_filename(
     {
       return p.make_absolute();
     }
+    /* NOLINTNEXTLINE */
     else if (const path r(m_paths->find(q.string())); !r.empty())
     {
       return r;
@@ -223,8 +223,16 @@ const wex::path wex::factory::link::find_url_or_mime(
     }
   }
 
-  // previewable (MIME) file
-  return (stc != nullptr && stc->lexer_is_previewable()) ? stc->path() : path();
+  if (data.line() == LINE_OPEN_MIME)
+  {
+    // previewable (MIME) file
+    return (stc != nullptr && stc->lexer_is_previewable()) ? stc->path() :
+                                                             path();
+  }
+  else
+  {
+    return path();
+  }
 }
 
 // text contains selected text, or current line
@@ -265,6 +273,7 @@ const wex::path wex::factory::link::get_path(
   {
     return file.make_absolute();
   }
+  /* NOLINTNEXTLINE */
   else if (file.is_relative() && stc != nullptr && stc->path().file_exists())
   {
     if (wex::path path(stc->path().parent_path());

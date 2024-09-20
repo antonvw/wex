@@ -2,7 +2,7 @@
 // Name:      global-env.cpp
 // Purpose:   Implementation of class wex::global_env
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2022 Anton van Wezenbeek
+// Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -16,12 +16,14 @@
 #include "block-lines.h"
 #include "global-env.h"
 
-wex::global_env::global_env(const addressrange* ar)
-  : m_ex(ar->get_ex())
-  , m_ar(ar)
-  , m_stc(m_ex->get_stc())
+wex::global_env::global_env(ex* e)
+  : m_ex(e)
+  , m_ar(e, "%")
+  , m_stc(e->get_stc())
 {
   m_stc->set_search_flags(m_ex->search_flags());
+
+  bool command_arg = false;
 
   for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
          addressrange::data().commands(),
@@ -35,20 +37,52 @@ wex::global_env::global_env(const addressrange* ar)
         m_recursive = true;
       }
 
-      m_commands.emplace_back(it);
+      if (!command_arg)
+      {
+        m_commands.emplace_back(it);
+      }
+      else
+      {
+        // for append, change, insert the | is part of the command
+        m_commands.back() += "|" + it;
+        command_arg = false;
+      }
+
+      if (it == "a" || it == "c" || it == "i")
+      {
+        command_arg = true;
+      }
     }
   }
+
+  if (command_arg)
+  {
+    log("global command") << m_commands.back() << "missing argument";
+    m_commands.clear();
+  }
+}
+
+bool wex::global_env::command(const block_lines& block, const std::string& text)
+  const
+{
+  if (const auto cmd(":" + block.get_range() + text); !m_ex->command(cmd))
+  {
+    m_ex->frame()->show_ex_message(cmd + " failed");
+    return false;
+  }
+
+  return true;
 }
 
 bool wex::global_env::for_each(const block_lines& match) const
 {
-  return !has_commands() ? m_stc->set_indicator(m_ar->find_indicator()) :
+  return !has_commands() ? m_stc->set_indicator(m_ar.find_indicator()) :
                            std::all_of(
                              m_commands.begin(),
                              m_commands.end(),
                              [this, match](const std::string& it)
                              {
-                               return run(match, it);
+                               return command(match, it);
                              });
 }
 
@@ -77,7 +111,7 @@ pp14
 // clang-format on
 bool wex::global_env::global(const data::substitute& data)
 {
-  addressrange_mark am(*m_ar, data);
+  addressrange_mark am(m_ar, data);
 
   if (!am.set())
   {
@@ -89,11 +123,13 @@ bool wex::global_env::global(const data::substitute& data)
     (m_recursive && data.commands() != "$" && data.commands() != "1" &&
      data.commands() != "d");
 
-  block_lines ib(m_ex, -1);
+  block_lines ib(m_ex, -1); // inverse block
   block_lines mb(m_ex);
 
-  while (am.search(data))
+  while (am.search())
   {
+    const auto lines(m_stc->get_line_count());
+
     if (mb = am.get_block_lines(); data.is_inverse())
     {
       if (!process_inverse(mb, ib))
@@ -116,7 +152,7 @@ bool wex::global_env::global(const data::substitute& data)
       return false;
     }
 
-    if (!am.update())
+    if (!am.update(m_stc->get_line_count() - lines))
     {
       break;
     }
@@ -167,18 +203,6 @@ bool wex::global_env::process_inverse(const block_lines& mb, block_lines& ib)
   else
   {
     ib = mb;
-  }
-
-  return true;
-}
-
-bool wex::global_env::run(const block_lines& block, const std::string& command)
-  const
-{
-  if (const auto cmd(":" + block.get_range() + command); !m_ex->command(cmd))
-  {
-    m_ex->frame()->show_ex_message(cmd + " failed");
-    return false;
   }
 
   return true;

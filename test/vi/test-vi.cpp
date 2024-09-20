@@ -2,7 +2,7 @@
 // Name:      vi/test-vi.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -142,7 +142,9 @@ TEST_CASE("wex::vi")
     REQUIRE(wex::ex::register_insert() == "xxxxxxxx");
     REQUIRE(vi->last_command() == "ixxxxxxxx" + wex::esc());
     for (int i = 0; i < 10; i++)
+    {
       REQUIRE(vi->command("."));
+    }
     REQUIRE(stc->get_text().contains("xxxxxxxxxxxxxxxxxxxxxxxxxxx"));
 
     // insert commands
@@ -344,4 +346,6 @@ TEST_CASE("wex::vi")
     // README: This should pass, but selection is not ok.
     // REQUIRE(stc->GetSelectedText().size() == 33);
   }
+
+  delete vi;
 }

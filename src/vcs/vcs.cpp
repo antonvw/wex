@@ -2,7 +2,7 @@
 // Name:      vcs.cpp
 // Purpose:   Implementation of wex::vcs class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -16,15 +16,15 @@
 #include <wex/ui/menus.h>
 #include <wex/vcs/vcs.h>
 
-#define SET_ENTRY                                                       \
-  if (                                                                  \
-    parent != nullptr && config(_("vcs.Always ask flags")).get(true) && \
-    item_dialog(v, data::window().parent(parent).title(message))        \
-        .ShowModal() == wxID_CANCEL)                                    \
-  {                                                                     \
-    return false;                                                       \
-  }                                                                     \
-                                                                        \
+#define SET_ENTRY                                                              \
+  if (                                                                         \
+    parent != nullptr && config(_("vcs.Always ask flags")).get(true) &&        \
+    item_dialog(v, data::window().parent(parent).title(message))               \
+        .ShowModal() == wxID_CANCEL)                                           \
+  {                                                                            \
+    return false;                                                              \
+  }                                                                            \
+                                                                               \
   m_entry = find_entry(m_store);
 
 #include <map>
@@ -41,49 +41,6 @@ enum
   VCS_START = 0   // number where fixed VCS start (index in vector)
 };
 
-/// Offers several vcs admin support methods.
-class vcs_admin
-{
-public:
-  /// Constructor.
-  vcs_admin(const std::string& dir, const path& p)
-    : m_dir(dir)
-    , m_path(p)
-  {
-  }
-
-  /// Returns true if admin dir exists for path.
-  bool exists() const
-  {
-    return !m_dir.empty() && !m_path.empty() &&
-           path(m_path).append(path(m_dir)).dir_exists();
-  }
-
-  /// Returns true if toplevel is not empty.
-  bool is_toplevel() const { return !toplevel().empty(); }
-
-  /// Return toplevel dir.
-  path toplevel() const
-  {
-    // .git
-    // /home/user/wex/src/src/vi.cpp
-    // should return -> /home/user/wex
-    for (path root; const auto& part : m_path.data())
-    {
-      if (vcs_admin(m_dir, root.append(part)).exists())
-      {
-        return root;
-      }
-    }
-
-    return path();
-  }
-
-private:
-  const std::string m_dir;
-  const path        m_path;
-};
-
 vcs::store_t::iterator find_entry(vcs::store_t* store, const path& p)
 {
   if (auto vcs = config("vcs.VCS").get(VCS_AUTO); vcs == VCS_AUTO)
@@ -95,7 +52,7 @@ vcs::store_t::iterator find_entry(vcs::store_t* store, const path& p)
             store->end(),
             [p](const auto& i)
             {
-              const vcs_admin va(i.admin_dir(), p);
+              const factory::vcs_admin va(i.admin_dir(), p);
               return va.is_toplevel() || va.exists();
             });
           it != store->end())
@@ -133,8 +90,9 @@ wex::vcs::vcs(const std::vector<wex::path>& files, int command_no)
     if (m_files.size() == 1 && !m_files[0].file_exists())
     {
       config(_("vcs.Base folder"))
-        .set_first_of(
-          vcs_admin(m_entry->admin_dir(), m_files[0]).toplevel().string());
+        .set_first_of(factory::vcs_admin(m_entry->admin_dir(), m_files[0])
+                        .toplevel()
+                        .string());
     }
 
     if (m_entry->set_command(command_no))
@@ -191,7 +149,10 @@ int wex::vcs::config_dialog(const data::window& par) const
   std::vector<item> v{{"vcs.VCS", choices, true, data::item().columns(cols)}};
 
   config(_("vcs.Always ask flags")).get(true);
+  config(_("vcs.Find includes submodules")).get(false);
+
   v.emplace_back(_("vcs.Always ask flags"), item::CHECKBOX);
+  v.emplace_back(_("vcs.Find includes submodules"), item::CHECKBOX);
 
   std::transform(
     m_store->begin(),
@@ -202,17 +163,14 @@ int wex::vcs::config_dialog(const data::window& par) const
       return item("vcs." + t.name(), item::FILEPICKERCTRL);
     });
 
-  if (const data::window data(
-        data::window(par).title(_("Set VCS").ToStdString()));
-      data.button() & wxAPPLY)
+  const data::window data(data::window(par).title(_("Set VCS").ToStdString()));
+  if (data.button() & wxAPPLY)
   {
     auto* dlg = new item_dialog(v, data);
     return dlg->Show();
   }
-  else
-  {
-    return item_dialog(v, data).ShowModal();
-  }
+
+  return item_dialog(v, data).ShowModal();
 }
 
 const wex::path wex::vcs::current_path() const
@@ -221,10 +179,8 @@ const wex::path wex::vcs::current_path() const
   {
     return wex::path(config(_("vcs.Base folder")).get_first_of());
   }
-  else
-  {
-    return m_files[0];
-  }
+
+  return m_files[0];
 }
 
 void wex::vcs::destroy_dialog()
@@ -238,25 +194,20 @@ void wex::vcs::destroy_dialog()
 
 bool wex::vcs::dir_exists(const wex::path& filename)
 {
-  if (const auto entry(find_entry(m_store, filename));
-      vcs_admin(entry->admin_dir(), filename).is_toplevel())
+  if (const auto& entry(find_entry(m_store, filename));
+      factory::vcs_admin(entry->admin_dir(), filename).is_toplevel())
   {
     return true;
   }
   else
   {
-    return vcs_admin(entry->admin_dir(), filename).exists();
+    return factory::vcs_admin(entry->admin_dir(), filename).exists();
   }
 }
 
 bool wex::vcs::empty()
 {
   return m_store->empty();
-}
-
-size_t wex::vcs::size()
-{
-  return m_store->size();
 }
 
 bool wex::vcs::execute()
@@ -269,42 +220,40 @@ bool wex::vcs::execute()
       lexer(),
       config(_("vcs.Base folder")).get_first_of());
   }
+
+  const path_lexer filename(current_path());
+  wex::path        wd(current_path());
+  std::string      args;
+
+  if (m_files.size() > 1)
+  {
+    args = clipboard_add(std::accumulate(
+      m_files.begin(),
+      m_files.end(),
+      std::string(),
+      [](const std::string& a, const wex::path& b)
+      {
+        return a + quoted_find(b.string()) + " ";
+      }));
+  }
+  else if (m_entry->name() == "git")
+  {
+    if (filename.file_exists() && !filename.filename().empty())
+    {
+      args = quoted_find(filename.filename());
+    }
+
+    if (wd.file_exists())
+    {
+      wd = wex::path(wd.parent_path());
+    }
+  }
   else
   {
-    const path_lexer filename(current_path());
-    wex::path        wd(current_path());
-    std::string      args;
-
-    if (m_files.size() > 1)
-    {
-      args = clipboard_add(std::accumulate(
-        m_files.begin(),
-        m_files.end(),
-        std::string(),
-        [](const std::string& a, const wex::path& b)
-        {
-          return a + quoted_find(b.string()) + " ";
-        }));
-    }
-    else if (m_entry->name() == "git")
-    {
-      if (filename.file_exists() && !filename.filename().empty())
-      {
-        args = quoted_find(filename.filename());
-      }
-
-      if (wd.file_exists())
-      {
-        wd = wex::path(wd.parent_path());
-      }
-    }
-    else
-    {
-      args = quoted_find(filename.string());
-    }
-
-    return m_entry->execute(args, filename.lexer(), wd.string());
+    args = quoted_find(filename.string());
   }
+
+  return m_entry->execute(args, filename.lexer(), wd.string());
 }
 
 bool wex::vcs::execute(const std::string& command)
@@ -322,6 +271,17 @@ const std::string wex::vcs::get_branch() const
                                             current_path().string());
 }
 
+bool wex::vcs::is_dir_excluded(const path& p) const
+{
+  return is_setup() && m_excludes.contains(p);
+}
+
+bool wex::vcs::is_file_excluded(const path& p) const
+{
+  // not yet implemented
+  return false;
+}
+
 bool wex::vcs::load_document()
 {
   on_init();
@@ -329,9 +289,11 @@ bool wex::vcs::load_document()
   const auto old_store = size();
 
   if (!menus::load("vcs", *m_store))
+  {
     return false;
+  }
 
-  log::trace("vcs store") << size();
+  log::info("vcs entries") << size() << "from" << menus::path().string();
 
   if (old_store == 0)
   {
@@ -402,6 +364,14 @@ wxStandardID wex::vcs::request(const data::window& data)
   return wxID_OK;
 }
 
+void wex::vcs::set(const wex::path& p)
+{
+  m_files.clear();
+  m_files.emplace_back(p);
+
+  m_entry = find_entry(m_store, current_path());
+}
+
 bool wex::vcs::set_entry_from_base(wxWindow* parent)
 {
   if (!use())
@@ -430,6 +400,28 @@ bool wex::vcs::set_entry_from_base(wxWindow* parent)
   }
 
   return !m_entry->name().empty();
+}
+
+bool wex::vcs::setup_exclude(const path& dir)
+{
+  if (config(_("vcs.Find includes submodules")).get(false))
+  {
+    return false;
+  }
+
+  const auto& s(m_entry->setup_exclude(toplevel(), dir));
+
+  if (!s)
+  {
+    return false;
+  }
+
+  m_excludes = *s;
+  set(dir);
+
+  log::trace("vcs setup on") << dir.string() << "excludes" << m_excludes.size();
+
+  return is_setup(true);
 }
 
 int wex::vcs::show_dialog(const data::window& arg)
@@ -524,9 +516,14 @@ int wex::vcs::show_dialog(const data::window& arg)
                                      m_item_dialog->ShowModal();
 }
 
+size_t wex::vcs::size()
+{
+  return m_store->size();
+}
+
 wex::path wex::vcs::toplevel() const
 {
-  return vcs_admin(
+  return factory::vcs_admin(
            m_entry->admin_dir(),
            m_files.empty() ? current_path() : m_files[0])
     .toplevel();

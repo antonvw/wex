@@ -2,7 +2,7 @@
 # shellcheck disable=SC2086
 ################################################################################
 # Name:      build-gen.sh
-# Purpose:   Generates (ninja) build files for osx or linux
+# Purpose:   Generates build files for osx or linux
 #            for building wex itself, or for building apps using it
 #            Just run from repo root
 # Author:    Anton van Wezenbeek
@@ -11,7 +11,7 @@
 
 usage()
 {
-  echo "usage: build-gen.sh [-B <dir>] [-d <dir>] [-abcghilopstT]"
+  echo "usage: build-gen.sh [-B <dir>] [-d <dir>] [-G <gen>] [-abcghilopstT]"
   echo "-a       build ASAN leak sanitizer"
   echo "-b       build static libraries, default builds shared libraries"
   echo "-B <dir> boost root build <dir>"
@@ -19,11 +19,12 @@ usage()
   echo "-d <dir> build <dir>, default uses the 'build' subdir"
   echo "-D <x=y> add a general cmake define"
   echo "-g       build github mode"
+  echo "-G <gen> use generator, default uses the 'Ninja' generator"
   echo "-h       displays usage information and exits"
   echo "-i       build interface bindings for SWIG"
   echo "-l       add locale files"
   echo "-o       build ODBC"
-  echo "-p       prepare only, do not run ninja after generating build files"
+  echo "-p       prepare only, do not run (ninja) after generating build files"
   echo "-s       build samples binaries as well"
   echo "-t       build tests binaries as well"
   echo "-T       build clang-tidy (to enable run-clang-tidy)"
@@ -36,6 +37,7 @@ option_build="-DwexBUILD_SHARED=ON"
 option_cmake=
 option_coverage=
 option_dir=build
+option_generator="-G Ninja"
 option_github=
 option_locale=
 option_odbc=
@@ -45,7 +47,7 @@ option_swig=
 option_tests=
 option_tidy=
 
-while getopts ":B:d:D:abcghilopstT" opt; do
+while getopts ":B:d:D:G:abcghilopstT" opt; do
   case $opt in
     a)
       option_asan="-DwexENABLE_ASAN=ON"
@@ -60,7 +62,8 @@ while getopts ":B:d:D:abcghilopstT" opt; do
     ;;
 
     c)
-      option_coverage="-DCMAKE_BUILD_TYPE=Coverage -DwexGCOV=gcov-13"
+      # see ci-ubuntu.yml
+      option_coverage="-DCMAKE_BUILD_TYPE=Coverage -DwexGCOV=gcov-12"
     ;;
 
     d)
@@ -75,6 +78,11 @@ while getopts ":B:d:D:abcghilopstT" opt; do
       option_github="-DwexBUILD_GITHUB=ON"
     ;;
 
+    G)
+      option_generator="-G ${OPTARG}"
+      option_prepare=true
+    ;;
+
     h)
       usage
       exit 1
@@ -82,6 +90,7 @@ while getopts ":B:d:D:abcghilopstT" opt; do
 
     i)
       option_swig="-DwexBUILD_BINDINGS=ON"
+      option_dir=swig
     ;;
 
     l)
@@ -131,7 +140,7 @@ fi
 
 mkdir -p "${option_dir}"
 
-cmake -B "${option_dir}" -G Ninja \
+cmake -B "${option_dir}" "${option_generator}" \
   ${option_asan} \
   ${option_boost_build} \
   ${option_build} \

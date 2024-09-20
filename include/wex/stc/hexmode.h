@@ -96,6 +96,9 @@ public:
   /// The text should be normal ascii text, it is encoded while appending.
   void set_text(const std::string& text);
 
+  /// Sets text from buffer, if hex mode is on.
+  void set_text_from_buffer();
+
   /// Sync, set text with buffer.
   bool sync();
 

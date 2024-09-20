@@ -7,6 +7,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <wex/common/stream.h>
+#include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
 #include <wex/factory/beautify.h>
@@ -46,7 +47,9 @@ bool wex::stream::process(std::string& text, size_t line_no)
     {
       count = m_frd->regex_replace(text);
       if (!m_modified)
+      {
         m_modified = (count > 0);
+      }
     }
   }
   else
@@ -86,15 +89,17 @@ bool wex::stream::process(std::string& text, size_t line_no)
 
       match = (count > 0);
       if (!m_modified)
+      {
         m_modified = match;
+      }
     }
   }
 
   if (match)
   {
-    if (m_tool.id() == ID_TOOL_REPORT_FIND && m_eh != nullptr)
+    if (m_tool.is_find_type() && m_eh != nullptr)
     {
-      process_match(path_match(path(), text, line_no, pos));
+      process_match(path_match(path(), m_tool, text, line_no, pos), m_eh);
     }
 
     const auto ac = m_stats.inc_actions_completed(count);
@@ -110,10 +115,8 @@ bool wex::stream::process(std::string& text, size_t line_no)
       {
         return false;
       }
-      else
-      {
-        m_asked = true;
-      }
+
+      m_asked = true;
     }
   }
 
@@ -147,13 +150,6 @@ bool wex::stream::process_begin()
   return true;
 }
 
-void wex::stream::process_match(const path_match& m)
-{
-  wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_LIST_MATCH);
-  event.SetClientData(new path_match(m));
-  wxPostEvent(m_eh, event);
-}
-
 int wex::stream::replace_all(std::string& text, int* match_pos)
 {
   int         count  = 0;
@@ -180,55 +176,59 @@ int wex::stream::replace_all(std::string& text, int* match_pos)
 
 bool wex::stream::run_tool()
 {
-  if (std::fstream fs(m_path.data(), std::ios_base::in); !fs.is_open())
+  std::fstream fs(m_path.data(), std::ios_base::in);
+  if (!fs.is_open())
   {
     log("stream::open") << m_path;
     return false;
   }
-  else if (!process_begin())
+
+  if (!process_begin())
   {
     return false;
   }
-  else
+
+  m_asked = false;
+  std::string s;
+  int         line_no = 0;
+
+  for (std::string line; std::getline(fs, line);)
   {
-    m_asked = false;
-    std::string s;
-    int         line_no = 0;
-
-    for (std::string line; std::getline(fs, line);)
+    if (!process(line, line_no++))
     {
-      if (!process(line, line_no++))
-      {
-        return false;
-      }
-
-      if (m_write)
-      {
-        s += line + "\n";
-      }
-    }
-
-    if (m_write && s.empty())
-    {
-      log("stream processing error") << m_path;
       return false;
     }
-    else if (m_modified && m_write)
-    {
-      fs.close();
-      fs.open(m_path.data(), std::ios_base::out);
-      if (!fs.is_open())
-        return false;
-      fs.write(s.c_str(), s.size());
 
-      if (factory::beautify b;
-          b.is_active() && b.is_auto() && b.is_supported(m_path))
-      {
-        fs.close();
-        b.file(m_path);
-      }
+    if (m_write)
+    {
+      s += line + "\n";
+    }
+  }
+
+  if (m_write && s.empty())
+  {
+    log("stream processing error") << m_path;
+    return false;
+  }
+
+  if (m_modified && m_write)
+  {
+    fs.close();
+    fs.open(m_path.data(), std::ios_base::out);
+    if (!fs.is_open())
+    {
+      return false;
     }
 
-    return true;
+    fs.write(s.c_str(), s.size());
+
+    if (factory::beautify b(m_path);
+        b.is_active() && b.is_auto() && b.is_supported(m_path))
+    {
+      fs.close();
+      b.file(m_path);
+    }
   }
+
+  return true;
 }

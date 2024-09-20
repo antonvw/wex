@@ -99,6 +99,11 @@ void wex::ex_commandline_imp::bind()
     {
       event.Skip();
 
+      if (m_cl->get_frame()->is_closing())
+      {
+        return;
+      }
+
       m_cl->get_frame()->set_find_focus(this);
 
       if (m_cl->stc() != nullptr)
@@ -153,7 +158,7 @@ bool wex::ex_commandline_imp::handle(const std::string& command)
 
   m_command.set_stc(m_cl->stc());
 
-  m_input       = 0;
+  m_text_input  = 0;
   m_mode_visual = !range.empty();
   m_control_r   = false;
 
@@ -181,8 +186,8 @@ bool wex::ex_commandline_imp::handle(char command)
     return false;
   }
 
-  m_control_r = false;
-  m_input     = command;
+  m_control_r  = false;
+  m_text_input = command;
 
   get_lexer().set(
     m_cl->stc() != nullptr ? m_cl->stc()->get_lexer().display_lexer() :
@@ -224,11 +229,11 @@ bool wex::ex_commandline_imp::handle_type(
       }
       else if (const auto& current(cli()->get()); !current.empty())
       {
-        const auto is_address(
-          m_cl->get_frame()->is_address(m_cl->stc(), current));
+        const auto vi_is_address(
+          m_cl->get_frame()->vi_is_address(m_cl->stc(), current));
 
         set_text(
-          m_mode_visual && current.find(range) != 0 && is_address ?
+          m_mode_visual && current.find(range) != 0 && vi_is_address ?
             range + current :
             current);
         SelectAll();
@@ -274,19 +279,6 @@ void wex::ex_commandline_imp::init()
   reset_margins();
 }
 
-bool wex::ex_commandline_imp::input_mode_finish() const
-{
-  if (const auto& text(get_text()); m_input == 0 || text.size() < 2)
-  {
-    return false;
-  }
-  else
-  {
-    const auto& last_two(text.substr(text.size() - 2, 2));
-    return text == ":." || last_two == "\n." || last_two == "\r.";
-  }
-}
-
 bool wex::ex_commandline_imp::is_ex_mode() const
 {
   return m_cl->stc() != nullptr && !m_cl->stc()->is_visual();
@@ -307,4 +299,27 @@ void wex::ex_commandline_imp::set_prefix()
         m_command.str() :
         std::string(1, m_command.str().back()));
   }
+}
+
+bool wex::ex_commandline_imp::text_input_mode_finish() const
+{
+  if (m_text_input == 0)
+  {
+    return false;
+  }
+
+  const auto& text(get_text());
+
+  if (text == ".")
+  {
+    return true;
+  }
+
+  if (text.size() < 2)
+  {
+    return false;
+  }
+
+  const auto& last_two(text.substr(text.size() - 2, 2));
+  return last_two == "\n." || last_two == "\r.";
 }

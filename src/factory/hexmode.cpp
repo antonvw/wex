@@ -2,7 +2,7 @@
 // Name:      hexmode.cpp
 // Purpose:   Implementation of class wex::factory::hexmode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/hex.hpp>
@@ -80,11 +80,9 @@ char wex::factory::hexmode::printable(unsigned int c) const
   {
     return c;
   }
-  else
-  {
-    // If we already defined our own symbol, use that one,
-    // otherwise print an ordinary ascii char.
-    const int symbol = m_stc->GetControlCharSymbol();
-    return symbol == 0 ? '.' : symbol;
-  }
+
+  // If we already defined our own symbol, use that one,
+  // otherwise print an ordinary ascii char.
+  const int symbol = m_stc->GetControlCharSymbol();
+  return symbol == 0 ? '.' : symbol;
 }

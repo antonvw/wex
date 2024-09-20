@@ -2,7 +2,7 @@
 // Name:      tool.cpp
 // Purpose:   Implementation of wex::tool class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2023 Anton van Wezenbeek
+// Copyright: (c) 2008-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -22,11 +22,9 @@ const std::string wex::tool::info() const
   {
     return it->second.info();
   }
-  else
-  {
-    log("tool::info") << (int)m_id;
-    return std::string();
-  }
+
+  log("tool::info") << (int)m_id;
+  return std::string();
 }
 
 const std::string wex::tool::info(const wex::statistics<int>* stat) const

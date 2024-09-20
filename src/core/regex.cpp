@@ -10,18 +10,18 @@
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
 
-#define FILL_DATA(TYPE, ACTION)                      \
-  [](const TYPE& reg_v, std::regex::flag_type flags) \
-  {                                                  \
-    regex_t v;                                       \
-    std::for_each(                                   \
-      reg_v.begin(),                                 \
-      reg_v.end(),                                   \
-      [&v, flags](const auto& e)                     \
-      {                                              \
-        ACTION;                                      \
-      });                                            \
-    return v;                                        \
+#define FILL_DATA(TYPE, ACTION)                                                \
+  [](const TYPE& reg_v, std::regex::flag_type flags)                           \
+  {                                                                            \
+    regex_t v;                                                                 \
+    std::for_each(                                                             \
+      reg_v.begin(),                                                           \
+      reg_v.end(),                                                             \
+      [&v, flags](const auto& e)                                               \
+      {                                                                        \
+        ACTION;                                                                \
+      });                                                                      \
+    return v;                                                                  \
   }(regex, flags)
 
 enum class wex::regex::find_t
@@ -63,14 +63,14 @@ wex::regex::regex(const regex_v_c_t& regex, std::regex::flag_type flags)
 {
 }
 
-const std::string wex::regex::operator[](size_t pos) const 
-{ 
-  return pos >= m_matches.size() ? std::string(): m_matches[pos]; 
+const std::string wex::regex::operator[](size_t pos) const
+{
+  return pos >= m_matches.size() ? std::string() : m_matches[pos];
 }
 
-const std::string wex::regex::back() const 
-{ 
- return m_matches.empty() ? std::string(): m_matches.back(); 
+const std::string wex::regex::back() const
+{
+  return m_matches.empty() ? std::string() : m_matches.back();
 }
 int wex::regex::find(const std::string& text, find_t how)
 {
@@ -96,10 +96,8 @@ int wex::regex::find(const std::string& text, find_t how)
 
         return true;
       }
-      else
-      {
-        return false;
-      }
+
+      return false;
     });
 
   return (m_it != m_datas.end()) ? static_cast<int>(m_matches.size()) : -1;
@@ -147,7 +145,7 @@ wex::regex::data::data(const regex_c_t& regex, std::regex::flag_type flags)
   init(regex, flags);
 }
 
-wex::regex::data::data() {}
+wex::regex::data::data() = default;
 
 void wex::regex::data::init(const regex_c_t& regex, std::regex::flag_type flags)
 {

@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::vi
 //            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/vi.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2023 Anton van Wezenbeek
+// Copyright: (c) 2009-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -163,11 +163,13 @@ bool wex::vi::command(const std::string& command)
   {
     return auto_write();
   }
-  else if (m_mode.is_insert())
+
+  if (m_mode.is_insert())
   {
     return insert_mode(command);
   }
-  else if (
+
+  if (
     !m_dot && command.size() > 2 && command.back() == WXK_ESCAPE &&
     command[command.size() - 2] == WXK_ESCAPE)
   {
@@ -180,23 +182,21 @@ bool wex::vi::command(const std::string& command)
   {
     return false;
   }
-  else
+
+  if (!m_dot)
   {
-    if (!m_dot)
-    {
-      set_last_command(command);
-    }
-
-    if (
-      !m_mode.is_insert() && command[0] != 'q' && command[0] != ':' &&
-      command[0] != '!' && command != "/" && command != "?" &&
-      command != k_s(WXK_CONTROL_R) + "=")
-    {
-      get_macros().record(command);
-    }
-
-    return auto_write();
+    set_last_command(command);
   }
+
+  if (
+    !m_mode.is_insert() && command[0] != 'q' && command[0] != ':' &&
+    command[0] != '!' && command != "/" && command != "?" &&
+    command != k_s(WXK_CONTROL_R) + "=")
+  {
+    get_macros().record(command);
+  }
+
+  return auto_write();
 }
 
 void wex::vi::command_reg(const std::string& reg)
@@ -292,56 +292,59 @@ void wex::vi::command_reg(const std::string& reg)
 std::string wex::vi::convert_key_event(const wxKeyEvent& event) const
 {
   if (event.GetKeyCode() == WXK_BACK)
+  {
     return k_s(WXK_BACK);
-  else if (event.GetKeyCode() == WXK_RETURN && !m_mode.is_insert())
+  }
+  if (event.GetKeyCode() == WXK_RETURN && !m_mode.is_insert())
+  {
     return "j";
+  }
 
-  if (auto c = event.GetUnicodeKey(); c != WXK_NONE)
+  if (auto c = event.GetUnicodeKey();
+      c != WXK_NONE && !(event.ControlDown() || event.RawControlDown()))
   {
     return std::string(1, c);
   }
-  else
+
+  std::string cmd;
+
+  switch (event.GetKeyCode())
   {
-    std::string cmd;
-
-    switch (event.GetKeyCode())
-    {
-      case WXK_DELETE:
-        cmd = "x";
-        break;
-      case WXK_DOWN:
-        cmd = "j";
-        break;
-      case WXK_END:
-        cmd = (event.ControlDown() || event.RawControlDown()) ? "G" : "$";
-        break;
-      case WXK_HOME:
-        cmd = (event.ControlDown() || event.RawControlDown()) ? "gg" : "0";
-        break;
-      case WXK_LEFT:
-        cmd = (event.ControlDown() || event.RawControlDown()) ? "b" : "h";
-        break;
-      case WXK_NUMPAD_ENTER:
-        cmd = "j";
-        break;
-      case WXK_PAGEDOWN:
-        cmd = WXK_CONTROL_F;
-        break;
-      case WXK_PAGEUP:
-        cmd = WXK_CONTROL_B;
-        break;
-      case WXK_RIGHT:
-        cmd = (event.ControlDown() || event.RawControlDown()) ? "w" : "l";
-        break;
-      case WXK_UP:
-        cmd = "k";
-        break;
-      default:
-        cmd = event.GetKeyCode();
-    }
-
-    return cmd;
+    case WXK_DELETE:
+      cmd = "x";
+      break;
+    case WXK_DOWN:
+      cmd = "j";
+      break;
+    case WXK_END:
+      cmd = (event.ControlDown() || event.RawControlDown()) ? "G" : "$";
+      break;
+    case WXK_HOME:
+      cmd = (event.ControlDown() || event.RawControlDown()) ? "gg" : "0";
+      break;
+    case WXK_LEFT:
+      cmd = (event.ControlDown() || event.RawControlDown()) ? "b" : "h";
+      break;
+    case WXK_NUMPAD_ENTER:
+      cmd = "j";
+      break;
+    case WXK_PAGEDOWN:
+      cmd = WXK_CONTROL_F;
+      break;
+    case WXK_PAGEUP:
+      cmd = WXK_CONTROL_B;
+      break;
+    case WXK_RIGHT:
+      cmd = (event.ControlDown() || event.RawControlDown()) ? "w" : "l";
+      break;
+    case WXK_UP:
+      cmd = "k";
+      break;
+    default:
+      cmd = event.GetKeyCode();
   }
+
+  return cmd;
 }
 
 bool wex::vi::delete_range(int start, int end)
@@ -432,12 +435,12 @@ bool wex::vi::insert_mode(const std::string& command)
   {
     return false;
   }
-  else if (get_stc()->is_hexmode())
+  if (get_stc()->is_hexmode())
   {
     return insert_mode_hex(command);
   }
   // add control chars
-  else if (command.size() == 2 && command[1] == 0)
+  if (command.size() == 2 && command[1] == 0)
   {
     append_insert_text(std::string(1, command[0]));
     get_stc()->add_text(std::string(1, command[0]));
@@ -449,7 +452,8 @@ bool wex::vi::insert_mode(const std::string& command)
     command_reg(command);
     return true;
   }
-  else if (command.contains(k_s(WXK_CONTROL_R)))
+
+  if (command.contains(k_s(WXK_CONTROL_R)))
   {
     return insert_mode_register(command);
   }
@@ -514,10 +518,8 @@ bool wex::vi::insert_mode_hex(const std::string& command)
 
     return true;
   }
-  else
-  {
-    return get_stc()->get_hexmode_insert(command, get_stc()->GetCurrentPos());
-  }
+
+  return get_stc()->get_hexmode_insert(command, get_stc()->GetCurrentPos());
 }
 
 void wex::vi::insert_mode_normal(const std::string& text)
@@ -634,31 +636,29 @@ bool wex::vi::insert_mode_other(const std::string& command)
         command_reg(std::string(1, command.back()));
         return false;
       }
+
+      if (
+        command.size() == 1 &&
+        (static_cast<int>(command.back()) == WXK_RETURN ||
+         static_cast<int>(command.back()) == WXK_NUMPAD_ENTER))
+      {
+        get_stc()->NewLine();
+
+        if (!get_stc()->AutoCompActive())
+        {
+          append_insert_text(get_stc()->eol());
+        }
+      }
       else
       {
-        if (
-          command.size() == 1 &&
-          (static_cast<int>(command.back()) == WXK_RETURN ||
-           static_cast<int>(command.back()) == WXK_NUMPAD_ENTER))
+        if (!get_stc()->GetOvertype())
         {
-          get_stc()->NewLine();
-
-          if (!get_stc()->AutoCompActive())
-          {
-            append_insert_text(get_stc()->eol());
-          }
+          insert_mode_normal(command);
         }
-        else
-        {
-          if (!get_stc()->GetOvertype())
-          {
-            insert_mode_normal(command);
-          }
 
-          if (!m_dot)
-          {
-            append_insert_text(command);
-          }
+        if (!m_dot)
+        {
+          append_insert_text(command);
         }
       }
   }
@@ -686,7 +686,7 @@ bool wex::vi::on_char(const wxKeyEvent& event)
   {
     return true;
   }
-  else if (m_mode.is_insert())
+  if (m_mode.is_insert())
   {
     if (is_block_insert(this))
     {
@@ -703,54 +703,50 @@ bool wex::vi::on_char(const wxKeyEvent& event)
 
     return result && get_stc()->GetOvertype();
   }
-  else
+
+  if (!(event.GetModifiers() & wxMOD_ALT))
   {
-    if (!(event.GetModifiers() & wxMOD_ALT))
+    // This check is important, as WXK_NONE (0)
+    // would add nullptr terminator at the end of m_command,
+    // and pressing ESC would not help, (rest is empty
+    // because of the nullptr).
+    if (event.GetUnicodeKey() != (wxChar)WXK_NONE)
     {
-      // This check is important, as WXK_NONE (0)
-      // would add nullptr terminator at the end of m_command,
-      // and pressing ESC would not help, (rest is empty
-      // because of the nullptr).
-      if (event.GetUnicodeKey() != (wxChar)WXK_NONE)
+      if (
+        !m_command.empty() && m_command.front() == '@' &&
+        event.GetKeyCode() == WXK_BACK)
       {
-        if (
-          !m_command.empty() && m_command.front() == '@' &&
-          event.GetKeyCode() == WXK_BACK)
-        {
-          m_command.pop_back();
-        }
-        else
-        {
-          m_control_down = (event.GetModifiers() & wxMOD_RAW_CONTROL);
+        m_command.pop_back();
+      }
+      else
+      {
+        m_control_down = (event.GetModifiers() & wxMOD_RAW_CONTROL);
 
 #ifdef __WXOSX__
-          if (event.GetModifiers() & wxMOD_RAW_CONTROL)
-          {
-            if (m_command.append_exec(event.GetKeyCode()))
-            {
-              m_command.clear();
-            }
-          }
-          else
-#endif
-            if (m_command.append_exec(event.GetUnicodeKey()))
+        if (event.GetModifiers() & wxMOD_RAW_CONTROL)
+        {
+          if (m_command.append_exec(event.GetKeyCode()))
           {
             m_command.clear();
           }
         }
+        else
+#endif
+          if (m_command.append_exec(event.GetUnicodeKey()))
+        {
+          m_command.clear();
+        }
       }
-      else
-      {
-        return true;
-      }
-
-      return false;
     }
     else
     {
       return true;
     }
+
+    return false;
   }
+
+  return true;
 }
 
 bool wex::vi::on_key_down(const wxKeyEvent& event)
@@ -759,25 +755,29 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
   {
     return true;
   }
-  else if (!m_command.empty() && m_command.front() == '@')
+
+  if (!m_command.empty() && m_command.front() == '@')
   {
     return process_macro_key(event);
   }
-  else if (is_block_insert(this) && event.GetKeyCode() != WXK_ESCAPE)
+
+  if (is_block_insert(this) && event.GetKeyCode() != WXK_ESCAPE)
   {
     m_command.clear();
     return true;
   }
-  else if (is_special_key(event, m_mode))
+
+  if (is_special_key(event, m_mode))
   {
     return process_special_key(event);
   }
-  else if (
-    (event.GetModifiers() & wxMOD_CONTROL) && event.GetKeyCode() != WXK_NONE)
+
+  if ((event.GetModifiers() & wxMOD_CONTROL) && event.GetKeyCode() != WXK_NONE)
   {
     return process_modifier(this, macros::key_t::CONTROL, event);
   }
-  else if ((event.GetModifiers() & wxMOD_ALT) && event.GetKeyCode() != WXK_NONE)
+
+  if ((event.GetModifiers() & wxMOD_ALT) && event.GetKeyCode() != WXK_NONE)
   {
     if (!m_mode.is_command())
     {
@@ -786,10 +786,8 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
 
     return process_modifier(this, macros::key_t::ALT, event);
   }
-  else
-  {
-    return true;
-  }
+
+  return true;
 }
 
 bool wex::vi::process_macro_key(const wxKeyEvent& event)

@@ -14,6 +14,7 @@
 #include <wex/ui/file-history.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/item.h>
+#include <wex/vcs/vcs.h>
 
 #include <set>
 
@@ -43,6 +44,9 @@ public:
     size_t              maxFiles    = 9,
     size_t              maxProjects = 0,
     const data::window& data = data::window().style(wxDEFAULT_FRAME_STYLE));
+
+  /// Destructor.
+  ~frame() override;
 
   // Virtual interface
 
@@ -103,6 +107,16 @@ public:
     /// normally grep does not replace, by setting sed, it can
     bool sed = false);
 
+  /// Opens file from action with a possible extension to move.
+  /// If file not empty returns false if an error occurred or no files opened,
+  /// and true if at least one file was opened (does not need to exist).
+  /// Otherwise always returns true.
+  bool open_from_action(
+    /// the file, might contain wildcards (* or ?), if empty a dialog is shown
+    const std::string& file,
+    /// possible extension
+    const std::string& move_ext);
+
   /// Sed (replace in files).
   /// The base directory is the directory for the current stc
   /// component, if available.
@@ -128,6 +142,9 @@ public:
   /// to the list.
   void use_file_history_list(listview* list);
 
+  /// Returns the vcs.
+  wex::vcs* vcs() { return m_vcs; };
+
   /// Shows blame info for vcs in the text margin.
   /// Returns true if info was added.
   bool vcs_blame_show(vcs_entry* vcs, syntax::stc*);
@@ -140,7 +157,6 @@ public:
   static inline const int id_find_in_files    = ID_FREE_LOWEST;
   static inline const int id_replace_in_files = ID_FREE_LOWEST + 1;
 
-  void append_vcs(menu*, const menu_item* i) const override;
   void bind_accelerators(
     wxWindow*                              parent,
     const std::vector<wxAcceleratorEntry>& v,
@@ -152,8 +168,6 @@ public:
   bool          debug_is_active() const override;
   bool          debug_print(const std::string& text) override;
   bool          debug_toggle_breakpoint(int line, syntax::stc* stc) override;
-
-  bool is_address(syntax::stc* stc, const std::string& text) override;
 
   void on_command_item_dialog(wxWindowID dialogid, const wxCommandEvent& event)
     override;
@@ -169,8 +183,8 @@ public:
   void statusbar_clicked(const std::string&) override;
   void statusbar_clicked_right(const std::string&) override;
 
-  int          show_stc_entry_dialog(bool modal = false) override;
   syntax::stc* stc_entry_dialog_component() override;
+  int          stc_entry_dialog_show(bool modal = false) override;
   std::string  stc_entry_dialog_title() const override;
   void         stc_entry_dialog_title(const std::string& title) override;
   void         stc_entry_dialog_validator(const std::string& regex) override;
@@ -178,6 +192,7 @@ public:
   void vcs_add_path(factory::link*) override;
   bool vcs_annotate_commit(syntax::stc*, int line, const std::string& commit_id)
     override;
+  void vcs_append(menu*, const menu_item* i) const override;
   bool vcs_blame(syntax::stc*) override;
   bool vcs_blame_revision(
     syntax::stc*,
@@ -189,15 +204,13 @@ public:
     const std::vector<wex::path>& paths,
     const data::window&           arg = data::window()) override;
 
+  bool vi_is_address(syntax::stc* stc, const std::string& text) const override;
+
 protected:
   /// Access to file history list,
   /// if you use this as a page in a notebook,
   /// you might want prevent closing it.
   auto* file_history_list() { return m_file_history_listview; }
-
-  /// Opens from event with a possible extension to move.
-  void
-  open_from_event(const wxCommandEvent& event, const std::string& move_ext);
 
 private:
   listview* activate_and_clear(const wex::tool& tool);
@@ -212,11 +225,11 @@ private:
 
   item_dialog *     m_fif_dialog{nullptr}, *m_rif_dialog{nullptr};
   stc_entry_dialog* m_entry_dialog{nullptr};
+  debug*            m_debug{nullptr};
+  process*          m_process{nullptr};
+  listview*         m_file_history_listview{nullptr};
+  class vcs*        m_vcs{nullptr};
 
-  debug*   m_debug{nullptr};
-  process* m_process{nullptr};
-
-  listview*          m_file_history_listview{nullptr};
   class file_history m_project_history;
 
   function_repeat m_function_repeat;

@@ -291,7 +291,7 @@ wex::vi_mode::vi_mode(
   m_fsm->initiate();
 }
 
-wex::vi_mode::~vi_mode() {}
+wex::vi_mode::~vi_mode() = default;
 
 void wex::vi_mode::command()
 {
@@ -454,18 +454,17 @@ bool wex::vi_mode::transition_prep(const std::string& command)
   {
     return false;
   }
-  else if (command[0] == 'c')
+
+  if (command[0] == 'c')
   {
     if (command.size() == 1)
     {
       return false;
     }
-    else
+
+    if (command.size() == 2 && (command[1] == 'f' || command[1] == 'F'))
     {
-      if (command.size() == 2 && (command[1] == 'f' || command[1] == 'F'))
-      {
-        return false;
-      }
+      return false;
     }
   }
 

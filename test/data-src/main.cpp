@@ -2,7 +2,7 @@
 // Name:      main.cpp
 // Purpose:   main for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023
+// Copyright: (c) 2021-2024
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "test.h"
@@ -33,8 +33,6 @@ public:
 private:
   const wex::path& path() const override { return m_path; };
   wex::path        m_path;
-
-  static inline wxFrame* m_frame = nullptr;
 };
 
 IMPLEMENT_APP_NO_MAIN(wex::test::data);

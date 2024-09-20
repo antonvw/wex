@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of wex::frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -91,9 +91,6 @@ public:
     /// page
     wxWindow* page);
 
-  /// Appends vcs menu.
-  virtual void append_vcs(menu*, const menu_item* i) const { ; }
-
   /// Binds accelerators.
   virtual void bind_accelerators(
     wxWindow*                              parent,
@@ -126,21 +123,6 @@ public:
 
   /// Toggles a breakpoint on line.
   virtual bool debug_toggle_breakpoint(int line, syntax::stc* stc)
-  {
-    return false;
-  };
-
-  /// Executes a ex command. Returns true if
-  /// this command is handled. This method is invoked
-  /// at the beginning of the ex command handling,
-  /// allowing you to override any command.
-  virtual bool exec_ex_command(ex_command& command) { return false; }
-
-  /// Allows you to override is_address, it is overridden in
-  /// del frame, returning true if text specifies
-  /// a one or two address based ex address (including command).
-  /// e.g. 1,5y, %y, etc.
-  virtual bool is_address(syntax::stc* stc, const std::string& text)
   {
     return false;
   };
@@ -190,11 +172,11 @@ public:
   /// Shows text in ex bar.
   virtual void show_ex_message(const std::string& text) { ; }
 
-  /// Shows or updates stc entry dialog.
-  virtual int show_stc_entry_dialog(bool modal = false) { return wxID_CANCEL; }
-
   /// Returns stc component for stc entry dialog.
   virtual syntax::stc* stc_entry_dialog_component() { return nullptr; }
+
+  /// Shows or updates stc entry dialog.
+  virtual int stc_entry_dialog_show(bool modal = false) { return wxID_CANCEL; }
 
   /// Returns stc entry dialog title.
   virtual std::string stc_entry_dialog_title() const { return std::string(); }
@@ -222,6 +204,9 @@ public:
     return false;
   };
 
+  /// Appends vcs menu.
+  virtual void vcs_append(menu*, const menu_item* i) const { ; }
+
   /// Blames the specified stc.
   virtual bool vcs_blame(syntax::stc*) { return false; }
 
@@ -248,6 +233,21 @@ public:
   {
     return false;
   }
+
+  /// Executes a ex command. Returns true if
+  /// this command is handled. This method is invoked
+  /// at the beginning of the ex command handling,
+  /// allowing you to override any command.
+  virtual bool vi_exec_command(ex_command& command) { return false; }
+
+  /// Allows you to override vi_is_address, it is overridden in
+  /// del frame, returning true if text specifies
+  /// a one or two address based ex address (including command).
+  /// e.g. 1,5y, %y, etc.
+  virtual bool vi_is_address(syntax::stc* stc, const std::string& text) const
+  {
+    return false;
+  };
 
   // Other methods
 

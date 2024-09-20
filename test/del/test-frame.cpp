@@ -93,6 +93,17 @@ TEST_CASE("wex::del::frame")
       std::string::npos);
   }
 
+  SUBCASE("open_from_action")
+  {
+    REQUIRE(del_frame()->open_from_action(
+      wex::test::get_path("test.h").string(),
+      "ext"));
+    REQUIRE(del_frame()->open_from_action("xxx", "ext"));
+    REQUIRE(del_frame()->open_from_action("test.h", "ext"));
+    REQUIRE(del_frame()->open_from_action("test.*", "ext"));
+    REQUIRE(del_frame()->open_from_action("../del/test.*", "ext"));
+  }
+
   SUBCASE("prepare_output")
   {
     wex::process::prepare_output(del_frame());
@@ -249,8 +260,6 @@ TEST_CASE("wex::del::frame")
 
     wex::log_none off;
 
-    del_frame()->append_vcs(menu, &item);
-
     const std::vector<wxAcceleratorEntry> v{};
     del_frame()->bind_accelerators(del_frame(), v);
 
@@ -268,9 +277,9 @@ TEST_CASE("wex::del::frame")
 
     REQUIRE(!del_frame()->debug_toggle_breakpoint(100, get_stc()));
 
-    REQUIRE(!del_frame()->is_address(get_stc(), "xx"));
-    REQUIRE(del_frame()->is_address(get_stc(), "1,5ya"));
-    REQUIRE(del_frame()->is_address(get_stc(), "%ya"));
+    REQUIRE(!del_frame()->vi_is_address(get_stc(), "xx"));
+    REQUIRE(del_frame()->vi_is_address(get_stc(), "1,5ya"));
+    REQUIRE(del_frame()->vi_is_address(get_stc(), "%ya"));
 
     del_frame()->on_command_item_dialog(
       wxID_ADD,
@@ -297,7 +306,7 @@ TEST_CASE("wex::del::frame")
 
     del_frame()->statusbar_clicked_right("text");
 
-    REQUIRE(del_frame()->show_stc_entry_dialog());
+    del_frame()->stc_entry_dialog_show();
 
     REQUIRE(del_frame()->stc_entry_dialog_component() != nullptr);
 
@@ -306,6 +315,8 @@ TEST_CASE("wex::del::frame")
     REQUIRE(del_frame()->stc_entry_dialog_title() == "hello world");
 
     del_frame()->stc_entry_dialog_validator("choose [0-9]");
+
+    del_frame()->vcs_append(menu, &item);
   }
 
   SUBCASE("visual")
