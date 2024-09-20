@@ -216,7 +216,13 @@ void wex::macro_fsm::playback(const std::string& macro, ex* ex, size_t repeat)
     return;
   }
 
-  stc_undo(ex->get_stc());
+  stc_undo* undo = nullptr;
+
+  if (!m_playback)
+  {
+    undo = new stc_undo(ex->get_stc());
+  }
+
   set_ask_for_input();
   m_playback = true;
   bool error = false;
@@ -253,6 +259,11 @@ void wex::macro_fsm::playback(const std::string& macro, ex* ex, size_t repeat)
   if (!error)
   {
     log::status(_("Macro played back"));
+  }
+
+  if (undo)
+  {
+    delete undo;
   }
 
   m_playback = false;
