@@ -113,8 +113,9 @@ cmake `
 
 if ( -not ($prepare))
 {
-  Set-Location $dir
+  Push-Location -Path $dir
   msbuild /noLogo /m /p:Configuration=$configuration ALL_BUILD.vcxproj
+  Pop-Location
 }
 
 if ($install)
