@@ -6,15 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## 25.04 - 2025-04 [Unreleased]
 
+### Added
+
 ### Changed
 
 - wex::quoted uses std::quoted and includes a delim character
 
-### Changed
-
 ### Fixed
 
 - macro playback and undo includes sub commands
+- build-gen.ps1 restores location after building
 
 ## 24.10 - 2024-09-22
 
