@@ -330,8 +330,6 @@ void wex::stc::bind_all()
       {
         reset_margins(margin_t().set(MARGIN_TEXT));
         m_margin_text_click = -1;
-        const item_vector iv(m_config_items);
-        SetWrapMode(iv.find<long>(_("stc.Wrap line")));
       },
       id::stc::margin_text_hide},
 
