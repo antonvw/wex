@@ -436,7 +436,11 @@ void wex::stc::bind_all()
 
 void wex::stc::build_popup_menu(menu& menu)
 {
-  if (get_current_line() == 0 && !lexers::get()->get_lexers().empty())
+  const auto sel(GetSelectedText().ToStdString());
+
+  if (
+    get_current_line() == 0 && sel.empty() &&
+    !lexers::get()->get_lexers().empty())
   {
     menu.append({{id::stc::show_properties, _("Properties")}});
   }
@@ -475,8 +479,8 @@ void wex::stc::build_popup_menu(menu& menu)
   // Folding if nothing selected, property is set,
   // and we have a lexer.
   if (
-    GetSelectedText().ToStdString().empty() && GetProperty("fold") == "1" &&
-    get_lexer().is_ok() && !get_lexer().scintilla_lexer().empty())
+    sel.empty() && GetProperty("fold") == "1" && get_lexer().is_ok() &&
+    !get_lexer().scintilla_lexer().empty())
   {
     menu.append(
       {{},
