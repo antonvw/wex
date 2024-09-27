@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - macro playback and undo includes sub commands
 - build-gen.ps1 restores location after building
 - blame hide should not do SetWrapMode
+- find next for empty line match
 
 ## 24.10 - 2024-09-22
 

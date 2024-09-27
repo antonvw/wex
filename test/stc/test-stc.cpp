@@ -118,11 +118,17 @@ TEST_CASE("wex::stc")
     {
       stc->get_vi().use(mode);
 
-      stc->set_text("hello stc and more text");
+      stc->set_text("\n\nhello stc and more text");
 
       REQUIRE(!stc->find("[", wxSTC_FIND_CXX11REGEX | wxSTC_FIND_REGEXP));
       REQUIRE(stc->find("hello"));
-      REQUIRE(stc->get_word_at_pos(0) == "hello");
+      REQUIRE(stc->get_word_at_pos(4) == "hello");
+
+      // find empty line
+      REQUIRE(stc->find("^$", wxSTC_FIND_CXX11REGEX | wxSTC_FIND_REGEXP));
+      REQUIRE(stc->get_current_line() == 0);
+      REQUIRE(stc->find("^$", wxSTC_FIND_CXX11REGEX | wxSTC_FIND_REGEXP));
+      REQUIRE(stc->get_current_line() == 1);
 
       REQUIRE(!stc->find("%d"));
       REQUIRE(!stc->find("%ld"));
