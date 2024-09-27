@@ -62,10 +62,17 @@ TEST_CASE("wex::data::substitute")
     REQUIRE(!sub.set_global("u/xx/yy"));
     REQUIRE(sub.set_global("g/xx/yy"));
     REQUIRE(!sub.is_inverse());
+    REQUIRE(sub.is_global_command());
     REQUIRE(sub.set_global("v/xx/yy"));
     REQUIRE(sub.pattern() == "xx");
     REQUIRE(sub.commands() == "yy");
     REQUIRE(sub.is_inverse());
+    REQUIRE(sub.set_global("g!/xx/yy"));
+    REQUIRE(sub.is_inverse());
+    REQUIRE(sub.is_global_command());
+    REQUIRE(sub.set_global("global!/xx/yy"));
+    REQUIRE(sub.is_inverse());
+    REQUIRE(sub.is_global_command());
   }
 
   SUBCASE("set_options")
@@ -76,5 +83,6 @@ TEST_CASE("wex::data::substitute")
     REQUIRE(sub.is_confirmed());
     REQUIRE(sub.is_ignore_case());
     REQUIRE(sub.is_global());
+    REQUIRE(!sub.is_global_command());
   }
 }

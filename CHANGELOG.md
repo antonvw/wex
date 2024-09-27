@@ -8,13 +8,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- added g! as alternative to global v command
+
 ### Changed
 
+- The Open Group Base Specifications Issue 8, 2024 edition
 - wex::quoted uses std::quoted and includes a delim character
 - stc context menu and properties only shown if no selection active
 
 ### Fixed
 
+- 2addr range for global commands
+- global v command and set indicator
 - macro playback and undo includes sub commands
 - build-gen.ps1 restores location after building
 - blame hide should not do SetWrapMode

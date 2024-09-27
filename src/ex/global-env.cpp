@@ -16,10 +16,10 @@
 #include "block-lines.h"
 #include "global-env.h"
 
-wex::global_env::global_env(ex* e)
-  : m_ex(e)
-  , m_ar(e, "%")
-  , m_stc(e->get_stc())
+wex::global_env::global_env(const addressrange& ar)
+  : m_ex(ar.get_ex())
+  , m_ar(ar)
+  , m_stc(ar.get_ex()->get_stc())
 {
   m_stc->set_search_flags(m_ex->search_flags());
 
@@ -76,7 +76,7 @@ bool wex::global_env::command(const block_lines& block, const std::string& text)
 
 bool wex::global_env::for_each(const block_lines& match) const
 {
-  return !has_commands() ? m_stc->set_indicator(m_ar.find_indicator()) :
+  return !has_commands() ? match.set_indicator(m_ar.find_indicator()) :
                            std::all_of(
                              m_commands.begin(),
                              m_commands.end(),
@@ -161,7 +161,7 @@ bool wex::global_env::global(const data::substitute& data)
   if (data.is_inverse())
   {
     ib.start(m_ex->marker_line('T') + 1);
-    ib.end(m_stc->get_line_count() - 1);
+    ib.end(m_ex->marker_line('$'));
 
     if (ib.is_available() && !process(ib))
     {

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      vi.cpp
 // Purpose:   Implementation of class wex::vi
-//            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/vi.html
+//            https://pubs.opengroup.org/onlinepubs/9799919799/utilities/vi.html
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2009-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////

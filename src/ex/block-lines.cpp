@@ -2,7 +2,7 @@
 // Name:      block-lines.cpp
 // Purpose:   Implementation of class wex::block_lines
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
@@ -16,8 +16,20 @@ wex::block_lines::block_lines(ex* ex, int start, int end)
   , m_stc(ex->get_stc())
   , m_start(start)
   , m_end(end)
+  , m_is_inverse(start == -1)
   , m_name(start == -1 ? "ib" : "mb")
 {
+}
+
+wex::block_lines& wex::block_lines::operator=(const block_lines& r)
+{
+  if (this != &r)
+  {
+    m_end   = r.m_end;
+    m_start = r.m_start;
+  }
+
+  return *this;
 }
 
 void wex::block_lines::end(int line)
@@ -45,7 +57,16 @@ bool wex::block_lines::is_available() const
 
 void wex::block_lines::log() const
 {
-  log::trace("block lines " + m_name) << "start:" << m_start << "end:" << m_end;
+  log::trace("block_lines " + m_name) << m_start << "," << m_end;
+}
+
+bool wex::block_lines::set_indicator(const indicator& indicator) const
+{
+  return m_is_inverse ? m_stc->set_indicator(
+                          indicator,
+                          m_stc->PositionFromLine(m_start),
+                          m_stc->PositionFromLine(m_end)) :
+                        m_stc->set_indicator(indicator);
 }
 
 wex::block_lines wex::block_lines::single() const
