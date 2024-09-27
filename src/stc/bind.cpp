@@ -8,6 +8,7 @@
 #include <boost/tokenizer.hpp>
 #include <wex/common/util.h>
 #include <wex/core/config.h>
+#include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
@@ -22,7 +23,6 @@
 #include <wex/ui/debug-entry.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
-#include <wex/ui/item-vector.h>
 #include <wex/ui/menu.h>
 #include <wx/accel.h>
 #include <wx/msgdlg.h>
