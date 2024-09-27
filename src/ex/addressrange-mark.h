@@ -61,6 +61,8 @@ private:
 
   mark_t get_type() const;
 
+  void set_target(int start);
+
   ex*           m_ex;
   factory::stc* m_stc;
 
@@ -69,6 +71,7 @@ private:
 
   stc_undo m_undo;
 
-  int m_corrected{0};
+  int  m_corrected{0};
+  bool m_last_range_line{false};
 };
 }; // namespace wex

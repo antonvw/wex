@@ -391,7 +391,7 @@ bool wex::addressrange::global(const command_parser& cp) const
   /// normally performs command on each match, if inverse
   /// performs (v) command if line does not match
 
-  global_env g(m_ex);
+  global_env g(*this);
 
   if (!g.global(m_substitute))
   {

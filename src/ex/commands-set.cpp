@@ -1,9 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      command-set.cpp
 // Purpose:   Implementation of class wex::ex
-//            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/ex.html
+//            https://pubs.opengroup.org/onlinepubs/9799919799/utilities/ex.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/cmdline.h>

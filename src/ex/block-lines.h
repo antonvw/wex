@@ -11,10 +11,10 @@ namespace wex
 {
 class ex;
 
-namespace factory
+namespace syntax
 {
 class stc;
-} // namespace factory
+} // namespace syntax
 
 /// This class offers a block of lines.
 class block_lines
@@ -23,6 +23,9 @@ public:
   /// Constructor, specify ex component, and start and end line.
   /// If start is -1, then this is an inverse block.
   block_lines(ex* ex, int start = 0, int end = 0);
+
+  /// Assignment operator.
+  block_lines& operator=(const block_lines& r);
 
   /// Spaceship operator.
   auto operator<=>(const block_lines& r) const
@@ -45,6 +48,9 @@ public:
   /// Logs components.
   void log() const;
 
+  /// Sets indicator based on this block.
+  bool set_indicator(const indicator& indicator) const;
+
   /// Returns block_lines as the first single line from target.
   block_lines single() const;
 
@@ -58,13 +64,15 @@ public:
   block_lines target() const;
 
 private:
-  static inline const int LINE_RESET = {-2};
+  static inline const int LINE_RESET{-2};
 
-  std::string m_name;
+  const bool m_is_inverse{false};
+
+  const std::string m_name;
 
   int m_start{LINE_RESET}, m_end{LINE_RESET};
 
-  ex*           m_ex;
-  factory::stc* m_stc;
+  ex*          m_ex;
+  syntax::stc* m_stc;
 };
 }; // namespace wex

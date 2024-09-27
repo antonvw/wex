@@ -18,9 +18,12 @@ class block_lines;
 class global_env
 {
 public:
-  /// Constructor. Specify ex component.
-  /// It uses the addressrange static data commands.
-  explicit global_env(ex* e);
+  /// Constructor. Specify addressrange, usually this range is not
+  /// specified, and implicit the entire range is assumed.
+  /// However you can select a 2addr range.
+  /// Next, it uses the addressrange static data commands for
+  /// the global command.
+  explicit global_env(const addressrange& ar);
 
   /// Runs the global commands using specified data.
   /// Returns false if an error occurred.
