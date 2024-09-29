@@ -38,6 +38,13 @@ empty
 	Appl
 	Output Contains	1
 
+global
+	Input Many	:a|line has text	20
+	Input	:a|last line
+	...	:g/has/
+	Appl
+	Output Contains	20
+
 info
 	Input	:a|line has text
 	...	:f
@@ -46,6 +53,13 @@ info
 	Output Contains	1
 	Output Contains	%
 	Output Contains	level
+
+inverse
+	Input Many	:a|line has text	20
+	Input	:a|last line
+	...	:g!/has/
+	Appl
+	Output Contains	1
 
 mdi
 	Input	:a|line has text
