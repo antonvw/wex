@@ -64,6 +64,9 @@ public:
   /// as previous line.
   virtual bool auto_indentation(int c) { return false; }
 
+  /// Performs generic settings on this stc.
+  virtual void generic_settings() {};
+
   /// Returns stc data.
   virtual wex::data::stc* get_data() { return nullptr; }
 

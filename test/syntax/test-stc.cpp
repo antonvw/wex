@@ -2,7 +2,7 @@
 // Name:      test-stc.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -34,14 +34,25 @@ TEST_CASE("wex::syntax::stc")
 
   SUBCASE("lexers")
   {
+    REQUIRE(stc->get_lexer().get_stc() == stc);
     REQUIRE(stc->get_lexer().display_lexer().empty());
 
     CAPTURE(stc->lexer_name());
     REQUIRE(stc->lexer_name().empty());
     REQUIRE(!stc->lexer_is_previewable());
 
+    // it seems generic_settings is not invoked
     REQUIRE(stc->get_lexer().set("cpp"));
+    REQUIRE(stc->get_lexer().get_stc() == stc);
     REQUIRE(stc->lexer_name() == "cpp");
+    WARN(stc->GetEdgeMode() == wxSTC_EDGE_NONE);
+
+    wex::lexer lexer2(stc);
+    REQUIRE(lexer2.get_stc() == stc);
+    lexer2.set("markdown");
+    REQUIRE(!lexer2.attribs().empty());
+    REQUIRE(lexer2.attrib(_("Edge line")) == wxSTC_EDGE_NONE);
+    REQUIRE(stc->GetEdgeMode() == wxSTC_EDGE_NONE);
 
     for (const auto& l : wex::lexers::get()->get_lexers())
     {
@@ -62,7 +73,6 @@ TEST_CASE("wex::syntax::stc")
     REQUIRE(!wex::lexer(" cpp").is_ok());
     REQUIRE(!wex::lexer("cpp ").is_ok());
     REQUIRE(!wex::lexer("xxx").is_ok());
-
     stc->get_lexer().set("cpp");
     wex::lexers::get()->apply_global_styles(stc);
     wex::lexers::get()->apply(stc);

@@ -126,12 +126,29 @@ TEST_CASE("wex::lexer")
       std::string("// headertest").size());
   }
 
+  SUBCASE("assign")
+  {
+    auto*      stc = new wex::test::stc();
+    wex::lexer lexer2(stc);
+    REQUIRE(lexer2.get_stc() == stc);
+    lexer2.set("markdown");
+    REQUIRE(!lexer2.attribs().empty());
+    REQUIRE(lexer2.attrib(_("Edge line")) == wxSTC_EDGE_NONE);
+    REQUIRE(stc->GetEdgeMode() == wxSTC_EDGE_NONE);
+
+    const wex::lexer cpp(stc);
+    lexer.set("cpp");
+    lexer2 = cpp;
+    REQUIRE(lexer2.attribs().empty());
+  }
+
   SUBCASE("clear")
   {
     lexer.set("markdown");
     REQUIRE(!lexer.attribs().empty());
     REQUIRE(lexer.attrib(_("Edge line")) == wxSTC_EDGE_NONE);
     lexer.clear();
+    REQUIRE(!lexer.is_ok());
     REQUIRE(lexer.display_lexer().empty());
     REQUIRE(lexer.scintilla_lexer().empty());
     REQUIRE(lexer.attribs().empty());
@@ -227,9 +244,14 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.set("xsl"));
     REQUIRE(lexer.language() == "xml");
 
+    REQUIRE(!lexer.set(std::string()));
+    REQUIRE(!lexer.is_ok());
+
     REQUIRE(!lexer.set(wex::lexer("XXXX")));
     REQUIRE(lexer.display_lexer().empty());
     REQUIRE(!lexer.is_ok());
+
+    REQUIRE(!lexer.set(wex::lexer("XXXX")));
 
     // rfw should be the last one, used later on
     for (const auto& lex : std::vector<std::string>{

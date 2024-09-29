@@ -2,7 +2,7 @@
 // Name:      test.h
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2023 Anton van Wezenbeek
+// Copyright: (c) 2022-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -25,6 +25,8 @@ public:
   {
     ;
   };
+
+  void generic_settings() override { SetEdgeMode(wxSTC_EDGE_LINE); }
 
 private:
   const wex::path& path() const override { return m_path; };

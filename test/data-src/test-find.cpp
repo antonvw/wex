@@ -2,7 +2,7 @@
 // Name:      data/test-find.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/find.h>
@@ -45,7 +45,7 @@ TEST_CASE("wex::data::find")
       REQUIRE(f.line_no() == -1);
       REQUIRE(f.pos() == -1);
       REQUIRE(f.stc() == stc);
-      REQUIRE(f.start_pos() == 0);
+      REQUIRE(f.start_pos() == 1); // searching for empty string
       REQUIRE(f.text().empty());
     }
 
