@@ -2,7 +2,7 @@
 // Name:      data/find.h
 // Purpose:   Declaration of class wex::data::find
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -71,7 +71,7 @@ public:
   /// Returns stream line.
   int line_no() const { return m_line_no; }
 
-  /// Returns sream pos.
+  /// Returns stream pos.
   int pos() const { return m_pos; }
 
   /// Returns stc start pos.

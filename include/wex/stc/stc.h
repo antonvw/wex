@@ -208,6 +208,8 @@ public:
   bool find(const std::string& text, int find_flags = -1, bool find_next = true)
     override;
 
+  void generic_settings() override;
+
   wex::data::stc* get_data() override { return &m_data; }
 
   const ex_command& get_ex_command() const override

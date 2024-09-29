@@ -764,15 +764,15 @@ void wex::lexer::parse_keyword(const pugi::xml_node* node)
 
 bool wex::lexer::set(const std::string& lexer, bool fold)
 {
-  if (
-    !lexer.empty() && !lexers::get()->get_lexers().empty() &&
+  if (lexer.empty())
+  {
+    clear();
+  }
+  else if (
+    !lexers::get()->get_lexers().empty() &&
     !set(lexers::get()->find(lexer), fold))
   {
     log::debug("lexer is not known") << lexer;
-  }
-  else if (lexer.empty())
-  {
-    clear();
   }
 
   return m_is_ok;
@@ -780,8 +780,7 @@ bool wex::lexer::set(const std::string& lexer, bool fold)
 
 bool wex::lexer::set(const lexer& lexer, bool fold)
 {
-  syntax::stc* keep =
-    (m_stc != nullptr && lexer.m_stc == nullptr ? m_stc : nullptr);
+  syntax::stc* keep = m_stc;
 
   (*this) =
     (lexer.m_scintilla_lexer.empty() && m_stc != nullptr &&
@@ -793,14 +792,13 @@ bool wex::lexer::set(const lexer& lexer, bool fold)
   {
     m_stc = keep;
   }
-
-  if (m_stc == nullptr)
+  else
   {
     return m_is_ok;
   }
 
   m_stc->SetLexerLanguage(m_scintilla_lexer);
-  m_stc->SetIndent(config(_("stc.Indent")).get(2));
+  m_stc->generic_settings();
 
   apply();
 

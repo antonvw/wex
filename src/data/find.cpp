@@ -142,7 +142,9 @@ void wex::data::find::set_pos()
       m_start_pos = m_stc->GetCurrentPos();
       m_end_pos   = m_stc->GetTextLength();
 
-      if (m_stc->GetTargetStart() == m_stc->GetTargetEnd())
+      if (
+        m_stc->GetTargetStart() == m_stc->GetTargetEnd() &&
+        m_stc->GetTargetStart() != -1)
       {
         m_start_pos++;
       }

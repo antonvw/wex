@@ -2,7 +2,7 @@
 // Name:      test-stc.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2023 Anton van Wezenbeek
+// Copyright: (c) 2022-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "test.h"
@@ -128,6 +128,7 @@ TEST_CASE("wex::factory::stc")
 
     REQUIRE(stc->vi_mode().empty());
 
+    stc->generic_settings();
     stc->vi_record("xxx");
   }
 }
