@@ -45,7 +45,7 @@ TEST_CASE("wex::data::find")
       REQUIRE(f.line_no() == -1);
       REQUIRE(f.pos() == -1);
       REQUIRE(f.stc() == stc);
-      REQUIRE(f.start_pos() == 1); // searching for empty string
+      REQUIRE(f.start_pos() == 0); // no target
       REQUIRE(f.text().empty());
     }
 
