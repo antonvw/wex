@@ -13,13 +13,12 @@
 namespace wex
 {
 class addressrange;
-class block_lines;
 class ex;
 
-namespace factory
+namespace syntax
 {
 class stc;
-}; // namespace factory
+}; // namespace syntax
 
 /// This class offers a class to handle markers on an addressrange.
 /// And if offers the stc_undo.
@@ -34,9 +33,6 @@ public:
 
   /// Finishes markers, clear indicators if specified.
   void end(bool clear_indicator = true);
-
-  /// Returns block lines for target.
-  block_lines get_block_lines() const;
 
   /// Searches in target for data, updates the target when found.
   bool search();
@@ -63,8 +59,8 @@ private:
 
   void set_target(int start);
 
-  ex*           m_ex;
-  factory::stc* m_stc;
+  ex*          m_ex;
+  syntax::stc* m_stc;
 
   const addressrange&     m_ar;
   const data::substitute& m_data;
