@@ -69,16 +69,6 @@ void wex::stc::config_get()
     SetUseVerticalScrollBar(iv.find<bool>(_("stc.Scroll bars")));
   }
 
-  if (
-    GetProperty("fold") == "1" && get_lexer().is_ok() &&
-    !get_lexer().scintilla_lexer().empty())
-  {
-    SetMarginWidth(
-      m_margin_folding_number,
-      iv.find<int>(_("stc.margin.Folding")));
-    SetFoldFlags(iv.find<long>(_("stc.Fold flags")));
-  }
-
   if (!iv.find<bool>(_("stc.vi mode")))
   {
     config(_("stc.vi mode")).get(true);
@@ -110,6 +100,13 @@ void wex::stc::generic_settings()
   }
   else
   {
+    if (GetProperty("fold") == "1" && !get_lexer().scintilla_lexer().empty())
+    {
+      SetMarginWidth(
+        m_margin_folding_number,
+        iv.find<int>(_("stc.margin.Folding")));
+    }
+
     if (const auto el = iv.find<long>(_("stc.Edge line"));
         el != wxSTC_EDGE_NONE)
     {
