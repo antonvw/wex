@@ -9,7 +9,7 @@
 
 namespace wex
 {
-class ex;
+class indicator;
 
 namespace syntax
 {
@@ -20,9 +20,19 @@ class stc;
 class block_lines
 {
 public:
-  /// Constructor, specify ex component, and start and end line.
-  /// If start is -1, then this is an inverse block.
-  block_lines(ex* ex, int start = 0, int end = 0);
+  /// The block types.
+  enum block_t
+  {
+    MATCH,  ///< normal match block
+    INVERSE ///< inverse block
+  };
+
+  /// Constructor, specify stc component, start, end line, and type.
+  block_lines(
+    syntax::stc* s,
+    int          start = 0,
+    int          end   = 0,
+    block_t            = block_t::MATCH);
 
   /// Assignment operator.
   block_lines& operator=(const block_lines& r);
@@ -39,10 +49,11 @@ public:
   /// Finishes block from other block.
   void finish(const block_lines& block);
 
-  /// Returns addressrange command.
+  /// Returns this block as an addressrange string.
+  /// In case the block is not available returns empty string.
   std::string get_range() const;
 
-  /// Returns true if there is a block is started.
+  /// Returns true if a block is available.
   bool is_available() const;
 
   /// Logs components.
@@ -51,28 +62,20 @@ public:
   /// Sets indicator based on this block.
   bool set_indicator(const indicator& indicator) const;
 
-  /// Returns block_lines as the first single line from target.
-  block_lines single() const;
-
   /// Return number of lines in the block.
   size_t size() const;
 
   /// Updates start line.
   void start(int start_line);
 
-  /// Returns block_lines from target.
-  block_lines target() const;
+  /// Returns type of block.
+  block_t type() const { return m_type; };
 
 private:
-  static inline const int LINE_RESET{-2};
+  const block_t m_type;
 
-  const bool m_is_inverse{false};
+  int m_start{0}, m_end{0};
 
-  const std::string m_name;
-
-  int m_start{LINE_RESET}, m_end{LINE_RESET};
-
-  ex*          m_ex;
   syntax::stc* m_stc;
 };
 }; // namespace wex

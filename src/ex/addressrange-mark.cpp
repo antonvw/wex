@@ -52,11 +52,6 @@ void wex::addressrange_mark::end(bool indicator_clear)
   }
 }
 
-wex::block_lines wex::addressrange_mark::get_block_lines() const
-{
-  return block_lines(m_ex).single();
-}
-
 wex::addressrange_mark::mark_t wex::addressrange_mark::get_type() const
 {
   if (m_data.is_global_command())

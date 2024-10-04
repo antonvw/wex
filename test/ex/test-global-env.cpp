@@ -51,13 +51,13 @@ TEST_CASE("wex::global_env")
     wex::global_env inv(ar);
     REQUIRE(!inv.has_commands());
     REQUIRE(inv.global(wex::addressrange::data()));
-    REQUIRE(inv.hits() == 7);
+    REQUIRE(inv.hits() == 8);
 
     REQUIRE(wex::addressrange::data().set_global("g!/he/"));
     wex::global_env inv2(ar);
     REQUIRE(!inv2.has_commands());
     REQUIRE(inv2.global(wex::addressrange::data()));
-    REQUIRE(inv2.hits() == 7);
+    REQUIRE(inv2.hits() == 8);
   }
 
   SUBCASE("commands-2addr")
@@ -69,6 +69,16 @@ TEST_CASE("wex::global_env")
     REQUIRE(ge.has_commands());
     REQUIRE(ge.global(wex::addressrange::data()));
     REQUIRE(ge.hits() == 2);
+
+    stc->set_text(
+      "hello\nhello11\nhello22\ntest\ngcc\nblame\nthis\nyank\ncopy\n\n");
+    REQUIRE(wex::addressrange::data().set_global("g!/gcc/d"));
+    wex::addressrange ar_inv(ex, "5,6");
+    wex::global_env   inv(ar_inv);
+
+    REQUIRE(inv.has_commands());
+    REQUIRE(inv.global(wex::addressrange::data()));
+    REQUIRE(inv.hits() == 1);
   }
 
   SUBCASE("commands-append")
