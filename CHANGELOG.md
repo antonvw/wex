@@ -24,7 +24,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - build-gen.ps1 restores location after building
 - blame hide should not do SetWrapMode
 - find next for empty line match
-- lexer dialog respects edge mode settings
+- lexer dialog respects edge mode and folding settings
+- ex mode get previous line
 
 ## 24.10 - 2024-09-22
 

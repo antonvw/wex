@@ -35,7 +35,7 @@
     {                                                                          \
       m_current_line[i++] = c;                                                 \
                                                                                \
-      if (c == '\n' || i == m_current_line_size)                               \
+      if (c == '\n' || i == m_line_size_requested)                             \
       {                                                                        \
         if (sl.handle(m_current_line, i) == wex::ex_stream_line::HANDLE_STOP)  \
         {                                                                      \
@@ -163,7 +163,8 @@ void wex::ex_stream::filter_line(int start, int end, std::streampos spos)
   const size_t sz(end - start - 1);
 
   memcpy(m_current_line, m_buffer + start + 1, sz);
-  m_current_line[sz] = 0;
+  m_current_line[sz]  = 0;
+  m_line_size_current = sz;
 
   m_stream->clear();
   m_stream->seekg((size_t)spos + start + 1);
@@ -279,7 +280,7 @@ bool wex::ex_stream::find_finish(const data::find& f, bool& found)
     }
   }
 
-  m_current_line_size = m_default_line_size;
+  m_line_size_requested = m_line_size_default;
 
   return found;
 }
@@ -332,7 +333,7 @@ int wex::ex_stream::get_line_count_request()
 
     if (m_block_mode)
     {
-      line_no += m_buffer_size / m_default_line_size;
+      line_no += m_buffer_size / m_line_size_default;
     }
   }
 
@@ -364,7 +365,7 @@ bool wex::ex_stream::get_lines(
 
 bool wex::ex_stream::get_next_line()
 {
-  if (!m_stream->getline(m_current_line, m_current_line_size))
+  if (!m_stream->getline(m_current_line, m_line_size_requested))
   {
     if (m_stream->eof())
     {
@@ -373,6 +374,7 @@ bool wex::ex_stream::get_next_line()
         m_last_line_no = m_line_no + 1;
       }
 
+      m_line_size_current = m_stream->gcount() - 1;
       log::status("at end-of-file");
 
       return false;
@@ -382,6 +384,7 @@ bool wex::ex_stream::get_next_line()
     m_block_mode = true;
   }
 
+  m_line_size_current = m_stream->gcount() - 1;
   m_line_no++;
 
   // the m_stream->eofbit might be set, without the eof() is on
@@ -393,23 +396,23 @@ bool wex::ex_stream::get_previous_line()
 {
   auto pos(m_stream->tellg());
 
-  if (static_cast<int>(pos) - static_cast<int>(m_current_line_size) > 0)
+  if (static_cast<int>(pos) - static_cast<int>(m_line_size_requested) > 0)
   {
-    m_stream->seekg((size_t)pos - m_current_line_size);
+    m_stream->seekg((size_t)pos - m_line_size_requested);
     pos = m_stream->tellg();
   }
   else if (pos > 0)
   {
     m_stream->seekg(0);
-    m_current_line_size = pos;
-    pos                 = 0;
+    m_line_size_requested = pos;
+    pos                   = 0;
   }
   else
   {
-    log("get_previous_line") << m_current_line_size << "at pos 0";
+    log("get_previous_line") << m_line_size_requested << "at pos 0";
   }
 
-  m_stream->read(m_buffer, m_current_line_size);
+  m_stream->read(m_buffer, m_line_size_requested);
 
   if (m_stream->gcount() > 0)
   {
@@ -440,11 +443,12 @@ bool wex::ex_stream::get_previous_line()
 
     memcpy(m_current_line, m_buffer, m_stream->gcount());
     m_current_line[m_stream->gcount()] = 0;
+    m_line_size_current                = m_stream->gcount() - 1;
     m_stream->clear();
     m_stream->seekg((size_t)pos);
 
     // There was no newline, this implies block mode.
-    if (m_current_line_size == m_default_line_size)
+    if (m_line_size_requested == m_line_size_default)
     {
       if (m_line_no > 0)
       {
@@ -452,10 +456,10 @@ bool wex::ex_stream::get_previous_line()
       }
 
       m_block_mode = true;
-      return static_cast<int>(m_stream->gcount()) > m_current_line_size - 1;
+      return static_cast<int>(m_stream->gcount()) > m_line_size_requested - 1;
     }
 
-    return static_cast<int>(m_stream->gcount()) > m_current_line_size;
+    return static_cast<int>(m_stream->gcount()) > m_line_size_requested;
   }
 
   return false;
@@ -486,12 +490,10 @@ void wex::ex_stream::goto_line(int no)
   log::trace("ex stream goto_line")
     << no << "current" << m_line_no << "pos" << (int)m_stream->tellg();
 
-  bool at_end = true;
-
   if (no == 0 || (no < 100 && no < m_line_no))
   {
-    m_line_no           = LINE_COUNT_UNKNOWN;
-    m_current_line_size = m_default_line_size;
+    m_line_no             = LINE_COUNT_UNKNOWN;
+    m_line_size_requested = m_line_size_default;
     m_stream->seekg(0);
 
     m_stc->SetReadOnly(false);
@@ -499,36 +501,30 @@ void wex::ex_stream::goto_line(int no)
     m_stc->SetReadOnly(true);
 
     while ((m_line_no < no) && get_next_line())
-    {
-      at_end = false;
-    }
+      ;
   }
   else if (
     no == m_line_no &&
     (no < m_last_line_no - 1 || m_last_line_no == LINE_COUNT_UNKNOWN))
   {
-    at_end = false;
   }
   else if (no < m_line_no)
   {
-    at_end = false;
     while ((no < m_line_no) && get_previous_line())
       ;
   }
   else
   {
     while ((no > m_line_no) && get_next_line())
-    {
-      at_end = false;
-    }
+      ;
   }
 
-  if (m_stream->gcount() > 0 && !at_end)
+  if (m_stream->gcount() > 0)
   {
     set_text();
   }
 
-  if (at_end || m_stream->eof())
+  if (m_stream->eof())
   {
     log::status("at end-of-file");
   }
@@ -622,7 +618,7 @@ void wex::ex_stream::set_text()
 
   if (!m_stc->is_hexmode())
   {
-    m_stc->append_text(std::string(m_current_line, m_stream->gcount() - 1));
+    m_stc->append_text(std::string(m_current_line, m_line_size_current));
   }
   else
   {
@@ -659,9 +655,9 @@ void wex::ex_stream::stream(file& f, size_t default_line_size)
     return;
   }
 
-  m_default_line_size = default_line_size;
-  m_current_line_size = default_line_size;
-  m_current_line      = new char[m_current_line_size];
+  m_line_size_default   = default_line_size;
+  m_line_size_requested = default_line_size;
+  m_current_line        = new char[m_line_size_requested];
 
   m_file = &f;
   m_function_repeat.activate();
