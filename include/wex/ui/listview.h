@@ -66,6 +66,9 @@ public:
   /// Returns the field separator.
   const auto& field_separator() const { return m_field_separator; }
 
+  /// Sets the field separator.
+  void field_separator(char sep) { m_field_separator = sep; }
+
   /// If column is not found, -1 is returned,
   int find_column(const std::string& name) const
   {
@@ -171,7 +174,7 @@ private:
         false);
   };
 
-  const char m_field_separator = '\t';
+  char m_field_separator = '\t';
 
   data::listview m_data;
 

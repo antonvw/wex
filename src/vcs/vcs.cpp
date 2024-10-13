@@ -11,7 +11,6 @@
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
-#include <wex/syntax/path-lexer.h>
 #include <wex/ui/item-dialog.h>
 #include <wex/ui/menus.h>
 #include <wex/vcs/vcs.h>
@@ -217,13 +216,12 @@ bool wex::vcs::execute()
     return m_entry->execute(
       m_entry->get_command().is_add() ? config(_("vcs.Path")).get_first_of() :
                                         std::string(),
-      lexer(),
+      path(),
       config(_("vcs.Base folder")).get_first_of());
   }
 
-  const path_lexer filename(current_path());
-  wex::path        wd(current_path());
-  std::string      args;
+  wex::path   wd(current_path());
+  std::string args;
 
   if (m_files.size() > 1)
   {
@@ -238,9 +236,9 @@ bool wex::vcs::execute()
   }
   else if (m_entry->name() == "git")
   {
-    if (filename.file_exists() && !filename.filename().empty())
+    if (current_path().file_exists() && !current_path().filename().empty())
     {
-      args = quoted_find(filename.filename());
+      args = quoted_find(current_path().filename());
     }
 
     if (wd.file_exists())
@@ -250,10 +248,10 @@ bool wex::vcs::execute()
   }
   else
   {
-    args = quoted_find(filename.string());
+    args = quoted_find(current_path().string());
   }
 
-  return m_entry->execute(args, filename.lexer(), wd.string());
+  return m_entry->execute(args, current_path(), wd.string());
 }
 
 bool wex::vcs::execute(const std::string& command)
@@ -429,8 +427,9 @@ int wex::vcs::show_dialog(const data::window& arg)
   assert(!m_entry->name().empty());
 
   if (
-    !config(_("vcs.Always ask flags")).get(true) &&
-    m_entry->get_command().type().test(wex::menu_command::IS_ASKED))
+    m_entry->get_command().get_command() == "show" ||
+    (!config(_("vcs.Always ask flags")).get(true) &&
+     m_entry->get_command().type().test(wex::menu_command::IS_ASKED)))
   {
     return wxID_OK;
   }

@@ -13,12 +13,35 @@
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
 #include <wex/stc/shell.h>
-#include <wex/ui/menu.h>
+#include <wex/syntax/path-lexer.h>
+#include <wex/ui/frame.h>
+#include <wex/ui/item-dialog.h>
+#include <wex/ui/listview.h>
 #include <wex/ui/menus.h>
 #include <wex/vcs/vcs-entry.h>
 
 namespace wex
 {
+strings_t from_git(const vcs_entry& e, const std::string& ask)
+{
+  process pro;
+  pro.system(process_data(e.bin() + " " + ask));
+
+  strings_t values;
+
+  values.emplace_back(std::string());
+
+  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+         pro.std_out(),
+         boost::char_separator<char>("\r\n")))
+  {
+    const auto& line(it);
+    values.emplace_back(line);
+  }
+
+  return values;
+}
+
 std::set<wex::path>
 parse(const path& toplevel, const std::string& file, const std::string& regex)
 {
@@ -73,10 +96,10 @@ size_t wex::vcs_entry::build_menu(int base_id, menu* menu) const
 
 bool wex::vcs_entry::execute(
   const std::string& args,
-  const lexer&       lexer,
+  const path&        p,
   const std::string& wd)
 {
-  m_lexer = lexer;
+  m_lexer = path_lexer(p).lexer();
 
   std::string prefix;
 
@@ -103,21 +126,54 @@ bool wex::vcs_entry::execute(
   }
 
   std::string flags;
+  std::string my_args(args);
+  std::string my_wd(wd);
 
-  if (get_command().ask_flags())
+  if (p.file_exists() && get_command().get_command() == "show")
   {
-    flags = get_flags();
+    const path&        tl(factory::vcs_admin(admin_dir(), p).toplevel());
+    const std::string& repo_path(p.string().substr(tl.string().size() + 1));
+
+    if (revisions_dialog(repo_path, tl, p) == wxID_CANCEL)
+    {
+      return false;
+    }
+
+    my_wd = tl.string();
+
+    if (const auto& entry(config(_("vcs.branches")).get_first_of());
+        !entry.empty())
+    {
+      my_args = entry + ":" + repo_path;
+    }
+    else if (const auto& entry(config(_("vcs.tags")).get_first_of());
+             !entry.empty())
+    {
+      my_args = entry + ":" + repo_path;
+    }
+    else
+    {
+      my_args.clear();
+    }
   }
-  else if (get_command().flags() != "none")
+
+  if (get_command().get_command() != "show")
   {
-    flags = get_command().flags();
+    if (get_command().ask_flags())
+    {
+      flags = get_flags();
+    }
+    else if (get_command().flags() != "none")
+    {
+      flags = get_command().flags();
+    }
   }
 
   // E.g. in git you can do
-  // git show HEAD~15:syncped/frame.cpp
+  // git show HEAD~15:<path>
   // where flags is HEAD~15:,
   // so there should be no space after it
-  if (!flags.empty() && flags.back() != ':')
+  if (!flags.empty() && flags.back() == ':')
   {
     flags += " ";
   }
@@ -130,8 +186,6 @@ bool wex::vcs_entry::execute(
       "-m \"" + config(_("vcs.Revision comment")).get_first_of() + "\" ";
   }
 
-  std::string my_args(args);
-
   // If we specified help (flags), we do not need a file argument.
   if (get_command().is_help() || flags.contains("help"))
   {
@@ -141,7 +195,7 @@ bool wex::vcs_entry::execute(
   return process::system(process_data(
                            bin() + " " + prefix + get_command().get_command() +
                            " " + subcommand + flags + comment + my_args)
-                           .start_dir(wd)) == 0;
+                           .start_dir(my_wd)) == 0;
 }
 
 const std::string wex::vcs_entry::get_branch(const std::string& wd) const
@@ -171,7 +225,7 @@ const std::string wex::vcs_entry::get_branch(const std::string& wd) const
 
 const std::string wex::vcs_entry::get_flags() const
 {
-  return config(_("vcs.Flags")).get();
+  return config(flags_key()).get();
 }
 
 bool wex::vcs_entry::log(const path& p, const std::string& id)
@@ -184,6 +238,56 @@ bool wex::vcs_entry::log(const path& p, const std::string& id)
                id + separator + m_log_flags;
 
   return process::system(process_data(command).start_dir(p.parent_path())) == 0;
+}
+
+int wex::vcs_entry::revisions_dialog(
+  const std::string& repo_path,
+  const path&        tl,
+  const path&        file)
+{
+  const data::window data(data::window()
+                            .title(file.filename() + " " + _("Select Revision"))
+                            .size({350, 400}));
+
+  item_dialog dlg(
+    {{"vcs.branches", wex::item::COMBOBOX, from_git(*this, "branch -a")},
+     {"vcs.tags", wex::item::COMBOBOX, from_git(*this, "tag")},
+     {"vcs.hashes", data::listview()}},
+    data);
+
+  auto* lv = dynamic_cast<wex::listview*>(dlg.find("vcs.hashes").window());
+  lv->append_columns(
+    {{"date", wex::column::STRING},
+     {"comment", wex::column::STRING, 250},
+     {"author", wex::column::STRING},
+     {"hash", wex::column::STRING}});
+
+  lv->field_separator('');
+
+  lv->Bind(
+    wxEVT_LEFT_DCLICK,
+    [=, this](wxMouseEvent& event)
+    {
+      event.Skip();
+      auto*       frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+      const auto  index(lv->GetFirstSelected());
+      const auto& hash(lv->get_item_text(index, "hash"));
+      config(flags_key()).set(hash);
+      system(
+        process_data("show " + hash + ":" + repo_path).start_dir(tl.string()));
+      frame->open_file_vcs(path(repo_path), *this, data::stc());
+      config(flags_key()).set(std::string());
+    });
+
+  process pro;
+  pro.system(
+    // this query should follow the columns as specified above,
+    // and using same field separator as used for the listview
+    process_data(bin() + " log --pretty=format:%as%s%an%h " + repo_path)
+      .start_dir(tl.string()));
+  lv->item_from_text(pro.std_out());
+
+  return dlg.ShowModal();
 }
 
 std::optional<std::set<wex::path>>

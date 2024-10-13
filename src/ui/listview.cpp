@@ -669,8 +669,16 @@ bool wex::listview::insert_item(
   const std::vector<std::string>& item,
   long                            requested_index)
 {
-  if (item.empty() || item.front().empty() || item.size() > m_columns.size())
+  if (item.empty() || item.front().empty())
   {
+    log("listview::insert_item empty");
+    return false;
+  }
+
+  if (item.size() > m_columns.size())
+  {
+    log("listview::insert_item")
+      << item.front() << item.size() << m_columns.size();
     return false;
   }
 
@@ -713,7 +721,7 @@ bool wex::listview::insert_item(
                requested_index == -1 ? GetItemCount() : requested_index,
                col)) == -1)
           {
-            log("listview insert") << "index:" << index << "col:" << col;
+            log("listview InsertItem") << "index:" << index << "col:" << col;
             return false;
           }
           if (regex v(",fore:(.*)");
@@ -957,6 +965,11 @@ bool wex::listview::load(const strings_t& l)
       {
         append_columns({{std::to_string(i++ + 1), column::STRING, 50}});
       });
+  }
+
+  if (m_columns.size() == 0)
+  {
+    return false;
   }
 
   for (const auto& it : l)

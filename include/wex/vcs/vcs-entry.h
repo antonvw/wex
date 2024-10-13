@@ -52,6 +52,9 @@ public:
   /// Returns the administrative directory.
   const auto& admin_dir() const { return m_admin_dir; }
 
+  /// Returns binary.
+  const std::string bin() const;
+
   /// Builds a menu from all vcs commands.
   /// Returns (total) number of items in menu.
   size_t build_menu(
@@ -69,7 +72,7 @@ public:
     /// args, like filenames, or vcs flags
     const std::string& args = std::string(),
     /// lexer that is used for presenting the output
-    const lexer& lexer = wex::lexer(),
+    const path& p = wex::path(),
     /// working directory
     const std::string& wd = std::string());
 
@@ -106,7 +109,10 @@ public:
   void show_output(const std::string& caption = std::string()) const override;
 
 private:
-  const std::string bin() const;
+  int revisions_dialog(
+    const std::string& path,
+    const wex::path&   tl,
+    const wex::path&   file);
 
   // no const, as entry is set using operator= in vcs.
   flags_location_t m_flags_location{flags_location_t::POSTFIX};
