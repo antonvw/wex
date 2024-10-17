@@ -15,6 +15,11 @@ TEST_CASE("wex::factory::stc")
 
   SUBCASE("margin")
   {
+    REQUIRE(stc->margin_divider_number() >= 0);
+    REQUIRE(stc->margin_folding_number() >= 0);
+    REQUIRE(stc->margin_line_number() >= 0);
+    REQUIRE(stc->margin_text_number() >= 0);
+
     REQUIRE(!stc->margin_text_is_shown());
     stc->SetMarginWidth(0, 10);
     stc->SetMarginWidth(1, 20);

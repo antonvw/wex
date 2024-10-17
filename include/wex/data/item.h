@@ -86,11 +86,17 @@ public:
   /// Sets initial.
   item& initial(const std::any& rhs);
 
+  /// Returns is_persistent.
+  const bool is_persistent() const { return m_is_persistent; }
+
   /// Returns is_readonly.
   const bool is_readonly() const { return m_is_readonly; }
 
   /// Returns is_regex.
   const bool is_regex() const { return m_is_regex; }
+
+  /// Sets is_persistent.
+  item& is_persistent(bool rhs);
 
   /// Sets is_readonly.
   item& is_readonly(bool rhs);
@@ -155,7 +161,7 @@ private:
 
   std::string m_validate_re;
 
-  bool m_is_readonly{false}, m_is_regex{false};
+  bool m_is_persistent{true}, m_is_readonly{false}, m_is_regex{false};
 
   wxImageList* m_image_list{nullptr};
 

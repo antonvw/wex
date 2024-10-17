@@ -797,6 +797,7 @@ bool wex::lexer::set(const lexer& lexer, bool fold)
     return m_is_ok;
   }
 
+  m_is_ok = !m_scintilla_lexer.empty();
   m_stc->SetLexerLanguage(m_scintilla_lexer);
   m_stc->generic_settings();
 
@@ -807,6 +808,13 @@ bool wex::lexer::set(const lexer& lexer, bool fold)
   if (!m_scintilla_lexer.empty() && !ok)
   {
     log::debug("lexer is not set") << lexer.display_lexer();
+  }
+
+  if (m_stc->GetProperty("fold") == "1" && !scintilla_lexer().empty())
+  {
+    m_stc->SetMarginWidth(
+      m_stc->margin_folding_number(),
+      config(_("stc.margin.Folding")).get(16));
   }
 
   if (fold)

@@ -132,13 +132,18 @@ TEST_CASE("wex::lexer")
     wex::lexer lexer2(stc);
     REQUIRE(lexer2.get_stc() == stc);
     lexer2.set("markdown");
+    REQUIRE(lexer2.is_ok());
+    REQUIRE(lexer2.scintilla_lexer() == "markdown");
     REQUIRE(!lexer2.attribs().empty());
     REQUIRE(lexer2.attrib(_("Edge line")) == wxSTC_EDGE_NONE);
     REQUIRE(stc->GetEdgeMode() == wxSTC_EDGE_NONE);
 
-    const wex::lexer cpp(stc);
-    lexer.set("cpp");
+    wex::lexer cpp(stc);
+    cpp.set("cpp");
+    REQUIRE(cpp.is_ok());
     lexer2 = cpp;
+    REQUIRE(lexer2.is_ok());
+    REQUIRE(lexer2.scintilla_lexer() == "cpp");
     REQUIRE(lexer2.attribs().empty());
   }
 

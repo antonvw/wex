@@ -127,34 +127,13 @@ bool wex::vcs_entry::execute(
 
   std::string flags;
   std::string my_args(args);
-  std::string my_wd(wd);
-
   if (p.file_exists() && get_command().get_command() == "show")
   {
     const path&        tl(factory::vcs_admin(admin_dir(), p).toplevel());
     const std::string& repo_path(p.string().substr(tl.string().size() + 1));
 
-    if (revisions_dialog(repo_path, tl, p) == wxID_CANCEL)
-    {
-      return false;
-    }
-
-    my_wd = tl.string();
-
-    if (const auto& entry(config(_("vcs.branches")).get_first_of());
-        !entry.empty())
-    {
-      my_args = entry + ":" + repo_path;
-    }
-    else if (const auto& entry(config(_("vcs.tags")).get_first_of());
-             !entry.empty())
-    {
-      my_args = entry + ":" + repo_path;
-    }
-    else
-    {
-      my_args.clear();
-    }
+    revisions_dialog(repo_path, tl, p);
+    return true;
   }
 
   if (get_command().get_command() != "show")
@@ -166,6 +145,11 @@ bool wex::vcs_entry::execute(
     else if (get_command().flags() != "none")
     {
       flags = get_command().flags();
+    }
+
+    if (!flags.empty())
+    {
+      flags += " ";
     }
   }
 
@@ -195,7 +179,7 @@ bool wex::vcs_entry::execute(
   return process::system(process_data(
                            bin() + " " + prefix + get_command().get_command() +
                            " " + subcommand + flags + comment + my_args)
-                           .start_dir(my_wd)) == 0;
+                           .start_dir(wd)) == 0;
 }
 
 const std::string wex::vcs_entry::get_branch(const std::string& wd) const
@@ -250,15 +234,45 @@ int wex::vcs_entry::revisions_dialog(
                             .size({350, 400}));
 
   item_dialog dlg(
-    {{"vcs.branches", wex::item::COMBOBOX, from_git(*this, "branch -a")},
-     {"vcs.tags", wex::item::COMBOBOX, from_git(*this, "tag")},
+    {{"vcs.branches",
+      wex::item::COMBOBOX,
+      from_git(*this, "branch -a"),
+      data::item().is_persistent(false)},
+     {"vcs.tags",
+      wex::item::COMBOBOX,
+      from_git(*this, "tag --sort=-creatordate"),
+      data::item().is_persistent(false)},
      {"vcs.hashes", data::listview()}},
     data);
 
+  auto* vb = dynamic_cast<wxComboBox*>(dlg.find("vcs.branches").window());
+  auto* vt = dynamic_cast<wxComboBox*>(dlg.find("vcs.tags").window());
   auto* lv = dynamic_cast<wex::listview*>(dlg.find("vcs.hashes").window());
+  auto*       frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+  
+  vb->Bind(
+    wxEVT_TEXT,
+    [=, this](wxCommandEvent& event)
+    {
+      event.Skip();
+      system(
+        process_data("show " + vb->GetValue() + ":" + repo_path).start_dir(tl.string()));
+      frame->open_file_vcs(path(repo_path), *this, data::stc());
+    });
+    
+  vt->Bind(
+    wxEVT_TEXT,
+    [=, this](wxCommandEvent& event)
+    {
+      event.Skip();
+      system(
+        process_data("show " + vt->GetValue() + ":" + repo_path).start_dir(tl.string()));
+      frame->open_file_vcs(path(repo_path), *this, data::stc());
+  });
+
   lv->append_columns(
     {{"date", wex::column::STRING},
-     {"comment", wex::column::STRING, 250},
+     {"comment", wex::column::STRING, 350},
      {"author", wex::column::STRING},
      {"hash", wex::column::STRING}});
 
@@ -269,7 +283,6 @@ int wex::vcs_entry::revisions_dialog(
     [=, this](wxMouseEvent& event)
     {
       event.Skip();
-      auto*       frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
       const auto  index(lv->GetFirstSelected());
       const auto& hash(lv->get_item_text(index, "hash"));
       config(flags_key()).set(hash);
@@ -283,7 +296,8 @@ int wex::vcs_entry::revisions_dialog(
   pro.system(
     // this query should follow the columns as specified above,
     // and using same field separator as used for the listview
-    process_data(bin() + " log --pretty=format:%as%s%an%h " + repo_path)
+    process_data(
+      bin() + " log --date=short --pretty=format:%ad%s%an%h " + repo_path)
       .start_dir(tl.string()));
   lv->item_from_text(pro.std_out());
 

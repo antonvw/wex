@@ -100,13 +100,6 @@ void wex::stc::generic_settings()
   }
   else
   {
-    if (GetProperty("fold") == "1" && !get_lexer().scintilla_lexer().empty())
-    {
-      SetMarginWidth(
-        m_margin_folding_number,
-        iv.find<int>(_("stc.margin.Folding")));
-    }
-
     if (const auto el = iv.find<long>(_("stc.Edge line"));
         el != wxSTC_EDGE_NONE)
     {
