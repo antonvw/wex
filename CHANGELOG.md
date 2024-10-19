@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - The Open Group Base Specifications Issue 8, 2024 edition
+- listview standard column sizes are configurable
 - wex::quoted uses std::quoted and includes a delim character
 - stc context menu and properties only shown if no selection active
 
