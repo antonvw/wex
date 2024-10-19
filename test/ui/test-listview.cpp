@@ -104,9 +104,14 @@ TEST_CASE("wex::listview")
 
   SUBCASE("item_from_to_text")
   {
-    REQUIRE(lv->append_columns({{"String", wex::column::STRING}}));
+    REQUIRE(lv->append_columns(
+      {{"Text", wex::column::STRING}, {"More", wex::column::STRING}}));
 
-    REQUIRE(lv->item_from_text("test.h\ntest.h"));
+    lv->field_separator('');
+
+    REQUIRE(lv->item_from_text("test.hmore\ntest.h"));
+    REQUIRE(lv->get_item_text(0, "More") == "more");
+    REQUIRE(!lv->item_to_text(0).empty());
     REQUIRE(!lv->item_to_text(0).empty());
     REQUIRE(!lv->item_to_text(-1).empty());
   }

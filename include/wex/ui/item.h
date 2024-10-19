@@ -429,7 +429,8 @@ public:
 
   /// Loads or saves this item to the config.
   /// Returns true if the config was accessed, as not all
-  /// config items associate with the config.
+  /// config items associate with the config, or
+  /// the item data is made non persistent.
   bool to_config(bool save) const;
 
   /// Returns the type.

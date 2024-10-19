@@ -13,7 +13,7 @@
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
 #include <wex/stc/shell.h>
-#include <wex/ui/menu.h>
+#include <wex/syntax/path-lexer.h>
 #include <wex/ui/menus.h>
 #include <wex/vcs/vcs-entry.h>
 
@@ -73,10 +73,18 @@ size_t wex::vcs_entry::build_menu(int base_id, menu* menu) const
 
 bool wex::vcs_entry::execute(
   const std::string& args,
-  const lexer&       lexer,
+  const path&        p,
   const std::string& wd)
 {
-  m_lexer = lexer;
+  m_lexer = path_lexer(p).lexer();
+
+  if (p.file_exists() && get_command().get_command() == "show")
+  {
+    const path&        tl(factory::vcs_admin(admin_dir(), p).toplevel());
+    const std::string& repo_path(p.string().substr(tl.string().size() + 1));
+    revisions_dialog(repo_path, tl, p);
+    return true;
+  }
 
   std::string prefix;
 
@@ -104,22 +112,21 @@ bool wex::vcs_entry::execute(
 
   std::string flags;
 
-  if (get_command().ask_flags())
+  if (get_command().get_command() != "show")
   {
-    flags = get_flags();
-  }
-  else if (get_command().flags() != "none")
-  {
-    flags = get_command().flags();
-  }
+    if (get_command().ask_flags())
+    {
+      flags = get_flags();
+    }
+    else if (get_command().flags() != "none")
+    {
+      flags = get_command().flags();
+    }
 
-  // E.g. in git you can do
-  // git show HEAD~15:syncped/frame.cpp
-  // where flags is HEAD~15:,
-  // so there should be no space after it
-  if (!flags.empty() && flags.back() != ':')
-  {
-    flags += " ";
+    if (!flags.empty())
+    {
+      flags += " ";
+    }
   }
 
   std::string comment;
@@ -171,7 +178,7 @@ const std::string wex::vcs_entry::get_branch(const std::string& wd) const
 
 const std::string wex::vcs_entry::get_flags() const
 {
-  return config(_("vcs.Flags")).get();
+  return config(flags_key()).get();
 }
 
 bool wex::vcs_entry::log(const path& p, const std::string& id)

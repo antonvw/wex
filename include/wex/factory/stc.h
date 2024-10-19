@@ -252,6 +252,18 @@ public:
   /// Returns word at position.
   const std::string get_word_at_pos(int pos) const;
 
+  /// Returns the divider margin number.
+  size_t margin_divider_number() const { return m_margin_divider_number; }
+
+  /// Returns the folding margin number.
+  size_t margin_folding_number() const { return m_margin_folding_number; }
+
+  /// Returns the line margin number.
+  size_t margin_line_number() const { return m_margin_line_number; }
+
+  /// Returns the text margin number.
+  size_t margin_text_number() const { return m_margin_text_number; }
+
   /// When clicked on a line with a text margin,
   /// returns revision id on the text margin, otherwise returns empty string.
   std::string margin_get_revision_id() const;

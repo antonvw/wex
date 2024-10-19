@@ -220,7 +220,7 @@ bool wex::item::persist(bool save) const
 
 bool wex::item::to_config(bool save) const
 {
-  if (!m_use_config || m_window == nullptr)
+  if (!m_use_config || !m_data.is_persistent() || m_window == nullptr)
   {
     return false;
   }

@@ -16,6 +16,7 @@ TEST_CASE("wex::data::item")
     REQUIRE(wex::data::item().apply() == nullptr);
     REQUIRE(wex::data::item().columns() == 1);
     REQUIRE(wex::data::item().image_list() == nullptr);
+    REQUIRE(wex::data::item().is_persistent());
     REQUIRE(!wex::data::item().is_readonly());
     REQUIRE(!wex::data::item().is_regex());
     REQUIRE(std::any_cast<int>(wex::data::item().inc()) == 1);
@@ -32,7 +33,7 @@ TEST_CASE("wex::data::item")
   SUBCASE("operator")
   {
     wex::data::item item;
-    item.is_readonly(true).is_regex(true).apply(
+    item.is_persistent(false).is_readonly(true).is_regex(true).apply(
       [=](wxWindow* user, const std::any& value, bool save)
       {
         wex::log::status("lambda") << "this is a lambda\n";
@@ -40,6 +41,7 @@ TEST_CASE("wex::data::item")
 
     const wex::data::item copy(item);
     REQUIRE(copy.apply() != nullptr);
+    REQUIRE(!copy.is_persistent());
     REQUIRE(copy.is_readonly());
     REQUIRE(copy.is_regex());
   }

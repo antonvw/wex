@@ -47,6 +47,7 @@ TEST_CASE("wex::vcs_entry")
     REQUIRE(entry.get_blame().use());
 
     REQUIRE(entry.get_commands().size() == 2);
+    REQUIRE(!entry.bin().empty());
     REQUIRE(!entry.get_command().get_command().empty());
     REQUIRE(entry.admin_dir() == "./");
     REQUIRE(entry.get_flags().empty());
@@ -79,7 +80,7 @@ TEST_CASE("wex::vcs_entry")
     REQUIRE(entry.system(wex::process_data("help")) == 0);
 
     auto* other = new wex::vcs_entry(doc.document_element());
-    REQUIRE(other->execute(std::string(), wex::lexer()));
+    REQUIRE(other->execute(std::string(), wex::path()));
     other->show_output();
 #endif
   }

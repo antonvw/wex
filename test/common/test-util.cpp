@@ -36,6 +36,9 @@ TEST_CASE("wex::util" * doctest::may_fail())
   {
     auto* cb = new wxComboBox(get_frame(), wxID_ANY);
     wex::combobox_as<const wex::strings_t>(cb, l);
+    REQUIRE(l.size() == cb->GetCount());
+    CAPTURE(cb->GetValue());
+    REQUIRE(cb->GetValue() == "x");
   }
 
   SUBCASE("combobox_from_list")
