@@ -810,7 +810,7 @@ bool wex::lexer::set(const lexer& lexer, bool fold)
     log::debug("lexer is not set") << lexer.display_lexer();
   }
 
-  if (m_stc->GetProperty("fold") == "1" && !scintilla_lexer().empty())
+  if (m_stc->GetProperty("fold") == "1" && !m_scintilla_lexer.empty())
   {
     m_stc->SetMarginWidth(
       m_stc->margin_folding_number(),
