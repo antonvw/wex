@@ -14,8 +14,10 @@
 #include <wex/core/regex.h>
 #include <wex/stc/shell.h>
 #include <wex/syntax/path-lexer.h>
+#include <wex/ui/frame.h>
 #include <wex/ui/menus.h>
 #include <wex/vcs/vcs-entry.h>
+#include <wx/app.h>
 
 namespace wex
 {
@@ -77,13 +79,23 @@ bool wex::vcs_entry::execute(
   const std::string& wd)
 {
   m_lexer = path_lexer(p).lexer();
+  const path& tl(factory::vcs_admin(admin_dir(), p).toplevel());
 
   if (p.file_exists() && get_command().get_command() == "show")
   {
-    const path&        tl(factory::vcs_admin(admin_dir(), p).toplevel());
     const std::string& repo_path(p.string().substr(tl.string().size() + 1));
     revisions_dialog(repo_path, tl, p);
     return true;
+  }
+
+  if (get_command().get_command() == "grep")
+  {
+    auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+    auto* stc   = frame->get_stc();
+    return stc != nullptr &&
+           frame->process_async_system(
+             process_data(bin() + " grep -n " + stc->get_selected_text())
+               .start_dir(tl.string()));
   }
 
   std::string prefix;
