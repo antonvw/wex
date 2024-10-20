@@ -149,6 +149,7 @@ bool wex::ex_commandline_imp::handle(const std::string& command)
   {
     m_command = ex_command(m_cl->stc()->get_ex_command()).set(command);
     get_lexer().set(m_cl->stc()->get_lexer().display_lexer());
+    reset_margins();
   }
   else
   {
@@ -192,6 +193,7 @@ bool wex::ex_commandline_imp::handle(char command)
   get_lexer().set(
     m_cl->stc() != nullptr ? m_cl->stc()->get_lexer().display_lexer() :
                              std::string());
+  reset_margins();
 
   ClearAll();
   m_command.reset();
