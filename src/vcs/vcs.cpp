@@ -427,6 +427,7 @@ int wex::vcs::show_dialog(const data::window& arg)
   assert(!m_entry->name().empty());
 
   if (
+    m_entry->get_command().get_command() == "grep" ||
     m_entry->get_command().get_command() == "show" ||
     (!config(_("vcs.Always ask flags")).get(true) &&
      m_entry->get_command().type().test(wex::menu_command::IS_ASKED)))

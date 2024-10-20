@@ -90,7 +90,7 @@ void wex::factory::process_imp::boost_async_system(
     m_group);
   // clang-format on
 
-  log::debug("async_system") << data.exe() << "debug:" << m_debug.load();
+  log::debug("async_system") << data.exe() << "wd:" << data.start_dir();
 }
 
 bool wex::factory::process_imp::stop(wxEvtHandler* e)
