@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- addr allows offset, and improvement on single address in addressrange
 - added g! as alternative to global v command
 - added set field_separator to listview
 - added revisions_dialog to git show

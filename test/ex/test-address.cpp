@@ -109,6 +109,14 @@ TEST_CASE("wex::address")
       wex::address address2(ex, "/hello3");
       REQUIRE(address2.get_line() == 4);
     }
+
+    SUBCASE("text-offset")
+    {
+      REQUIRE(wex::address(ex, "+1/hello2/").get_line() == 4);
+      REQUIRE(wex::address(ex, "/hello2/+3").get_line() == 6);
+      REQUIRE(wex::address(ex, "/hello2/+4").get_line() == 7);
+      REQUIRE(wex::address(ex, "/hello2/-1").get_line() == 2);
+    }
   }
 
   wex::address address(ex, "5");
