@@ -196,7 +196,7 @@ wex::vi::commands_t wex::vi::commands_other()
     {"m",
      [&](const std::string& command)
      {
-       if (one_letter_after("m", command))
+       if (one_letter_after('m', command))
        {
          marker_add(command.back());
          return 2;

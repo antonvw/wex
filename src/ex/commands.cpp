@@ -129,7 +129,7 @@ bool source(ex* ex, const std::string& cmd)
 wex::ex::commands_t wex::ex::commands_ex()
 {
   // These are the commands without address specifier,
-  // for these see address.cpp and addressrange.cpp.
+  // for these commands see address.cpp and addressrange.cpp.
   return {
     {"^:ab(breviate)?\\b",
      [&](const std::string& command)
@@ -265,6 +265,25 @@ wex::ex::commands_t wex::ex::commands_ex()
              });
        }
        return false;
+     }},
+    {"^:marks\\b",
+     [&](const std::string& command)
+     {
+       const lexer_props           l;
+       std::map<char, std::string> sorted;
+       for (const auto& marker : m_marker_identifiers)
+       {
+         sorted[marker.first] = l.make_key(
+           std::string(1, marker.first),
+           std::to_string(marker_line(marker.first) + 1));
+       }
+       std::string text;
+       for (const auto& it : sorted)
+       {
+         text += it.second;
+       }
+       show_dialog("Markers", text, l.scintilla_lexer());
+       return true;
      }},
     {"^:new\\b",
      [&](const std::string& command)

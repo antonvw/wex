@@ -2,7 +2,7 @@
 // Name:      test-vi-motion.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex/util.h>
@@ -52,7 +52,8 @@ TEST_CASE("wex::vi-motion")
         // test navigate
         std::string nc(1, c);
 
-        if (c == 'f' || c == 't' || c == 'F' || c == 'T' || c == '\'')
+        if (
+          c == 'f' || c == 't' || c == 'F' || c == 'T' || c == '\'' || c == '`')
         {
           nc += "f";
         }
@@ -70,7 +71,10 @@ TEST_CASE("wex::vi-motion")
 
         // test yank
         std::string mc(
-          c == 'f' || c == 't' || c == 'F' || c == 'T' || c == '\'' ? 3 : 2,
+          c == 'f' || c == 't' || c == 'F' || c == 'T' || c == '\'' ||
+              c == '`' ?
+            3 :
+            2,
           'y');
 
         mc[0] = 'y';

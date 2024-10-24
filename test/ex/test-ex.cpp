@@ -279,8 +279,13 @@ TEST_CASE("wex::ex")
     std::string command("xxx");
     REQUIRE(!wex::marker_and_register_expansion(nullptr, command));
     REQUIRE(wex::marker_and_register_expansion(ex, command));
+    REQUIRE(command == "xxx");
 
     command = "'yxxx";
+    REQUIRE(wex::marker_and_register_expansion(ex, command));
+    REQUIRE(command == "1xxx");
+
+    command = "`yxxx";
     REQUIRE(wex::marker_and_register_expansion(ex, command));
     REQUIRE(command == "1xxx");
 

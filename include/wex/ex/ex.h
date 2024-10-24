@@ -252,6 +252,8 @@ private:
   mode_t m_mode;
 
   std::unordered_map<char, int>
+    // relate a marker to column on a line
+    m_marker_columns,
     // relate a marker to identifier
     m_marker_identifiers,
     // relate a marker to mark number

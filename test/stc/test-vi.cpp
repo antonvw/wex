@@ -141,6 +141,21 @@ TEST_CASE("wex::vi")
     }
   }
 
+  SUBCASE("mark")
+  {
+    stc->set_text("some text with marker and pos\nmore\nmore");
+    REQUIRE(vi->command("2w"));
+    REQUIRE(stc->GetCurrentPos() == 10);
+    REQUIRE(vi->command("mx"));
+    stc->DocumentEnd();
+    REQUIRE(stc->get_current_line() == 2);
+    REQUIRE(vi->command("'x"));
+    REQUIRE(stc->get_current_line() == 0);
+    REQUIRE(stc->GetCurrentPos() == 0);
+    REQUIRE(vi->command("`x"));
+    REQUIRE(stc->GetCurrentPos() == 10);
+  }
+
   SUBCASE("navigate")
   {
     stc->set_text("{a brace and a close brace}");

@@ -10,11 +10,11 @@
 #include <string>
 #include <wx/defs.h>
 
-#define POST_CLOSE(ID, VETO)                      \
-  {                                               \
-    wxCloseEvent event(ID);                       \
-    event.SetCanVeto(VETO);                       \
-    wxPostEvent(wxTheApp->GetTopWindow(), event); \
+#define POST_CLOSE(ID, VETO)                                                   \
+  {                                                                            \
+    wxCloseEvent event(ID);                                                    \
+    event.SetCanVeto(VETO);                                                    \
+    wxPostEvent(wxTheApp->GetTopWindow(), event);                              \
   };
 
 namespace wex
@@ -62,8 +62,8 @@ std::string get_lines(
 /// Returns a string for specified key.
 const std::string k_s(wxKeyCode key);
 
-/// Returns whether there is one letter after.
-bool one_letter_after(const std::string& text, const std::string& letter);
+/// Returns whether there is one letter after specified char.
+bool one_letter_after(char c, const std::string& letter);
 
 /// Returns true if a register is specified after letter in text.
 bool register_after(const std::string& text, const std::string& letter);

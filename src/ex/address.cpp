@@ -222,10 +222,7 @@ int wex::address::get_line(int start_pos) const
         {
           offset = stoi(v[0]);
         }
-        else
-        {
-          search_index = 1;
-        }
+        search_index = 1;
         break;
 
       case 2:
@@ -241,19 +238,20 @@ int wex::address::get_line(int start_pos) const
     const auto& text(
       !v[search_index].empty() ? v[search_index] :
                                  find_replace_data::get()->get_find_string());
-
-    const auto result =
-      offset + (!m_ex->get_stc()->is_visual() ?
-                  find_stream(m_ex, text, m_address[0] == '/') :
-                  find_stc(m_ex, text, use_pos, m_address[0] == '/'));
+    const bool forward(v.match_no() == 0 || v.match_no() == 1);
+    const auto result = offset + (!m_ex->get_stc()->is_visual() ?
+                                    find_stream(m_ex, text, forward) :
+                                    find_stc(m_ex, text, use_pos, forward));
 
     if (result > 0 && !m_ex->line_data().is_ctag())
     {
       find_replace_data::get()->set_find_string(text);
     }
 
-    log::trace("address by regex")
-      << result << "with offset" << offset << "regex" << v.match_data().text();
+    log::trace("address") << m_address << "gives" << result << "with offset"
+                          << offset << "regex" << v.match_data().text() << "("
+                          << v.match_no() << ")"
+                          << "groups" << v.size();
 
     return result;
   }

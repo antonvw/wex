@@ -263,6 +263,17 @@ bool wex::ex::marker_add(char marker, int line)
 
   m_marker_identifiers[marker] = id;
 
+  int col = 0;
+
+  if (lin == get_stc()->GetCurrentLine())
+  {
+    col = get_stc()->GetCurrentPos() + 1 - get_stc()->PositionFromLine(lin);
+  }
+
+  m_marker_columns[marker] = col;
+
+  log::trace("added marker") << marker << "to line:" << lin << "col:" << col;
+
   return true;
 }
 
@@ -288,7 +299,8 @@ bool wex::ex::marker_goto(char marker)
 {
   if (const auto line = marker_line(marker); line != LINE_NUMBER_UNKNOWN)
   {
-    get_stc()->inject(data::control().line(line + 1));
+    get_stc()->inject(
+      data::control().line(line + 1).col(m_marker_columns[marker]));
     return true;
   }
 
