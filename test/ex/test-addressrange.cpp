@@ -13,6 +13,13 @@
 
 #include "test.h"
 
+#define ADD_LINES(EXTRA)                                                       \
+  for (int i = 0; i < 100; i++)                                                \
+  {                                                                            \
+    text += "line: " + std::to_string(i) + "\n";                               \
+  }                                                                            \
+  text += EXTRA
+
 TEST_CASE("wex::addressrange")
 {
   const std::string contents("a\nTIGER\ntiger\ntiger\ntiger\nf\ng\n");
@@ -232,6 +239,24 @@ TEST_CASE("wex::addressrange")
     REQUIRE(ar.is_ok());
     REQUIRE(ar.begin().type() == wex::address::address_t::IS_BEGIN);
     REQUIRE(ar.end().type() == wex::address::address_t::IS_END);
+  }
+
+  SUBCASE("range-with-offset")
+  {
+    std::string text;
+    ADD_LINES("blame");
+    ADD_LINES("yank");
+    text += "blame";
+    stc->set_text(text);
+    REQUIRE(wex::addressrange(ex, "/blame/").begin().get_line() == 101);
+    REQUIRE(wex::addressrange(ex, "/blame/").end().get_line() == 101);
+    REQUIRE(
+      wex::addressrange(ex, "/blame/").end().type() ==
+      wex::address::address_t::IS_BEGIN);
+    REQUIRE(wex::addressrange(ex, "/blame/,/yank/-1").is_ok());
+    REQUIRE(wex::addressrange(ex, "/blame/,/yank/-50").is_ok());
+    REQUIRE(wex::addressrange(ex, "/blame/,/yank/+1").is_ok());
+    REQUIRE(wex::addressrange(ex, "/blame/-1,/yank/+10").is_ok());
   }
 
   SUBCASE("range-selection")

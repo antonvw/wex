@@ -249,7 +249,9 @@ TEST_CASE("wex::del::frame")
   {
     wex::data::window data;
     data.button(wxOK | wxCANCEL | wxAPPLY);
-    REQUIRE(del_frame()->vcs_execute(9, {wex::test::get_path("test.h")}, data));
+    const int ID_VCS_LOG = 10; // in wex-menus.xml
+    REQUIRE(del_frame()
+              ->vcs_execute(ID_VCS_LOG, {wex::test::get_path("test.h")}, data));
     del_frame()->vcs_destroy_dialog();
   }
 

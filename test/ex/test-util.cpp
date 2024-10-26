@@ -58,11 +58,9 @@ TEST_CASE("wex::ex::utils")
 
   SUBCASE("one_letter_after")
   {
-    REQUIRE(wex::one_letter_after("m", "mA"));
-
-    REQUIRE(!wex::one_letter_after("", "mA"));
-    REQUIRE(!wex::one_letter_after("m", "m"));
-    REQUIRE(!wex::one_letter_after("m", "m9"));
+    REQUIRE(wex::one_letter_after('m', "mA"));
+    REQUIRE(!wex::one_letter_after('m', "m"));
+    REQUIRE(!wex::one_letter_after('m', "m9"));
   }
 
   SUBCASE("register_after")

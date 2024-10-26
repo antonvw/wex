@@ -656,7 +656,18 @@ bool wex::addressrange::set(const std::string& begin, const std::string& end)
   m_begin.m_type = address::address_t::IS_BEGIN;
   m_end.m_type   = address::address_t::IS_END;
 
-  return set_single(begin, m_begin) && set_single(end, m_end);
+  if (!set_single(begin, m_begin))
+  {
+    return false;
+  }
+
+  if (begin == end)
+  {
+    m_end = m_begin;
+    return true;
+  }
+
+  return set_single(end, m_end);
 }
 
 void wex::addressrange::set(address& begin, address& end, int lines) const

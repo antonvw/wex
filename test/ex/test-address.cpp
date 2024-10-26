@@ -38,11 +38,13 @@ TEST_CASE("wex::address")
     REQUIRE(wex::address(ex, 5).get_line() == 5);
 
     for (const auto& it : std::vector<std::pair<std::string, int>>{
-           {"30", lines},      {"40", lines},    {"-40", 1},   {"3-3", 0},
-           {"3-1", 2},         {".", 2},         {".+1", 3},   {"$", lines},
-           {"$-2", lines - 2}, {"x", 0},         {"'x", 0},    {"1,3s/x/y", 0},
-           {"/2/", 3},         {"?2?", 7},       {"'a", 1},    {"'b", 2},
-           {"'b+10", lines},   {"10+'b", lines}, {"'a+'b", 3}, {"'b+'a", 3},
+           {"30", lines},    {"40", lines}, {"-40", 1},
+           {"3-3", 0},       {"3-1", 2},    {".", 2},
+           {".+1", 3},       {"$", lines},  {"$-2", lines - 2},
+           {"x", 0},         {"'x", 0},     {"1,3s/x/y", 0},
+           {"/2/", 3},       {"?2?", 7},    {"'a", 1},
+           {"`a", 1},        {"'b", 2},     {"'b+10", lines},
+           {"10+'b", lines}, {"'a+'b", 3},  {"'b+'a", 3},
            {"'b-'a", 1}})
     {
       CAPTURE(it.first);
@@ -87,6 +89,10 @@ TEST_CASE("wex::address")
     {
       wex::address address(ex, "'a");
       REQUIRE(address.get_line() == 1);
+
+      wex::address address2(ex, "`a");
+      REQUIRE(address2.get_line() == 1);
+
       address.marker_delete();
       REQUIRE(address.get_line() == 0);
     }
@@ -108,6 +114,14 @@ TEST_CASE("wex::address")
 
       wex::address address2(ex, "/hello3");
       REQUIRE(address2.get_line() == 4);
+    }
+
+    SUBCASE("text-offset")
+    {
+      REQUIRE(wex::address(ex, "+1/hello2/").get_line() == 4);
+      REQUIRE(wex::address(ex, "/hello2/+3").get_line() == 6);
+      REQUIRE(wex::address(ex, "/hello2/+4").get_line() == 7);
+      REQUIRE(wex::address(ex, "/hello2/-1").get_line() == 2);
     }
   }
 

@@ -190,36 +190,75 @@ int wex::address::get_line(int start_pos) const
   m_ex->get_stc()->set_search_flags(m_ex->search_flags());
 
   // Addressing in ex:
-  // 5. A regular expression enclosed by <slash> characters ( '/' )
+  // (5). A regular expression enclosed by <slash> characters ( '/' )
   // shall address the first line found by searching forward.
   // In addition, the second <slash> can be omitted at the end of a command
   // line.
-  // 6. A regular expression enclosed in <question-mark> characters ( '?' )
+  // Extra: if the extra slash is present, it might be preceded or followed
+  // by an line number offset
+  // (6). A regular expression enclosed in <question-mark> characters ( '?' )
   // shall address the first line found by searching backward.
   // In addition, the second <question-mark> can be omitted at the end of a
   // command line.
-  if (regex v({"/(.*)/$", "/(.*)$", "\\?(.*)\\?$", "\\?(.*)$"});
+  // See also command-parser.cpp
+  if (regex v(
+        {"([-+]?[0-9]*)/(.*)/([-+]?[0-9]*)$",
+         "/(.*)$",
+         "([-+]?[0-9]*)\\?(.*)\\?([-+]?[0-9]*)$",
+         "\\?(.*)$"});
       v.match(m_address) > 0)
   {
+    int offset = 0, search_index = 0;
+
+    switch (v.size())
+    {
+      case 3:
+        if (!v[2].empty())
+        {
+          offset       = stoi(v[2]);
+          search_index = 1;
+        }
+        else if (!v[0].empty())
+        {
+          offset = stoi(v[0]);
+        }
+        search_index = 1;
+        break;
+
+      case 2:
+        if (!v[1].empty())
+        {
+          offset = stoi(v[1]);
+        }
+        break;
+    }
+
     const auto use_pos =
       start_pos == -1 ? m_ex->get_stc()->GetCurrentPos() + 1 : start_pos;
     const auto& text(
-      !v[0].empty() ? v[0] : find_replace_data::get()->get_find_string());
-
-    const auto result = !m_ex->get_stc()->is_visual() ?
-                          find_stream(m_ex, text, m_address[0] == '/') :
-                          find_stc(m_ex, text, use_pos, m_address[0] == '/');
+      !v[search_index].empty() ? v[search_index] :
+                                 find_replace_data::get()->get_find_string());
+    const bool forward(v.match_no() == 0 || v.match_no() == 1);
+    const auto result = offset + (!m_ex->get_stc()->is_visual() ?
+                                    find_stream(m_ex, text, forward) :
+                                    find_stc(m_ex, text, use_pos, forward));
 
     if (result > 0 && !m_ex->line_data().is_ctag())
     {
       find_replace_data::get()->set_find_string(text);
     }
 
+    log::trace("address") << m_address << "gives" << result << "with offset"
+                          << offset << "regex" << v.match_data().text() << "("
+                          << v.match_no() << ")"
+                          << "groups" << v.size();
+
     return result;
   }
 
-  // Try address calculation.
+  // Try address calculation. (1) (2) (3) (4)
   const auto& sum(m_ex->calculator(m_address));
+
   if (!sum)
   {
     return 0;
