@@ -92,10 +92,12 @@ bool wex::vcs_entry::execute(
   {
     auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
     auto* stc   = frame->get_stc();
+    const std::string& find(
+      boost::algorithm::replace_all_copy(stc->get_selected_text(), " ", "\\ "));
+
     return stc != nullptr &&
            frame->process_async_system(
-             process_data(bin() + " grep -n " + stc->get_selected_text())
-               .start_dir(tl.string()));
+             process_data(bin() + " grep -n " + find).start_dir(tl.string()));
   }
 
   std::string prefix;
