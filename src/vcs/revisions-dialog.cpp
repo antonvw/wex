@@ -61,34 +61,54 @@ int wex::vcs_entry::revisions_dialog(
   const path&        tl,
   const path&        file)
 {
-  const data::window data(data::window()
-                            .title(file.filename() + " " + _("Select Revision"))
-                            .size({350, 400}));
+  bool is_new{false};
 
-  auto* dlg = new item_dialog(
-    {{"vcs.branches", data::listview()},
-     {"vcs.tags", data::listview()},
-     {"vcs.hashes", data::listview()}},
-    data);
+  if (m_item_dialog == nullptr)
+  {
+    const data::window data(
+      data::window()
+        .title(file.filename() + " " + _("Select Revision"))
+        .size({350, 400}));
 
-  auto* vb = dynamic_cast<wex::listview*>(dlg->find("vcs.branches").window());
-  auto* vt = dynamic_cast<wex::listview*>(dlg->find("vcs.tags").window());
-  auto* lv = dynamic_cast<wex::listview*>(dlg->find("vcs.hashes").window());
+    m_item_dialog = new item_dialog(
+      {{"notebook",
+        {{"versions", {{"vcs.hashes", data::listview()}}},
+         {"branches", {{"vcs.branches", data::listview()}}},
+         {"tags", {{"vcs.tags", data::listview()}}}}}},
+      data);
+
+    is_new = true;
+  }
+
+  auto* vb =
+    dynamic_cast<wex::listview*>(m_item_dialog->find("vcs.branches").window());
+  auto* vt =
+    dynamic_cast<wex::listview*>(m_item_dialog->find("vcs.tags").window());
+  auto* lv =
+    dynamic_cast<wex::listview*>(m_item_dialog->find("vcs.hashes").window());
   auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
 
-  vb->append_columns({{"branches", wex::column::STRING, 500}});
-  vt->append_columns({{"tags", wex::column::STRING, 500}});
-  lv->append_columns(
-    {{"date", wex::column::STRING},
-     {"comment", wex::column::STRING, 350},
-     {"author", wex::column::STRING},
-     {"hash", wex::column::STRING}});
+  if (is_new)
+  {
+    vb->append_columns({{"branches", wex::column::STRING, 500}});
+    vt->append_columns({{"tags", wex::column::STRING, 500}});
+    lv->append_columns(
+      {{"date", wex::column::STRING, 75},
+       {"comment", wex::column::STRING, 400},
+       {"author", wex::column::STRING},
+       {"hash", wex::column::STRING}});
 
-  BIND_LISTVIEW(vb, "branches");
-  BIND_LISTVIEW(vt, "tags");
-  BIND_LISTVIEW(lv, "hash");
+    BIND_LISTVIEW(vb, "branches");
+    BIND_LISTVIEW(vt, "tags");
+    BIND_LISTVIEW(lv, "hash");
 
-  lv->field_separator('');
+    lv->field_separator('');
+  }
+  else
+  {
+    lv->clear();
+    m_item_dialog->SetTitle(file.filename() + " " + _("Select Revision"));
+  }
 
   vb->load(from_git(*this, "tag")); // --sort=-creatordate
   vt->load(from_git(*this, "branch -a", 2));
@@ -102,5 +122,5 @@ int wex::vcs_entry::revisions_dialog(
       .start_dir(tl.string()));
   lv->item_from_text(pro.std_out());
 
-  return dlg->Show();
+  return m_item_dialog->Show();
 }
