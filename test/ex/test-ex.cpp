@@ -306,10 +306,11 @@ TEST_CASE("wex::ex")
   {
     REQUIRE(ex->marker_add('a'));
     REQUIRE(ex->marker_line('a') != -1);
-    REQUIRE(ex->marker_goto('a'));
+    REQUIRE(!ex->marker_goto("a"));
+    REQUIRE(ex->marker_goto("\'a"));
     REQUIRE(ex->marker_delete('a'));
     REQUIRE(!ex->marker_delete('b'));
-    REQUIRE(!ex->marker_goto('a'));
+    REQUIRE(!ex->marker_goto("\'a"));
     REQUIRE(!ex->marker_delete('a'));
     stc->set_text("xx\nyy\nzz\n");
     stc->goto_line(0);

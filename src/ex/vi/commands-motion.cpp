@@ -234,7 +234,7 @@ wex::vi::commands_t wex::vi::commands_motion()
        if (one_letter_after(command[0], command))
        {
          const auto pos = get_stc()->GetCurrentPos();
-         marker_goto(command.back());
+         marker_goto(command);
 
          if (command[0] == '\'' && m_mode.get() == vi_mode::state_t::COMMAND)
          {

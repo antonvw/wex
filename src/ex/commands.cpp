@@ -275,9 +275,10 @@ wex::ex::commands_t wex::ex::commands_ex()
        {
          sorted[marker.first] = l.make_key(
            std::string(1, marker.first),
-           std::to_string(marker_line(marker.first) + 1));
+           std::to_string(marker_line(marker.first) + 1) + ":" +
+             std::to_string(m_marker_columns[marker.first]));
        }
-       std::string text;
+       std::string text("[line:col]\n");
        for (const auto& it : sorted)
        {
          text += it.second;
