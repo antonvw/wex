@@ -18,6 +18,7 @@
 
 namespace wex
 {
+class item_dialog;
 class menu;
 class process_data;
 
@@ -118,6 +119,8 @@ private:
   flags_location_t m_flags_location{flags_location_t::POSTFIX};
 
   std::string m_admin_dir, m_log_flags;
+
+  item_dialog* m_item_dialog{nullptr};
 
   class blame m_blame;
   lexer       m_lexer;
