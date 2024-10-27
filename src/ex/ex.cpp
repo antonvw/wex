@@ -265,7 +265,7 @@ bool wex::ex::marker_add(char marker, int line)
 
   const int col(
     lin == get_stc()->GetCurrentLine() ?
-      get_stc()->GetColumn(get_stc()->GetCurrentPos()) :
+      get_stc()->GetColumn(get_stc()->GetCurrentPos()) + 1 :
       0);
 
   m_marker_columns[marker] = col;
