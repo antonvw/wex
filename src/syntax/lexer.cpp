@@ -815,11 +815,15 @@ bool wex::lexer::set(const lexer& lexer, bool fold)
     m_stc->SetMarginWidth(
       m_stc->margin_folding_number(),
       config(_("stc.margin.Folding")).get(16));
-  }
 
-  if (fold)
+    if (fold)
+    {
+      m_stc->fold();
+    }
+  }
+  else
   {
-    m_stc->fold();
+    m_stc->SetMarginWidth(m_stc->margin_folding_number(), 0);
   }
 
   return m_scintilla_lexer.empty() || ok;
