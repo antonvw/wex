@@ -69,6 +69,14 @@ TEST_CASE("wex::util" * doctest::may_fail())
   }
 #endif
 
+  SUBCASE("listbox_as")
+  {
+    auto* lb = new wxListBox(get_frame(), wxID_ANY);
+    wex::listbox_as<const wex::strings_t>(lb, l);
+    REQUIRE(l.size() == lb->GetCount());
+    REQUIRE(lb->GetString(0) == "x");
+  }
+
   SUBCASE("open_files")
   {
     wex::path::current(wex::test::get_path().data());

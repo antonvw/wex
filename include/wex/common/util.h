@@ -8,10 +8,12 @@
 #pragma once
 
 #include <wex/common/path-match.h>
+#include <wex/core/core.h>
 #include <wex/core/types.h>
 #include <wex/data/dir.h>
 #include <wex/data/stc.h>
 #include <wx/combobox.h>
+#include <wx/listbox.h>
 
 #include <optional>
 #include <vector>
@@ -88,6 +90,29 @@ bool compare_file(const path& file1, const path& file2);
 /// Returns true and sets the lexer on the stc component if you selected
 /// one.
 bool lexers_dialog(syntax::stc* stc);
+
+/// Sets entries for a listbox from a container.
+template <typename T> void listbox_as(wxListBox* lb, const T& t)
+{
+  lb->Clear();
+
+  if (!t.empty())
+  {
+    int i = 0;
+
+    for (const auto& item : t)
+    {
+      lb->Append(find_before(item, ":"));
+
+      if (find_after(item, ":") == "1")
+      {
+        lb->SetSelection(i);
+      }
+
+      i++;
+    }
+  }
+}
 
 /// Opens all files specified by files.
 /// Returns number of files opened.

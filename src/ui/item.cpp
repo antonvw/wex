@@ -83,6 +83,7 @@ wex::item::item(
       case DIRPICKERCTRL:
       case FILEPICKERCTRL:
       case GROUP:
+      case LISTBOX:
       case SPACER:
       case STATICLINE:
       case USER:
@@ -551,6 +552,34 @@ const std::any wex::item::get_value() const
                   .ToStdString();
           break;
 
+        case LISTBOX:
+        {
+          auto*               lb = reinterpret_cast<wxListBox*>(m_window);
+          const wxArrayString items(lb->GetStrings());
+          wxArrayInt          selections;
+          lb->GetSelections(selections);
+          strings_t st;
+
+          for (size_t i = 0; i < items.GetCount(); ++i)
+          {
+            std::string selected = "0";
+
+            for (size_t j = 0; i < selections.size(); j++)
+            {
+              if (j == i)
+              {
+                selected = "1";
+                break;
+              }
+            }
+            st.push_back(items[i] + ":" + selected);
+          }
+
+          any = st;
+        }
+
+        break;
+
         case LISTVIEW:
           any = ((wex::listview*)m_window)->save();
           break;
@@ -711,11 +740,11 @@ wex::data::layout::sizer_t* wex::item::layout(data::layout& layout)
   }
   catch (std::bad_cast& e)
   {
-    wex::log(e) << "layout" << *this;
+    wex::log(e) << "item::layout" << *this;
   }
   catch (std::exception& e)
   {
-    wex::log(e) << "layout" << *this;
+    wex::log(e) << "item::layout" << *this;
   }
 
   return nullptr;
@@ -783,17 +812,21 @@ bool wex::item::set_value(const std::any& value) const
 
       case GRID:
       {
-        auto* win = reinterpret_cast<grid*>(m_window);
-        win->set_cells_value({0, 0}, std::any_cast<std::string>(value));
+        (reinterpret_cast<grid*>(m_window))
+          ->set_cells_value({0, 0}, std::any_cast<std::string>(value));
       }
       break;
 
+      case LISTBOX:
+        listbox_as(
+          reinterpret_cast<wxListBox*>(m_window),
+          std::any_cast<strings_t>(value));
+        break;
+
       case LISTVIEW:
-      {
-        auto* win = reinterpret_cast<listview*>(m_window);
-        win->load(std::any_cast<config::strings_t>(value));
-      }
-      break;
+        (reinterpret_cast<listview*>(m_window))
+          ->load(std::any_cast<strings_t>(value));
+        break;
 
       case SLIDER:
         (reinterpret_cast<wxSlider*>(m_window))
