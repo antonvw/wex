@@ -3,11 +3,13 @@ Copyright: (c) 2022-2023 Anton van Wezenbeek
 
 
 *** Settings ***
-Documentation	Testcases for wex vim
-Test Setup	Test Setup
-Suite Setup	Suite Setup
-Suite Teardown	Suite Teardown
-Resource	wex-keywords.resource
+Documentation       Testcases for wex vim
+
+Resource            wex-keywords.resource
+
+Suite Setup         Suite Setup
+Suite Teardown      Suite Teardown
+Test Setup          Test Setup
 
 
 *** Test Cases ***

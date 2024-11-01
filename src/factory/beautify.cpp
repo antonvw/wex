@@ -21,15 +21,13 @@ wex::factory::beautify::beautify(const path& p)
 
 bool wex::factory::beautify::check(const path& p)
 {
-  if (beautify(SOURCE).is_supported(p))
+  for (beautify_t t : {SOURCE, CMAKE, ROBOTFRAMEWORK})
   {
-    m_type = SOURCE;
-    return true;
-  }
-  else if (beautify(CMAKE).is_supported(p))
-  {
-    m_type = CMAKE;
-    return true;
+    if (beautify(t).is_supported(p))
+    {
+      m_type = t;
+      return true;
+    }
   }
 
   return false;
@@ -46,6 +44,10 @@ bool wex::factory::beautify::file(const path& p) const
   {
     case CMAKE:
       return factory::process().system(name() + " -i " + p.string()) == 0;
+
+    case ROBOTFRAMEWORK:
+      return factory::process().system(
+               name() + " --separator tab " + p.string()) == 0;
 
     case SOURCE:
       return factory::process().system(
@@ -74,6 +76,9 @@ bool wex::factory::beautify::is_supported(const path& p) const
     case CMAKE:
       return p.filename() == "CMakeLists.txt" || p.extension() == ".cmake";
 
+    case ROBOTFRAMEWORK:
+      return p.extension() == ".robot";
+
     case SOURCE:
       return p.extension() == ".c" || p.extension() == ".cpp" ||
              p.extension() == ".h" || p.extension() == ".hpp" ||
@@ -86,7 +91,7 @@ bool wex::factory::beautify::is_supported(const path& p) const
 
 wex::config::strings_t wex::factory::beautify::list() const
 {
-  return config::strings_t{{""}, {"clang-format"}, {"gersemi"}};
+  return config::strings_t{{""}, {"clang-format"}, {"gersemi"}, {"robotidy"}};
 }
 
 const std::string wex::factory::beautify::name() const
@@ -94,10 +99,13 @@ const std::string wex::factory::beautify::name() const
   switch (m_type)
   {
     case CMAKE:
-      return config(_("stc.Beautifier cmake")).get(list()).front();
+      return config("stc.beautifier.cmake").get(list()).front();
+
+    case ROBOTFRAMEWORK:
+      return config("stc.beautifier.robotframework").get(list()).front();
 
     case SOURCE:
-      return config(_("stc.Beautifier")).get(list()).front();
+      return config("stc.beautifier.sources").get(list()).front();
 
     default:
       return std::string();

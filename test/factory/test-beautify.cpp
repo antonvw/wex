@@ -21,6 +21,9 @@ TEST_CASE("wex::factory::beautify")
     REQUIRE(
       wex::factory::beautify(wex::path("xx.cpp")).type() ==
       wex::factory::beautify::SOURCE);
+    REQUIRE(
+      wex::factory::beautify(wex::path("xxi.robot")).type() ==
+      wex::factory::beautify::ROBOTFRAMEWORK);
     REQUIRE(!wex::factory::beautify().is_active());
     REQUIRE(!wex::factory::beautify(wex::factory::beautify::CMAKE).is_active());
     REQUIRE(!wex::factory::beautify().is_auto());
@@ -43,6 +46,8 @@ TEST_CASE("wex::factory::beautify")
 
   wex::config("stc.Beautifier").set(wex::config::strings_t{{"clang-format"}});
   wex::config("stc.Beautifier cmake").set(wex::config::strings_t{{"gersemi"}});
+  wex::config("stc.Beautifier robotframework")
+    .set(wex::config::strings_t{{"robotidy"}});
 
   SUBCASE("check")
   {
@@ -55,6 +60,8 @@ TEST_CASE("wex::factory::beautify")
     REQUIRE(b.type() == wex::factory::beautify::CMAKE);
     REQUIRE(b.check(wex::path("xxx.cpp")));
     REQUIRE(b.type() == wex::factory::beautify::SOURCE);
+    REQUIRE(b.check(wex::path("xxx.robot")));
+    REQUIRE(b.type() == wex::factory::beautify::ROBOTFRAMEWORK);
   }
 
   SUBCASE("file")
@@ -71,4 +78,6 @@ TEST_CASE("wex::factory::beautify")
 
   wex::config("stc.Beautifier").set(wex::config::strings_t{{""}});
   wex::config("stc.Beautifier cmake").set(wex::config::strings_t{{""}});
+  wex::config("stc.Beautifier robotframework")
+    .set(wex::config::strings_t{{""}});
 }
