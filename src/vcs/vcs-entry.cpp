@@ -85,7 +85,7 @@ bool wex::vcs_entry::execute(
   {
     const std::string& repo_path(p.string().substr(tl.string().size() + 1));
     revisions_dialog(repo_path, tl, p);
-    return true;
+    return false; // skip rest in vcs_execute
   }
 
   if (get_command().get_command() == "grep")

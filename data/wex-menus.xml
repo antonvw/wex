@@ -186,7 +186,8 @@ Copyright: (c) 2010-2024 Anton van Wezenbeek
       <command type="main"> &amp;pull </command>
       <command type="main"> &amp;push </command>
       -->
-      <command type="ellipses-is-asked"> &amp;show </command>
+      <command type="popup ellipses"> &amp;show </command>
+      <command type="main ellipses-is-asked"> &amp;show </command>
       <command type="ellipses-is-asked"> &amp;status </command>
     </commands>
   </vcs>

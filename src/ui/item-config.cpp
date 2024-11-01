@@ -11,7 +11,7 @@
 #include <wex/ui/frd.h>
 #include <wx/settings.h>
 
-#ifndef __WXMSW__
+#ifdef __WXOSX__
 #define BOOST_PROCESS_V2_HEADER_ONLY ON
 #include <boost/process/v2.hpp>
 #endif
@@ -133,7 +133,7 @@ void persistent_filepicker(const wex::item* item, bool save)
   }
   else
   {
-#ifndef __WXMSW__
+#ifdef __WXOSX__
     if (const auto initial = boost::process::v2::environment::find_executable(
           item->label_window());
         !initial.empty())
