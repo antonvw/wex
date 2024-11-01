@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- added LISTBOX item that uses a wxListBox
 - addr allows offset, and improvement on single address in addressrange
 - added :marks to show all markers and option to keep current
   position when adding a marker

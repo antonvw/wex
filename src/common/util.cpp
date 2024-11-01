@@ -200,6 +200,31 @@ bool wex::lexers_dialog(syntax::stc* stc)
   return true;
 }
 
+wex::strings_t wex::listbox_to_list(wxListBox* lb)
+{
+  const wxArrayString items(lb->GetStrings());
+  wxArrayInt          selections;
+  lb->GetSelections(selections);
+  strings_t st;
+
+  for (size_t i = 0; i < items.GetCount(); ++i)
+  {
+    std::string selected = "0";
+
+    for (size_t j = 0; j < selections.size(); j++)
+    {
+      if (selections[j] == i)
+      {
+        selected = "1";
+        break;
+      }
+    }
+    st.push_back(items[i] + ":" + selected);
+  }
+
+  return st;
+}
+
 int wex::open_files(
   factory::frame*          frame,
   const std::vector<path>& files,

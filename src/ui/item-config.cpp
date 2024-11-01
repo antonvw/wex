@@ -254,6 +254,7 @@ bool wex::item::to_config(bool save) const
         }
         break;
 
+      case LISTBOX:
       case LISTVIEW:
         if (save)
         {

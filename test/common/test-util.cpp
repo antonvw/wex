@@ -17,6 +17,7 @@
 TEST_CASE("wex::util" * doctest::may_fail())
 {
   const wex::strings_t l{"x", "y", "z"};
+  const wex::strings_t ls{"x:0", "y:0", "z:1"};
 
   SUBCASE("auto_complete_filename")
   {
@@ -68,6 +69,26 @@ TEST_CASE("wex::util" * doctest::may_fail())
       wex::test::get_path("test.h")));
   }
 #endif
+
+  SUBCASE("listbox_as")
+  {
+    auto* lb = new wxListBox(get_frame(), wxID_ANY);
+    wex::listbox_as<const wex::strings_t>(lb, ls);
+    REQUIRE(l.size() == lb->GetCount());
+    REQUIRE(lb->GetString(0) == "x");
+    REQUIRE(lb->GetStringSelection() == "z");
+  }
+
+  SUBCASE("listbox_to_list")
+  {
+    auto* lb = new wxListBox(get_frame(), wxID_ANY);
+    wex::listbox_as<const wex::strings_t>(lb, ls);
+    REQUIRE(lb->GetStringSelection() == "z");
+    const auto& lo(wex::listbox_to_list(lb));
+    REQUIRE(lo.size() == lb->GetCount());
+    CAPTURE(lo.back());
+    REQUIRE(lo.front() == "x:0");
+  }
 
   SUBCASE("open_files")
   {

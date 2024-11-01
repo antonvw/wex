@@ -90,6 +90,11 @@ public:
     /// wxHyperlinkCtrl item
     HYPERLINKCTRL,
 
+    /// wxListBox item
+    /// all values are stored in config, as well as all selections
+    /// as indicated by a :0 or :1 after the value in the config
+    LISTBOX,
+
     /// wex::listview item
     LISTVIEW,
 
@@ -343,7 +348,7 @@ public:
     /// listview data
     const data::listview& data,
     /// initial value
-    /// expects std::list< std::string>
+    /// expects strings_t
     const std::any& value = std::any(),
     /// item data
     const data::item& d = data::item().label_type(data::item::LABEL_NONE));
@@ -364,13 +369,14 @@ public:
     /// - DIRPICKERCTRL
     /// - FILEPICKERCTRL
     /// - FONTPICKERCTRL
+    /// - LISTBOX
     /// - TEXTCTRL_FLOAT
     /// - TEXTCTRL_INT
     /// - TOGGLEBUTTON
     type_t type,
     /// initial value for the control, if appropriate:
     /// - CHECKBOX expects bool
-    /// - COMBOXBOX expects std::list< std::string>
+    /// - COMBOXBOX, LISTBOX expect strings_t
     /// - COLOURPICKERWIDGET expects a wxColour
     /// - TEXTCTRL_FLOAT expects std::string with float contents
     /// - TEXTCTRL_INT expects std::string with int contents

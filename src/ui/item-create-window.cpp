@@ -203,6 +203,24 @@ void create_commandlink_button(
     PSS);
 }
 
+void create_listbox(wxWindow* parent, wxWindow*& window, const wex::item& item)
+{
+  window = new wxListBox(
+    parent,
+    IPS,
+    initial(
+      item.data(),
+      [&](wxArrayString& as)
+      {
+        for (const auto& it :
+             std::any_cast<config::strings_t>(item.data().initial()))
+        {
+          as.Add(it);
+        }
+      }),
+    item.data().window().style());
+}
+
 void create_dir_picker_control(
   wxWindow*        parent,
   wxWindow*&       window,
@@ -470,6 +488,7 @@ wex::item::create_t wex::item::creators()
     CREATE_CTRL(create_grid_control)
     CREATE_CTRL(create_panel) 
     CREATE_CTRL(create_hyperlink_control)
+    CREATE_CTRL(create_listbox)
     {[&](wxWindow* parent, wxWindow*& window, const wex::item& item)
       {
         auto* lv = new listview(m_data_listview.window(
