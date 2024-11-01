@@ -14,6 +14,8 @@
 
 TEST_CASE("wex::del::frame")
 {
+  const int vcs_git = 3;
+
   SUBCASE("default_extensions")
   {
     REQUIRE(!del_frame()->default_extensions().empty());
@@ -169,7 +171,7 @@ TEST_CASE("wex::del::frame")
 
   SUBCASE("vcs_annotate_commit")
   {
-    wex::config("vcs.VCS").set(2);
+    wex::config("vcs.VCS").set(vcs_git);
     const std::string commit_id("b6aae80e3ab4402c7930a9bd590d355641c74746");
 
     get_stc()->set_text("line 1\nline 2\nline 3\nline 4\nline 5\n");
@@ -192,7 +194,7 @@ TEST_CASE("wex::del::frame")
       wex::log_none off;
       REQUIRE(!del_frame()->vcs_blame(get_stc()));
     }
-    wex::config("vcs.VCS").set(2);
+    wex::config("vcs.VCS").set(vcs_git);
     REQUIRE(get_stc()->open(wex::test::get_path("test.h")));
     REQUIRE(del_frame()->vcs_blame(get_stc()));
 
@@ -211,7 +213,7 @@ TEST_CASE("wex::del::frame")
 
   SUBCASE("vcs_blame_revision")
   {
-    wex::config("vcs.VCS").set(2);
+    wex::config("vcs.VCS").set(vcs_git);
     REQUIRE(get_stc()->open(wex::test::get_path("test.h")));
     const std::string renamed;
     const std::string offset;
