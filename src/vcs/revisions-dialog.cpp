@@ -110,8 +110,8 @@ int wex::vcs_entry::revisions_dialog(
     m_item_dialog->SetTitle(file.filename() + " " + _("Select Revision"));
   }
 
-  vb->load(from_git(*this, "tag")); // --sort=-creatordate
-  vt->load(from_git(*this, "branch -a", 2));
+  vb->load(from_git(*this, "branch -a", 2));
+  vt->load(from_git(*this, "tag")); // --sort=-creatordate
 
   process pro;
   pro.system(

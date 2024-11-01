@@ -409,7 +409,7 @@ void wex::del::frame::on_command_item_dialog(
           break;
 
         default:
-          assert(0);
+          log::trace("on_command_item_dialog") << event.GetId();
       }
       break;
 

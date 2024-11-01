@@ -290,6 +290,8 @@ bool wex::vcs::load_document()
   {
     return false;
   }
+  
+  m_store->insert(m_store->begin(), vcs_entry());
 
   log::info("vcs entries") << size() << "from" << menus::path().string();
 
@@ -339,7 +341,6 @@ void wex::vcs::on_init()
   if (m_store == nullptr)
   {
     m_store = new store_t;
-    m_store->emplace_back();
 
     load_document();
   }

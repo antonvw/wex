@@ -215,8 +215,7 @@ int wex::address::get_line(int start_pos) const
       case 3:
         if (!v[2].empty())
         {
-          offset       = stoi(v[2]);
-          search_index = 1;
+          offset = stoi(v[2]);
         }
         else if (!v[0].empty())
         {
