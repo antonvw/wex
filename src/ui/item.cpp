@@ -553,32 +553,8 @@ const std::any wex::item::get_value() const
           break;
 
         case LISTBOX:
-        {
-          auto*               lb = reinterpret_cast<wxListBox*>(m_window);
-          const wxArrayString items(lb->GetStrings());
-          wxArrayInt          selections;
-          lb->GetSelections(selections);
-          strings_t st;
-
-          for (size_t i = 0; i < items.GetCount(); ++i)
-          {
-            std::string selected = "0";
-
-            for (size_t j = 0; i < selections.size(); j++)
-            {
-              if (j == i)
-              {
-                selected = "1";
-                break;
-              }
-            }
-            st.push_back(items[i] + ":" + selected);
-          }
-
-          any = st;
-        }
-
-        break;
+          any = listbox_to_list(reinterpret_cast<wxListBox*>(m_window));
+          break;
 
         case LISTVIEW:
           any = ((wex::listview*)m_window)->save();

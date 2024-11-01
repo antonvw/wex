@@ -114,6 +114,9 @@ template <typename T> void listbox_as(wxListBox* lb, const T& t)
   }
 }
 
+/// Returns a strings_t from value of a listbox.
+strings_t listbox_to_list(wxListBox* lb);
+
 /// Opens all files specified by files.
 /// Returns number of files opened.
 int open_files(

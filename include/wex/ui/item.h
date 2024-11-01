@@ -92,7 +92,7 @@ public:
 
     /// wxListBox item
     /// all values are stored in config, as well as all selections
-    /// as indicated by a :0 or :1 after the vlaye in the config
+    /// as indicated by a :0 or :1 after the value in the config
     LISTBOX,
 
     /// wex::listview item
