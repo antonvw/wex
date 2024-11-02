@@ -2,7 +2,7 @@
 // Name:      sort.cpp
 // Purpose:   Implementation of wex::sort class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -153,12 +153,6 @@ bool wex::factory::sort::selection_other(factory::stc* stc)
 const std::string
 wex::factory::sort::string(const std::string& input, const std::string& sep)
 {
-  if (!std::all_of(sep.begin(), sep.end(), isspace))
-  {
-    log("sort::string separator should contain whitespace only") << sep;
-    return input;
-  }
-
   // Empty lines are not kept after sorting, as they are used as separator.
   std::map<std::string, std::string>      m;
   std::multimap<std::string, std::string> mm;
@@ -182,9 +176,13 @@ wex::factory::sort::string(const std::string& input, const std::string& sep)
     if (m_len == std::string::npos)
     {
       if (m_sort_t[SORT_UNIQUE])
+      {
         m.insert({key, line});
+      }
       else
+      {
         mm.insert({key, line});
+      }
     }
     else
     {

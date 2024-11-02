@@ -2,7 +2,7 @@
 // Name:      sort.h
 // Purpose:   Declaration of wex::sort class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -46,7 +46,7 @@ public:
   const std::string string(
     /// text to sort
     const std::string& input,
-    /// characters to split lines
+    /// characters to tokenize the input
     const std::string& separators);
 
 private:
