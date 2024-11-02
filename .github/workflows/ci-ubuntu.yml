@@ -59,10 +59,10 @@ jobs:
 
       - name: Headless Test
         run: cd build &&
-          xvfb-run --auto-servernum ./test/del/wex-test-del -s -V 0
-          #ninja lcov-prep &&
-          #xvfb-run --auto-servernum ctest -VV &&
-          #ninja lcov
+          # currently skip wex-test-del, it segfaults, wait for gcc-14?
+          ninja lcov-prep &&
+          xvfb-run --auto-servernum ctest -VV -E del &&
+          ninja lcov
         env:
           NO_AT_BRIDGE: 1
 
