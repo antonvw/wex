@@ -58,8 +58,8 @@ jobs:
         run: cd build && ninja
 
       - name: Headless Test
+        # currently skip wex-test-del, it segfaults, wait for gcc-14?
         run: cd build &&
-          # currently skip wex-test-del, it segfaults, wait for gcc-14?
           ninja lcov-prep &&
           xvfb-run --auto-servernum ctest -VV -E del &&
           ninja lcov
