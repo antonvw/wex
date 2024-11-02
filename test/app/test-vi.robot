@@ -3,12 +3,14 @@ Copyright: (c) 2020-2024 Anton van Wezenbeek
 
 
 *** Settings ***
-Documentation	Testcases for wex vi
-Test Setup	Test Setup
-Library	DateTime
-Suite Setup	Suite Setup
-Suite Teardown	Suite Teardown
-Resource	wex-keywords.resource
+Documentation       Testcases for wex vi
+
+Library             DateTime
+Resource            wex-keywords.resource
+
+Suite Setup         Suite Setup
+Suite Teardown      Suite Teardown
+Test Setup          Test Setup
 
 
 *** Test Cases ***
