@@ -2,7 +2,7 @@
 // Name:      statistics.h
 // Purpose:   Include file for class wex::statistics
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -93,7 +93,7 @@ public:
   };
 
   /// Returns the items.
-  const auto& get_items() const { return m_items; }
+  const std::map<std::string, T>& get_items() const { return m_items; }
 
   /// Increments key with value.
   const T inc(const std::string& key, T inc_value = 1)
