@@ -69,12 +69,14 @@ int wex::vcs_entry::revisions_dialog(
       data::window()
         .title(file.filename() + " " + _("Select Revision"))
         .size({350, 400}));
+    const data::item di(
+      data::item().is_persistent(false).label_type(data::item::LABEL_NONE));
 
     m_item_dialog = new item_dialog(
       {{"notebook",
-        {{"versions", {{"vcs.hashes", data::listview()}}},
-         {"branches", {{"vcs.branches", data::listview()}}},
-         {"tags", {{"vcs.tags", data::listview()}}}}}},
+        {{"versions", {{"vcs.hashes", data::listview(), std::any(), di}}},
+         {"branches", {{"vcs.branches", data::listview(), std::any(), di}}},
+         {"tags", {{"vcs.tags", data::listview(), std::any(), di}}}}}},
       data);
 
     is_new = true;
