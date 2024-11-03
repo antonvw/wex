@@ -44,9 +44,10 @@ TEST_CASE("wex::factory::beautify")
       wex::factory::beautify(wex::factory::beautify::CMAKE).name().empty());
   }
 
-  wex::config("stc.Beautifier").set(wex::config::strings_t{{"clang-format"}});
-  wex::config("stc.Beautifier cmake").set(wex::config::strings_t{{"gersemi"}});
-  wex::config("stc.Beautifier robotframework")
+  wex::config("stc.beautifier.sources")
+    .set(wex::config::strings_t{{"clang-format"}});
+  wex::config("stc.beautifier.cmake").set(wex::config::strings_t{{"gersemi"}});
+  wex::config("stc.beautifier.robotframework")
     .set(wex::config::strings_t{{"robotidy"}});
 
   SUBCASE("check")
@@ -76,8 +77,8 @@ TEST_CASE("wex::factory::beautify")
                .file(wex::path("test.md")));
   }
 
-  wex::config("stc.Beautifier").set(wex::config::strings_t{{""}});
-  wex::config("stc.Beautifier cmake").set(wex::config::strings_t{{""}});
-  wex::config("stc.Beautifier robotframework")
+  wex::config("stc.beautifier.sources").set(wex::config::strings_t{{""}});
+  wex::config("stc.beautifier.cmake").set(wex::config::strings_t{{""}});
+  wex::config("stc.beautifier.robotframework")
     .set(wex::config::strings_t{{""}});
 }
