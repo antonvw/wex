@@ -972,7 +972,7 @@ bool wex::listview::load(const strings_t& l)
       });
   }
 
-  if (m_columns.size() == 0)
+  if (InReportView() && m_columns.size() == 0)
   {
     return false;
   }

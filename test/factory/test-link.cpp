@@ -2,7 +2,7 @@
 // Name:      test-link.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -126,6 +126,10 @@ TEST_CASE("wex::factory::link")
     wex::config(_("stc.link.Include directory"))
       .set(wex::config::strings_t{{"/usr/bin"}});
     lnk.config_get();
+
+    REQUIRE(
+      wex::config(_("stc.link.Include directory")).get_first_of() ==
+      "/usr/bin");
 
     wex::line_data data;
     data.line(wex::factory::link::LINE_OPEN_URL);

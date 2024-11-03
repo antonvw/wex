@@ -154,7 +154,7 @@ int wex::vcs::config_dialog(const data::window& par) const
   v.emplace_back(_("vcs.Find includes submodules"), item::CHECKBOX);
 
   std::transform(
-    m_store->begin(),
+    m_store->begin() + 1,
     m_store->end(),
     std::back_inserter(v),
     [](const auto& t)
@@ -290,7 +290,7 @@ bool wex::vcs::load_document()
   {
     return false;
   }
-  
+
   m_store->insert(m_store->begin(), vcs_entry());
 
   log::info("vcs entries") << size() << "from" << menus::path().string();
