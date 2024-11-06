@@ -138,6 +138,10 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
     <marker no="ex_marknum_vi"> mark_character,blue,turquoise </marker>
     <!-- ex_marknum_break is used by debugging -->
     <marker no="ex_marknum_break"> mark_arrow,red,white </marker>
+    <!-- ex_marknum_break is used by debugging -->
+    <marker no="marknum_diff_del"> mark_fullrect,red,white </marker>
+    <!-- ex_marknum_break is used by debugging -->
+    <marker no="marknum_diff_add"> mark_fullrect,green,white </marker>
 
     <!-- At this moment we do not have properties -->
     <properties/>

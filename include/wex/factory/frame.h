@@ -15,6 +15,7 @@ class wxListView;
 namespace wex
 {
 class process_data;
+class unified_diff;
 class vcs_entry;
 
 namespace data
@@ -94,6 +95,9 @@ public:
   {
     return nullptr;
   };
+
+  /// Runs a unified diff on paths.
+  virtual bool vcs_unified_diff(const unified_diff* uni) { return false; };
 
   /// Allows you to handle output text, .e.g. from a process.
   virtual bool output(const std::string& text) const { return false; }

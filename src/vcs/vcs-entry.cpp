@@ -128,7 +128,11 @@ bool wex::vcs_entry::execute(
 
   if (get_command().get_command() != "show")
   {
-    if (get_command().ask_flags())
+    if (get_command().get_command() == "diff")
+    {
+      flags = "-U0";
+    }
+    else if (get_command().ask_flags())
     {
       flags = get_flags();
     }

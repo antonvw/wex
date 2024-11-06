@@ -98,6 +98,10 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
       <def no ="ex_marknum_vi"> 0 </def>
       <!-- Macro for wex breakpoint markers -->
       <def no ="ex_marknum_break"> 2 </def>
+      <!-- Macro for wex breakpoint markers -->
+      <def no ="marknum_diff_del"> 3 </def>
+      <!-- Macro for wex breakpoint markers -->
+      <def no ="marknum_diff_add"> 4 </def>
     </def>
 
     <def name = "a68k">

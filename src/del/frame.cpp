@@ -908,6 +908,27 @@ bool wex::del::frame::vcs_execute(
   return wex::vcs_execute(this, event_id, paths, data);
 }
 
+bool wex::del::frame::vcs_unified_diff(const unified_diff* diff)
+{
+  if (auto* sf = open_file(diff->path_from()); sf != nullptr)
+  {
+    for (int l = diff->range_from_start(); l < diff->range_from_count(); l++)
+    {
+      sf->MarkerAdd(l, m_marker_del.number());
+    }
+  }
+
+  if (auto* st = open_file(diff->path_to()); st != nullptr)
+  {
+    for (int l = diff->range_to_start(); l < diff->range_to_count(); l++)
+    {
+      st->MarkerAdd(l, m_marker_add.number());
+    }
+  }
+
+  return true;
+}
+
 bool wex::del::frame::vi_is_address(syntax::stc* stc, const std::string& text)
   const
 {

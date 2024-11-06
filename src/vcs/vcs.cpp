@@ -13,6 +13,7 @@
 #include <wex/core/log.h>
 #include <wex/ui/item-dialog.h>
 #include <wex/ui/menus.h>
+#include <wex/vcs/unified-diff.h>
 #include <wex/vcs/vcs.h>
 
 #define SET_ENTRY                                                              \
@@ -559,7 +560,18 @@ bool wex::vcs_execute(
           {
             if (!vcs.entry().std_out().empty())
             {
-              frame->open_file_vcs(it, vcs.entry(), data::stc());
+              if (vcs.entry().get_command().get_command() == "diff")
+              {
+                if (unified_diff diff(vcs.entry().std_out(), frame);
+                    diff.parse())
+                {
+                  frame->vcs_unified_diff(&diff);
+                }
+              }
+              else
+              {
+                frame->open_file_vcs(it, vcs.entry(), data::stc());
+              }
             }
             else if (!vcs.entry().std_err().empty())
             {
