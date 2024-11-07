@@ -44,6 +44,13 @@ bool is_ex(ex_commandline* cl)
 {
   return cl->stc() != nullptr && !cl->stc()->is_visual();
 }
+
+path& toplevel(const path& p, const vcs_entry* e)
+{
+  const path& tl(factory::vcs_admin(e->admin_dir(), p).toplevel());
+
+  return path(tl).append(p);
+}
 } // namespace wex::del
 
 wex::del::frame::frame(
@@ -908,22 +915,31 @@ bool wex::del::frame::vcs_execute(
   return wex::vcs_execute(this, event_id, paths, data);
 }
 
-bool wex::del::frame::vcs_unified_diff(const unified_diff* diff)
+bool wex::del::frame::vcs_unified_diff(
+  const vcs_entry*    entry,
+  const unified_diff* diff)
 {
-  if (auto* sf = open_file(diff->path_from()); sf != nullptr)
+  if (auto* sf = dynamic_cast<syntax::stc*>(open_file(diff->path_from()));
+//        open_file(toplevel(diff->path_from(), entry)));
+      sf != nullptr)
   {
-    for (int l = diff->range_from_start(); l < diff->range_from_count(); l++)
-    {
-      sf->MarkerAdd(l, m_marker_del.number());
-    }
+    sf->set_indicator(
+      m_indicator_del,
+      sf->PositionFromLine(diff->range_from_start() - 1),
+      sf->GetLineEndPosition(
+        diff->range_from_start() - 2 + diff->range_from_count()));
   }
 
-  if (auto* st = open_file(diff->path_to()); st != nullptr)
+  if (auto* st =
+        dynamic_cast<syntax::stc*>(open_file(diff->path_to()));
+//toplevel(diff->path_to(), entry)));
+      st != nullptr)
   {
-    for (int l = diff->range_to_start(); l < diff->range_to_count(); l++)
-    {
-      st->MarkerAdd(l, m_marker_add.number());
-    }
+    st->set_indicator(
+      m_indicator_add,
+      st->PositionFromLine(diff->range_to_start() - 1),
+      st->GetLineEndPosition(
+        diff->range_to_start() - 2 + diff->range_to_count()));
   }
 
   return true;

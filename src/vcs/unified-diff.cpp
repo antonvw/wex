@@ -52,9 +52,13 @@ int stoi(const std::string& i)
 }
 } // namespace wex
 
-wex::unified_diff::unified_diff(const std::string& input, factory::frame* f)
+wex::unified_diff::unified_diff(
+  const std::string& input,
+  factory::frame*    f,
+  vcs_entry*         e)
   : m_input(input)
   , m_frame(f)
+  , m_vcs_entry(e)
 {
   m_range.fill({0});
 }
@@ -103,7 +107,7 @@ std::optional<int> wex::unified_diff::parse()
       CHANGES_LINES(1, 0);
       CHANGES_LINES(3, 1);
 
-      if (m_frame != nullptr && !m_frame->vcs_unified_diff(this))
+      if (m_frame != nullptr && !m_frame->vcs_unified_diff(m_vcs_entry, this))
       {
         return std::nullopt;
       }

@@ -26,18 +26,19 @@ TEST_CASE("wex::unified_diff")
     wex::log_none off;
     REQUIRE(!wex::unified_diff("error\n").parse());
     REQUIRE(!wex::unified_diff(
-      "diff --git a/CHANGELOG.md b/CHANGELOG.md\n"
-      "index a23525b3c..26e9e8fc1 100644\n"
-      "--- a/CHANGELOG.md\n"
-      "+++ b/CHANGELOG.md\n"
-      "@@ -10,0 + @@ The format is based on [Keep a Changelog].\n"
-      "+- added git diff option\n").parse());
-    REQUIRE(!wex::unified_diff(
-      "diff --git a/CHANGELOG.md b/CHANGELOG.md\n"
-      "index a23525b3c..26e9e8fc1 100644\n"
-      "--- a/CHANGELOG.md\n"
-      "+++ b/CHANGELOG.md\n"
-      "+- added git diff option\n").parse());
+               "diff --git a/CHANGELOG.md b/CHANGELOG.md\n"
+               "index a23525b3c..26e9e8fc1 100644\n"
+               "--- a/CHANGELOG.md\n"
+               "+++ b/CHANGELOG.md\n"
+               "@@ -10,0 + @@ The format is based on [Keep a Changelog].\n"
+               "+- added git diff option\n")
+               .parse());
+    REQUIRE(!wex::unified_diff("diff --git a/CHANGELOG.md b/CHANGELOG.md\n"
+                               "index a23525b3c..26e9e8fc1 100644\n"
+                               "--- a/CHANGELOG.md\n"
+                               "+++ b/CHANGELOG.md\n"
+                               "+- added git diff option\n")
+               .parse());
   }
 
   SUBCASE("parse-valid")

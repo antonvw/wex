@@ -562,11 +562,8 @@ bool wex::vcs_execute(
             {
               if (vcs.entry().get_command().get_command() == "diff")
               {
-                if (unified_diff diff(vcs.entry().std_out(), frame);
-                    diff.parse())
-                {
-                  frame->vcs_unified_diff(&diff);
-                }
+                unified_diff diff(vcs.entry().std_out(), frame, &vcs.entry());
+                diff.parse();
               }
               else
               {

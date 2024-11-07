@@ -238,8 +238,6 @@ bool wex::lexer::apply() const
     return false;
   }
 
-  m_stc->ClearDocumentStyle();
-
   for (const auto& it : m_properties)
   {
     it.apply_reset(m_stc);

@@ -11,7 +11,7 @@
 #include <wex/core/function-repeat.h>
 #include <wex/del/defs.h>
 #include <wex/del/listview.h>
-#include <wex/syntax/marker.h>
+#include <wex/syntax/indicator.h>
 #include <wex/ui/file-history.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/item.h>
@@ -204,7 +204,7 @@ public:
     int                           event_id,
     const std::vector<wex::path>& paths,
     const data::window&           arg = data::window()) override;
-  bool vcs_unified_diff(const unified_diff* uni) override;
+  bool vcs_unified_diff(const vcs_entry* e, const unified_diff* uni) override;
 
   bool vi_is_address(syntax::stc* stc, const std::string& text) const override;
 
@@ -236,8 +236,8 @@ private:
 
   function_repeat m_function_repeat;
 
-  const marker m_marker_del = wex::marker(3);
-  const marker m_marker_add = wex::marker(4);
+  const indicator m_indicator_del = wex::indicator(3);
+  const indicator m_indicator_add = wex::indicator(4);
 
   const std::string m_text_hidden{_("fif.Hidden")},
     m_text_in_files{_("fif.In files")}, m_text_in_folder{_("fif.In folder")},

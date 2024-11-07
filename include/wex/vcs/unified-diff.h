@@ -15,6 +15,7 @@
 
 namespace wex
 {
+class vcs_entry;
 
 namespace factory
 {
@@ -35,7 +36,9 @@ public:
     /// Provide frame, that will receive the unified diff callbacks.
     /// Using nullptr is allowed, no callbacks are done,
     /// can be useful for testing.
-    factory::frame* f = nullptr);
+    factory::frame* f = nullptr,
+    /// Provide vcs entry, using nullptr is allowed.
+    vcs_entry* e = nullptr);
 
   /// Parses the input.
   /// This routine might invoke callback methods on wex::frame.
@@ -73,6 +76,7 @@ private:
   std::array<path, 2>                     m_path;
   std::array<std::vector<std::string>, 2> m_text;
 
+  vcs_entry*      m_vcs_entry{nullptr};
   factory::frame* m_frame{nullptr};
 
   const std::string m_input;
