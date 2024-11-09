@@ -122,10 +122,8 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
     <!-- this indicator is used by debug location -->
     <indicator no="2"> indic_box,styleindicatordebug </indicator>
     
-    <!-- this indicator is used by showing diff del location -->
-    <indicator no="3"> indic_box,red </indicator>
     <!-- this indicator is used by showing diff add location -->
-    <indicator no="4"> indic_box,green </indicator>
+    <indicator no="3"> indic_box,green </indicator>
 
     <!-- The marker element has a 'no' attribute and its value contains the next fields:
          <marker symbol number><','><foreground colour><','><background colour> -->
@@ -144,6 +142,9 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
     <!-- ex_marknum_break is used by debugging -->
     <marker no="ex_marknum_break"> mark_arrow,red,white </marker>
 
+    <!-- this indicator is used by showing diff del location -->
+    <marker no="3"> mark_arrow,red,white </marker>
+    
     <!-- At this moment we do not have properties -->
     <properties/>
 
@@ -441,7 +442,8 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
       next prev next_permutation nextafter nexttoward noboolalpha none
       norm normal_distribution noshowbase noshowpoint noshowpos noskipws
       nosubs not1 not2 not_equal_to nothrow nothrow_t
-      notify_all_at_thread_exit nounitbuf nouppercase npos nth_element nullptr_t max_align_t
+      notify_all_at_thread_exit nounitbuf nouppercase 
+      npos nth_element nullopt nullptr_t max_align_t
       numeric_limits oct off_type ofstream once_flag open
       optimize optional ostream ostream_iterator ostreambuf_iterator ostringstream
       ostrstream out_of_range output_iterator output_iterator_tag overflow_error owner_less

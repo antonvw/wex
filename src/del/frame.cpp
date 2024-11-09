@@ -7,6 +7,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
+#include <sstream>
 #include <wex/wex.h>
 #include <wx/timer.h>
 
@@ -40,16 +41,16 @@ const std::string find_replace_string(bool replace)
                     std::string());
 }
 
+const std::string get_some_text(const std::vector<std::string>& text)
+{
+  std::stringstream ss;
+  ss << "deleted " << text.size() << " lines";
+  return ss.str();
+}
+
 bool is_ex(ex_commandline* cl)
 {
   return cl->stc() != nullptr && !cl->stc()->is_visual();
-}
-
-path& toplevel(const path& p, const vcs_entry* e)
-{
-  const path& tl(factory::vcs_admin(e->admin_dir(), p).toplevel());
-
-  return path(tl).append(p);
 }
 } // namespace wex::del
 
@@ -919,20 +920,21 @@ bool wex::del::frame::vcs_unified_diff(
   const vcs_entry*    entry,
   const unified_diff* diff)
 {
-  if (auto* sf = dynamic_cast<syntax::stc*>(open_file(diff->path_from()));
-//        open_file(toplevel(diff->path_from(), entry)));
-      sf != nullptr)
+  if (auto* sf = dynamic_cast<syntax::stc*>(open_file(diff->path_vcs()));
+      sf != nullptr && diff->range_from_count() > 0)
   {
-    sf->set_indicator(
-      m_indicator_del,
-      sf->PositionFromLine(diff->range_from_start() - 1),
-      sf->GetLineEndPosition(
-        diff->range_from_start() - 2 + diff->range_from_count()));
+    // deleted text, just a marker, and annotation with text
+    sf->MarkerAdd(diff->range_from_start() - 1, m_marker_del.number());
+
+    if (!diff->text_removed().empty())
+    {
+      sf->AnnotationSetText(
+        diff->range_from_start() - 1,
+        get_some_text(diff->text_removed()));
+    }
   }
 
-  if (auto* st =
-        dynamic_cast<syntax::stc*>(open_file(diff->path_to()));
-//toplevel(diff->path_to(), entry)));
+  if (auto* st = dynamic_cast<syntax::stc*>(open_file(diff->path_vcs()));
       st != nullptr)
   {
     st->set_indicator(

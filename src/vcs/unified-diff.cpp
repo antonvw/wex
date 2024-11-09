@@ -11,6 +11,7 @@
 #include <wex/core/regex.h>
 #include <wex/factory/frame.h>
 #include <wex/vcs/unified-diff.h>
+#include <wex/vcs/vcs-entry.h>
 
 #include <iostream>
 
@@ -52,11 +53,15 @@ int stoi(const std::string& i)
 }
 } // namespace wex
 
-wex::unified_diff::unified_diff(
-  const std::string& input,
-  factory::frame*    f,
-  vcs_entry*         e)
+wex::unified_diff::unified_diff(const std::string& input)
   : m_input(input)
+{
+  m_range.fill({0});
+}
+
+wex::unified_diff::unified_diff(const path& p, vcs_entry* e, factory::frame* f)
+  : m_path_vcs(p)
+  , m_input(e->std_out())
   , m_frame(f)
   , m_vcs_entry(e)
 {

@@ -32,13 +32,16 @@ public:
   /// Constructor.
   unified_diff(
     /// Provide input, that is conform unified diff format output.
-    const std::string& input,
+    const std::string& input);
+
+  /// Constructor.
+  unified_diff(
+    /// The path (under vcs).
+    const path& p,
+    /// Provide vcs entry to use the process std out as input.
+    vcs_entry* entry,
     /// Provide frame, that will receive the unified diff callbacks.
-    /// Using nullptr is allowed, no callbacks are done,
-    /// can be useful for testing.
-    factory::frame* f = nullptr,
-    /// Provide vcs entry, using nullptr is allowed.
-    vcs_entry* e = nullptr);
+    factory::frame* f);
 
   /// Parses the input.
   /// This routine might invoke callback methods on wex::frame.
@@ -50,6 +53,9 @@ public:
 
   /// Returns path to.
   const auto& path_to() const { return m_path[1]; };
+
+  /// Returns path (from vcs).
+  const auto& path_vcs() const { return m_path_vcs; };
 
   /// Returns start number for the from file.
   const auto& range_from_start() const { return m_range[0]; };
@@ -80,5 +86,6 @@ private:
   factory::frame* m_frame{nullptr};
 
   const std::string m_input;
+  const path        m_path_vcs;
 };
 }; // namespace wex

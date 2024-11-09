@@ -79,7 +79,7 @@ public:
   };
 
   /// Constructor.
-  /// Provide stc cpomponent and ex mode.
+  /// Provide stc component and ex mode.
   explicit ex(syntax::stc* stc, mode_t mode = mode_t::VISUAL);
 
   /// Destructor.

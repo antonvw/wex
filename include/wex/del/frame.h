@@ -12,6 +12,7 @@
 #include <wex/del/defs.h>
 #include <wex/del/listview.h>
 #include <wex/syntax/indicator.h>
+#include <wex/syntax/marker.h>
 #include <wex/ui/file-history.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/item.h>
@@ -236,8 +237,8 @@ private:
 
   function_repeat m_function_repeat;
 
-  const indicator m_indicator_del = wex::indicator(3);
-  const indicator m_indicator_add = wex::indicator(4);
+  const marker    m_marker_del    = wex::marker(3);
+  const indicator m_indicator_add = wex::indicator(3);
 
   const std::string m_text_hidden{_("fif.Hidden")},
     m_text_in_files{_("fif.In files")}, m_text_in_folder{_("fif.In folder")},
