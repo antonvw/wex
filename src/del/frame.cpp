@@ -44,7 +44,8 @@ const std::string find_replace_string(bool replace)
 const std::string get_some_text(const std::vector<std::string>& text)
 {
   std::stringstream ss;
-  ss << "deleted " << text.size() << " lines";
+  const std::string info(!text.front().empty() ? text.front() : std::string());
+  ss << "deleted " << text.size() << " lines" << info;
   return ss.str();
 }
 
@@ -920,28 +921,39 @@ bool wex::del::frame::vcs_unified_diff(
   const vcs_entry*    entry,
   const unified_diff* diff)
 {
-  if (auto* sf = dynamic_cast<syntax::stc*>(open_file(diff->path_vcs()));
-      sf != nullptr && diff->range_from_count() > 0)
+  if (!diff->path_vcs().file_exists())
   {
-    // deleted text, just a marker, and annotation with text
-    sf->MarkerAdd(diff->range_from_start() - 1, m_marker_del.number());
-
-    if (!diff->text_removed().empty())
-    {
-      sf->AnnotationSetText(
-        diff->range_from_start() - 1,
-        get_some_text(diff->text_removed()));
-    }
+    return false;
   }
 
-  if (auto* st = dynamic_cast<syntax::stc*>(open_file(diff->path_vcs()));
-      st != nullptr)
+  if (auto* stc = dynamic_cast<syntax::stc*>(open_file(diff->path_vcs()));
+      stc != nullptr)
   {
-    st->set_indicator(
-      m_indicator_add,
-      st->PositionFromLine(diff->range_to_start() - 1),
-      st->GetLineEndPosition(
-        diff->range_to_start() - 2 + diff->range_to_count()));
+    if (diff->range_from_count() > 0)
+    {
+      // deleted text, just a marker, and annotation with text
+      stc->MarkerAdd(diff->range_from_start() - 1, m_marker_del.number());
+
+      if (!diff->text_removed().empty())
+      {
+        stc->AnnotationSetText(
+          diff->range_from_start() - 1,
+          get_some_text(diff->text_removed()));
+      }
+    }
+
+    if (diff->range_to_count() > 0)
+    {
+      if (!stc->set_indicator(
+            m_indicator_add,
+            stc->PositionFromLine(diff->range_to_start() - 1),
+            stc->GetLineEndPosition(
+              diff->range_to_start() - 2 + diff->range_to_count())))
+      {
+        log("vcs_unified_diff") << diff->path_vcs().string();
+        return false;
+      }
+    }
   }
 
   return true;

@@ -73,4 +73,44 @@ TEST_CASE("wex::unified_diff")
     REQUIRE(uni.text_added().front() == "- test");
     REQUIRE(uni.text_removed().empty());
   }
+
+  SUBCASE("parse-valid-other")
+  {
+    wex::unified_diff uni(
+      "diff --git a/external/pugixml b/external/pugixml\n"
+      "--- a/external/pugixml\n"
+      "+++ b/external/pugixml\n"
+      "@@ -1 +1 @@\n"
+      "-Subproject commit 6909df2478f7eb092e8e5b5cda097616b2595cc6\n"
+      "+Subproject commit 6909df2478f7eb092e8e5b5cda097616b2595cc6-dirty\n"
+      "diff --git a/external/wxWidgets b/external/wxWidgets\n"
+      "--- a/external/wxWidgets\n"
+      "+++ b/external/wxWidgets\n"
+      "@@ -1 +1 @@\n"
+      "-Subproject commit 12b09a5e5ea76a1a0c27b769e821b37d803a4cb7\n"
+      "+Subproject commit 12b09a5e5ea76a1a0c27b769e821b37d803a4cb7-dirty\n"
+      "diff --git a/include/wex/vcs/unified-diff.h "
+      "b/include/wex/vcs/unified-diff.h\n"
+      "index 396ed3f8b..3d274e39e 100644\n"
+      "--- a/include/wex/vcs/unified-diff.h\n"
+      "+++ b/include/wex/vcs/unified-diff.h\n"
+      "@@ -42 +42 @@ public:\n"
+      "-    vcs_entry* entry,\n"
+      "+    const vcs_entry* entry,\n"
+      "@@ -85,2 +85,2 @@ private:\n"
+      "-  vcs_entry*      m_vcs_entry{nullptr};\n"
+      "-  factory::frame* m_frame{nullptr};\n"
+      "+  const vcs_entry* m_vcs_entry{nullptr};\n"
+      "+  factory::frame*  m_frame{nullptr};\n");
+
+    const auto res(uni.parse());
+    REQUIRE(res);
+    REQUIRE(*res == 4);
+    REQUIRE(uni.path_from().string() == "include/wex/vcs/unified-diff.h");
+    REQUIRE(uni.path_to().string() == "include/wex/vcs/unified-diff.h");
+    REQUIRE(uni.range_from_start() == 85);
+    REQUIRE(uni.range_from_count() == 2);
+    REQUIRE(uni.range_to_start() == 85);
+    REQUIRE(uni.range_to_count() == 2);
+  }
 }

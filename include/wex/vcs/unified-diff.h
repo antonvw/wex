@@ -39,7 +39,7 @@ public:
     /// The path (under vcs).
     const path& p,
     /// Provide vcs entry to use the process std out as input.
-    vcs_entry* entry,
+    const vcs_entry* entry,
     /// Provide frame, that will receive the unified diff callbacks.
     factory::frame* f);
 
@@ -82,10 +82,12 @@ private:
   std::array<path, 2>                     m_path;
   std::array<std::vector<std::string>, 2> m_text;
 
-  vcs_entry*      m_vcs_entry{nullptr};
-  factory::frame* m_frame{nullptr};
+  path m_path_vcs;
 
+  const vcs_entry* m_vcs_entry{nullptr};
+  factory::frame*  m_frame{nullptr};
+
+  const path        m_path_toplevel;
   const std::string m_input;
-  const path        m_path_vcs;
 };
 }; // namespace wex

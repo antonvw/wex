@@ -12,6 +12,7 @@
 #include <wex/factory/frame.h>
 #include <wex/vcs/unified-diff.h>
 #include <wex/vcs/vcs-entry.h>
+#include <wex/vcs/vcs.h>
 
 #include <iostream>
 
@@ -36,12 +37,12 @@
   NEXT_TOKEN
 
 #define SKIP_LINES                                                             \
-  for (int i = 0; i < 2; i++)                                                  \
+  while (tok_iter != tokens.end())                                             \
   {                                                                            \
-    if (++tok_iter == tokens.end())                                            \
+    NEXT_TOKEN                                                                 \
+    if (!tok_iter->starts_with("diff ") && !tok_iter->starts_with("index "))   \
     {                                                                          \
-      log("unified_diff") << "missing lines";                                  \
-      return std::nullopt;                                                     \
+      break;                                                                   \
     }                                                                          \
   }
 
@@ -59,10 +60,14 @@ wex::unified_diff::unified_diff(const std::string& input)
   m_range.fill({0});
 }
 
-wex::unified_diff::unified_diff(const path& p, vcs_entry* e, factory::frame* f)
+wex::unified_diff::unified_diff(
+  const path&      p,
+  const vcs_entry* e,
+  factory::frame*  f)
   : m_path_vcs(p)
   , m_input(e->std_out())
   , m_frame(f)
+  , m_path_toplevel(vcs().toplevel())
   , m_vcs_entry(e)
 {
   m_range.fill({0});
@@ -87,21 +92,21 @@ std::optional<int> wex::unified_diff::parse()
     HEADER_LINES("--- a/(.*)", m_path[0]);
     HEADER_LINES("\\+\\+\\+ b/(.*)", m_path[1]);
 
-    // Next come one or more hunks of differences
+    // Next come one or more chunks of differences
     while (tok_iter != tokens.end())
     {
-      if (regex r_hunk("@@ -([0-9]+),?([0-9]*) \\+([0-9]+),?([0-9]*) @@.*");
-          r_hunk.match(*tok_iter) != 4)
+      if (regex r_chunk("@@ -([0-9]+),?([0-9]*) \\+([0-9]+),?([0-9]*) @@.*");
+          r_chunk.match(*tok_iter) != 4)
       {
-        log("unified_diff") << *tok_iter << r_hunk.size();
+        log("unified_diff") << *tok_iter << r_chunk.size();
         return std::nullopt;
       }
       else
       {
-        m_range[0] = wex::stoi(r_hunk[0]);
-        m_range[1] = wex::stoi(r_hunk[1]);
-        m_range[2] = wex::stoi(r_hunk[2]);
-        m_range[3] = wex::stoi(r_hunk[3]);
+        m_range[0] = wex::stoi(r_chunk[0]);
+        m_range[1] = wex::stoi(r_chunk[1]);
+        m_range[2] = wex::stoi(r_chunk[2]);
+        m_range[3] = wex::stoi(r_chunk[3]);
       }
 
       diffs++;
@@ -112,14 +117,29 @@ std::optional<int> wex::unified_diff::parse()
       CHANGES_LINES(1, 0);
       CHANGES_LINES(3, 1);
 
-      if (m_frame != nullptr && !m_frame->vcs_unified_diff(m_vcs_entry, this))
+      if (m_vcs_entry != nullptr)
       {
-        return std::nullopt;
+        m_path_vcs = path(m_path_toplevel).append(m_path[0]);
+
+        if (!m_path_vcs.dir_exists())
+        {
+          if (!m_path_vcs.file_exists())
+          {
+            log("unified_diff") << m_path_vcs.string() << "does not exist";
+            return std::nullopt;
+          }
+
+          if (
+            m_frame != nullptr && !m_frame->vcs_unified_diff(m_vcs_entry, this))
+          {
+            return std::nullopt;
+          }
+        }
       }
 
       if (++tok_iter != tokens.end() && !(*tok_iter).starts_with("@@"))
       {
-        break; // this was last hunk, continue with header lines
+        break; // this was last chunk, continue with header lines
       }
     }
   }
