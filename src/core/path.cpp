@@ -68,6 +68,7 @@ wex::path::~path()
 wex::path& wex::path::append(const wex::path& path)
 {
   m_path /= fs::path(path.data());
+  m_stat.sync(m_path.string());
 
   return *this;
 }

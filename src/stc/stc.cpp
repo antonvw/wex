@@ -246,6 +246,29 @@ void wex::stc::Cut()
   }
 }
 
+bool wex::stc::diff_first()
+{
+  if (m_lines_diff.empty())
+  {
+    return false;
+  }
+
+  m_lines_diff_it = m_lines_diff.begin();
+  goto_line(*m_lines_diff_it);
+
+  return true;
+}
+
+bool wex::stc::diff_next()
+{
+  return true;
+}
+
+bool wex::stc::diff_previous()
+{
+  return true;
+}
+
 bool wex::stc::file_readonly_attribute_changed()
 {
   SetReadOnly(path().is_readonly()); // does not return anything

@@ -926,7 +926,7 @@ bool wex::del::frame::vcs_unified_diff(
     return false;
   }
 
-  if (auto* stc = dynamic_cast<syntax::stc*>(open_file(diff->path_vcs()));
+  if (auto* stc = dynamic_cast<wex::stc*>(open_file(diff->path_vcs()));
       stc != nullptr)
   {
     if (diff->range_from_count() > 0)
@@ -940,6 +940,8 @@ bool wex::del::frame::vcs_unified_diff(
           diff->range_from_start() - 1,
           get_some_text(diff->text_removed()));
       }
+
+      stc->diff_add(diff->range_from_start() - 1);
     }
 
     if (diff->range_to_count() > 0)
@@ -953,7 +955,11 @@ bool wex::del::frame::vcs_unified_diff(
         log("vcs_unified_diff") << diff->path_vcs().string();
         return false;
       }
+
+      stc->diff_add(diff->range_to_start() - 1);
     }
+
+    stc->diff_first();
   }
 
   return true;

@@ -121,7 +121,6 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
     <indicator no="1"> indic_squiggle,red </indicator>
     <!-- this indicator is used by debug location -->
     <indicator no="2"> indic_box,styleindicatordebug </indicator>
-    
     <!-- this indicator is used by showing diff add location -->
     <indicator no="3"> indic_box,green </indicator>
 
@@ -143,7 +142,7 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
     <marker no="ex_marknum_break"> mark_arrow,red,white </marker>
 
     <!-- this indicator is used by showing diff del location -->
-    <marker no="3"> mark_arrow,red,white </marker>
+    <marker no="3"> mark_shortarrow,red,warmgrey </marker>
     
     <!-- At this moment we do not have properties -->
     <properties/>
