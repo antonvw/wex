@@ -43,6 +43,9 @@ public:
     /// Provide frame, that will receive the unified diff callbacks.
     factory::frame* f);
 
+  /// Returns true if this is the first diff.
+  bool is_first() const { return m_is_first; };
+
   /// Parses the input.
   /// This routine might invoke callback methods on wex::frame.
   /// Returns number of differences present.
@@ -83,6 +86,8 @@ private:
   std::array<std::vector<std::string>, 2> m_text;
 
   path m_path_vcs;
+
+  bool m_is_first{true};
 
   const vcs_entry* m_vcs_entry{nullptr};
   factory::frame*  m_frame{nullptr};

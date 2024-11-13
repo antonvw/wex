@@ -137,6 +137,8 @@ std::optional<int> wex::unified_diff::parse()
         }
       }
 
+      m_is_first = false;
+
       if (++tok_iter != tokens.end() && !(*tok_iter).starts_with("@@"))
       {
         break; // this was last chunk, continue with header lines

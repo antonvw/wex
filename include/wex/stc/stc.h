@@ -14,10 +14,10 @@
 #include <wex/syntax/marker.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/item.h>
+#include <wex/vcs/unified-diffs.h>
 #include <wex/vi/vi.h>
 #include <wx/prntbase.h>
 
-#include <set>
 #include <vector>
 
 namespace wex
@@ -105,17 +105,11 @@ public:
   /// Returns associated data.
   const auto& data() const { return m_data; }
 
-  /// Adds a diff line.
-  void diff_add(int line) { m_lines_diff.insert(line); };
+  /// Returns diffs.
+  const unified_diffs& diffs() const { return m_diffs; };
 
-  /// Goto first diff line.
-  bool diff_first();
-
-  /// Goto next diff line.
-  bool diff_next();
-
-  /// Goto previous diff line.
-  bool diff_previous();
+  /// Returns writable diffs.
+  unified_diffs& diffs() { return m_diffs; };
 
   /// Shows a menu with current line type checked,
   /// and allows you to change it.
@@ -313,11 +307,9 @@ private:
   function_repeat m_function_repeat;
   data::stc       m_data;
   stc_file        m_file;
+  unified_diffs   m_diffs;
 
   int m_selection_mode_copy{wxSTC_SEL_STREAM};
-
-  std::set<int>           m_lines_diff;
-  std::set<int>::iterator m_lines_diff_it;
 
   // The ex or vi component.
   vi* m_vi{nullptr};

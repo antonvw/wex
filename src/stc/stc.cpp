@@ -36,6 +36,7 @@ wex::stc::stc(const wex::path& p, const data::stc& data)
   , m_file(this, wex::path(data.window().name()))
   , m_hexmode(hexmode(this))
   , m_frame(dynamic_cast<frame*>(wxTheApp->GetTopWindow()))
+  , m_diffs(this)
   , m_function_repeat(
       "stc",
       this,
@@ -244,29 +245,6 @@ void wex::stc::Cut()
 
     syntax::stc::Cut();
   }
-}
-
-bool wex::stc::diff_first()
-{
-  if (m_lines_diff.empty())
-  {
-    return false;
-  }
-
-  m_lines_diff_it = m_lines_diff.begin();
-  goto_line(*m_lines_diff_it);
-
-  return true;
-}
-
-bool wex::stc::diff_next()
-{
-  return true;
-}
-
-bool wex::stc::diff_previous()
-{
-  return true;
 }
 
 bool wex::stc::file_readonly_attribute_changed()

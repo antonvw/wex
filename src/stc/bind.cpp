@@ -139,8 +139,8 @@ void wex::stc::bind_all()
      {wxACCEL_CTRL, WXK_INSERT, wxID_COPY},
      {wxACCEL_NORMAL, WXK_F3, ID_EDIT_FIND_NEXT},
      {wxACCEL_NORMAL, WXK_F4, ID_EDIT_FIND_PREVIOUS},
-     {wxACCEL_NORMAL, WXK_F7, wxID_SORT_ASCENDING},
-     {wxACCEL_NORMAL, WXK_F8, wxID_SORT_DESCENDING},
+     {wxACCEL_NORMAL, WXK_F7, id::stc::diff_next},
+     {wxACCEL_NORMAL, WXK_F8, id::stc::diff_previous},
      {wxACCEL_NORMAL, WXK_F9, id::stc::fold_all},
      {wxACCEL_NORMAL, WXK_F10, id::stc::unfold_all},
      {wxACCEL_NORMAL, WXK_F11, id::stc::uppercase},
@@ -358,6 +358,20 @@ void wex::stc::bind_all()
         find_next();
       },
       ID_EDIT_FIND_PREVIOUS},
+
+     {[=, this](const wxCommandEvent& event)
+      {
+        m_diffs.next();
+        log::status("diff") << m_diffs.distance() << "from" << m_diffs.size();
+      },
+      id::stc::diff_next},
+
+     {[=, this](const wxCommandEvent& event)
+      {
+        m_diffs.prev();
+        log::status("diff") << m_diffs.distance() << "from" << m_diffs.size();
+      },
+      id::stc::diff_previous},
 
      {[=, this](const wxCommandEvent& event)
       {

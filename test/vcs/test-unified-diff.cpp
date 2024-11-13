@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      test-vcs-entry.cpp
+// Name:      test-unified-diff.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2024 Anton van Wezenbeek
@@ -61,6 +61,7 @@ TEST_CASE("wex::unified_diff")
       "@@ -38,0 +37 @@ The format is based on [Keep a Changelog].\n"
       "+- test\n");
 
+    REQUIRE(uni.is_first());
     const auto res(uni.parse());
     REQUIRE(res);
     REQUIRE(*res == 4);
@@ -72,6 +73,7 @@ TEST_CASE("wex::unified_diff")
     REQUIRE(uni.range_to_count() == 1);
     REQUIRE(uni.text_added().front() == "- test");
     REQUIRE(uni.text_removed().empty());
+    REQUIRE(!uni.is_first());
   }
 
   SUBCASE("parse-valid-other")
