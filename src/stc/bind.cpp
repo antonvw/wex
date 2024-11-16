@@ -362,14 +362,14 @@ void wex::stc::bind_all()
      {[=, this](const wxCommandEvent& event)
       {
         m_diffs.next();
-        log::status("diff") << m_diffs.distance() << "from" << m_diffs.size();
+        m_diffs.status();
       },
       id::stc::diff_next},
 
      {[=, this](const wxCommandEvent& event)
       {
         m_diffs.prev();
-        log::status("diff") << m_diffs.distance() << "from" << m_diffs.size();
+        m_diffs.status();
       },
       id::stc::diff_previous},
 

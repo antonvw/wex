@@ -6,15 +6,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
-#include <wex/vcs/unified-diff.h>
+#include <wex/factory/unified-diff.h>
 
 #include "test.h"
 
-TEST_CASE("wex::unified_diff")
+TEST_CASE("wex::factory::unified_diff")
 {
   SUBCASE("constructor")
   {
-    wex::unified_diff uni("");
+    wex::factory::unified_diff uni("");
 
     REQUIRE(uni.parse());
     REQUIRE(uni.range_from_count() == 0);
@@ -24,8 +24,8 @@ TEST_CASE("wex::unified_diff")
   SUBCASE("parse-invalid")
   {
     wex::log_none off;
-    REQUIRE(!wex::unified_diff("error\n").parse());
-    REQUIRE(!wex::unified_diff(
+    REQUIRE(!wex::factory::unified_diff("error\n").parse());
+    REQUIRE(!wex::factory::unified_diff(
                "diff --git a/CHANGELOG.md b/CHANGELOG.md\n"
                "index a23525b3c..26e9e8fc1 100644\n"
                "--- a/CHANGELOG.md\n"
@@ -33,17 +33,18 @@ TEST_CASE("wex::unified_diff")
                "@@ -10,0 + @@ The format is based on [Keep a Changelog].\n"
                "+- added git diff option\n")
                .parse());
-    REQUIRE(!wex::unified_diff("diff --git a/CHANGELOG.md b/CHANGELOG.md\n"
-                               "index a23525b3c..26e9e8fc1 100644\n"
-                               "--- a/CHANGELOG.md\n"
-                               "+++ b/CHANGELOG.md\n"
-                               "+- added git diff option\n")
-               .parse());
+    REQUIRE(
+      !wex::factory::unified_diff("diff --git a/CHANGELOG.md b/CHANGELOG.md\n"
+                                  "index a23525b3c..26e9e8fc1 100644\n"
+                                  "--- a/CHANGELOG.md\n"
+                                  "+++ b/CHANGELOG.md\n"
+                                  "+- added git diff option\n")
+         .parse());
   }
 
   SUBCASE("parse-valid")
   {
-    wex::unified_diff uni(
+    wex::factory::unified_diff uni(
       "diff --git a/build-gen.sh b/build-gen.sh\n"
       "index 9ff921d..b429c21 100755\n"
       "--- a/build-gen.sh\n"
@@ -78,7 +79,7 @@ TEST_CASE("wex::unified_diff")
 
   SUBCASE("parse-valid-other")
   {
-    wex::unified_diff uni(
+    wex::factory::unified_diff uni(
       "diff --git a/external/pugixml b/external/pugixml\n"
       "--- a/external/pugixml\n"
       "+++ b/external/pugixml\n"

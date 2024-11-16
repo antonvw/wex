@@ -9,12 +9,12 @@
 
 #include <wex/core/function-repeat.h>
 #include <wex/data/stc.h>
+#include <wex/factory/unified-diffs.h>
 #include <wex/stc/file.h>
 #include <wex/stc/hexmode.h>
 #include <wex/syntax/marker.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/item.h>
-#include <wex/vcs/unified-diffs.h>
 #include <wex/vi/vi.h>
 #include <wx/prntbase.h>
 

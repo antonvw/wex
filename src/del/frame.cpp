@@ -43,9 +43,36 @@ const std::string find_replace_string(bool replace)
 
 const std::string get_some_text(const std::vector<std::string>& text)
 {
-  std::stringstream ss;
-  const std::string info(!text.front().empty() ? text.front() : std::string());
-  ss << "deleted " << text.size() << " lines" << info;
+  std::stringstream                        ss, info;
+  std::vector<std::string>::const_iterator tok_iter = text.begin();
+
+  ss << "deleted " << text.size() << " lines";
+
+  const int max_size = 70;
+
+  while (tok_iter != text.end())
+  {
+    const auto& item(boost::algorithm::trim_copy(*tok_iter));
+
+    if (!item.empty())
+    {
+      info << item << "\n";
+    }
+
+    if (info.str().size() > max_size)
+    {
+      info << "...";
+      break;
+    }
+    
+    tok_iter++;
+  }
+
+  if (!info.str().empty())
+  {
+    ss << ":\n" << boost::algorithm::trim_copy(info.str());
+  }
+
   return ss.str();
 }
 
@@ -929,6 +956,13 @@ bool wex::del::frame::vcs_unified_diff(
   if (auto* stc = dynamic_cast<wex::stc*>(open_file(diff->path_vcs()));
       stc != nullptr)
   {
+    if (diff->is_last())
+    {
+      stc->diffs().first();
+      stc->diffs().status();
+      return true;
+    }
+
     if (diff->range_from_count() > 0)
     {
       // deleted text, just a marker, and annotation with text
@@ -961,7 +995,6 @@ bool wex::del::frame::vcs_unified_diff(
     }
 
     stc->diffs().insert(diff);
-    stc->diffs().first();
   }
 
   return true;

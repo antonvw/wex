@@ -96,11 +96,17 @@ public:
     return nullptr;
   };
 
-  /// Runs a unified diff on paths.
-  virtual bool vcs_unified_diff(const vcs_entry* e, const unified_diff* uni)
-  {
-    return false;
-  };
+  /// Moves to next page. If none or only one page present, returns false.
+  virtual bool page_next() { return false; }
+
+  /// Moves to next page. If none or only one page present, returns false.
+  virtual bool page_prev() { return false; }
+
+  /// Restores to saved page. If none present or none saved, returns false.
+  virtual bool page_restore() { return false; }
+
+  /// Saves current page. If none present, returns false.
+  virtual bool page_save() { return false; }
 
   /// Allows you to handle output text, .e.g. from a process.
   virtual bool output(const std::string& text) const { return false; }
@@ -121,6 +127,12 @@ public:
   /// Don't forget to call setup_statusbar first.
   virtual bool
   statustext(const std::string& text, const std::string& pane) const
+  {
+    return false;
+  };
+
+  /// Runs a unified diff on paths.
+  virtual bool vcs_unified_diff(const vcs_entry* e, const unified_diff* uni)
   {
     return false;
   };

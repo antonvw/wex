@@ -6,45 +6,11 @@
 // Copyright: (c) 2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <boost/tokenizer.hpp>
 #include <wex/core/log.h>
-#include <wex/core/regex.h>
 #include <wex/factory/frame.h>
 #include <wex/vcs/unified-diff.h>
 #include <wex/vcs/vcs-entry.h>
 #include <wex/vcs/vcs.h>
-
-#include <iostream>
-
-#define NEXT_TOKEN                                                             \
-  if (++tok_iter == tokens.end())                                              \
-  {                                                                            \
-    return std::nullopt;                                                       \
-  }
-
-#define CHANGES_LINES(RANGE, TEXT)                                             \
-  for (int i = 0; i < m_range[RANGE]; i++)                                     \
-  {                                                                            \
-    NEXT_TOKEN                                                                 \
-    m_text[TEXT].push_back((*tok_iter).substr(1));                             \
-  }
-
-#define HEADER_LINES(REGEX, INTO)                                              \
-  if (!parse_header(REGEX, *tok_iter, INTO))                                   \
-  {                                                                            \
-    return std::nullopt;                                                       \
-  }                                                                            \
-  NEXT_TOKEN
-
-#define SKIP_LINES                                                             \
-  while (tok_iter != tokens.end())                                             \
-  {                                                                            \
-    NEXT_TOKEN                                                                 \
-    if (!tok_iter->starts_with("diff ") && !tok_iter->starts_with("index "))   \
-    {                                                                          \
-      break;                                                                   \
-    }                                                                          \
-  }
 
 namespace wex
 {
@@ -54,115 +20,41 @@ int stoi(const std::string& i)
 }
 } // namespace wex
 
-wex::unified_diff::unified_diff(const std::string& input)
-  : m_input(input)
-{
-  m_range.fill({0});
-}
-
 wex::unified_diff::unified_diff(
   const path&      p,
   const vcs_entry* e,
   factory::frame*  f)
-  : m_path_vcs(p)
-  , m_input(e->std_out())
+  : factory::unified_diff(e->std_out())
+  , m_path_vcs(p)
   , m_frame(f)
   , m_path_toplevel(vcs().toplevel())
   , m_vcs_entry(e)
 {
-  m_range.fill({0});
+  m_frame->page_save();
 }
 
-std::optional<int> wex::unified_diff::parse()
+bool wex::unified_diff::report_diff()
 {
-  typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
+  m_path_vcs = path(m_path_toplevel).append(m_path[0]);
 
-  tokenizer tokens(m_input, boost::char_separator<char>("\r\n"));
-
-  tokenizer::iterator tok_iter = tokens.begin();
-
-  int diffs = 0;
-
-  while (tok_iter != tokens.end())
+  if (!m_path_vcs.dir_exists())
   {
-    // skip first lines
-    SKIP_LINES;
-
-    // The unified output format starts with a two-line header
-    HEADER_LINES("--- a/(.*)", m_path[0]);
-    HEADER_LINES("\\+\\+\\+ b/(.*)", m_path[1]);
-
-    // Next come one or more chunks of differences
-    while (tok_iter != tokens.end())
+    if (!m_path_vcs.file_exists())
     {
-      if (regex r_chunk("@@ -([0-9]+),?([0-9]*) \\+([0-9]+),?([0-9]*) @@.*");
-          r_chunk.match(*tok_iter) != 4)
-      {
-        log("unified_diff") << *tok_iter << r_chunk.size();
-        return std::nullopt;
-      }
-      else
-      {
-        m_range[0] = wex::stoi(r_chunk[0]);
-        m_range[1] = wex::stoi(r_chunk[1]);
-        m_range[2] = wex::stoi(r_chunk[2]);
-        m_range[3] = wex::stoi(r_chunk[3]);
-      }
+      log("unified_diff") << m_path_vcs.string() << "does not exist";
+      return false;
+    }
 
-      diffs++;
-
-      m_text.fill({});
-
-      // Now get all - lines and all + lines, collect them, and invoke callback.
-      CHANGES_LINES(1, 0);
-      CHANGES_LINES(3, 1);
-
-      if (m_vcs_entry != nullptr)
-      {
-        m_path_vcs = path(m_path_toplevel).append(m_path[0]);
-
-        if (!m_path_vcs.dir_exists())
-        {
-          if (!m_path_vcs.file_exists())
-          {
-            log("unified_diff") << m_path_vcs.string() << "does not exist";
-            return std::nullopt;
-          }
-
-          if (
-            m_frame != nullptr && !m_frame->vcs_unified_diff(m_vcs_entry, this))
-          {
-            return std::nullopt;
-          }
-        }
-      }
-
-      m_is_first = false;
-
-      if (++tok_iter != tokens.end() && !(*tok_iter).starts_with("@@"))
-      {
-        break; // this was last chunk, continue with header lines
-      }
+    if (!m_frame->vcs_unified_diff(m_vcs_entry, this))
+    {
+      return false;
     }
   }
 
-  return std::optional<int>{diffs};
+  return true;
 }
 
-bool wex::unified_diff::parse_header(
-  const std::string& r,
-  const std::string& line,
-  path&              p)
+void wex::unified_diff::report_diff_finish()
 {
-  if (regex re(r); !re.match(line))
-  {
-    log("unified_diff") << line << re.match_data().text();
-    return false;
-  }
-  else
-  {
-    p = path(re[0]);
-  }
-
-  return true;
+  m_frame->page_restore();
 }

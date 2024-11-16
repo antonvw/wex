@@ -120,7 +120,7 @@ bool wex::vim::command_special()
       if (auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
           frame != nullptr)
       {
-        frame->next_page();
+        frame->page_next();
       }
       break;
 
