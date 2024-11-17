@@ -36,6 +36,7 @@ wex::stc::stc(const wex::path& p, const data::stc& data)
   , m_file(this, wex::path(data.window().name()))
   , m_hexmode(hexmode(this))
   , m_frame(dynamic_cast<frame*>(wxTheApp->GetTopWindow()))
+  , m_diffs(this)
   , m_function_repeat(
       "stc",
       this,

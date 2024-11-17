@@ -16,6 +16,7 @@
 #include <wex/syntax/path-lexer.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/menus.h>
+#include <wex/vcs/unified-diff.h>
 #include <wex/vcs/vcs-entry.h>
 #include <wx/app.h>
 
@@ -128,7 +129,11 @@ bool wex::vcs_entry::execute(
 
   if (get_command().get_command() != "show")
   {
-    if (get_command().ask_flags())
+    if (get_command().get_command() == "diff")
+    {
+      flags = "-U0";
+    }
+    else if (get_command().ask_flags())
     {
       flags = get_flags();
     }
@@ -235,6 +240,16 @@ void wex::vcs_entry::show_output(const std::string& caption) const
     else
     {
       vcs_command_stc(get_command(), m_lexer, get_shell());
+    }
+
+    if (get_command().get_command() == "diff")
+    {
+      unified_diff(
+        path(),
+        this,
+        dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()))
+        .parse();
+      return;
     }
   }
 

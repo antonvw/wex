@@ -9,6 +9,7 @@
 
 #include <wex/core/function-repeat.h>
 #include <wex/data/stc.h>
+#include <wex/factory/unified-diffs.h>
 #include <wex/stc/file.h>
 #include <wex/stc/hexmode.h>
 #include <wex/syntax/marker.h>
@@ -103,6 +104,12 @@ public:
 
   /// Returns associated data.
   const auto& data() const { return m_data; }
+
+  /// Returns diffs.
+  const unified_diffs& diffs() const { return m_diffs; };
+
+  /// Returns writable diffs.
+  unified_diffs& diffs() { return m_diffs; };
 
   /// Shows a menu with current line type checked,
   /// and allows you to change it.
@@ -300,6 +307,7 @@ private:
   function_repeat m_function_repeat;
   data::stc       m_data;
   stc_file        m_file;
+  unified_diffs   m_diffs;
 
   int m_selection_mode_copy{wxSTC_SEL_STREAM};
 
