@@ -12,14 +12,6 @@
 #include <wex/vcs/vcs-entry.h>
 #include <wex/vcs/vcs.h>
 
-namespace wex
-{
-int stoi(const std::string& i)
-{
-  return i.empty() ? 1 : std::stoi(i);
-}
-} // namespace wex
-
 wex::unified_diff::unified_diff(
   const path&      p,
   const vcs_entry* e,
