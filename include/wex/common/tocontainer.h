@@ -13,11 +13,11 @@
 #include <wx/filedlg.h>
 #include <wx/generic/dirctrlg.h>
 
-#define WEX_CONVERT(IN)          \
-  if (IN.GetParent() == nullptr) \
-    return;                      \
-  wxArrayString paths;           \
-  in.GetPaths(paths);            \
+#define WEX_CONVERT(IN)                                                        \
+  if (IN.GetParent() == nullptr)                                               \
+    return;                                                                    \
+  wxArrayString paths;                                                         \
+  in.GetPaths(paths);                                                          \
   from_array_string(paths);
 
 namespace wex
@@ -57,15 +57,16 @@ public:
     for (auto it = tok.begin(); it != tok.end(); ++it)
     {
       std::string token(*it);
+
       // if escape space, add next token
-      if (token.back() == '\\')
+      while (token.back() == '\\')
       {
-        ++it;
-        if (it != tok.end())
+        if (++it != tok.end())
         {
           token = token.substr(0, token.size() - 1) + " " + *it;
         }
       }
+
       m_container.emplace_back(token);
     }
   }
@@ -74,7 +75,9 @@ public:
   explicit to_container(const wxComboBox* cb, size_t max_items = UINT_MAX)
   {
     if (max_items == 0)
+    {
       return;
+    }
 
     // wxArrayString has no emplace_back.
     m_container.push_back(cb->GetValue().ToStdString());
@@ -85,13 +88,17 @@ public:
         // The string is already present as the first one, add
         // all other items.
         for (size_t i = 1; i < cb->GetCount() && i < max_items; i++)
+        {
           m_container.push_back(cb->GetString(i).ToStdString());
+        }
         break;
       case wxNOT_FOUND:
         // Add the string, as it is not in the combobox, to the text,
         // simply by appending all combobox items.
         for (size_t i = 0; i < cb->GetCount() && i < max_items; i++)
+        {
           m_container.push_back(cb->GetString(i).ToStdString());
+        }
         break;
       default:
         // Reorder. The new first element already present, just add all
@@ -100,7 +107,9 @@ public:
         {
           const std::string cb_element(cb->GetString(i));
           if (cb_element != cb->GetValue())
+          {
             m_container.emplace_back(cb_element);
+          }
         }
     }
   };

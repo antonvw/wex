@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- openening files that contain a space in the filename
 - 2addr range for global commands
 - global v command and set indicator
 - macro playback and undo includes sub commands
