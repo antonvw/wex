@@ -2,7 +2,7 @@
 // Name:      test-tocontainer.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
@@ -10,9 +10,6 @@
 #include <wx/generic/dirctrlg.h>
 
 #include "test.h"
-
-#include <list>
-#include <vector>
 
 TEST_CASE("wex::to_container")
 {
@@ -34,7 +31,10 @@ TEST_CASE("wex::to_container")
   REQUIRE(wex::to_vector_string(a).get().size() == 4);
   REQUIRE(wex::to_vector_path(a).get().size() == 4);
   REQUIRE(wex::to_vector_string("test test test").get().size() == 3);
-  REQUIRE(wex::to_vector_string("test\\ test test").get().size() == 2);
+  REQUIRE(wex::to_vector_string("test\\ test\\ test").get().size() == 1);
+  REQUIRE(
+    wex::to_vector_string("test\\ test\\ test").get().front() ==
+    "test test test");
 
   REQUIRE(wex::to_list_string(dlg).get().empty());
 #ifndef __WXMSW__
