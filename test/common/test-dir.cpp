@@ -2,7 +2,7 @@
 // Name:      test-dir.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -101,12 +101,22 @@ TEST_CASE("wex::dir")
 
   SUBCASE("get_all_files")
   {
-    REQUIRE(
-      wex::get_all_files(
-        std::string("./"),
-        wex::data::dir().file_spec("*.txt").type(
-          wex::data::dir::type_t().set(wex::data::dir::FILES)))
-        .size() == 4);
+    const auto& v(wex::get_all_files(
+      std::string("./"),
+      wex::data::dir().file_spec("*.txt").type(
+        wex::data::dir::type_t().set(wex::data::dir::FILES))));
+
+    REQUIRE(v.size() == 5);
+
+    const auto& v2(wex::get_all_files(
+      std::string("./"),
+      wex::data::dir()
+        .file_spec("*containing*")
+        .type(wex::data::dir::type_t().set(wex::data::dir::FILES))));
+
+    REQUIRE(v2.size() == 1);
+    CAPTURE(v2.front());
+    REQUIRE(v2.front().contains("\\ "));
   }
 
   SUBCASE("invalid")

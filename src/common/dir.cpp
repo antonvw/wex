@@ -5,6 +5,7 @@
 // Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
 #include <wex/common/dir.h>
 #include <wex/common/stream.h>
 #include <wex/common/util.h>
@@ -33,6 +34,11 @@ public:
   }
 
 private:
+  const std::string escape_spaces(const std::string& text) const
+  {
+    return boost::algorithm::replace_all_copy(text, " ", "\\ ");
+  }
+
   bool on_dir(const path& p) const final
   {
     m_container.emplace_back(
@@ -43,7 +49,8 @@ private:
   bool on_file(const path& p) const final
   {
     m_container.emplace_back(
-      data().type().test(data::dir::RECURSIVE) ? p.string() : p.filename());
+      data().type().test(data::dir::RECURSIVE) ? escape_spaces(p.string()) :
+                                                 escape_spaces(p.filename()));
     return true;
   };
 
