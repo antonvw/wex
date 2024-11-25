@@ -2,7 +2,7 @@
 // Name:      reflection.h
 // Purpose:   Declaration of wex::reflection class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -12,15 +12,14 @@
 #include <sstream>
 #include <vector>
 
-/// YOu can use this macro to add reflection to your class members,
+/// You can use this macro to add reflection to your class members,
 /// or functions.
-#define REFLECT_ADD(NAME, ITEM) \
-  {                             \
-    NAME, [&]()                 \
-    {                           \
-      return ITEM;              \
-    }                           \
-  }
+#define REFLECT_ADD(NAME, ITEM)                                                \
+  {NAME,                                                                       \
+   [&]()                                                                       \
+   {                                                                           \
+     return ITEM;                                                              \
+   }}
 
 namespace wex
 {

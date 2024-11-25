@@ -2,14 +2,13 @@
 // Name:      ex-stream-line.h
 // Purpose:   Declaration of class wex::ex_stream_line
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <unordered_map>
 #include <wex/core/file.h>
-#include <wex/core/reflection.h>
 #include <wex/data/substitute.h>
 #include <wex/ex/addressrange.h>
 
@@ -109,8 +108,13 @@ private:
 
   std::string m_copy;
 
-  reflection m_reflect;
-
   static const std::unordered_map<action_t, std::string> m_action_names;
+
+  BOOST_DESCRIBE_CLASS(
+    ex_stream_line,
+    (),
+    (),
+    (),
+    (m_action, m_text, m_register, m_begin, m_end, m_dest))
 };
 }; // namespace wex

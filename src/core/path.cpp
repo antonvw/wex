@@ -57,6 +57,12 @@ wex::path::path(const std::vector<std::string>& v, log_t t)
   }
 }
 
+std::ostream& wex::operator<<(std::ostream& os, const wex::path& p)
+{
+  os << p.m_path;
+  return os;
+}
+
 wex::path::~path()
 {
   if (!m_path_original.empty() && m_path_original != current().data())

@@ -16,6 +16,13 @@
 #include <unistd.h>
 #endif
 
+std::ostream& wex::operator<<(std::ostream& os, const wex::file_status& rhs)
+{
+  os << rhs.m_fullpath;
+
+  return os;
+}
+
 const std::string
 wex::file_status::get_creation_time_str(const std::string& format) const
 {
