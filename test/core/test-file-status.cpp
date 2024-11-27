@@ -2,7 +2,7 @@
 // Name:      test-file-status.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2023 Anton van Wezenbeek
+// Copyright: (c) 2018-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/file-status.h>
@@ -24,6 +24,10 @@ TEST_CASE("wex::file_status")
   REQUIRE(stat.sync());
   REQUIRE(!stat.get_creation_time_str().empty());
   REQUIRE(!stat.get_modification_time_str().empty());
+
+  std::stringstream ss;
+  ss << wex::file_status("xxx");
+  REQUIRE(ss.str() == "xxx"); // different from wex::path, that is quoted
 
 #ifdef __UNIX__
   REQUIRE(wex::file_status("/etc/hosts").is_readonly());

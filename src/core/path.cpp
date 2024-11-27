@@ -13,6 +13,15 @@
 #include <wx/translation.h>
 #include <wx/utils.h>
 
+namespace wex
+{
+std::ostream& operator<<(std::ostream& os, const wex::path& p)
+{
+  os << p.m_path;
+  return os;
+}
+} // namespace wex
+
 namespace fs = std::filesystem;
 
 wex::path::path(const fs::path& p, log_t t)
@@ -55,12 +64,6 @@ wex::path::path(const std::vector<std::string>& v, log_t t)
   {
     append(path(it));
   }
-}
-
-std::ostream& wex::operator<<(std::ostream& os, const wex::path& p)
-{
-  os << p.m_path;
-  return os;
 }
 
 wex::path::~path()

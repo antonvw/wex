@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <unordered_map>
 #include <wex/core/file.h>
 #include <wex/data/substitute.h>
 #include <wex/ex/addressrange.h>
@@ -108,13 +107,23 @@ private:
 
   std::string m_copy;
 
-  static const std::unordered_map<action_t, std::string> m_action_names;
-
   BOOST_DESCRIBE_CLASS(
     ex_stream_line,
     (),
     (),
     (),
     (m_action, m_text, m_register, m_begin, m_end, m_dest))
+
+  BOOST_DESCRIBE_NESTED_ENUM(
+    action_t,
+    ACTION_COPY,
+    ACTION_ERASE,
+    ACTION_GET,
+    ACTION_INSERT,
+    ACTION_JOIN,
+    ACTION_MOVE,
+    ACTION_SUBSTITUTE,
+    ACTION_WRITE,
+    ACTION_YANK)
 };
 }; // namespace wex

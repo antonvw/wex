@@ -15,21 +15,6 @@
 
 #include "ex-stream-line.h"
 
-namespace wex
-{
-const std::unordered_map<ex_stream_line::action_t, std::string>
-  ex_stream_line::m_action_names = {
-    {ex_stream_line::ACTION_COPY, "copied"},
-    {ex_stream_line::ACTION_ERASE, "erased"},
-    {ex_stream_line::ACTION_GET, "get"},
-    {ex_stream_line::ACTION_INSERT, "inserted"},
-    {ex_stream_line::ACTION_JOIN, "joined"},
-    {ex_stream_line::ACTION_MOVE, "moved"},
-    {ex_stream_line::ACTION_SUBSTITUTE, "substituted"},
-    {ex_stream_line::ACTION_WRITE, "written"},
-    {ex_stream_line::ACTION_YANK, "yanked"}};
-}; // namespace wex
-
 wex::ex_stream_line::ex_stream_line(
   file*                   work,
   action_t                type,
@@ -100,10 +85,11 @@ wex::ex_stream_line::ex_stream_line(
 
 wex::ex_stream_line::~ex_stream_line()
 {
-  std::stringstream ss;
   using boost::describe::operators::operator<<;
-  ss << *this << m_data;
-  log::trace("ex stream " + m_action_names.at(m_action)) << ss;
+  std::stringstream ss;
+  ss << boost::describe::enum_to_string(m_action, "none") << " " << *this << " "
+     << m_data;
+  log::trace("ex stream") << ss;
 }
 
 wex::ex_stream_line::handle_t
