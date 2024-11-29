@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <boost/describe.hpp>
 #include <string>
 
 namespace wex::data
@@ -60,5 +61,12 @@ private:
   std::string m_commands, m_options, m_pattern, m_replacement;
 
   bool m_clear{false}, m_global_command{false}, m_inverse{false};
+
+  BOOST_DESCRIBE_CLASS(
+    substitute,
+    (),
+    (),
+    (),
+    (m_commands, m_options, m_pattern, m_replacement))
 };
 } // namespace wex::data

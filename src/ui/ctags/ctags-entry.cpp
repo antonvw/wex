@@ -23,15 +23,7 @@ enum class image_access_t
 };
 }
 
-wex::ctags_entry::ctags_entry()
-  : m_reflect(
-      {REFLECT_ADD("access", m_access),
-       REFLECT_ADD("class", m_class),
-       REFLECT_ADD("kind", m_kind),
-       REFLECT_ADD("signature", m_signature)},
-      reflection::log_t::SKIP_EMPTY)
-{
-}
+wex::ctags_entry::ctags_entry() {}
 
 wex::ctags_entry& wex::ctags_entry::access(const std::string& v)
 {
@@ -185,6 +177,14 @@ wex::ctags_entry& wex::ctags_entry::kind(const std::string& v)
 {
   m_kind = v;
   return *this;
+}
+
+const std::stringstream wex::ctags_entry::log() const
+{
+  std::stringstream ss;
+  using boost::describe::operators::operator<<;
+  ss << *this;
+  return ss;
 }
 
 void wex::ctags_entry::register_image(wxStyledTextCtrl* stc)

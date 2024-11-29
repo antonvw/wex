@@ -2,7 +2,7 @@
 // Name:      file-status.h
 // Purpose:   Declaration of wex::file_status class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2022 Anton van Wezenbeek
+// Copyright: (c) 2010-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -22,6 +22,9 @@ public:
 
   /// Default constructor. Calls sync.
   explicit file_status(const std::string& path = std::string()) { sync(path); }
+
+  /// << Operator.
+  friend std::ostream& operator<<(std::ostream& os, const file_status& rhs);
 
   /// Returns access time.
   time_t get_access_time() const;

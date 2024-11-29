@@ -481,6 +481,7 @@ It benefits from the following boost libraries:
 lib  | info
 -----|------
 boost::algorithm | uses find_tail, icontains, iequals, replace_all, to_upper, trim
+boost::describe | to add reflection
 boost::json | to implement wex::config
 boost::log | to implement wex::log
 boost::process | to implement wex::process

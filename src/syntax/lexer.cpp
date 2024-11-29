@@ -113,11 +113,6 @@ wex::lexer::lexer(const pugi::xml_node* node)
 wex::lexer::lexer(const pugi::xml_node* node, syntax::stc* s)
   : m_scintilla_lexer(node != nullptr ? node->attribute("name").value() : "")
   , m_stc(s)
-  , m_reflect(
-      {REFLECT_ADD("display", m_display_lexer),
-       REFLECT_ADD("extensions", m_extensions),
-       REFLECT_ADD("language", m_language),
-       REFLECT_ADD("lexer", m_scintilla_lexer)})
 {
 }
 

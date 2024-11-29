@@ -2,13 +2,14 @@
 // Name:      listitem.h
 // Purpose:   Declaration of class wex::listitem
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2023 Anton van Wezenbeek
+// Copyright: (c) 2009-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
+#include <boost/describe.hpp>
+
 #include <wex/core/path.h>
-#include <wex/core/reflection.h>
 #include <wex/ui/listview.h>
 
 namespace wex
@@ -43,7 +44,7 @@ public:
   bool is_readonly() const { return m_is_readonly; }
 
   /// Logs info about this item.
-  std::stringstream log() const { return m_reflect.log(); }
+  std::stringstream log() const;
 
   /// Returns the path.
   const auto& path() const { return m_path; }
@@ -66,6 +67,11 @@ private:
   const std::string m_file_spec;
   bool              m_is_readonly{false};
 
-  reflection m_reflect;
+  BOOST_DESCRIBE_CLASS(
+    listitem,
+    (),
+    (),
+    (),
+    (m_path, m_file_spec, m_is_readonly))
 };
 }; // namespace wex

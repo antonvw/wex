@@ -2,14 +2,13 @@
 // Name:      test-reflection.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/describe.hpp>
 #include <wex/core/chrono.h>
 #include <wex/core/reflection.h>
 #include <wex/test/test.h>
-
-#include <iostream>
 
 class test_reflect
 {
@@ -41,14 +40,31 @@ private:
   size_t m_size{0};
 
   wex::chrono     m_chrono;
+  wex::path       m_path{"hello"};
   wex::reflection m_reflect;
+
+  BOOST_DESCRIBE_CLASS(
+    test_reflect,
+    (),
+    (),
+    (),
+    (m_bool, m_double, m_float, m_int, m_long, m_size, m_path))
 };
+
+using boost::describe::operators::operator<<;
 
 TEST_CASE("wex::reflection")
 {
   SUBCASE("constructor")
   {
     REQUIRE(wex::reflection({}).log().str().empty());
+  }
+
+  SUBCASE("boost")
+  {
+    std::stringstream ss;
+    ss << test_reflect();
+    REQUIRE(ss.str().contains("hello"));
   }
 
   SUBCASE("log")

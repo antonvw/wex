@@ -2,12 +2,11 @@
 // Name:      lexer.h
 // Purpose:   Declaration of wex::lexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2023 Anton van Wezenbeek
+// Copyright: (c) 2008-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wex/core/reflection.h>
 #include <wex/syntax/property.h>
 #include <wex/syntax/style.h>
 
@@ -133,9 +132,6 @@ public:
   /// Returns the line size.
   size_t line_size() const;
 
-  /// Logs info about this class.
-  std::stringstream log() const { return m_reflect.log(); }
-
   /// Returns a lexer comment string with text formatted.
   const std::string make_comment(
     const std::string& text,
@@ -216,7 +212,5 @@ private:
   bool m_is_ok{false}, m_previewable{false};
 
   syntax::stc* m_stc{nullptr};
-
-  reflection m_reflect;
 };
 }; // namespace wex

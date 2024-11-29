@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- added boost::describe for reflection as well
 - added showing git diff as indicators in stc component
 - added robotidy beautifier, and added config page
 - added LISTBOX item that uses a wxListBox

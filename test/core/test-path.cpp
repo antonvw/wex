@@ -27,6 +27,9 @@ TEST_CASE("wex::path")
   {
     REQUIRE(wex::path().empty());
     REQUIRE(wex::path("xxx").string() == "xxx");
+    std::stringstream ss;
+    ss << wex::path("xxx");
+    REQUIRE(ss.str() == "\"xxx\"");
     REQUIRE(wex::path(wex::path("yyy")).string() == "yyy");
     wex::path fn = wex::test::get_path("test.h");
     REQUIRE(wex::path(fn).filename() == "test.h");

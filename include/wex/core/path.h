@@ -7,13 +7,14 @@
 
 #pragma once
 
-#include <wex/core/file-status.h>
-
 #include <bitset>
 #include <filesystem>
+#include <ostream>
 #include <sstream>
 #include <string>
 #include <vector>
+
+#include <wex/core/file-status.h>
 
 namespace wex
 {
@@ -78,6 +79,9 @@ public:
 
   /// == Operator.
   bool operator==(const path& r) const { return data() == r.data(); }
+
+  /// << Operator.
+  friend std::ostream& operator<<(std::ostream& os, const path& rhs);
 
   /// Appends path.
   path& append(const path& path);
