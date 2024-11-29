@@ -2,7 +2,7 @@
 // Name:      lexers/wex.h
 // Purpose:   General wex include file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -19,4 +19,5 @@
 #include <wex/syntax/printout.h>
 #include <wex/syntax/property.h>
 #include <wex/syntax/stc.h>
+#include <wex/syntax/style.h>
 #include <wex/syntax/util.h>

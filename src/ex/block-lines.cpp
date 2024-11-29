@@ -18,17 +18,6 @@ wex::block_lines::block_lines(syntax::stc* s, int start, int end, block_t t)
 {
 }
 
-wex::block_lines& wex::block_lines::operator=(const block_lines& r)
-{
-  if (this != &r)
-  {
-    m_end   = r.m_end;
-    m_start = r.m_start;
-  }
-
-  return *this;
-}
-
 void wex::block_lines::end(int line)
 {
   m_end = line;

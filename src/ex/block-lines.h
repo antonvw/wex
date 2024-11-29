@@ -34,9 +34,6 @@ public:
     int          end   = 0,
     block_t            = block_t::MATCH);
 
-  /// Assignment operator.
-  block_lines& operator=(const block_lines& r);
-
   /// Spaceship operator.
   auto operator<=>(const block_lines& r) const
   {
@@ -72,7 +69,7 @@ public:
   block_t type() const { return m_type; };
 
 private:
-  const block_t m_type;
+  block_t m_type;
 
   int m_start{0}, m_end{0};
 

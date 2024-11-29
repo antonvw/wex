@@ -29,27 +29,19 @@ const std::string wex::tool::info() const
 
 const std::string wex::tool::info(const wex::statistics<int>* stat) const
 {
-  std::string logtext(info());
+  std::stringstream ss;
 
-  boost::algorithm::replace_all(
-    logtext,
-    "%d",
-    std::to_string(stat->get(_("Actions Completed"))));
-
-  logtext.append(" ");
-  logtext.append(std::to_string(stat->get(_("Files"))));
-  logtext.append(" ");
-  logtext.append(_("file(s)"));
+  ss << boost::algorithm::replace_all_copy(
+          info(),
+          "%d",
+          std::to_string(stat->get(_("Actions Completed"))))
+     << " " << std::to_string(stat->get(_("Files"))) << " " << _("file(s)");
 
   if (const auto folders(stat->get(_("Folders"))); folders > 0)
   {
-    logtext.append(" ");
-    logtext.append(_("and"));
-    logtext.append(" ");
-    logtext.append(std::to_string(folders));
-    logtext.append(" ");
-    logtext.append(_("folders(s)"));
+    ss << " " << _("and") << " " << std::to_string(folders) << " "
+       << _("folders(s)");
   }
 
-  return logtext;
+  return ss.str();
 }

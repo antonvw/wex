@@ -44,6 +44,19 @@
 
 #define PSS PS, item.data().window().style()
 
+#define CHOICE                                                                 \
+  initial(                                                                     \
+    item.data(),                                                               \
+    [&](wxArrayString& as)                                                     \
+    {                                                                          \
+      for (const auto& it :                                                    \
+           std::any_cast<config::strings_t>(item.data().initial()))            \
+      {                                                                        \
+        as.Add(it);                                                            \
+      }                                                                        \
+    }),                                                                        \
+    item.data().window().style()
+
 namespace wex
 {
 void finish_picker(wxPickerBase* pc, const wex::item& item, wxWindow*& window)
@@ -159,20 +172,7 @@ void create_checklistbox_bool(
 
 void create_combobox(wxWindow* parent, wxWindow*& window, const wex::item& item)
 {
-  window = new wxComboBox(
-    PIL,
-    PS,
-    initial(
-      item.data(),
-      [&](wxArrayString& as)
-      {
-        for (const auto& it :
-             std::any_cast<config::strings_t>(item.data().initial()))
-        {
-          as.Add(it);
-        }
-      }),
-    item.data().window().style());
+  window = new wxComboBox(PIL, PS, CHOICE);
 }
 
 void create_colour_picket_widget(
@@ -205,20 +205,7 @@ void create_commandlink_button(
 
 void create_listbox(wxWindow* parent, wxWindow*& window, const wex::item& item)
 {
-  window = new wxListBox(
-    parent,
-    IPS,
-    initial(
-      item.data(),
-      [&](wxArrayString& as)
-      {
-        for (const auto& it :
-             std::any_cast<config::strings_t>(item.data().initial()))
-        {
-          as.Add(it);
-        }
-      }),
-    item.data().window().style());
+  window = new wxListBox(parent, IPS, CHOICE);
 }
 
 void create_dir_picker_control(

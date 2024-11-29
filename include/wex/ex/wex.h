@@ -2,7 +2,7 @@
 // Name:      ex/wex.h
 // Purpose:   General wex include file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -14,4 +14,5 @@
 #include <wex/ex/ex.h>
 #include <wex/ex/macro-mode.h>
 #include <wex/ex/macros.h>
+#include <wex/ex/util.h>
 #include <wex/ex/variable.h>
