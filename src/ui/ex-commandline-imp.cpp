@@ -63,7 +63,10 @@ wex::ex_commandline_imp::ex_commandline_imp(
   init();
   bind();
 
-  set_text(value);
+  if (!value.empty())
+  {
+    set_text(value.substr(1));
+  }
 
   m_command.set(value);
 }

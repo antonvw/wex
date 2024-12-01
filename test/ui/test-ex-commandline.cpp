@@ -21,7 +21,7 @@ TEST_CASE("wex::ex_commandline")
     REQUIRE(cl->stc() == nullptr);
     REQUIRE(cl->get_frame() == frame());
     REQUIRE(wex::ex_commandline(frame()).get_text().empty());
-    REQUIRE(cl->get_text() == ":");
+    REQUIRE(cl->get_text().empty());
   }
 
   SUBCASE("events")
