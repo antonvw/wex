@@ -39,6 +39,18 @@ public:
     const std::string&  value = std::string(),
     const data::window& data  = data::window());
 
+  // Virtual interface
+
+  /// Finds current text on the component, default the stc
+  /// component is used.
+  virtual bool find();
+
+  /// Process on enter key, default ex action, when
+  /// returning true skips defaults.
+  virtual bool find_on_enter() { return false; };
+
+  // Other methods
+
   /// Returns the stc control window for the component,
   /// the commandline itself is just another stc, just as
   /// the one it is related to (through set_stc and stc).

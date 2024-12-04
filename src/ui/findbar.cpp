@@ -23,69 +23,38 @@ wex::find_bar::find_bar(wex::frame* frame, const data::window& data)
     wxEVT_SET_FOCUS,
     [=, this](wxFocusEvent& event)
     {
-      if (auto* stc = dynamic_cast<wex::syntax::stc*>(frame->get_stc());
-          stc != nullptr)
+      set_stc(dynamic_cast<wex::syntax::stc*>(frame->get_stc()));
+
+      if (stc() != nullptr)
       {
-        stc->position_save();
-        set_stc(stc);
-        m_stc = stc;
-      }
-      else
-      {
-        m_stc = nullptr;
+        stc()->position_save();
       }
       event.Skip();
-    });
-
-  control()->Bind(
-    wxEVT_KEY_DOWN,
-    [=, this](wxKeyEvent& event)
-    {
-      if (event.GetKeyCode() == WXK_RETURN)
-      {
-        event.Skip();
-
-        if (!get_text().empty())
-        {
-          find_replace_data::get()->set_find_string(get_text());
-          find();
-        }
-      }
-      else
-      {
-        event.Skip();
-      }
-    });
-
-  control()->Bind(
-    wxEVT_STC_CHARADDED,
-    [=, this](wxStyledTextEvent& event)
-    {
-      event.Skip();
-
-      if (m_stc == nullptr)
-      {
-        find(true, true);
-      }
     });
 }
 
-bool wex::find_bar::find(bool find_next, bool restore_position)
+bool wex::find_bar::find()
 {
   if (auto* grid = dynamic_cast<wex::grid*>(get_frame()->get_grid());
       grid != nullptr)
   {
-    const data::find f(get_text(), find_next);
+    const data::find f(get_text(), find_replace_data::get()->search_down());
     return grid->find_next(f);
   }
   else if (auto* lv = get_frame()->get_listview(); lv != nullptr)
   {
-    return lv->find_next(get_text(), find_next);
+    return lv->find_next(get_text(), find_replace_data::get()->search_down());
   }
-  else if (m_stc != nullptr)
+  else
   {
-    return m_stc->find(get_text(), -1, find_next);
+    return ex_commandline::find();
   }
 
   return false;
+}
+
+bool wex::find_bar::find_on_enter()
+{
+  find();
+  return true;
 }

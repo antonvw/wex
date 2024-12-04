@@ -205,12 +205,14 @@ void wex::toolbar::add_find(bool realize)
   bind(this).command(
     {{[=, this](const wxCommandEvent& event)
       {
-        m_find_bar->find(true);
+        find_replace_data::get()->set_search_down(true);
+        m_find_bar->find();
       },
       wxID_DOWN},
      {[=, this](const wxCommandEvent& event)
       {
-        m_find_bar->find(false);
+        find_replace_data::get()->set_search_down(false);
+        m_find_bar->find();
       },
       wxID_UP}});
 

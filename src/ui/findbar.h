@@ -30,8 +30,11 @@ public:
   /// from find_replace_data.
   find_bar(wex::frame* frame, const data::window& data);
 
-  /// Finds current value in control.
-  bool find(bool find_next = true, bool restore_position = false);
+  // Virtual interface
+
+  bool find() override;
+
+  bool find_on_enter() override;
 
 private:
   syntax::stc* m_stc{nullptr};

@@ -219,15 +219,9 @@ void wex::ex_commandline_imp::on_key_down_tab()
 
 void wex::ex_commandline_imp::on_text()
 {
-  if (
-    m_user_input && m_cl->stc() != nullptr &&
-    m_command.type() == ex_command::type_t::FIND)
+  if (m_user_input && m_command.type() == ex_command::type_t::FIND)
   {
-    m_cl->stc()->position_restore();
-    m_cl->stc()->find(
-      get_text(),
-      m_cl->stc()->vi_search_flags(),
-      m_command.str() == "/");
+    m_cl->find();
   }
 }
 
@@ -284,6 +278,12 @@ void wex::ex_commandline_imp::on_text_enter_do()
   if (m_command.type() == ex_command::type_t::FIND)
   {
     find_replace_data::get()->set_find_string(get_text());
+
+    if (m_cl->find_on_enter())
+    {
+      return;
+    }
+
     m_command.exec_finish(m_user_input);
   }
   else

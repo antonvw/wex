@@ -36,6 +36,22 @@ wex::syntax::stc* wex::ex_commandline::control()
   return m_imp;
 }
 
+bool wex::ex_commandline::find()
+{
+  if (stc() == nullptr)
+  {
+    return false;
+  }
+
+  stc()->position_restore();
+  stc()->find(
+    get_text(),
+    stc()->vi_search_flags(),
+    m_imp->get_ex_command().str() == "/");
+
+  return true;
+}
+
 const std::string wex::ex_commandline::get_text() const
 {
   return m_imp->get_text();
