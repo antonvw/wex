@@ -32,11 +32,8 @@ public:
 
   // Virtual interface
 
-  bool find() override;
+  bool find(bool user_input = true) override;
 
   bool find_on_enter() override;
-
-private:
-  syntax::stc* m_stc{nullptr};
 };
 }; // namespace wex

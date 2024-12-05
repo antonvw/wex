@@ -16,24 +16,23 @@
 wex::find_bar::find_bar(wex::frame* frame, const data::window& data)
   : ex_commandline(
       frame,
-      "/" + find_replace_data::get()->get_find_string(),
+      "@" + find_replace_data::get()->get_find_string(),
       data)
 {
   control()->Bind(
     wxEVT_SET_FOCUS,
     [=, this](wxFocusEvent& event)
     {
-      set_stc(dynamic_cast<wex::syntax::stc*>(frame->get_stc()));
-
-      if (stc() != nullptr)
+      if (control() != frame->get_stc())
       {
-        stc()->position_save();
+        set_stc(dynamic_cast<wex::syntax::stc*>(frame->get_stc()));
       }
+
       event.Skip();
     });
 }
 
-bool wex::find_bar::find()
+bool wex::find_bar::find(bool user_input)
 {
   if (auto* grid = dynamic_cast<wex::grid*>(get_frame()->get_grid());
       grid != nullptr)
@@ -47,7 +46,7 @@ bool wex::find_bar::find()
   }
   else
   {
-    return ex_commandline::find();
+    return ex_commandline::find(user_input);
   }
 
   return false;
@@ -55,6 +54,6 @@ bool wex::find_bar::find()
 
 bool wex::find_bar::find_on_enter()
 {
-  find();
+  find(false);
   return true;
 }

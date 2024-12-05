@@ -7,6 +7,7 @@
 
 #include <wex/ui/ex-commandline.h>
 #include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
 
 #include "ex-commandline-imp.h"
 
@@ -36,18 +37,24 @@ wex::syntax::stc* wex::ex_commandline::control()
   return m_imp;
 }
 
-bool wex::ex_commandline::find()
+bool wex::ex_commandline::find(bool user_input)
 {
   if (stc() == nullptr)
   {
     return false;
   }
 
-  stc()->position_restore();
+  if (user_input)
+  {
+    stc()->position_restore();
+  }
+
   stc()->find(
     get_text(),
     stc()->vi_search_flags(),
-    m_imp->get_ex_command().str() == "/");
+    m_imp->get_ex_command().str() == "@" ?
+      find_replace_data::get()->search_down() :
+      m_imp->get_ex_command().str() == "/");
 
   return true;
 }

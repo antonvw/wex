@@ -206,13 +206,13 @@ void wex::toolbar::add_find(bool realize)
     {{[=, this](const wxCommandEvent& event)
       {
         find_replace_data::get()->set_search_down(true);
-        m_find_bar->find();
+        m_find_bar->find(false);
       },
       wxID_DOWN},
      {[=, this](const wxCommandEvent& event)
       {
         find_replace_data::get()->set_search_down(false);
-        m_find_bar->find();
+        m_find_bar->find(false);
       },
       wxID_UP}});
 

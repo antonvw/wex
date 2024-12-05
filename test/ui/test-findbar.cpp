@@ -26,4 +26,13 @@ TEST_CASE("wex::find_bar")
 
     REQUIRE(!fb.find());
   }
+
+  SUBCASE("find_on_enter")
+  {
+    wex::find_bar fb(frame(), wex::data::window());
+    fb.set_text("text");
+    get_stc()->set_text("text");
+
+    REQUIRE(fb.find_on_enter());
+  }
 }

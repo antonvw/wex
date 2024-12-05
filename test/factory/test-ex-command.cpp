@@ -2,7 +2,7 @@
 // Name:      test-ex-command.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/ex-command.h>
@@ -122,6 +122,10 @@ TEST_CASE("wex::ex_command")
     command.set("/xxx");
     REQUIRE(command.type() == wex::ex_command::type_t::FIND);
     REQUIRE(command.str() == "/");
+
+    command.set("@xxx");
+    REQUIRE(command.type() == wex::ex_command::type_t::FIND);
+    REQUIRE(command.str() == "@");
 
     command.set("?yyy");
     REQUIRE(command.type() == wex::ex_command::type_t::FIND);

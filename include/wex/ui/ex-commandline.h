@@ -43,10 +43,11 @@ public:
 
   /// Finds current text on the component, default the stc
   /// component is used.
-  virtual bool find();
+  virtual bool find(bool user_input = true);
 
-  /// Process on enter key, default ex action, when
-  /// returning true skips defaults.
+  /// Processes the enter key pressed on the component,
+  /// default (when returning false) performs ex action, when
+  /// returning true skips the default.
   virtual bool find_on_enter() { return false; };
 
   // Other methods

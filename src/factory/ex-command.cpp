@@ -126,6 +126,9 @@ wex::ex_command::type_t wex::ex_command::type() const
     case '!':
       return type_t::ESCAPE;
 
+    case '@':
+      return type_t::FIND;
+
     case '/':
     case '?':
       return m_stc != nullptr && m_stc->get_margin_text_click() > 0 ?
