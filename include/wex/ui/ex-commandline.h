@@ -39,6 +39,9 @@ public:
     const std::string&  value = std::string(),
     const data::window& data  = data::window());
 
+  /// Destructor.
+  virtual ~ex_commandline() = default;
+
   // Virtual interface
 
   /// Finds current text on the component, default the stc
