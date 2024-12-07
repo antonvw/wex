@@ -39,6 +39,22 @@ public:
     const std::string&  value = std::string(),
     const data::window& data  = data::window());
 
+  /// Destructor.
+  virtual ~ex_commandline() = default;
+
+  // Virtual interface
+
+  /// Finds current text on the component, default the stc
+  /// component is used.
+  virtual bool find(bool user_input = true);
+
+  /// Processes the enter key pressed on the component,
+  /// default (when returning false) performs ex action, when
+  /// returning true skips the default.
+  virtual bool find_on_enter() { return false; };
+
+  // Other methods
+
   /// Returns the stc control window for the component,
   /// the commandline itself is just another stc, just as
   /// the one it is related to (through set_stc and stc).

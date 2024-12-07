@@ -45,7 +45,7 @@ public:
   find_replace_data();
 
   /// Destructor, writes data to config.
-  ~find_replace_data();
+  virtual ~find_replace_data();
 
   // Virtual interface.
 

@@ -22,6 +22,8 @@ namespace wex
 {
 namespace test
 {
+class ui_frame;
+
 class ui : public app
 {
 public:
@@ -35,9 +37,22 @@ private:
   // Virtual interface
   bool OnInit() override;
 
-  inline static wex::frame*  m_frame     = nullptr;
+  inline static ui_frame*    m_frame     = nullptr;
   inline static statusbar*   m_statusbar = nullptr;
   inline static syntax::stc* m_stc       = nullptr;
+};
+
+class ui_frame : public frame
+{
+public:
+  ui_frame()
+    : frame()
+  {
+  }
+
+  factory::stc* get_stc() override { return ui::get_stc(); }
+
+private:
 };
 }; // namespace test
 }; // namespace wex
@@ -56,7 +71,7 @@ bool wex::test::ui::OnInit()
     return false;
   }
 
-  m_frame     = new wex::frame();
+  m_frame     = new ui_frame();
   m_statusbar = m_frame->setup_statusbar({{}});
 
   wex::data::window data;
