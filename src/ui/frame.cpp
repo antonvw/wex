@@ -345,11 +345,8 @@ bool wex::frame::add_toolbar_panes(const panes_t& panes)
     {
       if (pane.name == "FINDBAR")
       {
-        pane.Top()
-          .CloseButton(false)
-          .DockFixed(true)
-          .Movable(false)
-          .CaptionVisible(false);
+        pane.Top().CloseButton(false).DockFixed(true).Row(10).CaptionVisible(
+          false);
       }
       else
       {

@@ -7,6 +7,7 @@
 
 #include "../src/ui/findbar.h"
 #include "test.h"
+#include <wex/ui/frd.h>
 
 TEST_CASE("wex::find_bar")
 {
@@ -23,8 +24,12 @@ TEST_CASE("wex::find_bar")
     get_stc()->set_text("text1\ntext2\ntext3\n");
     fb->set_text("text");
     fb->control()->SetFocus();
-
     REQUIRE(fb->stc() != nullptr);
+
+    wex::find_replace_data::get()->set_match_word(true);
+    REQUIRE(!fb->find());
+
+    wex::find_replace_data::get()->set_match_word(false);
     REQUIRE(fb->find());
   }
 

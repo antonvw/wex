@@ -39,24 +39,24 @@ wex::syntax::stc* wex::ex_commandline::control()
 
 bool wex::ex_commandline::find(bool user_input)
 {
-  if (stc() == nullptr)
+  if (m_stc == nullptr)
   {
     return false;
   }
 
   if (user_input)
   {
-    stc()->position_restore();
+    m_stc->position_restore();
   }
 
-  stc()->find(
+  return m_stc->find(
     get_text(),
-    stc()->vi_search_flags(),
+    m_imp->get_ex_command().str() == "@" ?
+      find_replace_data::get()->stc_flags() :
+      m_stc->vi_search_flags(),
     m_imp->get_ex_command().str() == "@" ?
       find_replace_data::get()->search_down() :
       m_imp->get_ex_command().str() == "/");
-
-  return true;
 }
 
 const std::string wex::ex_commandline::get_text() const

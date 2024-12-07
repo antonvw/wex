@@ -152,7 +152,8 @@ void wex::toolbar::add_checkboxes_standard(bool realize)
 
 void wex::toolbar::add_find(bool realize)
 {
-  m_find_bar = new find_bar(m_frame, data::window().parent(this));
+  m_find_bar =
+    new find_bar(m_frame, data::window().parent(this).size(wxSize(120, 20)));
 
   AddControl(m_find_bar->control());
 

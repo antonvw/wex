@@ -59,6 +59,9 @@ public:
   /// strings list.
   void set_replace_strings(const ex_commandline_input::values_t& v);
 
+  /// Returns settings as stc flags.
+  int stc_flags() const;
+
   // Virtual overrides.
 
   void set_find_string(const std::string& value) override;

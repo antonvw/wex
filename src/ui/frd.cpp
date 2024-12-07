@@ -111,3 +111,25 @@ void wex::find_replace_data::set_replace_strings(
 
   log::trace("frd set_replace_strings") << get_replace_string();
 }
+
+int wex::find_replace_data::stc_flags() const
+{
+  int flags = 0;
+
+  if (find_replace_data::get()->match_case())
+  {
+    flags |= wxSTC_FIND_MATCHCASE;
+  }
+
+  if (find_replace_data::get()->match_word())
+  {
+    flags |= wxSTC_FIND_WHOLEWORD;
+  }
+
+  if (find_replace_data::get()->is_regex())
+  {
+    flags |= wxSTC_FIND_CXX11REGEX | wxSTC_FIND_REGEXP;
+  }
+
+  return flags;
+}
