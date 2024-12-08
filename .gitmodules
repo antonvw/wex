@@ -13,3 +13,6 @@
 [submodule "external/wxMaterialDesignArtProvider"]
 	path = external/wxMaterialDesignArtProvider
 	url = https://github.com/perazz/wxMaterialDesignArtProvider
+[submodule "external/trompeloeil"]
+	path = external/trompeloeil
+	url = https://github.com/rollbear/trompeloeil

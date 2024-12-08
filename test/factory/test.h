@@ -2,7 +2,7 @@
 // Name:      test.h
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2023 Anton van Wezenbeek
+// Copyright: (c) 2022-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -14,27 +14,16 @@
 namespace wex::test
 {
 
-/// This class offers a testable factory::stc by implementing
-/// the pure virtual methods.
+/// This class offers a testable factory::stc by mocking virtual methods.
 class stc : public wex::factory::stc
 {
 public:
   /// Default constructor.
-  stc()
-    : wex::factory::stc()
-  {
-    ;
-  };
+  stc() = default;
 
-  /// Overriden virtual methods.
-  bool is_visual() const override { return m_visual; }
-  void visual(bool on) override { m_visual = on; }
-
-private:
-  const wex::path& path() const override { return m_path; };
-  wex::path        m_path;
-
-  bool m_visual{true};
+  MAKE_CONST_MOCK0(is_visual, bool(), override);
+  MAKE_CONST_MOCK0(path, const wex::path&(), override);
+  MAKE_MOCK1(visual, void(bool), override);
 };
 }; // namespace wex::test
 

@@ -35,8 +35,11 @@ TEST_CASE("wex::ex::utils")
 
   SUBCASE("get_lines")
   {
-    auto* stc = get_stc();
+    auto* stc = new wex::test::stc();
     stc->set_text("xx\nxx\nyy\nzz\n");
+
+    const wex::path p("test.h");
+    ALLOW_CALL(*stc, path()).RETURN(p);
 
     REQUIRE(wex::get_lines(stc, 0, 0).empty());
     REQUIRE(wex::get_lines(stc, 0, 10000) == "xx\nxx\nyy\nzz\n");

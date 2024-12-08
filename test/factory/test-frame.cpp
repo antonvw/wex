@@ -74,6 +74,10 @@ TEST_CASE("wex::factory::frame")
     // the wex::data::stc is not linked, cannot be used
     // will be fixed later
     frame()->set_find_focus(stc);
+
+    const wex::path p("test.h");
+    ALLOW_CALL(*stc, path()).RETURN(p);
+
     REQUIRE(!frame()->is_open(wex::test::get_path("test.h")));
     REQUIRE(!frame()->is_open(wex::path("xxx")));
   }

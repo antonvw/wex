@@ -122,6 +122,11 @@ function(wex_install)
     DESTINATION ${WEX_INSTALL_DIR}
   )
 
+  install(
+    DIRECTORY ${CMAKE_SOURCE_DIR}/external/trompeloeil/include/
+    DESTINATION ${WEX_INSTALL_DIR}
+  )
+
   if(ODBC_FOUND)
     install(
       FILES ${CMAKE_SOURCE_DIR}/external/otl/otlv4.h

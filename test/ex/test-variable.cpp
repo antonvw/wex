@@ -2,7 +2,7 @@
 // Name:      test-variable.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/chrono.h>
@@ -16,7 +16,11 @@
 
 TEST_CASE("wex::variable")
 {
-  auto* ex = new wex::ex(get_stc());
+  auto* stc = new wex::test::stc();
+  auto* ex  = new wex::ex(stc);
+
+  const wex::path p("test.h");
+  ALLOW_CALL(*stc, path()).RETURN(p);
 
   SUBCASE("constructor")
   {
@@ -73,9 +77,13 @@ TEST_CASE("wex::variable")
       }
 
       if (var.get_name() == "template")
+      {
         REQUIRE(!var.expand(ex));
+      }
       else
+      {
         REQUIRE(var.expand(ex));
+      }
 
       REQUIRE(var.get_value() == std::get<3>(it));
 

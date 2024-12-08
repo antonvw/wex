@@ -117,6 +117,8 @@ TEST_CASE("wex::factory::link")
     REQUIRE(lnk.get_path("www.wxwidgets.org", data).data().empty());
 
     data.line(-99);
+    const wex::path p("xx");
+    ALLOW_CALL(*stc, path()).RETURN(p);
     REQUIRE(lnk.get_path("xx", data, stc).empty());
   }
 

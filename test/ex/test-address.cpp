@@ -2,7 +2,7 @@
 // Name:      test-address.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex/address.h>
@@ -14,8 +14,11 @@
 
 TEST_CASE("wex::address")
 {
-  auto* stc = get_stc();
+  auto* stc = new wex::test::stc();
   stc->set_text("hello0\nhello1\nhello2\nhello3\nhello4\nhello5\nhello2");
+
+  const wex::path p("test.h");
+  ALLOW_CALL(*stc, path()).RETURN(p);
 
   wex::data::stc data;
   data.set_stc(stc);

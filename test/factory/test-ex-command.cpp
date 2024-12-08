@@ -15,6 +15,7 @@ TEST_CASE("wex::ex_command")
 {
   auto* stc = new wex::test::stc();
   stc->set_text("more text\notherline\nother line");
+  ALLOW_CALL(*stc, is_visual()).RETURN(true);
 
   SUBCASE("constructor")
   {
@@ -105,11 +106,13 @@ TEST_CASE("wex::ex_command")
     REQUIRE(command.type() == wex::ex_command::type_t::COMMAND);
     REQUIRE(command.str() == ":");
 
-    stc->visual(false);
+    ALLOW_CALL(*stc, visual(false));
+    ALLOW_CALL(*stc, is_visual()).RETURN(false);
     command.set(":100");
     REQUIRE(command.type() == wex::ex_command::type_t::COMMAND_EX);
     REQUIRE(command.str() == ":");
-    stc->visual(true);
+    ALLOW_CALL(*stc, visual(true));
+    ALLOW_CALL(*stc, is_visual()).RETURN(true);
 
     command.set(std::string(1, WXK_CONTROL_R) + "=");
     REQUIRE(command.type() == wex::ex_command::type_t::CALC);
