@@ -11,6 +11,7 @@
 TEST_CASE("wex::factory::stc")
 {
   auto* stc = new wex::test::stc();
+  ALLOW_CALL(*stc, is_visual()).RETURN(true);
   stc->set_text("more text\notherline\nother line");
 
   SUBCASE("margin")

@@ -11,8 +11,6 @@
 
 TEST_CASE("wex::ctags_entry")
 {
-  wex::ctags_entry::register_image(get_stc());
-
   wex::ctags_entry filter;
 
   REQUIRE(!filter.is_active());

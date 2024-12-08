@@ -17,12 +17,15 @@
 
 TEST_CASE("wex::ex")
 {
-  auto* stc = get_stc();
+  auto* stc = new wex::test::stc();
   stc->visual(true);
   auto* ex = new wex::ex(stc);
   stc->SetReadOnly(false);
   stc->set_text("xx\nxx\nyy\nzz\n");
   stc->DocumentStart();
+
+  const wex::path p("test.h");
+  ALLOW_CALL(*stc, path()).RETURN(p);
 
   SUBCASE("abbreviations")
   {

@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation of general test functions.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/frame.h>
@@ -12,7 +12,7 @@
 
 const wex::path wex::test::get_path(const std::string& file, path::log_t t)
 {
-  return wex::test::app::get_path(file, t);
+  return wex::test::doctester::get_path(file, t);
 }
 
 bool wex::test::app::OnInit()

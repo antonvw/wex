@@ -19,14 +19,7 @@ bool wex::test::ctags::OnInit()
   auto* frame = new wex::frame();
   SetTopWindow(frame);
 
-  m_stc = new test::stc();
   frame->Show();
-  frame->pane_add(m_stc);
 
   return true;
-}
-
-wex::syntax::stc* get_stc()
-{
-  return wex::test::ctags::get_stc();
 }

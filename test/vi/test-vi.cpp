@@ -33,8 +33,11 @@ void change_prep(
 
 TEST_CASE("wex::vi")
 {
-  auto* stc = get_stc();
+  auto* stc = new wex::test::stc();
   auto* vi  = new wex::vi(stc);
+
+  const wex::path p("test.h");
+  ALLOW_CALL(*stc, path()).RETURN(p);
 
   // First load macros.
   REQUIRE(wex::ex::get_macros().load_document());

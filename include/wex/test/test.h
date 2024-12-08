@@ -9,6 +9,9 @@
 
 #include <wex/test/doctest.h>
 
+// after doctest
+#include <trompeloeil.hpp>
+
 namespace wex
 {
 namespace test

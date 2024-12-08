@@ -14,7 +14,10 @@
 
 TEST_CASE("wex::global_env")
 {
-  auto* stc = get_stc();
+  auto* stc = new wex::test::stc();
+
+  const wex::path p("test.h");
+  ALLOW_CALL(*stc, path()).RETURN(p);
 
   stc->set_text(
     "hello\nhello11\nhello22\ntest\ngcc\nblame\nthis\nyank\ncopy\n\n");

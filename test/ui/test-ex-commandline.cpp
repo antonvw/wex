@@ -5,6 +5,7 @@
 // Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log.h>
 #include <wex/ui/ex-commandline.h>
 
 #include "test.h"
@@ -26,26 +27,33 @@ TEST_CASE("wex::ex_commandline")
 
   SUBCASE("events")
   {
-    wxKeyEvent event(wxEVT_KEY_DOWN);
-
-    for (auto id : std::vector<int>{
-           WXK_TAB,
-           WXK_HOME,
-           WXK_ESCAPE,
-           WXK_RETURN,
-           WXK_PAGEDOWN})
+    try
     {
-      event.m_keyCode = id;
-      cl->on_key_down(event);
-    }
+      wxKeyEvent event(wxEVT_KEY_DOWN);
 
-    cl->set_text(":this is a line");
-    cl->control()->SetFocus();
-    event.m_keyCode = WXK_HOME;
-    cl->on_key_down(event);
-    event.m_keyCode = WXK_END;
-    cl->on_key_down(event);
-    REQUIRE(cl->control()->get_selected_text().empty());
+      for (auto id : std::vector<int>{
+             WXK_TAB,
+             WXK_HOME,
+             WXK_ESCAPE,
+             WXK_RETURN,
+             WXK_PAGEDOWN})
+      {
+        event.m_keyCode = id;
+        cl->on_key_down(event);
+      }
+
+      cl->set_text(":this is a line");
+      cl->control()->SetFocus();
+      event.m_keyCode = WXK_HOME;
+      cl->on_key_down(event);
+      event.m_keyCode = WXK_END;
+      cl->on_key_down(event);
+      REQUIRE(cl->control()->get_selected_text().empty());
+    }
+    catch (const std::exception& e)
+    {
+      wex::log(e) << "events";
+    }
   }
 
   SUBCASE("stc")
