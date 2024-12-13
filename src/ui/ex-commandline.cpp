@@ -2,7 +2,7 @@
 // Name:      ex-commandline.cpp
 // Purpose:   Implementation of wex::ex_commandline class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ui/ex-commandline.h>
@@ -74,17 +74,28 @@ void wex::ex_commandline::select_all() const
   return m_imp->SelectAll();
 }
 
+void wex::ex_commandline::set_stc(wex::syntax::stc* stc)
+{
+  m_stc = stc;
+
+  if (stc != nullptr)
+  {
+    m_imp->get_lexer().set(stc->get_lexer());
+    m_imp->reset_margins();
+  }
+}
+
 bool wex::ex_commandline::set_stc(
   wex::syntax::stc*  stc,
   const std::string& command)
 {
-  set_stc(stc);
+  m_stc = stc;
   return m_imp->handle(command);
 }
 
 bool wex::ex_commandline::set_stc(wex::syntax::stc* stc, char command)
 {
-  set_stc(stc);
+  m_stc = stc;
   return m_imp->handle(command);
 }
 
