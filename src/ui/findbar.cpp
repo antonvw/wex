@@ -19,6 +19,8 @@ wex::find_bar::find_bar(wex::frame* frame, const data::window& data)
       "@" + find_replace_data::get()->get_find_string(),
       data)
 {
+  frame->pane_set_height_lines("FINDBAR", control());
+
   control()->Bind(
     wxEVT_SET_FOCUS,
     [=, this](wxFocusEvent& event)
@@ -44,12 +46,8 @@ bool wex::find_bar::find(bool user_input)
   {
     return lv->find_next(get_text(), find_replace_data::get()->search_down());
   }
-  else
-  {
-    return ex_commandline::find(user_input);
-  }
 
-  return false;
+  return ex_commandline::find(user_input);
 }
 
 bool wex::find_bar::find_on_enter()

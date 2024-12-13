@@ -181,6 +181,7 @@ TEST_CASE("wex::frame")
 
     const wxAuiPaneInfo info;
     REQUIRE(!frame()->pane_set("vvvvvvvv", info));
+    REQUIRE(!frame()->pane_set_height_lines("vvvvvvvv", get_stc()));
 
     REQUIRE(!frame()->pane_show("vvvvvvvv", true));
 

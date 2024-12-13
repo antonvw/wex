@@ -73,7 +73,7 @@ public:
   void select_all() const;
 
   /// Sets stc component.
-  void set_stc(wex::syntax::stc* stc) { m_stc = stc; }
+  void set_stc(wex::syntax::stc* stc);
 
   /// Sets stc component and handles string command.
   /// Returns false if command not supported.

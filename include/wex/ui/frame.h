@@ -315,6 +315,14 @@ public:
   /// Returns false if pane is not managed.
   bool pane_set(const std::string& pane, const wxAuiPaneInfo& info);
 
+  /// Sets the pane height to a number of lines
+  //// according to the font used by stc.
+  /// Returns false if pane is not managed.
+  bool pane_set_height_lines(
+    const std::string& pane,
+    const syntax::stc* stc,
+    int                lines = 1);
+
   /// Shows or hides the managed pane.
   /// Returns false if pane is not managed.
   bool pane_show(const std::string& pane, bool show = true);

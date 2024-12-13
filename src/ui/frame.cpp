@@ -626,6 +626,18 @@ bool wex::frame::pane_set(const std::string& pane, const wxAuiPaneInfo& info)
   return true;
 }
 
+bool wex::frame::pane_set_height_lines(
+  const std::string& pane,
+  const syntax::stc* stc,
+  int                lines)
+{
+  return pane_set(
+    pane,
+    wxAuiPaneInfo().BestSize(
+      -1,
+      lines * stc->GetFont().GetPixelSize().GetHeight() + 10));
+}
+
 bool wex::frame::pane_show(const std::string& pane, bool show)
 {
   auto& info = m_manager.GetPane(pane);

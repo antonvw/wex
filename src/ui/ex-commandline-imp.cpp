@@ -168,9 +168,7 @@ bool wex::ex_commandline_imp::handle(const std::string& command)
 
   set_prefix();
 
-  m_cl->get_frame()->pane_set(
-    "VIBAR",
-    wxAuiPaneInfo().BestSize(-1, GetFont().GetPixelSize().GetHeight() + 10));
+  m_cl->get_frame()->pane_set_height_lines("VIBAR", this);
 
   if (!handle_type(command, range))
   {
@@ -201,11 +199,7 @@ bool wex::ex_commandline_imp::handle(char command)
   ClearAll();
   m_command.reset();
 
-  m_cl->get_frame()->pane_set(
-    "VIBAR",
-    wxAuiPaneInfo().BestSize(
-      -1,
-      4 * GetFont().GetPixelSize().GetHeight() + 10));
+  m_cl->get_frame()->pane_set_height_lines("VIBAR", this, 4);
 
   return true;
 }

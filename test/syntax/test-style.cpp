@@ -2,7 +2,7 @@
 // Name:      test-style.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -54,6 +54,8 @@ TEST_CASE("wex::style")
         REQUIRE(!test.is_ok());
       }
     }
+    
+    REQUIRE(wex::style().default_font_size() > 5);
   }
 
   SUBCASE("constructor-xml")
