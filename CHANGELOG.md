@@ -111,7 +111,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - switching between find in stc margin and normal window
 - ex mode fixes for printing, adjust_window
 
-## [23.10] - 2023-10-08
+## [23.10.0] - 2023-10-08
 
 ### Added
 
@@ -136,7 +136,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - ctags::find and empty tag finds next tag
 - rectangular paste
 
-## [23.04] - 2023-03-12
+## [23.04.0] - 2023-03-12
 
 ### Added
 
@@ -151,7 +151,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - ex mode fixes
 
-## [22.10] - 2022-09-18
+## [22.10.0] - 2022-09-18
 
 ### Added
 
@@ -165,7 +165,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - ex commands more closely follow
   The Open Group Base Specifications Issue 7, 2018 edition
 
-## [22.04] - 2022-03-06
+## [22.04.0] - 2022-03-06
 
 ### Added
 
@@ -179,7 +179,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - boost::json lib instead of nlohmann/json lib, requiring boost 1.75
 - Microsoft Visual Studio 2022
 
-## [21.10] - 2021-09-12
+## [21.10.0] - 2021-09-12
 
 ### Added
 
@@ -192,7 +192,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - boost::tokenizer lib used
 - use std::thread for find and replace in files
 
-## [21.04] - 2021-03-07
+## [21.04.0] - 2021-03-07
 
 ### Added
 
@@ -205,7 +205,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - boost::log lib used instead of easylogging++ lib
 - moved apps folder to gitlab
 
-## [20.10] - 2020-10-02
+## [20.10.0] - 2020-10-02
 
 ### Added
 
@@ -220,7 +220,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - ex append, insert, change, set commands follow
     The Open Group Base Specifications Issue 7, 2018 edition
 
-## [20.04] - 2020-03-15
+## [20.04.0] - 2020-03-15
 
 ### Added
 
@@ -232,7 +232,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - scintilla is compiled to use `std::regex` (ECMAScript)
 - Microsoft Visual Studio 2019
 
-## [19.10] - 2019-09-14
+## [19.10.0] - 2019-09-14
 
 ### Added
 
@@ -247,7 +247,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - boost::spirit lib instead of eval lib
   - boost::statechart lib instead of FSM lib
 
-## [19.04] - 2019-03-09
+## [19.04.0] - 2019-03-09
 
 ### Added
 
@@ -258,7 +258,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - uses std::filesystem instead of std::experimental::filesystem
 
-## [18.10] - 2018-10-01
+## [18.10.0] - 2018-10-01
 
 ### Changed
 
@@ -272,21 +272,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - c++17 standard
 
-## [18.04] - 2018-04-08
+## [18.04.0] - 2018-04-08
 
 ### Added
 
 - easylogging++ lib
 - FSM lib
 
-## [17.10] - 2017-09-30
+## [17.10.0] - 2017-09-30
 
 ### Changed
 
 - c++1z, using std::experimental::filesystem
 - Microsoft Visual Studio 2017
 
-## [17.04] - 2017-04-08
+## [17.04.0] - 2017-04-08
 
 ### Changed
 
@@ -296,7 +296,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - pugixml lib
 - TCLAP lib
 
-## [16.10] - 2016-09-30
+## [16.10.0] - 2016-09-30
 
 ### Added
 
@@ -548,31 +548,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Visual C++ 5.0
 
 [Unreleased]: https://github.com/antonvw/wex/compare/v24.10..HEAD
-[24.10]: https://github.com/antonvw/wex/compare/v24.04...v24.10
-[24.04]: https://github.com/antonvw/wex/compare/v23.10...v24.04
-[23.10]: https://github.com/antonvw/wex/compare/v23.04...v23.10
-[23.04]: https://github.com/antonvw/wex/compare/v22.10...v23.04
-[22.10]: https://github.com/antonvw/wex/compare/v22.04...v22.10
-[22.04]: https://github.com/antonvw/wex/compare/v21.10...v22.04
-[21.10]: https://github.com/antonvw/wex/compare/v21.04...v21.10
-[21.04]: https://github.com/antonvw/wex/compare/v20.10...v21.04
-[20.10]: https://github.com/antonvw/wex/compare/v20.04...v20.10
-[20.04]: https://github.com/antonvw/wex/compare/v19.10...v20.04
-[19.10]: https://github.com/antonvw/wex/compare/v19.04...v19.10
-[19.04]: https://github.com/antonvw/wex/compare/v18.10...v19.04
-[18.10]: https://github.com/antonvw/wex/compare/v18.04...v18.10
-[18.04]: https://github.com/antonvw/wex/compare/v17.10...v18.04
-[17.10]: https://github.com/antonvw/wex/compare/v17.04...v17.10
-[17.04]: https://github.com/antonvw/wex/compare/v16.10...v17.04
-[16.10]: https://github.com/antonvw/wex/compare/v3.1.0...v16.10
-[3.1.0]: https://github.com/antonvw/wex/compare/v3.0.2...v3.1.0
-[3.0.2]: https://github.com/antonvw/wex/compare/v3.0.1...v3.0.2
-[3.0.1]: https://github.com/antonvw/wex/compare/v3.0.0...v3.0.1
-[3.0.0]: https://github.com/antonvw/wex/compare/v2.9.5....v3.0.0
-[2.9.5]: https://github.com/antonvw/wex/compare/v2.9.4....v2.9.5
-[2.9.4]: https://github.com/antonvw/wex/compare/v2.9.3....v2.9.4
-[2.9.3]: https://github.com/antonvw/wex/compare/v2.9.2....v2.9.3
-[2.9.2]: https://github.com/antonvw/wex/tags/v2.9.2
+[24.10]:      https://github.com/antonvw/wex/compare/v24.04...v24.10
+[24.04]:      https://github.com/antonvw/wex/compare/v23.10...v24.04
+[23.10.0]:    https://github.com/antonvw/wex/compare/v23.04.0...v23.10.0
+[23.04.0]:    https://github.com/antonvw/wex/compare/v22.10.0...v23.04.0
+[22.10.0]:    https://github.com/antonvw/wex/compare/v22.04.0...v22.10.0
+[22.04.0]:    https://github.com/antonvw/wex/compare/v21.10.0...v22.04.0
+[21.10.0]:    https://github.com/antonvw/wex/compare/v21.04.0...v21.10.0
+[21.04.0]:    https://github.com/antonvw/wex/compare/v20.10.0...v21.04.0
+[20.10.0]:    https://github.com/antonvw/wex/compare/v20.04.0...v20.10.0
+[20.04.0]:    https://github.com/antonvw/wex/compare/v19.10.0...v20.04.0
+[19.10.0]:    https://github.com/antonvw/wex/compare/v19.04.0...v19.10.0
+[19.04.0]:    https://github.com/antonvw/wex/compare/v18.10.0...v19.04.0
+[18.10.0]:    https://github.com/antonvw/wex/compare/v18.04.0...v18.10.0
+[18.04.0]:    https://github.com/antonvw/wex/compare/v17.10.0...v18.04.0
+[17.10.0]:    https://github.com/antonvw/wex/compare/v17.04.0...v17.10.0
+[17.04.0]:    https://github.com/antonvw/wex/compare/v16.10.0...v17.04.0
+[16.10.0]:    https://github.com/antonvw/wex/compare/v3.1.0...v16.10.0
+[3.1.0]:      https://github.com/antonvw/wex/compare/v3.0.2...v3.1.0
+[3.0.2]:      https://github.com/antonvw/wex/compare/v3.0.1...v3.0.2
+[3.0.1]:      https://github.com/antonvw/wex/compare/v3.0.0...v3.0.1
+[3.0.0]:      https://github.com/antonvw/wex/compare/v2.9.5....v3.0.0
+[2.9.5]:      https://github.com/antonvw/wex/compare/v2.9.4....v2.9.5
+[2.9.4]:      https://github.com/antonvw/wex/compare/v2.9.3....v2.9.4
+[2.9.3]:      https://github.com/antonvw/wex/compare/v2.9.2....v2.9.3
+[2.9.2]:      https://github.com/antonvw/wex/tags/v2.9.2
 
 <!-- markdownlint-configure-file { "MD022": false,
   "MD024": false, "MD030": false, "MD032": false} -->
