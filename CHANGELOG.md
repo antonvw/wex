@@ -547,5 +547,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - CEdit is used as base for the output
 - Visual C++ 5.0
 
+[Unreleased]: https://github.com/antonvw/wex/compare/v24.10 ..HEAD
+[24.10]: https://github.com/antonvw/wex/compare/v24.04...v24.10
+[24.04]: https://github.com/antonvw/wex/compare/v23.10...v24.04
+[23.10]: https://github.com/antonvw/wex/compare/v23.04...v23.10
+[23.04]: https://github.com/antonvw/wex/compare/v22.10...v23.04
+[22.10]: https://github.com/antonvw/wex/compare/v22.04...v22.10
+[22.04]: https://github.com/antonvw/wex/compare/v21.10...v22.04
+[21.10]: https://github.com/antonvw/wex/compare/v21.04...v21.10
+[21.04]: https://github.com/antonvw/wex/compare/v20.10...v21.04
+[20.10]: https://github.com/antonvw/wex/compare/v20.04...v20.10
+[20.04]: https://github.com/antonvw/wex/compare/v19.10...v20.04
+[19.10]: https://github.com/antonvw/wex/compare/v19.04...v19.10
+[19.04]: https://github.com/antonvw/wex/compare/v18.10...v19.04
+[18.10]: https://github.com/antonvw/wex/compare/v18.04...v18.10
+[18.04]: https://github.com/antonvw/wex/compare/v17.10...v18.04
+[17.10]: https://github.com/antonvw/wex/compare/v17.04...v17.10
+[17.04]: https://github.com/antonvw/wex/compare/v16.10...v17.04
+[16.10]: https://github.com/antonvw/wex/compare/v3.1.0...v16.10
+[3.1.0]: https://github.com/antonvw/wex/compare/v3.0.2...v3.1.0
+[3.0.2]: https://github.com/antonvw/wex/compare/v3.0.1...v3.0.2
+[3.0.1]: https://github.com/antonvw/wex/compare/v3.0.0...v3.0.1
+[3.0.0]: https://github.com/antonvw/wex/compare/v2.9.5....v3.0.0
+[2.9.5]: https://github.com/antonvw/wex/compare/v2.9.4....v2.9.5
+[2.9.4]: https://github.com/antonvw/wex/compare/v2.9.3....v2.9.4
+[2.9.3]: https://github.com/antonvw/wex/compare/v2.9.2....v2.9.3
+[2.9.2]: https://github.com/antonvw/wex/tags/v2.9.2
+
 <!-- markdownlint-configure-file { "MD022": false,
   "MD024": false, "MD030": false, "MD032": false} -->
