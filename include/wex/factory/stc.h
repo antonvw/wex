@@ -191,6 +191,9 @@ public:
   /// If you open a file, the modification markers are used.
   virtual void use_modification_markers(bool use) { ; }
 
+  /// Clear vcs diffs (markers, annotations, indicators).
+  virtual void vcs_clear_diffs() { ; }
+
   /// Runs a vi command on this stc (default false).
   virtual bool vi_command(const line_data& data) { return false; }
 

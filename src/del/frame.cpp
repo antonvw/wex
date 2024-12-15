@@ -64,8 +64,8 @@ const std::string get_some_text(const std::vector<std::string>& text)
       info << "...";
       break;
     }
-    
-    tok_iter++;
+
+    ++tok_iter;
   }
 
   if (!info.str().empty())
@@ -963,11 +963,12 @@ bool wex::del::frame::vcs_unified_diff(
       return true;
     }
 
+    // deleted text: a marker, and annotation with text
+    // added text: a marker, and indicator
+    stc->unified_diff_set_markers(diff);
+
     if (diff->range_from_count() > 0)
     {
-      // deleted text, just a marker, and annotation with text
-      stc->MarkerAdd(diff->range_from_start() - 1, m_marker_del.number());
-
       if (!diff->text_removed().empty())
       {
         stc->AnnotationSetText(

@@ -34,7 +34,8 @@ class stc_entry_dialog;
 namespace factory
 {
 class frame;
-};
+class unified_diff;
+}; // namespace factory
 
 /// Offers a syntax stc with:
 /// - ex or vi support (default vi mode is on)
@@ -188,6 +189,9 @@ public:
     /// argument passed on to find_next
     bool stc_find_string = true);
 
+  /// Update markers according to diff.
+  void unified_diff_set_markers(const factory::unified_diff* uni);
+
   // Virtual methods from wxWidgets.
 
   bool CanCut() const override;
@@ -263,6 +267,8 @@ public:
 
   void use_modification_markers(bool use) override;
 
+  void vcs_clear_diffs() override;
+
   bool        vi_command(const line_data& data) override;
   bool        vi_command_finish(bool user_input) override;
   void        vi_record(const std::string& command) override;
@@ -295,7 +301,8 @@ private:
   void show_properties();
   void sort_action(const wxCommandEvent& event);
 
-  const marker m_marker_change = marker(1);
+  const marker m_marker_change{marker(1)}, m_marker_diff_add{marker(3)},
+    m_marker_diff_change{marker(4)}, m_marker_diff_del{marker(5)};
 
   bool m_skip{false};
 

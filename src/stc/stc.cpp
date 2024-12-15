@@ -11,6 +11,7 @@
 #include <wex/ex/ex-stream.h>
 #include <wex/ex/macros.h>
 #include <wex/factory/stc-undo.h>
+#include <wex/factory/unified-diff.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/auto-indent.h>
 #include <wex/stc/entry-dialog.h>
@@ -656,6 +657,22 @@ void wex::stc::Undo()
 {
   syntax::stc::Undo();
   m_hexmode.undo();
+}
+
+void wex::stc::unified_diff_set_markers(const factory::unified_diff* uni)
+{
+  if (uni->range_from_start() == uni->range_to_start())
+  {
+    MarkerAdd(uni->range_from_start() - 1, m_marker_diff_change.number());
+  }
+  else if (uni->range_from_count() > 0)
+  {
+    MarkerAdd(uni->range_from_start() - 1, m_marker_diff_del.number());
+  }
+  else if (uni->range_to_count() > 0)
+  {
+    MarkerAdd(uni->range_to_start() - 1, m_marker_diff_add.number());
+  }
 }
 
 void wex::stc::use_modification_markers(bool use)

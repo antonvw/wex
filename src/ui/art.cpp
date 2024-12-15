@@ -49,6 +49,8 @@ std::unordered_map<wxWindowID, wxArtID> wex::art::m_art_ids{
   {wxID_VIEW_LIST, wxART_LIST_VIEW},
 
   // wex items, with material art
+  {ID_ALL_STC_CLEAR_DIFFS, wxART_CLEANING_SERVICES},
+  {ID_CLEAR_DIFFS, wxART_CLEANING_SERVICES},
   {ID_CLEAR_FILES, wxART_CLEANING_SERVICES},
   {ID_CLEAR_FINDS, wxART_CLEANING_SERVICES},
   {ID_CLEAR_PROJECTS, wxART_CLEANING_SERVICES},

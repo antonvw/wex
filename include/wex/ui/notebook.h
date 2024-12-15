@@ -173,6 +173,10 @@ template <class T> bool wex::notebook::for_each(int id)
         }
         break;
 
+      case ID_ALL_STC_CLEAR_DIFFS:
+        ((syntax::stc*)win)->vcs_clear_diffs();
+        break;
+
       // STC only!!!
       case ID_ALL_STC_SET_LEXER:
         // At this moment same as themed change,
@@ -208,7 +212,9 @@ template <class T> bool wex::notebook::for_each(int id)
 inline const std::string wex::notebook::key_by_page(wxWindow* page) const
 {
   if (page == nullptr)
+  {
     return std::string();
+  }
   const auto& it = m_windows.find(page);
   return (it != m_windows.end() ? it->second : std::string());
 };
