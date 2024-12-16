@@ -97,10 +97,10 @@ public:
   };
 
   /// Moves to next page. If none or only one page present, returns false.
-  virtual bool page_next() { return false; }
+  virtual bool page_next(bool from_diff = false) { return false; }
 
   /// Moves to next page. If none or only one page present, returns false.
-  virtual bool page_prev() { return false; }
+  virtual bool page_prev(bool from_diff = false) { return false; }
 
   /// Restores to saved page. If none present or none saved, returns false.
   virtual bool page_restore() { return false; }

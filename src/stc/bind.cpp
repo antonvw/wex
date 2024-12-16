@@ -29,7 +29,6 @@
 #include <wx/accel.h>
 #include <wx/msgdlg.h>
 #include <wx/numdlg.h>
-#include <wxMaterialDesignArtProvider.hpp>
 
 namespace wex
 {
@@ -367,15 +366,19 @@ void wex::stc::bind_all()
 
      {[=, this](const wxCommandEvent& event)
       {
-        m_diffs.next();
-        m_diffs.status();
+        if (m_diffs.next())
+        {
+          m_diffs.status();
+        }
       },
       id::stc::diff_next},
 
      {[=, this](const wxCommandEvent& event)
       {
-        m_diffs.prev();
-        m_diffs.status();
+        if (m_diffs.prev())
+        {
+          m_diffs.status();
+        }
       },
       id::stc::diff_previous},
 
@@ -565,7 +568,7 @@ void wex::stc::build_popup_menu_edit(menu& menu)
     }
   }
 
-  if (sel.empty())
+  if (sel.empty() && m_diffs.size() > 0)
   {
     menu.append({{ID_CLEAR_DIFFS, _("Clear Diffs")}});
   }
@@ -917,11 +920,14 @@ void wex::stc::sort_action(const wxCommandEvent& event)
 
 void wex::stc::vcs_clear_diffs()
 {
-  m_diffs.clear();
-  AnnotationClearAll();
-  MarkerDeleteAll(m_marker_diff_add.number());
-  MarkerDeleteAll(m_marker_diff_change.number());
-  MarkerDeleteAll(m_marker_diff_del.number());
-  IndicatorClearRange(0, GetTextLength() - 1);
-  m_diffs.status();
+  if (m_diffs.size() > 0)
+  {
+    m_diffs.clear();
+    AnnotationClearAll();
+    MarkerDeleteAll(m_marker_diff_add.number());
+    MarkerDeleteAll(m_marker_diff_change.number());
+    MarkerDeleteAll(m_marker_diff_del.number());
+    IndicatorClearRange(0, GetTextLength() - 1);
+    m_diffs.status();
+  }
 }

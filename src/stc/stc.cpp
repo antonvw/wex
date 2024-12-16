@@ -665,13 +665,17 @@ void wex::stc::unified_diff_set_markers(const factory::unified_diff* uni)
   {
     MarkerAdd(uni->range_from_start() - 1, m_marker_diff_change.number());
   }
-  else if (uni->range_from_count() > 0)
+  else
   {
-    MarkerAdd(uni->range_from_start() - 1, m_marker_diff_del.number());
-  }
-  else if (uni->range_to_count() > 0)
-  {
-    MarkerAdd(uni->range_to_start() - 1, m_marker_diff_add.number());
+    if (uni->range_from_count() > 0)
+    {
+      MarkerAdd(uni->range_from_start() - 1, m_marker_diff_del.number());
+    }
+
+    if (uni->range_to_count() > 0)
+    {
+      MarkerAdd(uni->range_to_start() - 1, m_marker_diff_add.number());
+    }
   }
 }
 

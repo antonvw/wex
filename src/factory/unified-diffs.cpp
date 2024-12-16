@@ -84,7 +84,7 @@ bool wex::unified_diffs::next()
     if (auto* frame = dynamic_cast<factory::frame*>(wxTheApp->GetTopWindow());
         frame != nullptr)
     {
-      return frame->page_next();
+      frame->page_next(true);
     }
 
     return false;
@@ -121,7 +121,7 @@ bool wex::unified_diffs::prev()
     if (auto* frame = dynamic_cast<factory::frame*>(wxTheApp->GetTopWindow());
         frame != nullptr)
     {
-      return frame->page_prev();
+      frame->page_prev(true);
     }
 
     return false;
