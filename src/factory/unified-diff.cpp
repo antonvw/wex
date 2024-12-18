@@ -46,7 +46,7 @@
 
 namespace wex
 {
-int stoi(const std::string& i)
+size_t stoi(const std::string& i)
 {
   return i.empty() ? 1 : std::stoi(i);
 }
@@ -58,7 +58,7 @@ wex::factory::unified_diff::unified_diff(const std::string& input)
   m_range.fill({0});
 }
 
-std::optional<int> wex::factory::unified_diff::parse()
+std::optional<size_t> wex::factory::unified_diff::parse()
 {
   typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
 
@@ -66,7 +66,7 @@ std::optional<int> wex::factory::unified_diff::parse()
 
   tokenizer::iterator tok_iter = tokens.begin();
 
-  int diffs = 0;
+  size_t diffs = 0;
 
   while (tok_iter != tokens.end())
   {
@@ -126,7 +126,7 @@ std::optional<int> wex::factory::unified_diff::parse()
   report_diff();
   report_diff_finish();
 
-  return std::optional<int>{diffs};
+  return std::optional<size_t>{diffs};
 }
 
 bool wex::factory::unified_diff::parse_header(

@@ -661,21 +661,28 @@ void wex::stc::Undo()
 
 void wex::stc::unified_diff_set_markers(const factory::unified_diff* uni)
 {
+  int id = -1;
+
   if (uni->range_from_start() == uni->range_to_start())
   {
-    MarkerAdd(uni->range_from_start() - 1, m_marker_diff_change.number());
+    id = MarkerAdd(uni->range_from_start() - 1, m_marker_diff_change.number());
   }
   else
   {
     if (uni->range_from_count() > 0)
     {
-      MarkerAdd(uni->range_from_start() - 1, m_marker_diff_del.number());
+      id = MarkerAdd(uni->range_from_start() - 1, m_marker_diff_del.number());
     }
 
     if (uni->range_to_count() > 0)
     {
-      MarkerAdd(uni->range_to_start() - 1, m_marker_diff_add.number());
+      id = MarkerAdd(uni->range_to_start() - 1, m_marker_diff_add.number());
     }
+  }
+
+  if (id != -1)
+  {
+    m_marker_identifiers[uni->range_from_start() - 1] = id;
   }
 }
 

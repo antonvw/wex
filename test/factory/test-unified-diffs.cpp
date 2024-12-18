@@ -5,7 +5,6 @@
 // Copyright: (c) 2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/factory/unified-diff.h>
 #include <wex/factory/unified-diffs.h>
 
 #include "test.h"
@@ -28,6 +27,7 @@ TEST_CASE("wex::unified_diffs")
     REQUIRE(!diffs.first());
     REQUIRE(!diffs.next());
     REQUIRE(!diffs.prev());
+    REQUIRE(!diffs.checkout(0));
   }
 
   SUBCASE("insert")
@@ -68,7 +68,17 @@ TEST_CASE("wex::unified_diffs")
     REQUIRE(diffs.end());
     REQUIRE(diffs.pos() == 2);
 
-    diffs.insert(&uni); // same result
+    // do a checkout
+    REQUIRE(diffs.prev());
+    REQUIRE(diffs.pos() == 1);
+    REQUIRE(stc->get_current_line() == 36);
+    REQUIRE(diffs.checkout(36));
+    REQUIRE(diffs.size() == 1);
+    CAPTURE(stc->get_text());
+    REQUIRE(stc->get_text().contains("added git diff option"));
+
+    diffs.insert(&uni); // back to first
+    REQUIRE(diffs.pos() == 1);
     REQUIRE(diffs.size() == 2);
 
     diffs.clear();

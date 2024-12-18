@@ -7,6 +7,9 @@
 
 #pragma once
 
+#include <unordered_map>
+#include <vector>
+
 #include <wex/core/function-repeat.h>
 #include <wex/data/stc.h>
 #include <wex/factory/unified-diffs.h>
@@ -17,8 +20,6 @@
 #include <wex/ui/item.h>
 #include <wex/vi/vi.h>
 #include <wx/prntbase.h>
-
-#include <vector>
 
 namespace wex
 {
@@ -315,6 +316,8 @@ private:
   data::stc       m_data;
   stc_file        m_file;
   unified_diffs   m_diffs;
+
+  std::unordered_map<int, int> m_marker_identifiers;
 
   int m_selection_mode_copy{wxSTC_SEL_STREAM};
 

@@ -366,6 +366,20 @@ void wex::stc::bind_all()
 
      {[=, this](const wxCommandEvent& event)
       {
+        m_diffs.checkout(GetCurrentLine());
+        AnnotationClearLine(GetCurrentLine());
+
+        if (const auto& it = m_marker_identifiers.find(GetCurrentLine());
+            it != m_marker_identifiers.end())
+        {
+          MarkerDeleteHandle(it->second);
+          m_marker_identifiers.erase(it);
+        }
+      },
+      id::stc::diff_checkout},
+
+     {[=, this](const wxCommandEvent& event)
+      {
         if (m_diffs.next())
         {
           m_diffs.status();
@@ -474,6 +488,12 @@ void wex::stc::build_popup_menu(menu& menu)
        {id::stc::edge_clear, _("Edge Column Reset")}});
   }
 
+  if (const auto mg = MarkerGet(GetCurrentLine());
+      m_diffs.size() > 0 && (mg & (1 << m_marker_diff_del.number())))
+  {
+    menu.append({{id::stc::diff_checkout, _("Checkout Diff")}});
+  }
+    
   build_popup_menu_link(menu);
 
   if (
@@ -575,7 +595,7 @@ void wex::stc::build_popup_menu_edit(menu& menu)
 
   if (sel.empty() && beautify_add && beautify().is_supported(get_lexer()))
   {
-    menu.append({{}, {id::stc::beautify, _("&Beautify")}});
+    menu.append({{}, {id::stc::diff_checkout, _("&Beautify")}});
   }
 }
 
