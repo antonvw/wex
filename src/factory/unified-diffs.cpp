@@ -27,15 +27,15 @@ bool wex::unified_diffs::checkout(size_t line)
     if (it->second.range_from_count() > 0)
     {
       m_stc->insert_text(
-        m_stc->PositionFromLine(line + 1),
-        boost::join(it->second.text_removed(), "\n") + "\n");
+        m_stc->GetLineEndPosition(line - 1),
+        "\n" + boost::join(it->second.text_removed(), "\n"));
     }
 
     if (it->second.range_to_count() > 0)
     {
       m_stc->DeleteRange(
-        m_stc->PositionFromLine(line + 1),
-        m_stc->GetLineEndPosition(line + 1 + it->second.range_to_count()));
+        m_stc->GetLineEndPosition(line - 1),
+        m_stc->GetLineEndPosition(line + it->second.range_to_count()));
     }
 
     m_lines.erase(line);
