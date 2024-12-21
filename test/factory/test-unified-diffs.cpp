@@ -47,7 +47,7 @@ TEST_CASE("wex::unified_diffs")
       "-- added git diff option\n"
       "@@ -25 +23,0 @@ The format is based on [Keep a Changelog].\n"
       "-- listview standard column sizes are configurable\n"
-      "@@ -38,1 +37 @@ The format is based on [Keep a Changelog].\n"
+      "@@ -38,1 +45 @@ The format is based on [Keep a Changelog].\n"
       "-- added git diff option\n"
       "+- test\n");
 
@@ -59,7 +59,7 @@ TEST_CASE("wex::unified_diffs")
     REQUIRE(diffs.size() == 2); // only last difference
     REQUIRE(diffs.pos() == 1);
     REQUIRE(diffs.next());
-    REQUIRE(stc->get_current_line() == 36);
+    REQUIRE(stc->get_current_line() == 37);
     REQUIRE(diffs.pos() == 1);
     REQUIRE(diffs.next()); // we are on the last element
     REQUIRE(diffs.pos() == 2);
@@ -71,8 +71,8 @@ TEST_CASE("wex::unified_diffs")
     // do a checkout
     REQUIRE(diffs.prev());
     REQUIRE(diffs.pos() == 1);
-    REQUIRE(stc->get_current_line() == 36);
-    REQUIRE(diffs.checkout(36));
+    REQUIRE(stc->get_current_line() == 37);
+    REQUIRE(diffs.checkout(37));
     REQUIRE(diffs.size() == 1);
     CAPTURE(stc->get_text());
     REQUIRE(stc->get_text().contains("added git diff option"));

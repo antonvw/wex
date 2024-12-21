@@ -425,6 +425,25 @@ bool wex::stc::marker_delete_all_change()
   return true;
 }
 
+bool wex::stc::mark_diff(size_t line, const marker& marker)
+{
+  line--;
+
+  if (const auto& it = m_marker_identifiers.find(line);
+      it != m_marker_identifiers.end())
+  {
+    log::status("diff marker already present, skipped processing");
+    return false;
+  }
+  else if (const int id = MarkerAdd(line, marker.number()); id != -1)
+  {
+    m_marker_identifiers[line] = id;
+    return true;
+  }
+
+  return false;
+}
+
 void wex::stc::mark_modified(const wxStyledTextEvent& event)
 {
   if (!lexers::get()->marker_is_loaded(m_marker_change))
@@ -659,31 +678,28 @@ void wex::stc::Undo()
   m_hexmode.undo();
 }
 
-void wex::stc::unified_diff_set_markers(const factory::unified_diff* uni)
+bool wex::stc::unified_diff_set_markers(const factory::unified_diff* uni)
 {
-  int id = -1;
-
   if (uni->range_from_start() == uni->range_to_start())
   {
-    id = MarkerAdd(uni->range_from_start() - 1, m_marker_diff_change.number());
+    return mark_diff(uni->range_from_start(), m_marker_diff_change);
   }
   else
   {
     if (uni->range_from_count() > 0)
     {
-      id = MarkerAdd(uni->range_from_start() - 1, m_marker_diff_del.number());
+      return mark_diff(uni->range_from_start(), m_marker_diff_del);
     }
 
     if (uni->range_to_count() > 0)
     {
-      id = MarkerAdd(uni->range_to_start() - 1, m_marker_diff_add.number());
+      return mark_diff(uni->range_to_start(), m_marker_diff_add);
     }
   }
 
-  if (id != -1)
-  {
-    m_marker_identifiers[uni->range_from_start() - 1] = id;
-  }
+  log("no suitable marker found");
+
+  return false;
 }
 
 void wex::stc::use_modification_markers(bool use)

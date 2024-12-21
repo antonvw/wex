@@ -965,7 +965,10 @@ bool wex::del::frame::vcs_unified_diff(
 
     // deleted text: a marker, and annotation with text
     // added text: a marker, and indicator
-    stc->unified_diff_set_markers(diff);
+    if (!stc->unified_diff_set_markers(diff))
+    {
+      return false;
+    }
 
     if (diff->range_from_count() > 0)
     {

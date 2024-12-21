@@ -12,6 +12,7 @@
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
+#include <wex/stc/entry-dialog.h>
 #include <wex/stc/shell.h>
 #include <wex/syntax/path-lexer.h>
 #include <wex/ui/frame.h>
@@ -93,12 +94,38 @@ bool wex::vcs_entry::execute(
   {
     auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
     auto* stc   = frame->get_stc();
-    const std::string& find(
-      boost::algorithm::replace_all_copy(stc->get_selected_text(), " ", "\\ "));
+    auto  text(stc->get_selected_text());
 
-    return stc != nullptr &&
-           frame->process_async_system(
-             process_data(bin() + " grep -n " + find).start_dir(tl.string()));
+    if (text.empty())
+    {
+      static stc_entry_dialog* dlg = nullptr;
+
+      if (dlg == nullptr)
+      {
+        dlg = new stc_entry_dialog(
+          std::string(),
+          _("Text") + ":",
+          wex::data::window(),
+          wex::data::stc().flags(
+            wex::data::stc::window_t().set(wex::data::stc::WIN_SINGLE_LINE)));
+      }
+
+      dlg->ShowModal();
+
+      text = dlg->get_stc()->get_text();
+
+      if (text.empty())
+      {
+        return false;
+      }
+    }
+
+    const std::string& find(
+      boost::algorithm::replace_all_copy(text, " ", "\\ "));
+
+    frame->process_async_system(
+      process_data(bin() + " grep -n " + find).start_dir(tl.string()));
+    return false; // skip rest in vcs_execute
   }
 
   std::string prefix;

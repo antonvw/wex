@@ -191,7 +191,7 @@ public:
     bool stc_find_string = true);
 
   /// Update markers according to diff.
-  void unified_diff_set_markers(const factory::unified_diff* uni);
+  bool unified_diff_set_markers(const factory::unified_diff* uni);
 
   // Virtual methods from wxWidgets.
 
@@ -289,6 +289,7 @@ private:
   void build_popup_menu_link(menu& menu);
   void check_brace();
   bool check_brace(int pos);
+  bool current_line_contains_diff_marker();
   void eol_action(const wxCommandEvent& event);
   void file_action(const wxCommandEvent& event);
   bool file_readonly_attribute_changed();
@@ -296,8 +297,9 @@ private:
   void jump_action();
   void key_action(wxKeyEvent& event);
   void margin_action(wxStyledTextEvent& event);
-  void mouse_action(wxMouseEvent& event);
+  bool mark_diff(size_t line, const marker& marker);
   void mark_modified(const wxStyledTextEvent& event);
+  void mouse_action(wxMouseEvent& event);
   void on_styled_text(wxStyledTextEvent& event);
   void show_properties();
   void sort_action(const wxCommandEvent& event);
