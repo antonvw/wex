@@ -28,10 +28,13 @@ TEST_CASE("wex::unified_diffs")
     REQUIRE(!diffs.next());
     REQUIRE(!diffs.prev());
     REQUIRE(!diffs.checkout(0));
+    REQUIRE(stc->get_line_count() == 51);
   }
 
   SUBCASE("insert")
   {
+    REQUIRE(stc->get_line_count() == 51);
+
     wex::factory::unified_diff uni(
       "diff --git a/build-gen.sh b/build-gen.sh\n"
       "index 9ff921d..b429c21 100755\n"
@@ -76,10 +79,14 @@ TEST_CASE("wex::unified_diffs")
     REQUIRE(diffs.size() == 1);
     CAPTURE(stc->get_text());
     REQUIRE(stc->get_text().contains("added git diff option"));
+    REQUIRE(stc->get_line_count() == 51); // -38,1  and +45
 
     diffs.insert(&uni); // back to first
     REQUIRE(diffs.pos() == 1);
     REQUIRE(diffs.size() == 2);
+
+    REQUIRE(diffs.checkout(44));
+    REQUIRE(stc->get_line_count() == 51); // -38,1  and +45
 
     diffs.clear();
     REQUIRE(diffs.size() == 0);
