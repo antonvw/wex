@@ -30,7 +30,7 @@ TEST_CASE("wex::factory::unified_diff")
 
     REQUIRE_CALL(uni, report_diff()).RETURN(false);
     REQUIRE_CALL(uni, report_diff_finish());
-    REQUIRE(uni.parse());
+    REQUIRE(*uni.parse() == 0);
     REQUIRE(uni.range_from_count() == 0);
     REQUIRE(uni.range_to_count() == 0);
   }
