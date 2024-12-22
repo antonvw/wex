@@ -8,7 +8,6 @@
 #pragma once
 
 #include <array>
-#include <optional>
 #include <string>
 
 #include <wex/core/path.h>
