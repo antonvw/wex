@@ -271,12 +271,11 @@ void wex::vcs_entry::show_output(const std::string& caption) const
 
     if (get_command().get_command() == "diff")
     {
-      if (auto res(unified_diff(
-                     path(),
-                     this,
-                     dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()))
-                     .parse());
-          res && *res == 0)
+      if (unified_diff ud(
+            path(),
+            this,
+            dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()));
+          ud.parse() && ud.differences() == 0)
       {
         log::status("No output");
       }

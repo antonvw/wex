@@ -17,7 +17,7 @@
 #define NEXT_TOKEN                                                             \
   if (++tok_iter == tokens.end())                                              \
   {                                                                            \
-    return std::nullopt;                                                       \
+    return false;                                                              \
   }
 
 #define CHANGES_LINES(RANGE, TEXT)                                             \
@@ -30,7 +30,7 @@
 #define HEADER_LINES(REGEX, INTO)                                              \
   if (!parse_header(REGEX, *tok_iter, INTO))                                   \
   {                                                                            \
-    return std::nullopt;                                                       \
+    return false;                                                              \
   }                                                                            \
   NEXT_TOKEN
 
@@ -58,7 +58,7 @@ wex::factory::unified_diff::unified_diff(const std::string& input)
   m_range.fill({0});
 }
 
-std::optional<size_t> wex::factory::unified_diff::parse()
+bool wex::factory::unified_diff::parse()
 {
   typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
 
@@ -66,7 +66,7 @@ std::optional<size_t> wex::factory::unified_diff::parse()
 
   tokenizer::iterator tok_iter = tokens.begin();
 
-  size_t diffs = 0;
+  m_diffs = 0;
 
   while (tok_iter != tokens.end())
   {
@@ -87,7 +87,7 @@ std::optional<size_t> wex::factory::unified_diff::parse()
           r_chunk.match(*tok_iter) != 4)
       {
         log("unified_diff") << *tok_iter << r_chunk.size();
-        return std::nullopt;
+        return false;
       }
       else
       {
@@ -97,8 +97,6 @@ std::optional<size_t> wex::factory::unified_diff::parse()
         m_range[3] = wex::stoi(r_chunk[3]);
       }
 
-      diffs++;
-
       m_text.fill({});
 
       // Now get all - lines and all + lines, collect them, and invoke callback.
@@ -107,7 +105,7 @@ std::optional<size_t> wex::factory::unified_diff::parse()
 
       if (!report_diff())
       {
-        return std::nullopt;
+        return false;
       }
 
       m_is_first = false;
@@ -126,7 +124,7 @@ std::optional<size_t> wex::factory::unified_diff::parse()
   report_diff();
   report_diff_finish();
 
-  return std::optional<size_t>{diffs};
+  return true;
 }
 
 bool wex::factory::unified_diff::parse_header(

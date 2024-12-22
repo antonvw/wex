@@ -41,6 +41,8 @@ bool wex::unified_diff::report_diff()
     {
       return false;
     }
+
+    m_diffs++;
   }
 
   return true;

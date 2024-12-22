@@ -30,7 +30,8 @@ TEST_CASE("wex::factory::unified_diff")
 
     REQUIRE_CALL(uni, report_diff()).RETURN(false);
     REQUIRE_CALL(uni, report_diff_finish());
-    REQUIRE(*uni.parse() == 0);
+    REQUIRE(uni.parse());
+    REQUIRE(uni.differences() == 0);
     REQUIRE(uni.range_from_count() == 0);
     REQUIRE(uni.range_to_count() == 0);
   }
@@ -84,7 +85,6 @@ TEST_CASE("wex::factory::unified_diff")
     const auto res(uni.parse());
 
     REQUIRE(res);
-    REQUIRE(*res == 4);
     REQUIRE(uni.path_from().string() == "CHANGELOG.md");
     REQUIRE(uni.path_to().string() == "CHANGELOG.md");
     REQUIRE(uni.range_from_start() == 38);
@@ -130,12 +130,39 @@ TEST_CASE("wex::factory::unified_diff")
 
     const auto res(uni.parse());
     REQUIRE(res);
-    REQUIRE(*res == 4);
     REQUIRE(uni.path_from().string() == "include/wex/vcs/unified-diff.h");
     REQUIRE(uni.path_to().string() == "include/wex/vcs/unified-diff.h");
     REQUIRE(uni.range_from_start() == 85);
     REQUIRE(uni.range_from_count() == 2);
     REQUIRE(uni.range_to_start() == 85);
     REQUIRE(uni.range_to_count() == 2);
+  }
+
+  SUBCASE("parse-valid-sub")
+  {
+    mock_unified_diff uni(
+      "diff --git a/external/pugixml b/external/pugixml\n"
+      "--- a/external/pugixml\n"
+      "+++ b/external/pugixml\n"
+      "@@ -1 +1 @@\n"
+      "-Subproject commit 6909df2478f7eb092e8e5b5cda097616b2595cc6\n"
+      "+Subproject commit 6909df2478f7eb092e8e5b5cda097616b2595cc6-dirty\n"
+      "diff --git a/external/wxWidgets b/external/wxWidgets\n"
+      "--- a/external/wxWidgets\n"
+      "+++ b/external/wxWidgets\n"
+      "@@ -1 +1 @@\n"
+      "-Subproject commit 12b09a5e5ea76a1a0c27b769e821b37d803a4cb7\n"
+      "+Subproject commit 12b09a5e5ea76a1a0c27b769e821b37d803a4cb7-dirty\n");
+
+    ALLOW_CALL(uni, report_diff()).RETURN(true);
+    REQUIRE_CALL(uni, report_diff_finish());
+
+    const auto res(uni.parse());
+    REQUIRE(res);
+    REQUIRE(uni.range_from_start() == 1);
+    REQUIRE(uni.range_from_count() == 1);
+    REQUIRE(uni.range_to_start() == 1);
+    REQUIRE(uni.range_to_count() == 1);
+    CAPTURE(uni.path_from().string());
   }
 }
