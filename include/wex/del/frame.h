@@ -217,8 +217,7 @@ protected:
 
 private:
   listview* activate_and_clear(const wex::tool& tool);
-
-  void bind_all();
+  void      bind_all();
 
   stc_entry_dialog* entry_dialog(
     const std::string& title = std::string(),
@@ -237,7 +236,6 @@ private:
 
   function_repeat m_function_repeat;
 
-  const marker    m_marker_del    = wex::marker(3);
   const indicator m_indicator_add = wex::indicator(3);
 
   const std::string m_text_hidden{_("fif.Hidden")},

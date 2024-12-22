@@ -141,8 +141,10 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
     <!-- ex_marknum_break is used by debugging -->
     <marker no="ex_marknum_break"> mark_arrow,red,white </marker>
 
-    <!-- this indicator is used by showing diff del location -->
-    <marker no="3"> mark_shortarrow,red,warmgrey </marker>
+    <!-- this indicator is used by showing diff add, changed, del location -->
+    <marker no="3"> mark_shortarrow,green,warmgrey </marker>
+    <marker no="4"> mark_shortarrow,lightblue,warmgrey </marker>
+    <marker no="5"> mark_shortarrow,red,warmgrey </marker>
     
     <!-- At this moment we do not have properties -->
     <properties/>

@@ -6,6 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
+#include <charconv>
+#include <numeric>
 #include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
@@ -27,9 +29,6 @@
 #include <wx/accel.h>
 #include <wx/msgdlg.h>
 #include <wx/numdlg.h>
-
-#include <charconv>
-#include <numeric>
 
 namespace wex
 {
@@ -361,15 +360,41 @@ void wex::stc::bind_all()
 
      {[=, this](const wxCommandEvent& event)
       {
-        m_diffs.next();
-        m_diffs.status();
+        vcs_clear_diffs();
+      },
+      ID_CLEAR_DIFFS},
+
+     {[=, this](const wxCommandEvent& event)
+      {
+        const int line(GetCurrentLine());
+        AnnotationClearLine(line);
+
+        if (const auto& it = m_marker_identifiers.find(line);
+            it != m_marker_identifiers.end())
+        {
+          MarkerDeleteHandle(it->second);
+          m_marker_identifiers.erase(it);
+        }
+
+        m_diffs.checkout(line);
+      },
+      id::stc::diff_checkout},
+
+     {[=, this](const wxCommandEvent& event)
+      {
+        if (m_diffs.next())
+        {
+          m_diffs.status();
+        }
       },
       id::stc::diff_next},
 
      {[=, this](const wxCommandEvent& event)
       {
-        m_diffs.prev();
-        m_diffs.status();
+        if (m_diffs.prev())
+        {
+          m_diffs.status();
+        }
       },
       id::stc::diff_previous},
 
@@ -463,6 +488,11 @@ void wex::stc::build_popup_menu(menu& menu)
       {{},
        {id::stc::edge_set, _("Edge Column")},
        {id::stc::edge_clear, _("Edge Column Reset")}});
+  }
+
+  if (m_diffs.size() > 0 && current_line_contains_diff_marker())
+  {
+    menu.append({{id::stc::diff_checkout, _("Checkout Diff")}});
   }
 
   build_popup_menu_link(menu);
@@ -559,9 +589,14 @@ void wex::stc::build_popup_menu_edit(menu& menu)
     }
   }
 
+  if (sel.empty() && m_diffs.size() > 0)
+  {
+    menu.append({{ID_CLEAR_DIFFS, _("Clear Diffs")}});
+  }
+
   if (sel.empty() && beautify_add && beautify().is_supported(get_lexer()))
   {
-    menu.append({{}, {id::stc::beautify, _("&Beautify")}});
+    menu.append({{}, {id::stc::diff_checkout, _("&Beautify")}});
   }
 }
 
@@ -616,6 +651,16 @@ bool wex::stc::check_brace(int pos)
 
   BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
   return false;
+}
+
+bool wex::stc::current_line_contains_diff_marker()
+{
+  const auto mg = MarkerGet(get_current_line());
+
+  return (
+    mg &
+    ((1 << m_marker_diff_add.number()) | (1 << m_marker_diff_change.number()) |
+     (1 << m_marker_diff_del.number())));
 }
 
 void wex::stc::eol_action(const wxCommandEvent& event)
@@ -901,5 +946,19 @@ void wex::stc::sort_action(const wxCommandEvent& event)
         factory::sort::sort_t().set(factory::sort::SORT_DESCENDING),
       pos - 1)
       .selection(this);
+  }
+}
+
+void wex::stc::vcs_clear_diffs()
+{
+  if (m_diffs.size() > 0)
+  {
+    m_diffs.clear();
+    AnnotationClearAll();
+    MarkerDeleteAll(m_marker_diff_add.number());
+    MarkerDeleteAll(m_marker_diff_change.number());
+    MarkerDeleteAll(m_marker_diff_del.number());
+    IndicatorClearRange(0, GetTextLength() - 1);
+    m_diffs.status();
   }
 }

@@ -155,7 +155,7 @@ void wex::toolbar::add_find(bool realize)
   m_find_bar = new find_bar(
     m_frame,
     data::window().parent(this).size(
-      wxSize(150, style().default_font_size() + 4)));
+      wxSize(150, style().default_font_size() + 10)));
 
   AddControl(m_find_bar->control());
 

@@ -98,6 +98,8 @@ TEST_CASE("wex::stc")
     stc->Undo();
     stc->use_modification_markers(true);
     stc->use_modification_markers(false);
+
+    stc->vcs_clear_diffs();
   }
 
   SUBCASE("eol")

@@ -5,6 +5,7 @@
 // Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log.h>
 #include <wex/factory/defs.h>
 #include <wex/ui/art.h>
 #include <wex/ui/frame.h>
@@ -115,6 +116,10 @@ void wex::menu_item::append(wex::menu* menu) const
             bitmap.IsOk())
         {
           item->SetBitmap(bitmap);
+        }
+        else
+        {
+          log("menu_item::append") << m_id << "could not set bitmap";
         }
       }
 

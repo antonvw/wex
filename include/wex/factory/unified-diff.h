@@ -8,7 +8,6 @@
 #pragma once
 
 #include <array>
-#include <optional>
 #include <string>
 
 #include <wex/core/path.h>
@@ -28,17 +27,20 @@ public:
   /// Constructor.
   unified_diff(
     /// Provide input, that is conform unified diff format output.
-    const std::string& input);
+    const std::string& input = std::string());
 
   /// Virtual interface
 
-  /// Do something with a diff.
+  /// Do something with a diff, and update diff.
   virtual bool report_diff() { return true; };
 
   /// The last diff has been generated, we are finished.
   virtual void report_diff_finish() { ; };
 
   /// Other methods.
+
+  /// Returns number of differences found duing parsing.
+  size_t differences() const { return m_diffs; };
 
   /// Returns true if this is the first diff of a chunk.
   bool is_first() const { return m_is_first; };
@@ -48,8 +50,8 @@ public:
 
   /// Parses the input.
   /// This routine invokes report_diff methods.
-  /// Returns number of differences present.
-  std::optional<int> parse();
+  /// Returns false on error during parsing.
+  bool parse();
 
   /// Returns path from.
   const auto& path_from() const { return m_path[0]; };
@@ -78,15 +80,17 @@ public:
 protected:
   std::array<path, 2> m_path;
 
+  size_t m_diffs{0};
+
 private:
   bool parse_header(const std::string& r, const std::string& line, path& p);
 
-  std::array<int, 4>                      m_range;
+  std::array<size_t, 4>                   m_range;
   std::array<std::vector<std::string>, 2> m_text;
 
   bool m_is_first{true}, m_is_last{false};
 
-  const std::string m_input;
+  std::string m_input;
 };
 }; // namespace factory
 }; // namespace wex

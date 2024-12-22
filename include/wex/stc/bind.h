@@ -14,6 +14,7 @@ namespace wex::id
 enum stc
 {
   beautify = wxID_HIGHEST + 1,
+  diff_checkout,
   diff_next,
   diff_previous,
   edge_clear,
