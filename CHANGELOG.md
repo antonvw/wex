@@ -549,7 +549,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 [Unreleased]: https://github.com/antonvw/wex/compare/v24.10..HEAD
 [24.10]:      https://github.com/antonvw/wex/compare/v24.04...v24.10
-[24.04]:      https://github.com/antonvw/wex/compare/v23.10...v24.04
+[24.04]:      https://github.com/antonvw/wex/compare/v23.10.0...v24.04
 [23.10.0]:    https://github.com/antonvw/wex/compare/v23.04.0...v23.10.0
 [23.04.0]:    https://github.com/antonvw/wex/compare/v22.10.0...v23.04.0
 [22.10.0]:    https://github.com/antonvw/wex/compare/v22.04.0...v22.10.0
