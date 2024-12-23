@@ -2,7 +2,7 @@
 // Name:      data/test-listview.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/listview.h>
@@ -19,6 +19,9 @@ TEST_CASE("wex::data::listview")
     REQUIRE(data.type() == wex::data::listview::NONE);
     REQUIRE(data.get_listview() == nullptr);
     REQUIRE(!data.type_description().empty());
+    REQUIRE(!data.revision());
+    REQUIRE(data.menu().all());
+    REQUIRE(data.lexer() == nullptr);
     REQUIRE(
       data.image(wex::data::listview::IMAGE_NONE).image() ==
       wex::data::listview::IMAGE_NONE);
@@ -39,5 +42,14 @@ TEST_CASE("wex::data::listview")
     REQUIRE(!data.control(wex::data::control().line(2)).inject());
 
     REQUIRE(!wex::data::listview().inject());
+  }
+
+  SUBCASE("set")
+  {
+    wex::data::listview data;
+
+    REQUIRE(!data.revision());
+    data.revision(true);
+    REQUIRE(data.revision());
   }
 }
