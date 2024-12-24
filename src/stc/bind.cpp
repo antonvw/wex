@@ -959,6 +959,7 @@ void wex::stc::vcs_clear_diffs()
     MarkerDeleteAll(m_marker_diff_change.number());
     MarkerDeleteAll(m_marker_diff_del.number());
     IndicatorClearRange(0, GetTextLength() - 1);
+    m_marker_identifiers.clear();
     m_diffs.status();
   }
 }

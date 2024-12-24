@@ -421,9 +421,13 @@ void wex::listview::build_popup_menu(wex::menu& menu)
 
   if (GetSelectedItemCount() >= 1 && m_data.revision())
   {
-    menu.append(
-      {{ID_EDIT_REV_OPEN, _("&Open")},
-       {ID_EDIT_REV_COMPARE, _("C&ompare") + "\tCtrl+O"}});
+    menu.append({{ID_EDIT_REV_OPEN, _("&Open")}});
+
+    if (GetSelectedItemCount() == 1)
+    {
+      // Comparing two versions not yet implemented.
+      menu.append({{ID_EDIT_REV_COMPARE, _("C&ompare") + "\tCtrl+O"}});
+    }
   }
 
   menu.append({{}, {menu_item::EDIT_INVERT}});
