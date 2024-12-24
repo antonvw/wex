@@ -16,46 +16,64 @@
 
 namespace wex
 {
-
-void do_compare(
-  vcs_entry*         ve,
-  wex::listview*     lv,
-  int                index,
-  const std::string& repo_path,
-  const path&        tl,
-  const std::string& col)
+class rev_data
 {
-  auto*       frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
-  const auto& value(lv->get_item_text(index, col));
-
-  if (
-    ve->system(process_data("diff -U0 " + value + " " + repo_path)
-                 .start_dir(tl.string())) == 0)
+public:
+  rev_data(
+    vcs_entry*         ve,
+    wex::listview*     lv,
+    long               index,
+    const path&        tl,
+    const std::string& repo_path,
+    const std::string& col)
+    : m_ve(ve)
+    , m_lv(lv)
+    , m_index(index)
+    , m_tl(tl)
+    , m_repo_path(repo_path)
+    , m_col(col)
   {
-    unified_diff(path(repo_path), ve, frame).parse();
+    ;
+  }
+
+  void do_compare();
+  void do_open();
+
+private:
+  auto* frame() const
+  {
+    return dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
+  };
+
+  const auto value() const { return m_lv->get_item_text(m_index, m_col); };
+
+  vcs_entry*         m_ve;
+  wex::listview*     m_lv;
+  long               m_index;
+  const path&        m_tl;
+  const std::string &m_repo_path, m_col;
+};
+
+void rev_data::do_compare()
+{
+  if (
+    m_ve->system(process_data("diff -U0 " + value() + " " + m_repo_path)
+                   .start_dir(m_tl.string())) == 0)
+  {
+    unified_diff(path(m_repo_path), m_ve, frame()).parse();
   }
 };
 
-void do_open(
-  vcs_entry*         ve,
-  wex::listview*     lv,
-  int                index,
-  const std::string& repo_path,
-  const path&        tl,
-  const std::string& col)
+void rev_data::do_open()
 {
-  auto*       frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
-  const auto& value(lv->get_item_text(index, col));
-
-  config(ve->flags_key()).set(value);
+  config(m_ve->flags_key()).set(value());
 
   if (
-    ve->system(
-      process_data("show " + value + ":" + repo_path).start_dir(tl.string())) ==
-    0)
+    m_ve->system(process_data("show " + value() + ":" + m_repo_path)
+                   .start_dir(m_tl.string())) == 0)
   {
-    frame->open_file_vcs(path(repo_path), *ve, data::stc());
-    config(ve->flags_key()).set(std::string());
+    frame()->open_file_vcs(path(m_repo_path), *m_ve, data::stc());
+    config(m_ve->flags_key()).set(std::string());
   }
 };
 
@@ -89,13 +107,12 @@ void wex::vcs_entry::bind_rev(
   const path&        tl,
   const std::string& col)
 {
-  auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
   lv->Bind(
     wxEVT_LEFT_DCLICK,
     [=, this](wxMouseEvent& event)
     {
       event.Skip();
-      do_open(this, lv, lv->GetFirstSelected(), repo_path, tl, col);
+      rev_data(this, lv, lv->GetFirstSelected(), tl, repo_path, col).do_open();
     });
 
   bind(lv).command(
@@ -105,8 +122,8 @@ void wex::vcs_entry::bind_rev(
              i      = lv->GetNextSelected(i))
         {
           event.GetId() == ID_EDIT_REV_COMPARE ?
-            do_compare(this, lv, i, repo_path, tl, col) :
-            do_open(this, lv, i, repo_path, tl, col);
+            rev_data(this, lv, i, tl, repo_path, col).do_compare() :
+            rev_data(this, lv, i, tl, repo_path, col).do_open();
         }
       },
       ID_EDIT_REV_COMPARE,
