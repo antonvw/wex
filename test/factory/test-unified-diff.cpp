@@ -10,6 +10,12 @@
 
 #include "test.h"
 
+#define PARSE_AND_MOCK_CHECK(NUMBER)                                           \
+  REQUIRE_CALL(uni, report_diff()).RETURN(true).TIMES(NUMBER);                 \
+  REQUIRE_CALL(uni, report_diff_finish());                                     \
+  REQUIRE(uni.is_first());                                                     \
+  REQUIRE(uni.parse());
+
 class mock_unified_diff : public wex::factory::unified_diff
 {
 public:
@@ -30,7 +36,11 @@ TEST_CASE("wex::factory::unified_diff")
 
     REQUIRE_CALL(uni, report_diff()).RETURN(false);
     REQUIRE_CALL(uni, report_diff_finish());
+    REQUIRE(uni.is_first());
+    REQUIRE(!uni.is_last());
     REQUIRE(uni.parse());
+    REQUIRE(uni.is_first());
+    REQUIRE(uni.is_last());
     REQUIRE(uni.differences() == 0);
     REQUIRE(uni.range_from_count() == 0);
     REQUIRE(uni.range_to_count() == 0);
@@ -77,14 +87,8 @@ TEST_CASE("wex::factory::unified_diff")
       "@@ -38,0 +37 @@ The format is based on [Keep a Changelog].\n"
       "+- test\n");
 
-    REQUIRE(uni.is_first());
+    PARSE_AND_MOCK_CHECK(6);
 
-    REQUIRE_CALL(uni, report_diff()).RETURN(true).TIMES(AT_LEAST(5));
-    REQUIRE_CALL(uni, report_diff_finish());
-
-    const auto res(uni.parse());
-
-    REQUIRE(res);
     REQUIRE(uni.path_from().string() == "CHANGELOG.md");
     REQUIRE(uni.path_to().string() == "CHANGELOG.md");
     REQUIRE(uni.range_from_start() == 38);
@@ -94,6 +98,7 @@ TEST_CASE("wex::factory::unified_diff")
     REQUIRE(uni.text_added().front() == "- test");
     REQUIRE(uni.text_removed().empty());
     REQUIRE(!uni.is_first());
+    REQUIRE(uni.is_last());
   }
 
   SUBCASE("parse-valid-other")
@@ -125,11 +130,8 @@ TEST_CASE("wex::factory::unified_diff")
       "+  const vcs_entry* m_vcs_entry{nullptr};\n"
       "+  factory::frame*  m_frame{nullptr};\n");
 
-    REQUIRE_CALL(uni, report_diff()).RETURN(true).TIMES(AT_LEAST(5));
-    REQUIRE_CALL(uni, report_diff_finish());
+    PARSE_AND_MOCK_CHECK(7);
 
-    const auto res(uni.parse());
-    REQUIRE(res);
     REQUIRE(uni.path_from().string() == "include/wex/vcs/unified-diff.h");
     REQUIRE(uni.path_to().string() == "include/wex/vcs/unified-diff.h");
     REQUIRE(uni.range_from_start() == 85);
@@ -157,8 +159,7 @@ TEST_CASE("wex::factory::unified_diff")
     ALLOW_CALL(uni, report_diff()).RETURN(true);
     REQUIRE_CALL(uni, report_diff_finish());
 
-    const auto res(uni.parse());
-    REQUIRE(res);
+    REQUIRE(uni.parse());
     REQUIRE(uni.range_from_start() == 1);
     REQUIRE(uni.range_from_count() == 1);
     REQUIRE(uni.range_to_start() == 1);
