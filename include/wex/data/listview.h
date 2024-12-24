@@ -2,7 +2,7 @@
 // Name:      data/listview.h
 // Purpose:   Declaration of wex::data::listview
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2023 Anton van Wezenbeek
+// Copyright: (c) 2017-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -100,6 +100,12 @@ public:
   listview&
   menu(menu_t flags, data::control::action_t action = data::control::SET);
 
+  /// Returns is revision member.
+  bool revision() const { return m_is_revision; };
+
+  /// Sets is revision member, to enable revision like menus.
+  listview& revision(bool rhs);
+
   /// Sets listview.
   listview& set_listview(factory::listview* rhs);
 
@@ -129,13 +135,13 @@ private:
 
   menu_t m_menu_flags = menu_t().set();
 
-  const wex::lexer*  m_lexer    = nullptr;
-  factory::listview* m_listview = nullptr;
+  const wex::lexer*  m_lexer{nullptr};
+  factory::listview* m_listview{nullptr};
 
-  image_t m_image_type = IMAGE_ART;
-  type_t  m_type       = NONE;
+  image_t m_image_type{IMAGE_ART};
+  type_t  m_type{NONE};
 
-  bool m_initialized = false;
+  bool m_initialized{false}, m_is_revision{false};
 };
 }; // namespace data
 }; // namespace wex

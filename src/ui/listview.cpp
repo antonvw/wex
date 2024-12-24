@@ -349,6 +349,7 @@ void wex::listview::bind_other()
         }
       },
       ID_EDIT_OPEN},
+
      {[=, this](const wxCommandEvent& event)
       {
         if (!IsShown() || GetItemCount() == 0)
@@ -416,6 +417,17 @@ void wex::listview::build_popup_menu(wex::menu& menu)
   else if (GetSelectedItemCount() >= 1 && m_data.type() == data::listview::TSV)
   {
     menu.append({{ID_EDIT_OPEN, _("&Open")}});
+  }
+
+  if (GetSelectedItemCount() >= 1 && m_data.revision())
+  {
+    menu.append({{ID_EDIT_REV_OPEN, _("&Open")}});
+
+    if (GetSelectedItemCount() == 1)
+    {
+      // Comparing two versions not yet implemented.
+      menu.append({{ID_EDIT_REV_COMPARE, _("C&ompare") + "\tCtrl+O"}});
+    }
   }
 
   menu.append({{}, {menu_item::EDIT_INVERT}});

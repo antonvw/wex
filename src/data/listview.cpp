@@ -2,7 +2,7 @@
 // Name:      data/listview.cpp
 // Purpose:   Implementation of wex::data::listview
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/listview.h>
@@ -122,6 +122,12 @@ wex::data::listview&
 wex::data::listview::menu(menu_t flags, data::control::action_t action)
 {
   m_data.flags<flags.size()>(flags, m_menu_flags, action);
+  return *this;
+}
+
+wex::data::listview& wex::data::listview::revision(bool rhs)
+{
+  m_is_revision = rhs;
   return *this;
 }
 

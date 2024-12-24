@@ -13,7 +13,7 @@
 class mock_unified_diff : public wex::factory::unified_diff
 {
 public:
-  mock_unified_diff(const std::string& input)
+  explicit mock_unified_diff(const std::string& input)
     : wex::factory::unified_diff(input)
   {
     ;

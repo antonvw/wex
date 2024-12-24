@@ -19,6 +19,7 @@
 namespace wex
 {
 class item_dialog;
+class listview;
 class menu;
 class process_data;
 
@@ -114,6 +115,12 @@ private:
     const std::string& path,
     const wex::path&   tl,
     const wex::path&   file);
+
+  void bind_rev(
+    listview*          lv,
+    const std::string& repo_path,
+    const path&        tl,
+    const std::string& col);
 
   // no const, as entry is set using operator= in vcs.
   flags_location_t m_flags_location{flags_location_t::POSTFIX};
