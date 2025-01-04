@@ -2,7 +2,7 @@
 // Name:      test-global-env.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024 Anton van Wezenbeek
+// Copyright: (c) 2024-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -54,13 +54,13 @@ TEST_CASE("wex::global_env")
     wex::global_env inv(ar);
     REQUIRE(!inv.has_commands());
     REQUIRE(inv.global(wex::addressrange::data()));
-    REQUIRE(inv.hits() == 8);
+    REQUIRE(inv.hits() == 9);
 
     REQUIRE(wex::addressrange::data().set_global("g!/he/"));
     wex::global_env inv2(ar);
     REQUIRE(!inv2.has_commands());
     REQUIRE(inv2.global(wex::addressrange::data()));
-    REQUIRE(inv2.hits() == 8);
+    REQUIRE(inv2.hits() == 9);
   }
 
   SUBCASE("commands-2addr")
@@ -81,7 +81,7 @@ TEST_CASE("wex::global_env")
 
     REQUIRE(inv.has_commands());
     REQUIRE(inv.global(wex::addressrange::data()));
-    REQUIRE(inv.hits() == 1);
+    REQUIRE(inv.hits() == 2);
   }
 
   SUBCASE("commands-append")

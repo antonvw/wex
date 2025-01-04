@@ -1,5 +1,5 @@
 *** Comments ***
-Copyright: (c) 2020-2024 Anton van Wezenbeek
+Copyright: (c) 2020-2025 Anton van Wezenbeek
 
 
 *** Settings ***
@@ -45,7 +45,7 @@ global
 	Input	:a|last line
 	...	:g/has/
 	Appl
-	Output Contains	20
+	Output Contains	20 matches
 
 info
 	Input	:a|line has text
@@ -61,7 +61,7 @@ inverse
 	Input	:a|last line
 	...	:g!/has/
 	Appl
-	Output Contains	1
+	Output Contains	1 matches
 
 mdi
 	Input	:a|line has text

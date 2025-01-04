@@ -2,7 +2,7 @@
 // Name:      test-block-lines.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024 Anton van Wezenbeek
+// Copyright: (c) 2024-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex/ex.h>
@@ -53,5 +53,12 @@ TEST_CASE("wex::block_lines")
     bl.end(14);
     REQUIRE(!bl.is_available());
     REQUIRE(bl.get_range() == "");
+
+    wex::block_lines other(stc);
+    other.set_lines(bl);
+    REQUIRE(other.start() == 15);
+    REQUIRE(other.end() == 14);
+    REQUIRE(!other.is_available());
+    REQUIRE(other.get_range() == "");
   }
 }

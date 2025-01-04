@@ -2,7 +2,7 @@
 // Name:      test-ex.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2024 Anton van Wezenbeek
+// Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -224,7 +224,7 @@ TEST_CASE("wex::ex")
                     "pp14\n");
 
       REQUIRE(ex->command(":v/yy/d"));
-      REQUIRE(stc->get_line_count() == 10);
+      REQUIRE(stc->get_line_count() == 9);
       REQUIRE(!stc->get_text().contains("xx"));
       REQUIRE(!stc->get_text().contains("pp"));
     }
@@ -241,7 +241,7 @@ TEST_CASE("wex::ex")
       }
 
       REQUIRE(ex->command(":v/xxxx/d"));
-      REQUIRE(stc->get_line_count() == max + 1);
+      REQUIRE(stc->get_line_count() == max);
       REQUIRE(!stc->get_text().contains("yy"));
     }
   }
