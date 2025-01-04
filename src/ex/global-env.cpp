@@ -2,7 +2,7 @@
 // Name:      global-env.cpp
 // Purpose:   Implementation of class wex::global_env
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2024 Anton van Wezenbeek
+// Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -143,7 +143,7 @@ bool wex::global_env::global(const data::substitute& data)
   {
     const auto lines(m_stc->get_line_count());
 
-    if (mb = get_block_lines(m_stc); data.is_inverse())
+    if (mb.set_lines(get_block_lines(m_stc)); data.is_inverse())
     {
       if (!process_inverse(mb, ib))
       {
@@ -173,7 +173,7 @@ bool wex::global_env::global(const data::substitute& data)
 
   if (data.is_inverse())
   {
-    ib.start(m_ex->marker_line('T') + 1);
+    ib.start(m_ex->marker_line('T'));
     ib.end(m_ex->marker_line('$') + 1);
 
     if (ib.is_available() && !process(ib))
@@ -215,7 +215,7 @@ bool wex::global_env::process_inverse(const block_lines& mb, block_lines& ib)
   }
   else
   {
-    ib = mb;
+    ib.set_lines(mb);
   }
 
   return true;

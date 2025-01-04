@@ -2,7 +2,7 @@
 // Name:      block-lines.h
 // Purpose:   Declaration of class wex::block_lines
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -40,6 +40,9 @@ public:
     return m_start <=> r.m_start - 1;
   }
 
+  /// Returns end line.
+  int end() const { return m_end; };
+
   /// Updates end line.
   void end(int line);
 
@@ -59,8 +62,18 @@ public:
   /// Sets indicator based on this block.
   bool set_indicator(const indicator& indicator) const;
 
-  /// Return number of lines in the block.
+  /// Sets lines from other block.
+  void set_lines(const block_lines& b)
+  {
+    m_start = b.m_start;
+    m_end   = b.m_end;
+  };
+
+  /// Returns number of lines in the block.
   size_t size() const;
+
+  /// Returns start line.
+  int start() const { return m_start; };
 
   /// Updates start line.
   void start(int start_line);
@@ -69,7 +82,7 @@ public:
   block_t type() const { return m_type; };
 
 private:
-  block_t m_type;
+  const block_t m_type;
 
   int m_start{0}, m_end{0};
 
