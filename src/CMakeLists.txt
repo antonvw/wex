@@ -16,7 +16,7 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
     lcov-prep
     # prepare initial tracefile
     lcov --base-directory ./ --gcov-tool ${wexGCOV_USE} --capture --rc
-    branch_coverage=1 --initial --directory ./ --output-file app.base
+    lcov_branch_coverage=1 --initial --directory ./ --output-file app.base
   )
 
   add_custom_target(
@@ -24,16 +24,16 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
     # capture results
     COMMAND
       lcov --base-directory ./ --gcov-tool ${wexGCOV_USE} --capture --rc
-      branch_coverage=1 --directory ./ --output-file app.run
+      lcov_branch_coverage=1 --directory ./ --output-file app.run
     # combine tracefiles
     COMMAND
       lcov --gcov-tool ${wexGCOV_USE} --add-tracefile app.base --rc
-      branch_coverage=1 --add-tracefile app.run --output-file app.run
+      lcov_branch_coverage=1 --add-tracefile app.run --output-file app.run
     # remove output that we are not interested in
     COMMAND
       lcov --gcov-tool ${wexGCOV_USE} --remove app.run "*boost/*" "*/usr/*"
       "*sample*" "*external/*" "*/test/*" "*factory/grid*"
-      "*include/wex/factory/text-window.h" --rc branch_coverage=1 --output-file
+      "*include/wex/factory/text-window.h" --rc lcov_branch_coverage=1 --output-file
       app.run
     # generate local files
     COMMAND
