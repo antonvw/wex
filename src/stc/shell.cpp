@@ -2,7 +2,7 @@
 // Name:      shell.cpp
 // Purpose:   Implementation of class wex::shell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -494,13 +494,20 @@ bool wex::shell::set_command_from_history(const std::string& short_command)
         short_command.length() - m_command_end.length());
     }
 
-    for (const auto& command : std::ranges::reverse_view(m_commands))
+    if (std::any_of(
+          m_commands.rbegin(),
+          m_commands.rend(),
+          [&short_command_check, this](const auto& it)
+          {
+            if (it.substr(0, short_command_check.size()) == short_command_check)
+            {
+              m_command = it;
+              return true;
+            }
+            return false;
+          }))
     {
-      if (command.substr(0, short_command_check.size()) == short_command_check)
-      {
-        m_command = command;
-        return true;
-      }
+      return true;
     }
   }
 

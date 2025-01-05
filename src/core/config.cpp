@@ -2,7 +2,7 @@
 // Name:      config.cpp
 // Purpose:   Implementation of class wex::config
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -237,15 +237,15 @@ const std::string wex::config::get_first_of(const std::string& def) const
 
   if (is_special_ui(l.front()))
   {
-    for (const auto& item : l)
-    {
-      if (item.ends_with(":1"))
+    const auto& it(std::find_if(
+      l.begin(),
+      l.end(),
+      [](auto const& item)
       {
-        return find_before(item, ":");
-      }
-    }
+        return item.ends_with(":1");
+      }));
 
-    return std::string();
+    return it != l.end() ? find_before(*it, ":") : std::string();
   }
 
   return l.front();
