@@ -15,8 +15,8 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
   add_custom_target(
     lcov-prep
     # prepare initial tracefile
-    lcov --base-directory ./ --gcov-tool ${wexGCOV_USE} --capture --initial
-    --directory ./ --output-file app.base
+    lcov --base-directory ./ --gcov-tool ${wexGCOV_USE} --capture --rc
+    branch_coverage=1 --initial --directory ./ --output-file app.base
   )
 
   add_custom_target(
