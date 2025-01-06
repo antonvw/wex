@@ -42,7 +42,7 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
       --rc genhtml_hi_limit=50 --rc genhtml_med_limit=35
       # coverage rate limits for function coverage
       --rc genhtml_function_hi_limit=80 --rc genhtml_function_med_limit=50
-      --no-branch-coverage --title "${PROJECT_NAME}" app.run
+      --branch-coverage --title "${PROJECT_NAME}" app.run
     COMMENT "Running lcov"
     VERBATIM
   )
