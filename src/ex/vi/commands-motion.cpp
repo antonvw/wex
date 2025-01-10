@@ -2,7 +2,7 @@
 // Name:      commands-motion.cpp
 // Purpose:   Implementation of wex::vi::commands_motion
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -606,9 +606,8 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
     filter_count(command);
   }
 
-  const auto& it = std::find_if(
-    m_motion_commands.begin(),
-    m_motion_commands.end(),
+  const auto& it = std::ranges::find_if(
+    m_motion_commands,
     [&](auto const& e)
     {
       return std::any_of(

@@ -2,7 +2,7 @@
 // Name:      lexer.cpp
 // Purpose:   Implementation of wex::lexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2024 Anton van Wezenbeek
+// Copyright: (c) 2008-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -26,9 +26,8 @@ int convert_int_attrib(
   const std::vector<std::pair<std::string, int>>& v,
   const std::string&                              text)
 {
-  if (const auto& it = std::find_if(
-        v.begin(),
-        v.end(),
+  if (const auto& it = std::ranges::find_if(
+        v,
         [text](const auto& p)
         {
           return text == p.first;
@@ -297,9 +296,8 @@ bool wex::lexer::apply() const
 
 int wex::lexer::attrib(const std::string& name) const
 {
-  const auto& a = std::find_if(
-    m_attribs.begin(),
-    m_attribs.end(),
+  const auto& a = std::ranges::find_if(
+    m_attribs,
     [&](auto const& i)
     {
       return std::get<0>(i) == name;
@@ -330,9 +328,8 @@ void wex::lexer::auto_match(const std::string& lexer)
         else
         {
           // Then, a partial using find_if.
-          if (const auto& style = std::find_if(
-                lexers::get()->theme_macros().begin(),
-                lexers::get()->theme_macros().end(),
+          if (const auto& style = std::ranges::find_if(
+                lexers::get()->theme_macros(),
                 [&](auto const& e)
                 {
                   return it.first.contains(e.first);
@@ -824,9 +821,8 @@ bool wex::lexer::set(const lexer& lexer, bool fold)
 
 void wex::lexer::set_property(const std::string& name, const std::string& value)
 {
-  if (const auto& it = std::find_if(
-        m_properties.begin(),
-        m_properties.end(),
+  if (const auto& it = std::ranges::find_if(
+        m_properties,
         [name](auto const& e)
         {
           return e.name() == name;

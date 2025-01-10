@@ -237,9 +237,8 @@ const std::string wex::config::get_first_of(const std::string& def) const
 
   if (is_special_ui(l.front()))
   {
-    const auto& it(std::find_if(
-      l.begin(),
-      l.end(),
+    const auto& it(std::ranges::find_if(
+      l,
       [](auto const& item)
       {
         return item.ends_with(":1");

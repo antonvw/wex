@@ -2,7 +2,7 @@
 // Name:      comands-other.cpp
 // Purpose:   Implementation of wex::vi::commands_other
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -492,9 +492,8 @@ bool wex::vi::other_command(std::string& command)
 
   filter_count(command);
 
-  if (const auto& it = std::find_if(
-        m_other_commands.begin(),
-        m_other_commands.end(),
+  if (const auto& it = std::ranges::find_if(
+        m_other_commands,
         [command](auto const& e)
         {
           if (!isalpha(e.first.front()))

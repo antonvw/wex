@@ -2,7 +2,7 @@
 // Name:      addressrange.cpp
 // Purpose:   Implementation of class wex::addressrange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2024 Anton van Wezenbeek
+// Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -584,9 +584,8 @@ bool wex::addressrange::parse(const command_parser& cp, info_message_t& im)
 
   im = info_message_t::NONE;
 
-  if (const auto& it = std::find_if(
-        m_commands.begin(),
-        m_commands.end(),
+  if (const auto& it = std::ranges::find_if(
+        m_commands,
         [&](auto const& e)
         {
           return std::any_of(
