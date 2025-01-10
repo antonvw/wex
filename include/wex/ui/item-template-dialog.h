@@ -2,7 +2,7 @@
 // Name:      item-template-dialog.h
 // Purpose:   Declaration of wex::item_template_dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -191,9 +191,8 @@ void wex::item_template_dialog<T>::click(const wxCommandEvent& event) const
 template <class T>
 const T wex::item_template_dialog<T>::find(const std::string& label) const
 {
-  if (const auto& it = std::find_if(
-        m_items.begin(),
-        m_items.end(),
+  if (const auto& it = std::ranges::find_if(
+        m_items,
         [label](const auto& p)
         {
           return label == p.label();

@@ -2,7 +2,7 @@
 // Name:      vcs.cpp
 // Purpose:   Implementation of wex::vcs class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -47,9 +47,8 @@ vcs::store_t::iterator find_entry(vcs::store_t* store, const path& p)
   {
     if (!p.empty())
     {
-      if (auto it = std::find_if(
-            store->begin(),
-            store->end(),
+      if (auto it = std::ranges::find_if(
+            *store,
             [p](const auto& i)
             {
               const factory::vcs_admin va(i.admin_dir(), p);

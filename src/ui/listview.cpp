@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of wex::listview and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -649,9 +649,8 @@ unsigned int wex::listview::get_art_id(const wxArtID& artid)
 
 wex::column wex::listview::get_column(const std::string& name) const
 {
-  if (const auto& it = std::find_if(
-        m_columns.begin(),
-        m_columns.end(),
+  if (const auto& it = std::ranges::find_if(
+        m_columns,
         [name](auto const& it)
         {
           return it.GetText() == name;

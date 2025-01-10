@@ -2,7 +2,7 @@
 // Name:      commands-ex.cpp
 // Purpose:   Implementation of class wex::ex::commands_ex
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <charconv>
@@ -405,9 +405,8 @@ wex::ex::commands_t wex::ex::commands_ex()
 
 bool wex::ex::command_handle(const std::string& command) const
 {
-  const auto& it = std::find_if(
-    m_commands.begin(),
-    m_commands.end(),
+  const auto& it = std::ranges::find_if(
+    m_commands,
     [command](auto const& e)
     {
       return std::regex_search(command, std::regex(e.first));

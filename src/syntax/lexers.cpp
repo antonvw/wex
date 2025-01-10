@@ -2,7 +2,7 @@
 // Name:      lexers.cpp
 // Purpose:   Implementation of wex::lexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2024 Anton van Wezenbeek
+// Copyright: (c) 2008-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/util.h>
@@ -91,7 +91,7 @@ void wex::lexers::apply_global_styles(factory::stc* stc)
     m_default_colours["caretforeground"] = "grey"; // otherwise white was chosen
     m_default_colours["caretlinebackground"] =
       stc->GetCaretLineBackground().GetAsString();
-    m_default_colours["edge"] = stc->GetEdgeColour().GetAsString();
+    m_default_colours["edge"]      = stc->GetEdgeColour().GetAsString();
     m_theme_colours[std::string()] = m_default_colours;
   }
 
@@ -226,9 +226,8 @@ const wex::lexer& wex::lexers::find(const std::string& name) const
 {
   assert(!m_lexers.empty());
 
-  const auto& it = std::find_if(
-    m_lexers.begin(),
-    m_lexers.end(),
+  const auto& it = std::ranges::find_if(
+    m_lexers,
     [name](auto const& e)
     {
       return e.display_lexer() == name;
@@ -242,9 +241,8 @@ wex::lexers::find_by_filename(const std::string& filename) const
 {
   assert(!m_lexers.empty());
 
-  const auto& it = std::find_if(
-    m_lexers.begin(),
-    m_lexers.end(),
+  const auto& it = std::ranges::find_if(
+    m_lexers,
     [filename](auto const& e)
     {
       return !e.extensions().empty() &&

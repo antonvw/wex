@@ -33,9 +33,8 @@ const std::string def_switch(const std::vector<std::string>& v)
 template <typename T>
 const auto find_if(const T& t, const std::vector<std::string>& v)
 {
-  return std::find_if(
-    t.begin(),
-    t.end(),
+  return std::ranges::find_if(
+    t,
     [v](auto const& i)
     {
       return v[0] == find_before(i.first[0], ",") ||
@@ -107,16 +106,16 @@ std::string get_switch(
 }
 }; // namespace wex
 
-#define ADD(TYPE, CONV)                        \
-  if (!def_option(it.first).empty())           \
-    m_parser->m_desc.add_options()(            \
-      it.first[p_n].c_str(),                   \
-      po::value<TYPE>()->implicit_value(CONV), \
-      it.first[p_d].c_str());                  \
-  else                                         \
-    m_parser->m_desc.add_options()(            \
-      it.first[p_n].c_str(),                   \
-      po::value<TYPE>(),                       \
+#define ADD(TYPE, CONV)                                                        \
+  if (!def_option(it.first).empty())                                           \
+    m_parser->m_desc.add_options()(                                            \
+      it.first[p_n].c_str(),                                                   \
+      po::value<TYPE>()->implicit_value(CONV),                                 \
+      it.first[p_d].c_str());                                                  \
+  else                                                                         \
+    m_parser->m_desc.add_options()(                                            \
+      it.first[p_n].c_str(),                                                   \
+      po::value<TYPE>(),                                                       \
       it.first[p_d].c_str());
 
 wex::cmdline::cmdline(
@@ -323,7 +322,9 @@ bool wex::cmdline::parse_set(data::cmdline& data) const
       [&, this](const regex::match_t& m)
       {
         if (set_no_option(m, data.save()))
+        {
           found = true;
+        }
       }},
      // [option? ...]
      {"([a-z0-9]+)[ \t]*\\?(.*)",
@@ -341,7 +342,9 @@ bool wex::cmdline::parse_set(data::cmdline& data) const
       [&, this](const regex::match_t& m)
       {
         if (set_option(m, data.save()))
+        {
           found = true;
+        }
       }}});
 
   try
@@ -393,19 +396,25 @@ bool wex::cmdline::set_option(const std::vector<std::string>& v, bool save)
           case wex::cmdline::FLOAT:
             m_cfg->item(it.first[1]).set(std::stof(val));
             if (it.second.second != nullptr)
+            {
               it.second.second(std::stof(val));
+            }
             return true;
 
           case wex::cmdline::INT:
             m_cfg->item(it.first[1]).set(std::stoi(val));
             if (it.second.second != nullptr)
+            {
               it.second.second(std::stoi(val));
+            }
             return true;
 
           case wex::cmdline::STRING:
             m_cfg->item(it.first[1]).set(val);
             if (it.second.second != nullptr)
+            {
               it.second.second(val);
+            }
             return true;
 
           default:

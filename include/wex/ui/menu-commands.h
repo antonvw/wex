@@ -2,7 +2,7 @@
 // Name:      menu-commands.h
 // Purpose:   Declaration of class wex::menu_commands
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -44,9 +44,8 @@ public:
   /// or empty command if name could not be found.
   const T find(const std::string& name) const
   {
-    if (const auto& it = std::find_if(
-          m_commands.begin(),
-          m_commands.end(),
+    if (const auto& it = std::ranges::find_if(
+          m_commands,
           [name](const auto& p)
           {
             return name == p.get_command();
