@@ -39,6 +39,7 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
     COMMAND
       genhtml
       # coverage rate limits for line coverage
+      --ignore-errors mismatch
       --rc genhtml_hi_limit=50 --rc genhtml_med_limit=35
       # coverage rate limits for function coverage
       --rc genhtml_function_hi_limit=80 --rc genhtml_function_med_limit=50
