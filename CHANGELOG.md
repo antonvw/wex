@@ -30,6 +30,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- fixed possible infinite loop in bash
 - fixed findbar
 - openening files that contain a space in the filename
 - 2addr range for global commands
