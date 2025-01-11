@@ -15,8 +15,9 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
   add_custom_target(
     lcov-prep
     # prepare initial tracefile
-    lcov --base-directory ./ --gcov-tool ${wexGCOV_USE} --capture --rc
-    lcov_branch_coverage=1 --initial --directory ./ --output-file app.base
+    lcov --ignore-errors mismatch --base-directory ./ --gcov-tool ${wexGCOV_USE}
+    --capture --rc lcov_branch_coverage=1 --initial --directory ./ --output-file
+    app.base
   )
 
   add_custom_target(
@@ -33,14 +34,14 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
     COMMAND
       lcov --gcov-tool ${wexGCOV_USE} --remove app.run "*boost/*" "*/usr/*"
       "*sample*" "*external/*" "*/test/*" "*factory/grid*"
-      "*include/wex/factory/text-window.h" --rc lcov_branch_coverage=1 --output-file
-      app.run
+      "*include/wex/factory/text-window.h" --rc lcov_branch_coverage=1
+      --output-file app.run
     # generate local files
     COMMAND
       genhtml
       # coverage rate limits for line coverage
-      --ignore-errors mismatch
-      --rc genhtml_hi_limit=50 --rc genhtml_med_limit=35
+      --ignore-errors mismatch --rc genhtml_hi_limit=50 --rc
+      genhtml_med_limit=35
       # coverage rate limits for function coverage
       --rc genhtml_function_hi_limit=80 --rc genhtml_function_med_limit=50
       --branch-coverage --title "${PROJECT_NAME}" app.run
