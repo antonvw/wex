@@ -12,6 +12,19 @@ index 4517df0c..80a74a53 100644
  namespace {
  
  #define HERE_DELIM_MAX			256
+diff --git a/lexlib/StyleContext.h b/lexlib/StyleContext.h
+index 75e5c77f..b3b6933b 100644
+--- a/lexlib/StyleContext.h
++++ b/lexlib/StyleContext.h
+@@ -149,7 +149,7 @@ public:
+ 	}
+ 	bool MatchLineEnd() const noexcept {
+ 		const Sci_Position currentPosSigned = currentPos;
+-		return currentPosSigned == lineEnd;
++		return currentPosSigned == lineEnd || atLineEnd;
+ 	}
+ 	bool Match(char ch0) const noexcept {
+ 		const unsigned char uch0 = ch0;
 diff --git a/src/Lexilla.cxx b/src/Lexilla.cxx
 index 4a0ce4e5..ddd6ad3b 100644
 --- a/src/Lexilla.cxx
