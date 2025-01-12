@@ -15,8 +15,9 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
   add_custom_target(
     lcov-prep
     # prepare initial tracefile
-    lcov --ignore-errors mismatch --base-directory ./ --gcov-tool ${wexGCOV_USE}
-    --capture --rc lcov_branch_coverage=1 --initial --directory ./ --output-file
+    lcov --ignore-errors mismatch --ignore-errors empty,empty --rc
+    geninfo_unexecuted_blocks=1 --base-directory ./ --gcov-tool ${wexGCOV_USE}
+    --capture --rc branch_coverage=1 --initial --directory ./ --output-file
     app.base
   )
 
@@ -25,17 +26,17 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
     # capture results
     COMMAND
       lcov --base-directory ./ --gcov-tool ${wexGCOV_USE} --capture --rc
-      lcov_branch_coverage=1 --directory ./ --output-file app.run
+      branch_coverage=1 --directory ./ --output-file app.run
     # combine tracefiles
     COMMAND
       lcov --gcov-tool ${wexGCOV_USE} --add-tracefile app.base --rc
-      lcov_branch_coverage=1 --add-tracefile app.run --output-file app.run
+      branch_coverage=1 --add-tracefile app.run --output-file app.run
     # remove output that we are not interested in
     COMMAND
       lcov --gcov-tool ${wexGCOV_USE} --remove app.run "*boost/*" "*/usr/*"
       "*sample*" "*external/*" "*/test/*" "*factory/grid*"
-      "*include/wex/factory/text-window.h" --rc lcov_branch_coverage=1
-      --output-file app.run
+      "*include/wex/factory/text-window.h" --rc branch_coverage=1 --output-file
+      app.run
     # generate local files
     COMMAND
       genhtml
