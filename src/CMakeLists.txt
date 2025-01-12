@@ -25,8 +25,9 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
     lcov
     # capture results
     COMMAND
-      lcov --base-directory ./ --gcov-tool ${wexGCOV_USE} --capture --rc
-      branch_coverage=1 --directory ./ --output-file app.run
+      lcov --ignore-errors mismatch --ignore-errors empty,empty --rc
+      geninfo_unexecuted_blocks=1 --base-directory ./ --gcov-tool ${wexGCOV_USE}
+      --capture --rc branch_coverage=1 --directory ./ --output-file app.run
     # combine tracefiles
     COMMAND
       lcov --gcov-tool ${wexGCOV_USE} --add-tracefile app.base --rc
