@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - listview standard column sizes are configurable
 - wex::quoted uses std::quoted and includes a delim character
 - stc context menu and properties only shown if no selection active
+- removed get_word, use istringstream instead
 
 ### Fixed
 

@@ -2,7 +2,7 @@
 // Name:      test-frame.cpp
 // Purpose:   Implementation for wex del unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -251,7 +251,7 @@ TEST_CASE("wex::del::frame")
   {
     wex::data::window data;
     data.button(wxOK | wxCANCEL | wxAPPLY);
-    const int ID_VCS_LOG = 10; // in wex-menus.xml
+    const int ID_VCS_LOG = 11; // in wex-menus.xml
     REQUIRE(del_frame()
               ->vcs_execute(ID_VCS_LOG, {wex::test::get_path("test.h")}, data));
     del_frame()->vcs_destroy_dialog();

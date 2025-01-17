@@ -17,6 +17,7 @@
 
 #include <algorithm>
 #include <charconv>
+#include <sstream>
 
 #include "lexer-attribute-data.h"
 
@@ -200,13 +201,13 @@ const std::string wex::lexer::align_text(
   const auto& header_with_spaces =
     (header.empty()) ? std::string() : std::string(header.size(), ' ');
 
-  bool        at_begin = true;
-  std::string in(lines), line(header), out;
+  bool               at_begin = true;
+  std::string        line(header), out, word, mylines(lines);
+  std::istringstream in(mylines);
 
-  while (!in.empty())
+  while (in >> word)
   {
-    if (const auto& word = get_word(in);
-        line.size() + 1 + word.size() > line_length)
+    if (line.size() + 1 + word.size() > line_length)
     {
       out +=
         make_single_line_comment(line, fill_out_with_space, fill_out) + "\n";

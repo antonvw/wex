@@ -195,31 +195,6 @@ const std::string wex::get_string_set(
     });
 }
 
-const std::string wex::get_word(std::string& text)
-{
-  boost::tokenizer<boost::char_separator<char>> tok(
-    text,
-    boost::char_separator<char>(" \t\n"));
-
-  std::string token;
-  boost::algorithm::trim_left(text);
-
-  if (text.empty())
-  {
-    return text;
-  }
-
-  if (auto it = tok.begin(); it != tok.end())
-  {
-    token = *it;
-    text  = text.substr(token.size());
-  }
-
-  boost::algorithm::trim_left(text);
-
-  return token;
-}
-
 int wex::icompare(const std::string& text1, const std::string& text2)
 {
   return boost::algorithm::to_upper_copy(text1).compare(

@@ -76,9 +76,6 @@ const std::string get_string_set(
   size_t                       min_size = 0,
   const std::string&           prefix   = std::string());
 
-/// Returns a word from a string.
-const std::string get_word(std::string& text);
-
 /// Returns 0 if both texts are equal, ignoring case.
 int icompare(const std::string& text1, const std::string& text2);
 
