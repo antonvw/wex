@@ -300,10 +300,12 @@ int wex::vcs_entry::system(const process_data& data)
   }
   else
   {
-    std::string cmd(data.exe());
-    args = cmd;
+    std::istringstream cmd(data.exe());
+    args = cmd.str();
+    std::string word;
+    cmd >> word;
 
-    if (const vcs_command & vc(find(get_word(cmd))); !vc.get_command().empty())
+    if (const vcs_command & vc(find(word)); !vc.get_command().empty())
     {
       args += " " + vc.flags();
     }

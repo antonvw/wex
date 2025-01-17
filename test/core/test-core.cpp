@@ -2,7 +2,7 @@
 // Name:      test-core.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -80,27 +80,6 @@ TEST_CASE("wex::core")
   {
     REQUIRE(wex::get_string_set({"one", "two", "three"}) == "one three two ");
     REQUIRE(wex::get_string_set({"one", "two", "three"}, 4) == "three ");
-  }
-
-  SUBCASE("get_word")
-  {
-    std::string word("this is a test");
-    REQUIRE(wex::get_word(word) == "this");
-    REQUIRE(word == "is a test");
-    REQUIRE(wex::get_word(word) == "is");
-    REQUIRE(wex::get_word(word) == "a");
-
-    std::string other("    code improvements");
-    REQUIRE(wex::get_word(other) == "code");
-    REQUIRE(other == "improvements");
-
-    std::string spaces("    ");
-    REQUIRE(wex::get_word(spaces).empty());
-    REQUIRE(spaces.empty());
-
-    std::string with_nl("test\ntest2");
-    REQUIRE(wex::get_word(with_nl) == "test");
-    REQUIRE(wex::get_word(with_nl) == "test2");
   }
 
   SUBCASE("icompare")
