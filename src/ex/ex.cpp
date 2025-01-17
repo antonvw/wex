@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::ex
 //            https://pubs.opengroup.org/onlinepubs/9799919799/utilities/ex.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012-2024 Anton van Wezenbeek
+// Copyright: (c) 2012-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
@@ -228,12 +228,9 @@ bool wex::ex::marker_add(char marker, int line)
     if (const auto& it = m_marker_numbers.find(marker);
         it == m_marker_numbers.end())
     {
-      // We have symbol:
-      // 0: non-char ex marker
-      // 1: change marker
-      // 2: breakpoint marker
-      // 3..: character markers (all markers in m_marker_identifiers)
-      const auto marker_offset = 3;
+      // Start character markers (all markers in m_marker_identifiers)
+      // after the other ones.
+      const auto marker_offset = lexers::get()->marker_max_no_used() + 1;
       const auto marker_number = m_marker_identifiers.size() + marker_offset;
 
       get_stc()->MarkerDefine(

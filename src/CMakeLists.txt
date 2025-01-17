@@ -38,6 +38,12 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
       "*external/*" "*/test/*" "*factory/grid*"
       "*include/wex/factory/text-window.h" --rc branch_coverage=1 --output-file
       app.run
+    COMMENT "Running lcov"
+    VERBATIM
+  )
+
+  add_custom_target(
+    genhtml
     # generate local files
     COMMAND
       genhtml
@@ -47,7 +53,7 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
       # coverage rate limits for function coverage
       --rc genhtml_function_hi_limit=80 --rc genhtml_function_med_limit=50
       --branch-coverage --title "${PROJECT_NAME}" app.run
-    COMMENT "Running lcov"
+    COMMENT "Running genhtml"
     VERBATIM
   )
 endif()
