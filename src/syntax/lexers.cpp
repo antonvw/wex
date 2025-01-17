@@ -431,6 +431,8 @@ bool wex::lexers::load_document_init()
     m_theme_colours.clear();
     m_theme_macros.clear();
 
+    m_max_no_marker = -1;
+
     m_lexers.emplace_back();
   }
   else
@@ -504,6 +506,11 @@ void wex::lexers::parse_node_global(const pugi::xml_node& node)
       if (const wex::marker marker(child); marker.is_ok())
       {
         m_markers.insert(marker);
+
+        if (marker.number() < wxSTC_MARKNUM_FOLDEREND)
+        {
+          m_max_no_marker = std::max(m_max_no_marker, marker.number());
+        }
       }
     }
     else if (strcmp(child.name(), "properties") == 0)

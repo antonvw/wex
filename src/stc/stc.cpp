@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2024 Anton van Wezenbeek
+// Copyright: (c) 2008-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -440,6 +440,8 @@ bool wex::stc::mark_diff(size_t line, const marker& marker)
     m_marker_identifiers[line] = id;
     return true;
   }
+
+  log("could not add diff marker") << marker.number() << "to line:" << line;
 
   return false;
 }

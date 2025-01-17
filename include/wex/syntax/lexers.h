@@ -2,7 +2,7 @@
 // Name:      lexers.h
 // Purpose:   Declaration of wex::lexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2024 Anton van Wezenbeek
+// Copyright: (c) 2008-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -134,6 +134,10 @@ public:
     return m_markers.find(marker) != m_markers.end();
   };
 
+  /// Returns max number of marker read from the lexers file.
+  /// The markers used by folding are not included.
+  int marker_max_no_used() const { return m_max_no_marker; }
+
   /// Returns the path.
   const auto& path() const { return m_path; }
 
@@ -198,7 +202,7 @@ private:
 
   int m_style_no_text_margin{-1}, m_style_no_text_margin_day{-1},
     m_style_no_text_margin_week{-1}, m_style_no_text_margin_month{-1},
-    m_style_no_text_margin_year{-1};
+    m_style_no_text_margin_year{-1}, m_max_no_marker{-1};
 
   bool m_is_loaded{false};
 
