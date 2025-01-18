@@ -2,7 +2,7 @@
 // Name:      macros.cpp
 // Purpose:   Implementation of class wex::macros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -379,11 +379,11 @@ bool wex::macros::save_macro(const std::string& macro)
       }
 
       auto node_macro = m_doc.document_element().append_child("macro");
-      node_macro.append_attribute("name") = macro.c_str();
+      node_macro.append_attribute("name") = macro;
 
       for (const auto& it : v)
       {
-        node_macro.append_child("command").text().set(it.c_str());
+        node_macro.append_child("command").text().set(it);
       }
 
       m_is_modified = true;
@@ -421,9 +421,9 @@ void wex::macros::set(
     }
     else
     {
-      auto child = m_doc.document_element().append_child(xpath.c_str());
-      child.append_attribute("name") = name.c_str();
-      child.text().set(value.c_str());
+      auto child = m_doc.document_element().append_child(xpath);
+      child.append_attribute("name") = name;
+      child.text().set(value);
 
       container[type_to_value<S>(name).get()] = value;
     }

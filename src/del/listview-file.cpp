@@ -2,7 +2,7 @@
 // Name:      listview-file.cpp
 // Purpose:   Implementation of class wex::del::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2024 Anton van Wezenbeek
+// Copyright: (c) 2010-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <pugixml.hpp>
@@ -255,7 +255,7 @@ void wex::del::file::do_file_save(bool save_as)
 
     if (fn.dir_exists())
     {
-      node.append_attribute("extensions") = get_item_text(i, _("Type")).c_str();
+      node.append_attribute("extensions") = get_item_text(i, _("Type"));
     }
   }
 
