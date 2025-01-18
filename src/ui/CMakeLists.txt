@@ -1,4 +1,12 @@
-file(GLOB SRCS "*.cpp")
+if(wexBUILD_TIDY)
+  file(GLOB SRCS "*.cpp")
+else()
+  file(
+    GLOB SRCS
+    "*.cpp"
+    "../../external/wxMaterialDesignArtProvider/MaterialDesign/*.cpp"
+  )
+endif()
 
 if(wexENABLE_ODBC)
   find_package(ODBC)
