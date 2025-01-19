@@ -2,7 +2,7 @@
 // Name:      addressrange-mark.cpp
 // Purpose:   Implementation of class wex::addressrange_mark
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
@@ -22,7 +22,6 @@ wex::addressrange_mark::addressrange_mark(
   , m_undo(m_stc)
   , m_data(subs)
 {
-  m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
 }
 
 wex::addressrange_mark::~addressrange_mark()
@@ -41,7 +40,9 @@ void wex::addressrange_mark::end(bool indicator_clear)
 
   if (indicator_clear)
   {
-    m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
+    m_stc->IndicatorClearRange(
+      m_stc->PositionFromLine(m_ex->marker_line('#')),
+      m_stc->PositionFromLine(m_ex->marker_line('$') + m_corrected));
   }
 
   if (m_ar.is_selection())
@@ -123,6 +124,10 @@ bool wex::addressrange_mark::set()
   }
 
   set_target(m_stc->PositionFromLine(m_ex->marker_line('#')));
+
+  m_stc->IndicatorClearRange(
+    m_stc->PositionFromLine(m_ex->marker_line('#')),
+    m_stc->PositionFromLine(m_ex->marker_line('$') + m_corrected));
 
   m_last_range_line = false;
 

@@ -2,7 +2,7 @@
 // Name:      data/test-substitute.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/substitute.h>
@@ -60,6 +60,7 @@ TEST_CASE("wex::data::substitute")
     wex::data::substitute sub;
     REQUIRE(!sub.set_global("xxyy"));
     REQUIRE(!sub.set_global("u/xx/yy"));
+    REQUIRE(!sub.is_clear());
     REQUIRE(sub.set_global("g/xx/yy"));
     REQUIRE(!sub.is_inverse());
     REQUIRE(sub.is_global_command());
@@ -73,6 +74,8 @@ TEST_CASE("wex::data::substitute")
     REQUIRE(sub.set_global("global!/xx/yy"));
     REQUIRE(sub.is_inverse());
     REQUIRE(sub.is_global_command());
+    REQUIRE(sub.set_global("g//"));
+    REQUIRE(sub.is_clear());
   }
 
   SUBCASE("set_options")

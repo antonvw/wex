@@ -182,7 +182,7 @@ bool wex::global_env::global(const data::substitute& data)
     }
   }
 
-  am.end(has_commands());
+  am.end(data.is_clear());
 
   return true;
 }
