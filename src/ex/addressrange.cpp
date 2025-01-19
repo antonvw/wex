@@ -376,6 +376,12 @@ bool wex::addressrange::general(
 
 bool wex::addressrange::global(const command_parser& cp) const
 {
+  if (!m_stc->is_visual())
+  {
+    m_ex->frame()->show_ex_message("not supported in ex mode");
+    return false;
+  }
+
   if (!m_substitute.set_global(cp.command() + cp.text()))
   {
     return false;
