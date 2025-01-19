@@ -381,12 +381,6 @@ bool wex::addressrange::global(const command_parser& cp) const
     return false;
   }
 
-  if (m_substitute.is_clear())
-  {
-    m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
-    return true;
-  }
-
   /// Performs the global command (g) on this range.
   /// normally performs command on each match, if inverse
   /// performs (v) command if line does not match
