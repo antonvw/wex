@@ -778,7 +778,7 @@ void wex::listview::item_activated(long item_number)
     {
       wxDirDialog dir_dlg(
         this,
-        _(wxDirSelectorPromptStr),
+        wxDirSelectorPromptStr,
         GetItemText(item_number),
         wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
 
@@ -1027,7 +1027,7 @@ bool wex::listview::on_command(const wxCommandEvent& event)
 
       wxDirDialog dir_dlg(
         this,
-        _(wxDirSelectorPromptStr),
+        wxDirSelectorPromptStr,
         defaultPath,
         wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
 
