@@ -2,7 +2,7 @@
 // Name:      style.cpp
 // Purpose:   Implementation of wex::style class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2024 Anton van Wezenbeek
+// Copyright: (c) 2010-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -56,7 +56,10 @@ bool wex::style::apply(wxStyledTextCtrl* stc) const
   // If this is the only style, reset stc.
   if (m_no.empty())
   {
-    stc->StyleResetDefault();
+    if (!lexers::get()->get_lexers().empty())
+    {
+      stc->StyleResetDefault();
+    }
   }
   else
   {

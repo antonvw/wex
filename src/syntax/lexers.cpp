@@ -23,7 +23,6 @@
 wex::lexers::lexers()
   : m_path(wex::path(config::dir(), "wex-lexers.xml"))
   , m_path_macro(wex::path(config::dir(), "wex-lexers-macro.xml"))
-  , m_theme(config("theme").get())
   , m_reflect(
       {REFLECT_ADD("default colours", m_default_colours.size()),
        REFLECT_ADD("global properties", m_global_properties.size()),
@@ -285,12 +284,18 @@ const wex::lexer& wex::lexers::find_by_text(const std::string& text) const
   return m_lexers.front();
 }
 
-wex::lexers* wex::lexers::get(bool createOnDemand)
+wex::lexers* wex::lexers::get(bool create_on_demand)
 {
-  if (m_self == nullptr && createOnDemand)
+  if (m_self == nullptr && create_on_demand)
   {
     m_self = new lexers();
-    m_self->load_document();
+
+    if (m_is_initial_load)
+    {
+      m_theme = config("theme").get();
+
+      m_self->load_document();
+    }
   }
 
   return m_self;
