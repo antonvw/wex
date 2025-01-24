@@ -85,6 +85,8 @@ bool wex::app::OnInit()
   }
 
   wxTheClipboard->UsePrimarySelection(true);
+  
+  SetAppearance(Appearance::Dark);
 
   return true; // do not call base class: we have our own cmd line processing
 }

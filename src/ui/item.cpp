@@ -2,7 +2,7 @@
 // Name:      item.cpp
 // Purpose:   Implementation of wex::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <charconv>
@@ -299,7 +299,7 @@ wxFlexGridSizer* wex::item::add_browse_button(wxSizer* sizer) const
           {
             wxDirDialog dlg(
               window,
-              _(wxDirSelectorPromptStr),
+              wxDirSelectorPromptStr,
               cb->GetValue(),
               wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
             DO_DIALOG;
@@ -323,7 +323,7 @@ wxFlexGridSizer* wex::item::add_browse_button(wxSizer* sizer) const
             const path   path(cb->GetValue());
             wxFileDialog dlg(
               window,
-              _(wxFileSelectorPromptStr),
+              wxFileSelectorPromptStr,
               path.parent_path(),
               path.filename(),
               wxFileSelectorDefaultWildcardStr,
