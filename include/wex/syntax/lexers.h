@@ -45,8 +45,11 @@ public:
 
   /// Returns the lexers object.
   /// If this is the first invocation, and createOnDemand is true,
-  /// it also invokes load_document.
-  static lexers* get(bool createOnDemand = true);
+  /// it also invokes load_document (unless is_initial_load(false) was invoked).
+  static lexers* get(bool create_on_demand = true);
+
+  /// Sets the initial loading of document.
+  static void is_initial_load(bool load) { m_is_initial_load = load; };
 
   /// Sets the object as the current one, returns the pointer
   /// to the previous current object
@@ -197,8 +200,7 @@ private:
 
   const wex::path m_path, m_path_macro;
 
-  std::string m_folding_background_colour, m_folding_foreground_colour, m_theme,
-    m_theme_previous;
+  std::string m_folding_background_colour, m_folding_foreground_colour;
 
   int m_style_no_text_margin{-1}, m_style_no_text_margin_day{-1},
     m_style_no_text_margin_week{-1}, m_style_no_text_margin_month{-1},
@@ -208,6 +210,9 @@ private:
 
   reflection m_reflect;
 
-  static inline lexers* m_self = nullptr;
+  static inline std::string m_theme, m_theme_previous;
+
+  static inline lexers* m_self            = nullptr;
+  static inline bool    m_is_initial_load = true;
 };
 }; // namespace wex

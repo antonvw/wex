@@ -2,7 +2,7 @@
 // Name:      cmdline-imp.cpp
 // Purpose:   Implementation of wex::cmdline_imp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/cmdline.h>
@@ -129,7 +129,10 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
 
   if (m_vm.count("quit"))
   {
-    parse_quit();
+    if (!parse_quit())
+    {
+      return false;
+    }
   }
 
   if (m_vm.count("scriptout"))
@@ -240,7 +243,7 @@ void wex::cmdline_imp::parse_help(data::cmdline& data)
   }
 }
 
-void wex::cmdline_imp::parse_quit()
+bool wex::cmdline_imp::parse_quit()
 {
   if (const auto quit(m_vm["quit"].as<int>()); quit > 0)
   {
@@ -267,5 +270,15 @@ void wex::cmdline_imp::parse_quit()
         }
       },
       id_quit);
+
+    return true;
   }
+  else if (quit == 0)
+  {
+    return true;
+  }
+
+  std::cout << "number of milliseconds should be positive\n";
+
+  return false;
 }

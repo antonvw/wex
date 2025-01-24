@@ -8,14 +8,28 @@
 #include <wex/syntax/lexers.h>
 #include <wex/test/test.h>
 
-// see also test-stc, test-syntax
+// see also test-stc
 
 TEST_CASE("wex::lexers")
 {
   SUBCASE("get")
   {
-    REQUIRE(wex::lexers::get() != nullptr);
-    REQUIRE(!wex::lexers::get()->get_lexers().empty());
+    auto* l = wex::lexers::set(nullptr);
+    REQUIRE(l != nullptr);
+    REQUIRE(l->get_lexers().size() > 1);
+    REQUIRE(wex::lexers::get(false) == nullptr);
+
+    wex::lexers::is_initial_load(false);
+    REQUIRE(wex::lexers::get() != l);
+    REQUIRE(wex::lexers::get()->get_lexers().size() == 1);
+
+    wex::lexers::is_initial_load(true);
+    auto* m = wex::lexers::set(nullptr);
+    REQUIRE(m != nullptr);
+    REQUIRE(wex::lexers::get()->get_lexers().size() > 1);
+
+    delete l;
+    delete m;
   }
 
   SUBCASE("apply_default_style")
