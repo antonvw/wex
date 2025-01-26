@@ -2,7 +2,7 @@
 // Name:      config-imp.h
 // Purpose:   Implementation of class wex::config_imp
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -34,7 +34,7 @@ public:
   /// Other methods.
 
   /// Default constructor.
-  config_imp();
+  config_imp() = default;
 
   /// Copy constructor with a possible child item.
   config_imp(const config_imp* c, const std::string& item = std::string());

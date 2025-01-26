@@ -2,7 +2,7 @@
 // Name:      config-imp.cpp
 // Purpose:   Implementation of class wex::config_imp
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/json/src.hpp>
@@ -17,11 +17,6 @@
 
 #include <fstream>
 #include <iomanip>
-
-wex::config_imp::config_imp()
-  : m_json({})
-{
-}
 
 wex::config_imp::config_imp(const config_imp* c, const std::string& item)
   : m_json(c == nullptr ? json::object() : c->m_json)

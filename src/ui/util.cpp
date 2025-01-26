@@ -2,7 +2,7 @@
 // Name:      util.cpp
 // Purpose:   Implementation of wex::ui utils
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2023 Anton van Wezenbeek
+// Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <numeric>
@@ -35,6 +35,10 @@ const std::any get_value_prim(const wex::item* item)
           return (b.second.contains(",")) ? a |= b.first : a;
         }));
     }
+
+    case item::EMPTY:
+      return std::string();
+      break;
 
     default:
       return item->data().initial();
