@@ -2,7 +2,7 @@
 // Name:      reflection.h
 // Purpose:   Declaration of wex::reflection class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023-2024 Anton van Wezenbeek
+// Copyright: (c) 2023-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -46,8 +46,10 @@ public:
     function_t  f;
   } reflection_t;
 
-  /// Constructor, sets all reflection items and log_t.
-  explicit reflection(const std::vector<reflection_t>& v, log_t = log_t::ALL);
+  /// Default constructor, sets all reflection items and log_t.
+  explicit reflection(
+    const std::vector<reflection_t>& v = {},
+    log_t                              = log_t::ALL);
 
   /// Logs all items to a std::stringstream.
   std::stringstream log() const;

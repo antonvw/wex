@@ -2,7 +2,7 @@
 // Name:      item.h
 // Purpose:   Declaration of wex::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2024 Anton van Wezenbeek
+// Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -192,7 +192,7 @@ public:
   static void use_config(bool use) { m_use_config = use; }
 
   /// Default constructor for an EMPTY item.
-  item();
+  item() = default;
 
   /// Constructor for a SPACER item.
   /// The size is the size for the spacer used.
@@ -481,7 +481,7 @@ private:
 
   bool m_is_row_growable = false;
 
-  type_t m_type;
+  type_t m_type {EMPTY};
 
   std::string m_label, m_label_window, m_page;
 

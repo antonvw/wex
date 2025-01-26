@@ -95,11 +95,6 @@ wex::item::item(
   }
 }
 
-wex::item::item()
-  : item(EMPTY)
-{
-}
-
 wex::item::item(int size)
   : item(SPACER)
 {
