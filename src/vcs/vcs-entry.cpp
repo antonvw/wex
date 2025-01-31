@@ -10,6 +10,7 @@
 #include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
+#include <wex/core/log-none.h>
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
 #include <wex/stc/entry-dialog.h>
@@ -201,6 +202,8 @@ bool wex::vcs_entry::execute(
 
 const std::string wex::vcs_entry::get_branch(const std::string& wd) const
 {
+  wex::log_none off;
+
   if (process p; name() == "git" &&
                  p.system(process_data(bin() + " branch").start_dir(wd)) == 0)
   {
