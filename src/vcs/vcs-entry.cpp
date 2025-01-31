@@ -10,8 +10,8 @@
 #include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
-#include <wex/core/log.h>
 #include <wex/core/log-none.h>
+#include <wex/core/log.h>
 #include <wex/core/regex.h>
 #include <wex/stc/entry-dialog.h>
 #include <wex/stc/shell.h>
