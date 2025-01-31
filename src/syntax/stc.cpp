@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wex::syntax::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2024 Anton van Wezenbeek
+// Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -74,6 +74,11 @@ bool wex::syntax::stc::set_indicator(
   int              start,
   int              end)
 {
+  if (!lexers::get()->is_loaded())
+  {
+    return false;
+  }
+
   if (start == -1)
   {
     start = GetTargetStart();

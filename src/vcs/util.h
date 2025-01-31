@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      stc/util.h
+// Name:      vcs/util.h
 // Purpose:   Declaration of util methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -14,4 +14,6 @@ namespace wex
 class stc;
 
 void expand_macro(wex::process_data& data, stc* stc);
+
+bool vcs_diff(const std::string& command);
 }; // namespace wex

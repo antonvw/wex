@@ -1,4 +1,4 @@
-# changelog
+# Changelog
 
 All notable changes to this project will be documented in this file.
 
@@ -10,7 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - added trompeloeil as mocking framework
 - added boost::describe for reflection as well
-- added showing git diff as indicators in stc component
+- added showing git diff as indicators in stc component and option
+  to enable / disable this
 - added robotidy beautifier, and added config page
 - added LISTBOX item that uses a wxListBox
 - addr allows offset, and improvement on single address in addressrange

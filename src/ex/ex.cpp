@@ -198,7 +198,7 @@ bool wex::ex::is_address(const std::string& text)
 
 bool wex::ex::marker_add(char marker, int line)
 {
-  if (m_copy)
+  if (m_copy || !lexers::get()->is_loaded())
   {
     return false;
   }

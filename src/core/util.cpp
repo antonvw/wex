@@ -2,7 +2,7 @@
 // Name:      core/util.cpp
 // Purpose:   Implementation of wex core utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -41,17 +41,24 @@ bool wex::auto_complete_text(
 
 bool wex::browser(const std::string& url)
 {
-  if (const boost::urls::url_view view(url);
-      (view.has_scheme() || view.is_path_absolute()))
+  try
   {
-    if (!wxLaunchDefaultBrowser(url))
+    if (const boost::urls::url_view view(url);
+        (view.has_scheme() || view.is_path_absolute()))
     {
-      log("browser launch") << url;
-      return false;
-    }
+      if (!wxLaunchDefaultBrowser(url))
+      {
+        log("browser launch") << url;
+        return false;
+      }
 
-    log::info("browser") << url;
-    return true;
+      log::info("browser") << url;
+      return true;
+    }
+  }
+  catch (const std::exception&)
+  {
+    // do nothing, see id::stc::open_www.. causes exception boost.url
   }
 
   return false;

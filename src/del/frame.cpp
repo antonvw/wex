@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2024 Anton van Wezenbeek
+// Copyright: (c) 2009-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -948,7 +948,7 @@ bool wex::del::frame::vcs_unified_diff(
   const vcs_entry*    entry,
   const unified_diff* diff)
 {
-  if (!diff->path_vcs().file_exists())
+  if (!lexers::get()->is_loaded() || !diff->path_vcs().file_exists())
   {
     return false;
   }
