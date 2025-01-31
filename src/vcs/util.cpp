@@ -2,12 +2,18 @@
 // Name:      util.cpp
 // Purpose:   Implementation of util methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
+#include <wex/core/config.h>
+#include <wex/core/log.h>
 #include <wex/ex/ex-stream.h>
+#include <wex/factory/frame.h>
 #include <wex/stc/stc.h>
+#include <wex/syntax/lexers.h>
+#include <wex/vcs/unified-diff.h>
+#include <wex/vcs/vcs.h>
 
 #include "util.h"
 
@@ -53,4 +59,65 @@ void wex::expand_macro(wex::process_data& data, stc* stc)
     data.exe(
       get_range(data.exe(), stc->get_current_line(), stc->get_current_line()));
   }
+}
+
+bool wex::vcs_diff(const std::string& command)
+{
+  return command == "diff" &&
+         config(_("vcs.Use unified diff view")).get(true) &&
+         lexers::get()->is_loaded();
+}
+
+bool wex::vcs_execute(
+  factory::frame*          frame,
+  int                      id,
+  const std::vector<path>& files,
+  const data::window&      data)
+{
+  if (files.empty())
+  {
+    return false;
+  }
+
+  if (vcs vcs(files, id); vcs.entry().get_command().is_open())
+  {
+    if (vcs.show_dialog(data) == wxID_OK)
+    {
+      std::for_each(
+        files.begin(),
+        files.end(),
+        [frame, id](const auto& it)
+        {
+          if (wex::vcs vcs({it}, id); vcs.execute())
+          {
+            if (!vcs.entry().std_out().empty())
+            {
+              if (vcs_diff(vcs.entry().get_command().get_command()))
+              {
+                unified_diff(it, &vcs.entry(), frame).parse();
+              }
+              else
+              {
+                frame->open_file_vcs(it, vcs.entry(), data::stc());
+              }
+            }
+            else if (!vcs.entry().std_err().empty())
+            {
+              log() << vcs.entry().std_err();
+            }
+            else
+            {
+              log::status("No output");
+              log::debug("no output from") << vcs.entry().data().exe();
+            }
+          }
+        });
+    }
+  }
+  else
+  {
+    vcs.request();
+  }
+
+  return true;
 }

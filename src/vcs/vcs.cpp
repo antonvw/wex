@@ -13,7 +13,6 @@
 #include <wex/core/log.h>
 #include <wex/ui/item-dialog.h>
 #include <wex/ui/menus.h>
-#include <wex/vcs/unified-diff.h>
 #include <wex/vcs/vcs.h>
 
 #define SET_ENTRY                                                              \
@@ -149,9 +148,11 @@ int wex::vcs::config_dialog(const data::window& par) const
 
   config(_("vcs.Always ask flags")).get(true);
   config(_("vcs.Find includes submodules")).get(false);
+  config(_("vcs.Use unified diff view")).get(true);
 
   v.emplace_back(_("vcs.Always ask flags"), item::CHECKBOX);
   v.emplace_back(_("vcs.Find includes submodules"), item::CHECKBOX);
+  v.emplace_back(_("vcs.Use unified diff view"), item::CHECKBOX);
 
   std::transform(
     m_store->begin() + 1,
@@ -533,58 +534,4 @@ wex::path wex::vcs::toplevel() const
 bool wex::vcs::use() const
 {
   return config("vcs.VCS").get(VCS_AUTO) != VCS_NONE;
-}
-
-bool wex::vcs_execute(
-  factory::frame*          frame,
-  int                      id,
-  const std::vector<path>& files,
-  const data::window&      data)
-{
-  if (files.empty())
-  {
-    return false;
-  }
-
-  if (vcs vcs(files, id); vcs.entry().get_command().is_open())
-  {
-    if (vcs.show_dialog(data) == wxID_OK)
-    {
-      std::for_each(
-        files.begin(),
-        files.end(),
-        [frame, id](const auto& it)
-        {
-          if (wex::vcs vcs({it}, id); vcs.execute())
-          {
-            if (!vcs.entry().std_out().empty())
-            {
-              if (vcs.entry().get_command().get_command() == "diff")
-              {
-                unified_diff(it, &vcs.entry(), frame).parse();
-              }
-              else
-              {
-                frame->open_file_vcs(it, vcs.entry(), data::stc());
-              }
-            }
-            else if (!vcs.entry().std_err().empty())
-            {
-              log() << vcs.entry().std_err();
-            }
-            else
-            {
-              log::status("No output");
-              log::debug("no output from") << vcs.entry().data().exe();
-            }
-          }
-        });
-    }
-  }
-  else
-  {
-    vcs.request();
-  }
-
-  return true;
 }

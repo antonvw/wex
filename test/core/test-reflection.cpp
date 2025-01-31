@@ -2,7 +2,7 @@
 // Name:      test-reflection.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023-2024 Anton van Wezenbeek
+// Copyright: (c) 2023-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/describe.hpp>
@@ -57,7 +57,7 @@ TEST_CASE("wex::reflection")
 {
   SUBCASE("constructor")
   {
-    REQUIRE(wex::reflection({}).log().str().empty());
+    REQUIRE(wex::reflection().log().str().empty());
   }
 
   SUBCASE("boost")

@@ -123,6 +123,9 @@ public:
     return m_indicators.find(indic) != m_indicators.end();
   };
 
+  /// Returns whether lexers document is loaded.
+  bool is_loaded() const { return m_is_loaded; };
+
   /// Returns the keywords for the specified named set of keywords.
   /// Returns empty string if set does not exist.
   const std::string& keywords(const std::string& set) const;
@@ -162,6 +165,8 @@ public:
 
 private:
   explicit lexers();
+
+  void add_required_containers();
 
   void load_document(pugi::xml_document& doc, const wex::path& p);
   void load_document_check();

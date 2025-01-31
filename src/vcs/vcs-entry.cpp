@@ -21,6 +21,8 @@
 #include <wex/vcs/vcs-entry.h>
 #include <wx/app.h>
 
+#include "util.h"
+
 namespace wex
 {
 std::set<wex::path>
@@ -268,7 +270,7 @@ void wex::vcs_entry::show_output(const std::string& caption) const
       vcs_command_stc(get_command(), m_lexer, get_shell());
     }
 
-    if (get_command().get_command() == "diff")
+    if (vcs_diff(get_command().get_command()))
     {
       if (unified_diff ud(
             path(),

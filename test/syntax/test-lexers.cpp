@@ -22,11 +22,17 @@ TEST_CASE("wex::lexers")
     wex::lexers::is_initial_load(false);
     REQUIRE(wex::lexers::get() != l);
     REQUIRE(wex::lexers::get()->get_lexers().size() == 1);
+    REQUIRE(!wex::lexers::get()->is_loaded());
+    REQUIRE(wex::lexers::get()->marker_max_no_used() == -1);
+    REQUIRE(!wex::lexers::get()->indicator_is_loaded(wex::indicator(0)));
+    REQUIRE(!wex::lexers::get()->marker_is_loaded(wex::marker(0)));
+    REQUIRE(!wex::lexers::get()->get_marker(wex::marker(0)).is_ok());
 
     wex::lexers::is_initial_load(true);
     auto* m = wex::lexers::set(nullptr);
     REQUIRE(m != nullptr);
     REQUIRE(wex::lexers::get()->get_lexers().size() > 1);
+    REQUIRE(wex::lexers::get()->is_loaded());
 
     delete l;
     delete m;

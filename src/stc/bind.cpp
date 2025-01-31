@@ -2,7 +2,7 @@
 // Name:      stc/bind.cpp
 // Purpose:   Implementation of class wex::stc method bind_all
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2024 Anton van Wezenbeek
+// Copyright: (c) 2018-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -619,7 +619,7 @@ void wex::stc::build_popup_menu_link(menu& menu)
 
   if (m_data.menu().test(data::stc::MENU_OPEN_WWW) && !sel.empty())
   {
-    menu.append({{}, {id::stc::open_www, _("&Search")}});
+    menu.append({{}, {id::stc::open_www, _("&Browse")}});
   }
 }
 

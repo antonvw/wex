@@ -39,6 +39,17 @@ wex::lexers::lexers()
 {
 }
 
+void wex::lexers::add_required_containers()
+{
+  m_indicators.insert(indicator());
+  m_markers.insert(marker());
+
+  m_keywords[std::string()]      = std::string();
+  m_macros[std::string()]        = name_values_t{};
+  m_theme_colours[std::string()] = m_default_colours;
+  m_theme_macros[std::string()]  = name_values_t{};
+}
+
 void wex::lexers::apply(factory::stc* stc) const
 {
   m_default_style.apply(stc);
@@ -296,6 +307,10 @@ wex::lexers* wex::lexers::get(bool create_on_demand)
 
       m_self->load_document();
     }
+    else
+    {
+      m_self->add_required_containers();
+    }
   }
 
   return m_self;
@@ -413,12 +428,7 @@ void wex::lexers::load_document_check()
 
 bool wex::lexers::load_document_init()
 {
-  // This test is to prevent showing an error if the lexers file does not exist,
-  // as this is not required.
-  if (!m_path.file_exists() || !m_path_macro.file_exists())
-  {
-    return false;
-  }
+  bool exists = true;
 
   if (m_is_loaded)
   {
@@ -442,33 +452,35 @@ bool wex::lexers::load_document_init()
   }
   else
   {
-    pugi::xml_document doc;
-
-    load_document(doc, m_path_macro);
-
-    for (const auto& node : doc.document_element().children())
+    if (m_path.file_exists() && m_path_macro.file_exists())
     {
-      if (strcmp(node.name(), "macro") == 0)
+      pugi::xml_document doc;
+
+      load_document(doc, m_path_macro);
+
+      for (const auto& node : doc.document_element().children())
       {
-        parse_node_macro(node);
+        if (strcmp(node.name(), "macro") == 0)
+        {
+          parse_node_macro(node);
+        }
+        else if (strcmp(node.name(), "colour") == 0)
+        {
+          wxTheColourDatabase->AddColour(
+            node.attribute("no").value(),
+            node.text().get());
+        }
       }
-      else if (strcmp(node.name(), "colour") == 0)
-      {
-        wxTheColourDatabase->AddColour(
-          node.attribute("no").value(),
-          node.text().get());
-      }
+    }
+    else
+    {
+      exists = false;
     }
   }
 
-  m_indicators.insert(indicator());
-  m_keywords[std::string()] = std::string();
-  m_macros[std::string()]   = name_values_t{};
-  m_markers.insert(marker());
-  m_theme_colours[std::string()] = m_default_colours;
-  m_theme_macros[std::string()]  = name_values_t{};
+  add_required_containers();
 
-  return true;
+  return exists;
 }
 
 void wex::lexers::parse_node_folding(const pugi::xml_node& node)
