@@ -513,16 +513,14 @@ bool wex::macros::starts_with(const std::string_view& text)
   }
 
   return (
-    std::any_of(
-      m_macros.begin(),
-      m_macros.end(),
+    std::ranges::any_of(
+      m_macros,
       [text](const auto& p)
       {
         return p.first.substr(0, text.size()) == text;
       }) ||
-    std::any_of(
-      m_variables.begin(),
-      m_variables.end(),
+    std::ranges::any_of(
+      m_variables,
       [text](const auto& p)
       {
         return p.first.substr(0, text.size()) == text;

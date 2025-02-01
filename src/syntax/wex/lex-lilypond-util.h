@@ -2,7 +2,7 @@
 // Name:      lex-lilypond-util.h
 // Purpose:   Implementation of class lilypond
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -146,9 +146,8 @@ inline bool lilypond::last_word_check(
       }
       else
       {
-        return std::any_of(
-          checks.begin(),
-          checks.end(),
+        return std::ranges::any_of(
+          checks,
           [this, &match, &state, &start](const auto& w)
           {
             if (last_word_is(match, std::string("{" + w + "}").c_str()))
@@ -191,33 +190,46 @@ inline bool lilypond::last_word_is_match_env(Sci_Position pos) const
   char         s[32];
 
   if (m_styler.SafeGetCharAt(pos) != '}')
+  {
     return false;
+  }
 
   for (i = pos - 1; i >= 0; --i)
   {
     if (m_styler.SafeGetCharAt(i) == '{')
+    {
       break;
+    }
     if (pos - i >= 20)
+    {
       return false;
+    }
   }
 
   if (i < 0 || i == pos - 1)
+  {
     return false;
+  }
 
   ++i;
   for (j = 0; i + j < pos; ++j)
+  {
     s[j] = m_styler.SafeGetCharAt(i + j);
+  }
 
   s[j] = '\0';
   if (j == 0)
+  {
     return false;
+  }
 
   if (s[j - 1] == '*')
+  {
     s[--j] = '\0';
+  }
 
-  return std::any_of(
-    m_words.begin(),
-    m_words.end(),
+  return std::ranges::any_of(
+    m_words,
     [&s](const auto& w)
     {
       return w == s;

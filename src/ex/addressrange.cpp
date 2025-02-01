@@ -588,9 +588,8 @@ bool wex::addressrange::parse(const command_parser& cp, info_message_t& im)
         m_commands,
         [&](auto const& e)
         {
-          return std::any_of(
-            e.first.begin(),
-            e.first.end(),
+          return std::ranges::any_of(
+            e.first,
             [cp](const auto& p)
             {
               return p == cp.command()[0];

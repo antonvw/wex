@@ -54,9 +54,8 @@ public:
 
   bool find(const path& p) const
   {
-    return std::any_of(
-      m_paths.begin(),
-      m_paths.end(),
+    return std::ranges::any_of(
+      m_paths,
       [p](const auto& it)
       {
         return p.string() == it;
