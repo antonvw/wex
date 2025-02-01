@@ -2,7 +2,7 @@
 // Name:      toolbar.cpp
 // Purpose:   Implementation of wex::toolbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2024 Anton van Wezenbeek
+// Copyright: (c) 2010-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -304,9 +304,8 @@ bool wex::toolbar::add_tool(
   const std::vector<data::toolbar_item>& v,
   bool                                   realize)
 {
-  if (!std::all_of(
-        v.begin(),
-        v.end(),
+  if (!std::ranges::all_of(
+        v,
         [this](const auto& it)
         {
           // If the id has a bitmap from our art.

@@ -2,7 +2,7 @@
 // Name:      macro-fsm.cpp
 // Purpose:   Implementation of class wex::macro_fsm
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/mpl/list.hpp>
@@ -239,9 +239,8 @@ void wex::macro_fsm::playback(const std::string& macro, ex* ex, size_t repeat)
 
   for (size_t i = 0; i < repeat && !error; i++)
   {
-    if (!std::all_of(
-          commands.begin(),
-          commands.end(),
+    if (!std::ranges::all_of(
+          commands,
           [ex](const auto& i)
           {
             if (!ex->command(i))

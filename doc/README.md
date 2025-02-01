@@ -77,7 +77,7 @@ It benefits from the following c++ features:
 ### Algorithms library
 
 ```cpp
-  std::all_of (c++11)
+  std::ranges::all_of (c++11)
 ```
 
   E.g. when doing a global command on all of it's subcommands
@@ -87,17 +87,14 @@ It benefits from the following c++ features:
 ```cpp
 bool wex::global_env::for_each(const block_lines& match) const
 {
-  return !has_commands() ? m_stc->set_indicator(
-                             m_ar->get_find_indicator(),
-                             m_stc->GetTargetStart(),
-                             m_stc->GetTargetEnd()) :
-                           std::all_of(
-                             m_commands.begin(),
-                             m_commands.end(),
+  return !has_commands() ? match.set_indicator(m_ar.find_indicator()) :
+                           std::ranges::all_of(
+                             m_commands,
                              [this, match](const std::string& it)
                              {
-                               return run(match, it);
-                             });
+                               return command(match, it);
+                             );
+
 }
 ```
 

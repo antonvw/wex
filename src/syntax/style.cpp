@@ -66,9 +66,8 @@ bool wex::style::apply(wxStyledTextCtrl* stc) const
     if (const auto& tok(boost::tokenizer<boost::char_separator<char>>(
           m_value,
           boost::char_separator<char>(",")));
-        !std::all_of(
-          tok.begin(),
-          tok.end(),
+        !std::ranges::all_of(
+          tok,
           [](const auto& it)
           {
             return check_style_spec(it, "back") && check_style_spec(it, "fore");
