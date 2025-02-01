@@ -86,9 +86,8 @@ bool wex::global_env::command(const block_lines& block, const std::string& text)
 bool wex::global_env::for_each(const block_lines& match) const
 {
   return !has_commands() ? match.set_indicator(m_ar.find_indicator()) :
-                           std::all_of(
-                             m_commands.begin(),
-                             m_commands.end(),
+                           std::ranges::all_of(
+                             m_commands,
                              [this, match](const std::string& it)
                              {
                                return command(match, it);

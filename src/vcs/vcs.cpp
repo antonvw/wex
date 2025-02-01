@@ -195,9 +195,8 @@ void wex::vcs::destroy_dialog()
 bool wex::vcs::dir_exists(const wex::path& filename)
 {
   const auto& entry(find_entry(m_store, filename));
-  
-  if (
-      factory::vcs_admin(entry->admin_dir(), filename).is_toplevel())
+
+  if (factory::vcs_admin(entry->admin_dir(), filename).is_toplevel())
   {
     return true;
   }
@@ -501,9 +500,8 @@ int wex::vcs::show_dialog(const data::window& arg)
        item(_("vcs.Subcommand"), std::string()) :
        item()});
 
-  if (std::all_of(
-        v.begin(),
-        v.end(),
+  if (std::ranges::all_of(
+        v,
         [](const auto& i)
         {
           return i.type() == item::EMPTY;
