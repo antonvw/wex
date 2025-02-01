@@ -2,7 +2,7 @@
 // Name:      ctags-entry.h
 // Purpose:   Declaration of class wex::ctags_entry
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2024 Anton van Wezenbeek
+// Copyright: (c) 2019-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -28,7 +28,7 @@ public:
   // Other methods.
 
   /// Default constructor.
-  ctags_entry();
+  ctags_entry() = default;
 
   /// Returns access member.
   const auto& access() const { return m_access; }

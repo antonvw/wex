@@ -83,7 +83,9 @@ bool wex::addressrange_mark::search()
   {
     return false;
   }
-  else if (m_data.pattern() == "$")
+  
+  
+  if (m_data.pattern() == "$")
   {
     if (m_ex->marker_line('T') == m_ex->marker_line('$'))
     {

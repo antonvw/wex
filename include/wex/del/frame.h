@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Include file for wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2024 Anton van Wezenbeek
+// Copyright: (c) 2009-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -48,7 +48,7 @@ public:
     const data::window& data = data::window().style(wxDEFAULT_FRAME_STYLE));
 
   /// Destructor.
-  ~frame() override;
+  ~frame() = default;
 
   // Virtual interface
 

@@ -2,7 +2,7 @@
 // Name:      findbar.cpp
 // Purpose:   Implementation of wex::find_bar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024 Anton van Wezenbeek
+// Copyright: (c) 2024-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/find.h>
@@ -42,7 +42,8 @@ bool wex::find_bar::find(bool user_input)
     const data::find f(get_text(), find_replace_data::get()->search_down());
     return grid->find_next(f);
   }
-  else if (auto* lv = get_frame()->get_listview(); lv != nullptr)
+
+  if (auto* lv = get_frame()->get_listview(); lv != nullptr)
   {
     return lv->find_next(get_text(), find_replace_data::get()->search_down());
   }

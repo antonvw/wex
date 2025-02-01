@@ -2,7 +2,7 @@
 // Name:      revisions-dialog.cpp
 // Purpose:   Implementation of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024 Anton van Wezenbeek
+// Copyright: (c) 2024-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -83,9 +83,7 @@ from_git(const vcs_entry& e, const std::string& ask, size_t offset = 0)
   process pro;
   pro.system(process_data(e.bin() + " " + ask));
 
-  strings_t values;
-
-  values.emplace_back(std::string());
+  strings_t values{};
 
   for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
          pro.std_out(),

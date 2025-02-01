@@ -2,7 +2,7 @@
 // Name:      link.cpp
 // Purpose:   Implementation of class wex::link
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -229,10 +229,8 @@ const wex::path wex::factory::link::find_url_or_mime(
     return (stc != nullptr && stc->lexer_is_previewable()) ? stc->path() :
                                                              path();
   }
-  else
-  {
-    return path();
-  }
+
+  return path();
 }
 
 // text contains selected text, or current line

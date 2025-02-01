@@ -193,8 +193,6 @@ wex::del::frame::frame(
   bind_all();
 }
 
-wex::del::frame::~frame() {}
-
 wex::del::listview* wex::del::frame::activate_and_clear(const wex::tool& tool)
 {
   auto* lv = activate(listview::type_tool(tool));
@@ -509,14 +507,12 @@ bool wex::del::frame::open_from_action(
       to_vector_path(text).get(),
       data::control().command(cmd));
   }
-  else
-  {
-    data::window data;
-    data.style(wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR | wxFD_HEX_MODE)
-      .allow_move_path_extension(move_ext);
-    open_files_dialog(this, false, data::stc(data));
-    return true;
-  }
+
+  data::window data;
+  data.style(wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR | wxFD_HEX_MODE)
+    .allow_move_path_extension(move_ext);
+  open_files_dialog(this, false, data::stc(data));
+  return true;
 }
 
 bool wex::del::frame::process_async_system(const process_data& data)
