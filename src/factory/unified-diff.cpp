@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::factory::unified_diff
 //            https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024 Anton van Wezenbeek
+// Copyright: (c) 2024-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -83,19 +83,18 @@ bool wex::factory::unified_diff::parse()
     // Next come one or more chunks of differences
     while (tok_iter != tokens.end())
     {
-      if (regex r_chunk("@@ -([0-9]+),?([0-9]*) \\+([0-9]+),?([0-9]*) @@.*");
-          r_chunk.match(*tok_iter) != 4)
+      regex r_chunk("@@ -([0-9]+),?([0-9]*) \\+([0-9]+),?([0-9]*) @@.*");
+
+      if (r_chunk.match(*tok_iter) != 4)
       {
         log("unified_diff") << *tok_iter << r_chunk.size();
         return false;
       }
-      else
-      {
-        m_range[0] = wex::stoi(r_chunk[0]);
-        m_range[1] = wex::stoi(r_chunk[1]);
-        m_range[2] = wex::stoi(r_chunk[2]);
-        m_range[3] = wex::stoi(r_chunk[3]);
-      }
+
+      m_range[0] = wex::stoi(r_chunk[0]);
+      m_range[1] = wex::stoi(r_chunk[1]);
+      m_range[2] = wex::stoi(r_chunk[2]);
+      m_range[3] = wex::stoi(r_chunk[3]);
 
       m_text.fill({});
 
@@ -132,15 +131,15 @@ bool wex::factory::unified_diff::parse_header(
   const std::string& line,
   path&              p)
 {
-  if (regex re(r); !re.match(line))
+  regex re(r);
+
+  if (!re.match(line))
   {
     log("unified_diff") << line << re.match_data().text();
     return false;
   }
-  else
-  {
-    p = path(re[0]);
-  }
+
+  p = path(re[0]);
 
   return true;
 }

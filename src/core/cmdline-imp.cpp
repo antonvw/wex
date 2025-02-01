@@ -245,7 +245,9 @@ void wex::cmdline_imp::parse_help(data::cmdline& data)
 
 bool wex::cmdline_imp::parse_quit()
 {
-  if (const auto quit(m_vm["quit"].as<int>()); quit > 0)
+  const auto quit(m_vm["quit"].as<int>()); 
+
+  if (quit > 0)
   {
     m_use_events = true;
 
@@ -273,7 +275,8 @@ bool wex::cmdline_imp::parse_quit()
 
     return true;
   }
-  else if (quit == 0)
+  
+  if (quit == 0)
   {
     return true;
   }

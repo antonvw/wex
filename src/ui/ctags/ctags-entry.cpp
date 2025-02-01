@@ -2,7 +2,7 @@
 // Name:      ctags-entry.cpp
 // Purpose:   Implementation of class wex::ctags_entry
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -22,8 +22,6 @@ enum class image_access_t
   PRIVATE
 };
 }
-
-wex::ctags_entry::ctags_entry() {}
 
 wex::ctags_entry& wex::ctags_entry::access(const std::string& v)
 {

@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::factory::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -144,11 +144,9 @@ bool wex::factory::frame::update_statusbar(const wxListView* lv)
 
     return statustext(text, "PaneInfo");
   }
-  else
-  {
-    return statustext(std::string(), std::string()) &&
-           statustext(std::string(), "PaneInfo");
-  }
+
+  return statustext(std::string(), std::string()) &&
+         statustext(std::string(), "PaneInfo");
 }
 
 // Do not make it const, too many const_casts needed,

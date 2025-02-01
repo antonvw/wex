@@ -2,7 +2,7 @@
 // Name:      common/util.cpp
 // Purpose:   Implementation of wex common utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <numeric>
@@ -209,16 +209,16 @@ wex::strings_t wex::listbox_to_list(wxListBox* lb)
 
   for (size_t i = 0; i < items.GetCount(); ++i)
   {
-    std::string selected = "0";
+    const std::string selected(
+      std::ranges::any_of(
+        selections,
+        [i](const auto& p)
+        {
+          return p == i;
+        }) ?
+        "1" :
+        "0");
 
-    for (size_t j = 0; j < selections.size(); j++)
-    {
-      if (selections[j] == i)
-      {
-        selected = "1";
-        break;
-      }
-    }
     st.push_back(items[i] + ":" + selected);
   }
 

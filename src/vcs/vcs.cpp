@@ -194,15 +194,15 @@ void wex::vcs::destroy_dialog()
 
 bool wex::vcs::dir_exists(const wex::path& filename)
 {
-  if (const auto& entry(find_entry(m_store, filename));
+  const auto& entry(find_entry(m_store, filename));
+  
+  if (
       factory::vcs_admin(entry->admin_dir(), filename).is_toplevel())
   {
     return true;
   }
-  else
-  {
-    return factory::vcs_admin(entry->admin_dir(), filename).exists();
-  }
+
+  return factory::vcs_admin(entry->admin_dir(), filename).exists();
 }
 
 bool wex::vcs::empty()

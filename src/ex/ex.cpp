@@ -75,7 +75,9 @@ bool wex::ex::auto_write()
 
 std::optional<int> wex::ex::calculator(const std::string& text)
 {
-  if (const auto& val(evaluator().eval(this, text)); !val)
+  const auto& val(evaluator().eval(this, text));
+
+  if (!val)
   {
     if (!val.error().empty())
     {
@@ -83,10 +85,8 @@ std::optional<int> wex::ex::calculator(const std::string& text)
     }
     return {};
   }
-  else
-  {
-    return val.value();
-  }
+
+  return val.value();
 }
 
 bool wex::ex::command(const std::string& cmd)
