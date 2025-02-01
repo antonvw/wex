@@ -2,7 +2,7 @@
 // Name:      lex-rfw.cpp
 // Purpose:   Implementation of lmRFW
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -163,9 +163,8 @@ bool Scintilla::lex_rfw::section_keywords_detect(
   StyleContext&      sc,
   int&               cmd_state_new)
 {
-  return std::any_of(
-    m_section_keywords.begin(),
-    m_section_keywords.end(),
+  return std::ranges::any_of(
+    m_section_keywords,
     [&sc, &word, &cmd_state_new, this](const auto& i)
     {
       if (std::equal(word.begin(), word.end(), i.first.begin()))
@@ -211,9 +210,8 @@ bool Scintilla::lex_rfw::spaced_keywords_detect(
   StyleContext&      sc,
   int&               cmd_state_new)
 {
-  return std::any_of(
-    m_spaced_keywords.begin(),
-    m_spaced_keywords.end(),
+  return std::ranges::any_of(
+    m_spaced_keywords,
     [&sc, &word, &cmd_state_new](const auto& i)
     {
       if (std::equal(word.begin(), word.end(), i.begin()))

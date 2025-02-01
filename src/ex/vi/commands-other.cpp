@@ -498,9 +498,8 @@ bool wex::vi::other_command(std::string& command)
         {
           if (!isalpha(e.first.front()))
           {
-            return std::any_of(
-              e.first.begin(),
-              e.first.end(),
+            return std::ranges::any_of(
+              e.first,
               [command](const auto& p)
               {
                 return p == command.front();

@@ -610,9 +610,8 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
     m_motion_commands,
     [&](auto const& e)
     {
-      return std::any_of(
-        e.first.begin(),
-        e.first.end(),
+      return std::ranges::any_of(
+        e.first,
         [command](const auto& p)
         {
           return p == command[0];

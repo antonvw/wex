@@ -494,9 +494,8 @@ bool wex::shell::set_command_from_history(const std::string& short_command)
         short_command.length() - m_command_end.length());
     }
 
-    if (std::any_of(
-          m_commands.rbegin(),
-          m_commands.rend(),
+    if (std::ranges::any_of(
+          std::views::reverse(m_commands),
           [&short_command_check, this](const auto& it)
           {
             if (it.substr(0, short_command_check.size()) == short_command_check)
