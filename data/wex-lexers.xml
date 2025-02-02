@@ -3,9 +3,9 @@
 <!--
 Name:    wex-lexers.xml
 Purpose: Lexers configuration for wex.
-         See scintilla 5.3.1 (https://www.scintilla.org/LexillaHistory.html)
+         See scintilla 5.4.2 (https://www.scintilla.org/LexillaHistory.html)
 Author:  Anton van Wezenbeek
-Copyright: (c) 2009-2024, Anton van Wezenbeek
+Copyright: (c) 2009-2025, Anton van Wezenbeek
 -->
 
 <lexers>
@@ -1021,7 +1021,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     </properties>
     <keywords set-0="cmake-commands" set-1="cmake-variables"/>
   </lexer>
-  <lexer name="COBOL" macro="cpp">
+  <lexer name="COBOL" macro="cobol">
     <keywords>
       configuration data declaratives division environment environment-division file
       file-control function i-o i-o-control identification input input-output linkage
@@ -1057,6 +1057,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   <lexer name="d"/>
   <lexer name="dataflex"/>
+  <lexer name="dart"/>
   <lexer name="diff" extensions="*.diff;*.patch" edgemode="none">
     <styles>
     <style no="header"> fore:grey </style>
@@ -1451,6 +1452,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       build default include
     </keywords>
   </lexer>
+  <lexer name="nix"/>
   <lexer name="nncrontab"/>
   <lexer name="nsis"/>
   <lexer name="octave" macro="matlab"/>
@@ -1698,6 +1700,8 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   <lexer name="tehex" macro="ihex"/>
   <lexer name="tex" extensions="*.tex"/>
+  <lexer name="toml"/>
+  <lexer name="troff"/>
   <lexer name="txt2tags"/>
   <lexer name="vb">
     <keywords set ="vb"/>
@@ -1739,4 +1743,5 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <property name="fold.comment"> 1 </property>
     </properties>
   </lexer>
+  <lexer name="zig"/>
 </lexers>

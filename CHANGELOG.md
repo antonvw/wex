@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- upgrade to lexilla 5.4.2
 - The Open Group Base Specifications Issue 8, 2024 edition
 - listview standard column sizes are configurable
 - wex::quoted uses std::quoted and includes a delim character
@@ -34,7 +35,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - fixed possible infinite loop in bash
 - fixed findbar
-- openening files that contain a space in the filename
+- opening files that contain a space in the filename
 - 2addr range for global commands
 - global v command and set indicator
 - macro playback and undo includes sub commands

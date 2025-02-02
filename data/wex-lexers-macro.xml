@@ -3,9 +3,9 @@
 <!--
 Name:      wex-lexers-macro.xml
 Purpose:   Lexers configuration for wex.
-           See lexilla 5.3.1 (https://www.scintilla.org/LexillaHistory.html)
+           See lexilla 5.4.2 (https://www.scintilla.org/LexillaHistory.html)
 Author:    Anton van Wezenbeek
-Copyright: (c) 2009-2024, Anton van Wezenbeek
+Copyright: (c) 2009-2025, Anton van Wezenbeek
 -->
 
 <lexers>
@@ -384,6 +384,22 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
       <def no ="comment3"/>
     </def>
 
+    <def name = "cobol">
+      <def no ="default"/>
+      <def no ="comment"/>
+      <def no ="commentline"/>
+      <def no ="commentdoc"/>
+      <def no ="number"/>
+      <def no ="word"/>
+      <def no ="string"/>
+      <def no ="character"/>
+      <def no ="word3"/>
+      <def no ="preprocessor"/>
+      <def no ="operator"/>
+      <def no ="identifier"/>
+      <def no ="word2"/>
+    </def>
+
     <def name = "cil">
       <def no ="default"/>
       <def no ="comment"/>
@@ -479,7 +495,7 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
     </def>
 
     <def name = "cpp">
-    <!-- cpp, bullant, cobol, tacl, tal -->
+    <!-- cpp, bullant, tacl, tal -->
       <def no ="default"/>
       <def no ="comment"/>
       <def no ="commentline"/>
@@ -574,6 +590,36 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
       <def no ="commentlinedoc"/>
       <def no ="commentdockeyword"/>
       <def no ="commentdockeyworderror"/>
+    </def>
+
+    <def name = "dart">
+      <def no ="default"/>
+      <def no ="commentline"/>
+      <def no ="commentlinedoc"/>
+      <def no ="commentblock"/>
+      <def no ="commentblockdoc"/>
+      <def no ="string_sq"/>
+      <def no ="string_dq"/>
+      <def no ="triple_string_sq"/>
+      <def no ="triple_string_dq"/>
+      <def no ="rawstring_sq"/>
+      <def no ="rawstring_dq"/>
+      <def no ="triple_rawstring_sq"/>
+      <def no ="triple_rawstring_dq"/>
+      <def no ="escapechar"/>
+      <def no ="identifier"/>
+      <def no ="identifier_string"/>
+      <def no ="operator"/>
+      <def no ="operator_string"/>
+      <def no ="symbol_identifier"/>
+      <def no ="symbol_operator"/>
+      <def no ="number"/>
+      <def no ="key"/>
+      <def no ="metadata"/>
+      <def no ="kw_primary"/>
+      <def no ="kw_secondary"/>
+      <def no ="kw_tertiary"/>
+      <def no ="kw_type"/>
     </def>
 
     <def name = "dataflex">
@@ -1024,6 +1070,7 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
       <def no ="hj_symbols"/>
       <def no ="hj_stringeol"/>
       <def no ="hj_regex"/>
+      <def no ="hj_templateliteral"/>
       <!-- ASP Javascript> -->
       <def no ="hja_start"> 55 </def>
       <def no ="hja_default"/>
@@ -1038,6 +1085,7 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
       <def no ="hja_symbols"/>
       <def no ="hja_stringeol"/>
       <def no ="hja_regex"/>
+      <def no ="hja_templateliteral"/>
       <!-- Embedded VBScript -->
       <def no ="hb_start"> 70 </def>
       <def no ="hb_default"/>
@@ -1498,6 +1546,25 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
       <def no ="numerror"/>
       <def no ="operator"/>
       <def no ="identifier"/>
+    </def>
+
+    <def name = "nix">
+      <def no ="default"/>
+      <def no ="commentline"/>
+      <def no ="commentblock"/>
+      <def no ="string"/>
+      <def no ="string_multiline"/>
+      <def no ="escapechar"/>
+      <def no ="identifier"/>
+      <def no ="operator"/>
+      <def no ="operator_string"/>
+      <def no ="number"/>
+      <def no ="key"/>
+      <def no ="path"/>
+      <def no ="keyword1"/>
+      <def no ="keyword2"/>
+      <def no ="keyword3"/>
+      <def no ="keyword4"/>
     </def>
 
     <def name = "nncrontab">
@@ -1977,6 +2044,8 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
       <def no ="bytestring"/>
       <def no ="bytestringr"/>
       <def no ="bytecharacter"/>
+      <def no ="CSTRING"/>
+      <def no ="CSTRINGR"/>
     </def>
 
     <def name = "sas">
@@ -2210,6 +2279,55 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
       <def no ="text"/>
     </def>
 
+    <def name = "toml">
+      <def no ="default"/>
+      <def no ="comment"/>
+      <def no ="identifier"/>
+      <def no ="keyword"/>
+      <def no ="number"/>
+      <def no ="table"/>
+      <def no ="key"/>
+      <def no ="error"/>
+      <def no ="operator"/>
+      <def no ="string_sq"/>
+      <def no ="string_dq"/>
+      <def no ="triple_string_sq"/>
+      <def no ="triple_string_dq"/>
+      <def no ="escapechar"/>
+      <def no ="datetime"/>
+    </def>
+
+    <def name = "troff">
+      <def no ="default"/>
+      <def no ="request"/>
+      <def no ="command"/>
+      <def no ="number"/>
+      <def no ="operator"/>
+      <def no ="string"/>
+      <def no ="comment"/>
+      <def no ="ignore"/>
+      <def no ="escape_string"/>
+      <def no ="escape_macro"/>
+      <def no ="escape_font"/>
+      <def no ="escape_number"/>
+      <def no ="escape_colour"/>
+      <def no ="escape_glyph"/>
+      <def no ="escape_env"/>
+      <def no ="escape_suppression"/>
+      <def no ="escape_size"/>
+      <def no ="escape_transparent"/>
+      <def no ="escape_isvalid"/>
+      <def no ="escape_draw"/>
+      <def no ="escape_move"/>
+      <def no ="escape_height"/>
+      <def no ="escape_overstrike"/>
+      <def no ="escape_slant"/>
+      <def no ="escape_width"/>
+      <def no ="escape_vspacing"/>
+      <def no ="escape_device"/>
+      <def no ="escape_nomove"/>
+    </def>
+
     <def name = "txt2tags">
       <def no ="default"/>
       <def no ="line_begin"/>
@@ -2358,6 +2476,28 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
       <def no ="error"/>
       <def no ="operator"/>
     </def>
+
+    <def name = "zig">
+      <def no ="default"/>
+      <def no ="commentline"/>
+      <def no ="commentlinedoc"/>
+      <def no ="commentlinetop"/>
+      <def no ="number"/>
+      <def no ="operator"/>
+      <def no ="character"/>
+      <def no ="string"/>
+      <def no ="multistring"/>
+      <def no ="escapechar"/>
+      <def no ="identifier"/>
+      <def no ="function"/>
+      <def no ="builtin_function"/>
+      <def no ="kw_primary"/>
+      <def no ="kw_secondary"/>
+      <def no ="kw_tertiary"/>
+      <def no ="kw_type"/>
+      <def no ="identifier_string"/>
+    </def>
+
   </macro>
 
     <!-- add your own colours
