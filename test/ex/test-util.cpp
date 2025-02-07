@@ -2,11 +2,12 @@
 // Name:      test-util.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024 Anton van Wezenbeek
+// Copyright: (c) 2024-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex/util.h>
 
+#include "../../src/ex/util.h"
 #include "test.h"
 
 TEST_CASE("wex::ex::utils")
@@ -23,6 +24,48 @@ TEST_CASE("wex::ex::utils")
   SUBCASE("esc")
   {
     REQUIRE(wex::esc() == "\x1b");
+  }
+
+  SUBCASE("find_command")
+  {
+    const std::vector<std::pair<std::string, std::string>> none{};
+    const std::vector<std::pair<std::string, std::string>> cmds{
+      {"x", "1"},
+      {"abc", "1"},
+      {"DDDD", "3"}};
+
+    REQUIRE(
+      wex::find_from<std::vector<std::pair<std::string, std::string>>>(
+        none,
+        "") == none.end());
+    REQUIRE(
+      wex::find_from<std::vector<std::pair<std::string, std::string>>>(
+        cmds,
+        "") == cmds.end());
+    REQUIRE(
+      wex::find_from<std::vector<std::pair<std::string, std::string>>>(
+        cmds,
+        "x") != cmds.end());
+    REQUIRE(
+      wex::find_from<std::vector<std::pair<std::string, std::string>>>(
+        cmds,
+        "xx") != cmds.end());
+    REQUIRE(
+      wex::find_from<std::vector<std::pair<std::string, std::string>>>(
+        cmds,
+        "ab") != cmds.end());
+    REQUIRE(
+      wex::find_from<std::vector<std::pair<std::string, std::string>>>(
+        cmds,
+        "abcd") != cmds.end());
+    REQUIRE(
+      wex::find_from<std::vector<std::pair<std::string, std::string>>>(
+        cmds,
+        "d") == cmds.end());
+    REQUIRE(
+      wex::find_from<std::vector<std::pair<std::string, std::string>>>(
+        cmds,
+        "DDD") != cmds.end());
   }
 
   SUBCASE("find_first_of")

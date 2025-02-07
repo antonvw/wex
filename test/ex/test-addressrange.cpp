@@ -2,7 +2,7 @@
 // Name:      test-addressrange.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2024 Anton van Wezenbeek
+// Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex/addressrange.h>
@@ -200,7 +200,7 @@ TEST_CASE("wex::addressrange")
 
   SUBCASE("parse")
   {
-    wex::info_message_t im;
+    wex::info_message_t im(wex::info_message_t::NONE);
 
     REQUIRE(!wex::addressrange(ex).parse(wex::command_parser(ex, "1,3"), im));
     REQUIRE(im == wex::info_message_t::NONE);
