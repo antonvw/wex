@@ -18,6 +18,8 @@
 #include "util.h"
 #include "vim.h"
 
+#include "../util.h"
+
 namespace wex
 {
 constexpr int c_strcmp(char const* lhs, char const* rhs)
@@ -606,21 +608,13 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
     filter_count(command);
   }
 
-  const auto& it = std::ranges::find_if(
-    m_motion_commands,
-    [&](auto const& e)
-    {
-      return std::ranges::any_of(
-        e.first,
-        [command](const auto& p)
-        {
-          return p == command[0];
-        });
-    });
+  const auto& it = find_from<vi::commands_t>(m_motion_commands, command);
+
   if (it == m_motion_commands.end())
   {
     return false;
   }
+
   if (type < motion_t::NAVIGATE && get_stc()->GetReadOnly())
   {
     command.clear();

@@ -29,6 +29,7 @@
 
 #include "addressrange-mark.h"
 #include "global-env.h"
+#include "util.h"
 
 namespace wex
 {
@@ -582,21 +583,11 @@ bool wex::addressrange::parse(const command_parser& cp, info_message_t& im)
     return false;
   }
 
-  im = info_message_t::NONE;
-
-  if (const auto& it = std::ranges::find_if(
-        m_commands,
-        [&](auto const& e)
-        {
-          return std::ranges::any_of(
-            e.first,
-            [cp](const auto& p)
-            {
-              return p == cp.command()[0];
-            });
-        });
+  if (const auto& it =
+        find_from<addressrange::commands_t>(m_commands, cp.command());
       it != m_commands.end())
   {
+    im = info_message_t::NONE;
     return it->second(cp, im);
   }
 
