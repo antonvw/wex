@@ -45,13 +45,8 @@ void wex::syntax::stc::fold_all()
 
   while (line < get_line_count())
   {
-    if (const auto level = GetFoldLevel(line);
-        xml && (level == wxSTC_FOLDLEVELBASE + wxSTC_FOLDLEVELHEADERFLAG))
-    {
-      line++;
-    }
-    else if (const auto last_child_line = GetLastChild(line, level);
-             last_child_line > line + 1)
+    if (const auto last_child_line = GetLastChild(line, GetFoldLevel(line));
+        last_child_line > line + 1)
     {
       if (GetFoldExpanded(line))
       {

@@ -405,12 +405,9 @@ bool wex::vi_mode::transition(std::string& command)
       break;
 
     case state_t::VISUAL_LINE:
-      if (m_vi->get_stc()->SelectionIsRectangle())
-      {
-        m_vi->get_stc()->Home();
-        m_vi->get_stc()->LineDownExtend();
-      }
-      else if (m_vi->get_stc()->GetSelectedText().empty())
+      if (
+        m_vi->get_stc()->SelectionIsRectangle() ||
+        m_vi->get_stc()->GetSelectedText().empty())
       {
         m_vi->get_stc()->Home();
         m_vi->get_stc()->LineDownExtend();

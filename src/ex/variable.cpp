@@ -484,11 +484,7 @@ void wex::variable::set_argument(const std::string& val)
 
 void wex::variable::set_ask_for_input(bool value)
 {
-  if (!value)
-  {
-    m_ask_for_input = value;
-  }
-  else if (is_input() && m_type != input_t::INPUT_ONCE)
+  if (!value || is_input() && m_type != input_t::INPUT_ONCE)
   {
     m_ask_for_input = value;
   }

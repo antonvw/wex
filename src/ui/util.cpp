@@ -80,18 +80,16 @@ bool no_value(wex::item::type_t t)
 {
   switch (t)
   {
+    // Not yet implemented or no value
     case item::BUTTON:
+    case item::CHECKLISTBOX_BOOL:
     case item::COMMANDLINKBUTTON:
     case item::GROUP:
+    case item::RADIOBOX:
     case item::STATICBOX:
     case item::STATICLINE:
     case item::STATICTEXT:
-      break;
-
-    case item::CHECKLISTBOX_BOOL:
-    case item::RADIOBOX:
     case item::USER:
-      // Not yet implemented
       break;
 
     default:
