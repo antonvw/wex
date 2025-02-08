@@ -111,7 +111,7 @@ frame::frame(app* app)
   m_grid->AppendCols(2);
 
   m_listview->append_columns(
-    {{"String", wex::column::STRING},
+    {{"String", wex::column::STRING_MEDIUM},
      {"Number", wex::column::INT},
      {"Float", wex::column::FLOAT},
      {"Date", wex::column::DATE}});

@@ -25,6 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - upgrade to lexilla 5.4.2
+- split column types STRING into STRING SMALL, MEDIUM and LARGE
 - The Open Group Base Specifications Issue 8, 2024 edition
 - listview standard column sizes are configurable
 - wex::quoted uses std::quoted and includes a delim character

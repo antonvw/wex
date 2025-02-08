@@ -166,13 +166,13 @@ int wex::vcs_entry::revisions_dialog(
 
   if (is_new)
   {
-    vb->append_columns({{"branches", wex::column::STRING, 500}});
-    vt->append_columns({{"tags", wex::column::STRING, 500}});
+    vb->append_columns({{"branches", wex::column::STRING_LARGE}});
+    vt->append_columns({{"tags", wex::column::STRING_MEDIUM}});
     lv->append_columns(
-      {{"date", wex::column::STRING, 75},
-       {"comment", wex::column::STRING, 400},
-       {"author", wex::column::STRING},
-       {"hash", wex::column::STRING}});
+      {{"date", wex::column::DATE},
+       {"comment", wex::column::STRING_LARGE},
+       {"author", wex::column::STRING_MEDIUM},
+       {"hash", wex::column::STRING_SMALL}});
 
     bind_rev(vb, repo_path, tl, "branches");
     bind_rev(vt, repo_path, tl, "tags");
