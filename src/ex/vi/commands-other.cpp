@@ -51,14 +51,10 @@ size_t fold(wex::syntax::stc* stc, const std::string& command)
     case 'c':
     case 'o':
       if (
-        stc->GetFoldExpanded(line_to_fold) &&
-        boost::algorithm::trim_copy(command) == "zc")
-      {
-        stc->ToggleFold(line_to_fold);
-      }
-      else if (
-        !stc->GetFoldExpanded(line_to_fold) &&
-        boost::algorithm::trim_copy(command) == "zo")
+        (stc->GetFoldExpanded(line_to_fold) &&
+         boost::algorithm::trim_copy(command) == "zc") ||
+        (!stc->GetFoldExpanded(line_to_fold) &&
+         boost::algorithm::trim_copy(command) == "zo"))
       {
         stc->ToggleFold(line_to_fold);
       }

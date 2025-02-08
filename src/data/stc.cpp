@@ -168,20 +168,10 @@ bool wex::data::stc::inject_line() const
 {
   if (m_data.line() > 0)
   {
-    int line;
-
-    if (m_stc->get_line_count() == LINE_COUNT_UNKNOWN)
-    {
-      line = m_data.line() - 1;
-    }
-    else if (m_data.line() - 1 >= m_stc->get_line_count())
-    {
-      line = m_stc->get_line_count() - 1;
-    }
-    else
-    {
-      line = m_data.line() - 1;
-    }
+    const int line = (m_stc->get_line_count() != LINE_COUNT_UNKNOWN &&
+                      m_data.line() - 1 >= m_stc->get_line_count()) ?
+                       m_stc->get_line_count() - 1 :
+                       m_data.line() - 1;
 
     m_stc->goto_line(line);
 

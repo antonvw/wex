@@ -1,7 +1,9 @@
 ---
 Checks:
   '-*,
+  bugprone-branch-clone,
   modernize-loop-convert,
+  modernize-macro-to-enum,
   modernize-make-shared,
   modernize-make-unique,
   modernize-use-bool-literals,
@@ -11,6 +13,7 @@ Checks:
   modernize-use-equals-delete,
   modernize-use-nullptr,
   modernize-use-override,
+  modernize-use-ranges
   modernize-use-std-print,
   modernize-use-starts-ends-with,
   modernize-use-uncaught-exceptions,
