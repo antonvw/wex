@@ -38,7 +38,7 @@ public:
   {
     if (init)
     {
-      m_listview->append_columns({{"Name", column::STRING, 200}, {"Pid"}});
+      m_listview->append_columns({{"Name", column::STRING_MEDIUM}, {"Pid"}});
     }
     else
     {

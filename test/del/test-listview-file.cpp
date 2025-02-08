@@ -2,7 +2,7 @@
 // Name:      test-listview-file.cpp
 // Purpose:   Implementation for wex del unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/del/listview-file.h>
@@ -38,7 +38,7 @@ TEST_CASE("wex::del::file")
   SUBCASE("columns")
   {
     lv->append_columns(
-      {{"String", wex::column::STRING}, {"Number", wex::column::INT}});
+      {{"String", wex::column::STRING_SMALL}, {"Number", wex::column::INT}});
 
     // Remember that listview file already has columns.
     REQUIRE(lv->find_column("String") > 1);

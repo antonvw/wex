@@ -2,7 +2,7 @@
 // Name:      listview.h
 // Purpose:   Declaration of wex::factory::listview and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -33,11 +33,13 @@ public:
   /// get_column types.
   enum type_t
   {
-    INVALID, ///< illegal col
-    INT = 1, ///< integer
-    DATE,    ///< date
-    FLOAT,   ///< float
-    STRING   ///< string
+    INVALID,       ///< illegal col
+    INT = 1,       ///< integer
+    DATE,          ///< date
+    FLOAT,         ///< float
+    STRING_SMALL,  ///< string small size
+    STRING_MEDIUM, ///< string medium size
+    STRING_LARGE,  ///< string large size
   };
 
   /// Default constructor.

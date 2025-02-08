@@ -108,10 +108,12 @@ const std::vector<item> config_items()
           item::FONTPICKERCTRL,
           wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)}}},
        {_("Margin"),
-        {{"col.DATE", 0, 150, 150},
+        {{"col.DATE", 0, 150, 80},
          {"col.FLOAT", 0, 120, 80},
          {"col.INT", 0, 100, 60},
-         {"col.STRING", 0, 500, 100}}},
+         {"col.STRING SMALL", 0, 500, 60},
+         {"col.STRING MEDIUM", 0, 500, 200},
+         {"col.STRING LARGE", 0, 500, 400}}},
        {_("Colour"),
         {{_("list.Readonly colour"),
           item::COLOURPICKERWIDGET,
@@ -723,9 +725,6 @@ bool wex::listview::insert_item(
             (void)std::stoi(col);
             break;
 
-          case column::STRING:
-            break;
-
           default:
             break;
         }
@@ -979,7 +978,7 @@ bool wex::listview::load(const strings_t& l)
       tok.end(),
       [this, &i](const auto&)
       {
-        append_columns({{std::to_string(i++ + 1), column::STRING, 50}});
+        append_columns({{std::to_string(i++ + 1), column::STRING_MEDIUM, 100}});
       });
   }
 
@@ -1300,7 +1299,9 @@ int wxCALLBACK compare_cb(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData)
       return ascending ? wex::compare(std::stoi(str1), std::stoi(str2)) :
                          wex::compare(std::stoi(str2), std::stoi(str1));
 
-    case wex::column::STRING:
+    case wex::column::STRING_SMALL:
+    case wex::column::STRING_MEDIUM:
+    case wex::column::STRING_LARGE:
       if (!wex::find_replace_data::get()->match_case())
       {
         return ascending ? wex::icompare(str1, str2) :
@@ -1342,9 +1343,6 @@ bool wex::listview::set_item(long index, int column, const std::string& text)
 
       case column::INT:
         (void)std::stoi(text);
-        break;
-
-      case column::STRING:
         break;
 
       default:
