@@ -121,6 +121,26 @@ const std::string get_properties(
     });
 }
 
+void marker_move(stc* stc, bool next)
+{
+  auto line = next ? stc->MarkerNext(stc->get_current_line() + 1, 0xFFFF) :
+                     stc->MarkerPrevious(stc->get_current_line() - 1, 0xFFFF);
+
+  if (line == -1)
+  {
+    line = next ? stc->MarkerNext(0, 0xFFFF) :
+                  stc->MarkerPrevious(stc->get_line_count() - 1, 0xFFFF);
+  }
+
+  if (line != -1)
+  {
+    stc->goto_line(line);
+  }
+  else
+  {
+    log::status(_("No markers present"));
+  }
+}
 } // namespace wex
 
 void wex::stc::bind_all()
@@ -426,37 +446,13 @@ void wex::stc::bind_all()
 
      {[=, this](const wxCommandEvent& event)
       {
-        auto line = MarkerNext(get_current_line() + 1, 0xFFFF);
-        if (line == -1)
-        {
-          line = MarkerNext(0, 0xFFFF);
-        }
-        if (line != -1)
-        {
-          goto_line(line);
-        }
-        else
-        {
-          log::status(_("No markers present"));
-        }
+        marker_move(this, true);
       },
       id::stc::marker_next},
 
      {[=, this](const wxCommandEvent& event)
       {
-        auto line = MarkerPrevious(get_current_line() - 1, 0xFFFF);
-        if (line == -1)
-        {
-          line = MarkerPrevious(get_line_count() - 1, 0xFFFF);
-        }
-        if (line != -1)
-        {
-          goto_line(line);
-        }
-        else
-        {
-          log::status(_("No markers present"));
-        }
+        marker_move(this, false);
       },
       id::stc::marker_previous}});
 
