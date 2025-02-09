@@ -108,12 +108,17 @@ bool wex::vcs_entry::execute(
         dlg = new stc_entry_dialog(
           std::string(),
           _("Text") + ":",
-          wex::data::window(),
+          wex::data::window().title("git grep"),
           wex::data::stc().flags(
             wex::data::stc::window_t().set(wex::data::stc::WIN_SINGLE_LINE)));
       }
 
-      dlg->ShowModal();
+      dlg->get_stc()->SetFocus();
+
+      if (dlg->ShowModal() == wxID_CANCEL)
+      {
+        return false;
+      }
 
       text = dlg->get_stc()->get_text();
 
