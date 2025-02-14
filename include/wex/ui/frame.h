@@ -231,6 +231,18 @@ public:
     return false;
   }
 
+  /// Executes vcs.
+  virtual bool vcs_execute(
+    /// the vcs command
+    const std::string& command,
+    /// the paths
+    const std::vector<wex::path>& paths,
+    /// window data
+    const data::window& arg = data::window())
+  {
+    return false;
+  }
+
   /// Executes a ex command. Returns true if
   /// this command is handled. This method is invoked
   /// at the beginning of the ex command handling,

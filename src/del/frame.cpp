@@ -940,6 +940,20 @@ bool wex::del::frame::vcs_execute(
   return wex::vcs_execute(this, event_id, paths, data);
 }
 
+bool wex::del::frame::vcs_execute(
+  const std::string&            command,
+  const std::vector<wex::path>& paths,
+  const data::window&           data)
+{
+  if (wex::vcs vcs(paths); vcs.execute(command))
+  {
+    open_file_vcs(path(command), vcs.entry(), data);
+    return true;
+  }
+
+  return false;
+}
+
 bool wex::del::frame::vcs_unified_diff(
   const vcs_entry*    entry,
   const unified_diff* diff)

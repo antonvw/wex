@@ -249,12 +249,23 @@ TEST_CASE("wex::del::frame")
 
   SUBCASE("vcs_execute")
   {
+    REQUIRE(!del_frame()->vcs_execute(55, std::vector<wex::path>()));
+
     wex::data::window data;
     data.button(wxOK | wxCANCEL | wxAPPLY);
     const int ID_VCS_LOG = 11; // in wex-menus.xml
     REQUIRE(del_frame()
               ->vcs_execute(ID_VCS_LOG, {wex::test::get_path("test.h")}, data));
     del_frame()->vcs_destroy_dialog();
+
+    {
+      wex::log_none off;
+      REQUIRE(!del_frame()->vcs_execute("shows", std::vector<wex::path>()));
+    }
+
+    REQUIRE(del_frame()->vcs_execute(
+      "show",
+      std::vector<wex::path>{wex::test::get_path()}));
   }
 
   SUBCASE("virtual")

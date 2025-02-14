@@ -205,6 +205,11 @@ public:
     int                           event_id,
     const std::vector<wex::path>& paths,
     const data::window&           arg = data::window()) override;
+  bool vcs_execute(
+    const std::string&            command,
+    const std::vector<wex::path>& paths,
+    const data::window&           arg = data::window()) override;
+
   bool vcs_unified_diff(const vcs_entry* e, const unified_diff* uni) override;
 
   bool vi_is_address(syntax::stc* stc, const std::string& text) const override;

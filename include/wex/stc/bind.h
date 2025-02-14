@@ -2,7 +2,7 @@
 // Name:      bind.h
 // Purpose:   Declaration of bind id's
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -37,6 +37,7 @@ enum stc
   open_link,
   open_mime,
   open_www,
+  show_hash,
   show_properties,
   toggle_fold,
   unfold_all,
