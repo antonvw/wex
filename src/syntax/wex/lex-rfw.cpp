@@ -1022,7 +1022,7 @@ Sci_Position SCI_METHOD Scintilla::lex_rfw::WordListSet(int n, const char* wl)
   return firstModification;
 }
 
-LexerModule lmRFW(
+extern const LexerModule lmRFW(
   lex_rfw::language(),
   lex_rfw::get,
   lex_rfw::name(),
