@@ -138,5 +138,15 @@ TEST_CASE("wex::global_env")
     REQUIRE(ge.hits() == 3);
   }
 
+  SUBCASE("commands-substitute")
+  {
+    REQUIRE(wex::addressrange::data().set_global("g/he/s/ll/LL"));
+    wex::global_env ge(ar);
+
+    REQUIRE(ge.has_commands());
+    REQUIRE(ge.global(wex::addressrange::data()));
+    REQUIRE(ge.hits() == 3);
+  }
+
   delete ex;
 }

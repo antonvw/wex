@@ -2,7 +2,7 @@
 // Name:      global-env.h
 // Purpose:   Declaration of class wex::global_env
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2024 Anton van Wezenbeek
+// Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,6 +10,7 @@
 namespace wex
 {
 class addressrange;
+class addressrange_mark;
 class ex;
 class block_lines;
 
@@ -39,7 +40,10 @@ private:
   bool command(const block_lines& block, const std::string& text) const;
   bool for_each(const block_lines& match) const;
   bool process(const block_lines& block);
-  bool process_inverse(const block_lines& block, block_lines& inverse);
+  bool process_inverse(
+    const addressrange_mark& am,
+    const block_lines&       block,
+    block_lines&             inverse);
 
   const addressrange m_ar;
 

@@ -267,7 +267,7 @@ bool wex::ex::marker_add(char marker, int line)
 
   m_marker_columns[marker] = col;
 
-  log::trace("added marker") << marker << "to line:" << lin << "col:" << col;
+  log::trace("marker") << marker << "at line:" << lin << "col:" << col;
 
   return true;
 }
