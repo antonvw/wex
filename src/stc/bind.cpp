@@ -32,6 +32,23 @@
 
 namespace wex
 {
+bool do_show_hash(stc* stc, const std::function<void(const std::string&)>& f)
+{
+  const auto line(stc->GetLineText(stc->GetCurrentLine()));
+
+  if (regex r("commit ([a-z[0-9]+$)"); r.match(line) > 0)
+  {
+    if (f)
+    {
+      f(r[0]);
+    }
+
+    return true;
+  }
+
+  return false;
+}
+
 void edit_control_char(stc* stc)
 {
   if (stc->GetSelectedText().length() > 2)
@@ -426,6 +443,19 @@ void wex::stc::bind_all()
 
      {[=, this](const wxCommandEvent& event)
       {
+        do_show_hash(
+          this,
+          [&, this](const std::string& hash)
+          {
+            m_frame->vcs_execute(
+              "show " + hash,
+              std::vector<wex::path>{m_data.head_path()});
+          });
+      },
+      id::stc::show_hash},
+
+     {[=, this](const wxCommandEvent& event)
+      {
         const auto level        = GetFoldLevel(get_current_line());
         const auto line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
                                     get_current_line() :
@@ -500,11 +530,20 @@ void wex::stc::build_popup_menu(menu& menu)
     m_frame->debug_add_menu(menu, true);
   }
 
-  if (
-    m_data.menu().test(data::stc::MENU_VCS) && path().file_exists() &&
-    m_frame->vcs_dir_exists(path()))
+  if (m_data.menu().test(data::stc::MENU_VCS))
   {
-    menu.append({{}, {path(), m_frame}});
+    if (get_lexer().scintilla_lexer() == "yaml")
+    {
+      if (do_show_hash(this, nullptr))
+      {
+        menu.append({{}, {id::stc::show_hash, _("show hash")}});
+      }
+    }
+
+    if (path().file_exists() && m_frame->vcs_dir_exists(path()))
+    {
+      menu.append({{}, {path(), m_frame}});
+    }
   }
 
   if (!get_vi().is_active() && GetTextLength() > 0)

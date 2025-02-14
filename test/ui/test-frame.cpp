@@ -2,7 +2,7 @@
 // Name:      test-frame.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2024 Anton van Wezenbeek
+// Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/listctrl.h>
@@ -162,7 +162,12 @@ TEST_CASE("wex::frame")
 
     REQUIRE(!frame()->vcs_dir_exists(wex::test::get_path()));
 
-    frame()->vcs_execute(55, std::vector<wex::path>{wex::test::get_path()});
+    REQUIRE(
+      !frame()->vcs_execute(55, std::vector<wex::path>{wex::test::get_path()}));
+
+    REQUIRE(!frame()->vcs_execute(
+      "show",
+      std::vector<wex::path>{wex::test::get_path()}));
 
     auto* stc = new wex::test::ui_stc();
     REQUIRE(!frame()->pane_add(stc).empty());

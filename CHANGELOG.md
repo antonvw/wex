@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - added set field_separator to listview
 - added revisions_dialog to git show
 - added git grep when text is selected to context menu
+- added git show to log file
 
 ### Changed
 
