@@ -119,7 +119,7 @@ pp14
 // clang-format on
 bool wex::global_env::global(const data::substitute& data)
 {
-  addressrange_mark am(m_ar, data);
+  addressrange_mark am(m_ar, data, true); // global
 
   if (!am.set())
   {
@@ -144,7 +144,7 @@ bool wex::global_env::global(const data::substitute& data)
 
     if (mb.set_lines(get_block_lines(m_stc)); data.is_inverse())
     {
-      if (!process_inverse(mb, ib))
+      if (!process_inverse(am, mb, ib))
       {
         return false;
       }
@@ -172,8 +172,8 @@ bool wex::global_env::global(const data::substitute& data)
 
   if (data.is_inverse())
   {
-    ib.start(m_ex->marker_line('T'));
-    ib.end(m_ex->marker_line('$') + 1);
+    ib.start(am.marker_target());
+    ib.end(am.marker_end() + 1);
 
     if (ib.is_available() && !process(ib))
     {
@@ -200,7 +200,10 @@ bool wex::global_env::process(const block_lines& block)
   return true;
 }
 
-bool wex::global_env::process_inverse(const block_lines& mb, block_lines& ib)
+bool wex::global_env::process_inverse(
+  const addressrange_mark& am,
+  const block_lines&       mb,
+  block_lines&             ib)
 {
   // If there is a previous inverse block, process it.
   if (ib < mb)
@@ -210,7 +213,7 @@ bool wex::global_env::process_inverse(const block_lines& mb, block_lines& ib)
       return false;
     }
 
-    ib.start(m_ex->marker_line('T'));
+    ib.start(am.marker_target());
   }
   else
   {
