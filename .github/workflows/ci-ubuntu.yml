@@ -70,7 +70,7 @@ jobs:
         # see build-gen, currently a static build
         uses: actions/upload-artifact@v4
         with:
-          name: wex-lib
+          name: wex-lib-ubuntu
           path: build/**/*.a
 
       - name: Coveralls
