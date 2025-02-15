@@ -67,10 +67,11 @@ jobs:
           NO_AT_BRIDGE: 1
 
       - name: Artifacts
+        # see build-gen, currently a static build
         uses: actions/upload-artifact@v4
         with:
           name: lib-artifact
-          path: build/**/*.so*.0
+          path: build/**/*.a
 
       - name: Coveralls
         run: cd build && coveralls -r 9vV6skuIGeagBBkz5TCZNI12ezUv12gOj --format=lcov --file=src/app.run
