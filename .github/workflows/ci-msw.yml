@@ -38,6 +38,13 @@ jobs:
         run: |
           msbuild /noLogo /m /p:Configuration=Release ALL_BUILD.vcxproj
 
+      - name: Artifacts
+        # see build-gen, currently a static build
+        uses: actions/upload-artifact@v4
+        with:
+          name: wex-lib-windows
+          path: build/**/*.lib
+
       - name: Run tests
         uses: threeal/ctest-action@v1.1.0
         with:
