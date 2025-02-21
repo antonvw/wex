@@ -99,7 +99,7 @@ if ($tests)
   $option_tests="-DwexBUILD_TESTS=ON"
 }
 
-mkdir -p $dir
+md -Force $dir
 
 cmake `
   -B $dir `
