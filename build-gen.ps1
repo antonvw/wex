@@ -4,7 +4,7 @@
 #            for building wex itself, or for building apps using it
 #            Just run from repo root
 # Author:    Anton van Wezenbeek
-# Copyright: (c) 2024 Anton van Wezenbeek
+# Copyright: (c) 2024-2025 Anton van Wezenbeek
 ################################################################################
 
 <#
@@ -99,7 +99,7 @@ if ($tests)
   $option_tests="-DwexBUILD_TESTS=ON"
 }
 
-mkdir -p $dir
+mkdir -Force $dir
 
 cmake `
   -B $dir `
