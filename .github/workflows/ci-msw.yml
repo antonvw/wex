@@ -43,7 +43,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: wex-lib-windows
-          path: build/**/*.lib
+          path: |
+            build/**/*.lib
+            build/**/setup.h
 
       - name: Run tests
         uses: threeal/ctest-action@v1.1.0
