@@ -176,7 +176,17 @@ endif()
 
 include_directories(${Boost_INCLUDE_DIRS})
 
-file(GLOB wex_INCLUDES "${CMAKE_INSTALL_PREFIX}/include/wex/*.*")
+set(wex_INCLUDE_DIR_BASE "${CMAKE_INSTALL_PREFIX}/include/wex")
+
+if(NOT IS_DIRECTORY ${wex_INCLUDE_DIR_BASE})
+  message(FATAL_ERROR "No include wex dir: " ${wex_INCLUDE_DIR_BASE})
+endif()
+
+file(GLOB wex_INCLUDES "${wex_INCLUDE_DIR_BASE}/*.*")
+
+if(NOT wex_INCLUDES)
+  message(FATAL_ERROR "No subdirs in wex include dir: " ${wex_INCLUDE_DIR_BASE})
+endif()
 
 foreach(dir ${wex_INCLUDES})
   cmake_path(GET dir FILENAME wex_VERSION)
