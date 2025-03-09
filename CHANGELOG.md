@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [25.04] - 2025-04 [Unreleased]
+## [25.10] - 2025-10 [Unreleased]
+
+## [25.04] - 2025-03-16
 
 ### Added
 
@@ -553,7 +555,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - CEdit is used as base for the output
 - Visual C++ 5.0
 
-[Unreleased]: https://github.com/antonvw/wex/compare/v24.10..HEAD
+[Unreleased]: https://github.com/antonvw/wex/compare/v25.04..HEAD
+[25.04]:      https://github.com/antonvw/wex/compare/v24.10...v25.04
 [24.10]:      https://github.com/antonvw/wex/compare/v24.04...v24.10
 [24.04]:      https://github.com/antonvw/wex/compare/v23.10.0...v24.04
 [23.10.0]:    https://github.com/antonvw/wex/compare/v23.04.0...v23.10.0
