@@ -305,7 +305,10 @@ wex::lexers* wex::lexers::get(bool create_on_demand)
     {
       m_theme = config("theme").get();
 
-      m_self->load_document();
+      if (!m_self->load_document())
+      {
+        m_theme.clear();
+      }
     }
     else
     {
