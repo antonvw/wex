@@ -317,7 +317,7 @@ bool wex::vcs::load_document()
 
 const std::string wex::vcs::name() const
 {
-  return config("vcs.VCS").get(VCS_AUTO) ? "Auto" : m_entry->name();
+  return config("vcs.VCS").get(VCS_AUTO) == VCS_AUTO ? "Auto" : m_entry->name();
 }
 
 void wex::vcs::on_exit()

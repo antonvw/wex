@@ -50,6 +50,8 @@ TEST_CASE("wex::vcs")
     wex::config("vcs.VCS").set(0); // VCS_NONE
 
     REQUIRE(!vcs.use());
+    vcs.entry() = wex::vcs_entry(); // should not be necessary
+    CAPTURE(vcs.name());
     REQUIRE(vcs.name().empty());
 
     wex::config("vcs.VCS").set(current);
