@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <ranges>
 
 #include <wex/common/util.h>
 #include <wex/core/config.h>
@@ -35,9 +36,9 @@ namespace wex
 // present in the vcs.xml.
 enum
 {
-  VCS_NONE  = -2, // no version control
   VCS_AUTO  = -1, // uses the VCS appropriate for current file
-  VCS_START = 0   // number where fixed VCS start (index in vector)
+  VCS_NONE  = 0,  // no version control (index 0 in vector: empty vcs)
+  VCS_START = 1   // number where fixed VCS start (index in vector)
 };
 
 vcs::store_t::iterator find_entry(vcs::store_t* store, const path& p)
@@ -120,7 +121,7 @@ int wex::vcs::config_dialog(const data::window& par) const
     choices.insert({(long)VCS_AUTO, "Auto"});
   }
 
-  for (long i = VCS_START; const auto& it : *m_store)
+  for (long i = VCS_START; const auto& it : *m_store | std::views::drop(1))
   {
     choices.insert({i++, it.name()});
   }
@@ -316,15 +317,7 @@ bool wex::vcs::load_document()
 
 const std::string wex::vcs::name() const
 {
-  switch (config("vcs.VCS").get(VCS_AUTO))
-  {
-    case VCS_NONE:
-      return std::string();
-    case VCS_AUTO:
-      return "Auto";
-    default:
-      return m_entry->name();
-  }
+  return config("vcs.VCS").get(VCS_AUTO) ? "Auto" : m_entry->name();
 }
 
 void wex::vcs::on_exit()

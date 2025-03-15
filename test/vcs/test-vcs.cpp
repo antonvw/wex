@@ -2,7 +2,7 @@
 // Name:      test-vcs.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -35,6 +35,26 @@ TEST_CASE("wex::vcs")
     vcs.set(wex::path("/tmp/xxx"));
     REQUIRE(vcs.name() == "Auto");
     REQUIRE(vcs.entry().admin_dir() != ".git"); // should be empty??
+  }
+
+  SUBCASE("usage")
+  {
+    wex::vcs vcs(std::vector<wex::path>{file});
+
+    REQUIRE(vcs.use());
+
+    const auto current(wex::config("vcs.VCS").get(0));
+
+    REQUIRE(vcs.name() == "Auto");
+
+    wex::config("vcs.VCS").set(0); // VCS_NONE
+
+    REQUIRE(!vcs.use());
+    REQUIRE(vcs.name().empty());
+
+    wex::config("vcs.VCS").set(current);
+
+    REQUIRE(vcs.use());
   }
 
   SUBCASE("others")

@@ -2,7 +2,7 @@
 // Name:      unified-diff.h
 // Purpose:   Declaration of class wex::factory::unified_diff
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024 Anton van Wezenbeek
+// Copyright: (c) 2024-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -37,7 +37,7 @@ public:
   /// The last diff has been generated, we are finished.
   virtual void report_diff_finish() { ; };
 
-  /// Other methods.
+  // Other methods.
 
   /// Returns number of differences found duing parsing.
   size_t differences() const { return m_diffs; };

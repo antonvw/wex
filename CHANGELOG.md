@@ -48,6 +48,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - find next for empty line match
 - lexer dialog respects edge mode and folding settings
 - ex mode get previous line
+- item::choices_t and item::choices_bool_t use an ordered container
 
 ## [24.10] - 2024-09-22
 

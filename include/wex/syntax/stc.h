@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wex::syntax::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2024 Anton van Wezenbeek
+// Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -43,7 +43,6 @@ public:
   void blame_margin(const blame* blame);
 
   /// Enables or disables folding depending on fold property
-  /// (default not implemented).
   void fold(
     /// if document contains more than 'Auto fold' lines,
     /// or if fold_all (and fold property is on) is specified,

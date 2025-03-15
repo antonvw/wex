@@ -401,16 +401,9 @@ bool wex::addressrange::global(const command_parser& cp) const
 
   if (g.hits() > 0)
   {
-    if (g.has_commands())
-    {
-      m_ex->frame()->show_ex_message(
-        "executed: " + std::to_string(g.hits()) + " commands");
-    }
-    else
-    {
-      m_ex->frame()->show_ex_message(
-        "found: " + std::to_string(g.hits()) + " matches");
-    }
+    m_ex->frame()->show_ex_message(
+      g.has_commands() ? "executed: " + std::to_string(g.hits()) + " commands" :
+                         "found: " + std::to_string(g.hits()) + " matches");
   }
 
   return true;
