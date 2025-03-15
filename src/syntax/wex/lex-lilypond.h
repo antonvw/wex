@@ -65,7 +65,9 @@ private:
     {
       int sum = 0;
       for (int i = 0; i <= m_level; ++i)
+      {
         sum += m_open_begins[i];
+      }
       return ((sum + m_level + SC_FOLDLEVELBASE) & SC_FOLDLEVELNUMBERMASK);
     }
 
@@ -115,7 +117,7 @@ private:
     return m_option_set.PropertyType(name);
   };
 
-  /// Other methods.
+  // Other methods.
 
   void fold_dec(int& lev, fold_save& save) const;
   void fold_inc(int& lev, fold_save& save, bool& need) const;
@@ -123,19 +125,25 @@ private:
   int get_mode(Sci_Position line) const
   {
     if (line >= 0 && line < static_cast<Sci_Position>(m_modes.size()))
+    {
       return m_modes[line];
+    }
     return 0;
   }
 
   void get_save(Sci_Position line, fold_save& save) const
   {
     if (line >= 0 && line < static_cast<Sci_Position>(m_saves.size()))
+    {
       save = m_saves[line];
+    }
     else
     {
       save.m_level = 0;
       for (int i = 0; i < 8; ++i)
+      {
         save.m_open_begins[i] = 0;
+      }
     }
   }
 
@@ -144,26 +152,34 @@ private:
   void resize_modes(Sci_Position numLines)
   {
     if (static_cast<Sci_Position>(m_modes.size()) > numLines * 2 + 256)
+    {
       m_modes.resize(numLines + 128);
+    }
   }
 
   void resize_saves(Sci_Position numLines)
   {
     if (static_cast<Sci_Position>(m_saves.size()) > numLines * 2 + 256)
+    {
       m_saves.resize(numLines + 128);
+    }
   }
 
   void set_modes(Sci_Position line, int mode)
   {
     if (line >= static_cast<Sci_Position>(m_modes.size()))
+    {
       m_modes.resize(line + 1, 0);
+    }
     m_modes[line] = mode;
   }
 
   void set_saves(Sci_Position line, const fold_save& save)
   {
     if (line >= static_cast<Sci_Position>(m_saves.size()))
+    {
       m_saves.resize(line + 1);
+    }
     m_saves[line] = save;
   }
 

@@ -31,7 +31,7 @@ public:
   /// the default is used.
   static void set_path(const wex::path& p) { m_path = p; }
 
-  /// Other methods.
+  // Other methods.
 
   /// Default constructor.
   config_imp() = default;

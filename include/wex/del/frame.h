@@ -154,7 +154,7 @@ public:
   /// If vcs dialog was open, destroy it;
   void vcs_destroy_dialog();
 
-  /// Overridden methods.
+  // Overridden methods.
 
   static inline const int id_find_in_files    = ID_FREE_LOWEST;
   static inline const int id_replace_in_files = ID_FREE_LOWEST + 1;

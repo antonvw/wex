@@ -14,8 +14,8 @@
 #include <wx/sizer.h> // for wxSizer, and wxSizerFlags
 
 #include <any>
-#include <unordered_map>
-#include <unordered_set>
+#include <map>
+#include <set>
 #include <utility>
 #include <vector>
 
@@ -163,7 +163,7 @@ public:
   };
 
   /// Choices for radioboxes.
-  typedef std::unordered_map<
+  typedef std::map<
     /// value
     long,
     /// name, default the value is not set,
@@ -172,7 +172,7 @@ public:
     choices_t;
 
   /// Choices for listboxes with toggle options.
-  typedef std::unordered_set<std::string> choices_bool_t;
+  typedef std::set<std::string> choices_bool_t;
 
   /// A group is a pair of text with a vector of items.
   /// If the text is empty, a group is used, otherwise a static box,
@@ -481,7 +481,7 @@ private:
 
   bool m_is_row_growable = false;
 
-  type_t m_type {EMPTY};
+  type_t m_type{EMPTY};
 
   std::string m_label, m_label_window, m_page;
 

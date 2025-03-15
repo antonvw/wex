@@ -19,7 +19,7 @@ public:
 
   static bool is_letter(int ch);
 
-  /// Other methods
+  // Other methods
 
   /// Constructor.
   lilypond(LexAccessor& s)
