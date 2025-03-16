@@ -363,14 +363,15 @@ bool wex::toolbar::Destroy()
 
 bool wex::toolbar::set_checkbox(const std::string& name, bool show) const
 {
-  for (auto& it : m_checkboxes)
-  {
-    if (it->GetName() == name)
+  return std::ranges::any_of(
+    m_checkboxes,
+    [name, show](auto& cb)
     {
-      it->SetValue(show);
-      return true;
-    }
-  }
-
-  return false;
+      if (cb->GetName() == name)
+      {
+        cb->SetValue(show);
+        return true;
+      }
+      return false;
+    });
 }
