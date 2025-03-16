@@ -86,6 +86,9 @@ inline const std::vector<wex::item> test_config_item::vector(int rows, int cols)
 
       {"integers", {{"integer", wex::item::TEXTCTRL_INT}}},
 
+      {"listboxes",
+       {{"listbox", wex::item::LISTBOX, std::list<std::string>{"a:1", "b:0"}}}},
+
       {"listviews", {{"listview", wex::data::listview()}}},
 
       {"pickers",

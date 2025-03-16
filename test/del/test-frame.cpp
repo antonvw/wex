@@ -2,7 +2,7 @@
 // Name:      test-frame.cpp
 // Purpose:   Implementation for wex del unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -14,6 +14,8 @@
 
 TEST_CASE("wex::del::frame")
 {
+  const int vcs_git = 3;
+
   SUBCASE("default_extensions")
   {
     REQUIRE(!del_frame()->default_extensions().empty());
@@ -169,7 +171,7 @@ TEST_CASE("wex::del::frame")
 
   SUBCASE("vcs_annotate_commit")
   {
-    wex::config("vcs.VCS").set(2);
+    wex::config("vcs.VCS").set(vcs_git);
     const std::string commit_id("b6aae80e3ab4402c7930a9bd590d355641c74746");
 
     get_stc()->set_text("line 1\nline 2\nline 3\nline 4\nline 5\n");
@@ -192,7 +194,7 @@ TEST_CASE("wex::del::frame")
       wex::log_none off;
       REQUIRE(!del_frame()->vcs_blame(get_stc()));
     }
-    wex::config("vcs.VCS").set(2);
+    wex::config("vcs.VCS").set(vcs_git);
     REQUIRE(get_stc()->open(wex::test::get_path("test.h")));
     REQUIRE(del_frame()->vcs_blame(get_stc()));
 
@@ -211,7 +213,7 @@ TEST_CASE("wex::del::frame")
 
   SUBCASE("vcs_blame_revision")
   {
-    wex::config("vcs.VCS").set(2);
+    wex::config("vcs.VCS").set(vcs_git);
     REQUIRE(get_stc()->open(wex::test::get_path("test.h")));
     const std::string renamed;
     const std::string offset;
@@ -247,10 +249,23 @@ TEST_CASE("wex::del::frame")
 
   SUBCASE("vcs_execute")
   {
+    REQUIRE(!del_frame()->vcs_execute(55, std::vector<wex::path>()));
+
     wex::data::window data;
     data.button(wxOK | wxCANCEL | wxAPPLY);
-    REQUIRE(del_frame()->vcs_execute(9, {wex::test::get_path("test.h")}, data));
+    const int ID_VCS_LOG = 11; // in wex-menus.xml
+    REQUIRE(del_frame()
+              ->vcs_execute(ID_VCS_LOG, {wex::test::get_path("test.h")}, data));
     del_frame()->vcs_destroy_dialog();
+
+    {
+      wex::log_none off;
+      REQUIRE(!del_frame()->vcs_execute("shows", std::vector<wex::path>()));
+    }
+
+    REQUIRE(del_frame()->vcs_execute(
+      "show",
+      std::vector<wex::path>{wex::test::get_path()}));
   }
 
   SUBCASE("virtual")

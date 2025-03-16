@@ -2,7 +2,7 @@
 // Name:      debug.cpp
 // Purpose:   Implementation of class wex::debug
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016-2024 Anton van Wezenbeek
+// Copyright: (c) 2016-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -38,7 +38,7 @@ public:
   {
     if (init)
     {
-      m_listview->append_columns({{"Name", column::STRING, 200}, {"Pid"}});
+      m_listview->append_columns({{"Name", column::STRING_MEDIUM}, {"Pid"}});
     }
     else
     {
@@ -555,9 +555,8 @@ void wex::debug::set_entry(const std::string& debugger)
     {
       m_entry = v[0];
     }
-    else if (const auto& it = std::find_if(
-               v.begin(),
-               v.end(),
+    else if (const auto& it = std::ranges::find_if(
+               v,
                [debugger](auto const& e)
                {
                  return e.name() == debugger;

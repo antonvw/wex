@@ -43,8 +43,6 @@ wex::listitem::listitem(
   : m_listview(listview)
   , m_path(filename)
   , m_file_spec(filespec)
-  , m_reflect(
-      {REFLECT_ADD("path", m_path.string()), REFLECT_ADD("id", GetId())})
 {
   SetId(-1);
 }
@@ -81,6 +79,14 @@ void wex::listitem::insert(long index)
   {
     m_listview->SetItem(GetId(), col, filename);
   }
+}
+
+std::stringstream wex::listitem::log() const
+{
+  std::stringstream ss;
+  using boost::describe::operators::operator<<;
+  ss << "listitem: " << *this << GetId();
+  return ss;
 }
 
 bool wex::listitem::set_item(

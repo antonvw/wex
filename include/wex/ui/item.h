@@ -2,7 +2,7 @@
 // Name:      item.h
 // Purpose:   Declaration of wex::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2024 Anton van Wezenbeek
+// Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -14,8 +14,8 @@
 #include <wx/sizer.h> // for wxSizer, and wxSizerFlags
 
 #include <any>
-#include <unordered_map>
-#include <unordered_set>
+#include <map>
+#include <set>
 #include <utility>
 #include <vector>
 
@@ -90,6 +90,11 @@ public:
     /// wxHyperlinkCtrl item
     HYPERLINKCTRL,
 
+    /// wxListBox item
+    /// all values are stored in config, as well as all selections
+    /// as indicated by a :0 or :1 after the value in the config
+    LISTBOX,
+
     /// wex::listview item
     LISTVIEW,
 
@@ -158,7 +163,7 @@ public:
   };
 
   /// Choices for radioboxes.
-  typedef std::unordered_map<
+  typedef std::map<
     /// value
     long,
     /// name, default the value is not set,
@@ -167,7 +172,7 @@ public:
     choices_t;
 
   /// Choices for listboxes with toggle options.
-  typedef std::unordered_set<std::string> choices_bool_t;
+  typedef std::set<std::string> choices_bool_t;
 
   /// A group is a pair of text with a vector of items.
   /// If the text is empty, a group is used, otherwise a static box,
@@ -187,7 +192,7 @@ public:
   static void use_config(bool use) { m_use_config = use; }
 
   /// Default constructor for an EMPTY item.
-  item();
+  item() = default;
 
   /// Constructor for a SPACER item.
   /// The size is the size for the spacer used.
@@ -343,7 +348,7 @@ public:
     /// listview data
     const data::listview& data,
     /// initial value
-    /// expects std::list< std::string>
+    /// expects strings_t
     const std::any& value = std::any(),
     /// item data
     const data::item& d = data::item().label_type(data::item::LABEL_NONE));
@@ -364,13 +369,14 @@ public:
     /// - DIRPICKERCTRL
     /// - FILEPICKERCTRL
     /// - FONTPICKERCTRL
+    /// - LISTBOX
     /// - TEXTCTRL_FLOAT
     /// - TEXTCTRL_INT
     /// - TOGGLEBUTTON
     type_t type,
     /// initial value for the control, if appropriate:
     /// - CHECKBOX expects bool
-    /// - COMBOXBOX expects std::list< std::string>
+    /// - COMBOXBOX, LISTBOX expect strings_t
     /// - COLOURPICKERWIDGET expects a wxColour
     /// - TEXTCTRL_FLOAT expects std::string with float contents
     /// - TEXTCTRL_INT expects std::string with int contents
@@ -429,7 +435,8 @@ public:
 
   /// Loads or saves this item to the config.
   /// Returns true if the config was accessed, as not all
-  /// config items associate with the config.
+  /// config items associate with the config, or
+  /// the item data is made non persistent.
   bool to_config(bool save) const;
 
   /// Returns the type.
@@ -474,7 +481,7 @@ private:
 
   bool m_is_row_growable = false;
 
-  type_t m_type;
+  type_t m_type{EMPTY};
 
   std::string m_label, m_label_window, m_page;
 

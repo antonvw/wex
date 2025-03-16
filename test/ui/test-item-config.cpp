@@ -24,6 +24,10 @@ TEST_CASE("wex::item-config")
     const wex::item ci_empty;
     const wex::item ci_spacer(5);
     const wex::item ci_cb("ci-cb", wex::item::COMBOBOX);
+    const wex::item ci_lb(
+      "ci-lb",
+      wex::item::LISTBOX,
+      std::list<std::string>{"x:1", "y"});
     const wex::item ci_cb_dir("ci-cb-dir", wex::item::COMBOBOX_DIR);
     const wex::item ci_sp("ci-sp", 1, 5);
     const wex::item ci_sp_d(
@@ -61,9 +65,11 @@ TEST_CASE("wex::item-config")
           [=](wxWindow* user, bool save)
           {
             if (save)
+            {
               wex::config("mytext").set((reinterpret_cast<wxTextCtrl*>(user))
                                           ->GetValue()
                                           .ToStdString());
+            }
             return true;
           })
         .apply(
@@ -77,6 +83,7 @@ TEST_CASE("wex::item-config")
     REQUIRE(ci_empty.empty());
     REQUIRE(!ci_empty.is_row_growable());
     REQUIRE(ci_cb.type() == wex::item::COMBOBOX);
+    REQUIRE(ci_lb.type() == wex::item::LISTBOX);
     REQUIRE(ci_cb_dir.type() == wex::item::COMBOBOX_DIR);
     REQUIRE(ci_spacer.type() == wex::item::SPACER);
     REQUIRE(ci_grid.type() == wex::item::GRID);
@@ -99,6 +106,7 @@ TEST_CASE("wex::item-config")
       ci_empty,
       ci_spacer,
       ci_cb,
+      ci_lb,
       ci_cb_dir,
       ci_sl,
       ci_vl,
@@ -123,9 +131,13 @@ TEST_CASE("wex::item-config")
       REQUIRE(it.data().columns() == 1);
 
       if (it.type() == wex::item::USER)
+      {
         REQUIRE(it.window() != nullptr);
+      }
       else
+      {
         REQUIRE(it.window() == nullptr);
+      }
 
       if (
         it.type() != wex::item::STATICLINE && it.type() != wex::item::SPACER &&

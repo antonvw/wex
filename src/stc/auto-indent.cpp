@@ -2,7 +2,7 @@
 // Name:      stc/auto-indent.cpp
 // Purpose:   Implementation of class wex::auto_indent
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -90,12 +90,9 @@ bool wex::auto_indent::is_indentable(int c) const
       break;
 
     case wxSTC_EOL_CRLF:
-      is_nl = (c == '\n');
-      break; // so ignore first \r
-
     case wxSTC_EOL_LF:
       is_nl = (c == '\n');
-      break;
+      break; // so ignore first \r for CRLF
   }
 
   return is_nl;

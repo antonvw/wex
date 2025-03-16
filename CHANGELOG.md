@@ -1,10 +1,56 @@
-# changelog
+# Changelog
 
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## 24.10 - 2024-09-22
+## [25.10] - 2025-10 [Unreleased]
+
+## [25.04] - 2025-03-16
+
+### Added
+
+- added trompeloeil as mocking framework
+- added boost::describe for reflection as well
+- added showing git diff as indicators in stc component and option
+  to enable / disable this
+- added robotidy beautifier, and added config page
+- added LISTBOX item that uses a wxListBox
+- addr allows offset, and improvement on single address in addressrange
+- added :marks to show all markers and option to keep current
+  position when adding a marker
+- added g! as alternative to global v command
+- added set field_separator to listview
+- added revisions_dialog to git show
+- added git grep when text is selected to context menu
+- added git show to log file
+
+### Changed
+
+- upgrade to lexilla 5.4.2
+- split column types STRING into STRING SMALL, MEDIUM and LARGE
+- The Open Group Base Specifications Issue 8, 2024 edition
+- listview standard column sizes are configurable
+- wex::quoted uses std::quoted and includes a delim character
+- stc context menu and properties only shown if no selection active
+- removed get_word, use istringstream instead
+
+### Fixed
+
+- fixed possible infinite loop in bash
+- fixed findbar
+- opening files that contain a space in the filename
+- 2addr range for global commands
+- global v command and set indicator
+- macro playback and undo includes sub commands
+- build-gen.ps1 restores location after building
+- blame hide should not do SetWrapMode
+- find next for empty line match
+- lexer dialog respects edge mode and folding settings
+- ex mode get previous line
+- item::choices_t and item::choices_bool_t use an ordered container
+
+## [24.10] - 2024-09-22
 
 ### Added
 
@@ -43,7 +89,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   can be initialized with executable
 - ex global command and append or change of insert
 
-## 24.04 - 2024-03-29
+## [24.04] - 2024-03-29
 
 ### Added
 
@@ -74,7 +120,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - switching between find in stc margin and normal window
 - ex mode fixes for printing, adjust_window
 
-## 23.10 - 2023-10-08
+## [23.10.0] - 2023-10-08
 
 ### Added
 
@@ -99,7 +145,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - ctags::find and empty tag finds next tag
 - rectangular paste
 
-## 23.04 - 2023-03-12
+## [23.04.0] - 2023-03-12
 
 ### Added
 
@@ -114,7 +160,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - ex mode fixes
 
-## 22.10 - 2022-09-18
+## [22.10.0] - 2022-09-18
 
 ### Added
 
@@ -128,7 +174,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - ex commands more closely follow
   The Open Group Base Specifications Issue 7, 2018 edition
 
-## 22.04 - 2022-03-06
+## [22.04.0] - 2022-03-06
 
 ### Added
 
@@ -142,7 +188,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - boost::json lib instead of nlohmann/json lib, requiring boost 1.75
 - Microsoft Visual Studio 2022
 
-## 21.10 - 2021-09-12
+## [21.10.0] - 2021-09-12
 
 ### Added
 
@@ -155,7 +201,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - boost::tokenizer lib used
 - use std::thread for find and replace in files
 
-## 21.04 - 2021-03-07
+## [21.04.0] - 2021-03-07
 
 ### Added
 
@@ -168,7 +214,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - boost::log lib used instead of easylogging++ lib
 - moved apps folder to gitlab
 
-## 20.10 - 2020-10-02
+## [20.10.0] - 2020-10-02
 
 ### Added
 
@@ -183,7 +229,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - ex append, insert, change, set commands follow
     The Open Group Base Specifications Issue 7, 2018 edition
 
-## 20.04 - 2020-03-15
+## [20.04.0] - 2020-03-15
 
 ### Added
 
@@ -195,7 +241,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - scintilla is compiled to use `std::regex` (ECMAScript)
 - Microsoft Visual Studio 2019
 
-## 19.10 - 2019-09-14
+## [19.10.0] - 2019-09-14
 
 ### Added
 
@@ -210,7 +256,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - boost::spirit lib instead of eval lib
   - boost::statechart lib instead of FSM lib
 
-## 19.04 - 2019-03-09
+## [19.04.0] - 2019-03-09
 
 ### Added
 
@@ -221,7 +267,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - uses std::filesystem instead of std::experimental::filesystem
 
-## 18.10 - 2018-10-01
+## [18.10.0] - 2018-10-01
 
 ### Changed
 
@@ -235,21 +281,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - c++17 standard
 
-## 18.04 - 2018-04-08
+## [18.04.0] - 2018-04-08
 
 ### Added
 
 - easylogging++ lib
 - FSM lib
 
-## 17.10 - 2017-09-30
+## [17.10.0] - 2017-09-30
 
 ### Changed
 
 - c++1z, using std::experimental::filesystem
 - Microsoft Visual Studio 2017
 
-## 17.04 - 2017-04-08
+## [17.04.0] - 2017-04-08
 
 ### Changed
 
@@ -259,14 +305,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - pugixml lib
 - TCLAP lib
 
-## 16.10 - 2016-09-30
+## [16.10.0] - 2016-09-30
 
 ### Added
 
 - eval lib
 - osx support
 
-## 3.1.0 - 2016-03-11
+## [3.1.0] - 2016-03-11
 
 ### Added
 
@@ -283,21 +329,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - c++14 standard
 - wxWidgets 3.1.0
 
-## 3.0.2 - 2014-10-10
+## [3.0.2] - 2014-10-10
 
 ### Changed
 
 - c++11 standard
 - wxWidgets 3.0.2
 
-## 3.0.1 - 2010-06-19
+## [3.0.1] - 2010-06-19
 
 ### Changed
 
 - wxWidgets 3.0.1
 - Microsoft Visual Studio 2013
 
-## 3.0.0 - 2013-11-14
+## [3.0.0] - 2013-11-14
 
 ### Added
 
@@ -309,19 +355,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - wxWidgets 3.0.0
 - Microsoft Visual Studio 2012
 
-## 2.9.5 - 2013-07-20
+## [2.9.5] - 2013-07-20
 
 ### Changed
 
 - wxWidgets 2.9.5
 
-## 2.9.4 - 2012-07-16
+## [2.9.4] - 2012-07-16
 
 ### Changed
 
 - wxWidgets 2.9.4
 
-## 2.9.3 - 2012-03-24
+## [2.9.3] - 2012-03-24
 
 ### Added
 
@@ -332,7 +378,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - wxWidgets 2.9.3
 
-## 2.9.2 - 2011-12-11
+## [2.9.2] - 2011-12-11
 
 ### Added
 
@@ -348,7 +394,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - wxWidgets 2.9.2
 - Microsoft Visual Studio 2010
 
-## 6.0 - 2008-11-20
+## [6.0] - 2008-11-20
 
 ### Added
 
@@ -362,41 +408,41 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - use svn (sliksvn, xp-dev)
 
-## 5.1 - 2007-09-10
+## [5.1] - 2007-09-10
 
 ### Added
 
 - recent project support
 
-## 5.0 - 2007-04-04
+## [5.0] - 2007-04-04
 
 ### Added
 
 - wxAUI lib
 - MDI projects
 
-## 4.4 - 2006-12-14
+## [4.4] - 2006-12-14
 
 ### Added
 
 - portable version that reads and saves all config
     files from exe directory
 
-## 4.3 - 2006-06-19
+## [4.3] - 2006-06-19
 
-## 4.2 - 2006-04-03
+## [4.2] - 2006-04-03
 
 ### Added
 
 - MDI editors
 
-## 4.1 - 2006-02-06
+## [4.1] - 2006-02-06
 
 ### Added
 
 - hex mode opening
 
-## 4.0 - 2005-12-23
+## [4.0] - 2005-12-23
 
 ### Added
 
@@ -410,7 +456,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - autocompletion
 - folding
 
-## 3.6 - 2003-07-09
+## [3.6] - 2003-07-09
 
 ### Added
 
@@ -420,21 +466,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - gcc 3.2
 
-## 3.5 - 2002-03-22
+## [3.5] - 2002-03-22
 
-## 3.4 - 2002-02-21
+## [3.4] - 2002-02-21
 
-## 3.3 - 2001-11-30
+## [3.3] - 2001-11-30
 
-## 3.2 - 2001-07-11
+## [3.2] - 2001-07-11
 
-## 3.1 - 2001-06-22
+## [3.1] - 2001-06-22
 
 ### Changed
 
 - wxWidgets 2.2.7
 
-## 3.0 - 2001-06-12
+## [3.0] - 2001-06-12
 
 ### Added
 
@@ -445,7 +491,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - wxWidgets 2.2.1 instead of MFC
 
-## 2.2 - 2002-12-18
+## [2.2] - 2002-12-18
 
 ### Added
 
@@ -455,60 +501,88 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - XTToolKit lib
 
-## 2.1 - 2000-11-14
+## [2.1] - 2000-11-14
 
 ### Added
 
 - CodeJock lib v6.09
 
-## 2.0 - 2000-06-19
+## [2.0] - 2000-06-19
 
 ### Changed
 
 - MFC 6.0
 - Visual C++ 6.0
 
-## 1.9 - 2000-04-18
+## [1.9] - 2000-04-18
 
-## 1.8 - 2000-01-07
+## [1.8] - 2000-01-07
 
-## 1.7 - 1999-09-15
+## [1.7] - 1999-09-15
 
 ### Added
 
 - ClassBuilder 2.0
 
-## 1.6 - 1999-10-12
+## [1.6] - 1999-10-12
 
 ### Added
 
 - SDI interface
 
-## 1.5 - 1999-03-23
+## [1.5] - 1999-03-23
 
-## 1.4 - 1998-08-08
+## [1.4] - 1998-08-08
 
-## 1.3 - 1998-06-18
+## [1.3] - 1998-06-18
 
-## 1.2 - 1998-04-23
+## [1.2] - 1998-04-23
 
 ### Changed
 
 - use CListCtrl instead of CListBox
 
-## 1.1 - 1998-03-16
+## [1.1] - 1998-03-16
 
 ### Changed
 
 - use CListBox instead of CEdit
 
-## 1.0 - 1998-01-27
+## [1.0] - 1998-01-27
 
 ### Added
 
 - MFC 5.0
 - CEdit is used as base for the output
 - Visual C++ 5.0
+
+[Unreleased]: https://github.com/antonvw/wex/compare/v25.04..HEAD
+[25.04]:      https://github.com/antonvw/wex/compare/v24.10...v25.04
+[24.10]:      https://github.com/antonvw/wex/compare/v24.04...v24.10
+[24.04]:      https://github.com/antonvw/wex/compare/v23.10.0...v24.04
+[23.10.0]:    https://github.com/antonvw/wex/compare/v23.04.0...v23.10.0
+[23.04.0]:    https://github.com/antonvw/wex/compare/v22.10.0...v23.04.0
+[22.10.0]:    https://github.com/antonvw/wex/compare/v22.04.0...v22.10.0
+[22.04.0]:    https://github.com/antonvw/wex/compare/v21.10.0...v22.04.0
+[21.10.0]:    https://github.com/antonvw/wex/compare/v21.04.0...v21.10.0
+[21.04.0]:    https://github.com/antonvw/wex/compare/v20.10.0...v21.04.0
+[20.10.0]:    https://github.com/antonvw/wex/compare/v20.04.0...v20.10.0
+[20.04.0]:    https://github.com/antonvw/wex/compare/v19.10.0...v20.04.0
+[19.10.0]:    https://github.com/antonvw/wex/compare/v19.04.0...v19.10.0
+[19.04.0]:    https://github.com/antonvw/wex/compare/v18.10.0...v19.04.0
+[18.10.0]:    https://github.com/antonvw/wex/compare/v18.04.0...v18.10.0
+[18.04.0]:    https://github.com/antonvw/wex/compare/v17.10.0...v18.04.0
+[17.10.0]:    https://github.com/antonvw/wex/compare/v17.04.0...v17.10.0
+[17.04.0]:    https://github.com/antonvw/wex/compare/v16.10.0...v17.04.0
+[16.10.0]:    https://github.com/antonvw/wex/compare/v3.1.0...v16.10.0
+[3.1.0]:      https://github.com/antonvw/wex/compare/v3.0.2...v3.1.0
+[3.0.2]:      https://github.com/antonvw/wex/compare/v3.0.1...v3.0.2
+[3.0.1]:      https://github.com/antonvw/wex/compare/v3.0.0...v3.0.1
+[3.0.0]:      https://github.com/antonvw/wex/compare/v2.9.5...v3.0.0
+[2.9.5]:      https://github.com/antonvw/wex/compare/v2.9.4...v2.9.5
+[2.9.4]:      https://github.com/antonvw/wex/compare/v2.9.3...v2.9.4
+[2.9.3]:      https://github.com/antonvw/wex/compare/v2.9.2...v2.9.3
+[2.9.2]:      https://github.com/antonvw/wex/releases/v2.9.2
 
 <!-- markdownlint-configure-file { "MD022": false,
   "MD024": false, "MD030": false, "MD032": false} -->

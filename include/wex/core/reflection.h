@@ -2,7 +2,7 @@
 // Name:      reflection.h
 // Purpose:   Declaration of wex::reflection class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -12,15 +12,14 @@
 #include <sstream>
 #include <vector>
 
-/// YOu can use this macro to add reflection to your class members,
+/// You can use this macro to add reflection to your class members,
 /// or functions.
-#define REFLECT_ADD(NAME, ITEM) \
-  {                             \
-    NAME, [&]()                 \
-    {                           \
-      return ITEM;              \
-    }                           \
-  }
+#define REFLECT_ADD(NAME, ITEM)                                                \
+  {NAME,                                                                       \
+   [&]()                                                                       \
+   {                                                                           \
+     return ITEM;                                                              \
+   }}
 
 namespace wex
 {
@@ -47,8 +46,10 @@ public:
     function_t  f;
   } reflection_t;
 
-  /// Constructor, sets all reflection items and log_t.
-  explicit reflection(const std::vector<reflection_t>& v, log_t = log_t::ALL);
+  /// Default constructor, sets all reflection items and log_t.
+  explicit reflection(
+    const std::vector<reflection_t>& v = {},
+    log_t                              = log_t::ALL);
 
   /// Logs all items to a std::stringstream.
   std::stringstream log() const;

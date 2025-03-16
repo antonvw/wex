@@ -2,7 +2,7 @@
 // Name:      test-listview.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2024 Anton van Wezenbeek
+// Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -23,7 +23,7 @@ TEST_CASE("wex::listview")
     {"Int", wex::column::INT},
     {"Date", wex::column::DATE},
     {"Float", wex::column::FLOAT},
-    {"String", wex::column::STRING}};
+    {"String", wex::column::STRING_SMALL}};
 
   SUBCASE("general")
   {
@@ -47,7 +47,7 @@ TEST_CASE("wex::listview")
     REQUIRE(lv->append_columns(
       {{"Date", wex::column::DATE},
        {"Float", wex::column::FLOAT},
-       {"String", wex::column::STRING}}));
+       {"String", wex::column::STRING_MEDIUM}}));
 
     REQUIRE(lv->find_column("Int") == 0);
     REQUIRE(lv->find_column("Date") == 1);
@@ -104,9 +104,15 @@ TEST_CASE("wex::listview")
 
   SUBCASE("item_from_to_text")
   {
-    REQUIRE(lv->append_columns({{"String", wex::column::STRING}}));
+    REQUIRE(lv->append_columns(
+      {{"Text", wex::column::STRING_MEDIUM},
+       {"More", wex::column::STRING_MEDIUM}}));
 
-    REQUIRE(lv->item_from_text("test.h\ntest.h"));
+    lv->field_separator('');
+
+    REQUIRE(lv->item_from_text("test.hmore\ntest.h"));
+    REQUIRE(lv->get_item_text(0, "More") == "more");
+    REQUIRE(!lv->item_to_text(0).empty());
     REQUIRE(!lv->item_to_text(0).empty());
     REQUIRE(!lv->item_to_text(-1).empty());
   }
@@ -148,7 +154,7 @@ TEST_CASE("wex::listview")
     REQUIRE(lv->data().image() == wex::data::listview::IMAGE_ART);
     REQUIRE(!lv->data().type_description().empty());
 
-    REQUIRE(lv->append_columns({{"String", wex::column::STRING}}));
+    REQUIRE(lv->append_columns({{"String", wex::column::STRING_MEDIUM}}));
 
     REQUIRE(lv->item_from_text("test.h\ntest.h"));
     REQUIRE(lv->set_item_image(0, wxART_WARNING));

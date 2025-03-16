@@ -2,7 +2,7 @@
 // Name:      lexer.cpp
 // Purpose:   Implementation of wex::lexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2024 Anton van Wezenbeek
+// Copyright: (c) 2008-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -17,6 +17,7 @@
 
 #include <algorithm>
 #include <charconv>
+#include <sstream>
 
 #include "lexer-attribute-data.h"
 
@@ -26,9 +27,8 @@ int convert_int_attrib(
   const std::vector<std::pair<std::string, int>>& v,
   const std::string&                              text)
 {
-  if (const auto& it = std::find_if(
-        v.begin(),
-        v.end(),
+  if (const auto& it = std::ranges::find_if(
+        v,
         [text](const auto& p)
         {
           return text == p.first;
@@ -113,11 +113,6 @@ wex::lexer::lexer(const pugi::xml_node* node)
 wex::lexer::lexer(const pugi::xml_node* node, syntax::stc* s)
   : m_scintilla_lexer(node != nullptr ? node->attribute("name").value() : "")
   , m_stc(s)
-  , m_reflect(
-      {REFLECT_ADD("display", m_display_lexer),
-       REFLECT_ADD("extensions", m_extensions),
-       REFLECT_ADD("language", m_language),
-       REFLECT_ADD("lexer", m_scintilla_lexer)})
 {
 }
 
@@ -206,13 +201,13 @@ const std::string wex::lexer::align_text(
   const auto& header_with_spaces =
     (header.empty()) ? std::string() : std::string(header.size(), ' ');
 
-  bool        at_begin = true;
-  std::string in(lines), line(header), out;
+  bool               at_begin = true;
+  std::string        line(header), out, word, mylines(lines);
+  std::istringstream in(mylines);
 
-  while (!in.empty())
+  while (in >> word)
   {
-    if (const auto& word = get_word(in);
-        line.size() + 1 + word.size() > line_length)
+    if (line.size() + 1 + word.size() > line_length)
     {
       out +=
         make_single_line_comment(line, fill_out_with_space, fill_out) + "\n";
@@ -237,8 +232,6 @@ bool wex::lexer::apply() const
   {
     return false;
   }
-
-  m_stc->ClearDocumentStyle();
 
   for (const auto& it : m_properties)
   {
@@ -304,9 +297,8 @@ bool wex::lexer::apply() const
 
 int wex::lexer::attrib(const std::string& name) const
 {
-  const auto& a = std::find_if(
-    m_attribs.begin(),
-    m_attribs.end(),
+  const auto& a = std::ranges::find_if(
+    m_attribs,
     [&](auto const& i)
     {
       return std::get<0>(i) == name;
@@ -337,9 +329,8 @@ void wex::lexer::auto_match(const std::string& lexer)
         else
         {
           // Then, a partial using find_if.
-          if (const auto& style = std::find_if(
-                lexers::get()->theme_macros().begin(),
-                lexers::get()->theme_macros().end(),
+          if (const auto& style = std::ranges::find_if(
+                lexers::get()->theme_macros(),
                 [&](auto const& e)
                 {
                   return it.first.contains(e.first);
@@ -764,15 +755,15 @@ void wex::lexer::parse_keyword(const pugi::xml_node* node)
 
 bool wex::lexer::set(const std::string& lexer, bool fold)
 {
-  if (
-    !lexer.empty() && !lexers::get()->get_lexers().empty() &&
+  if (lexer.empty())
+  {
+    clear();
+  }
+  else if (
+    !lexers::get()->get_lexers().empty() &&
     !set(lexers::get()->find(lexer), fold))
   {
     log::debug("lexer is not known") << lexer;
-  }
-  else if (lexer.empty())
-  {
-    clear();
   }
 
   return m_is_ok;
@@ -780,8 +771,7 @@ bool wex::lexer::set(const std::string& lexer, bool fold)
 
 bool wex::lexer::set(const lexer& lexer, bool fold)
 {
-  syntax::stc* keep =
-    (m_stc != nullptr && lexer.m_stc == nullptr ? m_stc : nullptr);
+  syntax::stc* keep = m_stc;
 
   (*this) =
     (lexer.m_scintilla_lexer.empty() && m_stc != nullptr &&
@@ -793,14 +783,14 @@ bool wex::lexer::set(const lexer& lexer, bool fold)
   {
     m_stc = keep;
   }
-
-  if (m_stc == nullptr)
+  else
   {
     return m_is_ok;
   }
 
+  m_is_ok = !m_scintilla_lexer.empty();
   m_stc->SetLexerLanguage(m_scintilla_lexer);
-  m_stc->SetIndent(config(_("stc.Indent")).get(2));
+  m_stc->generic_settings();
 
   apply();
 
@@ -811,9 +801,20 @@ bool wex::lexer::set(const lexer& lexer, bool fold)
     log::debug("lexer is not set") << lexer.display_lexer();
   }
 
-  if (fold)
+  if (m_stc->GetProperty("fold") == "1" && !m_scintilla_lexer.empty())
   {
-    m_stc->fold();
+    m_stc->SetMarginWidth(
+      m_stc->margin_folding_number(),
+      config(_("stc.margin.Folding")).get(16));
+
+    if (fold)
+    {
+      m_stc->fold();
+    }
+  }
+  else
+  {
+    m_stc->SetMarginWidth(m_stc->margin_folding_number(), 0);
   }
 
   return m_scintilla_lexer.empty() || ok;
@@ -821,9 +822,8 @@ bool wex::lexer::set(const lexer& lexer, bool fold)
 
 void wex::lexer::set_property(const std::string& name, const std::string& value)
 {
-  if (const auto& it = std::find_if(
-        m_properties.begin(),
-        m_properties.end(),
+  if (const auto& it = std::ranges::find_if(
+        m_properties,
         [name](auto const& e)
         {
           return e.name() == name;

@@ -76,9 +76,6 @@ const std::string get_string_set(
   size_t                       min_size = 0,
   const std::string&           prefix   = std::string());
 
-/// Returns a word from a string.
-const std::string get_word(std::string& text);
-
 /// Returns 0 if both texts are equal, ignoring case.
 int icompare(const std::string& text1, const std::string& text2);
 
@@ -101,10 +98,10 @@ bool matches_one_of(
   /// default the pattern is not a regex, but you can change it
   bool is_regex = false);
 
-/// Returns quotes around the text.
-const std::string quoted(const std::string& text);
+/// Returns delimiter around the text.
+const std::string quoted(const std::string& text, char delim = '\'');
 
-/// Returns double quotes around the text,
+/// Returns double quotes around the text if text contains c,
 /// otherwise returns text.
 const std::string quoted_find(const std::string& text, char c = ' ');
 

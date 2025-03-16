@@ -2,7 +2,7 @@
 // Name:      lexers.h
 // Purpose:   Declaration of wex::lexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2024 Anton van Wezenbeek
+// Copyright: (c) 2008-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -45,8 +45,11 @@ public:
 
   /// Returns the lexers object.
   /// If this is the first invocation, and createOnDemand is true,
-  /// it also invokes load_document.
-  static lexers* get(bool createOnDemand = true);
+  /// it also invokes load_document (unless is_initial_load(false) was invoked).
+  static lexers* get(bool create_on_demand = true);
+
+  /// Sets the initial loading of document.
+  static void is_initial_load(bool load) { m_is_initial_load = load; };
 
   /// Sets the object as the current one, returns the pointer
   /// to the previous current object
@@ -120,6 +123,9 @@ public:
     return m_indicators.find(indic) != m_indicators.end();
   };
 
+  /// Returns whether lexers document is loaded.
+  bool is_loaded() const { return m_is_loaded; };
+
   /// Returns the keywords for the specified named set of keywords.
   /// Returns empty string if set does not exist.
   const std::string& keywords(const std::string& set) const;
@@ -133,6 +139,10 @@ public:
   {
     return m_markers.find(marker) != m_markers.end();
   };
+
+  /// Returns max number of marker read from the lexers file.
+  /// The markers used by folding are not included.
+  int marker_max_no_used() const { return m_max_no_marker; }
 
   /// Returns the path.
   const auto& path() const { return m_path; }
@@ -155,6 +165,8 @@ public:
 
 private:
   explicit lexers();
+
+  void add_required_containers();
 
   void load_document(pugi::xml_document& doc, const wex::path& p);
   void load_document_check();
@@ -193,17 +205,19 @@ private:
 
   const wex::path m_path, m_path_macro;
 
-  std::string m_folding_background_colour, m_folding_foreground_colour, m_theme,
-    m_theme_previous;
+  std::string m_folding_background_colour, m_folding_foreground_colour;
 
   int m_style_no_text_margin{-1}, m_style_no_text_margin_day{-1},
     m_style_no_text_margin_week{-1}, m_style_no_text_margin_month{-1},
-    m_style_no_text_margin_year{-1};
+    m_style_no_text_margin_year{-1}, m_max_no_marker{-1};
 
   bool m_is_loaded{false};
 
   reflection m_reflect;
 
-  static inline lexers* m_self = nullptr;
+  static inline std::string m_theme, m_theme_previous;
+
+  static inline lexers* m_self            = nullptr;
+  static inline bool    m_is_initial_load = true;
 };
 }; // namespace wex

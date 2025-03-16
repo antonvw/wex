@@ -58,13 +58,27 @@ TEST_CASE("wex::config")
     wex::config::save();
   }
 
-  SUBCASE("setters")
+  SUBCASE("get-set-first-of")
   {
+    REQUIRE(wex::config("l").get_first_of("l:0") == "");
+    REQUIRE(wex::config("l").get_first_of("l:1") == "l");
+    REQUIRE(wex::config("l").get_first_of("l:2") == "l:2");
+    REQUIRE(wex::config("l").get_first_of("l:1000") == "l:1000");
+
+    REQUIRE(wex::config("o").set_first_of("x:0") == "x:0");
+    REQUIRE(wex::config("o").set_first_of("y:0") == "y:0");
+    REQUIRE(wex::config("o").set_first_of("z:0") == "z:0");
+    REQUIRE(wex::config("o").get_first_of() == "");
+
     REQUIRE(wex::config("m").set_first_of("one") == "one");
     REQUIRE(wex::config("m").set_first_of("two") == "two");
-    REQUIRE(wex::config("m").get(wex::config::strings_t{}).size() == 2);
-    REQUIRE(wex::config("m").get_first_of() == "two");
+    REQUIRE(wex::config("m").set_first_of("xxx:1") == "xxx:1");
+    REQUIRE(wex::config("m").get(wex::config::strings_t{}).size() == 3);
+    REQUIRE(wex::config("m").get_first_of() == "xxx");
+  }
 
+  SUBCASE("setters")
+  {
     wex::config("y").set(4);
     REQUIRE(wex::config("y").exists());
     REQUIRE(wex::config("y").get(0) == 4);
@@ -78,6 +92,12 @@ TEST_CASE("wex::config")
     wex::config("list_items").set({"1", "2", "3"});
     REQUIRE(
       wex::config("list_items").get(wex::config::strings_t{}).front() == "1");
+
+    wex::config("list_items_sel").set({"1:0", "2:1", "3:0"});
+    REQUIRE(
+      wex::config("list_items_sel").get(wex::config::strings_t{}).front() ==
+      "1:0");
+    REQUIRE(wex::config("list_items_sel").get_first_of() == "2");
 
     wex::config("y").erase();
     REQUIRE(!wex::config("y").exists());

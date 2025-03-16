@@ -23,9 +23,10 @@ public:
   /// The supported beautify types.
   enum beautify_t
   {
-    CMAKE,   ///< cmake
-    SOURCE,  ///< source code (c, c#)
-    UNKNOWN, ///< type will be set later on
+    CMAKE,          ///< cmake
+    ROBOTFRAMEWORK, ///< robotframework
+    SOURCE,         ///< source code (c, c#)
+    UNKNOWN,        ///< type will be set later on
   };
 
   /// Default constructor, specify the beautify type.

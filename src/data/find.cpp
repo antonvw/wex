@@ -2,7 +2,7 @@
 // Name:      data/find.cpp
 // Purpose:   Implementation of class wex::data::find
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -100,6 +100,27 @@ wex::data::find& wex::data::find::flags(int rhs)
   return *this;
 }
 
+const std::string wex::data::find::get_find_result() const
+{
+  if (!recursive())
+  {
+    const auto where =
+      (is_forward()) ? _("bottom").ToStdString() : _("top").ToStdString();
+
+    return _("Searching for").ToStdString() + " " +
+           quoted(boost::algorithm::trim_copy(text())) + " " +
+           _("hit").ToStdString() + " " + where;
+  }
+
+  if (config(_("Error bells")).get(true))
+  {
+    wxBell();
+  }
+
+  return quoted(boost::algorithm::trim_copy(text())) + " " +
+         _("not found").ToStdString();
+}
+
 void wex::data::find::set_pos()
 {
   assert(m_stc != nullptr);
@@ -110,11 +131,23 @@ void wex::data::find::set_pos()
     {
       m_start_pos = 0;
       m_end_pos   = m_stc->GetCurrentPos();
+
+      if (m_stc->GetTargetStart() == m_stc->GetTargetEnd())
+      {
+        m_end_pos++;
+      }
     }
     else
     {
       m_start_pos = m_stc->GetCurrentPos();
       m_end_pos   = m_stc->GetTextLength();
+
+      if (
+        m_stc->GetTargetStart() == m_stc->GetTargetEnd() &&
+        m_stc->GetTargetStart() != -1)
+      {
+        m_start_pos++;
+      }
     }
   }
   else
@@ -141,27 +174,6 @@ void wex::data::find::set_pos()
       m_end_pos = 0;
     }
   }
-}
-
-const std::string wex::data::find::get_find_result() const
-{
-  if (!recursive())
-  {
-    const auto where =
-      (is_forward()) ? _("bottom").ToStdString() : _("top").ToStdString();
-
-    return _("Searching for").ToStdString() + " " +
-           quoted(boost::algorithm::trim_copy(text())) + " " +
-           _("hit").ToStdString() + " " + where;
-  }
-
-  if (config(_("Error bells")).get(true))
-  {
-    wxBell();
-  }
-
-  return quoted(boost::algorithm::trim_copy(text())) + " " +
-         _("not found").ToStdString();
 }
 
 void wex::data::find::statustext() const

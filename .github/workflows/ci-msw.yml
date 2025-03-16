@@ -23,7 +23,7 @@ jobs:
           # REQUIRED: Specify the required boost version
           # A list of supported versions can be found here:
           # https://github.com/actions/boost-versions/blob/main/versions-manifest.json
-          boost_version: 1.83.0
+          boost_version: 1.86.0
 
       - name: Add msbuild
         uses: microsoft/setup-msbuild@v2
@@ -37,6 +37,15 @@ jobs:
         working-directory: build
         run: |
           msbuild /noLogo /m /p:Configuration=Release ALL_BUILD.vcxproj
+
+      - name: Artifacts
+        # see build-gen, currently a static build
+        uses: actions/upload-artifact@v4
+        with:
+          name: wex-lib-windows
+          path: |
+            build/**/*.lib
+            build/**/setup.h
 
       - name: Run tests
         uses: threeal/ctest-action@v1.1.0

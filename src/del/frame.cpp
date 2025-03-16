@@ -2,11 +2,12 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2024 Anton van Wezenbeek
+// Copyright: (c) 2009-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
+#include <sstream>
 #include <wex/wex.h>
 #include <wx/timer.h>
 
@@ -38,6 +39,41 @@ const std::string find_replace_string(bool replace)
                       " " + _("replacing with") + ": " +
                       wex::find_replace_data::get()->get_replace_string()) :
                     std::string());
+}
+
+const std::string get_some_text(const std::vector<std::string>& text)
+{
+  std::stringstream                        ss, info;
+  std::vector<std::string>::const_iterator tok_iter = text.begin();
+
+  ss << "deleted " << text.size() << " lines";
+
+  const int max_size = 70;
+
+  while (tok_iter != text.end())
+  {
+    const auto& item(boost::algorithm::trim_copy(*tok_iter));
+
+    if (!item.empty())
+    {
+      info << item << "\n";
+    }
+
+    if (info.str().size() > max_size)
+    {
+      info << "...";
+      break;
+    }
+
+    ++tok_iter;
+  }
+
+  if (!info.str().empty())
+  {
+    ss << ":\n" << boost::algorithm::trim_copy(info.str());
+  }
+
+  return ss.str();
 }
 
 bool is_ex(ex_commandline* cl)
@@ -156,8 +192,6 @@ wex::del::frame::frame(
 
   bind_all();
 }
-
-wex::del::frame::~frame() {}
 
 wex::del::listview* wex::del::frame::activate_and_clear(const wex::tool& tool)
 {
@@ -409,7 +443,7 @@ void wex::del::frame::on_command_item_dialog(
           break;
 
         default:
-          assert(0);
+          log::trace("on_command_item_dialog") << event.GetId();
       }
       break;
 
@@ -473,14 +507,12 @@ bool wex::del::frame::open_from_action(
       to_vector_path(text).get(),
       data::control().command(cmd));
   }
-  else
-  {
-    data::window data;
-    data.style(wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR | wxFD_HEX_MODE)
-      .allow_move_path_extension(move_ext);
-    open_files_dialog(this, false, data::stc(data));
-    return true;
-  }
+
+  data::window data;
+  data.style(wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR | wxFD_HEX_MODE)
+    .allow_move_path_extension(move_ext);
+  open_files_dialog(this, false, data::stc(data));
+  return true;
 }
 
 bool wex::del::frame::process_async_system(const process_data& data)
@@ -906,6 +938,80 @@ bool wex::del::frame::vcs_execute(
 
 {
   return wex::vcs_execute(this, event_id, paths, data);
+}
+
+bool wex::del::frame::vcs_execute(
+  const std::string&            command,
+  const std::vector<wex::path>& paths,
+  const data::window&           data)
+{
+  if (wex::vcs vcs(paths); vcs.execute(command))
+  {
+    open_file_vcs(path(command), vcs.entry(), data);
+    return true;
+  }
+
+  return false;
+}
+
+bool wex::del::frame::vcs_unified_diff(
+  const vcs_entry*    entry,
+  const unified_diff* diff)
+{
+  if (!lexers::get()->is_loaded() || !diff->path_vcs().file_exists())
+  {
+    return false;
+  }
+
+  if (auto* stc = dynamic_cast<wex::stc*>(open_file(diff->path_vcs()));
+      stc != nullptr)
+  {
+    if (diff->is_last())
+    {
+      stc->diffs().first();
+      stc->diffs().status();
+      return true;
+    }
+
+    // deleted text: a marker, and annotation with text
+    // added text: a marker, and indicator
+    if (!stc->unified_diff_set_markers(diff))
+    {
+      return false;
+    }
+
+    if (diff->range_from_count() > 0)
+    {
+      if (!diff->text_removed().empty())
+      {
+        stc->AnnotationSetText(
+          diff->range_from_start() - 1,
+          get_some_text(diff->text_removed()));
+      }
+    }
+
+    if (diff->range_to_count() > 0)
+    {
+      if (!stc->set_indicator(
+            m_indicator_add,
+            stc->PositionFromLine(diff->range_to_start() - 1),
+            stc->GetLineEndPosition(
+              diff->range_to_start() - 2 + diff->range_to_count())))
+      {
+        log("vcs_unified_diff") << diff->path_vcs().string();
+        return false;
+      }
+    }
+
+    if (diff->is_first())
+    {
+      stc->diffs().clear();
+    }
+
+    stc->diffs().insert(diff);
+  }
+
+  return true;
 }
 
 bool wex::del::frame::vi_is_address(syntax::stc* stc, const std::string& text)

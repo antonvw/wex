@@ -1,9 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      vi.cpp
 // Purpose:   Implementation of class wex::vi
-//            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/vi.html
+//            https://pubs.opengroup.org/onlinepubs/9799919799/utilities/vi.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2024 Anton van Wezenbeek
+// Copyright: (c) 2009-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -124,9 +124,15 @@ wex::vi::vi(wex::syntax::stc* arg, mode_t ex_mode)
         m_insert_command.clear();
         get_stc()->EndUndoAction();
       })
+  // See opengroup specs, section:
+  // Repeat
+  // Synopsis:
+  //   [count] .
+  // Repeat the last !, <, >, A, C, D, I, J, O, P, R, S, X, Y,
+  //                 a, c, d, i, o, p, r, s, x, y, or ~ command.
   , m_last_commands{{"!", "<", ">", "A", "C", "D", "I", "J", "O",
-                     "P", "R", "S", "X", "Y", "a", "c", "d", "g",
-                     "i", "o", "p", "r", "s", "x", "y", "~"}}
+                     "P", "R", "S", "X", "Y", "a", "c", "d", "i",
+                     "o", "p", "r", "s", "x", "y", "~"}}
   , m_motion_commands(commands_motion())
   , m_other_commands(commands_other())
 {
@@ -889,17 +895,12 @@ void wex::vi::set_last_command(const std::string& command)
     first = v[0].size(); // skip a possible leading count
   }
 
-  if (const auto& it = std::find(
-        m_last_commands.begin(),
-        m_last_commands.end(),
-        command.substr(first, 1));
+  if (const auto& it =
+        std::ranges::find(m_last_commands, command.substr(first, 1));
       it != m_last_commands.end())
   {
-    if (command != "gg")
-    {
-      m_last_command = command;
-      log::trace("last command") << m_last_command;
-    }
+    m_last_command = command;
+    log::trace("last command") << m_last_command;
   }
 }
 

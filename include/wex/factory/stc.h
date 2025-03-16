@@ -64,6 +64,9 @@ public:
   /// as previous line.
   virtual bool auto_indentation(int c) { return false; }
 
+  /// Performs generic settings on this stc.
+  virtual void generic_settings() {};
+
   /// Returns stc data.
   virtual wex::data::stc* get_data() { return nullptr; }
 
@@ -188,6 +191,9 @@ public:
   /// If you open a file, the modification markers are used.
   virtual void use_modification_markers(bool use) { ; }
 
+  /// Clear vcs diffs (markers, annotations, indicators).
+  virtual void vcs_clear_diffs() { ; }
+
   /// Runs a vi command on this stc (default false).
   virtual bool vi_command(const line_data& data) { return false; }
 
@@ -248,6 +254,18 @@ public:
 
   /// Returns word at position.
   const std::string get_word_at_pos(int pos) const;
+
+  /// Returns the divider margin number.
+  size_t margin_divider_number() const { return m_margin_divider_number; }
+
+  /// Returns the folding margin number.
+  size_t margin_folding_number() const { return m_margin_folding_number; }
+
+  /// Returns the line margin number.
+  size_t margin_line_number() const { return m_margin_line_number; }
+
+  /// Returns the text margin number.
+  size_t margin_text_number() const { return m_margin_text_number; }
 
   /// When clicked on a line with a text margin,
   /// returns revision id on the text margin, otherwise returns empty string.

@@ -74,9 +74,8 @@ const std::string wex::regex::back() const
 }
 int wex::regex::find(const std::string& text, find_t how)
 {
-  m_it = std::find_if(
-    m_datas.begin(),
-    m_datas.end(),
+  m_it = std::ranges::find_if(
+    m_datas,
     [this, text, how](auto const& reg)
     {
       if (std::match_results<std::string::const_iterator> m;

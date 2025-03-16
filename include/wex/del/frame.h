@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Include file for wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2024 Anton van Wezenbeek
+// Copyright: (c) 2009-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -11,6 +11,8 @@
 #include <wex/core/function-repeat.h>
 #include <wex/del/defs.h>
 #include <wex/del/listview.h>
+#include <wex/syntax/indicator.h>
+#include <wex/syntax/marker.h>
 #include <wex/ui/file-history.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/item.h>
@@ -46,7 +48,7 @@ public:
     const data::window& data = data::window().style(wxDEFAULT_FRAME_STYLE));
 
   /// Destructor.
-  ~frame() override;
+  ~frame() = default;
 
   // Virtual interface
 
@@ -152,7 +154,7 @@ public:
   /// If vcs dialog was open, destroy it;
   void vcs_destroy_dialog();
 
-  /// Overridden methods.
+  // Overridden methods.
 
   static inline const int id_find_in_files    = ID_FREE_LOWEST;
   static inline const int id_replace_in_files = ID_FREE_LOWEST + 1;
@@ -203,6 +205,12 @@ public:
     int                           event_id,
     const std::vector<wex::path>& paths,
     const data::window&           arg = data::window()) override;
+  bool vcs_execute(
+    const std::string&            command,
+    const std::vector<wex::path>& paths,
+    const data::window&           arg = data::window()) override;
+
+  bool vcs_unified_diff(const vcs_entry* e, const unified_diff* uni) override;
 
   bool vi_is_address(syntax::stc* stc, const std::string& text) const override;
 
@@ -214,8 +222,7 @@ protected:
 
 private:
   listview* activate_and_clear(const wex::tool& tool);
-
-  void bind_all();
+  void      bind_all();
 
   stc_entry_dialog* entry_dialog(
     const std::string& title = std::string(),
@@ -233,6 +240,8 @@ private:
   class file_history m_project_history;
 
   function_repeat m_function_repeat;
+
+  const indicator m_indicator_add = wex::indicator(3);
 
   const std::string m_text_hidden{_("fif.Hidden")},
     m_text_in_files{_("fif.In files")}, m_text_in_folder{_("fif.In folder")},

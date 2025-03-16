@@ -2,7 +2,7 @@
 // Name:      macro-fsm.cpp
 // Purpose:   Implementation of class wex::macro_fsm
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/mpl/list.hpp>
@@ -216,7 +216,13 @@ void wex::macro_fsm::playback(const std::string& macro, ex* ex, size_t repeat)
     return;
   }
 
-  stc_undo(ex->get_stc());
+  stc_undo* undo = nullptr;
+
+  if (!m_playback)
+  {
+    undo = new stc_undo(ex->get_stc());
+  }
+
   set_ask_for_input();
   m_playback = true;
   bool error = false;
@@ -233,9 +239,8 @@ void wex::macro_fsm::playback(const std::string& macro, ex* ex, size_t repeat)
 
   for (size_t i = 0; i < repeat && !error; i++)
   {
-    if (!std::all_of(
-          commands.begin(),
-          commands.end(),
+    if (!std::ranges::all_of(
+          commands,
           [ex](const auto& i)
           {
             if (!ex->command(i))
@@ -253,6 +258,11 @@ void wex::macro_fsm::playback(const std::string& macro, ex* ex, size_t repeat)
   if (!error)
   {
     log::status(_("Macro played back"));
+  }
+
+  if (undo)
+  {
+    delete undo;
   }
 
   m_playback = false;

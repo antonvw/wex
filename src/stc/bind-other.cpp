@@ -2,7 +2,7 @@
 // Name:      stc/bind-other.cpp
 // Purpose:   Implementation of class wex::stc method bind_other
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -506,7 +506,7 @@ void wex::stc::mouse_action(wxMouseEvent& event)
       }
     }
   }
-  catch (std::exception& e)
+  catch (const std::exception& e)
   {
     log(e) << "mouse action";
     event.Skip();

@@ -2,7 +2,7 @@
 // Name:      lexers.cpp
 // Purpose:   Implementation of wex::lexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2024 Anton van Wezenbeek
+// Copyright: (c) 2008-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/util.h>
@@ -23,7 +23,6 @@
 wex::lexers::lexers()
   : m_path(wex::path(config::dir(), "wex-lexers.xml"))
   , m_path_macro(wex::path(config::dir(), "wex-lexers-macro.xml"))
-  , m_theme(config("theme").get())
   , m_reflect(
       {REFLECT_ADD("default colours", m_default_colours.size()),
        REFLECT_ADD("global properties", m_global_properties.size()),
@@ -38,6 +37,17 @@ wex::lexers::lexers()
        REFLECT_ADD("theme colours", m_theme_colours.size()),
        REFLECT_ADD("theme macros", m_theme_macros.size())})
 {
+}
+
+void wex::lexers::add_required_containers()
+{
+  m_indicators.insert(indicator());
+  m_markers.insert(marker());
+
+  m_keywords[std::string()]      = std::string();
+  m_macros[std::string()]        = name_values_t{};
+  m_theme_colours[std::string()] = m_default_colours;
+  m_theme_macros[std::string()]  = name_values_t{};
 }
 
 void wex::lexers::apply(factory::stc* stc) const
@@ -91,7 +101,7 @@ void wex::lexers::apply_global_styles(factory::stc* stc)
     m_default_colours["caretforeground"] = "grey"; // otherwise white was chosen
     m_default_colours["caretlinebackground"] =
       stc->GetCaretLineBackground().GetAsString();
-    m_default_colours["edge"] = stc->GetEdgeColour().GetAsString();
+    m_default_colours["edge"]      = stc->GetEdgeColour().GetAsString();
     m_theme_colours[std::string()] = m_default_colours;
   }
 
@@ -226,9 +236,8 @@ const wex::lexer& wex::lexers::find(const std::string& name) const
 {
   assert(!m_lexers.empty());
 
-  const auto& it = std::find_if(
-    m_lexers.begin(),
-    m_lexers.end(),
+  const auto& it = std::ranges::find_if(
+    m_lexers,
     [name](auto const& e)
     {
       return e.display_lexer() == name;
@@ -242,9 +251,8 @@ wex::lexers::find_by_filename(const std::string& filename) const
 {
   assert(!m_lexers.empty());
 
-  const auto& it = std::find_if(
-    m_lexers.begin(),
-    m_lexers.end(),
+  const auto& it = std::ranges::find_if(
+    m_lexers,
     [filename](auto const& e)
     {
       return !e.extensions().empty() &&
@@ -287,12 +295,25 @@ const wex::lexer& wex::lexers::find_by_text(const std::string& text) const
   return m_lexers.front();
 }
 
-wex::lexers* wex::lexers::get(bool createOnDemand)
+wex::lexers* wex::lexers::get(bool create_on_demand)
 {
-  if (m_self == nullptr && createOnDemand)
+  if (m_self == nullptr && create_on_demand)
   {
     m_self = new lexers();
-    m_self->load_document();
+
+    if (m_is_initial_load)
+    {
+      m_theme = config("theme").get();
+
+      if (!m_self->load_document())
+      {
+        m_theme.clear();
+      }
+    }
+    else
+    {
+      m_self->add_required_containers();
+    }
   }
 
   return m_self;
@@ -410,12 +431,7 @@ void wex::lexers::load_document_check()
 
 bool wex::lexers::load_document_init()
 {
-  // This test is to prevent showing an error if the lexers file does not exist,
-  // as this is not required.
-  if (!m_path.file_exists() || !m_path_macro.file_exists())
-  {
-    return false;
-  }
+  bool exists = true;
 
   if (m_is_loaded)
   {
@@ -433,37 +449,41 @@ bool wex::lexers::load_document_init()
     m_theme_colours.clear();
     m_theme_macros.clear();
 
+    m_max_no_marker = -1;
+
     m_lexers.emplace_back();
   }
   else
   {
-    pugi::xml_document doc;
-
-    load_document(doc, m_path_macro);
-
-    for (const auto& node : doc.document_element().children())
+    if (m_path.file_exists() && m_path_macro.file_exists())
     {
-      if (strcmp(node.name(), "macro") == 0)
+      pugi::xml_document doc;
+
+      load_document(doc, m_path_macro);
+
+      for (const auto& node : doc.document_element().children())
       {
-        parse_node_macro(node);
+        if (strcmp(node.name(), "macro") == 0)
+        {
+          parse_node_macro(node);
+        }
+        else if (strcmp(node.name(), "colour") == 0)
+        {
+          wxTheColourDatabase->AddColour(
+            node.attribute("no").value(),
+            node.text().get());
+        }
       }
-      else if (strcmp(node.name(), "colour") == 0)
-      {
-        wxTheColourDatabase->AddColour(
-          node.attribute("no").value(),
-          node.text().get());
-      }
+    }
+    else
+    {
+      exists = false;
     }
   }
 
-  m_indicators.insert(indicator());
-  m_keywords[std::string()] = std::string();
-  m_macros[std::string()]   = name_values_t{};
-  m_markers.insert(marker());
-  m_theme_colours[std::string()] = m_default_colours;
-  m_theme_macros[std::string()]  = name_values_t{};
+  add_required_containers();
 
-  return true;
+  return exists;
 }
 
 void wex::lexers::parse_node_folding(const pugi::xml_node& node)
@@ -506,6 +526,11 @@ void wex::lexers::parse_node_global(const pugi::xml_node& node)
       if (const wex::marker marker(child); marker.is_ok())
       {
         m_markers.insert(marker);
+
+        if (marker.number() < wxSTC_MARKNUM_FOLDEREND)
+        {
+          m_max_no_marker = std::max(m_max_no_marker, marker.number());
+        }
       }
     }
     else if (strcmp(child.name(), "properties") == 0)

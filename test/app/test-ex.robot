@@ -1,13 +1,15 @@
 *** Comments ***
-Copyright: (c) 2020-2024 Anton van Wezenbeek
+Copyright: (c) 2020-2025 Anton van Wezenbeek
 
 
 *** Settings ***
-Documentation	Testcases for wex ex
-Test Setup	Test Setup
-Suite Setup	Suite Setup
-Suite Teardown	Suite Teardown
-Resource	wex-keywords.resource
+Documentation       Testcases for wex ex
+
+Resource            wex-keywords.resource
+
+Suite Setup         Suite Setup
+Suite Teardown      Suite Teardown
+Test Setup          Test Setup
 
 
 *** Test Cases ***
@@ -38,6 +40,13 @@ empty
 	Appl
 	Output Contains	1
 
+global
+	Input Many	:a|line has text	20
+	Input	:a|last line
+	...	:g/has/
+	Appl
+	Output Contains	20 matches
+
 info
 	Input	:a|line has text
 	...	:f
@@ -46,6 +55,13 @@ info
 	Output Contains	1
 	Output Contains	%
 	Output Contains	level
+
+inverse
+	Input Many	:a|line has text	20
+	Input	:a|last line
+	...	:g!/has/
+	Appl
+	Output Contains	1 matches
 
 mdi
 	Input	:a|line has text

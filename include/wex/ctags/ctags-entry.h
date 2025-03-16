@@ -2,15 +2,14 @@
 // Name:      ctags-entry.h
 // Purpose:   Declaration of class wex::ctags_entry
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2024 Anton van Wezenbeek
+// Copyright: (c) 2019-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <string>
-
+#include <boost/describe.hpp>
 #include <readtags.h>
-#include <wex/core/reflection.h>
+#include <string>
 
 class wxStyledTextCtrl;
 
@@ -29,7 +28,7 @@ public:
   // Other methods.
 
   /// Default constructor.
-  ctags_entry();
+  ctags_entry() = default;
 
   /// Returns access member.
   const auto& access() const { return m_access; }
@@ -132,7 +131,7 @@ public:
   ctags_entry& kind(const std::string& v);
 
   /// Logs info about this entry.
-  const std::stringstream log() const { return m_reflect.log(); }
+  const std::stringstream log() const;
 
   /// Returns signature member.
   const auto& signature() const { return m_signature; }
@@ -149,6 +148,11 @@ private:
 
   std::string m_access, m_class, m_kind, m_signature;
 
-  reflection m_reflect;
+  BOOST_DESCRIBE_CLASS(
+    ctags_entry,
+    (),
+    (),
+    (),
+    (m_access, m_class, m_kind, m_signature))
 };
 }; // namespace wex

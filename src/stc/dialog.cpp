@@ -2,7 +2,7 @@
 // Name:      dialog.cpp
 // Purpose:   Implementation of class stc_entry_dialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2024 Anton van Wezenbeek
+// Copyright: (c) 2009-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
@@ -22,10 +22,8 @@ wxSize set_size(const data::stc& data)
   {
     return wxSize({100, 20});
   }
-  else
-  {
-    return data.window().size();
-  }
+
+  return data.window().size();
 }
 } // namespace wex
 

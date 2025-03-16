@@ -2,7 +2,7 @@
 // Name:      global-env.cpp
 // Purpose:   Implementation of class wex::global_env
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2024 Anton van Wezenbeek
+// Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -16,10 +16,19 @@
 #include "block-lines.h"
 #include "global-env.h"
 
-wex::global_env::global_env(ex* e)
-  : m_ex(e)
-  , m_ar(e, "%")
-  , m_stc(e->get_stc())
+namespace wex
+{
+wex::block_lines get_block_lines(syntax::stc* s)
+{
+  const auto target_start(s->LineFromPosition(s->GetTargetStart()));
+  return block_lines(s, target_start, target_start);
+}
+} // namespace wex
+
+wex::global_env::global_env(const addressrange& ar)
+  : m_ex(ar.get_ex())
+  , m_ar(ar)
+  , m_stc(ar.get_ex()->get_stc())
 {
   m_stc->set_search_flags(m_ex->search_flags());
 
@@ -76,10 +85,9 @@ bool wex::global_env::command(const block_lines& block, const std::string& text)
 
 bool wex::global_env::for_each(const block_lines& match) const
 {
-  return !has_commands() ? m_stc->set_indicator(m_ar.find_indicator()) :
-                           std::all_of(
-                             m_commands.begin(),
-                             m_commands.end(),
+  return !has_commands() ? match.set_indicator(m_ar.find_indicator()) :
+                           std::ranges::all_of(
+                             m_commands,
                              [this, match](const std::string& it)
                              {
                                return command(match, it);
@@ -88,7 +96,7 @@ bool wex::global_env::for_each(const block_lines& match) const
 
 // clang-format off
 /*
-example for global inverse
+example for global inverse and match block / inverse block
 v/yy/d
 text   mbs    ibs    ibe   ex action  
 xx0
@@ -111,7 +119,7 @@ pp14
 // clang-format on
 bool wex::global_env::global(const data::substitute& data)
 {
-  addressrange_mark am(m_ar, data);
+  addressrange_mark am(m_ar, data, true); // global
 
   if (!am.set())
   {
@@ -123,16 +131,20 @@ bool wex::global_env::global(const data::substitute& data)
     (m_recursive && data.commands() != "$" && data.commands() != "1" &&
      data.commands() != "d");
 
-  block_lines ib(m_ex, -1); // inverse block
-  block_lines mb(m_ex);
+  block_lines ib(
+    m_stc,
+    m_ar.begin().get_line() - 2,
+    0,
+    block_lines::block_t::INVERSE);
+  block_lines mb(m_stc);
 
   while (am.search())
   {
     const auto lines(m_stc->get_line_count());
 
-    if (mb = am.get_block_lines(); data.is_inverse())
+    if (mb.set_lines(get_block_lines(m_stc)); data.is_inverse())
     {
-      if (!process_inverse(mb, ib))
+      if (!process_inverse(am, mb, ib))
       {
         return false;
       }
@@ -160,8 +172,8 @@ bool wex::global_env::global(const data::substitute& data)
 
   if (data.is_inverse())
   {
-    ib.start(m_ex->marker_line('T') + 1);
-    ib.end(m_stc->get_line_count() - 1);
+    ib.start(am.marker_target());
+    ib.end(am.marker_end() + 1);
 
     if (ib.is_available() && !process(ib))
     {
@@ -169,7 +181,7 @@ bool wex::global_env::global(const data::substitute& data)
     }
   }
 
-  am.end(has_commands());
+  am.end(data.is_clear());
 
   return true;
 }
@@ -188,21 +200,24 @@ bool wex::global_env::process(const block_lines& block)
   return true;
 }
 
-bool wex::global_env::process_inverse(const block_lines& mb, block_lines& ib)
+bool wex::global_env::process_inverse(
+  const addressrange_mark& am,
+  const block_lines&       mb,
+  block_lines&             ib)
 {
   // If there is a previous inverse block, process it.
-  if (ib.is_available() && ib < mb)
+  if (ib < mb)
   {
     if (ib.finish(mb); !process(ib))
     {
       return false;
     }
 
-    ib.start(m_ex->marker_line('T'));
+    ib.start(am.marker_target());
   }
   else
   {
-    ib = mb;
+    ib.set_lines(mb);
   }
 
   return true;

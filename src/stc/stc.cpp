@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2024 Anton van Wezenbeek
+// Copyright: (c) 2008-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -11,6 +11,7 @@
 #include <wex/ex/ex-stream.h>
 #include <wex/ex/macros.h>
 #include <wex/factory/stc-undo.h>
+#include <wex/factory/unified-diff.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/auto-indent.h>
 #include <wex/stc/entry-dialog.h>
@@ -36,6 +37,7 @@ wex::stc::stc(const wex::path& p, const data::stc& data)
   , m_file(this, wex::path(data.window().name()))
   , m_hexmode(hexmode(this))
   , m_frame(dynamic_cast<frame*>(wxTheApp->GetTopWindow()))
+  , m_diffs(this)
   , m_function_repeat(
       "stc",
       this,
@@ -423,6 +425,28 @@ bool wex::stc::marker_delete_all_change()
   return true;
 }
 
+bool wex::stc::mark_diff(size_t line, const marker& marker)
+{
+  line--;
+
+  if (const auto& it = m_marker_identifiers.find(line);
+      it != m_marker_identifiers.end())
+  {
+    log::status("diff marker already present, skipped processing");
+    return false;
+  }
+  
+  if (const int id = MarkerAdd(line, marker.number()); id != -1)
+  {
+    m_marker_identifiers[line] = id;
+    return true;
+  }
+
+  log("could not add diff marker") << marker.number() << "to line:" << line;
+
+  return false;
+}
+
 void wex::stc::mark_modified(const wxStyledTextEvent& event)
 {
   if (!lexers::get()->marker_is_loaded(m_marker_change))
@@ -655,6 +679,28 @@ void wex::stc::Undo()
 {
   syntax::stc::Undo();
   m_hexmode.undo();
+}
+
+bool wex::stc::unified_diff_set_markers(const factory::unified_diff* uni)
+{
+  if (uni->range_from_start() == uni->range_to_start())
+  {
+    return mark_diff(uni->range_from_start(), m_marker_diff_change);
+  }
+  
+  if (uni->range_from_count() > 0)
+  {
+    return mark_diff(uni->range_from_start(), m_marker_diff_del);
+  }
+
+  if (uni->range_to_count() > 0)
+  {
+    return mark_diff(uni->range_to_start(), m_marker_diff_add);
+  }
+
+  log("no suitable marker found");
+
+  return false;
 }
 
 void wex::stc::use_modification_markers(bool use)

@@ -117,24 +117,8 @@ bool wex::stc::find(const std::string& text, int find_flags, bool forward)
 
   if (find_flags == -1)
   {
-    // get flags from find replace data
-
-    find_flags = 0;
-
-    if (find_replace_data::get()->match_case())
-    {
-      find_flags |= wxSTC_FIND_MATCHCASE;
-    }
-
-    if (find_replace_data::get()->match_word())
-    {
-      find_flags |= wxSTC_FIND_WHOLEWORD;
-    }
-
-    if (find_replace_data::get()->is_regex())
-    {
-      find_flags |= wxSTC_FIND_CXX11REGEX | wxSTC_FIND_REGEXP;
-    }
+    // get the flags from find replace data
+    find_flags = find_replace_data::get()->stc_flags();
   }
 
   if (!is_regex_valid(text, find_flags))

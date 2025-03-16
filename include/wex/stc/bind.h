@@ -2,7 +2,7 @@
 // Name:      bind.h
 // Purpose:   Declaration of bind id's
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -14,6 +14,9 @@ namespace wex::id
 enum stc
 {
   beautify = wxID_HIGHEST + 1,
+  diff_checkout,
+  diff_next,
+  diff_previous,
   edge_clear,
   edge_set,
   eol_dos,
@@ -34,6 +37,7 @@ enum stc
   open_link,
   open_mime,
   open_www,
+  show_hash,
   show_properties,
   toggle_fold,
   unfold_all,

@@ -50,7 +50,49 @@ void wex::stc::config_get()
 {
   const item_vector iv(m_config_items);
 
-  SetEdgeColumn(iv.find<int>(_("stc.Edge column")));
+  if (const auto blame_margin(iv.find<int>(_("stc.margin.Text")));
+      blame_margin != -1 && margin_text_is_shown())
+  {
+    SetMarginWidth(m_margin_text_number, blame_margin);
+  }
+
+  SetMarginWidth(
+    m_margin_divider_number,
+    iv.find<int>(_("stc.margin.Divider")));
+
+  if (m_data.flags().test(data::stc::WIN_EX))
+  {
+    SetUseVerticalScrollBar(false);
+  }
+  else
+  {
+    SetUseVerticalScrollBar(iv.find<bool>(_("stc.Scroll bars")));
+  }
+
+  if (!iv.find<bool>(_("stc.vi mode")))
+  {
+    config(_("stc.vi mode")).get(true);
+
+    if (!m_data.flags().test(data::stc::WIN_EX))
+    {
+      get_vi().use(ex::mode_t::OFF);
+    }
+  }
+  else if (!m_data.flags().test(data::stc::WIN_EX))
+  {
+    get_vi().use(ex::mode_t::VISUAL);
+  }
+
+  show_line_numbers(iv.find<bool>(_("stc.Line numbers")));
+
+  generic_settings();
+
+  get_lexer().apply(); // at end, to prioritize local xml config
+}
+
+void wex::stc::generic_settings()
+{
+  const item_vector iv(m_config_items);
 
   if (!get_lexer().is_ok())
   {
@@ -70,69 +112,22 @@ void wex::stc::config_get()
     }
   }
 
+  SetEdgeColumn(iv.find<int>(_("stc.Edge column")));
   AnnotationSetVisible(iv.find<long>(_("stc.Annotation style")));
   AutoCompSetMaxWidth(iv.find<int>(_("stc.Autocomplete max width")));
   SetCaretLineVisible(iv.find<bool>(_("stc.Caret line")));
   SetFoldFlags(iv.find<long>(_("stc.Fold flags")));
   SetIndent(iv.find<int>(_("stc.Indent")));
   SetIndentationGuides(iv.find<bool>(_("stc.Indentation guide")));
-  SetMarginWidth(
-    m_margin_divider_number,
-    iv.find<int>(_("stc.margin.Divider")));
-
-  if (const auto blame_margin(iv.find<int>(_("stc.margin.Text")));
-      blame_margin != -1 && margin_text_is_shown())
-  {
-    SetMarginWidth(m_margin_text_number, blame_margin);
-  }
-
   SetPrintColourMode(iv.find<long>(_("stc.Print flags")));
   SetTabDrawMode(iv.find<long>(_("stc.Tab draw mode")));
   SetTabWidth(iv.find<int>(_("stc.Tab width")));
   SetUseHorizontalScrollBar(iv.find<bool>(_("stc.Scroll bars")));
   SetUseTabs(!iv.find<bool>(_("stc.Expand tabs")));
-
-  if (m_data.flags().test(data::stc::WIN_EX))
-  {
-    SetUseVerticalScrollBar(false);
-  }
-  else
-  {
-    SetUseVerticalScrollBar(iv.find<bool>(_("stc.Scroll bars")));
-  }
-
   SetViewEOL(iv.find<bool>(_("stc.End of line")));
   SetViewWhiteSpace(iv.find<long>(_("stc.Whitespace visible")));
   SetWrapMode(iv.find<long>(_("stc.Wrap line")));
   SetWrapVisualFlags(iv.find<long>(_("stc.Wrap visual flags")));
-
-  if (
-    GetProperty("fold") == "1" && get_lexer().is_ok() &&
-    !get_lexer().scintilla_lexer().empty())
-  {
-    SetMarginWidth(
-      m_margin_folding_number,
-      iv.find<int>(_("stc.margin.Folding")));
-    SetFoldFlags(iv.find<long>(_("stc.Fold flags")));
-  }
-
-  if (!iv.find<bool>(_("stc.vi mode")))
-  {
-    config(_("stc.vi mode")).get(true);
-
-    if (!m_data.flags().test(data::stc::WIN_EX))
-    {
-      get_vi().use(ex::mode_t::OFF);
-    }
-  }
-  else if (!m_data.flags().test(data::stc::WIN_EX))
-  {
-    get_vi().use(ex::mode_t::VISUAL);
-  }
-
-  show_line_numbers(iv.find<bool>(_("stc.Line numbers")));
-
-  get_lexer().apply(); // at end, to prioritize local xml config
 }
 
 void wex::stc::on_exit()
@@ -153,22 +148,17 @@ void wex::stc::on_init()
       {
         {_("General"),
          {{"stc-subnotebook",
-           {{_("Switches"),
-             {{{_("stc.End of line"),
-                _("stc.Line numbers"),
-                def(_("stc.Expand tabs")),
-                _("stc.Ex mode show hex"),
-                def(_("stc.Caret line")),
-                def(_("stc.Scroll bars")),
-                _("stc.Auto beautify"),
-                _("stc.Auto blame"),
-                _("stc.Auto complete"),
-                def(_("stc.Auto indent")),
-                def(_("stc.Keep zoom")),
-                def(_("stc.vi mode")),
-                _("stc.vi tag fullpath")}},
-              {_("stc.Beautifier"), item::COMBOBOX, beautify().list()},
-              {_("stc.Beautifier cmake"), item::COMBOBOX, beautify().list()},
+           {{_("Switches"), {{{_("stc.End of line"), _("stc.Line numbers"), def(_("stc.Expand tabs")), _("stc.Ex mode show hex"), def(_("stc.Caret line")), def(_("stc.Scroll bars")), _("stc.Auto beautify"), _("stc.Auto blame"), _("stc.Auto complete"), def(_("stc.Auto indent")), def(_("stc.Keep zoom")), def(_("stc.vi mode")), _("stc.vi tag fullpath")}}}},
+            {_("Comboboxes"),
+             {{_("<i>Beautifiers:</i>")},
+              {"stc.beautifier.sources",
+               item::COMBOBOX_FILE,
+               beautify().list()},
+              {"stc.beautifier.cmake", item::COMBOBOX_FILE, beautify().list()},
+              {"stc.beautifier.robotframework",
+               item::COMBOBOX_FILE,
+               beautify().list()},
+              {_("<i>Others:</i>")},
               {_("stc.Search engine"),
                item::COMBOBOX,
                config::strings_t{{"https://duckduckgo.com"}}}}},

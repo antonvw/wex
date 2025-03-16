@@ -2,7 +2,7 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of wex::listview and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -107,6 +107,13 @@ const std::vector<item> config_items()
         {{_("list.Font"),
           item::FONTPICKERCTRL,
           wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)}}},
+       {_("Margin"),
+        {{"col.DATE", 0, 150, 80},
+         {"col.FLOAT", 0, 120, 80},
+         {"col.INT", 0, 100, 60},
+         {"col.STRING SMALL", 0, 500, 60},
+         {"col.STRING MEDIUM", 0, 500, 200},
+         {"col.STRING LARGE", 0, 500, 400}}},
        {_("Colour"),
         {{_("list.Readonly colour"),
           item::COLOURPICKERWIDGET,
@@ -344,6 +351,7 @@ void wex::listview::bind_other()
         }
       },
       ID_EDIT_OPEN},
+
      {[=, this](const wxCommandEvent& event)
       {
         if (!IsShown() || GetItemCount() == 0)
@@ -411,6 +419,17 @@ void wex::listview::build_popup_menu(wex::menu& menu)
   else if (GetSelectedItemCount() >= 1 && m_data.type() == data::listview::TSV)
   {
     menu.append({{ID_EDIT_OPEN, _("&Open")}});
+  }
+
+  if (GetSelectedItemCount() >= 1 && m_data.revision())
+  {
+    menu.append({{ID_EDIT_REV_OPEN, _("&Open")}});
+
+    if (GetSelectedItemCount() == 1)
+    {
+      // Comparing two versions not yet implemented.
+      menu.append({{ID_EDIT_REV_COMPARE, _("C&ompare") + "\tCtrl+O"}});
+    }
   }
 
   menu.append({{}, {menu_item::EDIT_INVERT}});
@@ -632,9 +651,8 @@ unsigned int wex::listview::get_art_id(const wxArtID& artid)
 
 wex::column wex::listview::get_column(const std::string& name) const
 {
-  if (const auto& it = std::find_if(
-        m_columns.begin(),
-        m_columns.end(),
+  if (const auto& it = std::ranges::find_if(
+        m_columns,
         [name](auto const& it)
         {
           return it.GetText() == name;
@@ -669,8 +687,16 @@ bool wex::listview::insert_item(
   const std::vector<std::string>& item,
   long                            requested_index)
 {
-  if (item.empty() || item.front().empty() || item.size() > m_columns.size())
+  if (item.empty() || item.front().empty())
   {
+    log("listview::insert_item empty");
+    return false;
+  }
+
+  if (item.size() > m_columns.size())
+  {
+    log("listview::insert_item")
+      << item.front() << item.size() << m_columns.size();
     return false;
   }
 
@@ -699,9 +725,6 @@ bool wex::listview::insert_item(
             (void)std::stoi(col);
             break;
 
-          case column::STRING:
-            break;
-
           default:
             break;
         }
@@ -713,7 +736,7 @@ bool wex::listview::insert_item(
                requested_index == -1 ? GetItemCount() : requested_index,
                col)) == -1)
           {
-            log("listview insert") << "index:" << index << "col:" << col;
+            log("listview InsertItem") << "index:" << index << "col:" << col;
             return false;
           }
           if (regex v(",fore:(.*)");
@@ -754,7 +777,7 @@ void wex::listview::item_activated(long item_number)
     {
       wxDirDialog dir_dlg(
         this,
-        _(wxDirSelectorPromptStr),
+        wxDirSelectorPromptStr,
         GetItemText(item_number),
         wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
 
@@ -955,8 +978,13 @@ bool wex::listview::load(const strings_t& l)
       tok.end(),
       [this, &i](const auto&)
       {
-        append_columns({{std::to_string(i++ + 1), column::STRING, 50}});
+        append_columns({{std::to_string(i++ + 1), column::STRING_MEDIUM, 100}});
       });
+  }
+
+  if (InReportView() && m_columns.size() == 0)
+  {
+    return false;
   }
 
   for (const auto& it : l)
@@ -998,7 +1026,7 @@ bool wex::listview::on_command(const wxCommandEvent& event)
 
       wxDirDialog dir_dlg(
         this,
-        _(wxDirSelectorPromptStr),
+        wxDirSelectorPromptStr,
         defaultPath,
         wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
 
@@ -1271,7 +1299,9 @@ int wxCALLBACK compare_cb(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData)
       return ascending ? wex::compare(std::stoi(str1), std::stoi(str2)) :
                          wex::compare(std::stoi(str2), std::stoi(str1));
 
-    case wex::column::STRING:
+    case wex::column::STRING_SMALL:
+    case wex::column::STRING_MEDIUM:
+    case wex::column::STRING_LARGE:
       if (!wex::find_replace_data::get()->match_case())
       {
         return ascending ? wex::icompare(str1, str2) :
@@ -1313,9 +1343,6 @@ bool wex::listview::set_item(long index, int column, const std::string& text)
 
       case column::INT:
         (void)std::stoi(text);
-        break;
-
-      case column::STRING:
         break;
 
       default:

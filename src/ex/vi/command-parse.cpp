@@ -2,7 +2,7 @@
 // Name:      command-parse.cpp
 // Purpose:   Implementation of class wex::vi::parse_command
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex/macros.h>
@@ -37,14 +37,13 @@ bool wex::vi::parse_command(std::string& command)
     command.erase(0, 2);
     return true;
   }
-  else if (command.front() == ':')
+
+  if (command.front() == ':')
   {
     return ex::command(command);
   }
-  else
-  {
-    filter_count(command);
-  }
+
+  filter_count(command);
 
   if (command.empty())
   {

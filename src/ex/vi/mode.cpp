@@ -2,7 +2,7 @@
 // Name:      mode.cpp
 // Purpose:   Implementation of class wex::vi_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2024 Anton van Wezenbeek
+// Copyright: (c) 2017-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/mpl/list.hpp>
@@ -350,9 +350,8 @@ bool wex::vi_mode::transition(std::string& command)
   }
 
   if (
-    std::find_if(
-      m_insert_commands.begin(),
-      m_insert_commands.end(),
+    std::ranges::find_if(
+      m_insert_commands,
       [command](auto const& e)
       {
         return e.first == command[0];
@@ -391,9 +390,8 @@ bool wex::vi_mode::transition(std::string& command)
     case state_t::INSERT:
       if (!m_vi->get_stc()->is_hexmode())
       {
-        if (const auto& it = std::find_if(
-              m_insert_commands.begin(),
-              m_insert_commands.end(),
+        if (const auto& it = std::ranges::find_if(
+              m_insert_commands,
               [command](auto const& e)
               {
                 return e.first == command[0];
@@ -407,12 +405,9 @@ bool wex::vi_mode::transition(std::string& command)
       break;
 
     case state_t::VISUAL_LINE:
-      if (m_vi->get_stc()->SelectionIsRectangle())
-      {
-        m_vi->get_stc()->Home();
-        m_vi->get_stc()->LineDownExtend();
-      }
-      else if (m_vi->get_stc()->GetSelectedText().empty())
+      if (
+        m_vi->get_stc()->SelectionIsRectangle() ||
+        m_vi->get_stc()->GetSelectedText().empty())
       {
         m_vi->get_stc()->Home();
         m_vi->get_stc()->LineDownExtend();

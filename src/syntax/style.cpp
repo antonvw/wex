@@ -2,7 +2,7 @@
 // Name:      style.cpp
 // Purpose:   Implementation of wex::style class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2023 Anton van Wezenbeek
+// Copyright: (c) 2010-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -32,6 +32,16 @@ bool check_style_spec(const std::string& spec, const std::string& colour)
 
   return true;
 }
+
+wxFont default_font()
+{
+  return config(_("stc.Default font"))
+    .get(wxFont(
+      12,
+      wxFONTFAMILY_DEFAULT,
+      wxFONTSTYLE_NORMAL,
+      wxFONTWEIGHT_NORMAL));
+}
 } // namespace wex
 
 bool wex::style::apply(wxStyledTextCtrl* stc) const
@@ -46,16 +56,18 @@ bool wex::style::apply(wxStyledTextCtrl* stc) const
   // If this is the only style, reset stc.
   if (m_no.empty())
   {
-    stc->StyleResetDefault();
+    if (!lexers::get()->get_lexers().empty())
+    {
+      stc->StyleResetDefault();
+    }
   }
   else
   {
     if (const auto& tok(boost::tokenizer<boost::char_separator<char>>(
           m_value,
           boost::char_separator<char>(",")));
-        !std::all_of(
-          tok.begin(),
-          tok.end(),
+        !std::ranges::all_of(
+          tok,
           [](const auto& it)
           {
             return check_style_spec(it, "back") && check_style_spec(it, "fore");
@@ -85,6 +97,11 @@ bool wex::style::contains_default_style() const
   return (m_no.find(wxSTC_STYLE_DEFAULT) != m_no.end());
 }
 
+int wex::style::default_font_size() const
+{
+  return default_font().GetPointSize();
+}
+
 int wex::style::number() const
 {
   return m_no.empty() ? -1 : *m_no.begin();
@@ -97,13 +114,8 @@ void wex::style::set(const pugi::xml_node& node, const std::string& macro)
   set_no(lexers::get()->apply_macro(m_define, macro), macro, node);
 
   const auto text(std::string(node.text().get()));
-  const auto font(config(_("stc.Default font"))
-                    .get(wxFont(
-                      12,
-                      wxFONTFAMILY_DEFAULT,
-                      wxFONTSTYLE_NORMAL,
-                      wxFONTWEIGHT_NORMAL)));
-  const auto font_size(std::to_string(font.GetPointSize()));
+  const auto font(default_font());
+  const auto font_size(std::to_string(default_font_size()));
 
   // The style is parsed using the themed macros, and
   // you can specify several styles separated by a + sign.

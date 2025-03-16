@@ -127,9 +127,6 @@ public:
     return false;
   };
 
-  /// Moves to next page. If none or only one page present, returns false.
-  virtual bool next_page() { return false; }
-
   /// Called if the notebook changed page.
   virtual void on_notebook(wxWindowID id, wxWindow* page) { ; }
 
@@ -234,6 +231,18 @@ public:
     return false;
   }
 
+  /// Executes vcs.
+  virtual bool vcs_execute(
+    /// the vcs command
+    const std::string& command,
+    /// the paths
+    const std::vector<wex::path>& paths,
+    /// window data
+    const data::window& arg = data::window())
+  {
+    return false;
+  }
+
   /// Executes a ex command. Returns true if
   /// this command is handled. This method is invoked
   /// at the beginning of the ex command handling,
@@ -317,6 +326,14 @@ public:
   /// Updates pane info for managed pane.
   /// Returns false if pane is not managed.
   bool pane_set(const std::string& pane, const wxAuiPaneInfo& info);
+
+  /// Sets the pane height to a number of lines
+  //// according to the font used by stc.
+  /// Returns false if pane is not managed.
+  bool pane_set_height_lines(
+    const std::string& pane,
+    const syntax::stc* stc,
+    int                lines = 1);
 
   /// Shows or hides the managed pane.
   /// Returns false if pane is not managed.

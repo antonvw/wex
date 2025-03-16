@@ -2,7 +2,7 @@
 // Name:      test-ex.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2024 Anton van Wezenbeek
+// Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -17,12 +17,15 @@
 
 TEST_CASE("wex::ex")
 {
-  auto* stc = get_stc();
+  auto* stc = new wex::test::stc();
   stc->visual(true);
   auto* ex = new wex::ex(stc);
   stc->SetReadOnly(false);
   stc->set_text("xx\nxx\nyy\nzz\n");
   stc->DocumentStart();
+
+  const wex::path p("test.h");
+  ALLOW_CALL(*stc, path()).RETURN(p);
 
   SUBCASE("abbreviations")
   {
@@ -221,7 +224,7 @@ TEST_CASE("wex::ex")
                     "pp14\n");
 
       REQUIRE(ex->command(":v/yy/d"));
-      REQUIRE(stc->get_line_count() == 10);
+      REQUIRE(stc->get_line_count() == 9);
       REQUIRE(!stc->get_text().contains("xx"));
       REQUIRE(!stc->get_text().contains("pp"));
     }
@@ -238,7 +241,7 @@ TEST_CASE("wex::ex")
       }
 
       REQUIRE(ex->command(":v/xxxx/d"));
-      REQUIRE(stc->get_line_count() == max + 1);
+      REQUIRE(stc->get_line_count() == max);
       REQUIRE(!stc->get_text().contains("yy"));
     }
   }
@@ -279,8 +282,13 @@ TEST_CASE("wex::ex")
     std::string command("xxx");
     REQUIRE(!wex::marker_and_register_expansion(nullptr, command));
     REQUIRE(wex::marker_and_register_expansion(ex, command));
+    REQUIRE(command == "xxx");
 
     command = "'yxxx";
+    REQUIRE(wex::marker_and_register_expansion(ex, command));
+    REQUIRE(command == "1xxx");
+
+    command = "`yxxx";
     REQUIRE(wex::marker_and_register_expansion(ex, command));
     REQUIRE(command == "1xxx");
 
@@ -301,10 +309,11 @@ TEST_CASE("wex::ex")
   {
     REQUIRE(ex->marker_add('a'));
     REQUIRE(ex->marker_line('a') != -1);
-    REQUIRE(ex->marker_goto('a'));
+    REQUIRE(!ex->marker_goto("a"));
+    REQUIRE(ex->marker_goto("\'a"));
     REQUIRE(ex->marker_delete('a'));
     REQUIRE(!ex->marker_delete('b'));
-    REQUIRE(!ex->marker_goto('a'));
+    REQUIRE(!ex->marker_goto("\'a"));
     REQUIRE(!ex->marker_delete('a'));
     stc->set_text("xx\nyy\nzz\n");
     stc->goto_line(0);

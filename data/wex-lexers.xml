@@ -3,9 +3,9 @@
 <!--
 Name:    wex-lexers.xml
 Purpose: Lexers configuration for wex.
-         See scintilla 5.3.1 (https://www.scintilla.org/LexillaHistory.html)
+         See scintilla 5.4.2 (https://www.scintilla.org/LexillaHistory.html)
 Author:  Anton van Wezenbeek
-Copyright: (c) 2009-2024, Anton van Wezenbeek
+Copyright: (c) 2009-2025, Anton van Wezenbeek
 -->
 
 <lexers>
@@ -121,6 +121,8 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
     <indicator no="1"> indic_squiggle,red </indicator>
     <!-- this indicator is used by debug location -->
     <indicator no="2"> indic_box,styleindicatordebug </indicator>
+    <!-- this indicator is used by showing diff add location -->
+    <indicator no="3"> indic_box,green </indicator>
 
     <!-- The marker element has a 'no' attribute and its value contains the next fields:
          <marker symbol number><','><foreground colour><','><background colour> -->
@@ -139,6 +141,11 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
     <!-- ex_marknum_break is used by debugging -->
     <marker no="ex_marknum_break"> mark_arrow,red,white </marker>
 
+    <!-- this indicator is used by showing diff add, changed, del location -->
+    <marker no="3"> mark_shortarrow,green,warmgrey </marker>
+    <marker no="4"> mark_shortarrow,lightblue,warmgrey </marker>
+    <marker no="5"> mark_shortarrow,red,warmgrey </marker>
+    
     <!-- At this moment we do not have properties -->
     <properties/>
 
@@ -436,7 +443,8 @@ Copyright: (c) 2009-2024, Anton van Wezenbeek
       next prev next_permutation nextafter nexttoward noboolalpha none
       norm normal_distribution noshowbase noshowpoint noshowpos noskipws
       nosubs not1 not2 not_equal_to nothrow nothrow_t
-      notify_all_at_thread_exit nounitbuf nouppercase npos nth_element nullptr_t max_align_t
+      notify_all_at_thread_exit nounitbuf nouppercase 
+      npos nth_element nullopt nullptr_t max_align_t
       numeric_limits oct off_type ofstream once_flag open
       optimize optional ostream ostream_iterator ostreambuf_iterator ostringstream
       ostrstream out_of_range output_iterator output_iterator_tag overflow_error owner_less
@@ -1013,7 +1021,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     </properties>
     <keywords set-0="cmake-commands" set-1="cmake-variables"/>
   </lexer>
-  <lexer name="COBOL" macro="cpp">
+  <lexer name="COBOL" macro="cobol">
     <keywords>
       configuration data declaratives division environment environment-division file
       file-control function i-o i-o-control identification input input-output linkage
@@ -1049,6 +1057,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   <lexer name="d"/>
   <lexer name="dataflex"/>
+  <lexer name="dart"/>
   <lexer name="diff" extensions="*.diff;*.patch" edgemode="none">
     <styles>
     <style no="header"> fore:grey </style>
@@ -1443,6 +1452,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       build default include
     </keywords>
   </lexer>
+  <lexer name="nix"/>
   <lexer name="nncrontab"/>
   <lexer name="nsis"/>
   <lexer name="octave" macro="matlab"/>
@@ -1690,6 +1700,8 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   <lexer name="tehex" macro="ihex"/>
   <lexer name="tex" extensions="*.tex"/>
+  <lexer name="toml"/>
+  <lexer name="troff"/>
   <lexer name="txt2tags"/>
   <lexer name="vb">
     <keywords set ="vb"/>
@@ -1731,4 +1743,5 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <property name="fold.comment"> 1 </property>
     </properties>
   </lexer>
+  <lexer name="zig"/>
 </lexers>

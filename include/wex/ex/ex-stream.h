@@ -160,7 +160,7 @@ private:
 
   const size_t m_buffer_size, m_context_lines;
 
-  size_t m_current_line_size{0}, m_default_line_size{0};
+  size_t m_line_size_requested{0}, m_line_size_current, m_line_size_default{0};
 
   std::fstream* m_stream{nullptr}; // pointer in m_file to actual stream
   file *        m_file{nullptr}, *m_temp{nullptr}, *m_work{nullptr};

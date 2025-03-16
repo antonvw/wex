@@ -2,11 +2,12 @@
 // Name:      test-util.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024 Anton van Wezenbeek
+// Copyright: (c) 2024-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex/util.h>
 
+#include "../../src/ex/util.h"
 #include "test.h"
 
 TEST_CASE("wex::ex::utils")
@@ -25,6 +26,48 @@ TEST_CASE("wex::ex::utils")
     REQUIRE(wex::esc() == "\x1b");
   }
 
+  SUBCASE("find_command")
+  {
+    const std::vector<std::pair<std::string, std::string>> none{};
+    const std::vector<std::pair<std::string, std::string>> cmds{
+      {"x", "1"},
+      {"abc", "1"},
+      {"DDDD", "3"}};
+
+    REQUIRE(
+      wex::find_from<std::vector<std::pair<std::string, std::string>>>(
+        none,
+        "") == none.end());
+    REQUIRE(
+      wex::find_from<std::vector<std::pair<std::string, std::string>>>(
+        cmds,
+        "") == cmds.end());
+    REQUIRE(
+      wex::find_from<std::vector<std::pair<std::string, std::string>>>(
+        cmds,
+        "x") != cmds.end());
+    REQUIRE(
+      wex::find_from<std::vector<std::pair<std::string, std::string>>>(
+        cmds,
+        "xx") != cmds.end());
+    REQUIRE(
+      wex::find_from<std::vector<std::pair<std::string, std::string>>>(
+        cmds,
+        "ab") != cmds.end());
+    REQUIRE(
+      wex::find_from<std::vector<std::pair<std::string, std::string>>>(
+        cmds,
+        "abcd") != cmds.end());
+    REQUIRE(
+      wex::find_from<std::vector<std::pair<std::string, std::string>>>(
+        cmds,
+        "d") == cmds.end());
+    REQUIRE(
+      wex::find_from<std::vector<std::pair<std::string, std::string>>>(
+        cmds,
+        "DDD") != cmds.end());
+  }
+
   SUBCASE("find_first_of")
   {
     REQUIRE(wex::find_first_of("aha", "a") == "ha");
@@ -35,8 +78,11 @@ TEST_CASE("wex::ex::utils")
 
   SUBCASE("get_lines")
   {
-    auto* stc = get_stc();
+    auto* stc = new wex::test::stc();
     stc->set_text("xx\nxx\nyy\nzz\n");
+
+    const wex::path p("test.h");
+    ALLOW_CALL(*stc, path()).RETURN(p);
 
     REQUIRE(wex::get_lines(stc, 0, 0).empty());
     REQUIRE(wex::get_lines(stc, 0, 10000) == "xx\nxx\nyy\nzz\n");
@@ -58,11 +104,9 @@ TEST_CASE("wex::ex::utils")
 
   SUBCASE("one_letter_after")
   {
-    REQUIRE(wex::one_letter_after("m", "mA"));
-
-    REQUIRE(!wex::one_letter_after("", "mA"));
-    REQUIRE(!wex::one_letter_after("m", "m"));
-    REQUIRE(!wex::one_letter_after("m", "m9"));
+    REQUIRE(wex::one_letter_after('m', "mA"));
+    REQUIRE(!wex::one_letter_after('m', "m"));
+    REQUIRE(!wex::one_letter_after('m', "m9"));
   }
 
   SUBCASE("register_after")

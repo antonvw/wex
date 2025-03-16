@@ -2,12 +2,15 @@
 // Name:      stc/bind.cpp
 // Purpose:   Implementation of class wex::stc method bind_all
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2024 Anton van Wezenbeek
+// Copyright: (c) 2018-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
+#include <charconv>
+#include <numeric>
 #include <wex/common/util.h>
 #include <wex/core/config.h>
+#include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
@@ -22,17 +25,30 @@
 #include <wex/ui/debug-entry.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
-#include <wex/ui/item-vector.h>
 #include <wex/ui/menu.h>
 #include <wx/accel.h>
 #include <wx/msgdlg.h>
 #include <wx/numdlg.h>
 
-#include <charconv>
-#include <numeric>
-
 namespace wex
 {
+bool do_show_hash(stc* stc, const std::function<void(const std::string&)>& f)
+{
+  const auto line(stc->GetLineText(stc->GetCurrentLine()));
+
+  if (regex r("commit ([a-z[0-9]+$)"); r.match(line) > 0)
+  {
+    if (f)
+    {
+      f(r[0]);
+    }
+
+    return true;
+  }
+
+  return false;
+}
+
 void edit_control_char(stc* stc)
 {
   if (stc->GetSelectedText().length() > 2)
@@ -122,6 +138,26 @@ const std::string get_properties(
     });
 }
 
+void marker_move(stc* stc, bool next)
+{
+  auto line = next ? stc->MarkerNext(stc->get_current_line() + 1, 0xFFFF) :
+                     stc->MarkerPrevious(stc->get_current_line() - 1, 0xFFFF);
+
+  if (line == -1)
+  {
+    line = next ? stc->MarkerNext(0, 0xFFFF) :
+                  stc->MarkerPrevious(stc->get_line_count() - 1, 0xFFFF);
+  }
+
+  if (line != -1)
+  {
+    stc->goto_line(line);
+  }
+  else
+  {
+    log::status(_("No markers present"));
+  }
+}
 } // namespace wex
 
 void wex::stc::bind_all()
@@ -139,8 +175,8 @@ void wex::stc::bind_all()
      {wxACCEL_CTRL, WXK_INSERT, wxID_COPY},
      {wxACCEL_NORMAL, WXK_F3, ID_EDIT_FIND_NEXT},
      {wxACCEL_NORMAL, WXK_F4, ID_EDIT_FIND_PREVIOUS},
-     {wxACCEL_NORMAL, WXK_F7, wxID_SORT_ASCENDING},
-     {wxACCEL_NORMAL, WXK_F8, wxID_SORT_DESCENDING},
+     {wxACCEL_NORMAL, WXK_F7, id::stc::diff_next},
+     {wxACCEL_NORMAL, WXK_F8, id::stc::diff_previous},
      {wxACCEL_NORMAL, WXK_F9, id::stc::fold_all},
      {wxACCEL_NORMAL, WXK_F10, id::stc::unfold_all},
      {wxACCEL_NORMAL, WXK_F11, id::stc::uppercase},
@@ -330,8 +366,6 @@ void wex::stc::bind_all()
       {
         reset_margins(margin_t().set(MARGIN_TEXT));
         m_margin_text_click = -1;
-        const item_vector iv(m_config_items);
-        SetWrapMode(iv.find<long>(_("stc.Wrap line")));
       },
       id::stc::margin_text_hide},
 
@@ -363,9 +397,62 @@ void wex::stc::bind_all()
 
      {[=, this](const wxCommandEvent& event)
       {
+        vcs_clear_diffs();
+      },
+      ID_CLEAR_DIFFS},
+
+     {[=, this](const wxCommandEvent& event)
+      {
+        const int line(GetCurrentLine());
+        AnnotationClearLine(line);
+
+        if (const auto& it = m_marker_identifiers.find(line);
+            it != m_marker_identifiers.end())
+        {
+          MarkerDeleteHandle(it->second);
+          m_marker_identifiers.erase(it);
+        }
+
+        m_diffs.checkout(line);
+      },
+      id::stc::diff_checkout},
+
+     {[=, this](const wxCommandEvent& event)
+      {
+        if (m_diffs.next())
+        {
+          m_diffs.status();
+        }
+      },
+      id::stc::diff_next},
+
+     {[=, this](const wxCommandEvent& event)
+      {
+        if (m_diffs.prev())
+        {
+          m_diffs.status();
+        }
+      },
+      id::stc::diff_previous},
+
+     {[=, this](const wxCommandEvent& event)
+      {
         link_open(link_t().set(LINK_OPEN_MIME));
       },
       id::stc::open_mime},
+
+     {[=, this](const wxCommandEvent& event)
+      {
+        do_show_hash(
+          this,
+          [&, this](const std::string& hash)
+          {
+            m_frame->vcs_execute(
+              "show " + hash,
+              std::vector<wex::path>{m_data.head_path()});
+          });
+      },
+      id::stc::show_hash},
 
      {[=, this](const wxCommandEvent& event)
       {
@@ -389,37 +476,13 @@ void wex::stc::bind_all()
 
      {[=, this](const wxCommandEvent& event)
       {
-        auto line = MarkerNext(get_current_line() + 1, 0xFFFF);
-        if (line == -1)
-        {
-          line = MarkerNext(0, 0xFFFF);
-        }
-        if (line != -1)
-        {
-          goto_line(line);
-        }
-        else
-        {
-          log::status(_("No markers present"));
-        }
+        marker_move(this, true);
       },
       id::stc::marker_next},
 
      {[=, this](const wxCommandEvent& event)
       {
-        auto line = MarkerPrevious(get_current_line() - 1, 0xFFFF);
-        if (line == -1)
-        {
-          line = MarkerPrevious(get_line_count() - 1, 0xFFFF);
-        }
-        if (line != -1)
-        {
-          goto_line(line);
-        }
-        else
-        {
-          log::status(_("No markers present"));
-        }
+        marker_move(this, false);
       },
       id::stc::marker_previous}});
 
@@ -436,7 +499,11 @@ void wex::stc::bind_all()
 
 void wex::stc::build_popup_menu(menu& menu)
 {
-  if (get_current_line() == 0 && !lexers::get()->get_lexers().empty())
+  const auto sel(GetSelectedText().ToStdString());
+
+  if (
+    get_current_line() == 0 && sel.empty() &&
+    !lexers::get()->get_lexers().empty())
   {
     menu.append({{id::stc::show_properties, _("Properties")}});
   }
@@ -449,6 +516,11 @@ void wex::stc::build_popup_menu(menu& menu)
        {id::stc::edge_clear, _("Edge Column Reset")}});
   }
 
+  if (m_diffs.size() > 0 && current_line_contains_diff_marker())
+  {
+    menu.append({{id::stc::diff_checkout, _("Checkout Diff")}});
+  }
+
   build_popup_menu_link(menu);
 
   if (
@@ -458,11 +530,20 @@ void wex::stc::build_popup_menu(menu& menu)
     m_frame->debug_add_menu(menu, true);
   }
 
-  if (
-    m_data.menu().test(data::stc::MENU_VCS) && path().file_exists() &&
-    m_frame->vcs_dir_exists(path()))
+  if (m_data.menu().test(data::stc::MENU_VCS))
   {
-    menu.append({{}, {path(), m_frame}});
+    if (get_lexer().scintilla_lexer() == "yaml")
+    {
+      if (do_show_hash(this, nullptr))
+      {
+        menu.append({{}, {id::stc::show_hash, _("show hash")}});
+      }
+    }
+
+    if (path().file_exists() && m_frame->vcs_dir_exists(path()))
+    {
+      menu.append({{}, {path(), m_frame}});
+    }
   }
 
   if (!get_vi().is_active() && GetTextLength() > 0)
@@ -475,8 +556,8 @@ void wex::stc::build_popup_menu(menu& menu)
   // Folding if nothing selected, property is set,
   // and we have a lexer.
   if (
-    GetSelectedText().ToStdString().empty() && GetProperty("fold") == "1" &&
-    get_lexer().is_ok() && !get_lexer().scintilla_lexer().empty())
+    sel.empty() && GetProperty("fold") == "1" && get_lexer().is_ok() &&
+    !get_lexer().scintilla_lexer().empty())
   {
     menu.append(
       {{},
@@ -543,9 +624,14 @@ void wex::stc::build_popup_menu_edit(menu& menu)
     }
   }
 
+  if (sel.empty() && m_diffs.size() > 0)
+  {
+    menu.append({{ID_CLEAR_DIFFS, _("Clear Diffs")}});
+  }
+
   if (sel.empty() && beautify_add && beautify().is_supported(get_lexer()))
   {
-    menu.append({{}, {id::stc::beautify, _("&Beautify")}});
+    menu.append({{}, {id::stc::diff_checkout, _("&Beautify")}});
   }
 }
 
@@ -568,7 +654,7 @@ void wex::stc::build_popup_menu_link(menu& menu)
 
   if (m_data.menu().test(data::stc::MENU_OPEN_WWW) && !sel.empty())
   {
-    menu.append({{}, {id::stc::open_www, _("&Search")}});
+    menu.append({{}, {id::stc::open_www, _("&Browse")}});
   }
 }
 
@@ -600,6 +686,16 @@ bool wex::stc::check_brace(int pos)
 
   BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
   return false;
+}
+
+bool wex::stc::current_line_contains_diff_marker()
+{
+  const auto mg = MarkerGet(get_current_line());
+
+  return (
+    mg &
+    ((1 << m_marker_diff_add.number()) | (1 << m_marker_diff_change.number()) |
+     (1 << m_marker_diff_del.number())));
 }
 
 void wex::stc::eol_action(const wxCommandEvent& event)
@@ -885,5 +981,20 @@ void wex::stc::sort_action(const wxCommandEvent& event)
         factory::sort::sort_t().set(factory::sort::SORT_DESCENDING),
       pos - 1)
       .selection(this);
+  }
+}
+
+void wex::stc::vcs_clear_diffs()
+{
+  if (m_diffs.size() > 0)
+  {
+    m_diffs.clear();
+    AnnotationClearAll();
+    MarkerDeleteAll(m_marker_diff_add.number());
+    MarkerDeleteAll(m_marker_diff_change.number());
+    MarkerDeleteAll(m_marker_diff_del.number());
+    IndicatorClearRange(0, GetTextLength() - 1);
+    m_marker_identifiers.clear();
+    m_diffs.status();
   }
 }

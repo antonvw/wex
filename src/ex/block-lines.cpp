@@ -2,21 +2,19 @@
 // Name:      block-lines.cpp
 // Purpose:   Implementation of class wex::block_lines
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
-#include <wex/ex/ex.h>
 #include <wex/syntax/stc.h>
 
 #include "block-lines.h"
 
-wex::block_lines::block_lines(ex* ex, int start, int end)
-  : m_ex(ex)
-  , m_stc(ex->get_stc())
+wex::block_lines::block_lines(syntax::stc* s, int start, int end, block_t t)
+  : m_stc(s)
   , m_start(start)
   , m_end(end)
-  , m_name(start == -1 ? "ib" : "mb")
+  , m_type(t)
 {
 }
 
@@ -33,6 +31,11 @@ void wex::block_lines::finish(const block_lines& block)
 
 std::string wex::block_lines::get_range() const
 {
+  if (!is_available())
+  {
+    return std::string();
+  }
+
   return size() > 1 ?
            std::to_string(m_start + 1) + "," + std::to_string(m_end) :
            std::to_string(m_start + 1);
@@ -40,18 +43,22 @@ std::string wex::block_lines::get_range() const
 
 bool wex::block_lines::is_available() const
 {
-  return m_start != LINE_RESET;
+  return m_start <= m_end;
 }
 
 void wex::block_lines::log() const
 {
-  log::trace("block lines " + m_name) << "start:" << m_start << "end:" << m_end;
+  const std::string name(m_type == block_t::MATCH ? "mb" : "ib");
+  log::trace("block_lines " + name) << m_start << "," << m_end;
 }
 
-wex::block_lines wex::block_lines::single() const
+bool wex::block_lines::set_indicator(const indicator& indicator) const
 {
-  const auto target_start(m_stc->LineFromPosition(m_stc->GetTargetStart()));
-  return {m_ex, target_start, target_start};
+  return m_type == block_t::INVERSE ? m_stc->set_indicator(
+                                        indicator,
+                                        m_stc->PositionFromLine(m_start),
+                                        m_stc->PositionFromLine(m_end)) :
+                                      m_stc->set_indicator(indicator);
 }
 
 size_t wex::block_lines::size() const
@@ -62,12 +69,4 @@ size_t wex::block_lines::size() const
 void wex::block_lines::start(int start)
 {
   m_start = start;
-}
-
-wex::block_lines wex::block_lines::target() const
-{
-  return {
-    m_ex,
-    m_stc->LineFromPosition(m_stc->GetTargetStart()),
-    m_stc->LineFromPosition(m_stc->GetTargetEnd())};
 }

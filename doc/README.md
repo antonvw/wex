@@ -2,7 +2,7 @@
 
 This library is written in the c++ language, and offers classes
 to add vi or ex functionality as specified in
-"The Open Group Base Specifications Issue 7, 2018 edition"
+"The Open Group Base Specifications Issue 8, 2024 edition"
 to your apps.
 
 ## wex c++ libraries
@@ -37,6 +37,39 @@ possibly followed by:
   run-clang-tidy -fix
 ```
 
+It benefits from the following wxWidgets libraries:
+
+## wxWidgets libraries
+
+- all gui classes are derived from / use wxWidgets base classes
+
+lib         | info
+------------|------
+wxbase      | base
+wxcore      | core
+wxaui       | advanced user interface
+wxHTML      | HTML
+wxscintilla | stc
+wxstc       | stc
+
+It benefits from the following boost libraries:
+
+## boost c++ libraries
+
+lib                       | info
+--------------------------|------
+boost::algorithm          | uses find_tail, icontains, iequals, replace_all, to_upper, trim
+boost::describe           | to add reflection
+boost::json               | to implement wex::config
+boost::log                | to implement wex::log
+boost::process            | to implement wex::process
+boost::program_options    | to implement wex::cmdline
+boost::regular expression | to implement the wex::regex_part
+boost::spirit             | to implement the wex::evaluator
+boost::statechart         | to implement the statemachine for vi mode and macro mode
+boost::tokenizer          | to tokenize expressions
+boost::URL                | to handle URLs
+
 It benefits from the following c++ features:
 
 ## c++ libraries
@@ -44,7 +77,7 @@ It benefits from the following c++ features:
 ### Algorithms library
 
 ```cpp
-  std::all_of (c++11)
+  std::ranges::all_of (c++11)
 ```
 
   E.g. when doing a global command on all of it's subcommands
@@ -54,17 +87,14 @@ It benefits from the following c++ features:
 ```cpp
 bool wex::global_env::for_each(const block_lines& match) const
 {
-  return !has_commands() ? m_stc->set_indicator(
-                             m_ar->get_find_indicator(),
-                             m_stc->GetTargetStart(),
-                             m_stc->GetTargetEnd()) :
-                           std::all_of(
-                             m_commands.begin(),
-                             m_commands.end(),
+  return !has_commands() ? match.set_indicator(m_ar.find_indicator()) :
+                           std::ranges::all_of(
+                             m_commands,
                              [this, match](const std::string& it)
                              {
-                               return run(match, it);
-                             });
+                               return command(match, it);
+                             );
+
 }
 ```
 
@@ -473,35 +503,3 @@ wex::regex::regex(
     return m_start <=> r.m_start - 1;
   }
 ```
-
-It benefits from the following boost libraries:
-
-## boost c++ libraries
-
-lib  | info
------|------
-boost::algorithm | uses find_tail, icontains, iequals, replace_all, to_upper, trim
-boost::json | to implement wex::config
-boost::log | to implement wex::log
-boost::process | to implement wex::process
-boost::program_options | to implement wex::cmdline
-boost::regular expression | to implement the wex::regex_part
-boost::spirit | to implement the wex::evaluator
-boost::statechart | to implement the statemachine for vi mode and macro mode
-boost::tokenizer | to tokenize expressions
-boost::URL | to handle URLs
-
-It benefits from the following wxWidgets libraries:
-
-## wxWidgets libraries
-
-- all gui classes are derived from / use wxWidgets base classes
-
-lib  | info
------|------
-wxbase | base
-wxcore | core
-wxaui | advanced user interface
-wxHTML | HTML
-wxscintilla | stc
-wxstc | stc

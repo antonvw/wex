@@ -2,7 +2,7 @@
 // Name:      statusbar.cpp
 // Purpose:   Implementation of wex::statusbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -60,9 +60,8 @@ public:
   /// Returns the style for the first element on the list.
   int style(const config::strings_t& styles) const
   {
-    if (const auto& it = std::find_if(
-          m_styles.begin(),
-          m_styles.end(),
+    if (const auto& it = std::ranges::find_if(
+          m_styles,
           [styles](auto const& i)
           {
             return i.second == styles.front();
@@ -390,9 +389,8 @@ wex::statusbar* wex::statusbar::setup(
     m_panes.clear();
 
     // If the PaneText is not present, add it as first pane.
-    if (const auto& it = std::find_if(
-          panes.begin(),
-          panes.end(),
+    if (const auto& it = std::ranges::find_if(
+          panes,
           [](const auto& p)
           {
             return p.name() == "PaneText";

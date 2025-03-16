@@ -2,7 +2,7 @@
 // Name:      test-stc.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2023 Anton van Wezenbeek
+// Copyright: (c) 2022-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "test.h"
@@ -11,10 +11,16 @@
 TEST_CASE("wex::factory::stc")
 {
   auto* stc = new wex::test::stc();
+  ALLOW_CALL(*stc, is_visual()).RETURN(true);
   stc->set_text("more text\notherline\nother line");
 
   SUBCASE("margin")
   {
+    REQUIRE(stc->margin_divider_number() >= 0);
+    REQUIRE(stc->margin_folding_number() >= 0);
+    REQUIRE(stc->margin_line_number() >= 0);
+    REQUIRE(stc->margin_text_number() >= 0);
+
     REQUIRE(!stc->margin_text_is_shown());
     stc->SetMarginWidth(0, 10);
     stc->SetMarginWidth(1, 20);
@@ -128,6 +134,7 @@ TEST_CASE("wex::factory::stc")
 
     REQUIRE(stc->vi_mode().empty());
 
+    stc->generic_settings();
     stc->vi_record("xxx");
   }
 }

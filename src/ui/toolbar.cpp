@@ -2,46 +2,27 @@
 // Name:      toolbar.cpp
 // Purpose:   Implementation of wex::toolbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2024 Anton van Wezenbeek
+// Copyright: (c) 2010-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
-#include <wex/data/find.h>
 #include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/art.h>
 #include <wex/ui/ex-commandline-input.h>
-#include <wex/ui/ex-commandline.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
-#include <wex/ui/grid.h>
-#include <wex/ui/listview.h>
 #include <wex/ui/menu.h>
 #include <wex/ui/toolbar.h>
 #include <wx/checkbox.h>
 #include <wx/stockitem.h>
 
+#include "findbar.h"
+
 namespace wex
 {
-/// Support class.
-/// Offers a find bar that allows you to find text
-/// on a current grid, listview or stc on a frame.
-/// Pressing key up and down browses through values from
-/// find_replace_data, and pressing enter sets value
-/// in find_replace_data.
-class find_bar : public ex_commandline
-{
-public:
-  /// Constructor. Fills the bar with value
-  /// from find_replace_data.
-  find_bar(wex::frame* frame, const data::window& data);
-
-  /// Finds current value in control.
-  void find(bool find_next = true, bool restore_position = false);
-};
-
 void find_popup_menu(
   wxWindow*                             win,
   const ex_commandline_input::values_t& l,
@@ -171,7 +152,10 @@ void wex::toolbar::add_checkboxes_standard(bool realize)
 
 void wex::toolbar::add_find(bool realize)
 {
-  m_find_bar = new find_bar(m_frame, data::window().parent(this));
+  m_find_bar = new find_bar(
+    m_frame,
+    data::window().parent(this).size(
+      wxSize(150, style().default_font_size() + 10)));
 
   AddControl(m_find_bar->control());
 
@@ -224,11 +208,13 @@ void wex::toolbar::add_find(bool realize)
   bind(this).command(
     {{[=, this](const wxCommandEvent& event)
       {
-        m_find_bar->find(true);
+        find_replace_data::get()->set_search_down(true);
+        m_find_bar->find(false);
       },
       wxID_DOWN},
      {[=, this](const wxCommandEvent& event)
       {
+        find_replace_data::get()->set_search_down(false);
         m_find_bar->find(false);
       },
       wxID_UP}});
@@ -318,9 +304,8 @@ bool wex::toolbar::add_tool(
   const std::vector<data::toolbar_item>& v,
   bool                                   realize)
 {
-  if (!std::all_of(
-        v.begin(),
-        v.end(),
+  if (!std::ranges::all_of(
+        v,
         [this](const auto& it)
         {
           // If the id has a bitmap from our art.
@@ -388,87 +373,4 @@ bool wex::toolbar::set_checkbox(const std::string& name, bool show) const
   }
 
   return false;
-}
-
-// Implementation of support class.
-
-wex::find_bar::find_bar(wex::frame* frame, const data::window& data)
-  : ex_commandline(frame, find_replace_data::get()->get_find_string(), data)
-{
-  frame->bind_accelerators(
-    control(),
-    {{wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE}});
-
-  control()->Bind(
-    wxEVT_CHAR,
-    [=, this](wxKeyEvent& event)
-    {
-      if (!find_replace_data::get()->m_find_strings.set(
-            event.GetKeyCode(),
-            control()))
-      {
-        event.Skip();
-      }
-    });
-
-  control()->Bind(
-    wxEVT_SET_FOCUS,
-    [=, this](wxFocusEvent& event)
-    {
-      if (auto* stc = frame->get_stc(); stc != nullptr)
-      {
-        stc->position_save();
-      }
-      event.Skip();
-    });
-
-  control()->Bind(
-    wxEVT_KEY_DOWN,
-    [=, this](wxKeyEvent& event)
-    {
-      if (event.GetKeyCode() == WXK_RETURN)
-      {
-        if (!get_text().empty())
-        {
-          find_replace_data::get()->set_find_string(get_text());
-          find();
-        }
-      }
-      else
-      {
-        // using bind in ex_commandline did not work
-        on_key_down(event);
-      }
-    });
-
-  control()->Bind(
-    wxEVT_STC_CHARADDED,
-    [=, this](wxStyledTextEvent& event)
-    {
-      event.Skip();
-      find(true, true);
-    });
-}
-
-void wex::find_bar::find(bool find_next, bool restore_position)
-{
-  if (auto* stc = get_frame()->get_stc(); stc != nullptr)
-  {
-    if (restore_position)
-    {
-      stc->position_restore();
-    }
-
-    stc->find(get_text(), -1, find_next);
-  }
-  else if (auto* grid = dynamic_cast<wex::grid*>(get_frame()->get_grid());
-           grid != nullptr)
-  {
-    data::find f(get_text(), find_next);
-    grid->find_next(f);
-  }
-  else if (auto* lv = get_frame()->get_listview(); lv != nullptr)
-  {
-    lv->find_next(get_text(), find_next);
-  }
 }

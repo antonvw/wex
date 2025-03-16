@@ -2,7 +2,7 @@
 // Name:      commands-motion.cpp
 // Purpose:   Implementation of wex::vi::commands_motion
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -17,6 +17,8 @@
 
 #include "util.h"
 #include "vim.h"
+
+#include "../util.h"
 
 namespace wex
 {
@@ -228,14 +230,23 @@ wex::vi::commands_t wex::vi::commands_motion()
      {
        return find_command(command);
      }},
-    {"\'",
+    {"\'`",
      [&](const std::string& command)
      {
-       if (one_letter_after("'", command))
+       if (one_letter_after(command[0], command))
        {
          const auto pos = get_stc()->GetCurrentPos();
-         marker_goto(command.back());
-         visual_extend(pos, get_stc()->GetCurrentPos());
+         marker_goto(command);
+
+         if (command[0] == '\'' && m_mode.get() == vi_mode::state_t::COMMAND)
+         {
+           get_stc()->Home();
+         }
+         else
+         {
+           visual_extend(pos, get_stc()->GetCurrentPos());
+         }
+
          return 2;
        }
        return 0;
@@ -597,23 +608,13 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
     filter_count(command);
   }
 
-  const auto& it = std::find_if(
-    m_motion_commands.begin(),
-    m_motion_commands.end(),
-    [&](auto const& e)
-    {
-      return std::any_of(
-        e.first.begin(),
-        e.first.end(),
-        [command](const auto& p)
-        {
-          return p == command[0];
-        });
-    });
+  const auto& it = find_from<vi::commands_t>(m_motion_commands, command);
+
   if (it == m_motion_commands.end())
   {
     return false;
   }
+
   if (type < motion_t::NAVIGATE && get_stc()->GetReadOnly())
   {
     command.clear();

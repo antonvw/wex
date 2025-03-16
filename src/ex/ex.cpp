@@ -1,9 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      ex.cpp
 // Purpose:   Implementation of class wex::ex
-//            http://pubs.opengroup.org/onlinepubs/9699919799/utilities/ex.html
+//            https://pubs.opengroup.org/onlinepubs/9799919799/utilities/ex.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012-2024 Anton van Wezenbeek
+// Copyright: (c) 2012-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
@@ -75,7 +75,9 @@ bool wex::ex::auto_write()
 
 std::optional<int> wex::ex::calculator(const std::string& text)
 {
-  if (const auto& val(evaluator().eval(this, text)); !val)
+  const auto& val(evaluator().eval(this, text));
+
+  if (!val)
   {
     if (!val.error().empty())
     {
@@ -83,10 +85,8 @@ std::optional<int> wex::ex::calculator(const std::string& text)
     }
     return {};
   }
-  else
-  {
-    return val.value();
-  }
+
+  return val.value();
 }
 
 bool wex::ex::command(const std::string& cmd)
@@ -198,7 +198,7 @@ bool wex::ex::is_address(const std::string& text)
 
 bool wex::ex::marker_add(char marker, int line)
 {
-  if (m_copy)
+  if (m_copy || !lexers::get()->is_loaded())
   {
     return false;
   }
@@ -228,12 +228,9 @@ bool wex::ex::marker_add(char marker, int line)
     if (const auto& it = m_marker_numbers.find(marker);
         it == m_marker_numbers.end())
     {
-      // We have symbol:
-      // 0: non-char ex marker
-      // 1: change marker
-      // 2: breakpoint marker
-      // 3..: character markers (all markers in m_marker_identifiers)
-      const auto marker_offset = 3;
+      // Start character markers (all markers in m_marker_identifiers)
+      // after the other ones.
+      const auto marker_offset = lexers::get()->marker_max_no_used() + 1;
       const auto marker_number = m_marker_identifiers.size() + marker_offset;
 
       get_stc()->MarkerDefine(
@@ -263,6 +260,15 @@ bool wex::ex::marker_add(char marker, int line)
 
   m_marker_identifiers[marker] = id;
 
+  const int col(
+    lin == get_stc()->GetCurrentLine() ?
+      get_stc()->GetColumn(get_stc()->GetCurrentPos()) + 1 :
+      0);
+
+  m_marker_columns[marker] = col;
+
+  log::trace("marker") << marker << "at line:" << lin << "col:" << col;
+
   return true;
 }
 
@@ -284,11 +290,24 @@ bool wex::ex::marker_delete(char marker)
   return false;
 }
 
-bool wex::ex::marker_goto(char marker)
+bool wex::ex::marker_goto(const std::string& marker)
 {
-  if (const auto line = marker_line(marker); line != LINE_NUMBER_UNKNOWN)
+  if (marker.size() < 2)
   {
-    get_stc()->inject(data::control().line(line + 1));
+    return false;
+  }
+
+  if (const auto line = marker_line(marker[1]); line != LINE_NUMBER_UNKNOWN)
+  {
+    data::control c;
+    c.line(line + 1);
+
+    if (marker[0] == '`')
+    {
+      c.col(m_marker_columns[marker[1]]);
+    }
+
+    get_stc()->inject(c);
     return true;
   }
 

@@ -2,7 +2,7 @@
 // Name:      core/util.cpp
 // Purpose:   Implementation of wex core utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -41,17 +41,24 @@ bool wex::auto_complete_text(
 
 bool wex::browser(const std::string& url)
 {
-  if (const boost::urls::url_view view(url);
-      (view.has_scheme() || view.is_path_absolute()))
+  try
   {
-    if (!wxLaunchDefaultBrowser(url))
+    if (const boost::urls::url_view view(url);
+        (view.has_scheme() || view.is_path_absolute()))
     {
-      log("browser launch") << url;
-      return false;
-    }
+      if (!wxLaunchDefaultBrowser(url))
+      {
+        log("browser launch") << url;
+        return false;
+      }
 
-    log::info("browser") << url;
-    return true;
+      log::info("browser") << url;
+      return true;
+    }
+  }
+  catch (const std::exception&)
+  {
+    // do nothing, see id::stc::open_www.. causes exception boost.url
   }
 
   return false;
@@ -195,31 +202,6 @@ const std::string wex::get_string_set(
     });
 }
 
-const std::string wex::get_word(std::string& text)
-{
-  boost::tokenizer<boost::char_separator<char>> tok(
-    text,
-    boost::char_separator<char>(" \t\n"));
-
-  std::string token;
-  boost::algorithm::trim_left(text);
-
-  if (text.empty())
-  {
-    return text;
-  }
-
-  if (auto it = tok.begin(); it != tok.end())
-  {
-    token = *it;
-    text  = text.substr(token.size());
-  }
-
-  boost::algorithm::trim_left(text);
-
-  return token;
-}
-
 int wex::icompare(const std::string& text1, const std::string& text2)
 {
   return boost::algorithm::to_upper_copy(text1).compare(
@@ -291,14 +273,16 @@ bool wex::matches_one_of(
   return false;
 }
 
-const std::string wex::quoted(const std::string& text)
+const std::string wex::quoted(const std::string& text, char delim)
 {
-  return "'" + text + "'";
+  std::ostringstream ss;
+  ss << std::quoted(text, delim);
+  return ss.str();
 }
 
 const std::string wex::quoted_find(const std::string& text, char c)
 {
-  return text.contains(c) ? "\"" + text + "\"" : text;
+  return text.contains(c) ? quoted(text, '"') : text;
 }
 
 const std::string

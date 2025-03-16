@@ -2,7 +2,7 @@
 // Name:      cmdline-imp.h
 // Purpose:   Declaration of wex::cmdline_imp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -61,7 +61,7 @@ public:
 private:
   bool parse_args(const data::cmdline& data);
   void parse_help(data::cmdline& data);
-  void parse_quit();
+  bool parse_quit();
 
   std::map<std::string, function_t> m_functions;
 

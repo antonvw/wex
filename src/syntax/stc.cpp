@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wex::syntax::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -10,10 +10,18 @@
 #include <wex/syntax/lexers.h>
 #include <wex/syntax/stc.h>
 
+wex::syntax::stc::stc(const data::window& data)
+  : factory::stc(data)
+  , m_lexer(this)
+{
+}
+
 void wex::syntax::stc::fold(bool all)
 {
   if (GetProperty("fold") != "1")
+  {
     return;
+  }
 
   if (all || get_line_count() > config(_("stc.Auto fold")).get(1500))
   {
@@ -37,13 +45,8 @@ void wex::syntax::stc::fold_all()
 
   while (line < get_line_count())
   {
-    if (const auto level = GetFoldLevel(line);
-        xml && (level == wxSTC_FOLDLEVELBASE + wxSTC_FOLDLEVELHEADERFLAG))
-    {
-      line++;
-    }
-    else if (const auto last_child_line = GetLastChild(line, level);
-             last_child_line > line + 1)
+    if (const auto last_child_line = GetLastChild(line, GetFoldLevel(line));
+        last_child_line > line + 1)
     {
       if (GetFoldExpanded(line))
       {
@@ -66,10 +69,20 @@ bool wex::syntax::stc::set_indicator(
   int              start,
   int              end)
 {
+  if (!lexers::get()->is_loaded())
+  {
+    return false;
+  }
+
   if (start == -1)
+  {
     start = GetTargetStart();
+  }
+
   if (end == -1)
+  {
     end = GetTargetEnd();
+  }
 
   if (const bool loaded(lexers::get()->indicator_is_loaded(indicator));
       !loaded || start == -1 || end == -1)

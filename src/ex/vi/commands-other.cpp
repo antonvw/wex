@@ -2,7 +2,7 @@
 // Name:      comands-other.cpp
 // Purpose:   Implementation of wex::vi::commands_other
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -51,14 +51,10 @@ size_t fold(wex::syntax::stc* stc, const std::string& command)
     case 'c':
     case 'o':
       if (
-        stc->GetFoldExpanded(line_to_fold) &&
-        boost::algorithm::trim_copy(command) == "zc")
-      {
-        stc->ToggleFold(line_to_fold);
-      }
-      else if (
-        !stc->GetFoldExpanded(line_to_fold) &&
-        boost::algorithm::trim_copy(command) == "zo")
+        (stc->GetFoldExpanded(line_to_fold) &&
+         boost::algorithm::trim_copy(command) == "zc") ||
+        (!stc->GetFoldExpanded(line_to_fold) &&
+         boost::algorithm::trim_copy(command) == "zo"))
       {
         stc->ToggleFold(line_to_fold);
       }
@@ -196,7 +192,7 @@ wex::vi::commands_t wex::vi::commands_other()
     {"m",
      [&](const std::string& command)
      {
-       if (one_letter_after("m", command))
+       if (one_letter_after('m', command))
        {
          marker_add(command.back());
          return 2;
@@ -492,16 +488,14 @@ bool wex::vi::other_command(std::string& command)
 
   filter_count(command);
 
-  if (const auto& it = std::find_if(
-        m_other_commands.begin(),
-        m_other_commands.end(),
+  if (const auto& it = std::ranges::find_if(
+        m_other_commands,
         [command](auto const& e)
         {
           if (!isalpha(e.first.front()))
           {
-            return std::any_of(
-              e.first.begin(),
-              e.first.end(),
+            return std::ranges::any_of(
+              e.first,
               [command](const auto& p)
               {
                 return p == command.front();

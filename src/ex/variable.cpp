@@ -2,7 +2,7 @@
 // Name:      variable.cpp
 // Purpose:   Implementation of class wex::variable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2024 Anton van Wezenbeek
+// Copyright: (c) 2018-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/chrono.h>
@@ -417,7 +417,7 @@ void wex::variable::save(pugi::xml_node& node, const std::string* value)
 
   if (!node.attribute("name"))
   {
-    node.append_attribute("name") = m_name.c_str();
+    node.append_attribute("name") = m_name;
   }
 
   if (!node.attribute("type"))
@@ -459,7 +459,7 @@ void wex::variable::save(pugi::xml_node& node, const std::string* value)
 
   if (!m_prefix.empty() && !node.attribute("prefix"))
   {
-    node.append_attribute("prefix") = m_prefix.c_str();
+    node.append_attribute("prefix") = m_prefix;
   }
 
   if (value != nullptr)
@@ -471,7 +471,7 @@ void wex::variable::save(pugi::xml_node& node, const std::string* value)
     !m_value.empty() && m_type != input_t::BUILTIN &&
     m_type != input_t::INPUT && m_type != input_t::PROCESS)
   {
-    node.text().set(m_value.c_str());
+    node.text().set(m_value);
   }
 }
 
@@ -484,11 +484,7 @@ void wex::variable::set_argument(const std::string& val)
 
 void wex::variable::set_ask_for_input(bool value)
 {
-  if (!value)
-  {
-    m_ask_for_input = value;
-  }
-  else if (is_input() && m_type != input_t::INPUT_ONCE)
+  if (!value || is_input() && m_type != input_t::INPUT_ONCE)
   {
     m_ask_for_input = value;
   }

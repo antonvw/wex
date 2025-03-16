@@ -2,7 +2,7 @@
 // Name:      lex-rfw.h
 // Purpose:   Declaration of Scintilla::lex_rfw class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -219,7 +219,7 @@ private:
 
   Sci_Position SCI_METHOD WordListSet(int n, const char* wl) override;
 
-  /// Other methods.
+  // Other methods.
 
   void init();
 

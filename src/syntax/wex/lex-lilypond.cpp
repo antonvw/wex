@@ -2,7 +2,7 @@
 // Name:      lex-lilypond.cpp
 // Purpose:   Implementation of Scintilla::lex_lillypond
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023-2024 Anton van Wezenbeek
+// Copyright: (c) 2023-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "lex-lilypond.h"
@@ -523,7 +523,7 @@ void SCI_METHOD lex_lilypond::Lex(
 
 static const char* const emptyWordListDesc[] = {0};
 
-LexerModule lmLilyPond(
+extern const LexerModule lmLilyPond(
   lex_lilypond::language(),
   lex_lilypond::get,
   lex_lilypond::name(),

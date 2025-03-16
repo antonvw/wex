@@ -2,7 +2,7 @@
 // Name:      command-parser.cpp
 // Purpose:   Implementation of class wex::command_parser
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -84,13 +84,14 @@ bool wex::command_parser::parse_other()
   marker_and_register_expansion(m_ex, m_text);
 
   // Addressing in ex.
+  // See also address::get_line
   const std::string addr(
     // (1) . (2) $ (3) decimal number, + or - (7)
     "[\\.\\$0-9\\+\\-]+|"
     // (4) marker
     "'[a-z]|"
     // (5) (6) regex find, non-greedy!
-    "[\\?/].*?[\\?/]");
+    "[-+]?[0-9]*[\\?/].*?[\\?/][-+]?[0-9]*");
 
   const auto& cmds_1addr(address(m_ex).regex_commands());
   const auto& cmds_2addr(addressrange(m_ex).regex_commands());

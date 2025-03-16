@@ -2,7 +2,7 @@
 // Name:      statistics.h
 // Purpose:   Include file for class wex::statistics
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -28,9 +28,8 @@ public:
   explicit statistics(
     const std::vector<std::pair<const std::string, T>>& v = {})
   {
-    if (!std::all_of(
-          v.begin(),
-          v.end(),
+    if (!std::ranges::all_of(
+          v,
           [this](const auto& it)
           {
             set(it.first, it.second);
@@ -93,7 +92,7 @@ public:
   };
 
   /// Returns the items.
-  const auto& get_items() const { return m_items; }
+  const std::map<std::string, T>& get_items() const { return m_items; }
 
   /// Increments key with value.
   const T inc(const std::string& key, T inc_value = 1)

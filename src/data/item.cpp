@@ -42,6 +42,12 @@ wex::data::item& wex::data::item::initial(const std::any& rhs)
   return *this;
 }
 
+wex::data::item& wex::data::item::is_persistent(bool rhs)
+{
+  m_is_persistent = rhs;
+  return *this;
+}
+
 wex::data::item& wex::data::item::is_readonly(bool rhs)
 {
   m_is_readonly = rhs;

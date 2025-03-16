@@ -2,7 +2,7 @@
 // Name:      common/util.cpp
 // Purpose:   Implementation of wex common utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <numeric>
@@ -198,6 +198,31 @@ bool wex::lexers_dialog(syntax::stc* stc)
   lexer.empty() ? stc->get_lexer().clear() :
                   (void)stc->get_lexer().set(lexer, true);
   return true;
+}
+
+wex::strings_t wex::listbox_to_list(wxListBox* lb)
+{
+  const wxArrayString items(lb->GetStrings());
+  wxArrayInt          selections;
+  lb->GetSelections(selections);
+  strings_t st;
+
+  for (size_t i = 0; i < items.GetCount(); ++i)
+  {
+    const std::string selected(
+      std::ranges::any_of(
+        selections,
+        [i](const auto& p)
+        {
+          return p == i;
+        }) ?
+        "1" :
+        "0");
+
+    st.push_back(items[i] + ":" + selected);
+  }
+
+  return st;
 }
 
 int wex::open_files(

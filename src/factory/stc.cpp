@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wex::factory::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -196,8 +196,10 @@ void wex::factory::stc::goto_line(int line)
 
 std::string wex::factory::stc::margin_get_revision_id() const
 {
-  std::string revision(MarginGetText(m_margin_text_click));
-  return get_word(revision);
+  std::istringstream revision(MarginGetText(m_margin_text_click));
+  std::string        word;
+  revision >> word;
+  return word;
 }
 
 bool wex::factory::stc::position_restore()

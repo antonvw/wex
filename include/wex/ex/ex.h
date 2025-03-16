@@ -79,7 +79,7 @@ public:
   };
 
   /// Constructor.
-  /// Provide stc cpomponent and ex mode.
+  /// Provide stc component and ex mode.
   explicit ex(syntax::stc* stc, mode_t mode = mode_t::VISUAL);
 
   /// Destructor.
@@ -149,7 +149,9 @@ public:
 
   /// Goes to specified marker.
   /// Returns true if marker exists.
-  bool marker_goto(char marker);
+  /// The command should start with backquote or `, followed
+  /// by marker.
+  bool marker_goto(const std::string& command);
 
   /// Returns line for specified marker.
   /// Returns LINE_NUMBER_UNKNOWN if marker does not exist.
@@ -252,6 +254,8 @@ private:
   mode_t m_mode;
 
   std::unordered_map<char, int>
+    // relate a marker to column on a line
+    m_marker_columns,
     // relate a marker to identifier
     m_marker_identifiers,
     // relate a marker to mark number

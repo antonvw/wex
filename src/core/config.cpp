@@ -2,7 +2,7 @@
 // Name:      config.cpp
 // Purpose:   Implementation of class wex::config
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -13,6 +13,14 @@
 #include <wx/stdpaths.h>
 
 #include "config-imp.h"
+
+namespace wex
+{
+bool is_special_ui(const std::string& item)
+{
+  return item.ends_with(":0") || item.ends_with(":1");
+}
+} // namespace wex
 
 wex::config::config(const std::string& item)
 {
@@ -206,7 +214,40 @@ wxFont wex::config::get(const wxFont& def) const
 const std::string wex::config::get_first_of(const std::string& def) const
 {
   const auto& l(get(strings_t{}));
-  return l.empty() ? def : l.front();
+
+  // with a listbox a :0, or :1 is stored after each item
+  // to notify whether the item was selected, the value
+  // this routine returns does not include this state, and
+  // returns the first one selected instead, or empty string
+  // if none selected
+
+  if (l.empty())
+  {
+    if (is_special_ui(def))
+    {
+      if (def.ends_with(":1"))
+      {
+        return find_before(def, ":");
+      }
+
+      return std::string();
+    }
+    return def;
+  }
+
+  if (is_special_ui(l.front()))
+  {
+    const auto& it(std::ranges::find_if(
+      l,
+      [](auto const& item)
+      {
+        return item.ends_with(":1");
+      }));
+
+    return it != l.end() ? find_before(*it, ":") : std::string();
+  }
+
+  return l.front();
 }
 
 wex::config_imp* wex::config::get_store() const

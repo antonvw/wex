@@ -2,7 +2,7 @@
 // Name:      item.cpp
 // Purpose:   Implementation of wex::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <charconv>
@@ -83,6 +83,7 @@ wex::item::item(
       case DIRPICKERCTRL:
       case FILEPICKERCTRL:
       case GROUP:
+      case LISTBOX:
       case SPACER:
       case STATICLINE:
       case USER:
@@ -92,11 +93,6 @@ wex::item::item(
       default:; // prevent warning
     }
   }
-}
-
-wex::item::item()
-  : item(EMPTY)
-{
 }
 
 wex::item::item(int size)
@@ -298,7 +294,7 @@ wxFlexGridSizer* wex::item::add_browse_button(wxSizer* sizer) const
           {
             wxDirDialog dlg(
               window,
-              _(wxDirSelectorPromptStr),
+              wxDirSelectorPromptStr,
               cb->GetValue(),
               wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
             DO_DIALOG;
@@ -322,7 +318,7 @@ wxFlexGridSizer* wex::item::add_browse_button(wxSizer* sizer) const
             const path   path(cb->GetValue());
             wxFileDialog dlg(
               window,
-              _(wxFileSelectorPromptStr),
+              wxFileSelectorPromptStr,
               path.parent_path(),
               path.filename(),
               wxFileSelectorDefaultWildcardStr,
@@ -551,6 +547,10 @@ const std::any wex::item::get_value() const
                   .ToStdString();
           break;
 
+        case LISTBOX:
+          any = listbox_to_list(reinterpret_cast<wxListBox*>(m_window));
+          break;
+
         case LISTVIEW:
           any = ((wex::listview*)m_window)->save();
           break;
@@ -711,11 +711,11 @@ wex::data::layout::sizer_t* wex::item::layout(data::layout& layout)
   }
   catch (std::bad_cast& e)
   {
-    wex::log(e) << "layout" << *this;
+    wex::log(e) << "item::layout" << *this;
   }
   catch (std::exception& e)
   {
-    wex::log(e) << "layout" << *this;
+    wex::log(e) << "item::layout" << *this;
   }
 
   return nullptr;
@@ -783,17 +783,21 @@ bool wex::item::set_value(const std::any& value) const
 
       case GRID:
       {
-        auto* win = reinterpret_cast<grid*>(m_window);
-        win->set_cells_value({0, 0}, std::any_cast<std::string>(value));
+        (reinterpret_cast<grid*>(m_window))
+          ->set_cells_value({0, 0}, std::any_cast<std::string>(value));
       }
       break;
 
+      case LISTBOX:
+        listbox_as(
+          reinterpret_cast<wxListBox*>(m_window),
+          std::any_cast<strings_t>(value));
+        break;
+
       case LISTVIEW:
-      {
-        auto* win = reinterpret_cast<listview*>(m_window);
-        win->load(std::any_cast<config::strings_t>(value));
-      }
-      break;
+        (reinterpret_cast<listview*>(m_window))
+          ->load(std::any_cast<strings_t>(value));
+        break;
 
       case SLIDER:
         (reinterpret_cast<wxSlider*>(m_window))

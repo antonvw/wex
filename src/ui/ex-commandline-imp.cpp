@@ -63,7 +63,10 @@ wex::ex_commandline_imp::ex_commandline_imp(
   init();
   bind();
 
-  set_text(value);
+  if (!value.empty())
+  {
+    set_text(value.substr(1));
+  }
 
   m_command.set(value);
 }
@@ -149,6 +152,7 @@ bool wex::ex_commandline_imp::handle(const std::string& command)
   {
     m_command = ex_command(m_cl->stc()->get_ex_command()).set(command);
     get_lexer().set(m_cl->stc()->get_lexer().display_lexer());
+    reset_margins();
   }
   else
   {
@@ -164,9 +168,7 @@ bool wex::ex_commandline_imp::handle(const std::string& command)
 
   set_prefix();
 
-  m_cl->get_frame()->pane_set(
-    "VIBAR",
-    wxAuiPaneInfo().BestSize(-1, GetFont().GetPixelSize().GetHeight() + 10));
+  m_cl->get_frame()->pane_set_height_lines("VIBAR", this);
 
   if (!handle_type(command, range))
   {
@@ -192,15 +194,12 @@ bool wex::ex_commandline_imp::handle(char command)
   get_lexer().set(
     m_cl->stc() != nullptr ? m_cl->stc()->get_lexer().display_lexer() :
                              std::string());
+  reset_margins();
 
   ClearAll();
   m_command.reset();
 
-  m_cl->get_frame()->pane_set(
-    "VIBAR",
-    wxAuiPaneInfo().BestSize(
-      -1,
-      4 * GetFont().GetPixelSize().GetHeight() + 10));
+  m_cl->get_frame()->pane_set_height_lines("VIBAR", this, 4);
 
   return true;
 }

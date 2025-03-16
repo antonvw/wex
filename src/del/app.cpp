@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wex::del::app class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023-2024 Anton van Wezenbeek
+// Copyright: (c) 2023-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/wex.h>
@@ -26,6 +26,12 @@ bool wex::del::app::OnInit()
   {
     return false;
   }
+
+  // Necessary for auto_complete images.
+  wxImage::AddHandler(new wxXPMHandler());
+
+  // Register art provider
+  wxArtProvider::Push(new wxMaterialDesignArtProvider);
 
   art::default_colour("light steel blue");
 

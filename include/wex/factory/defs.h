@@ -2,7 +2,7 @@
 // Name:      defs.h
 // Purpose:   Common defs for all wex classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -44,11 +44,13 @@ enum window_id
   ID_ALL_CLOSE_OTHERS,
   ID_ALL_CONFIG_GET,
   ID_ALL_SAVE,
+  ID_ALL_STC_CLEAR_DIFFS,
   ID_ALL_STC_SET_LEXER,
   ID_ALL_STC_SET_LEXER_THEME,
   ID_ALL_STC_SYNC,
   ID_ALL_HIGHEST, // and before this one
 
+  ID_CLEAR_DIFFS,
   ID_CLEAR_FILES,
   ID_CLEAR_FINDS,
   ID_CLEAR_PROJECTS,
@@ -66,6 +68,8 @@ enum window_id
   ID_EDIT_FIND_NEXT,
   ID_EDIT_FIND_PREVIOUS,
   ID_EDIT_OPEN,
+  ID_EDIT_REV_COMPARE,
+  ID_EDIT_REV_OPEN,
   ID_EDIT_SELECT_NONE,
   ID_EDIT_SELECT_INVERT,
 

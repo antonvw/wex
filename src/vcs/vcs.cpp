@@ -2,16 +2,16 @@
 // Name:      vcs.cpp
 // Purpose:   Implementation of wex::vcs class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <ranges>
 
 #include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
-#include <wex/syntax/path-lexer.h>
 #include <wex/ui/item-dialog.h>
 #include <wex/ui/menus.h>
 #include <wex/vcs/vcs.h>
@@ -36,9 +36,9 @@ namespace wex
 // present in the vcs.xml.
 enum
 {
-  VCS_NONE  = -2, // no version control
   VCS_AUTO  = -1, // uses the VCS appropriate for current file
-  VCS_START = 0   // number where fixed VCS start (index in vector)
+  VCS_NONE  = 0,  // no version control (index 0 in vector: empty vcs)
+  VCS_START = 1   // number where fixed VCS start (index in vector)
 };
 
 vcs::store_t::iterator find_entry(vcs::store_t* store, const path& p)
@@ -47,9 +47,8 @@ vcs::store_t::iterator find_entry(vcs::store_t* store, const path& p)
   {
     if (!p.empty())
     {
-      if (auto it = std::find_if(
-            store->begin(),
-            store->end(),
+      if (auto it = std::ranges::find_if(
+            *store,
             [p](const auto& i)
             {
               const factory::vcs_admin va(i.admin_dir(), p);
@@ -122,7 +121,7 @@ int wex::vcs::config_dialog(const data::window& par) const
     choices.insert({(long)VCS_AUTO, "Auto"});
   }
 
-  for (long i = VCS_START; const auto& it : *m_store)
+  for (long i = VCS_START; const auto& it : *m_store | std::views::drop(1))
   {
     choices.insert({i++, it.name()});
   }
@@ -150,12 +149,14 @@ int wex::vcs::config_dialog(const data::window& par) const
 
   config(_("vcs.Always ask flags")).get(true);
   config(_("vcs.Find includes submodules")).get(false);
+  config(_("vcs.Use unified diff view")).get(true);
 
   v.emplace_back(_("vcs.Always ask flags"), item::CHECKBOX);
   v.emplace_back(_("vcs.Find includes submodules"), item::CHECKBOX);
+  v.emplace_back(_("vcs.Use unified diff view"), item::CHECKBOX);
 
   std::transform(
-    m_store->begin(),
+    m_store->begin() + 1,
     m_store->end(),
     std::back_inserter(v),
     [](const auto& t)
@@ -194,15 +195,14 @@ void wex::vcs::destroy_dialog()
 
 bool wex::vcs::dir_exists(const wex::path& filename)
 {
-  if (const auto& entry(find_entry(m_store, filename));
-      factory::vcs_admin(entry->admin_dir(), filename).is_toplevel())
+  const auto& entry(find_entry(m_store, filename));
+
+  if (factory::vcs_admin(entry->admin_dir(), filename).is_toplevel())
   {
     return true;
   }
-  else
-  {
-    return factory::vcs_admin(entry->admin_dir(), filename).exists();
-  }
+
+  return factory::vcs_admin(entry->admin_dir(), filename).exists();
 }
 
 bool wex::vcs::empty()
@@ -217,13 +217,12 @@ bool wex::vcs::execute()
     return m_entry->execute(
       m_entry->get_command().is_add() ? config(_("vcs.Path")).get_first_of() :
                                         std::string(),
-      lexer(),
+      path(),
       config(_("vcs.Base folder")).get_first_of());
   }
 
-  const path_lexer filename(current_path());
-  wex::path        wd(current_path());
-  std::string      args;
+  wex::path   wd(current_path());
+  std::string args;
 
   if (m_files.size() > 1)
   {
@@ -238,9 +237,9 @@ bool wex::vcs::execute()
   }
   else if (m_entry->name() == "git")
   {
-    if (filename.file_exists() && !filename.filename().empty())
+    if (current_path().file_exists() && !current_path().filename().empty())
     {
-      args = quoted_find(filename.filename());
+      args = quoted_find(current_path().filename());
     }
 
     if (wd.file_exists())
@@ -250,10 +249,10 @@ bool wex::vcs::execute()
   }
   else
   {
-    args = quoted_find(filename.string());
+    args = quoted_find(current_path().string());
   }
 
-  return m_entry->execute(args, filename.lexer(), wd.string());
+  return m_entry->execute(args, current_path(), wd.string());
 }
 
 bool wex::vcs::execute(const std::string& command)
@@ -293,6 +292,8 @@ bool wex::vcs::load_document()
     return false;
   }
 
+  m_store->insert(m_store->begin(), vcs_entry());
+
   log::info("vcs entries") << size() << "from" << menus::path().string();
 
   if (old_store == 0)
@@ -316,15 +317,7 @@ bool wex::vcs::load_document()
 
 const std::string wex::vcs::name() const
 {
-  switch (config("vcs.VCS").get(VCS_AUTO))
-  {
-    case VCS_NONE:
-      return std::string();
-    case VCS_AUTO:
-      return "Auto";
-    default:
-      return m_entry->name();
-  }
+  return config("vcs.VCS").get(VCS_AUTO) == VCS_AUTO ? "Auto" : m_entry->name();
 }
 
 void wex::vcs::on_exit()
@@ -341,7 +334,6 @@ void wex::vcs::on_init()
   if (m_store == nullptr)
   {
     m_store = new store_t;
-    m_store->emplace_back();
 
     load_document();
   }
@@ -429,8 +421,10 @@ int wex::vcs::show_dialog(const data::window& arg)
   assert(!m_entry->name().empty());
 
   if (
-    !config(_("vcs.Always ask flags")).get(true) &&
-    m_entry->get_command().type().test(wex::menu_command::IS_ASKED))
+    m_entry->get_command().get_command() == "grep" ||
+    m_entry->get_command().get_command() == "show" ||
+    (!config(_("vcs.Always ask flags")).get(true) &&
+     m_entry->get_command().type().test(wex::menu_command::IS_ASKED)))
   {
     return wxID_OK;
   }
@@ -499,9 +493,8 @@ int wex::vcs::show_dialog(const data::window& arg)
        item(_("vcs.Subcommand"), std::string()) :
        item()});
 
-  if (std::all_of(
-        v.begin(),
-        v.end(),
+  if (std::ranges::all_of(
+        v,
         [](const auto& i)
         {
           return i.type() == item::EMPTY;
@@ -532,51 +525,4 @@ wex::path wex::vcs::toplevel() const
 bool wex::vcs::use() const
 {
   return config("vcs.VCS").get(VCS_AUTO) != VCS_NONE;
-}
-
-bool wex::vcs_execute(
-  factory::frame*          frame,
-  int                      id,
-  const std::vector<path>& files,
-  const data::window&      data)
-{
-  if (files.empty())
-  {
-    return false;
-  }
-
-  if (vcs vcs(files, id); vcs.entry().get_command().is_open())
-  {
-    if (vcs.show_dialog(data) == wxID_OK)
-    {
-      std::for_each(
-        files.begin(),
-        files.end(),
-        [frame, id](const auto& it)
-        {
-          if (wex::vcs vcs({it}, id); vcs.execute())
-          {
-            if (!vcs.entry().std_out().empty())
-            {
-              frame->open_file_vcs(it, vcs.entry(), data::stc());
-            }
-            else if (!vcs.entry().std_err().empty())
-            {
-              log() << vcs.entry().std_err();
-            }
-            else
-            {
-              log::status("No output");
-              log::debug("no output from") << vcs.entry().data().exe();
-            }
-          }
-        });
-    }
-  }
-  else
-  {
-    vcs.request();
-  }
-
-  return true;
 }

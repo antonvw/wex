@@ -2,7 +2,7 @@
 // Name:      test-vcs-entry.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2024 Anton van Wezenbeek
+// Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -47,6 +47,7 @@ TEST_CASE("wex::vcs_entry")
     REQUIRE(entry.get_blame().use());
 
     REQUIRE(entry.get_commands().size() == 2);
+    REQUIRE(!entry.bin().empty());
     REQUIRE(!entry.get_command().get_command().empty());
     REQUIRE(entry.admin_dir() == "./");
     REQUIRE(entry.get_flags().empty());
@@ -79,7 +80,7 @@ TEST_CASE("wex::vcs_entry")
     REQUIRE(entry.system(wex::process_data("help")) == 0);
 
     auto* other = new wex::vcs_entry(doc.document_element());
-    REQUIRE(other->execute(std::string(), wex::lexer()));
+    REQUIRE(other->execute(std::string(), wex::path()));
     other->show_output();
 #endif
   }
@@ -110,15 +111,13 @@ TEST_CASE("wex::vcs_entry")
     REQUIRE(v.has_value());
     REQUIRE(v->size() > 5);
     REQUIRE(
-      std::find(
-        v->begin(),
-        v->end(),
+      std::ranges::find(
+        *v,
         wex::path(vcs.toplevel()).append(wex::path("external/wxWidgets"))) !=
       v->end());
     REQUIRE(
-      std::find(
-        v->begin(),
-        v->end(),
+      std::ranges::find(
+        *v,
         wex::path(vcs.toplevel()).append(wex::path("build"))) != v->end());
   }
 }

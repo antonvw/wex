@@ -2,7 +2,7 @@
 // Name:      test.h
 // Purpose:   Declaration of classes for unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -13,11 +13,11 @@
 #include <wex/test/test.h>
 #include <wex/ui/frame.h>
 
-#define ITEM_START()                           \
-  auto* panel = new wxScrolledWindow(frame()); \
-  frame()->pane_add(panel);                    \
-  wex::data::layout layout(panel, 4);          \
-  panel->SetSizer(layout.sizer());             \
+#define ITEM_START()                                                           \
+  auto* panel = new wxScrolledWindow(frame());                                 \
+  frame()->pane_add(panel);                                                    \
+  wex::data::layout layout(panel, 4);                                          \
+  panel->SetSizer(layout.sizer());                                             \
   panel->SetScrollbars(20, 20, 50, 50);
 
 namespace wex
@@ -32,14 +32,14 @@ class ui_stc : public wex::syntax::stc
 public:
   ui_stc(const wex::data::stc& data = wex::data::stc());
 
+  // necessary for test-notebook
   wex::file& get_file();
 
   void config_get() { ; }
 
-private:
-  const wex::path& path() const override { return m_path; };
+  MAKE_CONST_MOCK0(path, const wex::path&(), override);
 
-  wex::path m_path;
+private:
   wex::file m_file;
 };
 }; // namespace wex::test

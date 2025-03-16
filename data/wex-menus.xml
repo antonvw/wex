@@ -4,7 +4,7 @@ Name:      wex-menus.xml
 Purpose:   setup of dynamic menus, like debuggers 
            and version control systems
 Author:    Anton van Wezenbeek
-Copyright: (c) 2010-2024 Anton van Wezenbeek
+Copyright: (c) 2010-2025 Anton van Wezenbeek
 -->
 
 <menus>
@@ -179,13 +179,16 @@ Copyright: (c) 2010-2024 Anton van Wezenbeek
       <command type="ellipses"> &amp;checkout </command>
       <command type="ellipses"> &amp;commit </command>
       <command type="ellipses-is-asked"> &amp;diff </command>
+      <command type="popup is-selected is-visual" menu="&amp;grep"> grep</command>
+      <command type="popup ellipses is-visual" menu="&amp;grep"> grep</command>
       <command type="ellipses main"> &amp;help </command>
       <command type="ellipses-is-asked"> &amp;log </command>
       <!-- pull and push ask for password (should be asyc, not yet)
       <command type="main"> &amp;pull </command>
       <command type="main"> &amp;push </command>
       -->
-      <command type="ellipses-is-asked"> &amp;show </command>
+      <command type="popup ellipses"> &amp;show </command>
+      <command type="main ellipses-is-asked"> &amp;show </command>
       <command type="ellipses-is-asked"> &amp;status </command>
     </commands>
   </vcs>

@@ -53,10 +53,10 @@ public:
   /// if you called prepare_output previously.
   void add_checkboxes_standard(bool realize = true);
 
-  /// Adds a find textctrl, up and down arrows
-  /// and checkboxes.
-  /// The find textctrl allows you to find in a grid, stc
-  /// or listview component on the specified frame.
+  /// Adds a find ctrl, up and down arrows and checkboxes.
+  /// The find ctrl allows you to find in a grid, stc
+  /// or listview component on the specified frame, and
+  /// is implemented as a ex-commandline.
   void add_find(bool realize = true);
 
   /// Adds the standard controls (e.g. file open).

@@ -133,6 +133,10 @@ void wex::process::show_output(const std::string& caption) const
     m_frame->show_process(true);
     m_shell->AppendText(!std_out().empty() ? std_out() : std_err());
   }
+  else if (std_out().empty())
+  {
+    log::status("No output");
+  }
 }
 
 int wex::process::system(const process_data& data_in)

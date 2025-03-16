@@ -2,11 +2,32 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of wex core listview methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
+
+#include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/factory/listview.h>
+
+namespace wex
+{
+std::string skip_underscore(const std::string& text)
+{
+  return boost::algorithm::replace_all_copy(text, "_", " ");
+}
+} // namespace wex
+
+#define SETUP_COL(NAME, ALIGN, SIZE)                                           \
+  case column::NAME:                                                           \
+    align = ALIGN;                                                             \
+                                                                               \
+    if (width == 0)                                                            \
+    {                                                                          \
+      width = config(skip_underscore("col." #NAME)).get(SIZE);                 \
+    }                                                                          \
+    break
 
 wex::column::column()
 {
@@ -20,29 +41,12 @@ wex::column::column(const std::string& name, type_t type, int width)
 
   switch (m_type)
   {
-    case column::FLOAT:
-      align = wxLIST_FORMAT_RIGHT;
-      if (width == 0)
-        width = 80;
-      break;
-
-    case column::INT:
-      align = wxLIST_FORMAT_RIGHT;
-      if (width == 0)
-        width = 60;
-      break;
-
-    case column::STRING:
-      align = wxLIST_FORMAT_LEFT;
-      if (width == 0)
-        width = 100;
-      break;
-
-    case column::DATE:
-      align = wxLIST_FORMAT_LEFT;
-      if (width == 0)
-        width = 150;
-      break;
+    SETUP_COL(DATE, wxLIST_FORMAT_LEFT, 80);
+    SETUP_COL(FLOAT, wxLIST_FORMAT_RIGHT, 80);
+    SETUP_COL(INT, wxLIST_FORMAT_RIGHT, 60);
+    SETUP_COL(STRING_SMALL, wxLIST_FORMAT_LEFT, 60);
+    SETUP_COL(STRING_MEDIUM, wxLIST_FORMAT_LEFT, 200);
+    SETUP_COL(STRING_LARGE, wxLIST_FORMAT_LEFT, 400);
 
     default:
       assert(0);

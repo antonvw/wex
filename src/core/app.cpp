@@ -2,14 +2,13 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wex::app class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2023 Anton van Wezenbeek
+// Copyright: (c) 2009-2025 Anton van Wezenbeek
 // ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/app.h>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
 #include <wx/clipbrd.h>
-#include <wxMaterialDesignArtProvider.hpp>
 
 #ifdef __WXGTK__
 #include <X11/Xlib.h>
@@ -85,13 +84,9 @@ bool wex::app::OnInit()
     m_loader->add_catalogs(m_language);
   }
 
-  // Necessary for auto_complete images.
-  wxInitAllImageHandlers();
-
-  // Register art provider
-  wxArtProvider::Push(new wxMaterialDesignArtProvider);
-
   wxTheClipboard->UsePrimarySelection(true);
+
+  SetAppearance(Appearance::Dark);
 
   return true; // do not call base class: we have our own cmd line processing
 }

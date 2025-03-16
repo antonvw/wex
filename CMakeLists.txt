@@ -53,6 +53,7 @@ execute_process(
 
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(external/doctest/doctest)
+include_directories(external/trompeloeil/include/doctest)
 
 set(
   CMAKE_MODULE_PATH

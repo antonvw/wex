@@ -345,11 +345,8 @@ bool wex::frame::add_toolbar_panes(const panes_t& panes)
     {
       if (pane.name == "FINDBAR")
       {
-        pane.Top()
-          .CloseButton(false)
-          .DockFixed(true)
-          .Movable(false)
-          .CaptionVisible(false);
+        pane.Top().CloseButton(false).DockFixed(true).Row(10).CaptionVisible(
+          false);
       }
       else
       {
@@ -357,7 +354,7 @@ bool wex::frame::add_toolbar_panes(const panes_t& panes)
       }
 
       // Initially hide special bars.
-      if (pane.name == "FINDBAR" || pane.name == "OPTIONSBAR")
+      if (pane.name == "OPTIONSBAR")
       {
         pane.Hide();
       }
@@ -574,8 +571,6 @@ bool wex::frame::pane_add(const panes_t& panes, const std::string& perspective)
     }
   }
 
-  pane_show("FINDBAR", false);
-
   // This should not be necessary, but when exiting with a shown findbar,
   // it reappears too large.
   m_manager.Update();
@@ -629,6 +624,18 @@ bool wex::frame::pane_set(const std::string& pane, const wxAuiPaneInfo& info)
 
   m_manager.Update();
   return true;
+}
+
+bool wex::frame::pane_set_height_lines(
+  const std::string& pane,
+  const syntax::stc* stc,
+  int                lines)
+{
+  return pane_set(
+    pane,
+    wxAuiPaneInfo().BestSize(
+      -1,
+      lines * stc->GetFont().GetPixelSize().GetHeight() + 10));
 }
 
 bool wex::frame::pane_show(const std::string& pane, bool show)

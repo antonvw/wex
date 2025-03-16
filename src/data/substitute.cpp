@@ -2,7 +2,7 @@
 // Name:      data/substitute.cpp
 // Purpose:   Implementation of class wex::data::substitute
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -90,7 +90,9 @@ bool wex::data::substitute::set_global(const std::string& text)
 {
   // [2addr] g[lobal] /pattern/ [commands]
   // [2addr] v /pattern/ [commands]
-  regex v("^(\\s*[gv]|global)/(.*?)/(.*)"); // non-greedy
+  // The optional '!' character after the global command shall be the same as
+  // executing the v command.
+  regex v("^(\\s*[gv]|global|global!|g!)/(.*?)/(.*)"); // non-greedy
 
   if (v.match(text) < 3)
   {
@@ -98,7 +100,7 @@ bool wex::data::substitute::set_global(const std::string& text)
   }
 
   m_global_command = true;
-  m_inverse        = v[0].starts_with('v');
+  m_inverse        = v[0].starts_with('v') || v[0].ends_with('!');
   auto pattern     = v[1];
   m_commands       = v[2];
 

@@ -7,8 +7,12 @@
 
 #pragma once
 
+#include <unordered_map>
+#include <vector>
+
 #include <wex/core/function-repeat.h>
 #include <wex/data/stc.h>
+#include <wex/factory/unified-diffs.h>
 #include <wex/stc/file.h>
 #include <wex/stc/hexmode.h>
 #include <wex/syntax/marker.h>
@@ -16,8 +20,6 @@
 #include <wex/ui/item.h>
 #include <wex/vi/vi.h>
 #include <wx/prntbase.h>
-
-#include <vector>
 
 namespace wex
 {
@@ -33,7 +35,8 @@ class stc_entry_dialog;
 namespace factory
 {
 class frame;
-};
+class unified_diff;
+}; // namespace factory
 
 /// Offers a syntax stc with:
 /// - ex or vi support (default vi mode is on)
@@ -103,6 +106,12 @@ public:
 
   /// Returns associated data.
   const auto& data() const { return m_data; }
+
+  /// Returns diffs.
+  const unified_diffs& diffs() const { return m_diffs; };
+
+  /// Returns writable diffs.
+  unified_diffs& diffs() { return m_diffs; };
 
   /// Shows a menu with current line type checked,
   /// and allows you to change it.
@@ -181,6 +190,9 @@ public:
     /// argument passed on to find_next
     bool stc_find_string = true);
 
+  /// Update markers according to diff.
+  bool unified_diff_set_markers(const factory::unified_diff* uni);
+
   // Virtual methods from wxWidgets.
 
   bool CanCut() const override;
@@ -207,6 +219,8 @@ public:
 
   bool find(const std::string& text, int find_flags = -1, bool find_next = true)
     override;
+
+  void generic_settings() override;
 
   wex::data::stc* get_data() override { return &m_data; }
 
@@ -254,6 +268,8 @@ public:
 
   void use_modification_markers(bool use) override;
 
+  void vcs_clear_diffs() override;
+
   bool        vi_command(const line_data& data) override;
   bool        vi_command_finish(bool user_input) override;
   void        vi_record(const std::string& command) override;
@@ -273,6 +289,7 @@ private:
   void build_popup_menu_link(menu& menu);
   void check_brace();
   bool check_brace(int pos);
+  bool current_line_contains_diff_marker();
   void eol_action(const wxCommandEvent& event);
   void file_action(const wxCommandEvent& event);
   bool file_readonly_attribute_changed();
@@ -280,13 +297,15 @@ private:
   void jump_action();
   void key_action(wxKeyEvent& event);
   void margin_action(wxStyledTextEvent& event);
-  void mouse_action(wxMouseEvent& event);
+  bool mark_diff(size_t line, const marker& marker);
   void mark_modified(const wxStyledTextEvent& event);
+  void mouse_action(wxMouseEvent& event);
   void on_styled_text(wxStyledTextEvent& event);
   void show_properties();
   void sort_action(const wxCommandEvent& event);
 
-  const marker m_marker_change = marker(1);
+  const marker m_marker_change{marker(1)}, m_marker_diff_add{marker(3)},
+    m_marker_diff_change{marker(4)}, m_marker_diff_del{marker(5)};
 
   bool m_skip{false};
 
@@ -298,6 +317,9 @@ private:
   function_repeat m_function_repeat;
   data::stc       m_data;
   stc_file        m_file;
+  unified_diffs   m_diffs;
+
+  std::unordered_map<int, int> m_marker_identifiers;
 
   int m_selection_mode_copy{wxSTC_SEL_STREAM};
 

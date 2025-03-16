@@ -2,7 +2,7 @@
 // Name:      addressrange.cpp
 // Purpose:   Implementation of class wex::addressrange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2024 Anton van Wezenbeek
+// Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -29,6 +29,7 @@
 
 #include "addressrange-mark.h"
 #include "global-env.h"
+#include "util.h"
 
 namespace wex
 {
@@ -376,22 +377,22 @@ bool wex::addressrange::general(
 
 bool wex::addressrange::global(const command_parser& cp) const
 {
-  if (!m_substitute.set_global(cp.command() + cp.text()))
+  if (!m_stc->is_visual())
   {
+    m_ex->frame()->show_ex_message("not supported in ex mode");
     return false;
   }
 
-  if (m_substitute.is_clear())
+  if (!m_substitute.set_global(cp.command() + cp.text()))
   {
-    m_stc->IndicatorClearRange(0, m_stc->GetTextLength() - 1);
-    return true;
+    return false;
   }
 
   /// Performs the global command (g) on this range.
   /// normally performs command on each match, if inverse
   /// performs (v) command if line does not match
 
-  global_env g(m_ex);
+  global_env g(*this);
 
   if (!g.global(m_substitute))
   {
@@ -400,16 +401,9 @@ bool wex::addressrange::global(const command_parser& cp) const
 
   if (g.hits() > 0)
   {
-    if (g.has_commands())
-    {
-      m_ex->frame()->show_ex_message(
-        "executed: " + std::to_string(g.hits()) + " commands");
-    }
-    else
-    {
-      m_ex->frame()->show_ex_message(
-        "found: " + std::to_string(g.hits()) + " matches");
-    }
+    m_ex->frame()->show_ex_message(
+      g.has_commands() ? "executed: " + std::to_string(g.hits()) + " commands" :
+                         "found: " + std::to_string(g.hits()) + " matches");
   }
 
   return true;
@@ -582,23 +576,11 @@ bool wex::addressrange::parse(const command_parser& cp, info_message_t& im)
     return false;
   }
 
-  im = info_message_t::NONE;
-
-  if (const auto& it = std::find_if(
-        m_commands.begin(),
-        m_commands.end(),
-        [&](auto const& e)
-        {
-          return std::any_of(
-            e.first.begin(),
-            e.first.end(),
-            [cp](const auto& p)
-            {
-              return p == cp.command()[0];
-            });
-        });
+  if (const auto& it =
+        find_from<addressrange::commands_t>(m_commands, cp.command());
       it != m_commands.end())
   {
+    im = info_message_t::NONE;
     return it->second(cp, im);
   }
 
@@ -656,7 +638,18 @@ bool wex::addressrange::set(const std::string& begin, const std::string& end)
   m_begin.m_type = address::address_t::IS_BEGIN;
   m_end.m_type   = address::address_t::IS_END;
 
-  return set_single(begin, m_begin) && set_single(end, m_end);
+  if (!set_single(begin, m_begin))
+  {
+    return false;
+  }
+
+  if (begin == end)
+  {
+    m_end = m_begin;
+    return true;
+  }
+
+  return set_single(end, m_end);
 }
 
 void wex::addressrange::set(address& begin, address& end, int lines) const

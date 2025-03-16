@@ -2,20 +2,40 @@
 // Name:      test-lexers.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/syntax/lexers.h>
 #include <wex/test/test.h>
 
-// see also test-stc, test-syntax
+// see also test-stc
 
 TEST_CASE("wex::lexers")
 {
   SUBCASE("get")
   {
-    REQUIRE(wex::lexers::get() != nullptr);
-    REQUIRE(!wex::lexers::get()->get_lexers().empty());
+    auto* l = wex::lexers::set(nullptr);
+    REQUIRE(l != nullptr);
+    REQUIRE(l->get_lexers().size() > 1);
+    REQUIRE(wex::lexers::get(false) == nullptr);
+
+    wex::lexers::is_initial_load(false);
+    REQUIRE(wex::lexers::get() != l);
+    REQUIRE(wex::lexers::get()->get_lexers().size() == 1);
+    REQUIRE(!wex::lexers::get()->is_loaded());
+    REQUIRE(wex::lexers::get()->marker_max_no_used() == -1);
+    REQUIRE(!wex::lexers::get()->indicator_is_loaded(wex::indicator(0)));
+    REQUIRE(!wex::lexers::get()->marker_is_loaded(wex::marker(0)));
+    REQUIRE(!wex::lexers::get()->get_marker(wex::marker(0)).is_ok());
+
+    wex::lexers::is_initial_load(true);
+    auto* m = wex::lexers::set(nullptr);
+    REQUIRE(m != nullptr);
+    REQUIRE(wex::lexers::get()->get_lexers().size() > 1);
+    REQUIRE(wex::lexers::get()->is_loaded());
+
+    delete l;
+    delete m;
   }
 
   SUBCASE("apply_default_style")
@@ -91,6 +111,14 @@ TEST_CASE("wex::lexers")
     REQUIRE(wex::lexers::get()->keywords(std::string()).empty());
   }
 
+  SUBCASE("markers")
+  {
+    REQUIRE(wex::lexers::get()->marker_is_loaded(wex::marker(0)));
+    REQUIRE(wex::lexers::get()->marker_max_no_used() > 4);
+    REQUIRE(wex::lexers::get()->marker_max_no_used() < wxSTC_MARKNUM_FOLDEREND);
+    REQUIRE(wex::lexers::get()->get_marker(wex::marker(0)).is_ok());
+  }
+
   SUBCASE("properties")
   {
     REQUIRE(wex::lexers::get()->properties().empty());
@@ -116,9 +144,7 @@ TEST_CASE("wex::lexers")
 
     REQUIRE(!wex::lexers::get()->indicator_is_loaded(wex::indicator(99)));
     REQUIRE(wex::lexers::get()->indicator_is_loaded(wex::indicator(0)));
-    REQUIRE(wex::lexers::get()->marker_is_loaded(wex::marker(0)));
     REQUIRE(wex::lexers::get()->get_indicator(wex::indicator(0)).is_ok());
-    REQUIRE(wex::lexers::get()->get_marker(wex::marker(0)).is_ok());
 
     REQUIRE(wxTheColourDatabase->Find("gray 2").IsOk());
 
