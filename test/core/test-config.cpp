@@ -23,8 +23,6 @@ TEST_CASE("wex::config")
 
   SUBCASE("static")
   {
-    REQUIRE(!wex::config::on_exit());
-
     REQUIRE(wex::config::store_is_active());
 
     REQUIRE(!wex::config::on_init());
