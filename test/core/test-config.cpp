@@ -2,7 +2,7 @@
 // Name:      test-config.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -18,6 +18,26 @@ TEST_CASE("wex::config")
     REQUIRE(!wex::config().is_child());
     REQUIRE(!wex::config().child_start());
     REQUIRE(!wex::config().child_end());
+    REQUIRE(wex::config::store_is_active());
+  }
+
+  SUBCASE("static")
+  {
+    REQUIRE(!wex::config::on_exit());
+
+    REQUIRE(wex::config::store_is_active());
+
+    REQUIRE(!wex::config::on_init());
+
+    REQUIRE(wex::config::store_is_active());
+
+    wex::config::discard();
+
+    const auto& p(wex::config::path());
+
+    REQUIRE(!p.empty());
+
+    wex::config::set_path(p);
   }
 
   SUBCASE("dir")
@@ -131,6 +151,8 @@ TEST_CASE("wex::config")
     wex::config c("parent", "child-x");
     REQUIRE(c.is_child());
 
+    REQUIRE(c.children() == 0);
+
     c.item("child-x").set("x");
     REQUIRE(c.item("child-x").get("y") == "x");
 
@@ -150,6 +172,7 @@ TEST_CASE("wex::config")
     c.item("child-y").set(2);
     c.item("child-z").set(3);
 
+    REQUIRE(c.children() == 3);
     REQUIRE(!c.item("child").exists());
     REQUIRE(c.item("child-x").get(99) == 1);
     REQUIRE(c.item("child-y").get(99) == 2);

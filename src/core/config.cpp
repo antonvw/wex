@@ -38,24 +38,6 @@ wex::config::~config()
   child_end();
 }
 
-bool wex::config::change_path(const wex::path& p)
-{
-  if (!child_end())
-  {
-    return false;
-  }
-
-  assert(m_store);
-
-  m_store->save();
-
-  config_imp::set_path(p);
-
-  m_store->read();
-
-  return true;
-}
-
 bool wex::config::child_end()
 {
   if (m_local == nullptr || m_store == nullptr)
@@ -274,20 +256,36 @@ wex::config& wex::config::item(const std::string& item)
   return *this;
 }
 
-void wex::config::on_exit()
+bool wex::config::on_exit()
 {
+  if (m_store == nullptr)
+  {
+    return false;
+  }
+
   if (m_store_save)
   {
     m_store->save();
   }
 
   delete m_store;
+
+  m_store = nullptr;
+
+  return true;
 }
 
-void wex::config::on_init()
+bool wex::config::on_init()
 {
+  if (m_store != nullptr)
+  {
+    return false;
+  }
+
   m_store = new config_imp();
   m_store->read();
+
+  return true;
 }
 
 const wex::path wex::config::path()
