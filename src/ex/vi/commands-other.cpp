@@ -23,6 +23,7 @@
 #include <wex/vi/vi.h>
 #include <wx/app.h>
 
+#include "../util.h"
 #include "util.h"
 
 #define REPEAT_WITH_UNDO(TEXT)                                                 \
@@ -432,7 +433,7 @@ wex::vi::commands_t wex::vi::commands_other()
          command_reg(command);
          return command.size();
        }
-       if (command.size() == 2 && register_after(k_s(WXK_CONTROL_R), command))
+       if (is_register_valid(command))
        {
          command_reg(command);
          return command.size();

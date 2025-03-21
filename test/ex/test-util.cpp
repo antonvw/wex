@@ -96,17 +96,20 @@ TEST_CASE("wex::ex::utils")
     REQUIRE(lines.contains("    1 xx$\n"));
   }
 
+  SUBCASE("is_register_valid")
+  {
+    REQUIRE(wex::is_register_valid("@6"));
+    REQUIRE(wex::is_register_valid("@x"));
+
+    REQUIRE(!wex::is_register_valid("@6 "));
+    REQUIRE(!wex::is_register_valid("@ "));
+    REQUIRE(!wex::is_register_valid("x"));
+    REQUIRE(!wex::is_register_valid("xx"));
+  }
+
   SUBCASE("k_s")
   {
     REQUIRE(wex::k_s(WXK_CONTROL_A) == "\x1");
     REQUIRE(wex::k_s(WXK_CONTROL_B) == "\x2");
-  }
-
-  SUBCASE("register_after")
-  {
-    REQUIRE(wex::register_after("@", "@6"));
-    REQUIRE(wex::register_after("@", "@x"));
-
-    REQUIRE(!wex::register_after("@", "@ "));
   }
 }
