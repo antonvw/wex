@@ -2,7 +2,7 @@
 // Name:      config.h
 // Purpose:   Declaration of class wex::config
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2024 Anton van Wezenbeek
+// Copyright: (c) 2018-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -52,12 +52,12 @@ public:
 
   /// Saves changes to store (unless discard was invoked), and frees objects.
   /// This is done in app::OnExit.
-  static void on_exit();
+  static bool on_exit();
 
   /// Initializes the store, and reads previous file.
   /// This should be done before first use of config,
   /// and is done in app::OnInit.
-  static void on_init();
+  static bool on_init();
 
   /// Returns the current config path.
   static const wex::path path();
@@ -74,6 +74,9 @@ public:
 
   /// Returns number of top level entries.
   static size_t size();
+
+  /// Returns whether store is available.
+  static bool store_is_active() { return m_store != nullptr; };
 
   // Other methods
 
@@ -111,10 +114,6 @@ public:
 
   /// Destructor, calls child_end.
   ~config();
-
-  /// Saves changes to current config file, and sets
-  /// and uses new file as config file.
-  bool change_path(const wex::path& p);
 
   /// Ends setting child values for this item,
   /// deletes a possible local store for a child item.
