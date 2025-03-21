@@ -35,6 +35,14 @@
     output += std::string(config(_("stc.Edge column")).get(80l), '-') + "\n";  \
   }
 
+namespace wex
+{
+bool is_marker_valid(char c)
+{
+  return isgraph(c);
+}
+} // namespace wex
+
 wex::macros wex::ex::m_macros;
 
 wex::ex::ex(wex::syntax::stc* stc, mode_t mode)
@@ -200,6 +208,12 @@ bool wex::ex::marker_add(char marker, int line)
 {
   if (m_copy || !lexers::get()->is_loaded())
   {
+    return false;
+  }
+
+  if (!is_marker_valid(marker))
+  {
+    wex::log("marker invalid") << std::string(1, marker);
     return false;
   }
 

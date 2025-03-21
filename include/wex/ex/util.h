@@ -62,9 +62,6 @@ std::string get_lines(
 /// Returns a string for specified key.
 const std::string k_s(wxKeyCode key);
 
-/// Returns whether there is only one letter in text after specified char.
-bool one_letter_after(char c, const std::string& text);
-
 /// Returns true if a register is specified after letter in text.
 bool register_after(const std::string& text, const std::string& letter);
 } // namespace wex

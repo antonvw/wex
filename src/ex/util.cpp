@@ -167,13 +167,6 @@ bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
   return true;
 }
 
-bool wex::one_letter_after(char c, const std::string& text)
-{
-  return std::regex_match(
-    text,
-    std::regex("^" + std::string(1, c) + "[a-zA-Z]$"));
-}
-
 bool wex::register_after(const std::string& text, const std::string& letter)
 {
   return std::regex_match(

@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
+#include <wex/core/log-none.h>
 #include <wex/ctags/ctags.h>
 #include <wex/ex/ex.h>
 #include <wex/ex/macros.h>
@@ -311,6 +312,7 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->marker_line('a') != -1);
     REQUIRE(!ex->marker_goto("a"));
     REQUIRE(ex->marker_goto("\'a"));
+    REQUIRE(!ex->marker_goto("\' "));
     REQUIRE(ex->marker_delete('a'));
     REQUIRE(!ex->marker_delete('b'));
     REQUIRE(!ex->marker_goto("\'a"));
@@ -323,6 +325,9 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->command(":'t,'us/s/w/"));
     REQUIRE(ex->command(":'t,$s/s/w/"));
     REQUIRE(ex->command(":1,'us/s/w/"));
+
+    wex::log_none off;
+    REQUIRE(!ex->marker_add(' '));
   }
 
   SUBCASE("print")

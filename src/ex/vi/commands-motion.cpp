@@ -233,18 +233,18 @@ wex::vi::commands_t wex::vi::commands_motion()
     {"\'`",
      [&](const std::string& command)
      {
-       if (one_letter_after(command[0], command))
+       if (command.size() == 2)
        {
-         const auto pos = get_stc()->GetCurrentPos();
-         marker_goto(command);
-
-         if (command[0] == '\'' && m_mode.get() == vi_mode::state_t::COMMAND)
+         if (const auto pos = get_stc()->GetCurrentPos(); marker_goto(command))
          {
-           get_stc()->Home();
-         }
-         else
-         {
-           visual_extend(pos, get_stc()->GetCurrentPos());
+           if (command[0] == '\'' && m_mode.get() == vi_mode::state_t::COMMAND)
+           {
+             get_stc()->Home();
+           }
+           else
+           {
+             visual_extend(pos, get_stc()->GetCurrentPos());
+           }
          }
 
          return 2;
