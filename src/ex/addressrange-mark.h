@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <array>
 #include <wex/data/substitute.h>
 #include <wex/factory/stc-undo.h>
 
@@ -67,6 +68,13 @@ private:
     NORMAL,
   };
 
+  enum marker_t
+  {
+    BEGIN,
+    TARGET,
+    END,
+  };
+
   mark_t get_type() const;
 
   void set_target(int start);
@@ -78,7 +86,7 @@ private:
   const data::substitute& m_data;
 
   // markers used: begin, target, end
-  const char ma_b, ma_t, ma_e;
+  const std::array<char, 3> m_markers;
 
   stc_undo m_undo;
 

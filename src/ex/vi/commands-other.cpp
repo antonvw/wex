@@ -192,7 +192,7 @@ wex::vi::commands_t wex::vi::commands_other()
     {"m",
      [&](const std::string& command)
      {
-       if (one_letter_after('m', command))
+       if (command.size() == 2)
        {
          marker_add(command.back());
          return 2;

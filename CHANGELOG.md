@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [25.10] - 2025-10 [Unreleased]
 
+### Changed
+
+- removed one_letter_after, replaced by internal is_marker_valid
+
+### Fixed
+
+- fixed allow adding markers for which isgraph is true
+
 ## [25.04] - 2025-03-16
 
 ### Added
