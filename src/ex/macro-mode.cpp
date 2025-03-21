@@ -2,7 +2,7 @@
 // Name:      macro-mode.cpp
 // Purpose:   Implementation of class wex::macro_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2024 Anton van Wezenbeek
+// Copyright: (c) 2017-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -11,7 +11,6 @@
 #include <wex/ex/ex.h>
 #include <wex/ex/macro-mode.h>
 #include <wex/ex/macros.h>
-#include <wex/ex/util.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/statusbar.h>
@@ -19,6 +18,7 @@
 #include <wx/choicdlg.h>
 
 #include "macro-fsm.h"
+#include "util.h"
 
 bool show_dialog(
   wxWindow*          parent,
@@ -167,7 +167,7 @@ std::optional<size_t> wex::macro_mode::transition_at(
       return std::optional<size_t>{2};
     }
   }
-  else if (register_after("@", macro))
+  else if (is_register_valid(macro))
   {
     macro = macro.back();
 

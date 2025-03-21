@@ -61,7 +61,4 @@ std::string get_lines(
 
 /// Returns a string for specified key.
 const std::string k_s(wxKeyCode key);
-
-/// Returns true if a register is specified after letter in text.
-bool register_after(const std::string& text, const std::string& letter);
 } // namespace wex

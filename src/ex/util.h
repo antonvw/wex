@@ -39,5 +39,8 @@ T::const_iterator find_from(
     });
 
   return it;
-}
+};
+
+/// Returns true if a register is specified by the text (normal or calc).
+bool is_register_valid(const std::string& text);
 }; // namespace wex
