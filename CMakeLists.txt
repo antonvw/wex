@@ -13,6 +13,7 @@ if(wexBUILD_SHARED)
     )
   endif()
 else()
+  set(wxBUILD_SHARED OFF)
   set(Boost_USE_STATIC_LIBS ON)
 endif()
 
