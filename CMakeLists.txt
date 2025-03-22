@@ -3,8 +3,7 @@ cmake_minimum_required(VERSION 3.21)
 project(wex)
 
 if(wexBUILD_SHARED)
-  set(BUILD_SHARED_LIBS YES)
-  set(wxBUILD_SHARED ON)
+  set(BUILD_SHARED_LIBS ON)
   add_definitions(-DBOOST_LOG_DYN_LINK)
 
   if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
@@ -15,7 +14,6 @@ if(wexBUILD_SHARED)
   endif()
 else()
   set(Boost_USE_STATIC_LIBS ON)
-  set(wxBUILD_SHARED OFF)
 endif()
 
 if(wexBUILD_GITHUB)

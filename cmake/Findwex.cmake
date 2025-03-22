@@ -30,6 +30,9 @@ endif()
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
+# wx version used, determined by the wxWidgets module branch checkout
+set(wx_BASE_LIB 3.3)
+
 set(CMAKE_CXX_STANDARD 23)
 
 find_package(
@@ -64,7 +67,13 @@ elseif(APPLE)
 
   set(cpp_LIBRARIES stdc++)
 
-  set(apple_LIBRARIES wxjpeg-3.3 wxpng-3.3 ${ICONV_LIBRARIES} ${ZLIB_LIBRARIES})
+  set(
+    apple_LIBRARIES
+    wxjpeg-${wx_BASE_LIB}
+    wxpng-${wx_BASE_LIB}
+    ${ICONV_LIBRARIES}
+    ${ZLIB_LIBRARIES}
+  )
 elseif(UNIX)
   add_definitions(-D__WXGTK3__ -D__WXGTK__)
 
@@ -159,16 +168,16 @@ if(MSVC)
 else()
   set(
     wx_LIBRARIES
-    wx_${PLATFORM}u_aui-3.3
-    wx_${PLATFORM}u_stc-3.3
-    wx_${PLATFORM}u_html-3.3
-    wx_${PLATFORM}u_core-3.3
-    wx_baseu-3.3
-    wx_baseu_net-3.3
+    wx_${PLATFORM}u_aui-${wx_BASE_LIB}
+    wx_${PLATFORM}u_stc-${wx_BASE_LIB}
+    wx_${PLATFORM}u_html-${wx_BASE_LIB}
+    wx_${PLATFORM}u_core-${wx_BASE_LIB}
+    wx_baseu-${wx_BASE_LIB}
+    wx_baseu_net-${wx_BASE_LIB}
   )
 
   if(NOT APPLE AND NOT wexBUILD_SHARED)
-    set(wx_LIBRARIES ${wx_LIBRARIES} wxscintilla-3.3)
+    set(wx_LIBRARIES ${wx_LIBRARIES} wxscintilla-${wx_BASE_LIB})
   endif()
 
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
