@@ -9,7 +9,6 @@
 	<file>/Users/anton/wex/test/core/test-log.cpp</file>
 	<file>/Users/anton/wex/test/core/test-regex.cpp</file>
 	<file>/Users/anton/wex/test/core/test-menu-command.cpp</file>
-	<file>/Users/anton/wex/test/core/test-queue-thread.cpp</file>
 	<file>/Users/anton/wex/test/core/test-vcs-command.cpp</file>
 	<file>/Users/anton/wex/test/core/test-file.cpp</file>
 	<file>/Users/anton/wex/test/core/test-statistics.cpp</file>
