@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [25.10] - 2025-10 [Unreleased]
 
+### Added
+
+- editor pages can be pinned to prevent moving them
+
 ### Changed
 
 - replaced one_letter_after by internal is_marker_valid
