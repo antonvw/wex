@@ -2,7 +2,7 @@
 // Name:      item-create-window.cpp
 // Purpose:   Implementation of wex::item::create_window and wex::item::creators
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <utility>
@@ -493,7 +493,7 @@ wex::item::create_t wex::item::creators()
         if (m_data.window().style() == data::NUMBER_NOT_SET)
         {
           data::window style(m_data.window());
-          style.style(wxAUI_NB_DEFAULT_STYLE);
+          style.style(notebook::default_style_t);
           m_data.window(style);
         }
       create_book_control<wxAuiNotebook>(parent, window, item);

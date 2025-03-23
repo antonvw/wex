@@ -2,7 +2,7 @@
 // Name:      notebook.cpp
 // Purpose:   Implementation of class wex::notebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
@@ -23,10 +23,7 @@ const std::vector<item> notebook_config_items()
     {{_("tab.Font"),
       item::FONTPICKERCTRL,
       wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
-     {_("tab.Art provider"),
-      item::COMBOBOX,
-      config::strings_t{"default", "simple"},
-      data::control().window(data::window().style(wxCB_READONLY))}});
+     });
 };
 } // namespace wex
 
@@ -36,11 +33,12 @@ wex::notebook::notebook(const data::window& data)
       data.id(),
       data.pos(),
       data.size(),
-      data.style() == data::NUMBER_NOT_SET ? wxAUI_NB_DEFAULT_STYLE :
-                                             data.style())
+      data.style() == data::NUMBER_NOT_SET ? default_style_t : data.style())
   , m_frame(dynamic_cast<frame*>(wxTheApp->GetTopWindow()))
 {
   config_get();
+
+  SetArtProvider(new wxAuiDefaultTabArt);
 
   Bind(
     wxEVT_AUINOTEBOOK_PAGE_CHANGED,
@@ -128,24 +126,6 @@ void wex::notebook::config_get()
 {
   const auto&       ci(notebook_config_items());
   const item_vector iv(&ci);
-
-  if (const auto& p(iv.find<config::strings_t>(_("tab.Art provider")));
-      p.empty())
-  {
-    log("no art provider");
-  }
-  else if (p.front() == "simple")
-  {
-    SetArtProvider(new wxAuiSimpleTabArt);
-  }
-  else if (p.front() == "default")
-  {
-    SetArtProvider(new wxAuiDefaultTabArt);
-  }
-  else
-  {
-    log("not supported art provider") << p.front();
-  }
 
   SetFont(iv.find<wxFont>(_("tab.Font")));
 }

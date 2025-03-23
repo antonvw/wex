@@ -2,7 +2,7 @@
 // Name:      notebook.h
 // Purpose:   Declaration of class wex::notebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -35,11 +35,14 @@ public:
   /// so you can use that id in frame::on_command_item_dialog.
   static int config_dialog(const data::window& data = data::window());
 
+  /// Returns notebook default style.
+  static inline long default_style_t =
+    wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_PIN_ON_ACTIVE_TAB;
+
   // Other methods.
 
   /// Default constructor.
-  notebook(
-    const data::window& data = data::window().style(wxAUI_NB_DEFAULT_STYLE));
+  notebook(const data::window& data = data::window().style(default_style_t));
 
   /// Adds the page with given key and fills the keys.
   wxWindow* add_page(const data::notebook& data);
