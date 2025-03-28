@@ -14,11 +14,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - replaced one_letter_after by internal is_marker_valid
 - replaced register_after by internal is_register_valid
-- removed queue_thread
 
 ### Fixed
 
 - fixed allow adding markers for which isgraph is true
+- fixed css macro's and added folding
+
+### Removed
+
+- removed queue_thread
 
 ## [25.04] - 2025-03-16
 
@@ -47,7 +51,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - listview standard column sizes are configurable
 - wex::quoted uses std::quoted and includes a delim character
 - stc context menu and properties only shown if no selection active
-- removed get_word, use istringstream instead
 
 ### Fixed
 
@@ -63,6 +66,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - lexer dialog respects edge mode and folding settings
 - ex mode get previous line
 - item::choices_t and item::choices_bool_t use an ordered container
+
+### Removed
+
+- removed get_word, use istringstream instead
 
 ## [24.10] - 2024-09-22
 
