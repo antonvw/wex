@@ -549,6 +549,7 @@ Copyright: (c) 2009-2025, Anton van Wezenbeek
       <def no ="default"/>
       <def no ="tag"/>
       <def no ="class"/>
+      <def no ="pseudoclass"/>
       <def no ="unknown_pseudoclass"/>
       <def no ="operator"/>
       <def no ="identifier"/>
