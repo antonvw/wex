@@ -2,7 +2,7 @@
 // Name:      motion.h
 // Purpose:   Declaration of enum class wex::vi::motion_t
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -32,6 +32,7 @@ enum class vi::motion_t
   G_hash,
   G_star,
   G_t,
+  G_T,
   G_special_end,
 
   // vim motion
