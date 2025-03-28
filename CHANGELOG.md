@@ -18,7 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 
 - fixed allow adding markers for which isgraph is true
-- fixed css macro's and added folding
+- fixed CSS macro's and added folding
 
 ### Removed
 
