@@ -2,7 +2,7 @@
 // Name:      test-vim.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/vi/vi.h>
@@ -48,5 +48,6 @@ TEST_CASE("wex::vim" * doctest::may_fail())
     REQUIRE(vi->command("g#"));
 
     REQUIRE(vi->command("gt"));
+    REQUIRE(vi->command("gT"));
   }
 }

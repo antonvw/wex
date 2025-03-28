@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - editor pages can be pinned to prevent moving them
+- added vim gT support
 
 ### Changed
 

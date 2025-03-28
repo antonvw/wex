@@ -3,7 +3,7 @@
 // Purpose:   Implementation of wex::vim
 //            http://www.viemu.com/vi-vim-cheat-sheet.gif
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ctags/ctags.h>
@@ -117,10 +117,11 @@ bool wex::vim::command_special()
       break;
 
     case vi::motion_t::G_t:
+    case vi::motion_t::G_T:
       if (auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
           frame != nullptr)
       {
-        frame->page_next();
+        m_motion == vi::motion_t::G_t ? frame->page_next() : frame->page_prev();
       }
       break;
 
@@ -159,6 +160,9 @@ wex::vi::motion_t wex::vim::get_motion(const std::string& command)
 
     case 't':
       return wex::vi::motion_t::G_t;
+
+    case 'T':
+      return wex::vi::motion_t::G_T;
 
     case 'U':
       return wex::vi::motion_t::G_U;
