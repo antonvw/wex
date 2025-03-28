@@ -26,8 +26,8 @@ Copyright: (c) 2009-2025, Anton van Wezenbeek
         <def style ="char"> fore:pink </def>
         <def style ="classname"> fore:yellow,bold </def>
         <def style ="command"> fore:steel blue </def>
-        <def style ="comment"> fore:paleturquoise,italic,back:gray 18,eol </def>
-        <def style ="commentdockeyword"> fore:paleturquoise,italic,underline,back:gray 18 </def>
+        <def style ="comment"> fore:paleturquoise,italic,back:gray 10,eol </def>
+        <def style ="commentdockeyword"> fore:paleturquoise,italic,underline,back:gray 10 </def>
         <def style ="error"> fore:red,italic,eol </def>
         <def style ="folder"> blue </def>
         <def style ="folder-back"> light blue </def>
@@ -43,8 +43,8 @@ Copyright: (c) 2009-2025, Anton van Wezenbeek
         <def style ="preprocessor"> fore:grey </def>
         <def style ="processor"> fore:dark grey </def>
         <def style ="string"> fore:#ffab8f </def>
-        <def style ="styledefault"> default-font,back:gray 18,fore:ivory 3 </def>
-        <def style ="styledefault-back"> default-font,back:gray 18,fore:gray 73,eol </def>
+        <def style ="styledefault"> default-font,back:gray 10,fore:ivory 3 </def>
+        <def style ="styledefault-back"> default-font,back:gray 10,fore:gray 73,eol </def>
         <def style ="stylelinenumber"> fore:grey </def>
         <def style ="styleindicatordebug"> blue </def>
         <def style ="styleindicatorfind"> red </def>
