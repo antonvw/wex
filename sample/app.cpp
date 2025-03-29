@@ -21,7 +21,9 @@ bool app::OnInit()
            [&](bool on)
            {
              if (!on)
+             {
                return;
+             }
              m_data.flags(
                wex::data::stc::window_t().set(wex::data::stc::WIN_EX),
                wex::data::control::OR);
@@ -46,9 +48,8 @@ bool app::OnInit()
          {{"files", "input file[:line number][:column number]"},
           [&](const std::vector<std::string>& v)
           {
-            std::transform(
-              v.begin(),
-              v.end(),
+            std::ranges::transform(
+              v,
               std::back_inserter(m_files),
               [](const auto& v)
               {

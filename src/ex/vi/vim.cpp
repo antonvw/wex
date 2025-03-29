@@ -23,9 +23,8 @@ namespace wex
 std::string reverse(const std::string& text)
 {
   std::string s(text);
-  std::transform(
-    std::begin(s),
-    std::end(s),
+  std::ranges::transform(
+    s,
     std::begin(s),
     [](const auto& c)
     {

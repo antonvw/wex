@@ -405,11 +405,7 @@ void wex::macro_fsm::state(state_t s)
 
       // We only use lower case macro's, to be able to
       // append to them using.
-      std::transform(
-        m_macro.begin(),
-        m_macro.end(),
-        m_macro.begin(),
-        ::tolower);
+      std::ranges::transform(m_macro, m_macro.begin(), ::tolower);
     }
     else
     {

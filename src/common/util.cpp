@@ -177,9 +177,8 @@ bool wex::lexers_dialog(syntax::stc* stc)
 {
   std::vector<std::string> s;
 
-  std::transform(
-    lexers::get()->get_lexers().begin(),
-    lexers::get()->get_lexers().end(),
+  std::ranges::transform(
+    lexers::get()->get_lexers(),
     std::back_inserter(s),
     [](const auto& i)
     {

@@ -68,9 +68,8 @@ const wex::macros::commands_t wex::macros::get() const
     }
   }
 
-  std::transform(
-    m_variables.begin(),
-    m_variables.end(),
+  std::ranges::transform(
+    m_variables,
     std::back_inserter(v),
     [](const auto& i)
     {
@@ -268,9 +267,8 @@ void wex::macros::parse_node_macro(const pugi::xml_node& node)
   {
     commands_t v;
 
-    std::transform(
-      node.children().begin(),
-      node.children().end(),
+    std::ranges::transform(
+      node.children(),
       std::back_inserter(v),
       [](const auto& t)
       {
