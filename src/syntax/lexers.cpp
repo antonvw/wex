@@ -718,9 +718,8 @@ bool wex::lexers::show_theme_dialog(wxWindow* parent)
 {
   std::vector<std::string> v;
 
-  std::transform(
-    m_theme_macros.begin(),
-    m_theme_macros.end(),
+  std::ranges::transform(
+    m_theme_macros,
     std::back_inserter(v),
     [](const auto& i)
     {

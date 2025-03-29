@@ -246,9 +246,8 @@ void wex::statusbar::pane_dialog()
       .ShowModal() == wxID_OK)
   {
     std::vector<statusbar_pane> v_p;
-    std::transform(
-      m_panes.begin(),
-      m_panes.end(),
+    std::ranges::transform(
+      m_panes,
       std::back_inserter(v_p),
       [](const auto& it)
       {
