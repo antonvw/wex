@@ -2,7 +2,7 @@
 // Name:      test-mode.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2023 Anton van Wezenbeek
+// Copyright: (c) 2017-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/vi/mode.h>
@@ -19,7 +19,7 @@ TEST_CASE("wex::vi_mode")
 
   REQUIRE(!mode.insert_commands().empty());
 
-  SUBCASE("command")
+  SECTION("command")
   {
     REQUIRE(mode.is_command());
     REQUIRE(!mode.transition(command));
@@ -28,7 +28,7 @@ TEST_CASE("wex::vi_mode")
     REQUIRE(mode.str().empty());
   }
 
-  SUBCASE("insert")
+  SECTION("insert")
   {
     command = "i";
     REQUIRE(mode.transition(command));
@@ -58,7 +58,7 @@ TEST_CASE("wex::vi_mode")
     get_stc()->SetReadOnly(false);
   }
 
-  SUBCASE("visuals")
+  SECTION("visuals")
   {
     mode.visual();
     REQUIRE(mode.is_visual());

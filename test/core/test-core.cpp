@@ -15,18 +15,18 @@ TEST_CASE("wex::core")
 {
   wex::ints_t cs{'(', ')', '{', '<', '>'};
 
-  SUBCASE("clipboard")
+  SECTION("clipboard")
   {
     REQUIRE(wex::clipboard_add("test"));
     REQUIRE(wex::clipboard_get() == "test");
   }
 
-  SUBCASE("ellipsed")
+  SECTION("ellipsed")
   {
     REQUIRE(wex::ellipsed("xxx").contains("..."));
   }
 
-  SUBCASE("find_after")
+  SECTION("find_after")
   {
     REQUIRE(wex::rfind_after("nospace", " ") == "nospace");
     REQUIRE(wex::find_after("nospace", " ") == "nospace");
@@ -37,7 +37,7 @@ TEST_CASE("wex::core")
     REQUIRE(wex::rfind_after("some space and more", " m") == "ore");
   }
 
-  SUBCASE("find_before")
+  SECTION("find_before")
   {
     REQUIRE(wex::rfind_before("nospace", " ") == "nospace");
     REQUIRE(wex::find_before("nospace", " ") == "nospace");
@@ -46,7 +46,7 @@ TEST_CASE("wex::core")
     REQUIRE(wex::rfind_before("some space and more", "m") == "some space and ");
   }
 
-  SUBCASE("find_tail")
+  SECTION("find_tail")
   {
     REQUIRE(wex::find_tail("test") == std::string("test"));
     REQUIRE(wex::find_tail("test", 3) == std::string("est"));
@@ -55,7 +55,7 @@ TEST_CASE("wex::core")
     REQUIRE(wex::find_tail("testtest", 9) == std::string("testtest"));
   }
 
-  SUBCASE("get_number_of_lines")
+  SECTION("get_number_of_lines")
   {
     REQUIRE(wex::get_number_of_lines("test") == 1);
     REQUIRE(wex::get_number_of_lines("test\n") == 2);
@@ -76,13 +76,13 @@ TEST_CASE("wex::core")
     REQUIRE(wex::get_number_of_lines("test\r\ntest\n\n", true) == 2);
   }
 
-  SUBCASE("get_string_set")
+  SECTION("get_string_set")
   {
     REQUIRE(wex::get_string_set({"one", "two", "three"}) == "one three two ");
     REQUIRE(wex::get_string_set({"one", "two", "three"}, 4) == "three ");
   }
 
-  SUBCASE("icompare")
+  SECTION("icompare")
   {
     REQUIRE(wex::icompare("", "") == 0);
     REQUIRE(wex::icompare("test", "test") == 0);
@@ -93,7 +93,7 @@ TEST_CASE("wex::core")
     REQUIRE(wex::icompare("test", "tEStx") != 0);
   }
 
-  SUBCASE("icontains")
+  SECTION("icontains")
   {
     REQUIRE(wex::icontains("test", ""));
     REQUIRE(wex::icontains("test", "e"));
@@ -105,7 +105,7 @@ TEST_CASE("wex::core")
     REQUIRE(!wex::icontains("test", "TESTx"));
   }
 
-  SUBCASE("is_brace")
+  SECTION("is_brace")
   {
     for (const auto& c : cs)
     {
@@ -115,7 +115,7 @@ TEST_CASE("wex::core")
     REQUIRE(!wex::is_brace('a'));
   }
 
-  SUBCASE("is_codeword_separator")
+  SECTION("is_codeword_separator")
   {
     cs.insert(cs.end(), {',', ';', ':', '@'});
 
@@ -127,7 +127,7 @@ TEST_CASE("wex::core")
     REQUIRE(!wex::is_codeword_separator('x'));
   }
 
-  SUBCASE("matches_one_of")
+  SECTION("matches_one_of")
   {
     REQUIRE(!wex::matches_one_of("test.txt", "*.cpp"));
     REQUIRE(wex::matches_one_of("test.txt", "*.txt"));
@@ -138,14 +138,14 @@ TEST_CASE("wex::core")
     REQUIRE(wex::matches_one_of("test.txt", "est.txt", true));
   }
 
-  SUBCASE("quoted")
+  SECTION("quoted")
   {
     REQUIRE(wex::quoted("test") == "'test'");
     REQUIRE(wex::quoted("test", '%') == "%test%");
     REQUIRE(wex::quoted("%d") == "'%d'");
   }
 
-  SUBCASE("quoted_find")
+  SECTION("quoted_find")
   {
     REQUIRE(wex::quoted_find("test") == "test");
     REQUIRE(wex::quoted_find("te st") == "\"te st\"");

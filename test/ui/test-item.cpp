@@ -2,7 +2,7 @@
 // Name:      test-item.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -20,26 +20,26 @@ TEST_CASE("wex::item")
 {
   ITEM_START()
 
-  SUBCASE("button")
+  SECTION("button")
   {
     wex::item button("button", wex::item::BUTTON);
     wex::item link("button", wex::item::COMMANDLINKBUTTON);
     wex::item toggle("button", wex::item::TOGGLEBUTTON);
-      
+
     REQUIRE(!button.get_value().has_value());
     REQUIRE(!link.get_value().has_value());
     REQUIRE(!toggle.get_value().has_value());
-    
+
     REQUIRE(button.layout(layout) != nullptr);
     REQUIRE(link.layout(layout) != nullptr);
     REQUIRE(toggle.layout(layout) != nullptr);
-    
+
     REQUIRE(!button.get_value().has_value());
     REQUIRE(!link.get_value().has_value());
     REQUIRE(toggle.get_value().has_value());
   }
 
-  SUBCASE("group")
+  SECTION("group")
   {
     auto* dlg = new wex::item_dialog(
       {wex::add_combobox_with_max("combo", "max"), {"text1"}, {"text2"}});
@@ -47,7 +47,7 @@ TEST_CASE("wex::item")
     dlg->Show();
   }
 
-  SUBCASE("label")
+  SECTION("label")
   {
     wex::item::use_config(true);
     wex::item item("item-parent.child", "karmeliet");
@@ -63,7 +63,7 @@ TEST_CASE("wex::item")
     REQUIRE(wex::config("item-parent.child").get() == "karmeliet");
   }
 
-  SUBCASE("notebooks")
+  SECTION("notebooks")
   {
     const std::vector<std::string> titles{
       "item::NOTEBOOK",
@@ -124,7 +124,7 @@ TEST_CASE("wex::item")
     }
   }
 
-  SUBCASE("staticbox")
+  SECTION("staticbox")
   {
     auto* dlg = new wex::item_dialog(
       {{{"staticbox", {{"element1"}, {"element2"}, {"element3"}, {"element4"}}}}});
@@ -132,7 +132,7 @@ TEST_CASE("wex::item")
     dlg->Show();
   }
 
-  SUBCASE("validate")
+  SECTION("validate")
   {
     wex::item item(
       "item",

@@ -2,7 +2,7 @@
 // Name:      test-dialog.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -13,7 +13,7 @@
 
 TEST_CASE("wex::stc_entry_dialog")
 {
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     auto* dlg = new wex::stc_entry_dialog("hello", "testing");
 
@@ -27,7 +27,7 @@ TEST_CASE("wex::stc_entry_dialog")
     dlg->Show();
   }
 
-  SUBCASE("constructor-data")
+  SECTION("constructor-data")
   {
     wex::stc_entry_dialog* dlg = new wex::stc_entry_dialog(
       "hello",
@@ -43,7 +43,7 @@ TEST_CASE("wex::stc_entry_dialog")
     dlg->Show();
   }
 
-  SUBCASE("set_validator")
+  SECTION("set_validator")
   {
     auto* dlg = new wex::stc_entry_dialog("hello", "testing");
 

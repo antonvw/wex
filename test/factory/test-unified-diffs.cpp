@@ -2,7 +2,7 @@
 // Name:      test-unified-diffs.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024 Anton van Wezenbeek
+// Copyright: (c) 2024-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/unified-diffs.h>
@@ -18,7 +18,7 @@ TEST_CASE("wex::unified_diffs")
     stc->append_text("this is a line\n");
   }
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     wex::unified_diffs diffs(stc);
 
@@ -31,7 +31,7 @@ TEST_CASE("wex::unified_diffs")
     REQUIRE(stc->get_line_count() == 51);
   }
 
-  SUBCASE("insert")
+  SECTION("insert")
   {
     REQUIRE(stc->get_line_count() == 51);
 
@@ -95,7 +95,7 @@ TEST_CASE("wex::unified_diffs")
     REQUIRE(diffs.pos() == 0);
   }
 
-  SUBCASE("insert-other")
+  SECTION("insert-other")
   {
     wex::factory::unified_diff uni(
       "diff --git a/CHANGELOG.md b/CHANGELOG.md\n"

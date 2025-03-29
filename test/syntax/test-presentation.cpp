@@ -2,7 +2,7 @@
 // Name:      test-presentation.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -12,13 +12,13 @@
 
 TEST_CASE("wex::presentation")
 {
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(wex::presentation(wex::presentation::MARKER).name() == "marker");
     REQUIRE(!wex::presentation(wex::presentation::MARKER).is_ok());
   }
 
-  SUBCASE("constructor-no")
+  SECTION("constructor-no")
   {
     wex::presentation px(wex::presentation::MARKER, 5, 2);
     wex::presentation py(wex::presentation::MARKER, 7, 5);
@@ -46,7 +46,7 @@ TEST_CASE("wex::presentation")
       wex::presentation(wex::presentation::MARKER, 5, 2));
   }
 
-  SUBCASE("constructor-xml")
+  SECTION("constructor-xml")
   {
     pugi::xml_document     doc;
     pugi::xml_parse_result result =
@@ -65,7 +65,7 @@ TEST_CASE("wex::presentation")
     REQUIRE(p.is_ok());
   }
 
-  SUBCASE("constructor-xml-invalid")
+  SECTION("constructor-xml-invalid")
   {
     wex::log_none      off;
     pugi::xml_document doc;

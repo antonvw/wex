@@ -2,7 +2,7 @@
 // Name:      test-address.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2024 Anton van Wezenbeek
+// Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex/address.h>
@@ -29,7 +29,7 @@ TEST_CASE("wex::address")
   data.control(wex::data::control().line(2)).inject();
   ex->marker_add('b');
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(wex::address().get_line() == 0);
     REQUIRE(wex::address().type() == wex::address::address_t::IS_SINGLE);
@@ -55,7 +55,7 @@ TEST_CASE("wex::address")
     }
   }
 
-  SUBCASE("adjust_window")
+  SECTION("adjust_window")
   {
     REQUIRE(ex->command(":5z"));
     REQUIRE(ex->command(":5z-"));
@@ -66,13 +66,13 @@ TEST_CASE("wex::address")
     REQUIRE(!ex->command(":5zxxx"));
   }
 
-  SUBCASE("append")
+  SECTION("append")
   {
     REQUIRE(ex->command(":5a|appended text"));
     REQUIRE(stc->get_text().contains("appended text"));
   }
 
-  SUBCASE("flags_supported")
+  SECTION("flags_supported")
   {
     REQUIRE(wex::address::flags_supported(""));
     REQUIRE(wex::address::flags_supported("-"));
@@ -86,9 +86,9 @@ TEST_CASE("wex::address")
     REQUIRE(!wex::address::flags_supported("lxllll"));
   }
 
-  SUBCASE("get_line")
+  SECTION("get_line")
   {
-    SUBCASE("marker")
+    SECTION("marker")
     {
       wex::address address(ex, "'a");
       REQUIRE(address.get_line() == 1);
@@ -100,7 +100,7 @@ TEST_CASE("wex::address")
       REQUIRE(address.get_line() == 0);
     }
 
-    SUBCASE("number")
+    SECTION("number")
     {
       REQUIRE(wex::address(ex).get_line() == 0);
       REQUIRE(wex::address(ex, "-1").get_line() == 1);
@@ -108,7 +108,7 @@ TEST_CASE("wex::address")
       REQUIRE(wex::address(ex, "100").get_line() == lines);
     }
 
-    SUBCASE("text")
+    SECTION("text")
     {
       wex::address address(ex, "/hello2/");
       REQUIRE(address.get_line() == 3);
@@ -119,7 +119,7 @@ TEST_CASE("wex::address")
       REQUIRE(address2.get_line() == 4);
     }
 
-    SUBCASE("text-offset")
+    SECTION("text-offset")
     {
       REQUIRE(wex::address(ex, "+1/hello2/").get_line() == 4);
       REQUIRE(wex::address(ex, "/hello2/+3").get_line() == 6);
@@ -130,38 +130,38 @@ TEST_CASE("wex::address")
 
   wex::address address(ex, "5");
 
-  SUBCASE("insert")
+  SECTION("insert")
   {
     REQUIRE(ex->command(":5i|inserted text"));
     REQUIRE(stc->get_text().contains("inserted text"));
   }
 
-  SUBCASE("marker_add")
+  SECTION("marker_add")
   {
     REQUIRE(address.marker_add('x'));
   }
 
-  SUBCASE("marker_delete")
+  SECTION("marker_delete")
   {
     REQUIRE(!address.marker_delete());
     REQUIRE(address.marker_add('x'));
     REQUIRE(wex::address(ex, "'x").marker_delete());
   }
 
-  SUBCASE("parse")
+  SECTION("parse")
   {
     REQUIRE(!wex::address(ex).parse(wex::command_parser(ex, "3")));
     REQUIRE(!wex::address(ex).parse(wex::command_parser(ex, "3zP")));
   }
 
-  SUBCASE("put")
+  SECTION("put")
   {
     ex->get_macros().set_register('z', "zzzzz");
     REQUIRE(ex->command(":5pu z"));
     REQUIRE(stc->get_text().contains("zzzz"));
   }
 
-  SUBCASE("read")
+  SECTION("read")
   {
     REQUIRE(!ex->command(":5r XXXXX"));
     REQUIRE(ex->command(":5r " + wex::test::get_path("test.bin").string()));
@@ -170,7 +170,7 @@ TEST_CASE("wex::address")
 #endif
   }
 
-  SUBCASE("write_line_number")
+  SECTION("write_line_number")
   {
     REQUIRE(ex->command(":5="));
   }

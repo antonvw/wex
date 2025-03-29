@@ -2,7 +2,7 @@
 // Name:      test-cmdline.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/cmdline.h>
@@ -11,31 +11,31 @@
 
 TEST_CASE("wex::cmdline")
 {
-  SUBCASE("default constructor")
+  SECTION("default constructor")
   {
     wex::cmdline cmdl;
 
-    SUBCASE("1")
+    SECTION("1")
     {
       wex::data::cmdline data("");
       REQUIRE(cmdl.parse(data));
     }
 
-    SUBCASE("2")
+    SECTION("2")
     {
       wex::log_none      off;
       wex::data::cmdline data("xxx");
       REQUIRE(!cmdl.parse(data));
     }
 
-    SUBCASE("3")
+    SECTION("3")
     {
       wex::data::cmdline data("-h");
       REQUIRE(!cmdl.parse(data));
     }
   }
 
-  SUBCASE("constructor-no-standard-options")
+  SECTION("constructor-no-standard-options")
   {
     int         a{0};
     float       b{0};
@@ -95,7 +95,7 @@ TEST_CASE("wex::cmdline")
        }},
       false);
 
-    SUBCASE("help")
+    SECTION("help")
     {
       wex::data::cmdline data("-h");
       const bool         res(cmdl.parse(data));
@@ -104,7 +104,7 @@ TEST_CASE("wex::cmdline")
       REQUIRE(!data.help().empty());
     }
 
-    SUBCASE("parse")
+    SECTION("parse")
     {
       wex::data::cmdline data(
         "-a 10 -b 5.1 -c test -s -t -u -w --xx one two three");
@@ -127,7 +127,7 @@ TEST_CASE("wex::cmdline")
       REQUIRE(r == "three");
     }
 
-    SUBCASE("parse_set")
+    SECTION("parse_set")
     {
       wex::log_none      off;
       wex::data::cmdline data("all");
@@ -145,7 +145,7 @@ TEST_CASE("wex::cmdline")
     }
   }
 
-  SUBCASE("constructor-standard-options")
+  SECTION("constructor-standard-options")
   {
     bool        s{false};
     std::string a;

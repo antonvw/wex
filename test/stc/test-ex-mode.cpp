@@ -2,7 +2,7 @@
 // Name:      test-ex-mode.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2024 Anton van Wezenbeek
+// Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex/ex-stream.h>
@@ -17,7 +17,7 @@ TEST_CASE("wex::ex-mode")
   ex->use(wex::ex::mode_t::EX);
   stc->DocumentStart();
 
-  SUBCASE("find")
+  SECTION("find")
   {
     wex::file ifs("test.md", std::ios_base::in);
     ex->ex_stream()->stream(ifs);
@@ -27,10 +27,10 @@ TEST_CASE("wex::ex-mode")
     REQUIRE(ex->ex_stream()->get_current_line() == 9);
     REQUIRE(ex->ex_stream()->get_previous_line());
     REQUIRE(ex->command(":??"));
-    WARN(ex->ex_stream()->get_current_line() == 2);
+    CHECK(ex->ex_stream()->get_current_line() == 2);
   }
 
-  SUBCASE("print")
+  SECTION("print")
   {
     wex::file ifs("test.md", std::ios_base::in);
     ex->ex_stream()->stream(ifs);

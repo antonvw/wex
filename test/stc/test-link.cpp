@@ -2,7 +2,7 @@
 // Name:      test-link.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -16,7 +16,7 @@ TEST_CASE("wex::link")
   auto*     stc = get_stc();
   wex::link lnk;
 
-  SUBCASE("large-line")
+  SECTION("large-line")
   {
     auto*       vi = &stc->get_vi();
     std::string line("\"xxxxxx\" ");
@@ -60,7 +60,7 @@ TEST_CASE("wex::link")
     REQUIRE(name_ok == std::string(50, 'c'));
   }
 
-  SUBCASE("mime")
+  SECTION("mime")
   {
     wex::data::control data;
     data.line(wex::link::LINE_OPEN_MIME);
@@ -71,7 +71,7 @@ TEST_CASE("wex::link")
     REQUIRE(lnk.get_path("xx", data, stc).data() == "test.html");
   }
 
-  SUBCASE("pairs")
+  SECTION("pairs")
   {
     wex::config(_("stc.link.Pairs")).set(wex::config::strings_t{{"[\t]"}});
     wex::config(_("stc.link.Include directory"))
@@ -88,7 +88,7 @@ TEST_CASE("wex::link")
       "/usr/bin/whoami");
   }
 
-  SUBCASE("source")
+  SECTION("source")
   {
     wex::config(_("stc.link.Include directory"))
       .set(wex::config::strings_t{{"/usr/bin"}});

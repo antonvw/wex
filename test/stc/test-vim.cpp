@@ -9,20 +9,20 @@
 
 #include "test.h"
 
-TEST_CASE("wex::vim" * doctest::may_fail())
+TEST_CASE("wex::vim", "[!mayfail]")
 {
   auto* stc = get_stc();
   auto* vi  = &get_stc()->get_vi();
   stc->set_text("xxxxxxxxxx second\nxxxxxxxx");
 
-  SUBCASE("invalid")
+  SECTION("invalid")
   {
     REQUIRE(!vi->command("gc"));
     REQUIRE(!vi->command("gcdefg"));
     REQUIRE(!vi->command("g5"));
   }
 
-  SUBCASE("motion")
+  SECTION("motion")
   {
     REQUIRE(vi->command("gUw"));
     REQUIRE(vi->get_stc()->get_text() == "XXXXXXXXXX second\nxxxxxxxx");
@@ -38,7 +38,7 @@ TEST_CASE("wex::vim" * doctest::may_fail())
     REQUIRE(vi->get_stc()->get_text() == "XXXXXXXXXX SECOND\nXXXXXXXX");
   }
 
-  SUBCASE("special")
+  SECTION("special")
   {
     REQUIRE(vi->command("ga"));
     REQUIRE(vi->command("gd"));

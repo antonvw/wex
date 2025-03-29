@@ -2,7 +2,7 @@
 // Name:      test-ex_commandline.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
@@ -16,7 +16,7 @@ TEST_CASE("wex::ex_commandline")
   frame()->pane_add(cl->control());
   cl->control()->Show();
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(cl->control() != nullptr);
     REQUIRE(cl->stc() == nullptr);
@@ -25,7 +25,7 @@ TEST_CASE("wex::ex_commandline")
     REQUIRE(cl->get_text().empty());
   }
 
-  SUBCASE("events")
+  SECTION("events")
   {
     try
     {
@@ -56,7 +56,7 @@ TEST_CASE("wex::ex_commandline")
     }
   }
 
-  SUBCASE("stc")
+  SECTION("stc")
   {
     auto* stc = get_stc();
 
@@ -80,7 +80,7 @@ TEST_CASE("wex::ex_commandline")
     REQUIRE(!cl->set_stc(stc, 'e'));
   }
 
-  SUBCASE("text")
+  SECTION("text")
   {
     cl->set_text("xyz");
     REQUIRE(cl->get_text() == "xyz");

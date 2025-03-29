@@ -25,7 +25,7 @@ TEST_CASE("wex::global_env")
   auto*             ex = new wex::ex(stc);
   wex::addressrange ar(ex, "%");
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(wex::addressrange::data().set_global("g/xx/"));
     wex::global_env ge(ar);
@@ -36,7 +36,7 @@ TEST_CASE("wex::global_env")
     REQUIRE(ge.hits() == 0);
   }
 
-  SUBCASE("commands")
+  SECTION("commands")
   {
     REQUIRE(wex::addressrange::data().set_global("g/he/"));
     wex::global_env ge(ar);
@@ -63,7 +63,7 @@ TEST_CASE("wex::global_env")
     REQUIRE(inv2.hits() == 9);
   }
 
-  SUBCASE("commands-2addr")
+  SECTION("commands-2addr")
   {
     REQUIRE(wex::addressrange::data().set_global("g/he/d"));
     wex::addressrange ar(ex, "1,2");
@@ -84,7 +84,7 @@ TEST_CASE("wex::global_env")
     REQUIRE(inv.hits() == 2);
   }
 
-  SUBCASE("commands-append")
+  SECTION("commands-append")
   {
     REQUIRE(
       wex::addressrange::data().set_global("g/he/a|added he <XXX>|a|other"));
@@ -103,7 +103,7 @@ TEST_CASE("wex::global_env")
     REQUIRE(ge_error.hits() == 9);
   }
 
-  SUBCASE("commands-change")
+  SECTION("commands-change")
   {
     REQUIRE(wex::addressrange::data().set_global("g/he/c|<XXX>"));
     wex::global_env ge(ar);
@@ -118,7 +118,7 @@ TEST_CASE("wex::global_env")
     REQUIRE(!ex->get_stc()->get_text().contains("<XXX>"));
   }
 
-  SUBCASE("commands-delete")
+  SECTION("commands-delete")
   {
     REQUIRE(wex::addressrange::data().set_global("g/he/d"));
     wex::global_env ge(ar);
@@ -128,7 +128,7 @@ TEST_CASE("wex::global_env")
     REQUIRE(ge.hits() == 3);
   }
 
-  SUBCASE("commands-insert")
+  SECTION("commands-insert")
   {
     REQUIRE(wex::addressrange::data().set_global("g/he/i|<XXX>"));
     wex::global_env ge(ar);
@@ -138,7 +138,7 @@ TEST_CASE("wex::global_env")
     REQUIRE(ge.hits() == 3);
   }
 
-  SUBCASE("commands-substitute")
+  SECTION("commands-substitute")
   {
     REQUIRE(wex::addressrange::data().set_global("g/he/s/ll/LL"));
     wex::global_env ge(ar);

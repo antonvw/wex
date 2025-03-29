@@ -2,7 +2,7 @@
 // Name:      data/test-listview.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/listview.h>
@@ -11,7 +11,7 @@
 
 TEST_CASE("wex::data::listview")
 {
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     wex::data::listview data;
 
@@ -32,7 +32,7 @@ TEST_CASE("wex::data::listview")
       "XX");
   }
 
-  SUBCASE("inject")
+  SECTION("inject")
   {
     wex::data::listview data;
     data.set_listview(get_listview());
@@ -44,7 +44,7 @@ TEST_CASE("wex::data::listview")
     REQUIRE(!wex::data::listview().inject());
   }
 
-  SUBCASE("set")
+  SECTION("set")
   {
     wex::data::listview data;
 

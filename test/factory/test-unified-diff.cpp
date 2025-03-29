@@ -2,7 +2,7 @@
 // Name:      test-unified-diff.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024 Anton van Wezenbeek
+// Copyright: (c) 2024-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -30,7 +30,7 @@ public:
 
 TEST_CASE("wex::factory::unified_diff")
 {
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     mock_unified_diff uni("");
 
@@ -46,7 +46,7 @@ TEST_CASE("wex::factory::unified_diff")
     REQUIRE(uni.range_to_count() == 0);
   }
 
-  SUBCASE("parse-invalid")
+  SECTION("parse-invalid")
   {
     wex::log_none off;
     REQUIRE(!wex::factory::unified_diff("error\n").parse());
@@ -67,7 +67,7 @@ TEST_CASE("wex::factory::unified_diff")
          .parse());
   }
 
-  SUBCASE("parse-valid")
+  SECTION("parse-valid")
   {
     mock_unified_diff uni(
       "diff --git a/build-gen.sh b/build-gen.sh\n"
@@ -101,7 +101,7 @@ TEST_CASE("wex::factory::unified_diff")
     REQUIRE(uni.is_last());
   }
 
-  SUBCASE("parse-valid-other")
+  SECTION("parse-valid-other")
   {
     mock_unified_diff uni(
       "diff --git a/external/pugixml b/external/pugixml\n"
@@ -140,7 +140,7 @@ TEST_CASE("wex::factory::unified_diff")
     REQUIRE(uni.range_to_count() == 2);
   }
 
-  SUBCASE("parse-valid-sub")
+  SECTION("parse-valid-sub")
   {
     mock_unified_diff uni(
       "diff --git a/external/pugixml b/external/pugixml\n"

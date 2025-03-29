@@ -10,7 +10,7 @@
 
 TEST_CASE("wex::data::substitute")
 {
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     wex::data::substitute sub;
 
@@ -22,7 +22,7 @@ TEST_CASE("wex::data::substitute")
     REQUIRE(!sub.is_ignore_case());
   }
 
-  SUBCASE("set")
+  SECTION("set")
   {
     wex::data::substitute sub;
     REQUIRE(!sub.set(""));
@@ -55,7 +55,7 @@ TEST_CASE("wex::data::substitute")
     REQUIRE(sub.replacement() == "y");
   }
 
-  SUBCASE("set_global")
+  SECTION("set_global")
   {
     wex::data::substitute sub;
     REQUIRE(!sub.set_global("xxyy"));
@@ -78,7 +78,7 @@ TEST_CASE("wex::data::substitute")
     REQUIRE(sub.is_clear());
   }
 
-  SUBCASE("set_options")
+  SECTION("set_options")
   {
     wex::data::substitute sub;
     sub.set_options("cgi");

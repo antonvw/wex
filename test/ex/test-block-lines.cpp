@@ -16,7 +16,7 @@ TEST_CASE("wex::block_lines")
 
   stc->set_text("hello\nhello11\nhello22\ntest\ngcc\nblame\nthis\nyank\ncopy");
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     wex::block_lines bl(stc, 2, 5);
 
@@ -25,7 +25,7 @@ TEST_CASE("wex::block_lines")
     REQUIRE(bl.size() == 3);
   }
 
-  SUBCASE("constructor-inverse")
+  SECTION("constructor-inverse")
   {
     wex::block_lines bl(stc, 0, 0, wex::block_lines::block_t::INVERSE);
 
@@ -34,7 +34,7 @@ TEST_CASE("wex::block_lines")
     REQUIRE(bl.size() == 1);
   }
 
-  SUBCASE("actions")
+  SECTION("actions")
   {
     wex::block_lines bl(stc, 0, 0, wex::block_lines::block_t::INVERSE);
     wex::block_lines normal(stc, 4, 8);

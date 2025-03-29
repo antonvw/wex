@@ -2,7 +2,7 @@
 // Name:      test-tool.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2024 Anton van Wezenbeek
+// Copyright: (c) 2018-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/statistics.h>
@@ -12,16 +12,16 @@
 
 TEST_CASE("wex::tool")
 {
-  SUBCASE("default-constructor")
+  SECTION("default-constructor")
   {
     wex::tool tool;
     REQUIRE(tool.id() == wex::ID_LOWEST);
-  
+
     wex::log_none off;
     REQUIRE(tool.info().empty());
   }
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     wex::tool tool(wex::ID_ALL_CLOSE);
     wex::tool::add_info(wex::ID_ALL_CLOSE, "this is ok");
@@ -42,7 +42,7 @@ TEST_CASE("wex::tool")
 
 TEST_CASE("wex::tool_info")
 {
-  SUBCASE("default-constructor")
+  SECTION("default-constructor")
   {
     wex::tool_info info;
     REQUIRE(info.help_text().empty());
@@ -50,7 +50,7 @@ TEST_CASE("wex::tool_info")
     REQUIRE(info.text().empty());
   }
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     wex::tool_info info("x", "y", "z");
     REQUIRE(info.help_text() == "z");

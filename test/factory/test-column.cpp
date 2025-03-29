@@ -2,7 +2,7 @@
 // Name:      test-column.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/listview.h>
@@ -10,7 +10,7 @@
 
 TEST_CASE("wex::column")
 {
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     wex::column c;
     REQUIRE(c.GetText().empty());
@@ -21,7 +21,7 @@ TEST_CASE("wex::column")
     REQUIRE(c.is_sorted_ascending());
   }
 
-  SUBCASE("constructor-2")
+  SECTION("constructor-2")
   {
     wex::column c("hello");
     REQUIRE(c.GetText() == "hello");

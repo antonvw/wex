@@ -2,7 +2,7 @@
 // Name:      test-menu-command.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/menu-command.h>
@@ -12,7 +12,7 @@ TEST_CASE("wex::menu_command")
 {
   pugi::xml_document doc;
 
-  SUBCASE("Default constructor")
+  SECTION("Default constructor")
   {
     const wex::menu_command none;
     REQUIRE(none.type().test(wex::menu_command::IS_MAIN));
@@ -20,7 +20,7 @@ TEST_CASE("wex::menu_command")
     REQUIRE(!none.type().test(wex::menu_command::IS_VISUAL));
   }
 
-  SUBCASE("control")
+  SECTION("control")
   {
     doc.load_string("<command control=\"x\"> a&dd </command>");
     const wex::menu_command cmd(doc.document_element());
@@ -35,7 +35,7 @@ TEST_CASE("wex::menu_command")
     REQUIRE(cmd.submenu().empty());
   }
 
-  SUBCASE("ellipses")
+  SECTION("ellipses")
   {
     doc.load_string("<command type=\"ellipses\"> ask </command>");
     const wex::menu_command cmd(doc.document_element());
@@ -43,7 +43,7 @@ TEST_CASE("wex::menu_command")
     REQUIRE(!cmd.type().test(wex::menu_command::IS_ASKED));
   }
 
-  SUBCASE("ellipses-is-asked")
+  SECTION("ellipses-is-asked")
   {
     doc.load_string("<command type=\"ellipses-is-asked\"> ask </command>");
     const wex::menu_command cmd(doc.document_element());
@@ -51,14 +51,14 @@ TEST_CASE("wex::menu_command")
     REQUIRE(cmd.type().test(wex::menu_command::IS_ASKED));
   }
 
-  SUBCASE("flags")
+  SECTION("flags")
   {
     doc.load_string("<command flags=\"hello\"> world </command>");
     const wex::menu_command cmd(doc.document_element());
     REQUIRE(cmd.flags() == "hello");
   }
 
-  SUBCASE("menu")
+  SECTION("menu")
   {
     doc.load_string("<command menu=\"blame line\"> blame </command>");
     const wex::menu_command cmd(doc.document_element());
@@ -68,7 +68,7 @@ TEST_CASE("wex::menu_command")
     REQUIRE(cmd.get_command() == "blame");
   }
 
-  SUBCASE("subcommand")
+  SECTION("subcommand")
   {
     doc.load_string("<command subcommand=\"m&e\"> h&elp </command>");
     const wex::menu_command cmd(doc.document_element());
@@ -89,7 +89,7 @@ TEST_CASE("wex::menu_command")
     REQUIRE(cmd.submenu() == "m&e");
   }
 
-  SUBCASE("type")
+  SECTION("type")
   {
     doc.load_string(
       "<command type=\"main is-selected is-visual\"> commit </command>");
@@ -100,7 +100,7 @@ TEST_CASE("wex::menu_command")
     REQUIRE(cmd.type().test(wex::menu_command::IS_VISUAL));
   }
 
-  SUBCASE("type and submenu")
+  SECTION("type and submenu")
   {
     doc.load_string(
       "<command type=\"popup\" submenu=\"submenu\"> diff </command>");

@@ -2,7 +2,7 @@
 // Name:      test-printing.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/syntax/printing.h>
@@ -18,17 +18,17 @@ TEST_CASE("wex::printing")
   REQUIRE(wex::printing::get(false) == nullptr);
   REQUIRE(wex::printing::get(true) != nullptr);
 
-  SUBCASE("print_caption")
+  SECTION("print_caption")
   {
     REQUIRE(wex::print_caption(wex::path("test")).contains("test"));
   }
 
-  SUBCASE("print_footer")
+  SECTION("print_footer")
   {
     REQUIRE(wex::print_footer().contains("@"));
   }
 
-  SUBCASE("print_header")
+  SECTION("print_header")
   {
     REQUIRE(wex::print_header(wex::path_lexer(wex::test::get_path("test.h")))
               .contains("test"));

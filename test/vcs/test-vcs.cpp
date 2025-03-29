@@ -18,7 +18,7 @@ TEST_CASE("wex::vcs")
   wex::path file(wex::test::get_path("test.h"));
   file.make_absolute();
 
-  SUBCASE("statics")
+  SECTION("statics")
   {
     REQUIRE(wex::vcs::load_document());
     REQUIRE(wex::vcs::dir_exists(file));
@@ -26,7 +26,7 @@ TEST_CASE("wex::vcs")
     REQUIRE(wex::vcs::size() > 0);
   }
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     wex::vcs vcs(std::vector<wex::path>{file});
     REQUIRE(vcs.name() == "Auto");
@@ -37,7 +37,7 @@ TEST_CASE("wex::vcs")
     REQUIRE(vcs.entry().admin_dir() != ".git"); // should be empty??
   }
 
-  SUBCASE("usage")
+  SECTION("usage")
   {
     wex::vcs vcs(std::vector<wex::path>{file});
 
@@ -59,7 +59,7 @@ TEST_CASE("wex::vcs")
     REQUIRE(vcs.use());
   }
 
-  SUBCASE("others")
+  SECTION("others")
   {
     REQUIRE(wex::vcs::load_document());
 

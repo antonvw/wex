@@ -2,7 +2,7 @@
 // Name:      test-version-dialog.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/del/version-dialog.h>
@@ -32,25 +32,25 @@ TEST_CASE("wex::extern_libraries")
 
 TEST_CASE("wex::version_info_dialog")
 {
-  SUBCASE("default-constructor")
+  SECTION("default-constructor")
   {
     const wex::version_info_dialog info;
 
     REQUIRE(info.about().GetDescription().find("wex") != std::string::npos);
   }
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     wex::about_info about;
 
-    SUBCASE("description")
+    SECTION("description")
     {
       about.description("hello");
       const wex::version_info_dialog info(about);
       REQUIRE(info.about().GetDescription().find("hello") != std::string::npos);
     }
 
-    SUBCASE("no-description")
+    SECTION("no-description")
     {
       const wex::version_info_dialog info(about);
       REQUIRE(
@@ -58,7 +58,7 @@ TEST_CASE("wex::version_info_dialog")
     }
   }
 
-  SUBCASE("constructor-other")
+  SECTION("constructor-other")
   {
     wex::version_info vi;
 

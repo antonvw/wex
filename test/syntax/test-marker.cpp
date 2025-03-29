@@ -2,7 +2,7 @@
 // Name:      test-marker.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -12,12 +12,12 @@
 
 TEST_CASE("wex::marker")
 {
-  SUBCASE("default-constructor")
+  SECTION("default-constructor")
   {
     REQUIRE(!wex::marker().is_ok());
   }
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(!wex::marker(1, 100).is_ok());
     REQUIRE(wex::marker(1, wxSTC_MARK_CHARACTER).is_ok());
@@ -42,7 +42,7 @@ TEST_CASE("wex::marker")
     markerx.apply(&s);
   }
 
-  SUBCASE("constructor-xml")
+  SECTION("constructor-xml")
   {
     pugi::xml_document doc;
     REQUIRE(doc.load_string(
@@ -56,7 +56,7 @@ TEST_CASE("wex::marker")
     REQUIRE(marker.is_ok());
   }
 
-  SUBCASE("constructor-xml-invalid")
+  SECTION("constructor-xml-invalid")
   {
     wex::log_none      off;
     pugi::xml_document doc;

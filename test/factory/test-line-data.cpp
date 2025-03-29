@@ -2,7 +2,7 @@
 // Name:      test-line-data.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023-2024 Anton van Wezenbeek
+// Copyright: (c) 2023-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/line-data.h>
@@ -10,7 +10,7 @@
 
 TEST_CASE("wex::line_data")
 {
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     wex::line_data data;
 
@@ -20,14 +20,14 @@ TEST_CASE("wex::line_data")
     REQUIRE(wex::line_data().line() == wex::NUMBER_NOT_SET);
   }
 
-  SUBCASE("reset")
+  SECTION("reset")
   {
     wex::line_data data(wex::line_data().line(3));
     data.reset();
     REQUIRE(data.line() == wex::NUMBER_NOT_SET);
   }
 
-  SUBCASE("set")
+  SECTION("set")
   {
     REQUIRE(wex::line_data().col(3).col() == 3);
     REQUIRE(wex::line_data().command("xx").command() == "xx");

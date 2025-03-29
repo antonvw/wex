@@ -2,7 +2,7 @@
 // Name:      test-stc-undo.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2024 Anton van Wezenbeek
+// Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/stc-undo.h>
@@ -16,7 +16,7 @@ TEST_CASE("wex::stc_undo")
   stc->set_text("aaaaa\nbbbbb\nccccc\nddddddddd\n");
   ALLOW_CALL(*stc, is_visual()).RETURN(true);
 
-  SUBCASE("action")
+  SECTION("action")
   {
     REQUIRE(stc->CanUndo());
 
@@ -35,7 +35,7 @@ TEST_CASE("wex::stc_undo")
     REQUIRE(!stc->get_text().contains("hello"));
   }
 
-  SUBCASE("pos")
+  SECTION("pos")
   {
     stc->SetCurrentPos(5);
     REQUIRE(stc->GetCurrentPos() == 5);
@@ -50,7 +50,7 @@ TEST_CASE("wex::stc_undo")
     REQUIRE(stc->GetCurrentPos() == 5);
   }
 
-  SUBCASE("sel-none")
+  SECTION("sel-none")
   {
     stc->SelectNone();
 

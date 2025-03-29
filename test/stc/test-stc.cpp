@@ -2,7 +2,7 @@
 // Name:      test-stc.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2024 Anton van Wezenbeek
+// Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -27,7 +27,7 @@ TEST_CASE("wex::stc")
   stc->get_vi().command("\x1b");
   wex::config(_("stc.Wrap scan")).set(true);
 
-  SUBCASE("auto_complete")
+  SECTION("auto_complete")
   {
     stc->auto_complete()->use(true);
     REQUIRE(stc->auto_complete()->use());
@@ -36,12 +36,12 @@ TEST_CASE("wex::stc")
     REQUIRE(!stc->auto_complete()->use());
   }
 
-  SUBCASE("auto_indentation")
+  SECTION("auto_indentation")
   {
     REQUIRE(!stc->auto_indentation('x'));
   }
 
-  SUBCASE("binary")
+  SECTION("binary")
   {
     // do the same test as with wex::file in core for a binary file
     REQUIRE(stc->open(wex::test::get_path("test.bin")));
@@ -50,7 +50,7 @@ TEST_CASE("wex::stc")
     REQUIRE(buffer.length() == 40);
   }
 
-  SUBCASE("clear")
+  SECTION("clear")
   {
     stc->set_text("added text");
     wxPostEvent(stc, wxCommandEvent(wxEVT_MENU, wxID_CLEAR));
@@ -60,12 +60,12 @@ TEST_CASE("wex::stc")
     REQUIRE(stc->get_text().empty());
   }
 
-  SUBCASE("config_dialog")
+  SECTION("config_dialog")
   {
     wex::stc::config_dialog(wex::data::window().button(wxCANCEL | wxAPPLY));
   }
 
-  SUBCASE("contents_changed")
+  SECTION("contents_changed")
   {
     stc->set_text("added text");
     REQUIRE(stc->get_text().contains("added text"));
@@ -79,7 +79,7 @@ TEST_CASE("wex::stc")
     REQUIRE(stc->get_text() != "hello stc");
   }
 
-  SUBCASE("coverage")
+  SECTION("coverage")
   {
     REQUIRE(!stc->process_char(WXK_BACK));
 
@@ -102,19 +102,19 @@ TEST_CASE("wex::stc")
     stc->vcs_clear_diffs();
   }
 
-  SUBCASE("eol")
+  SECTION("eol")
   {
     REQUIRE(!stc->eol().empty());
   }
 
-  SUBCASE("events")
+  SECTION("events")
   {
     wxCommandEvent event(wxEVT_MENU, wex::id::stc::margin_text_blame_revision);
     wxPostEvent(stc, event);
     wxTheApp->ProcessPendingEvents();
   }
 
-  SUBCASE("find")
+  SECTION("find")
   {
     for (const auto mode : {wex::ex::mode_t::OFF, wex::ex::mode_t::VISUAL})
     {
@@ -141,7 +141,7 @@ TEST_CASE("wex::stc")
       REQUIRE(!stc->find("HELLO", wxSTC_FIND_MATCHCASE));
 
       REQUIRE((stc->GetSearchFlags() & wxSTC_FIND_MATCHCASE) > 0);
-      REQUIRE(!(stc->GetSearchFlags() & wxSTC_FIND_WHOLEWORD) > 0);
+      REQUIRE_FALSE((stc->GetSearchFlags() & wxSTC_FIND_WHOLEWORD) > 0);
 
       // uses flags from frd
       wex::find_replace_data::get()->set_regex(false);
@@ -176,7 +176,7 @@ TEST_CASE("wex::stc")
     }
   }
 
-  SUBCASE("find_next")
+  SECTION("find_next")
   {
     for (const auto mode : {wex::ex::mode_t::OFF, wex::ex::mode_t::VISUAL})
     {
@@ -194,7 +194,7 @@ TEST_CASE("wex::stc")
     wex::find_replace_data::get()->set_match_word(true);
   }
 
-  SUBCASE("hexmode")
+  SECTION("hexmode")
   {
     stc->get_hexmode().set(true);
     REQUIRE(stc->is_hexmode());
@@ -236,7 +236,7 @@ TEST_CASE("wex::stc")
     stc->SetReadOnly(false);
   }
 
-  SUBCASE("hypertext")
+  SECTION("hypertext")
   {
     stc->set_text("");
     REQUIRE(stc->get_lexer().set("xml"));
@@ -246,7 +246,7 @@ TEST_CASE("wex::stc")
     REQUIRE(stc->get_text() == "<xxxxx></xxxxx>");
   }
 
-  SUBCASE("lexer")
+  SECTION("lexer")
   {
     stc->set_text("new text");
     REQUIRE(stc->get_lexer().set("cpp"));
@@ -277,7 +277,7 @@ TEST_CASE("wex::stc")
     wex::config::set_path(keep);
   }
 
-  SUBCASE("link")
+  SECTION("link")
   {
     stc->set_text("not_a_link");
     REQUIRE(!stc->link_open());
@@ -297,19 +297,19 @@ TEST_CASE("wex::stc")
     REQUIRE(stc->link_open());
   }
 
-  SUBCASE("margin")
+  SECTION("margin")
   {
     REQUIRE(stc->get_margin_text_click() == -1);
   }
 
-  SUBCASE("marker")
+  SECTION("marker")
   {
     REQUIRE(stc->marker_delete_all_change());
   }
 
-  SUBCASE("modeline")
+  SECTION("modeline")
   {
-    SUBCASE("text")
+    SECTION("text")
     {
       const std::string modeline("set ts=120 ec=40 sy=sql sw=4 nu el");
       auto*             stc = new wex::stc(std::string("-- vi: " + modeline));
@@ -322,7 +322,7 @@ TEST_CASE("wex::stc")
       REQUIRE(stc->get_lexer().scintilla_lexer() == "sql");
     }
 
-    SUBCASE("modeline-vi")
+    SECTION("modeline-vi")
     {
       auto* stc = new wex::stc(std::string("// 	vi: set ts=120 "
                                            "// this is a modeline"));
@@ -331,7 +331,7 @@ TEST_CASE("wex::stc")
       REQUIRE(stc->get_vi().mode().is_command());
     }
 
-    SUBCASE("modeline-vim")
+    SECTION("modeline-vim")
     {
       auto* stc =
         // see e.g. libre-office-xmlreader.h
@@ -347,7 +347,7 @@ TEST_CASE("wex::stc")
     modeline_from_file("test-modeline2.txt");
   }
 
-  SUBCASE("open")
+  SECTION("open")
   {
     wex::stc stc(wex::test::get_path("test.h"));
     REQUIRE(stc.path().string().contains("test.h"));
@@ -355,12 +355,12 @@ TEST_CASE("wex::stc")
     REQUIRE(!stc.open(wex::path("XXX")));
   }
 
-  SUBCASE("popup")
+  SECTION("popup")
   {
     REQUIRE(stc->get_lexer().set("cpp"));
   }
 
-  SUBCASE("shift-double-click")
+  SECTION("shift-double-click")
   {
     stc->set_text("hello stc");
     event(stc, WXK_SHIFT, wxEVT_KEY_DOWN);
@@ -368,7 +368,7 @@ TEST_CASE("wex::stc")
     // result is not yet checked
   }
 
-  SUBCASE("show")
+  SECTION("show")
   {
     stc->show_line_numbers(false);
     REQUIRE(!stc->is_shown_line_numbers());
@@ -383,7 +383,7 @@ TEST_CASE("wex::stc")
     REQUIRE(!stc->GetViewEOL());
   }
 
-  SUBCASE("text")
+  SECTION("text")
   {
     stc->set_text("hello stc");
     REQUIRE(stc->get_text() == "hello stc");
@@ -397,7 +397,7 @@ TEST_CASE("wex::stc")
     REQUIRE(stc->get_text().contains("firsthello stc\nfirsthello stc"));
   }
 
-  SUBCASE("vi")
+  SECTION("vi")
   {
     REQUIRE(stc->vi_command(wex::line_data().command("G")));
     REQUIRE(stc->vi_command_finish(false));

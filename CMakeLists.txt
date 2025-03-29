@@ -51,8 +51,7 @@ execute_process(
 )
 
 include_directories(${Boost_INCLUDE_DIRS})
-include_directories(external/doctest/doctest)
-include_directories(external/trompeloeil/include/doctest)
+include_directories(external/trompeloeil/include/catch2)
 
 set(
   CMAKE_MODULE_PATH
@@ -124,6 +123,14 @@ separate_arguments(wex_own_LIBRARIES)
 set(WEX_CXX_STANDARD 23) # see also Findwex.cmake, c_cpp_properties.json
 set(CMAKE_CXX_STANDARD ${WEX_CXX_STANDARD})
 
+if(wexBUILD_TESTS)
+  add_definitions(-DwexBUILD_TESTS)
+
+  include_directories(external/wxWidgets/3rdparty/catch/single_include/catch2)
+
+  add_subdirectory(test)
+endif()
+
 add_subdirectory(ci)
 add_subdirectory(src)
 
@@ -133,10 +140,6 @@ endif()
 
 if(wexBUILD_SAMPLES)
   add_subdirectory(sample)
-endif()
-
-if(wexBUILD_TESTS)
-  add_subdirectory(test)
 endif()
 
 add_subdirectory(locale)

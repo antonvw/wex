@@ -2,7 +2,7 @@
 // Name:      test-process.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -25,7 +25,7 @@ TEST_CASE("wex::process")
   wex::path cwd;
 
 #ifndef GITHUB
-  SUBCASE("static")
+  SECTION("static")
   {
     REQUIRE(wex::process::prepare_output(frame()) != nullptr);
     REQUIRE(wex::process::get_shell() != nullptr);
@@ -37,15 +37,15 @@ TEST_CASE("wex::process")
 
   wex::process process;
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(process.get_frame() != nullptr);
   }
 
 #ifdef __UNIX__
-  SUBCASE("async_system")
+  SECTION("async_system")
   {
-    SUBCASE("exe")
+    SECTION("exe")
     {
       REQUIRE(process.async_system(wex::process_data("bash")));
       REQUIRE(process.is_running());
@@ -55,7 +55,7 @@ TEST_CASE("wex::process")
     }
 
 #ifndef GITHUB
-    SUBCASE("invalid")
+    SECTION("invalid")
     {
       wex::log_none off;
       REQUIRE(process.async_system(wex::process_data("xxxx")));
@@ -64,22 +64,22 @@ TEST_CASE("wex::process")
     }
 #endif
 
-    SUBCASE("macro")
+    SECTION("macro")
     {
       REQUIRE(process.async_system(wex::process_data("echo %LINES")));
     }
   }
 #endif
 
-  SUBCASE("dialog")
+  SECTION("dialog")
   {
     wex::process::config_dialog(wex::data::window().button(wxAPPLY | wxCANCEL));
   }
 
 #ifdef __UNIX__
-  SUBCASE("system")
+  SECTION("system")
   {
-    SUBCASE("exe")
+    SECTION("exe")
     {
       REQUIRE(process.system(wex::process_data("ls -l")) == 0);
       REQUIRE(!process.write("hello world"));
@@ -90,14 +90,14 @@ TEST_CASE("wex::process")
       process.show_output();
     }
 
-    SUBCASE("repeat")
+    SECTION("repeat")
     {
       REQUIRE(process.system(wex::process_data("ls -l")) == 0);
       REQUIRE(!process.is_running());
       REQUIRE(!process.std_out().empty());
     }
 
-    SUBCASE("working directory")
+    SECTION("working directory")
     {
       REQUIRE(process.system(wex::process_data("ls -l").start_dir("/")) == 0);
       REQUIRE(!process.std_out().empty());
@@ -105,7 +105,7 @@ TEST_CASE("wex::process")
     }
 
 #ifndef __WXGTK__
-    SUBCASE("invalid")
+    SECTION("invalid")
     {
       wex::log_none off;
       REQUIRE(process.system(wex::process_data("xxxx")) != 0);
@@ -115,7 +115,7 @@ TEST_CASE("wex::process")
     }
 #endif
 
-    SUBCASE("working directory")
+    SECTION("working directory")
     {
       REQUIRE(process.system(wex::process_data("ls -l").start_dir("/")) == 0);
       wex::path::current(cwd.original());
@@ -124,7 +124,7 @@ TEST_CASE("wex::process")
 #endif
 }
 
-TEST_CASE("wex::process-macro" * doctest::skip())
+TEST_CASE("wex::process-macro", "[.]")
 {
   wex::process process;
 

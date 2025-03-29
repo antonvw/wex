@@ -2,7 +2,7 @@
 // Name:      test-path.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/syntax/path-lexer.h>
@@ -10,7 +10,7 @@
 
 TEST_CASE("wex::path_lexer")
 {
-  SUBCASE("default-constructor")
+  SECTION("default-constructor")
   {
     wex::path_lexer p("build.ninja");
 
@@ -18,7 +18,7 @@ TEST_CASE("wex::path_lexer")
     REQUIRE(p.is_build());
   }
 
-  SUBCASE("constructor-path")
+  SECTION("constructor-path")
   {
     wex::path_lexer p(wex::test::get_path("test.h"));
 

@@ -2,7 +2,7 @@
 // Name:      data/test-layout.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/layout.h>
@@ -12,9 +12,9 @@
 
 TEST_CASE("wex::data::layout")
 {
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
-    SUBCASE("cols")
+    SECTION("cols")
     {
       wex::data::layout layout(get_listview(), 5);
 
@@ -28,7 +28,7 @@ TEST_CASE("wex::data::layout")
       REQUIRE(!layout.sizer_layout_grow_row());
     }
 
-    SUBCASE("cols-and-rows")
+    SECTION("cols-and-rows")
     {
       wex::data::layout layout(get_listview(), 5, 5);
 
@@ -44,7 +44,7 @@ TEST_CASE("wex::data::layout")
     }
   }
 
-  SUBCASE("set")
+  SECTION("set")
   {
     wex::data::layout layout(get_listview(), 4, 3);
 

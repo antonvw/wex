@@ -2,7 +2,7 @@
 // Name:      test-hexmode.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/hexmode.h>
@@ -13,7 +13,7 @@ TEST_CASE("wex::factory::hexmode")
 {
   auto* stc = new wex::test::stc();
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     wex::factory::hexmode hm(stc);
     REQUIRE(!hm.is_active());
@@ -22,7 +22,7 @@ TEST_CASE("wex::factory::hexmode")
     REQUIRE(hm.each_hex_field() > 0);
   }
 
-  SUBCASE("lines")
+  SECTION("lines")
   {
     wex::factory::hexmode hm(stc);
     REQUIRE(hm.lines("main()").empty());
@@ -33,14 +33,14 @@ TEST_CASE("wex::factory::hexmode")
       "6D 61 69 6E 28 29                               main()");
   }
 
-  SUBCASE("make_active")
+  SECTION("make_active")
   {
     wex::factory::hexmode hm(stc);
     hm.make_active(true);
     REQUIRE(hm.is_active());
   }
 
-  SUBCASE("printable")
+  SECTION("printable")
   {
     wex::factory::hexmode hm(stc);
     REQUIRE(hm.printable('x') == 'x');

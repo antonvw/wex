@@ -2,7 +2,7 @@
 // Name:      test-ex-command.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/ex-command.h>
@@ -16,14 +16,14 @@ TEST_CASE("wex::ex_command")
 
   wex::ex_command command(stc);
 
-  SUBCASE("append_exec")
+  SECTION("append_exec")
   {
     REQUIRE(!command.append_exec('g'));
     REQUIRE(command.append_exec('g'));
     REQUIRE(stc->get_current_line() == 0);
   }
 
-  SUBCASE("exec")
+  SECTION("exec")
   {
     command.set("G");
     REQUIRE(command.command() == "G");
