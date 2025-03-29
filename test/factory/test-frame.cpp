@@ -2,7 +2,7 @@
 // Name:      factory/test-frame.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023-2024 Anton van Wezenbeek
+// Copyright: (c) 2023-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/listctrl.h>
@@ -14,7 +14,7 @@ TEST_CASE("wex::factory::frame")
 {
   auto* stc = new wex::test::stc();
 
-  SUBCASE("bars")
+  SECTION("bars")
   {
     auto* bar = new wxMenuBar();
     frame()->SetMenuBar(bar);
@@ -38,12 +38,12 @@ TEST_CASE("wex::factory::frame")
     REQUIRE(!frame()->update_statusbar(lv));
   }
 
-  SUBCASE("closing")
+  SECTION("closing")
   {
     REQUIRE(!frame()->is_closing());
   }
 
-  SUBCASE("coverage")
+  SECTION("coverage")
   {
     frame()->on_command_item_dialog(
       wxID_ADD,
@@ -52,7 +52,7 @@ TEST_CASE("wex::factory::frame")
     REQUIRE(!frame()->output("xxx"));
   }
 
-  SUBCASE("focus")
+  SECTION("focus")
   {
     frame()->set_find_focus(stc);
     REQUIRE(frame()->get_find_focus() == stc);
@@ -61,14 +61,14 @@ TEST_CASE("wex::factory::frame")
     frame()->set_find_focus(frame());
   }
 
-  SUBCASE("get")
+  SECTION("get")
   {
     REQUIRE(frame()->get_grid() == nullptr);
     REQUIRE(frame()->get_listview() == nullptr);
     REQUIRE(frame()->get_process("xxx") == nullptr);
   }
 
-  SUBCASE("open_file")
+  SECTION("open_file")
   {
     // the factory stc does not open the file
     // the wex::data::stc is not linked, cannot be used

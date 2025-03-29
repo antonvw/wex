@@ -2,7 +2,7 @@
 // Name:      test-frd.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/find.h>
@@ -22,7 +22,7 @@ TEST_CASE("wex::frd")
 {
   auto* frd = wex::find_replace_data::get();
 
-  SUBCASE("match")
+  SECTION("match")
   {
     const std::string text("xxx");
 
@@ -51,7 +51,7 @@ TEST_CASE("wex::frd")
     REQUIRE(frd->match(text, wex::data::find("X+")));
   }
 
-  SUBCASE("get-set")
+  SECTION("get-set")
   {
     frd->set_regex(true);
     frd->set_find_string("find[0-9]");

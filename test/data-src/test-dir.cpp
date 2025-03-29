@@ -2,7 +2,7 @@
 // Name:      data/test-dir.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/dir.h>
@@ -10,7 +10,7 @@
 
 TEST_CASE("wex::data::dir")
 {
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     wex::data::dir         dir;
     wex::data::dir::type_t t;
@@ -30,7 +30,7 @@ TEST_CASE("wex::data::dir")
     REQUIRE(dir.vcs() == nullptr);
   }
 
-  SUBCASE("type")
+  SECTION("type")
   {
     REQUIRE(wex::data::dir::type_t_def().test(wex::data::dir::FILES));
     REQUIRE(wex::data::dir::type_t_def().test(wex::data::dir::DIRS));

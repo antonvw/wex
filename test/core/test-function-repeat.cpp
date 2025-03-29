@@ -2,7 +2,7 @@
 // Name:      test-function-repeat.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -27,7 +27,7 @@ TEST_CASE("wex::function_repeat")
 
   REQUIRE(x == 0);
 
-  SUBCASE("all")
+  SECTION("all")
   {
     REQUIRE(repeat.activate());
     REQUIRE(!repeat.activate());
@@ -41,7 +41,7 @@ TEST_CASE("wex::function_repeat")
     REQUIRE(!repeat.activate(false));
   }
 
-  SUBCASE("no-activate")
+  SECTION("no-activate")
   {
     REQUIRE(!repeat.activate(false));
   }

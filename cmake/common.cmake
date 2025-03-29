@@ -112,11 +112,6 @@ function(wex_install)
   )
 
   install(
-    FILES ${CMAKE_SOURCE_DIR}/external/doctest/doctest/doctest.h
-    DESTINATION ${WEX_INSTALL_DIR}
-  )
-
-  install(
     DIRECTORY
       ${CMAKE_SOURCE_DIR}/external/wxMaterialDesignArtProvider/MaterialDesign/
     DESTINATION ${WEX_INSTALL_DIR}
@@ -306,6 +301,7 @@ endfunction(add_test_libs)
 
 function(wex_test_app libs)
   add_test_libs(${libs})
+
   add_executable(${PROJECT_NAME} ${SRCS})
 
   get_property(tmp GLOBAL PROPERTY test_libs)

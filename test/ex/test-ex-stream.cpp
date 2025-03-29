@@ -2,7 +2,7 @@
 // Name:      test-ex-stream.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -68,7 +68,7 @@ TEST_CASE("wex::ex_stream")
   wex::ex        ex(stc, wex::ex::mode_t::EX);
   wex::ex_stream exs(&ex);
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(exs.get_current_line() == 0);
     REQUIRE(exs.get_line_count() == wex::LINE_COUNT_UNKNOWN);
@@ -80,7 +80,7 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(exs.get_line_count_request() == wex::LINE_COUNT_UNKNOWN);
   }
 
-  SUBCASE("actions")
+  SECTION("actions")
   {
     wex::file ifs(open_file());
     REQUIRE(ifs.open());
@@ -88,7 +88,7 @@ TEST_CASE("wex::ex_stream")
 
     REQUIRE(exs.get_line_count_request() == 5);
 
-    SUBCASE("copy")
+    SECTION("copy")
     {
       const wex::address      dest(&ex, "$");
       const wex::addressrange ar(&ex, "1,2");
@@ -99,7 +99,7 @@ TEST_CASE("wex::ex_stream")
       REQUIRE(exs.get_line_count_request() == 7);
     }
 
-    SUBCASE("erase")
+    SECTION("erase")
     {
       const wex::addressrange ar(&ex, "1,2");
 
@@ -110,7 +110,7 @@ TEST_CASE("wex::ex_stream")
       write_file(exs, 3);
     }
 
-    SUBCASE("get_lines")
+    SECTION("get_lines")
     {
       REQUIRE(exs.get_line_count_request() == 5);
       REQUIRE(exs.get_line_count() == 5);
@@ -130,7 +130,7 @@ TEST_CASE("wex::ex_stream")
       REQUIRE(!exs.is_modified());
     }
 
-    SUBCASE("insert_text")
+    SECTION("insert_text")
     {
       REQUIRE(!exs.insert_text(0, "TEXT_BEFORE"));
       REQUIRE(!exs.insert_text(-4, "TEXT_BEFORE"));
@@ -149,7 +149,7 @@ TEST_CASE("wex::ex_stream")
       REQUIRE(exs.is_modified());
     }
 
-    SUBCASE("join")
+    SECTION("join")
     {
       REQUIRE(exs.get_line_count_request() == 5);
       REQUIRE(exs.get_line_count() == 5);
@@ -161,7 +161,7 @@ TEST_CASE("wex::ex_stream")
       REQUIRE(exs.get_line_count() == 4);
     }
 
-    SUBCASE("move")
+    SECTION("move")
     {
       const wex::address      dest(&ex, "$");
       const wex::addressrange ar(&ex, "1,2");
@@ -171,7 +171,7 @@ TEST_CASE("wex::ex_stream")
       REQUIRE(exs.get_line_count_request() == 5);
     }
 
-    SUBCASE("substitute")
+    SECTION("substitute")
     {
       ex.command(":set nomagic");
 
@@ -184,9 +184,9 @@ TEST_CASE("wex::ex_stream")
   }
 
   // See also stc/test-ex-mocde.cpp
-  SUBCASE("find")
+  SECTION("find")
   {
-    SUBCASE("basic")
+    SECTION("basic")
     {
       wex::file ifs("test.md", std::ios_base::in);
       REQUIRE(ifs.is_open());
@@ -219,10 +219,10 @@ TEST_CASE("wex::ex_stream")
       REQUIRE(exs.get_current_line() == 9);
       REQUIRE(exs.get_previous_line());
       REQUIRE(exs.find(std::string("w"), 0, false));
-      WARN(exs.get_current_line() == 2);
+      CHECK(exs.get_current_line() == 2);
     }
 
-    SUBCASE("find_data")
+    SECTION("find_data")
     {
       wex::file ifs("test.md", std::ios_base::in);
       REQUIRE(ifs.is_open());
@@ -237,7 +237,7 @@ TEST_CASE("wex::ex_stream")
       REQUIRE(exs.get_current_line() == line_containing_one_test_md);
     }
 
-    SUBCASE("noeol")
+    SECTION("noeol")
     {
       wex::file ifs(open_file(false));
       REQUIRE(ifs.open());
@@ -253,7 +253,7 @@ TEST_CASE("wex::ex_stream")
       REQUIRE(!exs.find(std::string("xxxone")));
     }
 
-    SUBCASE("previous")
+    SECTION("previous")
     {
       wex::file ifs("test.md", std::ios_base::in);
       exs.stream(ifs);
@@ -267,7 +267,7 @@ TEST_CASE("wex::ex_stream")
       REQUIRE(!exs.is_block_mode());
     }
 
-    SUBCASE("previous-noeol")
+    SECTION("previous-noeol")
     {
       wex::file ifs(open_file(false));
       REQUIRE(ifs.open());
@@ -283,7 +283,7 @@ TEST_CASE("wex::ex_stream")
     }
   }
 
-  SUBCASE("goto-line")
+  SECTION("goto-line")
   {
     wex::file ifs("test.md", std::ios_base::in);
     exs.stream(ifs);
@@ -295,7 +295,7 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(exs.get_current_line() == lines_test_md - 2);
   }
 
-  SUBCASE("markers")
+  SECTION("markers")
   {
     wex::file ifs(open_file());
     REQUIRE(ifs.open());
@@ -311,7 +311,7 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(exs.marker_line('x') == wex::LINE_NUMBER_UNKNOWN);
   }
 
-  SUBCASE("request")
+  SECTION("request")
   {
     wex::file ifs("test.md", std::ios_base::in);
     REQUIRE(ifs.is_open());
@@ -322,7 +322,7 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(exs.get_line_count_request() == lines_test_md);
   }
 
-  SUBCASE("stream")
+  SECTION("stream")
   {
     wex::file ifs("test.md", std::ios_base::in);
     REQUIRE(ifs.is_open());
@@ -344,7 +344,7 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(!exs.write());
   }
 
-  SUBCASE("write")
+  SECTION("write")
   {
     wex::file ifs(open_file());
     REQUIRE(ifs.open());
@@ -354,7 +354,7 @@ TEST_CASE("wex::ex_stream")
     REQUIRE(exs.write(ar, "tmp.txt"));
   }
 
-  SUBCASE("yank")
+  SECTION("yank")
   {
     wex::file ifs(open_file());
     REQUIRE(ifs.open());

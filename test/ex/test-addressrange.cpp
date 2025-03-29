@@ -34,9 +34,9 @@ TEST_CASE("wex::addressrange")
   ex->get_macros().set_register('*', "ls");
   stc->GotoLine(2);
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
-    SUBCASE("range-default")
+    SECTION("range-default")
     {
       wex::addressrange ar(ex);
 
@@ -45,7 +45,7 @@ TEST_CASE("wex::addressrange")
       REQUIRE(!ar.find_indicator().is_ok());
     }
 
-    SUBCASE("range-int")
+    SECTION("range-int")
     {
       wex::addressrange ar(ex, 6);
 
@@ -54,7 +54,7 @@ TEST_CASE("wex::addressrange")
       REQUIRE(!ar.find_indicator().is_ok());
     }
 
-    SUBCASE("range-ints")
+    SECTION("range-ints")
     {
       wex::addressrange ar(ex, 6, 8);
 
@@ -63,7 +63,7 @@ TEST_CASE("wex::addressrange")
       REQUIRE(!ar.find_indicator().is_ok());
     }
 
-    SUBCASE("range-string")
+    SECTION("range-string")
     {
       wex::addressrange ar(ex, "");
 
@@ -73,7 +73,7 @@ TEST_CASE("wex::addressrange")
     }
   }
 
-  SUBCASE("change")
+  SECTION("change")
   {
     stc->set_text("a\nb\nc\nd\ne\nf\ng\n");
     REQUIRE(stc->get_line_count() == 8);
@@ -82,12 +82,12 @@ TEST_CASE("wex::addressrange")
     REQUIRE(stc->get_line_count() == 5);
   }
 
-  SUBCASE("data")
+  SECTION("data")
   {
     REQUIRE(!wex::addressrange::data().is_global());
   }
 
-  SUBCASE("copy")
+  SECTION("copy")
   {
     stc->set_text(contents);
     REQUIRE(stc->get_line_count() == 8);
@@ -95,7 +95,7 @@ TEST_CASE("wex::addressrange")
     REQUIRE(stc->get_line_count() == 10);
   }
 
-  SUBCASE("erase")
+  SECTION("erase")
   {
     REQUIRE(stc->get_line_count() == 9);
     REQUIRE(wex::addressrange(ex, "1,3").erase());
@@ -116,7 +116,7 @@ TEST_CASE("wex::addressrange")
     stc->SelectNone();
   }
 
-  SUBCASE("escape")
+  SECTION("escape")
   {
     // See also del/test-frame.cpp
 #ifdef __UNIX__
@@ -128,14 +128,14 @@ TEST_CASE("wex::addressrange")
 #endif
   }
 
-  SUBCASE("execute")
+  SECTION("execute")
   {
     stc->set_text(contents);
     REQUIRE(!ex->command("1,5@Z"));
   }
 
 #ifdef __UNIX__
-  SUBCASE("global")
+  SECTION("global")
   {
     stc->set_text(contents);
     REQUIRE(!ex->command(":1,5g"));
@@ -152,7 +152,7 @@ TEST_CASE("wex::addressrange")
   }
 #endif
 
-  SUBCASE("invalid-range")
+  SECTION("invalid-range")
   {
     REQUIRE(!wex::addressrange(ex, 0).is_ok());
     REQUIRE(!wex::addressrange(ex, "0").is_ok());
@@ -171,7 +171,7 @@ TEST_CASE("wex::addressrange")
     REQUIRE(!wex::addressrange(ex, "?2?,?1?").is_ok());
   }
 
-  SUBCASE("invalid-range-selection")
+  SECTION("invalid-range-selection")
   {
     stc->SelectAll();
 
@@ -182,7 +182,7 @@ TEST_CASE("wex::addressrange")
     stc->SelectNone();
   }
 
-  SUBCASE("join")
+  SECTION("join")
   {
     stc->set_text("a\nb\nc\nd\ne\nf\ng\n");
     REQUIRE(wex::addressrange(ex, "%").join());
@@ -190,7 +190,7 @@ TEST_CASE("wex::addressrange")
     REQUIRE(stc->get_line_count() == 1);
   }
 
-  SUBCASE("move")
+  SECTION("move")
   {
     stc->set_text(contents);
     REQUIRE(stc->get_line_count() == 8);
@@ -198,7 +198,7 @@ TEST_CASE("wex::addressrange")
     REQUIRE(stc->get_line_count() == 8);
   }
 
-  SUBCASE("parse")
+  SECTION("parse")
   {
     wex::info_message_t im(wex::info_message_t::NONE);
 
@@ -211,13 +211,13 @@ TEST_CASE("wex::addressrange")
     REQUIRE(im == wex::info_message_t::YANK);
   }
 
-  SUBCASE("print")
+  SECTION("print")
   {
     stc->set_text(contents);
     REQUIRE(ex->command(":1,5print"));
   }
 
-  SUBCASE("range")
+  SECTION("range")
   {
     REQUIRE(wex::addressrange(ex).is_ok());
     REQUIRE(wex::addressrange(ex, -1).is_ok());
@@ -241,7 +241,7 @@ TEST_CASE("wex::addressrange")
     REQUIRE(ar.end().type() == wex::address::address_t::IS_END);
   }
 
-  SUBCASE("range-with-offset")
+  SECTION("range-with-offset")
   {
     std::string text;
     ADD_LINES("blame");
@@ -259,7 +259,7 @@ TEST_CASE("wex::addressrange")
     REQUIRE(wex::addressrange(ex, "/blame/-1,/yank/+10").is_ok());
   }
 
-  SUBCASE("range-selection")
+  SECTION("range-selection")
   {
     stc->SelectAll();
 
@@ -271,7 +271,7 @@ TEST_CASE("wex::addressrange")
     stc->SelectNone();
   }
 
-  SUBCASE("shift")
+  SECTION("shift")
   {
     stc->set_text(contents);
     REQUIRE(!ex->command(":<SOH>"));
@@ -281,7 +281,7 @@ TEST_CASE("wex::addressrange")
     REQUIRE(wex::addressrange(ex, 5).shift_left());
   }
 
-  SUBCASE("sort")
+  SECTION("sort")
   {
     REQUIRE(!ex->command(":1,2Sx"));
 
@@ -318,11 +318,11 @@ TEST_CASE("wex::addressrange")
     REQUIRE(ex->command(":1,2Sr8,9"));
   }
 
-  SUBCASE("substitute")
+  SECTION("substitute")
   {
     stc->set_text(contents);
 
-    SUBCASE("empty")
+    SECTION("empty")
     {
       REQUIRE(ex->command(":%s/tiger//"));
       REQUIRE(!stc->get_text().contains("tiger"));
@@ -332,14 +332,14 @@ TEST_CASE("wex::addressrange")
       REQUIRE(stc->get_text() == contents);
     }
 
-    SUBCASE("eol-all")
+    SECTION("eol-all")
     {
       REQUIRE(ex->command(":%s/$/xxxxx/"));
       REQUIRE(stc->get_text().contains("TIGERxxxxx"));
       REQUIRE(stc->get_text().contains("tigerxxxxx"));
     }
 
-    SUBCASE("eol-part")
+    SECTION("eol-part")
     {
       REQUIRE(ex->command(":%s/TIGER$/xxxxx/"));
       REQUIRE(!stc->get_text().contains("TIGER"));
@@ -352,7 +352,7 @@ TEST_CASE("wex::addressrange")
       REQUIRE(stc->get_text().contains("yyyyy"));
     }
 
-    SUBCASE("lower")
+    SECTION("lower")
     {
       REQUIRE(ex->command(":%s/tiger/\\U&&\\L& \\0 \\0 & & \\U&/"));
       REQUIRE(stc->get_text().contains("TIGER"));
@@ -362,19 +362,19 @@ TEST_CASE("wex::addressrange")
       REQUIRE(!stc->get_text().contains("\\0"));
     }
 
-    SUBCASE("other")
+    SECTION("other")
     {
       REQUIRE(ex->command(":%s/tiger/lion/"));
       REQUIRE(stc->get_text().contains("lion"));
     }
 
-    SUBCASE("other-repeat")
+    SECTION("other-repeat")
     {
       REQUIRE(ex->command(":%&"));
       REQUIRE(stc->get_text().contains("lion"));
     }
 
-    SUBCASE("upper")
+    SECTION("upper")
     {
       REQUIRE(ex->command(":%s/tiger/\\U&/g"));
       REQUIRE(stc->get_text().contains("TIGER"));
@@ -383,7 +383,7 @@ TEST_CASE("wex::addressrange")
     }
   }
 
-  SUBCASE("substitute-other")
+  SECTION("substitute-other")
   {
     stc->set_text(contents);
     REQUIRE(ex->command(":%s/tiger/lion/"));
@@ -405,7 +405,7 @@ TEST_CASE("wex::addressrange")
     REQUIRE(stc->get_text().contains("char  present"));
   }
 
-  SUBCASE("substitute-flags")
+  SECTION("substitute-flags")
   {
     REQUIRE(ex->command(":.,.+1s//y"));
     REQUIRE(ex->command(":.,.+2s/x/y/f"));
@@ -418,14 +418,14 @@ TEST_CASE("wex::addressrange")
     REQUIRE(!ex->command(":1,2sxg"));
   }
 
-  SUBCASE("write")
+  SECTION("write")
   {
     stc->set_text(contents);
     REQUIRE(ex->command(":1,5w sample.txt"));
     REQUIRE(remove("sample.txt") == 0);
   }
 
-  SUBCASE("yank")
+  SECTION("yank")
   {
     stc->set_text("a\nb\nc\nd\ne\nf\ng\n");
     stc->GotoLine(0);

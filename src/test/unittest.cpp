@@ -1,11 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      doctest.cpp
+// Name:      unittest.cpp
 // Purpose:   Implementation of general test functions.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023-2024 Anton van Wezenbeek
+// Copyright: (c) 2023-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#define DOCTEST_CONFIG_IMPLEMENT
+#define CATCH_CONFIG_RUNNER
+
+#include <iostream>
 
 #include <wx/timer.h>
 #include <wx/window.h>
@@ -13,14 +15,14 @@
 #include <wex/core/cmdline.h>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
-#include <wex/test/doctest.h>
+#include <wex/test/unittest.h>
 
-wex::path wex::test::doctester::get_path(const std::string& file, path::log_t t)
+wex::path wex::test::unittest::get_path(const std::string& file, path::log_t t)
 {
   return file.empty() ? m_path : path(m_path, file, t);
 }
 
-bool wex::test::doctester::on_init(wex::app* app)
+bool wex::test::unittest::on_init(wex::app* app)
 {
   app->SetAppName("wex-test"); // as in CMakeLists
 
@@ -42,7 +44,7 @@ bool wex::test::doctester::on_init(wex::app* app)
   return true;
 }
 
-void wex::test::doctester::on_run(wex::app* app)
+void wex::test::unittest::on_run(wex::app* app)
 {
   const int id_start    = wxWindow::NewControlId();
   auto*     timer_start = new wxTimer(app, id_start);
@@ -53,17 +55,17 @@ void wex::test::doctester::on_run(wex::app* app)
     wxEVT_TIMER,
     [=, this](const wxTimerEvent& event)
     {
-      if (m_context != nullptr)
+      if (m_session != nullptr)
       {
         delete timer_start;
 
-        m_context->run();
+        m_session->run();
 
         config("AllowSync").set(false);
 
-        if (m_context->shouldExit())
+        //  if (m_session->shouldExit())
         {
-          delete m_context;
+          delete m_session;
           wxExit();
         }
       }
@@ -75,7 +77,7 @@ void wex::test::doctester::on_run(wex::app* app)
     id_start);
 }
 
-bool wex::test::doctester::use_context(wex::app* app, int argc, char* argv[])
+bool wex::test::unittest::start(wex::app* app, int argc, char* argv[])
 {
   wxApp::SetInstance(app);
 
@@ -94,10 +96,9 @@ bool wex::test::doctester::use_context(wex::app* app, int argc, char* argv[])
     }
   }
 
-  m_context = new doctest::Context;
+  m_session = new Catch::Session(); // There must be exactly one instance
 
-  m_context->setOption("exit", true);
-  m_context->applyCommandLine(argc, argv);
+  m_session->applyCommandLine(argc, argv);
 
   std::string text;
 
@@ -118,5 +119,5 @@ bool wex::test::doctester::use_context(wex::app* app, int argc, char* argv[])
     return false;
   }
 
-  return true;
+  return app->OnInit() && app->OnRun();
 }

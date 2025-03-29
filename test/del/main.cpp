@@ -2,11 +2,11 @@
 // Name:      main.cpp
 // Purpose:   main for wex del unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/del/app.h>
-#include <wex/test/doctest.h>
+#include <wex/test/unittest.h>
 
 #include "test.h"
 
@@ -43,7 +43,7 @@ private:
 
 class del
   : public wex::del::app
-  , public doctester
+  , public unittest
 {
 public:
   bool OnInit() final
@@ -98,9 +98,7 @@ int main(int argc, char* argv[])
 {
   auto* app = new wex::test::del();
 
-  return app->use_context(app, argc, argv) && app->OnInit() && app->OnRun() ?
-           1 :
-           0;
+  return app->start(app, argc, argv) ? 1 : 0;
 }
 
 wex::stc* get_stc()

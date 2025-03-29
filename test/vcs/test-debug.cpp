@@ -2,7 +2,7 @@
 // Name:      test-debug.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016-2024 Anton van Wezenbeek
+// Copyright: (c) 2016-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -13,7 +13,7 @@
 
 #include "test.h"
 
-TEST_CASE("wex::debug" * doctest::may_fail())
+TEST_CASE("wex::debug", "[!mayfail]")
 {
   wex::config("debug.debugger").set(wex::debug::default_exe());
 
@@ -25,13 +25,13 @@ TEST_CASE("wex::debug" * doctest::may_fail())
   stc->EmptyUndoBuffer();
   stc->SetSavePoint();
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(!wex::debug(frame()).is_active());
     REQUIRE(dbg.breakpoints().empty());
   }
 
-  SUBCASE("execute")
+  SECTION("execute")
   {
 #ifdef __WXOSX__
     REQUIRE(dbg.execute("detach"));
@@ -48,7 +48,7 @@ TEST_CASE("wex::debug" * doctest::may_fail())
     REQUIRE(!dbg.is_active());
   }
 
-  SUBCASE("menu")
+  SECTION("menu")
   {
     REQUIRE(dbg.add_menu(&menu) > 0);
     REQUIRE(dbg.add_menu(&menu, true) > 0);
@@ -66,7 +66,7 @@ TEST_CASE("wex::debug" * doctest::may_fail())
   }
 
 #ifndef __WXMSW__
-  SUBCASE("run")
+  SECTION("run")
   {
     stc->set_text("#include <stdio.h>\n\n"
                   "int main()\n"
@@ -109,7 +109,7 @@ TEST_CASE("wex::debug" * doctest::may_fail())
 #endif
 
 #ifndef __WXMSW__
-  SUBCASE("remove")
+  SECTION("remove")
   {
     REQUIRE(remove("a.out") == 0);
     system("rm -rf a.out.dSYM");
@@ -117,7 +117,7 @@ TEST_CASE("wex::debug" * doctest::may_fail())
   }
 #endif
 
-  SUBCASE("static")
+  SECTION("static")
   {
     REQUIRE(!wex::debug::default_exe().empty());
   }

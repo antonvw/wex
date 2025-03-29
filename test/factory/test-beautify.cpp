@@ -2,7 +2,7 @@
 // Name:      factory/test-beautify.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023-2024 Anton van Wezenbeek
+// Copyright: (c) 2023-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/beautify.h>
@@ -10,7 +10,7 @@
 
 TEST_CASE("wex::factory::beautify")
 {
-  SUBCASE("access")
+  SECTION("access")
   {
     REQUIRE(
       wex::factory::beautify(wex::path("xxx")).type() ==
@@ -50,7 +50,7 @@ TEST_CASE("wex::factory::beautify")
   wex::config("stc.beautifier.robotframework")
     .set(wex::config::strings_t{{"robotidy"}});
 
-  SUBCASE("check")
+  SECTION("check")
   {
     wex::factory::beautify b;
 
@@ -65,7 +65,7 @@ TEST_CASE("wex::factory::beautify")
     REQUIRE(b.type() == wex::factory::beautify::ROBOTFRAMEWORK);
   }
 
-  SUBCASE("file")
+  SECTION("file")
   {
     REQUIRE(wex::factory::beautify(wex::factory::beautify::SOURCE).is_active());
     REQUIRE(

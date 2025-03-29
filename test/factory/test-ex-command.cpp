@@ -2,7 +2,7 @@
 // Name:      test-ex-command.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/ex-command.h>
@@ -17,7 +17,7 @@ TEST_CASE("wex::ex_command")
   stc->set_text("more text\notherline\nother line");
   ALLOW_CALL(*stc, is_visual()).RETURN(true);
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     wex::ex_command command("G");
 
@@ -29,7 +29,7 @@ TEST_CASE("wex::ex_command")
     REQUIRE(stc->get_current_line() == 0);
   }
 
-  SUBCASE("constructor stc")
+  SECTION("constructor stc")
   {
     wex::ex_command command(stc);
 
@@ -37,7 +37,7 @@ TEST_CASE("wex::ex_command")
     REQUIRE(command.get_stc() == stc);
     REQUIRE(command.type() == wex::ex_command::type_t::NONE);
 
-    SUBCASE("clear")
+    SECTION("clear")
     {
       command.set("12345");
       REQUIRE(!command.empty());
@@ -49,7 +49,7 @@ TEST_CASE("wex::ex_command")
 
   wex::ex_command command(stc);
 
-  SUBCASE("change")
+  SECTION("change")
   {
     REQUIRE(command.get_stc() == stc);
     command.append('g');
@@ -79,7 +79,7 @@ TEST_CASE("wex::ex_command")
     REQUIRE(command.command() == "wwwwwwww");
   }
 
-  SUBCASE("exec")
+  SECTION("exec")
   {
     command.set("G");
     REQUIRE(command.command() == "G");
@@ -88,7 +88,7 @@ TEST_CASE("wex::ex_command")
     REQUIRE(stc->get_current_line() == 0);
   }
 
-  SUBCASE("reset")
+  SECTION("reset")
   {
     command.set(":100");
     REQUIRE(command.str() == ":");
@@ -96,7 +96,7 @@ TEST_CASE("wex::ex_command")
     REQUIRE(command.str() == ":");
   }
 
-  SUBCASE("set")
+  SECTION("set")
   {
     command.set("G");
     REQUIRE(command.type() == wex::ex_command::type_t::VI);

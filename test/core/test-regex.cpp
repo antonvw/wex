@@ -2,7 +2,7 @@
 // Name:      test-regex.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -18,7 +18,7 @@ TEST_CASE("wex::regex::data")
 
 TEST_CASE("wex::regex")
 {
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(wex::regex(std::string()).match("") == 0);
     REQUIRE(wex::regex({"", "", ""}).match("") == 0);
@@ -34,7 +34,7 @@ TEST_CASE("wex::regex")
     REQUIRE(r[0].empty());
   }
 
-  SUBCASE("match")
+  SECTION("match")
   {
     REQUIRE(wex::regex("hllo").match("hello world") == -1);
     REQUIRE(wex::regex("hello").match("hello world") == -1);
@@ -49,7 +49,7 @@ TEST_CASE("wex::regex")
     REQUIRE(wex::regex("[a-9").match("9") == -1);
   }
 
-  SUBCASE("matches")
+  SECTION("matches")
   {
     wex::regex r(
       {{"(\\.[\\0-7A-Za-z_/.-]+) .*",
@@ -74,7 +74,7 @@ TEST_CASE("wex::regex")
     REQUIRE(r[0] == ".77xx77");
   }
 
-  SUBCASE("operator")
+  SECTION("operator")
   {
     wex::regex r("([?/].*[?/])(,[?/].*[?/])([msy])");
 
@@ -84,7 +84,7 @@ TEST_CASE("wex::regex")
     REQUIRE(r[2] == "y");
   }
 
-  SUBCASE("replace")
+  SECTION("replace")
   {
     wex::regex r({{"99xx77"}, {"([0-9]+)([a-z]+)([0-9]+)"}});
 
@@ -96,7 +96,7 @@ TEST_CASE("wex::regex")
     REQUIRE(text == "zz");
   }
 
-  SUBCASE("search")
+  SECTION("search")
   {
     REQUIRE(wex::regex("hllo").search("hello world") == -1);
     REQUIRE(wex::regex("hello").search("hello world") == 0);

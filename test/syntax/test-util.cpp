@@ -2,7 +2,7 @@
 // Name:      test-util.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/syntax/util.h>
@@ -10,7 +10,7 @@
 
 TEST_CASE("wex::factory::utils")
 {
-  SUBCASE("node_properties")
+  SECTION("node_properties")
   {
     std::vector<wex::property> properties;
     pugi::xml_document         doc;
@@ -25,7 +25,7 @@ TEST_CASE("wex::factory::utils")
     REQUIRE(properties.size() == 1);
   }
 
-  SUBCASE("node_styles")
+  SECTION("node_styles")
   {
     std::vector<wex::style> styles;
     pugi::xml_document      doc;

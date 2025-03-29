@@ -2,7 +2,7 @@
 // Name:      test-indicator.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -12,12 +12,12 @@
 
 TEST_CASE("wex::indicator")
 {
-  SUBCASE("default-constructor")
+  SECTION("default-constructor")
   {
     REQUIRE(!wex::indicator().is_ok());
   }
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     const wex::indicator indx(5, 2);
     const wex::indicator indy(7, 5);
@@ -36,7 +36,7 @@ TEST_CASE("wex::indicator")
     REQUIRE(wex::indicator(5, 1) != wex::indicator(5, 2));
   }
 
-  SUBCASE("constructor-xml")
+  SECTION("constructor-xml")
   {
     pugi::xml_document     doc;
     pugi::xml_parse_result result =
@@ -56,7 +56,7 @@ TEST_CASE("wex::indicator")
     REQUIRE(ind.is_ok());
   }
 
-  SUBCASE("constructor-xml-invalid")
+  SECTION("constructor-xml-invalid")
   {
     wex::log_none      off;
     pugi::xml_document doc;

@@ -2,7 +2,7 @@
 // Name:      test-listview.cpp
 // Purpose:   Implementation for wex del unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2024 Anton van Wezenbeek
+// Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/del/defs.h>
@@ -15,7 +15,7 @@
 
 TEST_CASE("wex::del::listview")
 {
-  SUBCASE("flow")
+  SECTION("flow")
   {
     auto* lv = new wex::del::listview(
       wex::data::listview().type(wex::data::listview::FIND));
@@ -44,7 +44,7 @@ TEST_CASE("wex::del::listview")
 #endif
   }
 
-  SUBCASE("static")
+  SECTION("static")
   {
     REQUIRE(
       wex::del::listview::type_tool(wex::tool(wex::ID_TOOL_REPORT_FIND)) ==
@@ -55,7 +55,7 @@ TEST_CASE("wex::del::listview")
   }
 
 #ifndef __WXMSW__
-  SUBCASE("destroy")
+  SECTION("destroy")
   {
     auto* lv = new wex::del::listview(
       wex::data::listview().type(wex::data::listview::FIND));

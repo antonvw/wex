@@ -2,7 +2,7 @@
 // Name:      test-process.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -14,7 +14,7 @@ TEST_CASE("wex::factory::process")
 {
   wex::factory::process process;
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(process.std_out().empty());
     REQUIRE(process.std_err().empty());
@@ -25,9 +25,9 @@ TEST_CASE("wex::factory::process")
   }
 
 #ifndef __WXMSW__
-  SUBCASE("async_system")
+  SECTION("async_system")
   {
-    SUBCASE("no handler")
+    SECTION("no handler")
     {
       REQUIRE(!process.async_system(wex::process_data("bash")));
     }
@@ -35,7 +35,7 @@ TEST_CASE("wex::factory::process")
     wxEvtHandler out;
     process.set_handler_out(&out);
 
-    SUBCASE("exe")
+    SECTION("exe")
     {
       REQUIRE(process.async_system(wex::process_data("bash")));
       REQUIRE(process.data().exe() == "bash");
@@ -49,7 +49,7 @@ TEST_CASE("wex::factory::process")
       process.set_handler_dbg(&out); // if directly after out: crash
     }
 
-    SUBCASE("invalid")
+    SECTION("invalid")
     {
       wex::log_none off;
       REQUIRE(process.async_system(wex::process_data("xxxx")));
@@ -60,10 +60,10 @@ TEST_CASE("wex::factory::process")
   }
 #endif
 
-  SUBCASE("system")
+  SECTION("system")
   {
 #ifndef GITHUB
-    SUBCASE("invalid")
+    SECTION("invalid")
     {
       wex::log_none off;
       REQUIRE(process.system(wex::process_data("xxxx")) != 0);
@@ -74,7 +74,7 @@ TEST_CASE("wex::factory::process")
 
 #ifndef GITHUB
 #ifndef __WXMSW__
-    SUBCASE("stdin")
+    SECTION("stdin")
     {
       REQUIRE(process.system(wex::process_data("wc -c").std_in("xxxxxx")) == 0);
       CAPTURE(process.std_out());
@@ -82,7 +82,7 @@ TEST_CASE("wex::factory::process")
       REQUIRE(process.std_out().contains("6"));
     }
 
-    SUBCASE("start_dir")
+    SECTION("start_dir")
     {
       wex::path cwd;
 

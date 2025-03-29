@@ -2,7 +2,7 @@
 // Name:      test-sort.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -28,7 +28,7 @@ TEST_CASE("wex::sort")
                            "456z45672345678901234\n");
 
 #ifndef __WXMSW__
-  SUBCASE("string")
+  SECTION("string")
   {
     REQUIRE(wex::factory::sort().string("z\ny\nx\n", "\n") == "x\ny\nz\n");
     REQUIRE(
@@ -47,7 +47,7 @@ TEST_CASE("wex::sort")
 
   auto* s = new wex::test::stc();
 
-  SUBCASE("selection")
+  SECTION("selection")
   {
     wex::log_none off;
     s->SelectNone();
@@ -62,7 +62,7 @@ TEST_CASE("wex::sort")
     REQUIRE(!wex::factory::sort(0, 25, 10).selection(s));
   }
 
-  SUBCASE("block")
+  SECTION("block")
   {
     s->SelectNone();
     s->SetText(rect);

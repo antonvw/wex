@@ -2,7 +2,7 @@
 // Name:      test-process-data.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/process-data.h>
@@ -10,7 +10,7 @@
 
 TEST_CASE("wex::process_data")
 {
-  SUBCASE("constructor-default")
+  SECTION("constructor-default")
   {
     wex::process_data data;
 
@@ -22,7 +22,7 @@ TEST_CASE("wex::process_data")
     REQUIRE(data.std_in().empty());
   }
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     wex::process_data data("wc yy");
 
@@ -39,7 +39,7 @@ TEST_CASE("wex::process_data")
     REQUIRE(data.std_in().empty());
   }
 
-  SUBCASE("constructor-args")
+  SECTION("constructor-args")
   {
     wex::process_data data("wc", "yy -l");
 
@@ -47,14 +47,14 @@ TEST_CASE("wex::process_data")
     REQUIRE(data.args_str() == "yy -l");
   }
 
-  SUBCASE("log")
+  SECTION("log")
   {
     wex::process_data data("xx -c -v");
 
     REQUIRE(data.log() == "exe: Could not find: xx args: -c -v");
   }
 
-  SUBCASE("set")
+  SECTION("set")
   {
     wex::process_data data("xx");
 

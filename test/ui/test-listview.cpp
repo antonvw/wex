@@ -25,7 +25,7 @@ TEST_CASE("wex::listview")
     {"Float", wex::column::FLOAT},
     {"String", wex::column::STRING_SMALL}};
 
-  SUBCASE("general")
+  SECTION("general")
   {
     REQUIRE(lv->data().type() == wex::data::listview::NONE);
 
@@ -74,14 +74,14 @@ TEST_CASE("wex::listview")
     REQUIRE(lv->set_item(0, 3, "new"));
   }
 
-  SUBCASE("clear")
+  SECTION("clear")
   {
     lv->clear();
     lv->items_update();
     REQUIRE(lv->GetItemCount() == 0);
   }
 
-  SUBCASE("events")
+  SECTION("events")
   {
     wex::column intcol(wex::column("Int", wex::column::INT));
     REQUIRE(lv->append_columns({{intcol}}));
@@ -102,7 +102,7 @@ TEST_CASE("wex::listview")
     }
   }
 
-  SUBCASE("item_from_to_text")
+  SECTION("item_from_to_text")
   {
     REQUIRE(lv->append_columns(
       {{"Text", wex::column::STRING_MEDIUM},
@@ -119,7 +119,7 @@ TEST_CASE("wex::listview")
 
 #ifndef GITHUB
 #ifndef __WXMSW__
-  SUBCASE("popup_menu")
+  SECTION("popup_menu")
   {
     auto* other = new wex::listview();
     frame()->pane_add(lv);
@@ -144,12 +144,12 @@ TEST_CASE("wex::listview")
     REQUIRE(sim.Char(WXK_RETURN));
     wxYield();
 
-    WARN(other->GetItemCount() == 0);
+    CHECK(other->GetItemCount() == 0);
   }
 #endif
 #endif
 
-  SUBCASE("set_item_image")
+  SECTION("set_item_image")
   {
     REQUIRE(lv->data().image() == wex::data::listview::IMAGE_ART);
     REQUIRE(!lv->data().type_description().empty());
@@ -177,7 +177,7 @@ TEST_CASE("wex::listview")
     REQUIRE(item2.GetImage() == -1);
   }
 
-  SUBCASE("sorting")
+  SECTION("sorting")
   {
     REQUIRE(lv->append_columns(common_cols));
 
@@ -209,7 +209,7 @@ TEST_CASE("wex::listview")
     REQUIRE(lv->sort_column("Date"));
   }
 
-  SUBCASE("TSV")
+  SECTION("TSV")
   {
     auto* lv =
       new wex::listview(wex::data::listview().type(wex::data::listview::TSV));

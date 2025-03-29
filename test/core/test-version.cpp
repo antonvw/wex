@@ -2,7 +2,7 @@
 // Name:      test-version.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/version.h>
@@ -11,12 +11,12 @@
 TEST_CASE("wex::version")
 {
 
-  SUBCASE("default-constructor")
+  SECTION("default-constructor")
   {
     REQUIRE(!wex::version_info().get().empty());
   }
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     const wex::version_info info(
       {"hello", 5, 6, 7, "test-version", "wex-copyright"});
@@ -27,7 +27,7 @@ TEST_CASE("wex::version")
     REQUIRE(info.get(false) == "5.6.7");
   }
 
-  SUBCASE("get_version_info")
+  SECTION("get_version_info")
   {
     REQUIRE(!wex::get_version_info().get().empty());
   }

@@ -2,7 +2,7 @@
 // Name:      test-util.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2024 Anton van Wezenbeek
+// Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/util.h>
@@ -14,12 +14,12 @@
 
 #include <vector>
 
-TEST_CASE("wex::util" * doctest::may_fail())
+TEST_CASE("wex::util", "[!mayfail]")
 {
   const wex::strings_t l{"x", "y", "z"};
   const wex::strings_t ls{"x:0", "y:0", "z:1"};
 
-  SUBCASE("auto_complete_filename")
+  SECTION("auto_complete_filename")
   {
     REQUIRE(wex::auto_complete_filename("te"));
     REQUIRE(wex::auto_complete_filename("te")->expansion == "st");
@@ -33,7 +33,7 @@ TEST_CASE("wex::util" * doctest::may_fail())
 #endif
   }
 
-  SUBCASE("combobox_as")
+  SECTION("combobox_as")
   {
     auto* cb = new wxComboBox(get_frame(), wxID_ANY);
     wex::combobox_as<const wex::strings_t>(cb, l);
@@ -42,7 +42,7 @@ TEST_CASE("wex::util" * doctest::may_fail())
     REQUIRE(cb->GetValue() == "x");
   }
 
-  SUBCASE("combobox_from_list")
+  SECTION("combobox_from_list")
   {
     auto* cb = new wxComboBox(get_frame(), wxID_ANY);
 
@@ -60,7 +60,7 @@ TEST_CASE("wex::util" * doctest::may_fail())
   }
 
 #ifndef __WXMSW__
-  SUBCASE("compare_file")
+  SECTION("compare_file")
   {
     wex::config(_("list.Comparator")).set("diff");
 
@@ -70,7 +70,7 @@ TEST_CASE("wex::util" * doctest::may_fail())
   }
 #endif
 
-  SUBCASE("listbox_as")
+  SECTION("listbox_as")
   {
     auto* lb = new wxListBox(get_frame(), wxID_ANY);
     wex::listbox_as<const wex::strings_t>(lb, ls);
@@ -79,7 +79,7 @@ TEST_CASE("wex::util" * doctest::may_fail())
     REQUIRE(lb->GetStringSelection() == "z");
   }
 
-  SUBCASE("listbox_to_list")
+  SECTION("listbox_to_list")
   {
     auto* lb = new wxListBox(get_frame(), wxID_ANY);
     wex::listbox_as<const wex::strings_t>(lb, ls);
@@ -90,7 +90,7 @@ TEST_CASE("wex::util" * doctest::may_fail())
     REQUIRE(lo.front() == "x:0");
   }
 
-  SUBCASE("open_files")
+  SECTION("open_files")
   {
     wex::path::current(wex::test::get_path().data());
 
@@ -125,7 +125,7 @@ TEST_CASE("wex::util" * doctest::may_fail())
         std::vector<wex::path>{wex::path("../../data-xxx/yy.cpp")}) == 0);
   }
 
-  SUBCASE("process_match")
+  SECTION("process_match")
   {
     const auto   p(wex::test::get_path("test.h"));
     wxEvtHandler e;
@@ -134,7 +134,7 @@ TEST_CASE("wex::util" * doctest::may_fail())
   }
 
 #ifdef __UNIX__
-  SUBCASE("shell_expansion")
+  SECTION("shell_expansion")
   {
     std::string command("xxx `pwd` `pwd`");
     REQUIRE(wex::shell_expansion(command));
@@ -150,7 +150,7 @@ TEST_CASE("wex::util" * doctest::may_fail())
   }
 #endif
 
-  SUBCASE("vcs_command_stc")
+  SECTION("vcs_command_stc")
   {
     wex::vcs_command command;
     wex::vcs_command_stc(command, wex::lexer(get_stc()), get_stc());
@@ -158,7 +158,7 @@ TEST_CASE("wex::util" * doctest::may_fail())
     wex::vcs_command_stc(command, wex::lexer(), get_stc());
   }
 
-  SUBCASE("xml_error")
+  SECTION("xml_error")
   {
     wex::path              fn("xml-err.xml");
     pugi::xml_parse_result pr;

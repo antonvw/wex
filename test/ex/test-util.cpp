@@ -12,7 +12,7 @@
 
 TEST_CASE("wex::ex::utils")
 {
-  SUBCASE("append_line_no")
+  SECTION("append_line_no")
   {
     std::string text;
     wex::append_line_no(text, 1);
@@ -21,12 +21,12 @@ TEST_CASE("wex::ex::utils")
     REQUIRE(text.contains("   301"));
   }
 
-  SUBCASE("esc")
+  SECTION("esc")
   {
     REQUIRE(wex::esc() == "\x1b");
   }
 
-  SUBCASE("find_command")
+  SECTION("find_command")
   {
     const std::vector<std::pair<std::string, std::string>> none{};
     const std::vector<std::pair<std::string, std::string>> cmds{
@@ -68,7 +68,7 @@ TEST_CASE("wex::ex::utils")
         "DDD") != cmds.end());
   }
 
-  SUBCASE("find_first_of")
+  SECTION("find_first_of")
   {
     REQUIRE(wex::find_first_of("aha", "a") == "ha");
     REQUIRE(wex::find_first_of("aha", "a", 10).empty());
@@ -76,7 +76,7 @@ TEST_CASE("wex::ex::utils")
     REQUIRE(wex::find_first_of("aha", "z").empty());
   }
 
-  SUBCASE("get_lines")
+  SECTION("get_lines")
   {
     auto* stc = new wex::test::stc();
     stc->set_text("xx\nxx\nyy\nzz\n");
@@ -96,7 +96,7 @@ TEST_CASE("wex::ex::utils")
     REQUIRE(lines.contains("    1 xx$\n"));
   }
 
-  SUBCASE("is_register_valid")
+  SECTION("is_register_valid")
   {
     REQUIRE(wex::is_register_valid("@6"));
     REQUIRE(wex::is_register_valid("@x"));
@@ -107,7 +107,7 @@ TEST_CASE("wex::ex::utils")
     REQUIRE(!wex::is_register_valid("xx"));
   }
 
-  SUBCASE("k_s")
+  SECTION("k_s")
   {
     REQUIRE(wex::k_s(WXK_CONTROL_A) == "\x1");
     REQUIRE(wex::k_s(WXK_CONTROL_B) == "\x2");

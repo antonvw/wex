@@ -2,7 +2,7 @@
 // Name:      test-odbc.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -14,12 +14,12 @@
 #if wexUSE_ODBC
 TEST_CASE("wex::odbc")
 {
-  SUBCASE("static")
+  SECTION("static")
   {
     REQUIRE(!wex::odbc::get_version_info().get().empty());
   }
 
-  SUBCASE("prep")
+  SECTION("prep")
   {
     // Ensure we have a database and a table.
     if (system("mysql -u root test < odbc-create.sql") != 0)
@@ -29,7 +29,7 @@ TEST_CASE("wex::odbc")
     }
   }
 
-  SUBCASE("rest")
+  SECTION("rest")
   {
     wex::config(_("Datasource")).set_first_of("Test");
     wex::config(_("User")).set();

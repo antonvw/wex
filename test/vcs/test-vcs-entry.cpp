@@ -26,7 +26,7 @@ TEST_CASE("wex::vcs_entry")
                           "  </commands>"
                           "</vcs>"));
 
-  SUBCASE("default constructor")
+  SECTION("default constructor")
   {
     REQUIRE(wex::vcs_entry().admin_dir().empty());
     REQUIRE(wex::vcs_entry().get_commands().empty());
@@ -35,7 +35,7 @@ TEST_CASE("wex::vcs_entry")
       wex::vcs_entry::flags_location_t::POSTFIX);
   }
 
-  SUBCASE("constructor using xml")
+  SECTION("constructor using xml")
   {
     wex::vcs_entry entry(doc.document_element());
     REQUIRE(entry.name() == "git");
@@ -85,7 +85,7 @@ TEST_CASE("wex::vcs_entry")
 #endif
   }
 
-  SUBCASE("blame")
+  SECTION("blame")
   {
     auto*      stc = get_stc();
     wex::blame blame;
@@ -101,7 +101,7 @@ TEST_CASE("wex::vcs_entry")
     stc->get_file().reset_contents_changed();
   }
 
-  SUBCASE("setup_exclude")
+  SECTION("setup_exclude")
   {
     REQUIRE(wex::vcs::load_document());
     wex::vcs       vcs(std::vector<wex::path>{wex::test::get_path("test.h")});

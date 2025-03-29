@@ -11,7 +11,7 @@
 #include "../src/ex/addressrange-mark.h"
 #include "test.h"
 
-TEST_CASE("wex::addressrange_mark" * doctest::may_fail())
+TEST_CASE("wex::addressrange_mark", "[!mayfail]")
 {
   auto* stc = get_stc();
 
@@ -19,7 +19,7 @@ TEST_CASE("wex::addressrange_mark" * doctest::may_fail())
 
   auto* ex = new wex::ex(stc);
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     const wex::addressrange ar(ex, "1,2");
     auto* arm = new wex::addressrange_mark(ar, wex::data::substitute());
@@ -34,7 +34,7 @@ TEST_CASE("wex::addressrange_mark" * doctest::may_fail())
 #endif
 
     REQUIRE(arm->update());
-    
+
     arm->end();
     arm->end(false);
 

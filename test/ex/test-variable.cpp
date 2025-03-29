@@ -2,7 +2,7 @@
 // Name:      test-variable.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/chrono.h>
@@ -22,7 +22,7 @@ TEST_CASE("wex::variable")
   const wex::path p("test.h");
   ALLOW_CALL(*stc, path()).RETURN(p);
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     std::string value;
     REQUIRE(wex::variable("test").get_name() == "test");
@@ -40,7 +40,7 @@ TEST_CASE("wex::variable")
 
   pugi::xml_document doc;
 
-  SUBCASE("XML")
+  SECTION("XML")
   {
     wex::log_none off;
 
@@ -93,7 +93,7 @@ TEST_CASE("wex::variable")
     }
   }
 
-  SUBCASE("builtin")
+  SECTION("builtin")
   {
     for (const auto& it : get_builtin_variables())
     {
@@ -124,7 +124,7 @@ TEST_CASE("wex::variable")
     }
   }
 
-  SUBCASE("format")
+  SECTION("format")
   {
     for (const auto& it : std::vector<
            std::tuple<std::string, std::string, std::string, std::string>>{
@@ -153,7 +153,7 @@ TEST_CASE("wex::variable")
     }
   }
 
-  SUBCASE("static")
+  SECTION("static")
   {
     wex::variable::set_argument("hello world");
   }

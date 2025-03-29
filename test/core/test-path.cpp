@@ -2,7 +2,7 @@
 // Name:      test-path.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/path.h>
@@ -18,12 +18,12 @@ bool log_contains(const wex::path::log_t& flags, const std::string& text)
 
 TEST_CASE("wex::path")
 {
-  SUBCASE("static")
+  SECTION("static")
   {
     REQUIRE(!wex::path::current().empty());
   }
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(wex::path().empty());
     REQUIRE(wex::path("xxx").string() == "xxx");
@@ -41,7 +41,7 @@ TEST_CASE("wex::path")
     REQUIRE(!wex::path().original().empty());
   }
 
-  SUBCASE("basic")
+  SECTION("basic")
   {
     wex::path path(wex::test::get_path("test.h"));
 
@@ -70,9 +70,9 @@ TEST_CASE("wex::path")
     REQUIRE(wex::path("XXXXX").make_absolute().string() != "XXXXX");
   }
 
-  SUBCASE("log")
+  SECTION("log")
   {
-    SUBCASE("no-bits")
+    SECTION("no-bits")
     {
       REQUIRE(log_contains(wex::path::log_t(), "test.h"));
       REQUIRE(!log_contains(wex::path::log_t(), "Modified"));
@@ -80,7 +80,7 @@ TEST_CASE("wex::path")
       REQUIRE(!log_contains(wex::path::log_t(), "Synchronized"));
     }
 
-    SUBCASE("sync-bit")
+    SECTION("sync-bit")
     {
       REQUIRE(log_contains(
         wex::path::log_t().set(wex::path::LOG_SYNC),
@@ -92,7 +92,7 @@ TEST_CASE("wex::path")
         "test/data/test.h"));
     }
 
-    SUBCASE("mod-bit")
+    SECTION("mod-bit")
     {
       REQUIRE(
         log_contains(wex::path::log_t().set(wex::path::LOG_MOD), "Modified"));
@@ -104,7 +104,7 @@ TEST_CASE("wex::path")
         "test/data/test.h"));
     }
 
-    SUBCASE("path-bit")
+    SECTION("path-bit")
     {
       REQUIRE(
         log_contains(wex::path::log_t().set(wex::path::LOG_PATH), "data"));
@@ -112,7 +112,7 @@ TEST_CASE("wex::path")
         !log_contains(wex::path::log_t().set(wex::path::LOG_PATH), "Modified"));
     }
 
-    SUBCASE("combine")
+    SECTION("combine")
     {
       REQUIRE(log_contains(
         wex::path::log_t().set(wex::path::LOG_PATH).set(wex::path::LOG_MOD),
@@ -123,7 +123,7 @@ TEST_CASE("wex::path")
     }
   }
 
-  SUBCASE("mime")
+  SECTION("mime")
   {
     REQUIRE(!wex::path("XXXXX.md").open_mime());
     REQUIRE(!wex::path("XXXXX").open_mime());
@@ -133,7 +133,7 @@ TEST_CASE("wex::path")
 #endif
   }
 
-  SUBCASE("timing")
+  SECTION("timing")
   {
     const int  max = 1000;
     const auto exfile(wex::test::get_path("test.h"));
@@ -157,7 +157,7 @@ TEST_CASE("wex::path")
     const auto wx_milli = std::chrono::duration_cast<std::chrono::milliseconds>(
       std::chrono::system_clock::now() - wx_start);
 
-    CHECK_LT(ex_milli.count(), 1000);
-    CHECK_LT(wx_milli.count(), 1000);
+    REQUIRE(ex_milli.count() < 1000);
+    REQUIRE(wx_milli.count() < 1000);
   }
 }

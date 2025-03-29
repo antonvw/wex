@@ -2,7 +2,7 @@
 // Name:      test-item-template-dialog.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/defs.h>
@@ -40,13 +40,11 @@ public:
 };
 }; // namespace wex
 
-TEST_SUITE_BEGIN("wex::item");
-
 TEST_CASE("wex::item_template_dialog")
 {
   wex::item::use_config(false);
 
-  SUBCASE("basic")
+  SECTION("basic")
   {
     auto* dlg = new wex::item_template_dialog<wex::testitem>(
       std::vector<wex::testitem>{
@@ -85,7 +83,7 @@ TEST_CASE("wex::item_template_dialog")
     dlg->force_checkbox_checked();
   }
 
-  SUBCASE("dialog_checkbox")
+  SECTION("dialog_checkbox")
   {
     auto* dlg = new wex::item_template_dialog<wex::testitem>(
       std::vector<wex::testitem>{{"checkbox", wex::item::CHECKBOX}},
@@ -95,7 +93,7 @@ TEST_CASE("wex::item_template_dialog")
     dlg->Show();
   }
 
-  SUBCASE("dialog_no_buttons")
+  SECTION("dialog_no_buttons")
   {
     auto* dlg = new wex::item_template_dialog<wex::testitem>(
       std::vector<wex::testitem>{{"string1"}, {"string2"}},
@@ -103,7 +101,7 @@ TEST_CASE("wex::item_template_dialog")
     dlg->Show();
   }
 
-  SUBCASE("dialog_no_items")
+  SECTION("dialog_no_items")
   {
     auto* dlg = new wex::item_template_dialog<wex::testitem>(
       std::vector<wex::testitem>(),
@@ -111,7 +109,7 @@ TEST_CASE("wex::item_template_dialog")
     dlg->Show();
   }
 
-  SUBCASE("dialog_empty_items")
+  SECTION("dialog_empty_items")
   {
     auto* dlg = new wex::item_template_dialog<wex::testitem>(
       std::vector<wex::testitem>{{}, {}, {}},
@@ -119,5 +117,3 @@ TEST_CASE("wex::item_template_dialog")
     dlg->Show();
   }
 }
-
-TEST_SUITE_END();

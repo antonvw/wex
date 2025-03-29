@@ -16,12 +16,12 @@ TEST_CASE("wex::del::frame")
 {
   const int vcs_git = 3;
 
-  SUBCASE("default_extensions")
+  SECTION("default_extensions")
   {
     REQUIRE(!del_frame()->default_extensions().empty());
   }
 
-  SUBCASE("events")
+  SECTION("events")
   {
     for (auto id : std::vector<int>{
            wxID_PREFERENCES,
@@ -40,7 +40,7 @@ TEST_CASE("wex::del::frame")
     }
   }
 
-  SUBCASE("find_in_files")
+  SECTION("find_in_files")
   {
     wex::find_replace_data::get()->set_find_string("wex::test_app");
 
@@ -73,18 +73,18 @@ TEST_CASE("wex::del::frame")
 #endif
   }
 
-  SUBCASE("get_debug")
+  SECTION("get_debug")
   {
     REQUIRE(del_frame()->get_debug() != nullptr);
   }
 
-  SUBCASE("get_project_history")
+  SECTION("get_project_history")
   {
     auto* menu = new wex::menu();
     del_frame()->get_project_history().use_menu(1000, menu);
   }
 
-  SUBCASE("open_file")
+  SECTION("open_file")
   {
     del_frame()->set_find_focus(get_stc());
 
@@ -95,7 +95,7 @@ TEST_CASE("wex::del::frame")
       std::string::npos);
   }
 
-  SUBCASE("open_from_action")
+  SECTION("open_from_action")
   {
     REQUIRE(del_frame()->open_from_action(
       wex::test::get_path("test.h").string(),
@@ -106,14 +106,14 @@ TEST_CASE("wex::del::frame")
     REQUIRE(del_frame()->open_from_action("../del/test.*", "ext"));
   }
 
-  SUBCASE("prepare_output")
+  SECTION("prepare_output")
   {
     wex::process::prepare_output(del_frame());
     REQUIRE(get_stc()->get_vi().command("!ls"));
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
 
-  SUBCASE("set_recent")
+  SECTION("set_recent")
   {
     del_frame()->set_recent_project(wex::path("xxx.prj"));
     REQUIRE(del_frame()->get_project_history()[0].empty());
@@ -121,7 +121,7 @@ TEST_CASE("wex::del::frame")
     del_frame()->set_recent_file(wex::test::get_path("test.h"));
   }
 
-  SUBCASE("show_ex_bar")
+  SECTION("show_ex_bar")
   {
     del_frame()->show_ex_bar(wex::frame::HIDE_BAR);
     del_frame()->show_ex_bar(wex::frame::HIDE_BAR_FOCUS_STC);
@@ -129,25 +129,25 @@ TEST_CASE("wex::del::frame")
     del_frame()->show_ex_bar(wex::frame::HIDE_BAR_FORCE_FOCUS_STC);
   }
 
-  SUBCASE("statustext_vcs")
+  SECTION("statustext_vcs")
   {
     del_frame()->statustext_vcs(get_stc());
   }
 
-  SUBCASE("stc_entry_dialog")
+  SECTION("stc_entry_dialog")
   {
     REQUIRE(del_frame()->stc_entry_dialog_component() != nullptr);
     del_frame()->stc_entry_dialog_title("hello world");
     REQUIRE(del_frame()->stc_entry_dialog_title() == "hello world");
   }
 
-  SUBCASE("sync")
+  SECTION("sync")
   {
     del_frame()->sync(false);
     del_frame()->sync(true);
   }
 
-  SUBCASE("use_file_history")
+  SECTION("use_file_history")
   {
     auto* list = new wex::del::listview(
       wex::data::listview().type(wex::data::listview::HISTORY));
@@ -157,7 +157,7 @@ TEST_CASE("wex::del::frame")
     REQUIRE(del_frame()->activate(wex::data::listview::HISTORY) != nullptr);
   }
 
-  SUBCASE("vcs_add_path")
+  SECTION("vcs_add_path")
   {
     wex::link          lnk;
     wex::data::control data;
@@ -169,7 +169,7 @@ TEST_CASE("wex::del::frame")
               .file_exists());
   }
 
-  SUBCASE("vcs_annotate_commit")
+  SECTION("vcs_annotate_commit")
   {
     wex::config("vcs.VCS").set(vcs_git);
     const std::string commit_id("b6aae80e3ab4402c7930a9bd590d355641c74746");
@@ -186,7 +186,7 @@ TEST_CASE("wex::del::frame")
 #endif
   }
 
-  SUBCASE("vcs_blame")
+  SECTION("vcs_blame")
   {
     get_stc()->set_text(std::string());
     {
@@ -211,7 +211,7 @@ TEST_CASE("wex::del::frame")
     REQUIRE(!get_stc()->find("b6aae80e3a"));
   }
 
-  SUBCASE("vcs_blame_revision")
+  SECTION("vcs_blame_revision")
   {
     wex::config("vcs.VCS").set(vcs_git);
     REQUIRE(get_stc()->open(wex::test::get_path("test.h")));
@@ -221,7 +221,7 @@ TEST_CASE("wex::del::frame")
     REQUIRE(del_frame()->vcs_blame_revision(get_stc(), renamed, offset));
   }
 
-  SUBCASE("vcs_blame_show")
+  SECTION("vcs_blame_show")
   {
     wex::blame blame;
     wex::lexers::get()->apply_margin_text_style(get_stc(), &blame);
@@ -239,7 +239,7 @@ TEST_CASE("wex::del::frame")
     get_stc()->get_file().reset_contents_changed();
   }
 
-  SUBCASE("vcs_dir_exists")
+  SECTION("vcs_dir_exists")
   {
     REQUIRE(del_frame()->vcs_dir_exists(wex::test::get_path()));
 #ifndef __WXMSW__
@@ -247,7 +247,7 @@ TEST_CASE("wex::del::frame")
 #endif
   }
 
-  SUBCASE("vcs_execute")
+  SECTION("vcs_execute")
   {
     REQUIRE(!del_frame()->vcs_execute(55, std::vector<wex::path>()));
 
@@ -268,7 +268,7 @@ TEST_CASE("wex::del::frame")
       std::vector<wex::path>{wex::test::get_path()}));
   }
 
-  SUBCASE("virtual")
+  SECTION("virtual")
   {
     auto*          menu = new wex::menu();
     wex::menu_item item;
@@ -334,7 +334,7 @@ TEST_CASE("wex::del::frame")
     del_frame()->vcs_append(menu, &item);
   }
 
-  SUBCASE("visual")
+  SECTION("visual")
   {
     auto* vi = &get_stc()->get_vi();
 
@@ -352,7 +352,7 @@ TEST_CASE("wex::del::frame")
     REQUIRE(vi->is_active());
   }
 
-  SUBCASE("other")
+  SECTION("other")
   {
     REQUIRE(!del_frame()->pane_is_shown("VIBAR"));
 

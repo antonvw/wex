@@ -2,7 +2,7 @@
 // Name:      test-path-match.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024 Anton van Wezenbeek
+// Copyright: (c) 2024-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/path-match.h>
@@ -12,7 +12,7 @@ TEST_CASE("wex::path_match")
 {
   wex::path p("xxx");
 
-  SUBCASE("constructor-path")
+  SECTION("constructor-path")
   {
     wex::path_match m(p);
 
@@ -23,7 +23,7 @@ TEST_CASE("wex::path_match")
     REQUIRE(m.tool().id() == wex::ID_LOWEST);
   }
 
-  SUBCASE("constructor-all")
+  SECTION("constructor-all")
   {
     wex::path_match m(p, wex::tool(wex::ID_LIST_MATCH), "hello", 7, 8);
 

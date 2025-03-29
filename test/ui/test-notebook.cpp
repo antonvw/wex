@@ -2,7 +2,7 @@
 // Name:      test-notebook.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/defs.h>
@@ -32,7 +32,7 @@ TEST_CASE("wex::notebook")
     nullptr);
   // pages: 0,1,2 keys: key1, key2, key3 pages page1,page2,page3.
 
-  SUBCASE("access")
+  SECTION("access")
   {
     REQUIRE(notebook->key_by_page(page1) == "key1");
     REQUIRE(notebook->page_by_key("key1") == page1);
@@ -40,7 +40,7 @@ TEST_CASE("wex::notebook")
     REQUIRE(notebook->page_index_by_key("xxx") == wxNOT_FOUND);
   }
 
-  SUBCASE("change")
+  SECTION("change")
   {
     REQUIRE(notebook->set_page_text("key1", "keyx", "hello"));
     REQUIRE(notebook->page_by_key("keyx") == page1);
@@ -54,7 +54,7 @@ TEST_CASE("wex::notebook")
     // pages: 0 keys: key3 pages:page3.
   }
 
-  SUBCASE("insert")
+  SECTION("insert")
   {
     REQUIRE(
       notebook->insert_page(wex::data::notebook().page(page4).key("KEY1")) !=
@@ -86,7 +86,7 @@ TEST_CASE("wex::notebook")
     REQUIRE(notebook->GetPageCount() == 2); // 5 - 3
   }
 
-  SUBCASE("for_each")
+  SECTION("for_each")
   {
     REQUIRE(notebook->DeleteAllPages());
 
@@ -116,13 +116,13 @@ TEST_CASE("wex::notebook")
     REQUIRE(notebook->GetPageCount() == 0);
   }
 
-  SUBCASE("rearrange")
+  SECTION("rearrange")
   {
     notebook->rearrange(wxLEFT);
     notebook->rearrange(wxBOTTOM);
   }
 
-  SUBCASE("split")
+  SECTION("split")
   {
     REQUIRE(notebook->DeleteAllPages());
 

@@ -2,7 +2,7 @@
 // Name:      test-property.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/syntax/property.h>
@@ -10,7 +10,7 @@
 
 TEST_CASE("wex::property")
 {
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(!wex::property().is_ok());
 
@@ -23,7 +23,7 @@ TEST_CASE("wex::property")
     REQUIRE(p.is_ok());
   }
 
-  SUBCASE("constructor-2")
+  SECTION("constructor-2")
   {
     wex::property p("man", "ugly");
 

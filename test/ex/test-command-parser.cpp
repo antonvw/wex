@@ -2,7 +2,7 @@
 // Name:      test-command-parser.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex/command-parser.h>
@@ -15,7 +15,7 @@ TEST_CASE("wex::command_parser")
   stc->set_text("hello\nhello1\nhello2");
   auto* ex = new wex::ex(stc);
 
-  SUBCASE("empty-command")
+  SECTION("empty-command")
   {
     wex::command_parser cp(ex);
 
@@ -26,7 +26,7 @@ TEST_CASE("wex::command_parser")
     REQUIRE(cp.type() == wex::command_parser::address_t::NO_ADDR);
   }
 
-  SUBCASE("no-addr")
+  SECTION("no-addr")
   {
     wex::command_parser cp(ex, "10");
 
@@ -37,7 +37,7 @@ TEST_CASE("wex::command_parser")
     REQUIRE(cp.type() == wex::command_parser::address_t::NO_ADDR);
   }
 
-  SUBCASE("one-addr")
+  SECTION("one-addr")
   {
     wex::command_parser cp(ex, ".ma z");
 
@@ -48,7 +48,7 @@ TEST_CASE("wex::command_parser")
     REQUIRE(cp.type() == wex::command_parser::address_t::ONE_ADDR);
   }
 
-  SUBCASE("two-addr")
+  SECTION("two-addr")
   {
     wex::command_parser cp(ex, "1,3ya");
 

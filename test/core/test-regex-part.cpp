@@ -2,7 +2,7 @@
 // Name:      test-regex-part.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2023 Anton van Wezenbeek
+// Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/regex-part.h>
@@ -10,7 +10,7 @@
 
 TEST_CASE("wex::regex_part")
 {
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(
       wex::regex_part(std::string()).match('x') ==
@@ -23,7 +23,7 @@ TEST_CASE("wex::regex_part")
     REQUIRE(re.match('E') == wex::regex_part::match_t::PART);
   }
 
-  SUBCASE("match")
+  SECTION("match")
   {
     wex::regex_part rer("[xyz");
 
@@ -73,7 +73,7 @@ TEST_CASE("wex::regex_part")
     REQUIRE(rfw.match('*') == wex::regex_part::match_t::FULL);
   }
 
-  SUBCASE("reset")
+  SECTION("reset")
   {
     wex::regex_part re("[abcde]x");
 

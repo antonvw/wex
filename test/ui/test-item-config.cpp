@@ -2,7 +2,7 @@
 // Name:      test-item-config.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -16,7 +16,7 @@ TEST_CASE("wex::item-config")
 {
   ITEM_START()
 
-  SUBCASE("config")
+  SECTION("config")
   {
     wex::item::use_config(true);
 

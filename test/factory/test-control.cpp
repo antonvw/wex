@@ -2,7 +2,7 @@
 // Name:      data/test-control.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/control.h>
@@ -10,20 +10,20 @@
 
 TEST_CASE("wex::data::control")
 {
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(wex::data::control().col() == wex::data::NUMBER_NOT_SET);
     REQUIRE(wex::data::control().line() == wex::data::NUMBER_NOT_SET);
     REQUIRE(!wex::data::control().is_required());
   }
 
-  SUBCASE("inject")
+  SECTION("inject")
   {
     REQUIRE(!wex::data::control().inject());
     REQUIRE(!wex::data::control().line(1).col(5).inject());
   }
 
-  SUBCASE("others")
+  SECTION("others")
   {
     const std::bitset<3> org(3); // 011
 
@@ -42,7 +42,7 @@ TEST_CASE("wex::data::control")
     REQUIRE(bs.to_string() == "100");
   }
 
-  SUBCASE("reset")
+  SECTION("reset")
   {
     wex::data::control data(wex::data::control().line(3));
     data.reset();
@@ -50,7 +50,7 @@ TEST_CASE("wex::data::control")
     REQUIRE(wex::data::control().validator() == nullptr);
   }
 
-  SUBCASE("set")
+  SECTION("set")
   {
     REQUIRE(wex::data::control().col(3).col() == 3);
     REQUIRE(wex::data::control().command("xx").command() == "xx");

@@ -2,7 +2,7 @@
 // Name:      test-vcs.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024 Anton van Wezenbeek
+// Copyright: (c) 2024-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
@@ -22,7 +22,7 @@ TEST_CASE("wex::factory::vcs")
 
 TEST_CASE("wex::factory::vcs_admin")
 {
-  SUBCASE("constructor-empty")
+  SECTION("constructor-empty")
   {
     const wex::factory::vcs_admin vcsa("", wex::path());
     const auto&                   tl(vcsa.toplevel());
@@ -32,7 +32,7 @@ TEST_CASE("wex::factory::vcs_admin")
     REQUIRE(!vcsa.is_toplevel());
   }
 
-  SUBCASE("constructor-other")
+  SECTION("constructor-other")
   {
     const wex::factory::vcs_admin vcsa(".git", wex::path::current());
     const auto&                   tl(vcsa.toplevel());
@@ -43,7 +43,7 @@ TEST_CASE("wex::factory::vcs_admin")
     REQUIRE(vcsa.is_toplevel());
   }
 
-  SUBCASE("constructor-subproject")
+  SECTION("constructor-subproject")
   {
     const wex::factory::vcs_admin vcsa(
       ".git",
