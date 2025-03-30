@@ -21,10 +21,6 @@ if(wexBUILD_GITHUB)
   add_definitions(-DGITHUB)
 endif()
 
-if(APPLE)
-  find_package(LLVM REQUIRED CONFIG)
-endif()
-
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 set(CMAKE_DISABLE_PRECOMPILE_HEADERS ON)
