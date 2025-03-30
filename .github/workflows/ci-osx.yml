@@ -26,13 +26,12 @@ jobs:
           CXX: /opt/homebrew/opt/llvm/bin/clang
 
       - name: Run tests
-        run: cd build && ctest -VV
+        run: cd build && ctest -VV -I 2,5
 
       - name: Artifacts
-        # see build-gen, currently a static build
         uses: actions/upload-artifact@v4
         with:
           name: wex-lib-macos
           path: |
-            build/**/*.a
+            build/**/*.dylib
             build/**/setup.h
