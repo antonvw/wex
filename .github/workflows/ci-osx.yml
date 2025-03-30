@@ -33,7 +33,7 @@ jobs:
           BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
           CC: /opt/homebrew/opt/llvm/bin/clang
           CXX: /opt/homebrew/opt/llvm/bin/clang
-          CXXFLAGS: -L"$(brew --prefix llvm)/lib/c++" -L"$(brew --prefix llvm)/lib" -lunwind
+          CXXFLAGS: -L"$$(brew --prefix llvm)/lib/c++" -L"$$(brew --prefix llvm)/lib" -lunwind
 
       - name: Run tests
         run: cd build && ctest -VV
