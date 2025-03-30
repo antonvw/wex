@@ -132,10 +132,13 @@ done
 uname=$(uname)
 
 if [[ $uname == "Darwin" ]]; then
-  # cmake find_package llvm otherwise gives error
   export LLVM_DIR=/usr/local/Cellar/homebrew/opt
-  export CC=${LLVM_DIR}/llvm/bin/clang
-  export CXX=${LLVM_DIR}/llvm/bin/clang
+
+  if [ -d "$LLVM_DIR" ]; then
+    # cmake find_package llvm otherwise gives error
+    export CC=${LLVM_DIR}/llvm/bin/clang
+    export CXX=${LLVM_DIR}/llvm/bin/clang
+  fi
 fi
 
 mkdir -p "${option_dir}"

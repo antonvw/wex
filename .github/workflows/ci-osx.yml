@@ -25,13 +25,12 @@ jobs:
       - name: Install llvm
         run: brew install llvm
 
-      - name: Install ninja
-        run: brew install ninja
-
       - name: Configure
         run: ./build-gen.sh -b -g -t -B ${{steps.install-boost.outputs.BOOST_ROOT}}
         env:
           BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
+          CC: /opt/homebrew/opt/llvm/bin/clang
+          CXX: /opt/homebrew/opt/llvm/bin/clang
 
       - name: Run tests
         run: cd build && ctest -VV
