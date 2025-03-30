@@ -1,0 +1,37 @@
+name: github-ci-osx
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install boost
+        run: brew install boost
+
+      - name: Install llvm
+        run: brew install llvm
+
+      - name: Configure
+        run: ./build-gen.sh -g -t
+        env:
+          CC: /opt/homebrew/opt/llvm/bin/clang
+          CXX: /opt/homebrew/opt/llvm/bin/clang
+
+      - name: Run tests
+        run: cd build && ctest -VV -I 2,5
+
+      - name: Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: wex-lib-macos
+          path: |
+            build/**/*.dylib
+            build/**/setup.h
