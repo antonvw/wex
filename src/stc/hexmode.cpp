@@ -2,7 +2,7 @@
 // Name:      hexmode.cpp
 // Purpose:   Implementation of class wex::hexmode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -14,9 +14,9 @@
 #include <wx/numdlg.h>
 #include <wx/spinctrl.h>
 
-#include "hexmode-line.h"
+#include <boost/regex.hpp>
 
-#include <regex>
+#include "hexmode-line.h"
 
 namespace wex
 {
@@ -201,7 +201,7 @@ bool wex::hexmode::replace_target(const std::string& replacement, bool settext)
     get_stc()->GetTargetEnd() == wxSTC_INVALID_POSITION ||
     get_stc()->GetTargetEnd() <= get_stc()->GetTargetStart() ||
     (replacement.size() % 2) > 0 ||
-    !std::regex_match(replacement, std::regex("[0-9A-F]*")))
+    !boost::regex_match(replacement, boost::regex("[0-9A-F]*")))
   {
     return false;
   }
@@ -321,7 +321,7 @@ void wex::hexmode::undo()
 
   make_active(
     (get_stc()->GetTextLength() > min_size &&
-     std::regex_match(
+     boost::regex_match(
        get_stc()->GetTextRange(0, min_size).ToStdString(),
-       std::regex("([0-9A-F][0-9A-F] )+ *"))));
+       boost::regex("([0-9A-F][0-9A-F] )+ *"))));
 }

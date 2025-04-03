@@ -64,11 +64,85 @@ boost::json               | to implement wex::config
 boost::log                | to implement wex::log
 boost::process            | to implement wex::process
 boost::program_options    | to implement wex::cmdline
-boost::regular expression | to implement the wex::regex_part
+boost::regular expression | to implement the wex::regex and regex_part
 boost::spirit             | to implement the wex::evaluator
 boost::statechart         | to implement the statemachine for vi mode and macro mode
 boost::tokenizer          | to tokenize expressions
 boost::URL                | to handle URLs
+
+### Regular expressions library
+
+though part of c++11, we use the boost::regular_expression library
+as this has better performance
+
+```cpp
+  boost::regex
+  boost::regex_match
+  boost::regex_replace
+  boost::regex_search
+```
+
+  E.g. here is code to parse a:
+
+```cpp
+  // :set [option[=[value]] ...][nooption ...][option? ...][all]
+```
+
+  that implements the ex :set OpenSource specs.
+
+  example:
+
+```cpp
+  regex r(
+    {"all",
+     // [nooption ...]
+     "no([a-z0-9]+)(.*)",
+     // [option? ...]
+     "([a-z0-9]+)[ \t]*\\?(.*)",
+     // [option[=[value]] ...]
+     "([a-z0-9]+)(=[a-z0-9]+)?(.*)"});
+
+  std::string help;
+  bool        found = false;
+
+  for (auto line(boost::algorithm::trim_copy(data.string())); !line.empty();)
+  {
+    switch (r.search(line); r.which_no())
+```
+
+  and search:
+
+```cpp
+  int wex::regex::find(const std::string& text, find_t how)
+  ...
+  for (const auto& reg : m_regex)
+  {
+    try
+    {
+      if (std::match_results<std::string::const_iterator> m;
+          ((how == REGEX_MATCH && boost::regex_match(text, m, reg.first)) ||
+           (how == REGEX_SEARCH && boost::regex_search(text, m, reg.first))))
+      {
+        if (m.size() > 1)
+        {
+          m_matches.clear();
+          std::copy(++m.begin(), m.end(), std::back_inserter(m_matches));
+        }
+
+        m_which    = reg;
+        m_which_no = index;
+
+        return m_matches.size();
+      }
+
+      index++;
+    }
+    catch (boost::regex_error& e)
+    {
+      log(e) << reg.second << "code:" << (int)e.code();
+    }
+  }
+```
 
 It benefits from the following c++ features:
 
@@ -166,77 +240,6 @@ bool wex::global_env::for_each(const block_lines& match) const
                                   it->second.end(),
                                   std::string()) :
                                 std::string();
-```
-
-### Regular expressions library (c++11)
-
-```cpp
-  std::regex
-  std::regex_match
-  std::regex_replace
-  std::regex_search
-```
-
-  E.g. here is code to parse a:
-
-```cpp
-  // :set [option[=[value]] ...][nooption ...][option? ...][all]
-```
-
-  that implements the ex :set OpenSource specs.
-
-  example:
-
-```cpp
-  regex r(
-    {"all",
-     // [nooption ...]
-     "no([a-z0-9]+)(.*)",
-     // [option? ...]
-     "([a-z0-9]+)[ \t]*\\?(.*)",
-     // [option[=[value]] ...]
-     "([a-z0-9]+)(=[a-z0-9]+)?(.*)"});
-
-  std::string help;
-  bool        found = false;
-
-  for (auto line(boost::algorithm::trim_copy(data.string())); !line.empty();)
-  {
-    switch (r.search(line); r.which_no())
-```
-
-  and search:
-
-```cpp
-  int wex::regex::find(const std::string& text, find_t how)
-  ...
-  for (const auto& reg : m_regex)
-  {
-    try
-    {
-      if (std::match_results<std::string::const_iterator> m;
-          ((how == REGEX_MATCH && std::regex_match(text, m, reg.first)) ||
-           (how == REGEX_SEARCH && std::regex_search(text, m, reg.first))))
-      {
-        if (m.size() > 1)
-        {
-          m_matches.clear();
-          std::copy(++m.begin(), m.end(), std::back_inserter(m_matches));
-        }
-
-        m_which    = reg;
-        m_which_no = index;
-
-        return m_matches.size();
-      }
-
-      index++;
-    }
-    catch (std::regex_error& e)
-    {
-      log(e) << reg.second << "code:" << (int)e.code();
-    }
-  }
 ```
 
 ### Strings library
@@ -456,14 +459,14 @@ bool wex::global_env::for_each(const block_lines& match) const
 ```cpp
 wex::regex::regex(
   const std::vector<std::string>& regex,
-  std::regex::flag_type           flags)
+  boost::regex::flag_type           flags)
   : m_regex(
-      [](const std::vector<std::string>& reg_str, std::regex::flag_type flags) {
+      [](const std::vector<std::string>& reg_str, boost::regex::flag_type flags) {
         regex_t v;
 
         for (const auto& r : reg_str)
         {
-          v.emplace_back(std::regex(r, flags), r);
+          v.emplace_back(boost::regex(r, flags), r);
         }
 
         return v;

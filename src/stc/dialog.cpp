@@ -88,7 +88,7 @@ wex::stc_entry_dialog::stc_entry_dialog(
     {
       if (!m_validator_string.empty())
       {
-        if (std::regex_match(m_stc->get_text(), m_validator))
+        if (boost::regex_match(m_stc->get_text(), m_validator))
         {
           log::status(std::string());
           event.Enable(true);
@@ -114,21 +114,21 @@ bool wex::stc_entry_dialog::set_validator(const std::string& regex, bool ic)
     return false;
   }
 
-  std::regex::flag_type flags = std::regex::ECMAScript;
+  boost::regex::flag_type flags = boost::regex::ECMAScript;
 
   if (ic)
   {
-    flags |= std::regex::icase;
+    flags |= boost::regex::icase;
   }
 
   try
   {
-    m_validator        = std::regex(regex, flags);
+    m_validator        = boost::regex(regex, flags);
     m_validator_string = regex;
     log::trace("validator") << regex;
     return true;
   }
-  catch (std::regex_error& e)
+  catch (boost::regex_error& e)
   {
     log("validator") << e.what() << regex;
     return false;

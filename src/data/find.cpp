@@ -2,7 +2,7 @@
 // Name:      data/find.cpp
 // Purpose:   Implementation of class wex::data::find
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -12,7 +12,7 @@
 #include <wex/data/find.h>
 #include <wex/factory/stc.h>
 
-#include <regex>
+#include <boost/regex.hpp>
 
 wex::data::find::find(const std::string& text, bool forward)
   : m_text(text)
@@ -44,7 +44,7 @@ bool wex::data::find::find_margin(int& found_line)
   assert(m_stc != nullptr);
 
   const bool wrapscan(config(_("stc.Wrap scan")).get(true));
-  std::match_results<std::string::const_iterator> m;
+  boost::match_results<std::string::const_iterator> m;
 
   int line = !m_recursive ?
                m_stc->LineFromPosition(m_start_pos) + (m_forward ? +1 : -1) :
@@ -56,7 +56,7 @@ bool wex::data::find::find_margin(int& found_line)
   {
     if (const std::string margin(m_stc->MarginGetText(line));
         ((m_flags & wxSTC_FIND_REGEXP) &&
-         std::regex_search(margin, m, std::regex(m_text))) ||
+         boost::regex_search(margin, m, boost::regex(m_text))) ||
         margin.contains(m_text))
     {
       found_line = line;

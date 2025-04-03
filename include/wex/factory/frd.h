@@ -2,14 +2,15 @@
 // Name:      frd.h
 // Purpose:   Declaration of wex::find_replace_data class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2024 Anton van Wezenbeek
+// Copyright: (c) 2018-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <list>
-#include <regex>
 #include <string>
+
+#include <boost/regex.hpp>
 
 class wxFindReplaceData;
 
@@ -121,6 +122,6 @@ private:
 
   bool m_use_regex{false};
 
-  std::regex m_regex;
+  boost::regex m_regex;
 };
 }; // namespace wex::factory

@@ -409,7 +409,7 @@ bool wex::ex::command_handle(const std::string& command) const
     m_commands,
     [command](auto const& e)
     {
-      return std::regex_search(command, std::regex(e.first));
+      return boost::regex_search(command, boost::regex(e.first));
     });
 
   return it != m_commands.end() && it->second(command);

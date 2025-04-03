@@ -247,7 +247,7 @@ int wex::address::get_line(int start_pos) const
       find_replace_data::get()->set_find_string(text);
     }
 
-    log::trace("address") << m_address << "gives" << result << "with offset"
+    log::trace("address") << m_address << "line" << result << "with offset"
                           << offset << "regex" << v.match_data().text() << "("
                           << v.match_no() << ")"
                           << "groups" << v.size();

@@ -273,15 +273,15 @@ const wex::lexer& wex::lexers::find_by_text(const std::string& text) const
 
   try
   {
-    const auto& filtered(std::regex_replace(
+    const auto& filtered(boost::regex_replace(
       text,
-      std::regex("[ \t\n\v\f\r]+$"),
+      boost::regex("[ \t\n\v\f\r]+$"),
       "",
-      std::regex_constants::format_sed));
+      boost::regex_constants::format_sed));
 
     for (const auto& t : m_texts)
     {
-      if (std::regex_search(filtered, std::regex(t.second)))
+      if (boost::regex_search(filtered, boost::regex(t.second)))
       {
         return find(t.first);
       }

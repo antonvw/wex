@@ -2,15 +2,16 @@
 // Name:      regex.h
 // Purpose:   Include file for class wex::regex
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <functional>
-#include <regex>
 #include <string>
 #include <vector>
+
+#include <boost/regex.hpp>
 
 namespace wex
 {
@@ -41,23 +42,23 @@ public:
     data();
 
     /// Constructor.
-    data(const regex_c_t& regex, std::regex::flag_type flags);
+    data(const regex_c_t& regex, boost::regex::flag_type flags);
 
     /// Returns function.
     const function_t& function() const { return m_function; };
 
     /// Returns regex.
-    const std::regex& regex() const { return m_regex; };
+    const boost::regex& regex() const { return m_regex; };
 
     /// Returns text.
     const std::string& text() const { return m_text; };
 
   private:
-    void init(const regex_c_t& regex, std::regex::flag_type flags);
+    void init(const regex_c_t& regex, boost::regex::flag_type flags);
 
-    std::string m_text;
-    std::regex  m_regex;
-    function_t  m_function{nullptr};
+    std::string  m_text;
+    boost::regex m_regex;
+    function_t   m_function{nullptr};
   };
 
   /// Constructor, provide regular expression data.
@@ -65,27 +66,27 @@ public:
 
   /// Constructor, provide regular expression string and regex flags.
   regex(
-    const std::string&    regex,
-    std::regex::flag_type flags = std::regex::ECMAScript);
+    const std::string&      regex,
+    boost::regex::flag_type flags = boost::regex::ECMAScript);
 
   /// Constructor, provide regular expression string, callback and
   /// regex flags.
   regex(
-    const std::string&    regex,
-    function_t            f,
-    std::regex::flag_type flags = std::regex::ECMAScript);
+    const std::string&      regex,
+    function_t              f,
+    boost::regex::flag_type flags = boost::regex::ECMAScript);
 
   /// Constructor, provide vector with regular expressions and
   /// regex flags.
   explicit regex(
-    const regex_v_t&      regex,
-    std::regex::flag_type flags = std::regex::ECMAScript);
+    const regex_v_t&        regex,
+    boost::regex::flag_type flags = boost::regex::ECMAScript);
 
   /// Constructor, provide vector with regular expressions, callbacks
   /// and regex flags.
   explicit regex(
-    const regex_v_c_t&    regex,
-    std::regex::flag_type flags = std::regex::ECMAScript);
+    const regex_v_c_t&      regex,
+    boost::regex::flag_type flags = boost::regex::ECMAScript);
 
   /// Returns requested submatch element.
   /// Returns empty string if pos beyond index.
@@ -117,8 +118,8 @@ public:
   bool replace(
     std::string&       text,
     const std::string& replacement,
-    std::regex_constants::match_flag_type =
-      std::regex_constants::format_sed) const;
+    boost::regex_constants::match_flag_type =
+      boost::regex_constants::format_sed) const;
 
   /// Regular expression search.
   /// Returns:
