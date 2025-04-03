@@ -64,7 +64,7 @@ boost::json               | to implement wex::config
 boost::log                | to implement wex::log
 boost::process            | to implement wex::process
 boost::program_options    | to implement wex::cmdline
-boost::regular expression | to implement the wex::regex and regex_part
+boost::regular expression | to implement the wex::regular expression and regex_part
 boost::spirit             | to implement the wex::evaluator
 boost::statechart         | to implement the statemachine for vi mode and macro mode
 boost::tokenizer          | to tokenize expressions
@@ -72,7 +72,7 @@ boost::URL                | to handle URLs
 
 ### Regular expressions library
 
-though part of c++11, we use the boost::regular_expression library
+though part of c++11, we use the boost::regular expression library
 as this has better performance
 
 ```cpp
