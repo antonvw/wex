@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
+#include <boost/regex.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/url.hpp>
 
@@ -18,7 +19,6 @@
 
 #include <algorithm>
 #include <numeric>
-#include <regex>
 
 bool wex::auto_complete_text(
   const std::string&              text,
@@ -257,13 +257,13 @@ bool wex::matches_one_of(
     try
     {
       if (
-        !is_regex && std::regex_match(filename, std::regex(it)) ||
-        is_regex && std::regex_search(filename, std::regex(it)))
+        !is_regex && boost::regex_match(filename, boost::regex(it)) ||
+        is_regex && boost::regex_search(filename, boost::regex(it)))
       {
         return true;
       }
     }
-    catch (std::regex_error& e)
+    catch (boost::regex_error& e)
     {
       log::status() << e.what();
       return false;

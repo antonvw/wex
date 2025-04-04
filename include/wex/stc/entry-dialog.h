@@ -2,7 +2,7 @@
 // Name:      stc-entry-dialog.h
 // Purpose:   Declaration of class wex::stc_entry_dialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2024 Anton van Wezenbeek
+// Copyright: (c) 2009-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,7 +10,7 @@
 #include <wex/data/stc.h>
 #include <wex/ui/dialog.h>
 
-#include <regex>
+#include <boost/regex.hpp>
 #include <string>
 
 namespace wex
@@ -48,8 +48,8 @@ public:
     bool ic = false);
 
 private:
-  std::regex  m_validator;
-  std::string m_validator_string;
+  boost::regex m_validator;
+  std::string  m_validator_string;
 
   wex::stc* m_stc;
 };

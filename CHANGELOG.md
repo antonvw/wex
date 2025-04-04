@@ -21,6 +21,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - fixed allow adding markers for which isgraph is true
 - fixed CSS macro's and added folding
+- improved performance on regular expression searching by using
+  boost::regular expression instead of std::regular expression
 
 ### Removed
 

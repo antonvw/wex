@@ -2,7 +2,7 @@
 // Name:      frd.cpp
 // Purpose:   Implementation of wex::factory::find_replace_data class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -68,25 +68,25 @@ bool wex::factory::find_replace_data::match_word() const
 int wex::factory::find_replace_data::regex_replace(std::string& text) const
 {
   const auto words_begin =
-    std::sregex_iterator(text.begin(), text.end(), m_regex);
-  const auto words_end = std::sregex_iterator();
+    boost::sregex_iterator(text.begin(), text.end(), m_regex);
+  const auto words_end = boost::sregex_iterator();
   const int  result    = std::distance(words_begin, words_end);
 
-  text = std::regex_replace(
+  text = boost::regex_replace(
     text,
     m_regex,
     get_replace_string(),
     // Otherwise, \2 \1 in replacement does not work,
     // though that actually is ECMAScript??
-    std::regex_constants::format_sed);
+    boost::regex_constants::format_sed);
 
   return result;
 }
 
 int wex::factory::find_replace_data::regex_search(const std::string& text) const
 {
-  std::smatch m;
-  if (!std::regex_search(text, m, m_regex))
+  boost::smatch m;
+  if (!boost::regex_search(text, m, m_regex))
   {
     return -1;
   }
@@ -154,19 +154,19 @@ void wex::factory::find_replace_data::set_regex(bool value)
 
   try
   {
-    std::regex::flag_type flags = std::regex::ECMAScript;
+    boost::regex::flag_type flags = boost::regex::ECMAScript;
 
     if (!match_case())
     {
-      flags |= std::regex::icase;
+      flags |= boost::regex::icase;
     }
 
-    m_regex     = std::regex(get_find_string(), flags);
+    m_regex     = boost::regex(get_find_string(), flags);
     m_use_regex = true;
 
     log::trace("frd set_regex") << get_find_string();
   }
-  catch (std::regex_error& e)
+  catch (boost::regex_error& e)
   {
     m_use_regex = false;
     log::status(e.what()) << "regex" << get_find_string();

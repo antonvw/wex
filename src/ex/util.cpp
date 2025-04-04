@@ -8,7 +8,7 @@
 #ifndef __WXGTK__
 #include <format>
 #endif
-#include <regex>
+#include <boost/regex.hpp>
 
 #include <wex/core/log.h>
 #include <wex/ex/ex.h>
@@ -86,9 +86,9 @@ wex::get_lines(factory::stc* stc, int start, int end, const std::string& flags)
 bool wex::is_register_valid(const std::string& text)
 {
   return text.size() == 2 && (text[0] == '@' || text[0] == WXK_CONTROL_R) &&
-         std::regex_match(
+         boost::regex_match(
            text,
-           std::regex("^" + std::string(1, text[0]) + "[0-9=\"a-z%._\\*]$"));
+           boost::regex("^" + std::string(1, text[0]) + "[0-9=\"a-z%._\\*]$"));
 }
 
 const std::string wex::k_s(wxKeyCode key)
