@@ -1717,8 +1717,13 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   <lexer name="toml"/>
   <lexer name="troff"/>
   <lexer name="txt2tags"/>
-  <lexer name="vb">
+  <lexer name="vb" extensions="*.vba;*.bas;*.cls" >
     <keywords set ="vb"/>
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+    </properties>
   </lexer>
   <lexer name="vbscript" macro="vb">
     <keywords set ="vb"/>
