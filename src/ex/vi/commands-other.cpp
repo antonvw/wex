@@ -247,7 +247,7 @@ wex::vi::commands_t wex::vi::commands_other()
        }
        else
        {
-         if (config(_("Error bells")).get(true))
+         if (config("ex-set.errorbells").get(true))
          {
            wxBell();
          }

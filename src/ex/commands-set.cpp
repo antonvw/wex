@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::ex
 //            https://pubs.opengroup.org/onlinepubs/9799919799/utilities/ex.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/cmdline.h>
@@ -21,7 +21,7 @@ bool wex::ex::command_set(const std::string& command)
 
   wex::cmdline cmdline(
     // switches
-    {{{"ac", _("Auto complete")}, nullptr},
+    {{{"ac", _("stc.Auto complete")}, nullptr},
      {{"autoindent,ai", "ex-set.ai"},
       [&](bool on)
       {
@@ -35,7 +35,7 @@ bool wex::ex::command_set(const std::string& command)
       {
         m_auto_write = on;
       }},
-     {{"errorbells,eb", _("stc.Error bells")}, nullptr},
+     {{"errorbells,eb", "ex-set.errorbells"}, nullptr},
      {{"el", "ex-set.el"},
       [&](bool on)
       {
@@ -160,12 +160,12 @@ bool wex::ex::command_set(const std::string& command)
          }
        }}},
      {{"report",
-       "stc.Reported lines",
-       std::to_string(config("stc.Reported lines").get(5))},
+       "ex-set.reportedlines",
+       std::to_string(config("ex-set.reportedlines").get(5))},
       {cmdline::INT,
        [&](const std::any& val)
        {
-         config("stc.Reported lines").set(std::any_cast<int>(val));
+         config("ex-set.reportedlines").set(std::any_cast<int>(val));
        }}},
      {{"shiftwidth,sw",
        _("stc.Indent"),
