@@ -2,7 +2,7 @@
 // Name:      ex-commandline-imp-on.cpp
 // Purpose:   Implementation of wex::ex_commandline_imp class on.. methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2024 Anton van Wezenbeek
+// Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/util.h>
@@ -265,6 +265,7 @@ void wex::ex_commandline_imp::on_text_enter(wxEvent& event)
       .exec())
   {
     on_text_enter_do();
+    m_text_not_expanded.clear();
   }
 }
 

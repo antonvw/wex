@@ -496,7 +496,6 @@ void wex::ex_stream::goto_line(int no)
 
   m_stream->clear();
 
-  log::status(std::string());
   log::trace("ex stream goto_line")
     << no << "current" << m_line_no << "pos" << (int)m_stream->tellg();
 
