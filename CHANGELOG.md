@@ -23,7 +23,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - fixed CSS macro's and added folding
 - improved performance on regular expression searching by using
   boost::regular expression instead of std::regular expression
-- fix some ex settings such as errorbells
+- fixed some ex settings such as errorbells
+- fixed recording using escape
 
 ### Removed
 
