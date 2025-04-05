@@ -358,7 +358,7 @@ TEST_CASE("wex::vi")
     REQUIRE(!stc->GetUseTabs());
 
     REQUIRE(vi->command(":set report=10"));
-    REQUIRE(wex::config("stc.Reported lines").get(5) == 10);
+    REQUIRE(wex::config("ex-set.reportedlines").get(5) == 10);
 
     REQUIRE(vi->command(":set ve=5"));
     REQUIRE(std::to_underlying(wex::log::get_level()) == 5);

@@ -112,7 +112,7 @@ const std::string wex::data::find::get_find_result() const
            _("hit").ToStdString() + " " + where;
   }
 
-  if (config(_("Error bells")).get(true))
+  if (config("ex-set.errorbells").get(true))
   {
     wxBell();
   }

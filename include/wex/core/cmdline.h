@@ -2,7 +2,7 @@
 // Name:      cmdline.h
 // Purpose:   Declaration of wex::cmdline class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -113,7 +113,7 @@ public:
   bool parse_set(data::cmdline& data) const;
 
 private:
-  void get_all(std::string& help) const;
+  std::string get_all() const;
   bool get_single(const std::vector<std::string>& v, std::string& help) const;
   void init();
   bool set_no_option(const std::vector<std::string>& v, bool save) const;

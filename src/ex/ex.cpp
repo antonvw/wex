@@ -167,7 +167,7 @@ void wex::ex::info_message(const std::string& text, wex::info_message_t type)
   const
 {
   if (const auto lines = get_number_of_lines(text);
-      lines > config("stc.Reported lines").get(5))
+      lines > config("ex-set.reportedlines").get(5))
   {
     std::stringstream msg;
     msg << lines - 1 << " ";
@@ -370,7 +370,7 @@ int wex::ex::marker_line(char marker) const
     }
   }
 
-  if (config(_("stc.Error bells")).get(true))
+  if (config("ex-set.errorbells").get(true))
   {
     wxBell();
   }

@@ -2,7 +2,7 @@
 // Name:      cmdline.cpp
 // Purpose:   Implementation of wex::cmdline class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025: Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -137,24 +137,24 @@ wex::cmdline::~cmdline()
   delete m_parser;
 }
 
-void wex::cmdline::get_all(std::string& help) const
+std::string wex::cmdline::get_all() const
 {
-  help += std::accumulate(
-            m_options.begin(),
-            m_options.end(),
-            std::string(),
-            [this](const std::string& a, const auto& b)
-            {
-              return a + get_option(b, m_cfg);
-            }) +
-          std::accumulate(
-            m_switches.begin(),
-            m_switches.end(),
-            std::string(),
-            [this](const std::string& a, const auto& b)
-            {
-              return a + get_switch(b, m_cfg);
-            });
+  return std::accumulate(
+           m_options.begin(),
+           m_options.end(),
+           std::string(),
+           [this](const std::string& a, const auto& b)
+           {
+             return a + get_option(b, m_cfg);
+           }) +
+         std::accumulate(
+           m_switches.begin(),
+           m_switches.end(),
+           std::string(),
+           [this](const std::string& a, const auto& b)
+           {
+             return a + get_switch(b, m_cfg);
+           });
 }
 
 std::string wex::cmdline::get_output()
@@ -311,9 +311,7 @@ bool wex::cmdline::parse_set(data::cmdline& data) const
     {{"all",
       [&, this](const regex::match_t& m)
       {
-        std::string help;
-        get_all(help);
-        data.help(help);
+        data.help(get_all());
       }},
      // [nooption ...]
      {"no([a-z0-9]+)(.*)",
