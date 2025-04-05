@@ -83,7 +83,9 @@ if(wexENABLE_ODBC)
   find_package(ODBC)
 endif()
 
-enable_testing()
+if(wexBUILD_TESTS)
+  enable_testing()
+endif()
 
 include(cmake/options.cmake)
 include(cmake/common.cmake)
@@ -110,9 +112,12 @@ set(
   wex-data
   wex-syntax
   wex-factory
-  wex-test
   wex-core
 )
+
+if(wexBUILD_TESTS)
+  set(wex_own_LIBRARIES "${wex_own_LIBRARIES}" wex-test)
+endif()
 
 separate_arguments(wex_own_LIBRARIES)
 
