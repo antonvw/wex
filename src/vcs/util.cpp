@@ -83,9 +83,8 @@ bool wex::vcs_execute(
   {
     if (vcs.show_dialog(data) == wxID_OK)
     {
-      std::for_each(
-        files.begin(),
-        files.end(),
+      std::ranges::for_each(
+        files,
         [frame, id](const auto& it)
         {
           if (wex::vcs vcs({it}, id); vcs.execute())

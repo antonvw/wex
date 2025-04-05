@@ -973,9 +973,8 @@ bool wex::listview::load(const strings_t& l)
 
     int i = 0;
 
-    std::for_each(
-      tok.begin(),
-      tok.end(),
+    std::ranges::for_each(
+      tok,
       [this, &i](const auto&)
       {
         append_columns({{std::to_string(i++ + 1), column::STRING_MEDIUM, 100}});

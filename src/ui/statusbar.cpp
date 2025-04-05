@@ -82,9 +82,8 @@ std::vector<item> pane_dialog_items(const std::vector<statusbar_pane>& panes)
 {
   std::vector<item> v_i(add_header({"pane", "width", "style"}));
 
-  std::for_each(
-    panes.begin(),
-    panes.end(),
+  std::ranges::for_each(
+    panes,
     [&v_i](const auto& it)
     {
       if (it.is_shown())

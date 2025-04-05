@@ -2,7 +2,7 @@
 // Name:      item-build.cpp
 // Purpose:   Implementation of item build methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -25,9 +25,8 @@ wex::add_header(const std::vector<std::string>& names)
 {
   std::vector<item> v;
 
-  std::for_each(
-    names.begin(),
-    names.end(),
+  std::ranges::for_each(
+    names,
     [&v](const auto& name)
     {
       v.push_back(

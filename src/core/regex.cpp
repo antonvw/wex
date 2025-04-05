@@ -14,9 +14,8 @@
   [](const TYPE& reg_v, boost::regex::flag_type flags)                         \
   {                                                                            \
     regex_t v;                                                                 \
-    std::for_each(                                                             \
-      reg_v.begin(),                                                           \
-      reg_v.end(),                                                             \
+    std::ranges::for_each(                                                     \
+      reg_v,                                                                   \
       [&v, flags](const auto& e)                                               \
       {                                                                        \
         ACTION;                                                                \

@@ -180,9 +180,8 @@ void wex::stc::add_text_block(const std::string& text)
 {
   stc_undo undo(this);
 
-  std::for_each(
-    text.begin(),
-    text.end(),
+  std::ranges::for_each(
+    text,
     [this](const auto& it)
     {
       if (it != '\n' && it != '\r')
@@ -435,7 +434,7 @@ bool wex::stc::mark_diff(size_t line, const marker& marker)
     log::status("diff marker already present, skipped processing");
     return false;
   }
-  
+
   if (const int id = MarkerAdd(line, marker.number()); id != -1)
   {
     m_marker_identifiers[line] = id;
@@ -687,7 +686,7 @@ bool wex::stc::unified_diff_set_markers(const factory::unified_diff* uni)
   {
     return mark_diff(uni->range_from_start(), m_marker_diff_change);
   }
-  
+
   if (uni->range_from_count() > 0)
   {
     return mark_diff(uni->range_from_start(), m_marker_diff_del);

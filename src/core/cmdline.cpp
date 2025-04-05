@@ -2,7 +2,7 @@
 // Name:      cmdline.cpp
 // Purpose:   Implementation of wex::cmdline class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025: Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -202,9 +202,8 @@ void wex::cmdline::init()
   {
     const size_t p_n{0}, p_d{1}; // par name, description
 
-    std::for_each(
-      m_switches.begin(),
-      m_switches.end(),
+    std::ranges::for_each(
+      m_switches,
       [this](const auto& it)
       {
         m_parser->m_desc.add_options()(
@@ -214,9 +213,8 @@ void wex::cmdline::init()
         m_parser->add_function(it.first[p_n], it.second);
       });
 
-    std::for_each(
-      m_options.begin(),
-      m_options.end(),
+    std::ranges::for_each(
+      m_options,
       [this](const auto& it)
       {
         m_parser->add_function(
