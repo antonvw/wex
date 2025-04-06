@@ -99,24 +99,39 @@ if(wexENABLE_ASAN)
 endif()
 
 # See also Findwex
-set(
-  wex_own_LIBRARIES
-  wex-del
-  wex-vcs
-  wex-stc
-  wex-vi
-  wex-ex
-  wex-ctags
-  wex-ui
-  wex-common
-  wex-data
-  wex-syntax
-  wex-factory
-  wex-core
-)
-
 if(wexBUILD_TESTS)
-  set(wex_own_LIBRARIES "${wex_own_LIBRARIES}" wex-test)
+  set(
+    wex_own_LIBRARIES
+    wex-del
+    wex-vcs
+    wex-stc
+    wex-vi
+    wex-ex
+    wex-ctags
+    wex-ui
+    wex-common
+    wex-data
+    wex-syntax
+    wex-factory
+    wex-test
+    wex-core
+  )
+else()
+  set(
+    wex_own_LIBRARIES
+    wex-del
+    wex-vcs
+    wex-stc
+    wex-vi
+    wex-ex
+    wex-ctags
+    wex-ui
+    wex-common
+    wex-data
+    wex-syntax
+    wex-factory
+    wex-core
+  )
 endif()
 
 separate_arguments(wex_own_LIBRARIES)
