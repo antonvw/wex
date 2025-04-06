@@ -45,7 +45,7 @@ jobs:
       - name: Install robotframework
         run: sudo pip install robotframework
 
-      - name: Configure
+      - name: Configure for coverage
         # adding -s samples switch should result in app running,
         # but then the headless test keeps on running
         run: ./build-gen.sh -b -c -g -p -t -B ${{steps.install-boost.outputs.BOOST_ROOT}}
@@ -57,7 +57,7 @@ jobs:
       - name: Make using ninja
         run: cd build && ninja
 
-      - name: Headless Test
+      - name: Headless test
         # currently skip wex-test-del, it segfaults, wait for gcc-14?
         run: cd build &&
           ninja lcov-prep &&
@@ -66,14 +66,24 @@ jobs:
         env:
           NO_AT_BRIDGE: 1
 
+      #- name: Coveralls
+      #  run: cd build && coveralls -r 9vV6skuIGeagBBkz5TCZNI12ezUv12gOj --format=lcov --file=src/app.run
+
+      - name: Cleanup
+        run: rm -rf build
+
+      - name: Reconfigure and build for artifacts without testing
+        run: ./build-gen.sh -b -g -B ${{steps.install-boost.outputs.BOOST_ROOT}}
+        env:
+          BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
+          CC: gcc-14
+          CXX: g++-14
+
       - name: Artifacts
-        # see build-gen, currently a static build
         uses: actions/upload-artifact@v4
         with:
           name: wex-lib-ubuntu
           path: |
+            data/*.xml
             build/**/*.a
             build/**/setup.h
-
-      - name: Coveralls
-        run: cd build && coveralls -r 9vV6skuIGeagBBkz5TCZNI12ezUv12gOj --format=lcov --file=src/app.run

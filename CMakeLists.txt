@@ -83,7 +83,9 @@ if(wexENABLE_ODBC)
   find_package(ODBC)
 endif()
 
-enable_testing()
+if(wexBUILD_TESTS)
+  enable_testing()
+endif()
 
 include(cmake/options.cmake)
 include(cmake/common.cmake)
@@ -97,22 +99,40 @@ if(wexENABLE_ASAN)
 endif()
 
 # See also Findwex
-set(
-  wex_own_LIBRARIES
-  wex-del
-  wex-vcs
-  wex-stc
-  wex-vi
-  wex-ex
-  wex-ctags
-  wex-ui
-  wex-common
-  wex-data
-  wex-syntax
-  wex-factory
-  wex-test
-  wex-core
-)
+if(wexBUILD_TESTS)
+  set(
+    wex_own_LIBRARIES
+    wex-del
+    wex-vcs
+    wex-stc
+    wex-vi
+    wex-ex
+    wex-ctags
+    wex-ui
+    wex-common
+    wex-data
+    wex-syntax
+    wex-factory
+    wex-test
+    wex-core
+  )
+else()
+  set(
+    wex_own_LIBRARIES
+    wex-del
+    wex-vcs
+    wex-stc
+    wex-vi
+    wex-ex
+    wex-ctags
+    wex-ui
+    wex-common
+    wex-data
+    wex-syntax
+    wex-factory
+    wex-core
+  )
+endif()
 
 separate_arguments(wex_own_LIBRARIES)
 
