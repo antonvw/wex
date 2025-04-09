@@ -7,8 +7,6 @@
 
 #pragma once
 
-#ifdef wexBUILD_TESTS
-
 #include <wex/test/unittest.h>
 
 // after test include
@@ -56,4 +54,3 @@ int main(int argc, char* argv[], app* app);
 std::vector<std::pair<std::string, std::string>> get_abbreviations();
 }; // namespace test
 }; // namespace wex
-#endif
