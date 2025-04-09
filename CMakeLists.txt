@@ -48,6 +48,7 @@ execute_process(
 
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(external/trompeloeil/include/catch2)
+include_directories(external/wxWidgets/3rdparty/catch/single_include/catch2)
 
 set(
   CMAKE_MODULE_PATH
@@ -123,8 +124,6 @@ set(CMAKE_CXX_STANDARD ${WEX_CXX_STANDARD})
 
 if(wexBUILD_TESTS)
   add_definitions(-DwexBUILD_TESTS)
-
-  include_directories(external/wxWidgets/3rdparty/catch/single_include/catch2)
 
   add_subdirectory(test)
 endif()
