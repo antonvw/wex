@@ -66,8 +66,8 @@ jobs:
         env:
           NO_AT_BRIDGE: 1
 
-      #- name: Coveralls
-      #  run: cd build && coveralls -r 9vV6skuIGeagBBkz5TCZNI12ezUv12gOj --format=lcov --file=src/app.run
+      - name: Coveralls
+        run: cd build && coveralls -r 9vV6skuIGeagBBkz5TCZNI12ezUv12gOj --format=lcov --file=src/app.run
 
       - name: Cleanup
         run: rm -rf build
