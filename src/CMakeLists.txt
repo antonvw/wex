@@ -63,11 +63,7 @@ if(wexBUILD_TIDY)
 endif()
 
 add_subdirectory(core)
-
-if(wexBUILD_TESTS)
-  add_subdirectory(test)
-endif()
-
+add_subdirectory(test)
 add_subdirectory(factory)
 add_subdirectory(syntax)
 add_subdirectory(data)

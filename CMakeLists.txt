@@ -48,6 +48,7 @@ execute_process(
 
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(external/trompeloeil/include/catch2)
+include_directories(external/wxWidgets/3rdparty/catch/single_include/catch2)
 
 set(
   CMAKE_MODULE_PATH
@@ -99,40 +100,22 @@ if(wexENABLE_ASAN)
 endif()
 
 # See also Findwex
-if(wexBUILD_TESTS)
-  set(
-    wex_own_LIBRARIES
-    wex-del
-    wex-vcs
-    wex-stc
-    wex-vi
-    wex-ex
-    wex-ctags
-    wex-ui
-    wex-common
-    wex-data
-    wex-syntax
-    wex-factory
-    wex-test
-    wex-core
-  )
-else()
-  set(
-    wex_own_LIBRARIES
-    wex-del
-    wex-vcs
-    wex-stc
-    wex-vi
-    wex-ex
-    wex-ctags
-    wex-ui
-    wex-common
-    wex-data
-    wex-syntax
-    wex-factory
-    wex-core
-  )
-endif()
+set(
+  wex_own_LIBRARIES
+  wex-del
+  wex-vcs
+  wex-stc
+  wex-vi
+  wex-ex
+  wex-ctags
+  wex-ui
+  wex-common
+  wex-data
+  wex-syntax
+  wex-factory
+  wex-test
+  wex-core
+)
 
 separate_arguments(wex_own_LIBRARIES)
 
@@ -141,8 +124,6 @@ set(CMAKE_CXX_STANDARD ${WEX_CXX_STANDARD})
 
 if(wexBUILD_TESTS)
   add_definitions(-DwexBUILD_TESTS)
-
-  include_directories(external/wxWidgets/3rdparty/catch/single_include/catch2)
 
   add_subdirectory(test)
 endif()

@@ -10,8 +10,6 @@
 #include <wex/core/app.h>
 #include <wex/core/path.h>
 
-#ifdef wexBUILD_TESTS
-
 #include <catch.hpp>
 
 namespace Catch
@@ -55,4 +53,3 @@ private:
 };
 } // namespace test
 } // namespace wex
-#endif
