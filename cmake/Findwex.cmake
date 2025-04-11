@@ -116,6 +116,7 @@ elseif(UNIX)
     -lcairo
     -lgobject-2.0
     -lglib-2.0
+    -lxkbcommon
   )
 else()
   message(FATAL_ERROR "Unsupported platform")

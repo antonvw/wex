@@ -122,6 +122,12 @@ function(wex_install)
     DESTINATION ${WEX_INSTALL_DIR}
   )
 
+  install(
+    FILES
+      ${CMAKE_SOURCE_DIR}/external/wxWidgets/3rdparty/catch/single_include/catch2/catch.hpp
+    DESTINATION ${WEX_INSTALL_DIR}
+  )
+
   if(ODBC_FOUND)
     install(
       FILES ${CMAKE_SOURCE_DIR}/external/otl/otlv4.h
