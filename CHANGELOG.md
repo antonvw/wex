@@ -25,6 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   boost::regular expression instead of std::regular expression
 - fixed some ex settings such as errorbells
 - fixed recording using escape
+- prevent git grep on selection with multiple lines
 
 ### Removed
 

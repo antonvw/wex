@@ -131,6 +131,12 @@ bool wex::vcs_entry::execute(
     const std::string& find(
       boost::algorithm::replace_all_copy(text, " ", "\\ "));
 
+    if (find.contains("\n"))
+    {
+      log::status("Cannot grep multiple lines");
+      return false;
+    }
+
     frame->process_async_system(
       process_data(bin() + " grep -n " + find).start_dir(tl.string()));
     return false; // skip rest in vcs_execute
