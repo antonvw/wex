@@ -178,7 +178,13 @@ else()
   )
 
   if(NOT APPLE AND NOT wexBUILD_SHARED)
-    set(wx_LIBRARIES ${wx_LIBRARIES} wxscintilla-${wx_BASE_LIB})
+    set(
+      wx_LIBRARIES
+      ${wx_LIBRARIES}
+      wxscintilla-${wx_BASE_LIB}
+      wxlexilla-${wx_BASE_LIB}
+      wxregexu-${wx_BASE_LIB}
+    )
   endif()
 
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
