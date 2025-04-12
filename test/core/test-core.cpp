@@ -13,7 +13,7 @@
 
 TEST_CASE("wex::core")
 {
-  wex::ints_t cs{'(', ')', '{', '<', '>'};
+  wex::ints_t cs{'(', ')', '{', '}', '<', '>', '[', ']'};
 
   SECTION("clipboard")
   {
@@ -117,7 +117,7 @@ TEST_CASE("wex::core")
 
   SECTION("is_codeword_separator")
   {
-    cs.insert(cs.end(), {',', ';', ':', '@'});
+    cs.insert(cs.end(), {',', ';', ':', '@', '+', '-', ' ', '\t'});
 
     for (const auto& c : cs)
     {

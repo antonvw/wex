@@ -221,8 +221,7 @@ bool wex::is_brace(int c)
 
 bool wex::is_codeword_separator(int c)
 {
-  return isspace(c) || is_brace(c) || c == ',' || c == ';' || c == ':' ||
-         c == '+' || c == '-' || c == '@';
+  return isspace(c) || is_brace(c) || ispunct(c);
 }
 
 bool wex::matches_one_of(
