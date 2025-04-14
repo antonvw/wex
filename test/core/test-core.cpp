@@ -9,11 +9,28 @@
 #include <wex/core/types.h>
 #include <wex/test/test.h>
 
-#include <vector>
-
 TEST_CASE("wex::core")
 {
   wex::ints_t cs{'(', ')', '{', '}', '<', '>', '[', ']'};
+
+  SECTION("auto_complete_text")
+  {
+    const std::vector<std::string> v{"one_xxxx", "one_yyyyy", "one_z"};
+    std::string                    result;
+
+    REQUIRE(!wex::auto_complete_text("", v, result));
+    REQUIRE(result == "one_z");
+
+    REQUIRE(!wex::auto_complete_text("aha", v, result));
+    REQUIRE(result == "one_z");
+
+    REQUIRE(
+      !wex::auto_complete_text("aha", std::vector<std::string>{}, result));
+    REQUIRE(result == "one_z");
+
+    REQUIRE(wex::auto_complete_text("one_x", v, result));
+    REQUIRE(result == "one_xxxx");
+  }
 
   SECTION("clipboard")
   {

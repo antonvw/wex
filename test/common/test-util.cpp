@@ -26,7 +26,7 @@ TEST_CASE("wex::util", "[!mayfail]")
     REQUIRE(!wex::auto_complete_filename("XX"));
 
 #ifdef __UNIX__
-    REQUIRE(wex::auto_complete_filename("/usr/local/l"));
+    REQUIRE(wex::auto_complete_filename("/bin/l"));
 
     // we are in wex/test/data
     REQUIRE(wex::auto_complete_filename("../../src/v"));
