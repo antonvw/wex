@@ -35,6 +35,10 @@ set(wx_BASE_LIB 3.3)
 
 set(CMAKE_CXX_STANDARD 23)
 
+if(CMAKE_VERSION VERSION_GREATER "3.30.0")
+  cmake_policy(SET CMP0167 NEW)
+endif()
+
 find_package(
   Boost
   1.81.0
