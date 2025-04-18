@@ -88,7 +88,7 @@ wex::auto_complete_filename(const std::string& text)
   // alias to filename
   const auto& prefix(path.filename());
 
-  // get all matching files
+  // get all matching files (not recursive)
   const auto& v(get_all_files(
     path.parent_path(),
     data::dir()
