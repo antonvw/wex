@@ -2,7 +2,7 @@
 // Name:      path-match.h
 // Purpose:   Declaration of class wex::path_match
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -17,11 +17,7 @@ class path_match
 {
 public:
   /// Constructor path only.
-  path_match(const path& p)
-    : m_path(p)
-  {
-    ;
-  }
+  path_match(const path& p);
 
   /// Constructor.
   explicit path_match(
@@ -34,15 +30,12 @@ public:
     /// line number containing match
     size_t line_no,
     /// pos on line where match starts, -1 not known
-    int pos)
-    : m_line(line)
-    , m_path(p)
-    , m_pos(pos)
-    , m_line_no(line_no)
-    , m_tool(t)
-  {
-    ;
-  };
+    int pos);
+
+  /// Returns context.
+  /// This returns context around the matching pos, instead of the
+  /// complete line. The context size is determined by config.
+  const std::string context() const;
 
   /// Returns matching line.
   auto& line() const { return m_line; }
