@@ -37,7 +37,7 @@ set(CMAKE_CXX_STANDARD 23)
 
 if(CMAKE_VERSION VERSION_GREATER "3.30.0")
   cmake_policy(SET CMP0144 OLD)
-  cmake_policy(SET CMP0167 NEW)
+  cmake_policy(SET CMP0167 OLD)
 endif()
 
 find_package(
