@@ -509,20 +509,6 @@ void wex::listview::config_get()
   items_update();
 }
 
-const std::string wex::listview::context(const std::string& line, int pos) const
-{
-  int context_size = config(_("list.Context size")).get(10);
-
-  if (pos == -1 || context_size <= 0)
-  {
-    return line;
-  }
-
-  return (context_size > pos ? std::string(context_size - pos, ' ') :
-                               std::string()) +
-         line.substr(context_size < pos ? pos - context_size : 0);
-}
-
 void wex::listview::copy_selection_to_clipboard()
 {
   if (GetSelectedItemCount() == 0)
@@ -1145,7 +1131,7 @@ void wex::listview::process_match(const wxCommandEvent& event)
 
   item.insert();
   item.set_item(_("Line No"), std::to_string(m->line_no() + 1));
-  item.set_item(_("Line"), context(m->line(), m->pos()));
+  item.set_item(_("Line"), m->context());
   item.set_item(
     _("Match"),
     m->tool().id() == ID_TOOL_REPORT_FIND ?
