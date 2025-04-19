@@ -2,7 +2,7 @@
 // Name:      style.h
 // Purpose:   Declaration of wex::style class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2024 Anton van Wezenbeek
+// Copyright: (c) 2010-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -52,6 +52,9 @@ public:
 
   /// Is the default style part of these styles.
   bool contains_default_style() const;
+
+  /// Returns default font.
+  wxFont default_font() const;
 
   /// Returns default font size.
   int default_font_size() const;

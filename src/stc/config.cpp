@@ -2,7 +2,7 @@
 // Name:      stc/config.cpp
 // Purpose:   Implementation of config related methods of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2024 Anton van Wezenbeek
+// Copyright: (c) 2017-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -209,20 +209,13 @@ void wex::stc::on_init()
         {_("Font"),
          {{_("stc.Default font"),
            item::FONTPICKERCTRL,
-           wxFont(
-             12,
-             wxFONTFAMILY_DEFAULT,
-             wxFONTSTYLE_NORMAL,
-             wxFONTWEIGHT_NORMAL),
+           style().default_font(),
            data::item().apply(
              [=](wxWindow* user, const std::any& value, bool save)
              {
                // Doing this once is enough, not yet possible.
                lexers::get()->load_document();
-             })},
-          {_("stc.Text font"),
-           item::FONTPICKERCTRL,
-           wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)}}},
+             })}}},
         {_("Edge"),
          {{_("stc.Edge column"), 0, 500, 80},
           {_("stc.Edge line"),

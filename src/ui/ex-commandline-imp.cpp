@@ -2,7 +2,7 @@
 // Name:      ex-commandline-imp.cpp
 // Purpose:   Implementation of wex::ex_commandline_imp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <utility>
@@ -271,8 +271,6 @@ void wex::ex_commandline_imp::init()
 {
   SetUseHorizontalScrollBar(false);
   SetUseVerticalScrollBar(false);
-  SetFont(config(_("stc.Text font"))
-            .get(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
 
   get_lexer().set(lexer(this));
   reset_margins();

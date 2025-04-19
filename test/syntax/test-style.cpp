@@ -20,6 +20,7 @@ TEST_CASE("wex::style")
   SECTION("constructor")
   {
     REQUIRE(!wex::style().is_ok());
+    REQUIRE(wex::style().default_font().IsOk());
   }
 
   SECTION("constructor-no-value")

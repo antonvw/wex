@@ -33,15 +33,6 @@ bool check_style_spec(const std::string& spec, const std::string& colour)
   return true;
 }
 
-wxFont default_font()
-{
-  return config(_("stc.Default font"))
-    .get(wxFont(
-      12,
-      wxFONTFAMILY_DEFAULT,
-      wxFONTSTYLE_NORMAL,
-      wxFONTWEIGHT_NORMAL));
-}
 } // namespace wex
 
 bool wex::style::apply(wxStyledTextCtrl* stc) const
@@ -95,6 +86,16 @@ void wex::style::clear()
 bool wex::style::contains_default_style() const
 {
   return (m_no.find(wxSTC_STYLE_DEFAULT) != m_no.end());
+}
+
+wxFont wex::style::default_font() const
+{
+  return config(_("stc.Default font"))
+    .get(wxFont(
+      10,
+      wxFONTFAMILY_TELETYPE,
+      wxFONTSTYLE_NORMAL,
+      wxFONTWEIGHT_NORMAL));
 }
 
 int wex::style::default_font_size() const
