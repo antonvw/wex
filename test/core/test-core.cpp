@@ -5,6 +5,7 @@
 // Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/types.h>
 #include <wex/test/test.h>
@@ -30,6 +31,17 @@ TEST_CASE("wex::core")
 
     REQUIRE(wex::auto_complete_text("one_x", v, result));
     REQUIRE(result == "one_xxxx");
+  }
+
+  SECTION("bell")
+  {
+    const std::string key("ex-set.errorbells");
+
+    wex::config(key).set(true);
+    REQUIRE(wex::bell());
+
+    wex::config(key).set(false);
+    REQUIRE(!wex::bell());
   }
 
   SECTION("clipboard")

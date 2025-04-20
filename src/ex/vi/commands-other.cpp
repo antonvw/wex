@@ -247,10 +247,7 @@ wex::vi::commands_t wex::vi::commands_other()
        }
        else
        {
-         if (config("ex-set.errorbells").get(true))
-         {
-           wxBell();
-         }
+         bell();
        }
        return 1;
      }},

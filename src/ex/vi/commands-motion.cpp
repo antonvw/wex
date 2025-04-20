@@ -7,6 +7,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <wex/core/config.h>
+#include <wex/core/core.h>
 #include <wex/ex/addressrange.h>
 #include <wex/ex/macros.h>
 #include <wex/ex/util.h>
@@ -632,11 +633,17 @@ bool wex::vi::motion_command_handle(
   size_t parsed = 0;
   auto   start  = get_stc()->GetCurrentPos();
 
-  if (wex::vim vim(this, command, type); vim.is_motion())
+  if (wex::vim vim(this, command, type); vim.is_vim())
   {
-    if (!vim.motion(start, parsed, f_type))
+    if (vim.is_motion() && !vim.motion(start, parsed, f_type))
     {
       return false;
+    }
+    else if (!vim.is_special() && command.size() > 1)
+    {
+      bell();
+      command.clear();
+      return true;
     }
   }
   else

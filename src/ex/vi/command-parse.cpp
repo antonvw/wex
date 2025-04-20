@@ -5,6 +5,7 @@
 // Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/core.h>
 #include <wex/ex/macros.h>
 #include <wex/syntax/stc.h>
 #include <wex/vi/vi.h>
@@ -137,10 +138,16 @@ bool wex::vi::parse_command_motion(
   std::string& command,
   bool&        check_other)
 {
-  if (wex::vim vim(this, command, motion); vim.is_special())
+  if (wex::vim vim(this, command, motion); vim.is_vim())
   {
     if (vim.special())
     {
+      return true;
+    }
+    else if (!vim.is_motion() && command.size() > 1)
+    {
+      bell();
+      command.clear();
       return true;
     }
   }

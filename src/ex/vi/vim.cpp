@@ -189,6 +189,11 @@ bool wex::vim::is_special() const
          m_motion < vi::motion_t::G_special_end;
 }
 
+bool wex::vim::is_vim() const
+{
+  return m_motion >= vi::motion_t::G;
+}
+
 bool wex::vim::motion(int start_pos, size_t& parsed, const vi::function_t& f)
 {
   if (!is_motion())

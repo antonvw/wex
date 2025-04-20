@@ -370,10 +370,7 @@ int wex::ex::marker_line(char marker) const
     }
   }
 
-  if (config("ex-set.errorbells").get(true))
-  {
-    wxBell();
-  }
+  bell();
 
   return LINE_NUMBER_UNKNOWN;
 }

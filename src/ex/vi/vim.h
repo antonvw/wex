@@ -2,7 +2,7 @@
 // Name:      vim.h
 // Purpose:   Declaration of wex::vim class to handle vim special commands
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -28,6 +28,9 @@ public:
 
   /// Returns true if this is a vim special command.
   bool is_special() const;
+
+  /// Returns true if this command starts with a vim command.
+  bool is_vim() const;
 
   /// Handles the motion commands.
   bool motion(int start_pos, size_t& parsed, const vi::function_t& t);
