@@ -39,6 +39,18 @@ bool wex::auto_complete_text(
   return (matches == 1);
 }
 
+bool wex::bell()
+{
+  if (!config("ex-set.errorbells").get(true))
+  {
+    return false;
+  }
+
+  wxBell();
+
+  return true;
+}
+
 bool wex::browser(const std::string& url)
 {
   try

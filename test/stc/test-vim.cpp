@@ -15,11 +15,16 @@ TEST_CASE("wex::vim", "[!mayfail]")
   auto* vi  = &get_stc()->get_vi();
   stc->set_text("xxxxxxxxxx second\nxxxxxxxx");
 
+  SECTION("begin")
+  {
+    REQUIRE(!vi->command("g"));
+  }
+
   SECTION("invalid")
   {
-    REQUIRE(!vi->command("gc"));
-    REQUIRE(!vi->command("gcdefg"));
-    REQUIRE(!vi->command("g5"));
+    REQUIRE(vi->command("gc"));
+    REQUIRE(vi->command("gcdefg"));
+    REQUIRE(vi->command("g5"));
   }
 
   SECTION("motion")

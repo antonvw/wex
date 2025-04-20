@@ -26,6 +26,9 @@ bool auto_complete_text(
   /// expansion of text to the last match from the vector
   std::string& s);
 
+/// Bells if enabled in config.
+bool bell();
+
 /// Launch default browser.
 /// Returns false if no browser configured or url could not be opened.
 bool browser(const std::string& url);

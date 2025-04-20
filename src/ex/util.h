@@ -26,7 +26,7 @@ T::const_iterator find_from(
     return commands.end();
   }
 
-  const auto& it = std::ranges::find_if(
+  return std::ranges::find_if(
     commands,
     [&](auto const& e)
     {
@@ -37,8 +37,6 @@ T::const_iterator find_from(
           return p == chars[0];
         });
     });
-
-  return it;
 };
 
 /// Returns true if a register is specified by the text (normal or calc).
