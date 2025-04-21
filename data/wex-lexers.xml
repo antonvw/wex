@@ -3,7 +3,7 @@
 <!--
 Name:    wex-lexers.xml
 Purpose: Lexers configuration for wex.
-         See scintilla 5.4.2 (https://www.scintilla.org/LexillaHistory.html)
+         See scintilla 5.4.4 (https://www.scintilla.org/LexillaHistory.html)
 Author:  Anton van Wezenbeek
 Copyright: (c) 2009-2025, Anton van Wezenbeek
 -->
