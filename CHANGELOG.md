@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- upgrade to lexilla 5.4.4
 - replaced one_letter_after by internal is_marker_valid
 - replaced register_after by internal is_register_valid
 - used catch lib from wxWidgets instead of doctest lib for unit tests
