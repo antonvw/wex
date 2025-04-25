@@ -6,7 +6,7 @@
 #            for building wex itself, or for building apps using it
 #            Just run from repo root
 # Author:    Anton van Wezenbeek
-# Copyright: (c) 2024 Anton van Wezenbeek
+# Copyright: (c) 2024-2025 Anton van Wezenbeek
 ################################################################################
 
 usage()
@@ -80,7 +80,6 @@ while getopts ":B:d:D:G:abcghilopstT" opt; do
 
     G)
       option_generator="-G ${OPTARG}"
-      option_prepare=true
     ;;
 
     h)
@@ -158,5 +157,9 @@ cmake -B "${option_dir}" "${option_generator}" \
   ${option_tidy}
 
 if [[ "${option_prepare}" == "false" ]]; then
-  cd "${option_dir}" && ninja
+  if [[ "${option_generator}" =~ .*Ninja ]]; then
+    cd "${option_dir}" && ninja
+  elif [[ "${option_generator}" =~ .*Xcode ]]; then
+    cd "${option_dir}" && xcodebuild
+  fi
 fi

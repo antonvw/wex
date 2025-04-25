@@ -74,7 +74,7 @@ add_subdirectory(stc)
 add_subdirectory(vcs)
 add_subdirectory(del)
 
-if(${CMAKE_BUILD_TYPE} STREQUAL "Debug" AND MSVC)
+if(CMAKE_BUILD_TYPE MATCHES "Debug" AND MSVC)
   set_target_properties(
     ${wex_own_LIBRARIES}
     PROPERTIES
