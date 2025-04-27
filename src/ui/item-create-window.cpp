@@ -259,7 +259,7 @@ void create_font_picker_control(
   auto* pc = new wxFontPickerCtrl(
     parent,
     item.data().window().id(),
-    wxNullFont,
+    std::any_cast<wxFont>(item.data().initial()),
     PSS == data::NUMBER_NOT_SET ? wxFNTP_DEFAULT_STYLE | wxPB_SMALL :
                                   item.data().window().style());
 

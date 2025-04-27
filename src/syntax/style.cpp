@@ -92,7 +92,11 @@ wxFont wex::style::default_font() const
 {
   return config(_("stc.Default font"))
     .get(wxFont(
-      10,
+#ifdef __WXOSX__
+      14,
+#else
+      12,
+#endif
       wxFONTFAMILY_TELETYPE,
       wxFONTSTYLE_NORMAL,
       wxFONTWEIGHT_NORMAL));
