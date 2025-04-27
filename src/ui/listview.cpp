@@ -106,7 +106,7 @@ const std::vector<item> config_items()
        {_("Font"),
         {{_("list.Font"),
           item::FONTPICKERCTRL,
-          wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)}}},
+          style().default_font()}}},
        {_("Margin"),
         {{"col.DATE", 0, 150, 80},
          {"col.FLOAT", 0, 120, 80},

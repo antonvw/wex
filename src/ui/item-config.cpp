@@ -188,10 +188,6 @@ bool wex::item::persist(bool save) const
       (reinterpret_cast<wxColourPickerWidget*>(m_window))->GetColour());
     PERSISTENT_FOR(DIRPICKERCTRL, std::string, m_label);
     PERSISTENT_FOR(
-      FONTPICKERCTRL,
-      wxFont,
-      wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
-    PERSISTENT_FOR(
       SLIDER,
       int,
       (reinterpret_cast<wxSlider*>(m_window))->GetValue());
