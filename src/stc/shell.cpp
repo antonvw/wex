@@ -214,9 +214,8 @@ void wex::shell::expand()
       m_auto_complete_list = t->vector;
       AutoCompShow(
         prefix.length(),
-        std::accumulate(
-          t->vector.begin(),
-          t->vector.end(),
+        std::ranges::fold_left(
+          t->vector,
           std::string(),
           [&](const std::string& a, const std::string& b)
           {

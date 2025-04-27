@@ -2,7 +2,7 @@
 // Name:      eval.cpp
 // Purpose:   Implementation of class wex::evaluator
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
@@ -170,9 +170,8 @@ struct eval
 
   int operator()(program const& x) const
   {
-    return std::accumulate(
-      x.rest.begin(),
-      x.rest.end(),
+    return std::ranges::fold_left(
+      x.rest,
       boost::apply_visitor(*this, x.first),
       *this);
   }

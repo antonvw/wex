@@ -128,9 +128,8 @@ const std::string get_properties(
   const std::vector<property>& props,
   wxStyledTextCtrl*            stc)
 {
-  return std::accumulate(
-    props.begin(),
-    props.end(),
+  return std::ranges::fold_left(
+    props,
     std::string(),
     [stc, l](const std::string& a, const property& b)
     {
