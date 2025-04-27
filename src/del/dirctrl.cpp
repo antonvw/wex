@@ -2,7 +2,7 @@
 // Name:      dirctrl.cpp
 // Purpose:   Implementation of class wex::del::dirctrl
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2024 Anton van Wezenbeek
+// Copyright: (c) 2010-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/wex.h>
@@ -60,9 +60,8 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
      {[=, this](const wxCommandEvent& event)
       {
         const auto v(to_vector_string(*this).get());
-        clipboard_add(std::accumulate(
-          v.begin(),
-          v.end(),
+        clipboard_add(std::ranges::fold_left(
+          v,
           std::string(),
           [](const std::string& a, const std::string& b)
           {

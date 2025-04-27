@@ -139,17 +139,15 @@ wex::cmdline::~cmdline()
 
 std::string wex::cmdline::get_all() const
 {
-  return std::accumulate(
-           m_options.begin(),
-           m_options.end(),
+  return std::ranges::fold_left(
+           m_options,
            std::string(),
            [this](const std::string& a, const auto& b)
            {
              return a + get_option(b, m_cfg);
            }) +
-         std::accumulate(
-           m_switches.begin(),
-           m_switches.end(),
+         std::ranges::fold_left(
+           m_switches,
            std::string(),
            [this](const std::string& a, const auto& b)
            {

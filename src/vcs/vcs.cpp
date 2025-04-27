@@ -226,9 +226,8 @@ bool wex::vcs::execute()
 
   if (m_files.size() > 1)
   {
-    args = clipboard_add(std::accumulate(
-      m_files.begin(),
-      m_files.end(),
+    args = clipboard_add(std::ranges::fold_left(
+      m_files,
       std::string(),
       [](const std::string& a, const wex::path& b)
       {

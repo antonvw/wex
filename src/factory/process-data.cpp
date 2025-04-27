@@ -2,7 +2,7 @@
 // Name:      process-data.cpp
 // Purpose:   Implementation of class wex::factory::process_data
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2024 Anton van Wezenbeek
+// Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <filesystem>
@@ -89,9 +89,8 @@ const std::string wex::process_data::log() const
 
   return exe +
          (!arg_v.empty() ?
-            " args:" + std::accumulate(
-                         arg_v.begin(),
-                         arg_v.end(),
+            " args:" + std::ranges::fold_left(
+                         arg_v,
                          std::string(""),
                          [](const std::string& a, const std::string& b)
                          {

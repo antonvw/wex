@@ -204,9 +204,8 @@ const std::string wex::get_string_set(
   size_t                       min_size,
   const std::string&           prefix)
 {
-  return std::accumulate(
-    kset.begin(),
-    kset.end(),
+  return std::ranges::fold_left(
+    kset,
     std::string{},
     [&](const std::string& a, const std::string& b)
     {
