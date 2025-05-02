@@ -84,15 +84,7 @@ elseif(UNIX)
 
   set(PLATFORM "gtk3")
 
-  if(CENTOS)
-    set(
-      cpp_std_LIBRARIES
-      /usr/gnat/lib64/libstdc++.a
-      /usr/gnat/lib64/libstdc++fs.a
-    )
-  else()
-    set(cpp_std_LIBRARIES stdc++ stdc++fs)
-  endif()
+  set(cpp_std_LIBRARIES stdc++ stdc++fs)
 
   find_package(JPEG)
   find_package(PNG)
