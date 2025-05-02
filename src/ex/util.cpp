@@ -20,15 +20,7 @@
 
 void wex::append_line_no(std::string& text, int line)
 {
-#ifndef __WXGTK__
-  // not yet for gcc 12
   text += std::format("{:6} ", line + 1);
-#else
-  char buffer[8];
-  snprintf(buffer, sizeof(buffer), "%6d ", line + 1);
-
-  text += buffer;
-#endif
 }
 
 const std::string wex::esc()

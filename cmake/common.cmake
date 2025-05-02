@@ -238,15 +238,7 @@ function(wex_target_link_all)
 
   separate_arguments(wex_use_LIBRARIES)
 
-  if(CENTOS)
-    set(
-      cpp_std_LIBRARIES
-      /usr/gnat/lib64/libstdc++.a
-      /usr/gnat/lib64/libstdc++fs.a
-    )
-  else()
-    set(cpp_std_LIBRARIES X11 pthread stdc++ stdc++fs)
-  endif()
+  set(cpp_std_LIBRARIES X11 pthread stdc++ stdc++fs)
 
   set(
     wxWidgets_LIBRARIES
