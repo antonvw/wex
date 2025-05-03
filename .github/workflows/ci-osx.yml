@@ -14,7 +14,7 @@ jobs:
           submodules: recursive
 
       - name: Install boost
-        run: brew install boost@1.85 && brew link boost@1.85
+        run: brew install boost@1.88 && brew link boost@1.88
 
       - name: Install llvm
         run: brew install llvm

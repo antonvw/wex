@@ -2,8 +2,10 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wex::factory::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
+
+#include <future>
 
 #include <wex/core/log.h>
 #include <wex/factory/process.h>
@@ -94,7 +96,7 @@ int wex::factory::process::system(const process_data& data)
 
     if (data.std_in().empty())
     {
-      boost::process::std_in
+      boost::process::v1::std_in
         .close(); // e.g. for svn a password is required, not yet ok
       log::trace("closing stdin");
     }

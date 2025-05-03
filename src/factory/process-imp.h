@@ -2,7 +2,7 @@
 // Name:      process-imp.h
 // Purpose:   Declaration of class wex::factory::process_imp
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -10,15 +10,22 @@
 #include <queue>
 
 #include <boost/process.hpp>
+#include <boost/process/v1/args.hpp>
+#include <boost/process/v1/async_system.hpp>
+#include <boost/process/v1/group.hpp>
+#include <boost/process/v1/io.hpp>
+#include <boost/process/v1/pipe.hpp>
+#include <boost/process/v1/start_dir.hpp>
+#include <boost/process/v1/system.hpp>
 
-namespace bp = boost::process;
+namespace bp = boost::process::v1;
 
 namespace wex::factory
 {
 class process;
 
 /// This class offers methods to support processing. It uses
-/// the boost::process classes.
+/// the boost::process::v1 classes.
 class process_imp
 {
 public:
