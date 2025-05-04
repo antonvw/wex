@@ -65,7 +65,7 @@ public:
 private:
   factory::stc* m_stc{nullptr};
 
-  std::map<size_t, factory::unified_diff> m_lines;
-  std::map<size_t, factory::unified_diff>::const_iterator m_lines_it;
+  std::map<int, factory::unified_diff>                 m_lines;
+  std::map<int, factory::unified_diff>::const_iterator m_lines_it;
 };
 }; // namespace wex

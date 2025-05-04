@@ -424,7 +424,7 @@ bool wex::stc::marker_delete_all_change()
   return true;
 }
 
-bool wex::stc::mark_diff(size_t line, const marker& marker)
+bool wex::stc::mark_diff(int line, const marker& marker)
 {
   line--;
 

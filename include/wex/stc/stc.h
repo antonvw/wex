@@ -297,7 +297,7 @@ private:
   void jump_action();
   void key_action(wxKeyEvent& event);
   void margin_action(wxStyledTextEvent& event);
-  bool mark_diff(size_t line, const marker& marker);
+  bool mark_diff(int line, const marker& marker);
   void mark_modified(const wxStyledTextEvent& event);
   void mouse_action(wxMouseEvent& event);
   void on_styled_text(wxStyledTextEvent& event);
