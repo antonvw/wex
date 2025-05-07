@@ -20,6 +20,17 @@ const wex::item wex::add_combobox_with_max(
       {name_max, -1, INT_MAX}}}};
 }
 
+const wex::item wex::add_find_text(const data::item&  data)
+{
+  data::item my_data(data);
+  my_data.control().is_required(true);
+
+  return item(find_replace_data::get()->text_find(),
+    item::COMBOBOX,
+    std::any(),
+    my_data);
+}
+
 const std::vector<wex::item>
 wex::add_header(const std::vector<std::string>& names)
 {
