@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - used catch lib from wxWidgets instead of doctest lib for unit tests
 - used wxFONTFAMILY_TELETYPE instead of wxFONTFAMILY_DEFAULT as default font
 - build-gen.sh supports xcodebuild
+- updated git grep dialog to include checkboxes
 
 ### Fixed
 

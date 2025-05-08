@@ -24,12 +24,13 @@ const wex::item wex::add_combobox_with_max(
 
 const wex::item wex::add_find_text(const data::item& data)
 {
-  data::item my_data(data);
+  data::item    my_data(data);
   data::control cd(data.control());
   cd.is_required(true);
   my_data.control(cd);
 
-  return item(find_replace_data::get()->text_find(),
+  return item(
+    find_replace_data::get()->text_find(),
     item::COMBOBOX,
     std::any(),
     my_data);

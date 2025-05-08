@@ -2,7 +2,7 @@
 // Name:      stc/find.cpp
 // Purpose:   Implementation of class wex::stc find methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2024 Anton van Wezenbeek
+// Copyright: (c) 2018-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/regex.hpp>
@@ -167,8 +167,7 @@ bool wex::stc::find_next(bool stc_find_string)
 
 const std::string wex::stc::get_find_string() const
 {
-  if (const auto selection =
-        const_cast<stc*>(this)->GetSelectedText().ToStdString();
+  if (const auto& selection(get_selected_text());
       !selection.empty() && get_number_of_lines(selection) == 1)
   {
     bool alnum = true;
