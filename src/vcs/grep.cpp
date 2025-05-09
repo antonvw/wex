@@ -29,12 +29,11 @@ bool execute_grep(const std::string& bin, const path& tl)
   {
     if (dlg == nullptr)
     {
-      const item::choices_bool_t checks{
-        find_replace_data::get()->text_match_case(),
-        find_replace_data::get()->text_match_word()};
-
       dlg = new item_dialog(
-        {add_find_text(), checks},
+        {add_find_text(),
+         item::choices_bool_t{
+           find_replace_data::get()->text_match_case(),
+           find_replace_data::get()->text_match_word()}},
         wex::data::window().title("git grep"));
     }
 
