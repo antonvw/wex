@@ -2,7 +2,7 @@
 // Name:      findbar.cpp
 // Purpose:   Declaration of wex::find_bar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024 Anton van Wezenbeek
+// Copyright: (c) 2024-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -13,11 +13,6 @@
 
 namespace wex
 {
-namespace syntax
-{
-class stc;
-};
-
 /// This class offers a find bar that allows you to find text
 /// on a current grid, listview or stc on a frame.
 /// Pressing key up and down browses through values from

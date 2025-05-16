@@ -2,7 +2,7 @@
 // Name:      toolbar.h
 // Purpose:   Declaration of wex::toolbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2024 Anton van Wezenbeek
+// Copyright: (c) 2010-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -74,6 +74,9 @@ public:
     const std::string& name,
     /// value
     bool value) const;
+
+  /// Forwarded by frame::sync_close_all.
+  void sync_close_all(wxWindowID id);
 
   /// overridden methods
 

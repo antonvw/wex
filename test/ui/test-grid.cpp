@@ -36,7 +36,7 @@ TEST_CASE("wex::grid")
   grid->SetFocus();
 
   wex::data::find::recursive(false);
-  wex::data::find f("test1");
+  wex::data::find f("tESt1");
 
   REQUIRE(grid->find_next(f));
   REQUIRE(grid->get_find_string() == "test1");

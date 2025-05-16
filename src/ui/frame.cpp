@@ -795,5 +795,7 @@ void wex::frame::sync_close_all(wxWindowID id)
 {
   set_find_focus(nullptr);
 
+  m_findbar->sync_close_all(id);
+
   show_ex_bar(SHOW_BAR_SYNC_CLOSE_ALL);
 }
