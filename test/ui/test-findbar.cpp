@@ -21,6 +21,7 @@ TEST_CASE("wex::find_bar")
 
   SECTION("find")
   {
+    fb->set_stc(get_stc());
     get_stc()->set_text("text1\ntext2\ntext3\n");
     fb->set_text("text");
     fb->control()->SetFocus();
