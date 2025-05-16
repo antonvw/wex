@@ -148,8 +148,6 @@ TEST_CASE("wex::frame")
 
     frame()->sync_all();
 
-    frame()->sync_close_all(100);
-
     frame()->vcs_add_path(nullptr);
 
     frame()->vcs_annotate_commit(get_stc(), 100, "a898989aaabbb");

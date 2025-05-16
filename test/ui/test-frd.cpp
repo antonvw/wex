@@ -45,10 +45,10 @@ TEST_CASE("wex::frd")
     check(text, true, false, false, false);
 
     frd->set_regex(true);
-    check(text, true, true, false, false);
+    check(text, true, false, false, false);
 
     REQUIRE(frd->match(text, wex::data::find("x+")));
-    REQUIRE(frd->match(text, wex::data::find("X+")));
+    REQUIRE(!frd->match(text, wex::data::find("X+")));
   }
 
   SECTION("get-set")

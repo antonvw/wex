@@ -31,6 +31,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - fixed recording using escape
 - prevent git grep on selection with multiple lines
 - fixed git grep and spaces at end
+- fixed crash in findbar if all documents were closed
+- fixed match function and regular expression in find_replace_data
 
 ### Removed
 

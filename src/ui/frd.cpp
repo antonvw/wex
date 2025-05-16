@@ -46,7 +46,7 @@ bool wex::find_replace_data::match(const std::string& text, const data::find& f)
   {
     boost::regex::flag_type flags = boost::regex::ECMAScript;
 
-    if (match_case())
+    if (!match_case())
     {
       flags |= boost::regex::icase;
     }
