@@ -261,7 +261,7 @@ public:
   bool set_hexmode(bool on) override { return get_hexmode().set(on); }
   void set_search_flags(int flags) override;
   void set_text(const std::string& value) override;
-  void show_ascii_value() override;
+  void show_ascii_value(bool byte_only = false) override;
   void show_line_numbers(bool show) override;
   void show_whitespace(bool show) override;
   void sync(bool start = true) override { m_function_repeat.activate(start); }

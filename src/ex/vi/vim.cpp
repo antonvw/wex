@@ -6,6 +6,7 @@
 // Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
 #include <wex/ctags/ctags.h>
 #include <wex/factory/stc-undo.h>
 #include <wex/syntax/stc.h>
@@ -15,6 +16,7 @@
 #include <wx/app.h>
 
 #include <algorithm>
+#include <string>
 
 #include "vim.h"
 
@@ -86,28 +88,38 @@ bool wex::vim::command_motion(int start_pos)
   return true;
 }
 
-bool wex::vim::command_special()
+bool wex::vim::command_other()
 {
-  switch (m_motion)
+  switch (const auto pos = m_vi->get_stc()->GetCurrentPos(); m_motion)
   {
+    case vi::motion_t::G_8:
+      m_vi->get_stc()->show_ascii_value(true);
+      break;
+
     case vi::motion_t::G_a:
       m_vi->get_stc()->show_ascii_value();
       break;
 
     case vi::motion_t::G_d:
-      ctags::find(
-        m_vi->get_stc()->get_word_at_pos(m_vi->get_stc()->GetCurrentPos()),
-        m_vi->get_stc());
+      ctags::find(m_vi->get_stc()->get_word_at_pos(pos), m_vi->get_stc());
       break;
 
     case vi::motion_t::G_f:
       m_vi->get_stc()->link_open();
       break;
 
+    case vi::motion_t::G_m:
+    {
+      const auto ll(
+        m_vi->get_stc()->LineLength(m_vi->get_stc()->get_current_line()));
+      m_vi->command(std::to_string(int(ll / 2)) + "|");
+    }
+    break;
+
     case vi::motion_t::G_star:
     case vi::motion_t::G_hash:
       find_replace_data::get()->set_find_string(
-        m_vi->get_stc()->get_word_at_pos(m_vi->get_stc()->GetCurrentPos()));
+        m_vi->get_stc()->get_word_at_pos(pos));
       m_vi->reset_search_flags();
       m_vi->get_stc()->find(
         find_replace_data::get()->get_find_string(),
@@ -124,6 +136,10 @@ bool wex::vim::command_special()
       }
       break;
 
+    case vi::motion_t::Z:
+      command_z();
+      break;
+
     default:
       assert(0);
   }
@@ -133,8 +149,66 @@ bool wex::vim::command_special()
   return true;
 }
 
+void wex::vim::command_z()
+{
+  const auto level =
+    m_vi->get_stc()->GetFoldLevel(m_vi->get_stc()->get_current_line());
+
+  const auto line_to_fold =
+    (level & wxSTC_FOLDLEVELHEADERFLAG) ?
+      m_vi->get_stc()->get_current_line() :
+      m_vi->get_stc()->GetFoldParent(m_vi->get_stc()->get_current_line());
+
+  switch (m_command[1])
+  {
+    case 'c':
+    case 'o':
+      if (
+        (m_vi->get_stc()->GetFoldExpanded(line_to_fold) &&
+         boost::algorithm::trim_copy(m_command) == "zc") ||
+        (!m_vi->get_stc()->GetFoldExpanded(line_to_fold) &&
+         boost::algorithm::trim_copy(m_command) == "zo"))
+      {
+        m_vi->get_stc()->ToggleFold(line_to_fold);
+      }
+      break;
+
+    case 'f':
+      m_vi->get_stc()->get_lexer().set_property("fold", "1");
+      m_vi->get_stc()->get_lexer().apply();
+      m_vi->get_stc()->fold(true);
+      break;
+
+    case 'E':
+      m_vi->get_stc()->get_lexer().set_property("fold", "0");
+      m_vi->get_stc()->get_lexer().apply();
+      m_vi->get_stc()->fold(false);
+      break;
+
+    case 'M':
+      m_vi->get_stc()->fold(true);
+      break;
+
+    case 'R':
+      for (int i = 0; i < m_vi->get_stc()->get_line_count(); i++)
+      {
+        m_vi->get_stc()->EnsureVisible(i);
+      }
+      break;
+
+    case 'z':
+      m_vi->get_stc()->VerticalCentreCaret();
+      break;
+  }
+}
+
 wex::vi::motion_t wex::vim::get_motion(const std::string& command)
 {
+  if (command.starts_with('z'))
+  {
+    return wex::vi::motion_t::Z;
+  }
+
   if (command.size() == 1)
   {
     return wex::vi::motion_t::G;
@@ -142,6 +216,15 @@ wex::vi::motion_t wex::vim::get_motion(const std::string& command)
 
   switch (command[1])
   {
+    case '8':
+      return wex::vi::motion_t::G_8;
+
+    case '*':
+      return wex::vi::motion_t::G_star;
+
+    case '#':
+      return wex::vi::motion_t::G_hash;
+
     case 'a':
       return wex::vi::motion_t::G_a;
 
@@ -151,11 +234,8 @@ wex::vi::motion_t wex::vim::get_motion(const std::string& command)
     case 'f':
       return wex::vi::motion_t::G_f;
 
-    case '*':
-      return wex::vi::motion_t::G_star;
-
-    case '#':
-      return wex::vi::motion_t::G_hash;
+    case 'm':
+      return wex::vi::motion_t::G_m;
 
     case 't':
       return wex::vi::motion_t::G_t;
@@ -183,10 +263,11 @@ bool wex::vim::is_motion() const
          m_motion < vi::motion_t::G_motion_end;
 }
 
-bool wex::vim::is_special() const
+bool wex::vim::is_other() const
 {
-  return m_motion > vi::motion_t::G_special_start &&
-         m_motion < vi::motion_t::G_special_end;
+  return (m_motion > vi::motion_t::G &&
+          m_motion < vi::motion_t::G_motion_start) ||
+         m_motion == vi::motion_t::Z;
 }
 
 bool wex::vim::is_vim() const
@@ -217,11 +298,11 @@ void wex::vim::motion_prep()
   }
 }
 
-bool wex::vim::special()
+bool wex::vim::other()
 {
-  if (is_special() && m_command.size() == 2)
+  if (is_other() && m_command.size() == 2)
   {
-    command_special();
+    command_other();
     return true;
   }
 

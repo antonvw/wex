@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      vim.h
-// Purpose:   Declaration of wex::vim class to handle vim special commands
+// Purpose:   Declaration of wex::vim class to handle vim commands
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,7 @@ namespace wex
 {
 enum class motion_t;
 
-/// This class offers vim commands handling (g commands).
+/// This class offers vim commands handling (g or z commands).
 class vim
 {
 public:
@@ -26,8 +26,8 @@ public:
   /// Returns true if this is a vim motion command.
   bool is_motion() const;
 
-  /// Returns true if this is a vim special command.
-  bool is_special() const;
+  /// Returns true if this is a vim other command.
+  bool is_other() const;
 
   /// Returns true if this command starts with a vim command.
   bool is_vim() const;
@@ -38,12 +38,13 @@ public:
   /// Prepares the motion commands.
   void motion_prep();
 
-  /// Handles the special commands.
-  bool special();
+  /// Handles other commands.
+  bool other();
 
 private:
   bool command_motion(int pos_start);
-  bool command_special();
+  bool command_other();
+  void command_z();
 
   vi* m_vi;
 

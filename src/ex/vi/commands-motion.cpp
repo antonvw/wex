@@ -639,7 +639,7 @@ bool wex::vi::motion_command_handle(
     {
       return false;
     }
-    else if (!vim.is_special() && command.size() > 1)
+    else if (!vim.is_other() && command.size() > 1)
     {
       bell();
       command.clear();

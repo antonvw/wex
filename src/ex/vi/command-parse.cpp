@@ -140,7 +140,7 @@ bool wex::vi::parse_command_motion(
 {
   if (wex::vim vim(this, command, motion); vim.is_vim())
   {
-    if (vim.special())
+    if (vim.other())
     {
       return true;
     }

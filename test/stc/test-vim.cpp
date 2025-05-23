@@ -43,16 +43,28 @@ TEST_CASE("wex::vim", "[!mayfail]")
     REQUIRE(vi->get_stc()->get_text() == "XXXXXXXXXX SECOND\nXXXXXXXX");
   }
 
-  SECTION("special")
+  SECTION("other")
   {
+    REQUIRE(vi->command("g8"));
     REQUIRE(vi->command("ga"));
     REQUIRE(vi->command("gd"));
     REQUIRE(vi->command("gf"));
+    REQUIRE(vi->command("gm"));
 
     REQUIRE(vi->command("g*"));
     REQUIRE(vi->command("g#"));
 
     REQUIRE(vi->command("gt"));
     REQUIRE(vi->command("gT"));
+  }
+
+  SECTION("z")
+  {
+    for (auto& fold : std::vector<std::string>{"zo", "zc", "zE", "zf", "zz"})
+    {
+      CAPTURE(fold);
+      REQUIRE(vi->command(fold));
+      REQUIRE(vi->last_command() != fold);
+    }
   }
 }
