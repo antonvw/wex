@@ -38,7 +38,6 @@ wex::item::item(
   , m_label_window(rfind_after(label, "."))
   , m_sizer_flags(
       m_type == GROUP ? wxSizerFlags().Left() : wxSizerFlags().Border().Left())
-  , m_reflect()
 {
   m_data.initial(value);
 
@@ -712,6 +711,16 @@ wex::data::layout::sizer_t* wex::item::layout(data::layout& layout)
   }
 
   return nullptr;
+}
+
+std::stringstream wex::item::log() const
+{
+  std::stringstream ss;
+
+  using boost::describe::operators::operator<<;
+  ss << "item: " << *this;
+
+  return ss;
 }
 
 void wex::item::set_dialog(item_template_dialog<item>* dlg)
