@@ -60,7 +60,8 @@ TEST_CASE("wex::vim", "[!mayfail]")
 
   SECTION("z")
   {
-    for (auto& fold : std::vector<std::string>{"zo", "zc", "zE", "zf", "zz"})
+    for (auto& fold : std::vector<
+           std::string>{"za", "zo", "zc", "zE", "zf", "zz", "zC", "zO"})
     {
       CAPTURE(fold);
       REQUIRE(vi->command(fold));

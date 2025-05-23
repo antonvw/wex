@@ -46,7 +46,8 @@ private:
   bool command_other();
   void command_z();
 
-  vi* m_vi;
+  vi*          m_vi;
+  syntax::stc* m_stc;
 
   std::string&       m_command;
   const vi::motion_t m_motion;

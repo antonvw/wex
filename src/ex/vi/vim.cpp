@@ -38,6 +38,7 @@ std::string reverse(const std::string& text)
 
 wex::vim::vim(wex::vi* vi, std::string& command, vi::motion_t t)
   : m_vi(vi)
+  , m_stc(vi->get_stc())
   , m_command(command)
   , m_motion(t)
 {
@@ -45,83 +46,79 @@ wex::vim::vim(wex::vi* vi, std::string& command, vi::motion_t t)
 
 bool wex::vim::command_motion(int start_pos)
 {
-  if (!m_vi->get_stc()->is_visual())
+  if (!m_stc->is_visual())
   {
     return false;
   }
 
   stc_undo undo(
-    m_vi->get_stc(),
+    m_stc,
     stc_undo::undo_t().set(stc_undo::UNDO_ACTION).set(stc_undo::UNDO_POS));
 
-  if (const auto end_pos = m_vi->get_stc()->GetCurrentPos();
-      end_pos - start_pos > 0)
+  if (const auto end_pos = m_stc->GetCurrentPos(); end_pos - start_pos > 0)
   {
-    m_vi->get_stc()->SetSelection(start_pos, end_pos);
+    m_stc->SetSelection(start_pos, end_pos);
   }
   else
   {
-    m_vi->get_stc()->SetSelection(end_pos, start_pos);
+    m_stc->SetSelection(end_pos, start_pos);
   }
 
   switch (m_motion)
   {
     case vi::motion_t::G_tilde:
-      m_vi->get_stc()->ReplaceSelection(
-        reverse(m_vi->get_stc()->get_selected_text()));
+      m_stc->ReplaceSelection(reverse(m_stc->get_selected_text()));
       break;
 
     case vi::motion_t::G_u:
-      m_vi->get_stc()->LowerCase();
+      m_stc->LowerCase();
       break;
 
     case vi::motion_t::G_U:
-      m_vi->get_stc()->UpperCase();
+      m_stc->UpperCase();
       break;
 
     default:
       assert(0);
   }
 
-  m_vi->get_stc()->SelectNone();
+  m_stc->SelectNone();
 
   return true;
 }
 
 bool wex::vim::command_other()
 {
-  switch (const auto pos = m_vi->get_stc()->GetCurrentPos(); m_motion)
+  switch (const auto pos = m_stc->GetCurrentPos(); m_motion)
   {
     case vi::motion_t::G_8:
-      m_vi->get_stc()->show_ascii_value(true);
+      m_stc->show_ascii_value(true);
       break;
 
     case vi::motion_t::G_a:
-      m_vi->get_stc()->show_ascii_value();
+      m_stc->show_ascii_value();
       break;
 
     case vi::motion_t::G_d:
-      ctags::find(m_vi->get_stc()->get_word_at_pos(pos), m_vi->get_stc());
+      ctags::find(m_stc->get_word_at_pos(pos), m_stc);
       break;
 
     case vi::motion_t::G_f:
-      m_vi->get_stc()->link_open();
+      m_stc->link_open();
       break;
 
     case vi::motion_t::G_m:
     {
-      const auto ll(
-        m_vi->get_stc()->LineLength(m_vi->get_stc()->get_current_line()));
+      const auto ll(m_stc->LineLength(m_stc->get_current_line()));
       m_vi->command(std::to_string(int(ll / 2)) + "|");
     }
     break;
 
     case vi::motion_t::G_star:
     case vi::motion_t::G_hash:
-      find_replace_data::get()->set_find_string(
-        m_vi->get_stc()->get_word_at_pos(pos));
+      find_replace_data::get()->set_find_string(m_stc->get_word_at_pos(pos));
       m_vi->reset_search_flags();
-      m_vi->get_stc()->find(
+      m_stc->find(
         find_replace_data::get()->get_find_string(),
         m_vi->search_flags(),
         m_motion == vi::motion_t::G_star);
@@ -151,53 +148,55 @@ bool wex::vim::command_other()
 
 void wex::vim::command_z()
 {
-  const auto level =
-    m_vi->get_stc()->GetFoldLevel(m_vi->get_stc()->get_current_line());
+  const auto level = m_stc->GetFoldLevel(m_stc->get_current_line());
 
-  const auto line_to_fold =
-    (level & wxSTC_FOLDLEVELHEADERFLAG) ?
-      m_vi->get_stc()->get_current_line() :
-      m_vi->get_stc()->GetFoldParent(m_vi->get_stc()->get_current_line());
-
-  switch (m_command[1])
+  switch (const auto line_to_fold =
+            (level & wxSTC_FOLDLEVELHEADERFLAG) ?
+              m_stc->get_current_line() :
+              m_stc->GetFoldParent(m_stc->get_current_line());
+          m_command[1])
   {
+    case 'a':
+      m_stc->ToggleFold(line_to_fold);
+      break;
+
     case 'c':
     case 'o':
       if (
-        (m_vi->get_stc()->GetFoldExpanded(line_to_fold) &&
+        (m_stc->GetFoldExpanded(line_to_fold) &&
          boost::algorithm::trim_copy(m_command) == "zc") ||
-        (!m_vi->get_stc()->GetFoldExpanded(line_to_fold) &&
+        (!m_stc->GetFoldExpanded(line_to_fold) &&
          boost::algorithm::trim_copy(m_command) == "zo"))
       {
-        m_vi->get_stc()->ToggleFold(line_to_fold);
+        m_stc->ToggleFold(line_to_fold);
       }
       break;
 
     case 'f':
-      m_vi->get_stc()->get_lexer().set_property("fold", "1");
-      m_vi->get_stc()->get_lexer().apply();
-      m_vi->get_stc()->fold(true);
+      m_stc->get_lexer().set_property("fold", "1");
+      m_stc->get_lexer().apply();
+      m_stc->fold(true);
+      break;
+
+    case 'C':
+      m_stc->fold(true);
       break;
 
     case 'E':
-      m_vi->get_stc()->get_lexer().set_property("fold", "0");
-      m_vi->get_stc()->get_lexer().apply();
-      m_vi->get_stc()->fold(false);
+      m_stc->get_lexer().set_property("fold", "0");
+      m_stc->get_lexer().apply();
+      m_stc->fold(false);
       break;
 
-    case 'M':
-      m_vi->get_stc()->fold(true);
-      break;
-
-    case 'R':
-      for (int i = 0; i < m_vi->get_stc()->get_line_count(); i++)
+    case 'O':
+      for (int i = 0; i < m_stc->get_line_count(); i++)
       {
-        m_vi->get_stc()->EnsureVisible(i);
+        m_stc->EnsureVisible(i);
       }
       break;
 
     case 'z':
-      m_vi->get_stc()->VerticalCentreCaret();
+      m_stc->VerticalCentreCaret();
       break;
   }
 }
