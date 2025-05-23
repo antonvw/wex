@@ -7,7 +7,8 @@
 
 #pragma once
 
-#include <wex/core/reflection.h>
+#include <boost/describe.hpp>
+
 #include <wex/data/item.h>
 #include <wex/data/layout.h>
 #include <wex/data/listview.h>
@@ -419,7 +420,7 @@ public:
   data::layout::sizer_t* layout(data::layout& layout);
 
   /// Logs info about this item.
-  std::stringstream log() const { return m_reflect.log(); }
+  std::stringstream log() const;
 
   /// Returns the page.
   const auto& page() const { return m_page; }
@@ -493,7 +494,7 @@ private:
 
   create_t m_creators;
 
-  reflection m_reflect;
+  BOOST_DESCRIBE_CLASS(item, (), (), (), (m_label, m_type))
 
   static inline item_template_dialog<item>* m_dialog     = nullptr;
   static inline bool                        m_use_config = true;
