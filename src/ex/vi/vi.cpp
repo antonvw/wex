@@ -425,6 +425,7 @@ wex::vi::motion_t wex::vi::get_motion(const std::string& command) const
       return motion_t::DEL;
 
     case 'g':
+    case 'z':
       return vim::get_motion(command);
 
     case 'y':

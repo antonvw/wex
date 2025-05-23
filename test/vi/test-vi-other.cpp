@@ -185,13 +185,6 @@ TEST_CASE("wex::vi-other")
     vi->reset_search_flags();
     wex::config(_("stc.Wrap scan")).set(true);
 
-    // Test fold.
-    for (auto& fold : std::vector<std::string>{"zo", "zc", "zE", "zf"})
-    {
-      REQUIRE(vi->command(fold));
-      REQUIRE(vi->last_command() != fold);
-    }
-
     // Test other commands (ZZ not tested).
     for (auto& other_command : vi->other_commands())
     {

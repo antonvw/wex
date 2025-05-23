@@ -839,7 +839,7 @@ void wex::stc::jump_action()
   }
 }
 
-void wex::stc::show_ascii_value()
+void wex::stc::show_ascii_value(bool byte_only)
 {
   if (CallTipActive())
   {
@@ -847,6 +847,13 @@ void wex::stc::show_ascii_value()
   }
 
   const auto pos = GetCurrentPos();
+
+  if (byte_only)
+  {
+    const auto c(GetCharAt(pos));
+    CallTipShow(pos, std::to_string(c));
+    return;
+  }
 
   if (is_hexmode())
   {

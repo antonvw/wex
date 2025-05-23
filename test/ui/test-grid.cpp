@@ -2,10 +2,11 @@
 // Name:      test-grid.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/find.h>
+#include <wex/ui/frd.h>
 #include <wex/ui/grid.h>
 
 #include "test.h"
@@ -36,6 +37,7 @@ TEST_CASE("wex::grid")
   grid->SetFocus();
 
   wex::data::find::recursive(false);
+  wex::find_replace_data::get()->set_match_case(false);
   wex::data::find f("tESt1");
 
   REQUIRE(grid->find_next(f));

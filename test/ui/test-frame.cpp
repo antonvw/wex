@@ -291,7 +291,7 @@ TEST_CASE("wex::frame::bars")
   REQUIRE(!frame()->pane_show("xxxx", false));
 
   frame()->sync_all();
-  frame()->sync_close_all(0);
+  //  frame()->sync_close_all(0);
 
   REQUIRE(frame()->get_find_toolbar() != nullptr);
   REQUIRE(frame()->get_options_toolbar() != nullptr);

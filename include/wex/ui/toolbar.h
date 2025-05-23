@@ -83,7 +83,7 @@ public:
   bool Destroy() override;
 
 private:
-  find_bar* m_find_bar;
+  find_bar* m_find_bar{nullptr};
   frame*    m_frame;
 
   std::vector<wxCheckBox*> m_checkboxes;
