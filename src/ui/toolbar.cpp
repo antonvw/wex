@@ -357,6 +357,7 @@ bool wex::toolbar::add_tool(
 bool wex::toolbar::Destroy()
 {
   delete m_find_bar;
+  m_find_bar = nullptr;
 
   return wxAuiToolBar::Destroy();
 }
