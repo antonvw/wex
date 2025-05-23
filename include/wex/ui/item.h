@@ -219,14 +219,12 @@ public:
     /// you can use a parent child config item by using a
     /// dot in the label, the prefix is not shown on the window
     const std::string& label,
-    /// initial value, also used as default for a hyperlink ctrl,
-    /// or as lexer for STC
+    /// initial value, also used as default for a hyperlink ctrl
     const std::string& value = std::string(),
     /// type of this item:
     /// - GRID
     /// - HYPERLINKCTRL
     /// - STATICTEXT
-    /// - STC
     /// - TEXTCTRL
     /// if the label contains a colon, it is a STATICTEXT,
     /// otherwise default TEXTCTRL
