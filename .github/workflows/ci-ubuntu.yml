@@ -60,7 +60,7 @@ jobs:
       - name: Headless test
         run: cd build &&
           ninja lcov-prep &&
-          xvfb-run --auto-servernum ctest -VV &&
+          xvfb-run --auto-servernum ./test/del/wex-test-del -s
           ninja lcov
         env:
           NO_AT_BRIDGE: 1
