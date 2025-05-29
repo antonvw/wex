@@ -80,9 +80,9 @@ jobs:
 
       - name: Artifact coredump
         uses: actions/upload-artifact@v4
-          if: ${{ failure() }}  # Run only if something went wrong
-          with:
-            name: coredump
+        if: ${{ failure() }}  # Run only if something went wrong
+        with:
+          name: coredump
           path: /cores
 
       - name: Coveralls
