@@ -57,13 +57,33 @@ jobs:
       - name: Make using ninja
         run: cd build && ninja
 
+      # Upload the del binary, which we will need to debug the core
+      - uses: actions/upload-artifact@v4
+        with:
+          name: executable
+          path: test/del/wex-test-del
+
+      - name: Set cores to get stored in /cores
+        run: |
+          sudo mkdir /cores
+          sudo chmod 777 /cores
+          # Core filenames will be of the form executable.pid.timestamp:
+          sudo bash -c 'echo "/cores/%e.%p.%t" > /proc/sys/kernel/core_pattern'
+
       - name: Headless test
         run: cd build &&
           ninja lcov-prep &&
-          xvfb-run --auto-servernum ./test/del/wex-test-del -s
+          xvfb-run --auto-servernum ./test/del/wex-test-del
           ninja lcov
         env:
           NO_AT_BRIDGE: 1
+
+      - name: Artifact coredump
+        uses: actions/upload-artifact@v4
+          if: ${{ failure() }}  # Run only if something went wrong
+          with:
+            name: coredump
+          path: /cores
 
       - name: Coveralls
         run: cd build && coveralls -r 9vV6skuIGeagBBkz5TCZNI12ezUv12gOj --format=lcov --file=src/app.run
