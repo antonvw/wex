@@ -75,7 +75,7 @@ jobs:
           ulimit -c unlimited
           cd build
           ninja lcov-prep
-          xvfb-run --auto-servernum ./test/del/wex-test-del
+          xvfb-run --auto-servernum ctest -VV
           ninja lcov
         env:
           NO_AT_BRIDGE: 1
