@@ -71,8 +71,10 @@ jobs:
           sudo bash -c 'echo "/cores/%e.%p.%t" > /proc/sys/kernel/core_pattern'
 
       - name: Headless test
-        run: cd build &&
-          ninja lcov-prep &&
+        run: |
+          ulimit -c unlimited
+          cd build
+          ninja lcov-prep
           xvfb-run --auto-servernum ./test/del/wex-test-del
           ninja lcov
         env:
