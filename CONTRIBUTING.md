@@ -6,6 +6,8 @@
 
 - create a feature branch for that issue from the develop branch to base your work
 
+- see also [openvi](https://github.com/johnsonjh/OpenVi)
+
 ## Adding functionality
 
 - use style as indicated by .clang-format
