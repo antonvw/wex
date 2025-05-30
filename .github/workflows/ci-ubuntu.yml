@@ -61,7 +61,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: executable
-          path: test/del/wex-test-del
+          path: build/test/del/wex-test-del
 
       - name: Set cores to get stored in /cores
         run: |
