@@ -46,4 +46,4 @@ An example is the [syncped editor](https://gitlab.kitware.com/antonvw/syncped).
 - [pugixml lib](https://github.com/zeux/pugixml)
 - [trompeloeil](https://github.com/rollbear/trompeloeil/tree/main)
 - [universal-ctags lib](https://github.com/universal-ctags/ctags)
-- [wxWidgets lib](https://github.com/wxWidgets/wxWidgets/)
+- [wxWidgets 3.3 lib](https://github.com/wxWidgets/wxWidgets/)
