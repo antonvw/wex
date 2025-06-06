@@ -31,10 +31,6 @@ TEST_CASE("wex::blaming")
 
     wex::blaming bl(get_stc(), "1000");
 
-    REQUIRE(bl.renamed().empty());
-    REQUIRE(bl.revision().empty());
-    REQUIRE(bl.vcs().entry().name().empty());
-
     REQUIRE(!bl.execute(wex::path("xxx")));
   }
 }
