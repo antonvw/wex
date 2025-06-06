@@ -101,6 +101,52 @@ TEST_CASE("wex::vcs_entry")
     stc->get_file().reset_contents_changed();
   }
 
+  SECTION("execute-grep")
+  {
+    pugi::xml_document dc;
+
+    REQUIRE(dc.load_string("<vcs name=\"git\" admin-dir=\"./\" log-flags=\"-n "
+                           "1\" blame-format=\" yyyy\">"
+                           "  <commands>"
+                           "     <command> grep </command>"
+                           "  </commands>"
+                           "</vcs>"));
+
+    wex::vcs_entry entry(dc.document_element());
+    REQUIRE(entry.name() == "git");
+    REQUIRE(entry.get_command().get_command() == "grep");
+
+    auto* stc = get_stc();
+    stc->set_text("hello world");
+    stc->SelectAll();
+
+    REQUIRE(!entry.execute());
+    REQUIRE(!entry.std_out().contains("usage: "));
+
+    REQUIRE(!entry.execute(std::string(), wex::test::get_path("test.h")));
+  }
+
+  SECTION("execute-show")
+  {
+    pugi::xml_document dc;
+
+    REQUIRE(dc.load_string("<vcs name=\"git\" admin-dir=\"./\" log-flags=\"-n "
+                           "1\" blame-format=\" yyyy\">"
+                           "  <commands>"
+                           "     <command> show </command>"
+                           "  </commands>"
+                           "</vcs>"));
+
+    wex::vcs_entry entry(dc.document_element());
+    REQUIRE(entry.name() == "git");
+    REQUIRE(entry.get_command().get_command() == "show");
+
+    REQUIRE(entry.execute());
+    REQUIRE(!entry.std_out().contains("usage: "));
+
+    REQUIRE(!entry.execute(std::string(), wex::test::get_path("test.h")));
+  }
+
   SECTION("setup_exclude")
   {
     REQUIRE(wex::vcs::load_document());
