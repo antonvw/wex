@@ -41,14 +41,14 @@ public:
   /// Performs session activation.
   void on_run(wex::app* app);
 
-  /// Sets session.
-  void set_session(Catch::Session* session) { m_session = session; }
-
   /// Start testing.
   bool start(wex::app* app, int argc, char* argv[]);
 
 private:
-  Catch::Session*    m_session;
+  Catch::Session* m_session{nullptr};
+
+  bool m_exit_after_test{true};
+
   static inline path m_path;
 };
 } // namespace test
