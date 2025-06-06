@@ -2,7 +2,7 @@
 // Name:      scope.cpp
 // Purpose:   Implementation of class wex::scope
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
@@ -81,7 +81,13 @@ bool wex::scope::end() const
 
 bool wex::scope::find(const std::string& text)
 {
+  if (m_filters.empty())
+  {
+    return false;
+  }
+
   m_it = iterator(text);
+
   return !end();
 }
 
