@@ -242,6 +242,7 @@ TEST_CASE("wex::del::frame")
   SECTION("vcs_dir_exists")
   {
     REQUIRE(del_frame()->vcs_dir_exists(wex::test::get_path()));
+
 #ifndef __WXMSW__
     REQUIRE(!del_frame()->vcs_dir_exists(wex::path("/tmp")));
 #endif
@@ -249,23 +250,30 @@ TEST_CASE("wex::del::frame")
 
   SECTION("vcs_execute")
   {
-    REQUIRE(!del_frame()->vcs_execute(55, std::vector<wex::path>()));
+    SECTION("int")
+    {
+      REQUIRE(!del_frame()->vcs_execute(55, std::vector<wex::path>()));
 
-    wex::data::window data;
-    data.button(wxOK | wxCANCEL | wxAPPLY);
-    const int ID_VCS_LOG = 11; // in wex-menus.xml
-    REQUIRE(del_frame()
-              ->vcs_execute(ID_VCS_LOG, {wex::test::get_path("test.h")}, data));
-    del_frame()->vcs_destroy_dialog();
+      wex::data::window data;
+      data.button(wxOK | wxCANCEL | wxAPPLY);
+      const int ID_VCS_LOG = 11; // in wex-menus.xml
+      REQUIRE(del_frame()->vcs_execute(
+        ID_VCS_LOG,
+        {wex::test::get_path("test.h")},
+        data));
 
+      del_frame()->vcs_destroy_dialog();
+    }
+
+    SECTION("string")
     {
       wex::log_none off;
       REQUIRE(!del_frame()->vcs_execute("shows", std::vector<wex::path>()));
-    }
 
-    REQUIRE(del_frame()->vcs_execute(
-      "show",
-      std::vector<wex::path>{wex::test::get_path()}));
+      REQUIRE(del_frame()->vcs_execute(
+        "show",
+        std::vector<wex::path>{wex::test::get_path()}));
+    }
   }
 
   SECTION("virtual")
