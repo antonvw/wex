@@ -23,7 +23,11 @@ TEST_CASE("wex::vcs")
     REQUIRE(wex::vcs::load_document());
     REQUIRE(wex::vcs::dir_exists(file));
     REQUIRE(!wex::vcs::empty());
-    REQUIRE(wex::vcs::size() > 0);
+
+    const auto size(wex::vcs::size());
+    REQUIRE(size > 0);
+    REQUIRE(wex::vcs::load_document());
+    REQUIRE(size == wex::vcs::size());
   }
 
   SECTION("constructor")
