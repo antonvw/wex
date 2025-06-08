@@ -100,7 +100,8 @@ void wex::stc::generic_settings()
   }
   else
   {
-    if (const auto el = iv.find<int>(_("stc.Edge line")); el != wxSTC_EDGE_NONE)
+    if (const auto el = iv.find<long>(_("stc.Edge line"));
+        el != wxSTC_EDGE_NONE)
     {
       const auto font(iv.find<wxFont>(_("stc.Default font")));
       SetEdgeMode(font.IsFixedWidth() ? el : wxSTC_EDGE_BACKGROUND);
@@ -112,21 +113,21 @@ void wex::stc::generic_settings()
   }
 
   SetEdgeColumn(iv.find<int>(_("stc.Edge column")));
-  AnnotationSetVisible(iv.find<int>(_("stc.Annotation style")));
+  AnnotationSetVisible(iv.find<long>(_("stc.Annotation style")));
   AutoCompSetMaxWidth(iv.find<int>(_("stc.Autocomplete max width")));
   SetCaretLineVisible(iv.find<bool>(_("stc.Caret line")));
-  SetFoldFlags(iv.find<int>(_("stc.Fold flags")));
+  SetFoldFlags(iv.find<long>(_("stc.Fold flags")));
   SetIndent(iv.find<int>(_("stc.Indent")));
   SetIndentationGuides(iv.find<bool>(_("stc.Indentation guide")));
-  SetPrintColourMode(iv.find<int>(_("stc.Print flags")));
-  SetTabDrawMode(iv.find<int>(_("stc.Tab draw mode")));
+  SetPrintColourMode(iv.find<long>(_("stc.Print flags")));
+  SetTabDrawMode(iv.find<long>(_("stc.Tab draw mode")));
   SetTabWidth(iv.find<int>(_("stc.Tab width")));
   SetUseHorizontalScrollBar(iv.find<bool>(_("stc.Scroll bars")));
   SetUseTabs(!iv.find<bool>(_("stc.Expand tabs")));
   SetViewEOL(iv.find<bool>(_("stc.End of line")));
-  SetViewWhiteSpace(iv.find<int>(_("stc.Whitespace visible")));
-  SetWrapMode(iv.find<int>(_("stc.Wrap line")));
-  SetWrapVisualFlags(iv.find<int>(_("stc.Wrap visual flags")));
+  SetViewWhiteSpace(iv.find<long>(_("stc.Whitespace visible")));
+  SetWrapMode(iv.find<long>(_("stc.Wrap line")));
+  SetWrapVisualFlags(iv.find<long>(_("stc.Wrap visual flags")));
 }
 
 void wex::stc::on_exit()
