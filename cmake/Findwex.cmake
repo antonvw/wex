@@ -30,8 +30,13 @@ endif()
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
-# wx version used, determined by the wxWidgets module branch checkout
-set(wx_BASE_LIB 3.3)
+# wx version used
+# should match the wxWidgets module branch checkout or clone
+if(MSVC)
+  set(wx_BASE_LIB 33)
+else()
+  set(wx_BASE_LIB 3.3)
+endif()
 
 set(CMAKE_CXX_STANDARD 23)
 
@@ -146,14 +151,14 @@ if(MSVC)
 
   set(
     wx_LIBRARIES
-    wx${PLATFORM}33u${USE_DEBUG}_aui
-    wx${PLATFORM}33u${USE_DEBUG}_stc
-    wx${PLATFORM}33u${USE_DEBUG}_html
-    wx${PLATFORM}33u${USE_DEBUG}_core
-    wx${PLATFORM}33u${USE_DEBUG}_qa
-    wx${PLATFORM}33u${USE_DEBUG}_gl
-    wxbase33u${USE_DEBUG}
-    wxbase33u${USE_DEBUG}_net
+    wx${PLATFORM}${wx_BASE_LIB}u${USE_DEBUG}_aui
+    wx${PLATFORM}${wx_BASE_LIB}u${USE_DEBUG}_stc
+    wx${PLATFORM}${wx_BASE_LIB}u${USE_DEBUG}_html
+    wx${PLATFORM}${wx_BASE_LIB}u${USE_DEBUG}_core
+    wx${PLATFORM}${wx_BASE_LIB}u${USE_DEBUG}_qa
+    wx${PLATFORM}${wx_BASE_LIB}u${USE_DEBUG}_gl
+    wxbase${wx_BASE_LIB}u${USE_DEBUG}
+    wxbase${wx_BASE_LIB}u${USE_DEBUG}_net
     wxjpeg
     wxpng
     wxzlib

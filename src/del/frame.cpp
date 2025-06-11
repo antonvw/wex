@@ -146,10 +146,7 @@ wex::del::frame::frame(
   ex::get_macros().load_document();
 
   const std::vector<item> f{
-    {find_replace_data::get()->text_find(),
-     item::COMBOBOX,
-     std::any(),
-     data::control().is_required(true)},
+    {add_find_text()},
     {m_text_in_files,
      item::COMBOBOX,
      default_extensions(),

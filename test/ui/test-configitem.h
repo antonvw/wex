@@ -2,13 +2,14 @@
 // Name:      test-configitem.h
 // Purpose:   Declaration and implementation of class test_config_item
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/core/config.h>
 #include <wex/core/log.h>
+#include <wex/syntax/style.h>
 #include <wex/ui/item.h>
 
 #include <wx/html/htmlwin.h>
@@ -95,7 +96,9 @@ inline const std::vector<wex::item> test_config_item::vector(int rows, int cols)
        {{10},
         {"dir picker", wex::item::DIRPICKERCTRL},
         {"file picker", wex::item::FILEPICKERCTRL},
-        {"font picker", wex::item::FONTPICKERCTRL}}},
+        {"font picker",
+         wex::item::FONTPICKERCTRL,
+         wex::style().default_font()}}},
 
       {"radioboxes",
        {{"radio box",

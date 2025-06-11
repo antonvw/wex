@@ -29,4 +29,12 @@ TEST_CASE("wex::ex_commandline_imp")
     REQUIRE(cli.handle("/hello"));
     REQUIRE(cli.handle('c'));
   }
+
+  SECTION("on")
+  {
+    wex::ex_commandline_imp cli(cl, control, wex::data::window());
+
+    REQUIRE(!cli.handle('\t'));
+    REQUIRE(!cli.handle(WXK_ESCAPE));
+  }
 }

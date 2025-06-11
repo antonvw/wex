@@ -9,7 +9,6 @@
 #include <charconv>
 #include <sstream>
 
-#include <boost/algorithm/string.hpp>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/ctags/ctags.h>
@@ -25,6 +24,7 @@
 
 #include "../util.h"
 #include "util.h"
+#include "vim.h"
 
 #define REPEAT_WITH_UNDO(TEXT)                                                 \
   {                                                                            \
@@ -34,60 +34,6 @@
 
 namespace wex
 {
-size_t fold(wex::syntax::stc* stc, const std::string& command)
-{
-  if (command.size() <= 1)
-  {
-    return (size_t)0;
-  }
-
-  const auto level = stc->GetFoldLevel(stc->get_current_line());
-
-  const auto line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
-                              stc->get_current_line() :
-                              stc->GetFoldParent(stc->get_current_line());
-
-  switch (command[1])
-  {
-    case 'c':
-    case 'o':
-      if (
-        (stc->GetFoldExpanded(line_to_fold) &&
-         boost::algorithm::trim_copy(command) == "zc") ||
-        (!stc->GetFoldExpanded(line_to_fold) &&
-         boost::algorithm::trim_copy(command) == "zo"))
-      {
-        stc->ToggleFold(line_to_fold);
-      }
-      break;
-
-    case 'f':
-      stc->get_lexer().set_property("fold", "1");
-      stc->get_lexer().apply();
-      stc->fold(true);
-      break;
-
-    case 'E':
-      stc->get_lexer().set_property("fold", "0");
-      stc->get_lexer().apply();
-      stc->fold(false);
-      break;
-
-    case 'M':
-      stc->fold(true);
-      break;
-
-    case 'R':
-      for (int i = 0; i < stc->get_line_count(); i++)
-      {
-        stc->EnsureVisible(i);
-      }
-      break;
-  }
-
-  return command.size();
-}
-
 bool replace_char(factory::stc* stc, char c, int count)
 {
   if (stc->is_hexmode())
@@ -368,7 +314,8 @@ wex::vi::commands_t wex::vi::commands_other()
     {"z",
      [&](const std::string& command)
      {
-       return fold(get_stc(), command);
+       auto cmd(command);
+       return vim(this, cmd, get_motion(command)).other() ? 2 : 0;
      }},
     {".",
      [&](const std::string& command)

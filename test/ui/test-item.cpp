@@ -52,6 +52,8 @@ TEST_CASE("wex::item")
     wex::item::use_config(true);
     wex::item item("item-parent.child", "karmeliet");
 
+    REQUIRE(item.log().str().contains("item-parent"));
+
     REQUIRE(item.layout(layout) != nullptr);
     REQUIRE(item.label() == "item-parent.child");
     REQUIRE(std::any_cast<std::string>(item.get_value()) == "karmeliet");

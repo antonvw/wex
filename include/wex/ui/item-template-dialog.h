@@ -350,7 +350,7 @@ void wex::item_template_dialog<T>::process_checklistbox(const T& item)
   if (m_force_checkbox_checked)
   {
     auto* clb = reinterpret_cast<wxCheckListBox*>(item.window());
-    for (size_t i = 0; i < clb->GetCount(); i++)
+    for (unsigned int i = 0; i < clb->GetCount(); i++)
     {
       if (
         icontains(clb->GetString(i), m_contains) && clb->IsChecked(i) &&

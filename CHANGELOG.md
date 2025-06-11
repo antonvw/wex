@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - editor pages can be pinned to prevent moving them
-- added vim gT support
+- added more vim g and z commands
 
 ### Changed
 
@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - used catch lib from wxWidgets instead of doctest lib for unit tests
 - used wxFONTFAMILY_TELETYPE instead of wxFONTFAMILY_DEFAULT as default font
 - build-gen.sh supports xcodebuild
+- updated git grep dialog to include checkboxes
 - more boost::process::v2 lib used, requiring boost 1.88
 
 ### Fixed
@@ -31,6 +32,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - fixed recording using escape
 - prevent git grep on selection with multiple lines
 - fixed git grep and spaces at end
+- fixed crash in findbar if all documents were closed
+- fixed match function and regular expression in find_replace_data
 
 ### Removed
 

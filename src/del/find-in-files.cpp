@@ -117,10 +117,7 @@ int wex::del::frame::find_in_files_dialog(const tool& tool, bool add_in_files)
 
   if (
     item_dialog(
-      {{find_replace_data::get()->text_find(),
-        item::COMBOBOX,
-        std::any(),
-        data::control().is_required(true)},
+      {{add_find_text()},
        (add_in_files ? item(
                          m_text_in_files,
                          item::COMBOBOX,

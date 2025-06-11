@@ -357,6 +357,7 @@ bool wex::toolbar::add_tool(
 bool wex::toolbar::Destroy()
 {
   delete m_find_bar;
+  m_find_bar = nullptr;
 
   return wxAuiToolBar::Destroy();
 }
@@ -374,4 +375,12 @@ bool wex::toolbar::set_checkbox(const std::string& name, bool show) const
       }
       return false;
     });
+}
+
+void wex::toolbar::sync_close_all(wxWindowID id)
+{
+  if (m_find_bar != nullptr)
+  {
+    m_find_bar->set_stc(nullptr);
+  }
 }

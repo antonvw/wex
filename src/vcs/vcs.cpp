@@ -291,8 +291,6 @@ bool wex::vcs::load_document()
     return false;
   }
 
-  m_store->insert(m_store->begin(), vcs_entry());
-
   log::info("vcs entries") << size() << "from" << menus::path().string();
 
   if (old_store == 0)
@@ -335,6 +333,8 @@ void wex::vcs::on_init()
     m_store = new store_t;
 
     load_document();
+
+    m_store->insert(m_store->begin(), vcs_entry());
   }
 }
 
@@ -417,7 +417,10 @@ bool wex::vcs::setup_exclude(const path& dir)
 
 int wex::vcs::show_dialog(const data::window& arg)
 {
-  assert(!m_entry->name().empty());
+  if (size() <= 1)
+  {
+    return wxID_CANCEL;
+  }
 
   if (
     m_entry->get_command().get_command() == "grep" ||

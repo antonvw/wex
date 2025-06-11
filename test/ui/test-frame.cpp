@@ -148,8 +148,6 @@ TEST_CASE("wex::frame")
 
     frame()->sync_all();
 
-    frame()->sync_close_all(100);
-
     frame()->vcs_add_path(nullptr);
 
     frame()->vcs_annotate_commit(get_stc(), 100, "a898989aaabbb");
@@ -293,7 +291,7 @@ TEST_CASE("wex::frame::bars")
   REQUIRE(!frame()->pane_show("xxxx", false));
 
   frame()->sync_all();
-  frame()->sync_close_all(0);
+  //  frame()->sync_close_all(0);
 
   REQUIRE(frame()->get_find_toolbar() != nullptr);
   REQUIRE(frame()->get_options_toolbar() != nullptr);

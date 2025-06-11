@@ -85,7 +85,7 @@ protected:
 private:
   bool parse_header(const std::string& r, const std::string& line, path& p);
 
-  std::array<size_t, 4>                   m_range;
+  std::array<int, 4>                      m_range;
   std::array<std::vector<std::string>, 2> m_text;
 
   bool m_is_first{true}, m_is_last{false};

@@ -2,7 +2,7 @@
 // Name:      test-item-build.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ui/item-build.h>
@@ -15,6 +15,14 @@ TEST_CASE("wex::add_combobox_with_max")
 
   REQUIRE(combo_max.label().empty());
   REQUIRE(combo_max.type() == wex::item::GROUP);
+}
+
+TEST_CASE("wex::add_find_text")
+{
+  const auto& find(wex::add_find_text());
+
+  REQUIRE(find.label() == "fif.Find what");
+  REQUIRE(find.type() == wex::item::COMBOBOX);
 }
 
 TEST_CASE("wex::add_header")

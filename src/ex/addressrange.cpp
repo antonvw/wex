@@ -762,9 +762,8 @@ bool wex::addressrange::sort(const std::string& parameters) const
     }
 
     std::string filter; // filter r, u
-    std::copy_if(
-      parameters.begin(),
-      parameters.end(),
+    std::ranges::copy_if(
+      parameters,
       std::back_inserter(filter),
       [](char c)
       {

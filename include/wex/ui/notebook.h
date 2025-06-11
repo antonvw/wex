@@ -133,9 +133,9 @@ template <class T> bool wex::notebook::for_each(int id)
 {
   m_frame->set_find_focus(nullptr);
 
-  wxWindowUpdateLocker locker(
-    m_frame != nullptr ? reinterpret_cast<wxWindow*>(m_frame) :
-                         reinterpret_cast<wxWindow*>(this));
+  wxWindowUpdateLocker locker(reinterpret_cast<wxWindow*>(m_frame));
+
+  const bool keys_empty(m_keys.empty());
 
   // The page should be an int (no), otherwise page >= 0 never fails!
   for (int page = GetPageCount() - 1; page >= 0; page--)
@@ -205,10 +205,11 @@ template <class T> bool wex::notebook::for_each(int id)
     }
   }
 
-  if (m_frame != nullptr && m_keys.empty())
+  if (!keys_empty && m_keys.empty())
   {
     m_frame->sync_close_all(GetId());
   }
+
   return true;
 };
 
