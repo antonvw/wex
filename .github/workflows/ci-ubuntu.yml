@@ -22,7 +22,7 @@ jobs:
           # https://github.com/actions/boost-versions/blob/main/versions-manifest.json
           boost_version: 1.88.0
           # OPTIONAL: Specify a platform version
-          platform_version: 20.04
+          platform_version: 24.04
 
       - name: Install gtk
         run:
