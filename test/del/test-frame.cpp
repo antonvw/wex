@@ -186,6 +186,26 @@ TEST_CASE("wex::del::frame")
 #endif
   }
 
+  SECTION("vcs_annotate_line")
+  {
+    get_stc()->open(wex::test::get_path("test.h"));
+
+    REQUIRE(
+      del_frame()->vcs_annotate_line(get_stc(), "PaneBlameXXX") ==
+      std::string());
+
+    REQUIRE(
+      !del_frame()->vcs_annotate_line(get_stc(), "PaneBlameComments").empty());
+
+    REQUIRE(del_frame()
+              ->vcs_annotate_line(get_stc(), "PaneBlameComments")
+              .starts_with("improved"));
+
+    REQUIRE(
+      del_frame()->vcs_annotate_line(get_stc(), "PaneBlameAuthor") ==
+      "Anton van Wezenbeek");
+  }
+
   SECTION("vcs_blame")
   {
     get_stc()->set_text(std::string());

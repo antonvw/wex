@@ -350,6 +350,9 @@ void wex::stc::bind_other()
       if (event.GetUpdated() & wxSTC_UPDATE_SELECTION)
       {
         m_frame->update_statusbar(this, "PaneInfo");
+        m_frame->update_statusbar(this, "PaneBlameAuthor");
+        m_frame->update_statusbar(this, "PaneBlameDate");
+        m_frame->update_statusbar(this, "PaneBlameComments");
       }
     });
 }

@@ -194,6 +194,8 @@ public:
   void vcs_add_path(factory::link*) override;
   bool vcs_annotate_commit(syntax::stc*, int line, const std::string& commit_id)
     override;
+  std::string
+  vcs_annotate_line(factory::stc* s, const std::string& pane) const override;
   void vcs_append(menu*, const menu_item* i) const override;
   bool vcs_blame(syntax::stc*) override;
   bool vcs_blame_revision(
@@ -242,6 +244,8 @@ private:
   function_repeat m_function_repeat;
 
   const indicator m_indicator_add = wex::indicator(3);
+
+  const std::map<std::string, std::string> m_field_formats;
 
   const std::string m_text_hidden{_("fif.Hidden")},
     m_text_in_files{_("fif.In files")}, m_text_in_folder{_("fif.In folder")},
