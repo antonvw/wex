@@ -26,10 +26,6 @@ if(wexBUILD_GITHUB)
   add_definitions(-DGITHUB)
 endif()
 
-if (MSVC)
-  add_definitions(-DWIN32_LEAN_AND_MEAN)
-endif()
-
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 set(CMAKE_DISABLE_PRECOMPILE_HEADERS ON)
