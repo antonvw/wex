@@ -103,7 +103,11 @@ const std::string win_frame = "window.frame", win_max = "window.maximized";
 
 wex::frame::frame(size_t maxFiles, const data::window& data)
   : m_file_history(maxFiles, wxID_FILE1)
-  , m_toggled_panes(
+  , m_panes_blame_format(
+      {{"PaneBlameAuthor", "%an"},
+       {"PaneBlameDate", "%ad"},
+       {"PaneBlameComments", "%s"}})
+  , m_panes_toggle(
       {{{"FINDBAR", _("&Findbar")}, ID_VIEW_LOWEST + 1},
        {{"OPTIONSBAR", _("&Optionsbar")}, ID_VIEW_LOWEST + 2},
        {{"TOOLBAR", _("&Toolbar")}, ID_VIEW_LOWEST + 3},
@@ -272,7 +276,7 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
       m_optionsbar->set_checkbox(info->name, false);
     });
 
-  for (const auto& it : m_toggled_panes)
+  for (const auto& it : m_panes_toggle)
   {
     Bind(
       wxEVT_UPDATE_UI,

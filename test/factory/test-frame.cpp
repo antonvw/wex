@@ -81,4 +81,10 @@ TEST_CASE("wex::factory::frame")
     REQUIRE(!frame()->is_open(wex::test::get_path("test.h")));
     REQUIRE(!frame()->is_open(wex::path("xxx")));
   }
+
+  SECTION("vcs")
+  {
+    REQUIRE(
+      frame()->vcs_annotate_line(stc, "PaneBlameAuthor") == std::string());
+  }
 }

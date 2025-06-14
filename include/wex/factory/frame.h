@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of wex::factory::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -129,6 +129,12 @@ public:
   statustext(const std::string& text, const std::string& pane) const
   {
     return false;
+  };
+
+  /// Return git annotate info for current line on specified stc.
+  virtual std::string vcs_annotate_line(stc*, const std::string& pane) const
+  {
+    return std::string();
   };
 
   /// Runs a unified diff on paths.
