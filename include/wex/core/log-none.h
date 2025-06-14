@@ -2,7 +2,7 @@
 // Name:      log-none.h
 // Purpose:   Declaration of wex::log_none class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -16,7 +16,10 @@ public:
   /// Default constructor, disables logging.
   log_none();
 
-  /// Destructor, restores previous loglevel.
+  /// Enables logging to previous level.
+  void enable();
+
+  /// Destructor, enables logging.
   ~log_none();
 
 private:

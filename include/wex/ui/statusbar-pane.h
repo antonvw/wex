@@ -2,7 +2,7 @@
 // Name:      statusbar-pane.h
 // Purpose:   Declaration of wex::statusbar-pane class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -39,6 +39,9 @@ public:
     /// - PaneTheme
     /// - PaneMacro
     /// - PaneMode
+    /// - PaneBlameAuthor
+    /// - PaneBlameDate
+    /// - PaneBlameComments
     /// by setting up one of these panes,
     /// your panes will get controlled by the lib.
     const std::string& name,

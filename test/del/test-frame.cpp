@@ -188,14 +188,13 @@ TEST_CASE("wex::del::frame")
 
   SECTION("vcs_annotate_line")
   {
-    get_stc()->open(wex::test::get_path("test.h"));
+    REQUIRE(del_frame()->open_file(wex::test::get_path("test.h")) != nullptr);
+    del_frame()->set_find_focus(get_stc());
+
+    REQUIRE(del_frame()->vcs_annotate_line(get_stc(), "PaneBlameXXX").empty());
 
     REQUIRE(
-      del_frame()->vcs_annotate_line(get_stc(), "PaneBlameXXX") ==
-      std::string());
-
-    REQUIRE(
-      !del_frame()->vcs_annotate_line(get_stc(), "PaneBlameComments").empty());
+      !del_frame()->vcs_annotate_line(get_stc(), "PaneBlameDate").empty());
 
     REQUIRE(del_frame()
               ->vcs_annotate_line(get_stc(), "PaneBlameComments")
@@ -328,9 +327,11 @@ TEST_CASE("wex::del::frame")
       wxID_ADD,
       wxCommandEvent(wxEVT_NULL, wxID_OK));
 
+#ifndef GITHUB
     del_frame()->on_command_item_dialog(
       wex::del::frame::id_find_in_files,
       wxCommandEvent(wxEVT_NULL, wxID_OK));
+#endif
 
     del_frame()->on_notebook(100, nullptr);
 

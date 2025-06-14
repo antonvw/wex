@@ -264,6 +264,19 @@ void wex::statusbar::pane_dialog()
   }
 }
 
+bool wex::statusbar::pane_is_shown(const std::string& pane) const
+{
+  for (auto& it : m_panes)
+  {
+    if (it.name() == pane)
+    {
+      return it.is_shown();
+    }
+  }
+
+  return false;
+}
+
 bool wex::statusbar::pane_show(const std::string& pane, bool show)
 {
   assert(!m_panes.empty());

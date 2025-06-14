@@ -245,8 +245,6 @@ private:
 
   const indicator m_indicator_add = wex::indicator(3);
 
-  const std::map<std::string, std::string> m_field_formats;
-
   const std::string m_text_hidden{_("fif.Hidden")},
     m_text_in_files{_("fif.In files")}, m_text_in_folder{_("fif.In folder")},
     m_text_recursive{_("fif.Recursive")};

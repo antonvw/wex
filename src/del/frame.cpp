@@ -133,10 +133,6 @@ wex::del::frame::frame(
           }
         }
       })
-  , m_field_formats(
-      {{"PaneBlameAuthor", "%an"},
-       {"PaneBlameDate", "%ad"},
-       {"PaneBlameComments", "%s"}})
 {
   auto info(m_info);
   // Match whole word does not work with replace.
@@ -803,20 +799,24 @@ std::string wex::del::frame::vcs_annotate_line(
   factory::stc*      stc,
   const std::string& pane) const
 {
-  const auto it = m_field_formats.find(pane);
+  const auto it = panes_blame_format().find(pane);
 
-  if (it == m_field_formats.end())
+  if (it == panes_blame_format().end())
   {
+    log("no blame pane") << pane;
     return std::string();
   }
 
-  wex::log_none off; // prevent log errors, such as new commits etc.
+  wex::log_none off; // prevent log errors, such as illegal line
   wex::vcs      vcs{{stc->path()}};
 
   if (const auto& line(std::to_string(stc->get_current_line() + 1));
       vcs.execute("blame -L " + line + "," + line + " " + stc->path().string()))
   {
+    off.enable();
+
     if (const auto& commit_hash(find_before(vcs.entry().std_out(), " "));
+        !commit_hash.starts_with("000000") &&
         vcs.execute(
           "log " + commit_hash + " -n 1 --date=short --format=" + it->second))
     {

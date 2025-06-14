@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - editor pages can be pinned to prevent moving them
 - added more vim g and z commands
 - added showing blame current line in statusbar
+- added pane_is_shown to statusbar
 
 ### Changed
 
@@ -22,6 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - build-gen.sh supports xcodebuild
 - updated git grep dialog to include checkboxes
 - used released wxWidgets 3.3.0
+- allow to enable a log_none
 
 ### Fixed
 
