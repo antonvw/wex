@@ -40,6 +40,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Removed
 
+- removed ODBC support and otlv4 lib: moved to wex-db lib
 - removed queue_thread
 
 ## [25.04] - 2025-03-16

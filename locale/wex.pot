@@ -772,9 +772,6 @@ msgstr ""
 msgid "Datasource"
 msgstr ""
 
-msgid "Open ODBC Connection"
-msgstr ""
-
 msgid "User"
 msgstr ""
 

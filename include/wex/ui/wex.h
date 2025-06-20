@@ -2,7 +2,7 @@
 // Name:      ui/wex.h
 // Purpose:   General wex include file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -31,7 +31,6 @@
 #include <wex/ui/menubar.h>
 #include <wex/ui/menus.h>
 #include <wex/ui/notebook.h>
-#include <wex/ui/odbc.h>
 #include <wex/ui/statusbar-pane.h>
 #include <wex/ui/statusbar.h>
 #include <wex/ui/toolbar.h>
