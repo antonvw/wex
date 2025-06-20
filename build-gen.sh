@@ -45,7 +45,7 @@ option_swig=
 option_tests=
 option_tidy=
 
-while getopts ":B:d:D:G:abcghilopstT" opt; do
+while getopts ":B:d:D:G:abcghilpstT" opt; do
   case $opt in
     a)
       option_asan="-DwexENABLE_ASAN=ON"
