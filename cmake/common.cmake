@@ -128,13 +128,6 @@ function(wex_install)
     DESTINATION ${WEX_INSTALL_DIR}
   )
 
-  if(ODBC_FOUND)
-    install(
-      FILES ${CMAKE_SOURCE_DIR}/external/otl/otlv4.h
-      DESTINATION ${WEX_INSTALL_DIR}
-    )
-  endif()
-
   install(FILES ${wexSETUP_H} DESTINATION ${WEX_INSTALL_DIR}/wx)
 
   # install libraries
@@ -231,7 +224,7 @@ endfunction()
 
 function(wex_target_link_all)
   if(${ARGC} STREQUAL "0")
-    set(wex_use_LIBRARIES ${wex_own_LIBRARIES} ${ODBC_LIBRARIES})
+    set(wex_use_LIBRARIES ${wex_own_LIBRARIES})
   else()
     set(wex_use_LIBRARIES ${ARGN})
   endif()
@@ -304,11 +297,7 @@ function(wex_test_app libs)
 
   get_property(tmp GLOBAL PROPERTY test_libs)
 
-  if(ODBC_FOUND)
-    wex_target_link_all(${tmp} ${ODBC_LIBRARIES})
-  else()
-    wex_target_link_all(${tmp})
-  endif()
+  wex_target_link_all(${tmp})
 
   add_test(
     NAME ${PROJECT_NAME}

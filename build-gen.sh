@@ -23,7 +23,6 @@ usage()
   echo "-h       displays usage information and exits"
   echo "-i       build interface bindings for SWIG"
   echo "-l       add locale files"
-  echo "-o       build ODBC"
   echo "-p       prepare only, do not run (ninja) after generating build files"
   echo "-s       build samples binaries as well"
   echo "-t       build tests binaries as well"
@@ -40,7 +39,6 @@ option_dir=build
 option_generator="-G Ninja"
 option_github=
 option_locale=
-option_odbc=
 option_prepare=false
 option_samples=
 option_swig=
@@ -96,10 +94,6 @@ while getopts ":B:d:D:G:abcghilopstT" opt; do
       option_locale="-DwexENABLE_GETTEXT=ON"
     ;;
 
-    o)
-      option_odbc="-DwexENABLE_ODBC=ON"
-    ;;
-
     p)
       option_prepare=true
     ;;
@@ -150,7 +144,6 @@ cmake -B "${option_dir}" "${option_generator}" \
   ${option_coverage} \
   ${option_github} \
   ${option_locale} \
-  ${option_odbc} \
   ${option_samples} \
   ${option_swig} \
   ${option_tests} \

@@ -85,10 +85,6 @@ if(wexENABLE_GETTEXT)
   include(FindGettext)
 endif()
 
-if(wexENABLE_ODBC)
-  find_package(ODBC)
-endif()
-
 if(wexBUILD_TESTS)
   enable_testing()
 endif()
