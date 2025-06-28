@@ -2,7 +2,7 @@
 // Name:      test-file-status.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2024 Anton van Wezenbeek
+// Copyright: (c) 2018-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/file-status.h>
@@ -31,7 +31,7 @@ TEST_CASE("wex::file_status")
 
 #ifdef __UNIX__
   REQUIRE(wex::file_status("/etc/hosts").is_readonly());
-  REQUIRE(!wex::file_status(".odbc.ini").is_readonly());
+  REQUIRE(!wex::file_status(".test.h").is_readonly());
   REQUIRE(!wex::file_status("xxxxx").is_readonly());
 #endif
 }

@@ -186,6 +186,25 @@ TEST_CASE("wex::del::frame")
 #endif
   }
 
+  SECTION("vcs_annotate_line")
+  {
+    REQUIRE(del_frame()->open_file(wex::test::get_path("test.h")) != nullptr);
+    del_frame()->set_find_focus(get_stc());
+
+    REQUIRE(del_frame()->vcs_annotate_line(get_stc(), "PaneBlameXXX").empty());
+
+    REQUIRE(
+      !del_frame()->vcs_annotate_line(get_stc(), "PaneBlameDate").empty());
+
+    REQUIRE(del_frame()
+              ->vcs_annotate_line(get_stc(), "PaneBlameComments")
+              .starts_with("improved"));
+
+    REQUIRE(
+      del_frame()->vcs_annotate_line(get_stc(), "PaneBlameAuthor") ==
+      "Anton van Wezenbeek");
+  }
+
   SECTION("vcs_blame")
   {
     get_stc()->set_text(std::string());
@@ -308,9 +327,11 @@ TEST_CASE("wex::del::frame")
       wxID_ADD,
       wxCommandEvent(wxEVT_NULL, wxID_OK));
 
+#ifndef GITHUB
     del_frame()->on_command_item_dialog(
       wex::del::frame::id_find_in_files,
       wxCommandEvent(wxEVT_NULL, wxID_OK));
+#endif
 
     del_frame()->on_notebook(100, nullptr);
 

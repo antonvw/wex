@@ -165,7 +165,7 @@ void wex::menu_item::append_panes(wex::menu* menu) const
 #endif
     {ID_VIEW_STATUSBAR, _("&Statusbar"), CHECK}});
 
-  for (const auto& it : m_frame->toggled_panes())
+  for (const auto& it : m_frame->panes_toggle())
   {
     menu->append({{it.second, it.first.second, CHECK}});
   }

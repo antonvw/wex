@@ -585,6 +585,14 @@ void wex::stc::properties_message(path::log_t flags)
     m_frame->update_statusbar(this, "PaneMode");
   }
 
+  for (const auto& pane : m_frame->panes_blame_format())
+  {
+    m_frame->get_statusbar()->pane_show(
+      pane.first,
+      wex::config(_("stc.Auto blame statusbar")).get(false) &&
+        m_frame->vcs_dir_exists(path()));
+  }
+
   m_frame->update_statusbar(this, "PaneInfo");
 
   if (!flags[path::LOG_SYNC])

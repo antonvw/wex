@@ -37,5 +37,3 @@ file(
 foreach(p ${pattern_files})
   file(COPY ${p} DESTINATION ${CONFIG_INSTALL_DIR})
 endforeach()
-
-file(COPY data/.odbc.ini DESTINATION ${CONFIG_INSTALL_DIR})
