@@ -48,7 +48,16 @@ endif()
 find_package(
   Boost
   1.88.0
-  COMPONENTS log_setup log filesystem program_options date_time regex json url
+  COMPONENTS
+    log_setup
+    log
+    filesystem
+    program_options
+    date_time
+    regex
+    json
+    url
+    process
   REQUIRED
 )
 

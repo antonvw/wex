@@ -18,6 +18,10 @@ option(wxUSE_RIBBON "Use ribbon" OFF)
 option(wxUSE_RICHTEXT "Use richtext" OFF)
 set(wxUSE_REGEX builtin)
 
+if (WIN32)
+option(wxUSE_WINSOCK2 "include <winsock2.h> rather than <winsock.h>" OFF)
+endif()
+
 option(wxUSE_STD_STRING_CONV_IN_WXSTRING "Use std::string" ON)
 option(wxUSE_UNICODE "Use Unicode" ON)
 option(wxUSE_WEBVIEW "Use webview" OFF)
