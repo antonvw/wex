@@ -2,17 +2,17 @@
 // Name:      process-imp.cpp
 // Purpose:   Implementation of class wex::factory::process_imp
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
+
+#include "process-imp.h"
 
 #include <wex/core/log.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/process.h>
 #include <wx/event.h>
-
-#include "process-imp.h"
 
 #define WEX_POST(ID, TEXT, DEST)                                               \
   if (DEST != nullptr)                                                         \
@@ -34,16 +34,13 @@ void wex::factory::process_imp::async_sleep_for(
   std::this_thread::sleep_for(ms);
 }
 
-void wex::factory::process_imp::async_system(
-  process*            p,
-  const process_data& data)
+void wex::factory::process_imp::async_system(process* p)
 {
   m_debug.store(p->m_eh_debug != nullptr);
-  m_data = data;
 
   try
   {
-    boost_async_system(p, data);
+    boost_async_system(p);
 
     m_is_running.store(true);
 
@@ -57,13 +54,11 @@ void wex::factory::process_imp::async_system(
   }
 }
 
-void wex::factory::process_imp::boost_async_system(
-  process*            p,
-  const process_data& data)
+void wex::factory::process_imp::boost_async_system(process* p)
 {
   bp::async_system(
     *m_io.get(),
-    [this, p, data](boost::system::error_code error, int i)
+    [this, p](boost::system::error_code error, int i)
     {
       m_is_running.store(false);
 
@@ -72,7 +67,7 @@ void wex::factory::process_imp::boost_async_system(
         WEX_POST(ID_SHELL_APPEND_ERROR, error.message(), p->m_eh_out)
       }
 
-      log::debug("async_system") << "exit" << data.exe();
+      log::debug("async_system") << "exit" << p->data().exe();
 
       if (m_debug.load())
       {
@@ -81,43 +76,37 @@ void wex::factory::process_imp::boost_async_system(
     },
 
     // clang-format off
-    data.exe_path(),
-    bp::args = data.args(),
-    bp::start_dir = data.start_dir(),
+    p->data().exe_path(),
+    bp::args = p->data().args(),
+    bp::start_dir = p->data().start_dir(),
     bp::std_err > m_es,
     bp::std_in < m_os, 
     bp::std_out > m_is,
     m_group);
   // clang-format on
 
-  log::debug("async_system") << data.exe() << "wd:" << data.start_dir();
+  log::debug("async_system")
+    << p->data().exe() << "wd:" << p->data().start_dir();
 }
 
 bool wex::factory::process_imp::stop(wxEvtHandler* e)
 {
-  try
+  if (m_is_running.load())
   {
-    if (m_is_running.load())
+    if (m_group.valid())
     {
-      if (m_group.valid())
-      {
-        m_group.terminate();
-      }
-
-      m_io->stop();
-      m_is_running.store(false);
-
-      if (m_debug.load() && e != nullptr)
-      {
-        WEX_POST(ID_DEBUG_EXIT, "", e)
-      }
-
-      return true;
+      m_group.terminate();
     }
-  }
-  catch (std::exception& ex)
-  {
-    log(ex) << "stop" << m_data.exe();
+
+    m_io->stop();
+    m_is_running.store(false);
+
+    if (m_debug.load() && e != nullptr)
+    {
+      WEX_POST(ID_DEBUG_EXIT, "", e)
+    }
+
+    return true;
   }
 
   return false;

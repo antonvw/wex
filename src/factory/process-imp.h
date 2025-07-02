@@ -20,6 +20,8 @@
 
 namespace bp = boost::process::v1;
 
+class wxEvtHandler;
+
 namespace wex::factory
 {
 class process;
@@ -36,7 +38,7 @@ public:
   void async_sleep_for(const std::chrono::milliseconds& ms);
 
   /// Runs the exe as a async process.
-  void async_system(process* p, const process_data& data);
+  void async_system(process* p);
 
   /// Returns true if this is a debug process.
   bool is_debug() const { return m_debug; }
@@ -51,7 +53,7 @@ public:
   bool write(const std::string& text);
 
 private:
-  void boost_async_system(process* p, const process_data& data);
+  void boost_async_system(process* p);
   void thread_error(const process* p);
   void thread_input(const process* p);
   void thread_output(const process* p);
@@ -65,7 +67,5 @@ private:
   bp::ipstream m_es, m_is;
   bp::opstream m_os;
   bp::group    m_group;
-
-  process_data m_data;
 };
 }; // namespace wex::factory
