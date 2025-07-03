@@ -9,6 +9,8 @@
 #include <atomic>
 #include <queue>
 
+#define _WINSOCKAPI_
+
 #include <boost/process.hpp>
 #include <boost/process/v1/args.hpp>
 #include <boost/process/v1/async_system.hpp>
