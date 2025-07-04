@@ -7,12 +7,12 @@
 
 #include <thread>
 
-#include "process-imp.h"
-
 #include <wex/core/log.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/process.h>
 #include <wx/event.h>
+
+#include "process-imp.h"
 
 #define WEX_POST(ID, TEXT, DEST)                                               \
   if (DEST != nullptr)                                                         \

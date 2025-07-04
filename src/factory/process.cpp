@@ -7,12 +7,11 @@
 
 #include <future>
 
-#include "process-imp.h"
-
 #include <wex/core/log.h>
 #include <wex/factory/process.h>
 
 #include "data-to-std-in.h"
+#include "process-imp.h"
 
 wex::factory::process::process()
   : m_imp(std::make_shared<process_imp>())
