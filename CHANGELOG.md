@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - used wxFONTFAMILY_TELETYPE instead of wxFONTFAMILY_DEFAULT as default font
 - build-gen.sh supports xcodebuild
 - updated git grep dialog to include checkboxes
+- more boost::process::v2 lib used, requiring boost 1.88
 - used released wxWidgets 3.3.0
 - allow to enable a log_none
 

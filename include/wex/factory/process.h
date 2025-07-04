@@ -40,12 +40,12 @@ public:
   /// The output streams of the executing process are sent to these
   /// event handlers using wxPostEvent.
   /// Returns true if the async process is started.
-  virtual bool async_system(const process_data& data);
+  virtual bool async_system(const wex::process_data& data);
 
   /// Runs the sync process, collecting output in stdout and stderr.
   /// It will execute the process and wait for it's exit,
   /// then returns the exit_code.
-  virtual int system(const process_data& data);
+  virtual int system(const wex::process_data& data);
 
   // Writes data to the input of the async process.
   virtual bool write(const std::string& text);
@@ -56,7 +56,7 @@ public:
   void async_sleep_for(const std::chrono::milliseconds& ms);
 
   /// Returns last or current data used by async_system or system.
-  const process_data& data() const { return m_data; };
+  const wex::process_data& data() const { return m_data; };
 
   /// Is this a debug process.
   bool is_debug() const;
@@ -84,7 +84,7 @@ private:
 
   wxEvtHandler *m_eh_debug{nullptr}, *m_eh_out{nullptr};
 
-  process_data m_data;
+  wex::process_data m_data;
 
   std::shared_ptr<process_imp> m_imp;
 };

@@ -30,10 +30,20 @@ set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 set(CMAKE_DISABLE_PRECOMPILE_HEADERS ON)
 
+# see also Findwex, uses same Boost components
 find_package(
   Boost
-  1.81.0
-  COMPONENTS log_setup log filesystem program_options date_time regex json url
+  1.88.0
+  COMPONENTS
+    log_setup
+    log
+    filesystem
+    program_options
+    date_time
+    regex
+    json
+    url
+    process
   REQUIRED
 )
 
