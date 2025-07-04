@@ -1049,9 +1049,6 @@ msgstr "Options d’onglet"
 msgid "Datasource"
 msgstr "Sources des données"
 
-msgid "Open ODBC Connection"
-msgstr "Ouvrir une connexion ODBC"
-
 msgid "User"
 msgstr "Utilisateur"
 

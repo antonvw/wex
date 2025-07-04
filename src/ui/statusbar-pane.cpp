@@ -2,7 +2,7 @@
 // Name:      statusbar-pane.cpp
 // Purpose:   Implementation of wex::statusbar_pane class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ui/statusbar-pane.h>
@@ -17,6 +17,9 @@ std::string determine_help_text(const std::string& name)
     {"PaneDBG", _("Debugger")},
     {"PaneFileType", _("File Type")},
     {"PaneInfo", _("Lines or Items")},
+    {"PaneBlameAuthor", _("Current line author annotation")},
+    {"PaneBlameComments", _("Current line comments annotation")},
+    {"PaneBlameDate", _("Current line date annotation")},
     {"PaneMode", "vi mode"},
     {"PaneTheme", _("Theme")}};
 

@@ -186,6 +186,25 @@ TEST_CASE("wex::del::frame")
 #endif
   }
 
+  SECTION("vcs_annotate_line")
+  {
+    REQUIRE(del_frame()->open_file(wex::test::get_path("test.h")) != nullptr);
+    del_frame()->set_find_focus(get_stc());
+
+    REQUIRE(del_frame()->vcs_annotate_line(get_stc(), "PaneBlameXXX").empty());
+
+    REQUIRE(
+      !del_frame()->vcs_annotate_line(get_stc(), "PaneBlameDate").empty());
+
+    REQUIRE(del_frame()
+              ->vcs_annotate_line(get_stc(), "PaneBlameComments")
+              .starts_with("improved"));
+
+    REQUIRE(
+      del_frame()->vcs_annotate_line(get_stc(), "PaneBlameAuthor") ==
+      "Anton van Wezenbeek");
+  }
+
   SECTION("vcs_blame")
   {
     get_stc()->set_text(std::string());
@@ -242,6 +261,7 @@ TEST_CASE("wex::del::frame")
   SECTION("vcs_dir_exists")
   {
     REQUIRE(del_frame()->vcs_dir_exists(wex::test::get_path()));
+
 #ifndef __WXMSW__
     REQUIRE(!del_frame()->vcs_dir_exists(wex::path("/tmp")));
 #endif
@@ -249,23 +269,30 @@ TEST_CASE("wex::del::frame")
 
   SECTION("vcs_execute")
   {
-    REQUIRE(!del_frame()->vcs_execute(55, std::vector<wex::path>()));
+    SECTION("int")
+    {
+      REQUIRE(!del_frame()->vcs_execute(55, std::vector<wex::path>()));
 
-    wex::data::window data;
-    data.button(wxOK | wxCANCEL | wxAPPLY);
-    const int ID_VCS_LOG = 11; // in wex-menus.xml
-    REQUIRE(del_frame()
-              ->vcs_execute(ID_VCS_LOG, {wex::test::get_path("test.h")}, data));
-    del_frame()->vcs_destroy_dialog();
+      wex::data::window data;
+      data.button(wxOK | wxCANCEL | wxAPPLY);
+      const int ID_VCS_LOG = 11; // in wex-menus.xml
+      REQUIRE(del_frame()->vcs_execute(
+        ID_VCS_LOG,
+        {wex::test::get_path("test.h")},
+        data));
 
+      del_frame()->vcs_destroy_dialog();
+    }
+
+    SECTION("string")
     {
       wex::log_none off;
       REQUIRE(!del_frame()->vcs_execute("shows", std::vector<wex::path>()));
-    }
 
-    REQUIRE(del_frame()->vcs_execute(
-      "show",
-      std::vector<wex::path>{wex::test::get_path()}));
+      REQUIRE(del_frame()->vcs_execute(
+        "show",
+        std::vector<wex::path>{wex::test::get_path()}));
+    }
   }
 
   SECTION("virtual")
@@ -300,9 +327,11 @@ TEST_CASE("wex::del::frame")
       wxID_ADD,
       wxCommandEvent(wxEVT_NULL, wxID_OK));
 
+#ifndef GITHUB
     del_frame()->on_command_item_dialog(
       wex::del::frame::id_find_in_files,
       wxCommandEvent(wxEVT_NULL, wxID_OK));
+#endif
 
     del_frame()->on_notebook(100, nullptr);
 

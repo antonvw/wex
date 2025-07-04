@@ -350,6 +350,17 @@ void wex::stc::bind_other()
       if (event.GetUpdated() & wxSTC_UPDATE_SELECTION)
       {
         m_frame->update_statusbar(this, "PaneInfo");
+
+        if (wex::config(_("stc.Auto blame statusbar")).get(false))
+        {
+          for (const auto& pane : m_frame->panes_blame_format())
+          {
+            if (m_frame->get_statusbar()->pane_is_shown(pane.first))
+            {
+              m_frame->update_statusbar(this, pane.first);
+            }
+          }
+        }
       }
     });
 }

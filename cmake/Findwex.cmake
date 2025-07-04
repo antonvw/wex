@@ -47,18 +47,19 @@ endif()
 
 find_package(
   Boost
-  1.81.0
-  COMPONENTS log_setup log filesystem program_options date_time regex json url
+  1.88.0
+  COMPONENTS
+    log_setup
+    log
+    filesystem
+    program_options
+    date_time
+    regex
+    json
+    url
+    process
   REQUIRED
 )
-
-find_package(ODBC QUIET)
-
-if(ODBC_FOUND)
-  add_definitions(-DwexUSE_ODBC)
-else()
-  set(ODBC_LIBRARIES "")
-endif()
 
 if(WIN32)
   add_definitions(-D__WXMSW__)
@@ -244,7 +245,6 @@ if(${wex_FOUND})
     ${apple_LIBRARIES}
     ${Boost_LIBRARIES}
     ${cpp_LIBRARIES}
-    ${ODBC_LIBRARIES}
   )
 else()
   message(FATAL_ERROR "No suitable wex found in: " ${wex_INCLUDES})

@@ -8,14 +8,14 @@
 #include <filesystem>
 #include <numeric>
 
-#include <boost/process/search_path.hpp>
+#include <boost/process/v2/environment.hpp>
 
 #include <wex/common/tostring.h>
 #include <wex/core/core.h>
 #include <wex/core/path.h>
 #include <wex/factory/process-data.h>
 
-namespace bp = boost::process;
+namespace bp = boost::process::v2;
 
 wex::process_data::process_data(const std::string& exe, const std::string& args)
   : m_exe(exe)
@@ -62,7 +62,8 @@ const std::string wex::process_data::exe_path() const
   }
   if (!p.file_exists())
   {
-    if (const auto& bop(bp::search_path(p.string())); !bop.empty())
+    if (const auto& bop(bp::environment::find_executable(p.string()));
+        !bop.empty())
     {
       return bop.string();
     }

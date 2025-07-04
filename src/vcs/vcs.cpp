@@ -333,9 +333,9 @@ void wex::vcs::on_init()
     m_store = new store_t;
 
     load_document();
-  }
 
-  m_store->insert(m_store->begin(), vcs_entry());
+    m_store->insert(m_store->begin(), vcs_entry());
+  }
 }
 
 wxStandardID wex::vcs::request(const data::window& data)

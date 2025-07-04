@@ -204,7 +204,7 @@ TEST_CASE("wex::frame")
 
     frame()->show_process(false);
 
-    REQUIRE(!frame()->toggled_panes().empty());
+    REQUIRE(!frame()->panes_toggle().empty());
   }
 
   SECTION("events")

@@ -63,7 +63,7 @@ void wex::test::unittest::on_run(wex::app* app)
 
         config("AllowSync").set(false);
 
-        //  if (m_session->shouldExit())
+        if (m_exit_after_test)
         {
           delete m_session;
           wxExit();
@@ -87,15 +87,6 @@ bool wex::test::unittest::start(wex::app* app, int argc, char* argv[])
     return false;
   }
 
-  // Set this variable to use rfw testing
-  if (const bool use_rfw = false; use_rfw)
-  {
-    if (wex::data::cmdline c(argc, argv); !wex::cmdline().parse(c))
-    {
-      return false;
-    }
-  }
-
   m_session = new Catch::Session(); // There must be exactly one instance
 
   m_session->applyCommandLine(argc, argv);
@@ -103,6 +94,7 @@ bool wex::test::unittest::start(wex::app* app, int argc, char* argv[])
   std::string text;
 
   const std::string level{"-V"};
+  const std::string quit{"-q"};
 
   for (int i = 0; i < argc; i++)
   {
@@ -110,7 +102,16 @@ bool wex::test::unittest::start(wex::app* app, int argc, char* argv[])
     {
       const std::string value(argv[i + 1]);
       text = " " + level + " " + value;
-      break;
+    }
+    else if (strcmp(argv[i], quit.c_str()) == 0 && i + 1 < argc)
+    {
+      const std::string value(argv[i + 1]);
+      text = " " + quit + " " + value;
+
+      if (std::stoi(value) == 0)
+      {
+        m_exit_after_test = false;
+      }
     }
   }
 

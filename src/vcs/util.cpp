@@ -117,7 +117,7 @@ bool wex::vcs_execute(
   }
   else
   {
-    vcs.request();
+    vcs.request(data);
   }
 
   return true;

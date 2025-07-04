@@ -2,7 +2,7 @@
 // Name:      log-none.cpp
 // Purpose:   Implementation of class wex::log_none
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2023 Anton van Wezenbeek
+// Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -15,6 +15,11 @@ wex::log_none::log_none()
 }
 
 wex::log_none::~log_none()
+{
+  enable();
+}
+
+void wex::log_none::enable()
 {
   log::set_level((log::level_t)m_level);
 }
