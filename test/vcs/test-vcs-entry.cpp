@@ -144,6 +144,7 @@ TEST_CASE("wex::vcs_entry")
     REQUIRE(entry.execute());
     REQUIRE(!entry.std_out().contains("usage: "));
 
+    wex::log_none of;
     REQUIRE(!entry.execute(std::string(), wex::test::get_path("test.h")));
   }
 
