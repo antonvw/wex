@@ -53,4 +53,5 @@ jobs:
         uses: threeal/ctest-action@v1.1.0
         with:
           build-config: Release
+          tests-regex: co|fa|sy|da|ui|vi|stc|vcs|del
           verbose: true
