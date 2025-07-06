@@ -26,11 +26,14 @@ TEST_CASE("wex::blaming")
 
   SECTION("constructor-offset")
   {
+    del_frame()->set_find_focus(get_stc());
+
     REQUIRE(
       ((wex::frame*)del_frame())->open_file(wex::test::get_path("test.h")));
 
     wex::blaming bl(get_stc(), "1000");
 
+    wex::log_none off;
     REQUIRE(!bl.execute(wex::path("xxx")));
   }
 }
