@@ -2,7 +2,7 @@
 // Name:      main.cpp
 // Purpose:   main for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023
+// Copyright: (c) 2021-2025
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "test.h"
@@ -76,5 +76,5 @@ wex::syntax::stc* get_stc()
 
 TEST_CASE("wex::test::app")
 {
-  wxGetApp().get_catalog_dir();
+  wxGetApp().get_locale().GetName();
 }

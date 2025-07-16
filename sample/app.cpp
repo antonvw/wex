@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wex sample app class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "app.h"
@@ -66,8 +66,7 @@ bool app::OnInit()
   f->Show(true);
   f->update();
 
-  wex::log::status("Locale")
-    << get_locale().GetName().ToStdString() << "dir" << get_catalog_dir();
+  wex::log::status("Locale") << get_locale().GetName().ToStdString();
 
   return true;
 }
