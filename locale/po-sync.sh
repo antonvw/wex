@@ -14,7 +14,7 @@ function create_mo()
   # merge (-j join) the po files
   for f in $files; do
     if [[ -f $f ]]; then
-      xgettext -s -j -k_ -o "$f" --no-location --copyright-holder="A.M. van Wezenbeek" -f locs
+      xgettext -F -j -k_ -o "$f" --no-location --copyright-holder="A.M. van Wezenbeek" -f locs
       substitute "$f"
     else
       echo $f does not exist
@@ -25,7 +25,7 @@ function create_mo()
 function create_pot()
 {
   determine_files
-  xgettext -s -k_ -o wex.pot --no-location --copyright-holder="A.M. van Wezenbeek" -f locs
+  xgettext -F -k_ -o wex.pot --no-location --copyright-holder="A.M. van Wezenbeek" -f locs
 }
 
 function substitute
