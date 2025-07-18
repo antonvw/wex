@@ -2,7 +2,7 @@
 // Name:      menus.h
 // Purpose:   Declaration of wex::menus class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -64,13 +64,10 @@ size_t wex::menus::add_commands(const pugi::xml_node& node, T& commands)
 {
   size_t added = 0;
 
-  for (const auto& child : node.children())
+  for (const auto& child : node.children("commands"))
   {
-    if (strcmp(child.name(), "commands") == 0)
-    {
-      add_command(child, commands);
-      added++;
-    }
+    add_command(child, commands);
+    added++;
   }
 
   if (added == 0)
@@ -102,12 +99,9 @@ size_t wex::menus::build_menu(const T& commands, int base_id, menu* menu)
 template <typename T>
 void wex::menus::add_command(const pugi::xml_node& node, T& commands)
 {
-  for (const auto& child : node.children())
+  for (const auto& child : node.children("command"))
   {
-    if (strcmp(child.name(), "command") == 0)
-    {
-      commands.push_back({child});
-    }
+    commands.push_back({child});
   }
 };
 
@@ -120,12 +114,9 @@ template <typename T> bool wex::menus::load(const std::string& name, T& entries)
   }
 
   entries.clear();
-  for (const auto& child : doc.document_element().children())
+  for (const auto& child : doc.document_element().children(name.c_str()))
   {
-    if (strcmp(child.name(), name.c_str()) == 0)
-    {
-      entries.push_back({child});
-    }
+    entries.push_back({child});
   }
   return !entries.empty();
 }

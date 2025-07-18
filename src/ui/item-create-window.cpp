@@ -223,7 +223,7 @@ void create_dir_picker_control(
 }
 
 void create_empty_or_spacer_control(
-  wxWindow*        parent,
+  const wxWindow*  parent,
   wxWindow*&       window,
   const wex::item& item)
 {

@@ -2,7 +2,7 @@
 // Name:      lex-rfw-access.h
 // Purpose:   Declaration of Scintilla::lex_rfw_access class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -55,7 +55,7 @@ public:
   bool is_tab_line(int offset = 0) const;
 
   /// Returns number base.
-  int number_base(char* s) const;
+  int number_base(const char* s) const;
 
   /// Returns translated digit.
   int translate_digit(int ch) const;
@@ -145,9 +145,13 @@ Scintilla::lex_rfw_access::get_line_pos_eol(int offset, char c) const
   {
     char ch = m_styler[i];
     if (ch == c)
+    {
       return true;
+    }
     else if (c != '\t' && ch != ' ' && ch != '\t')
+    {
       return false;
+    }
   }
 
   return false;
@@ -180,13 +184,17 @@ Scintilla::lex_rfw_access::init(Sci_PositionU startPos) const
   Sci_Position ln = m_styler.GetLine(startPos);
 
   if (ln > 0 && startPos == static_cast<Sci_PositionU>(m_styler.LineStart(ln)))
+  {
     ln--;
+  }
 
   for (;;)
   {
     startPos = m_styler.LineStart(ln);
     if (ln == 0 || m_styler.GetLineState(ln) == RFW_CMD_START)
+    {
       break;
+    }
     ln--;
   }
 
@@ -208,7 +216,7 @@ inline bool Scintilla::lex_rfw_access::is_tab_line(int offset) const
   return get_line_pos_eol(offset, '\t');
 }
 
-inline int Scintilla::lex_rfw_access::number_base(char* s) const
+inline int Scintilla::lex_rfw_access::number_base(const char* s) const
 {
   int i    = 0;
   int base = 0;
@@ -291,12 +299,16 @@ inline void Scintilla::quote::start(int u)
 inline void Scintilla::quote_stack::pop(void)
 {
   if (m_stack.empty())
+  {
     return;
+  }
 
   m_stack.pop();
 
   if (m_stack.empty())
+  {
     return;
+  }
 
   m_count = m_stack.top().m_count;
   m_up    = m_stack.top().m_up;

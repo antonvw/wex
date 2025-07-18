@@ -19,6 +19,9 @@ jobs:
       - name: Install llvm
         run: brew install llvm
 
+      - name: Install cppcheck
+        run: brew install cppcheck
+
       - name: Configure
         run: ./build-gen.sh -g -t
         env:
@@ -27,6 +30,9 @@ jobs:
 
       - name: Run tests
         run: cd build && ctest -VV -I 2,5
+
+      - name: Run cppcheck
+        run: cd build && ninja cppcheck
 
       - name: Artifacts
         uses: actions/upload-artifact@v4

@@ -2,7 +2,7 @@
 // Name:      util.cpp
 // Purpose:   Implementation of wex syntax utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/syntax/util.h>
@@ -12,12 +12,9 @@ void wex::node_properties(
   const pugi::xml_node*  node,
   std::vector<property>& properties)
 {
-  for (const auto& child : node->children())
+  for (const auto& child : node->children("property"))
   {
-    if (strcmp(child.name(), "property") == 0)
-    {
-      properties.emplace_back(child);
-    }
+    properties.emplace_back(child);
   }
 }
 
@@ -26,12 +23,9 @@ void wex::node_styles(
   const std::string&    lexer,
   std::vector<style>&   styles)
 {
-  for (const auto& child : node->children())
+  for (const auto& child : node->children("style"))
   {
-    if (strcmp(child.name(), "style") == 0)
-    {
-      styles.emplace_back(child, lexer);
-    }
+    styles.emplace_back(child, lexer);
   }
 }
 
@@ -55,9 +49,13 @@ bool wex::single_choice_dialog(
   }
 
   if (const auto index = s.Index(selection); index != wxNOT_FOUND)
+  {
     dlg.SetSelection(index);
+  }
   if (dlg.ShowModal() == wxID_CANCEL)
+  {
     return false;
+  }
 
   selection = dlg.GetStringSelection();
 
