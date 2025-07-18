@@ -2,6 +2,8 @@ file(GLOB_RECURSE wexSETUP_H ${CMAKE_BINARY_DIR}/*setup.h)
 # use only first element from list
 list(GET wexSETUP_H 0 wexSETUP_H)
 
+include(GNUInstallDirs)
+
 # functions
 
 function(wex_config)
@@ -204,19 +206,26 @@ function(wex_process_po_files)
         set(locale "fr_FR")
       endif()
 
-      gettext_process_po_files(
-        ${locale}
-        ALL
-        INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
-        PO_FILES ${filename}
+      gettext_process_po_files(${locale} ALL PO_FILES ${filename})
+
+      install(
+        FILES "${CMAKE_CURRENT_BINARY_DIR}/wex-${lang}.gmo"
+        DESTINATION ${LOCALE_INSTALL_DIR}/${locale}/LC_MESSAGES
+        RENAME "wex.mo"
       )
 
       set(wxWidgets_ROOT_DIR ${CMAKE_SOURCE_DIR}/external/wxWidgets)
+
       gettext_process_po_files(
         ${locale}
         ALL
-        INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
         PO_FILES ${wxWidgets_ROOT_DIR}/locale/${lang}.po
+      )
+
+      install(
+        FILES "${CMAKE_CURRENT_BINARY_DIR}/${lang}.gmo"
+        DESTINATION ${LOCALE_INSTALL_DIR}/${locale}/LC_MESSAGES
+        RENAME "wxstd.mo"
       )
     endforeach()
   endif()
@@ -311,7 +320,7 @@ endfunction()
 if(WIN32)
   set(LOCALE_INSTALL_DIR bin)
 else()
-  set(LOCALE_INSTALL_DIR share/locale/)
+  set(LOCALE_INSTALL_DIR ${CMAKE_INSTALL_LOCALEDIR})
 endif()
 
 if(MSVC)

@@ -150,7 +150,9 @@ if(wexBUILD_SAMPLES)
   add_subdirectory(sample)
 endif()
 
-add_subdirectory(locale)
+if(wexENABLE_GETTEXT)
+  add_subdirectory(locale)
+endif()
 
 set(CMAKE_INSTALL_MESSAGE LAZY)
 
