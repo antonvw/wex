@@ -41,6 +41,7 @@ empty
 	Output Contains	1
 
 global
+	[Tags]	not on github
 	Input Many	:a|line has text	20
 	Input	:a|last line
 	...	:g/has/
@@ -124,6 +125,7 @@ substitute
 	Output Contains	simon
 
 substitute-eol
+	[Tags]	not on github
 	Input	:a|line has text
 	...	:a|line has a tiger
 	...	:a|line has simon and simon and garfunkel
@@ -134,6 +136,7 @@ substitute-eol
 	Contents Contains	garfunkelEOL
 
 substitute-global
+	[Tags]	not on github
 	Input	:a|line has text
 	...	:a|line has a tiger
 	...	:a|line has simon and simon and garfunkel

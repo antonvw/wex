@@ -45,6 +45,7 @@ delete
 	Output Contains	fewer
 
 delete-d
+	[Tags]	not on github
 	Input	:a|line has some text
 	...	:1
 	...	ww
@@ -54,6 +55,7 @@ delete-d
 	Contents Does Not Contain	some text
 
 escape
+	[Tags]	not on github
 	Input Many	:a|line has text	50
 	Input	:1
 	...	v
@@ -82,6 +84,7 @@ find-ok
 	Output Contains	5
 
 info
+	[Tags]	not on github
 	Input	:a|line has text
 	...	
 	Appl
@@ -123,6 +126,7 @@ macro-record
 	Contents Contains	1223
 
 marker
+	[Tags]	not on github
 	Input Many	:a|line has text	50
 	Input	:10
 	...	mx
@@ -208,6 +212,7 @@ rfw
 	Appl
 
 substitute-eol
+	[Tags]	not on github
 	Input	:a|line has text
 	...	:a|line has a tiger
 	...	:a|line has simon and simon and garfunkel
