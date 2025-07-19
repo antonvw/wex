@@ -57,6 +57,7 @@ info
 	Output Contains	level
 
 inverse
+	[Tags]	not ready
 	Input Many	:a|line has text	20
 	Input	:a|last line
 	...	:g!/has/

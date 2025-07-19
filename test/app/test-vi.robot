@@ -1,5 +1,5 @@
 *** Comments ***
-Copyright: (c) 2020-2024 Anton van Wezenbeek
+Copyright: (c) 2020-2025 Anton van Wezenbeek
 
 
 *** Settings ***
@@ -15,6 +15,7 @@ Test Setup          Test Setup
 
 *** Test Cases ***
 browse
+	[Tags]	not on github
 	Input	:a|wxWidgets.org has some text
 	...	:1
 	...	ll
