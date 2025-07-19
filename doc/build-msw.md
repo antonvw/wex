@@ -5,9 +5,9 @@
 ### boost
 
 - download
-  [boost](https://boostorg.jfrog.io/ui/native/main/release/1.80.0/binaries)
-  boost_1_80-msvc-14.3-64.exe
-  and put them e.g. in `c:\libraries\boost_1_80_0`
+  [boost](https://sourceforge.net/projects/boost/files/boost-binaries/)
+  boost_1_88-msvc-14.3-64.exe
+  and put them in `c:\libraries\boost_1_88_0`
 
 ### cmake
 
@@ -16,7 +16,9 @@
 
 ## build wex
 
-- see build-gen.ps1
+```bash
+build-gen.ps1
+```
 
 ### install wex
 

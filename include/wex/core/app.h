@@ -40,10 +40,6 @@ public:
   /// Returns locale language.
   auto get_language() const { return m_language; }
 
-protected:
-  /// Returns wxLANGUAGE_DEFAULT, but you can override this.
-  virtual wxLanguage get_default_language() const;
-
 private:
   void set_language();
 
