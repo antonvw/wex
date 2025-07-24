@@ -24,24 +24,6 @@ enum class vi::motion_t
   // all vim g commands
   G,
 
-  // vim g other than motion
-  G_8,
-  G_a,
-  G_d,
-  G_f,
-  G_hash,
-  G_m,
-  G_star,
-  G_t,
-  G_T,
-
-  // vim g motion
-  G_motion_start,
-  G_tilde,
-  G_u,
-  G_U,
-  G_motion_end,
-
   // all vim z commands
   Z,
 };

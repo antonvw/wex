@@ -45,17 +45,11 @@ TEST_CASE("wex::vim", "[!mayfail]")
 
   SECTION("other")
   {
-    REQUIRE(vi->command("g8"));
-    REQUIRE(vi->command("ga"));
-    REQUIRE(vi->command("gd"));
-    REQUIRE(vi->command("gf"));
-    REQUIRE(vi->command("gm"));
-
-    REQUIRE(vi->command("g*"));
-    REQUIRE(vi->command("g#"));
-
-    REQUIRE(vi->command("gt"));
-    REQUIRE(vi->command("gT"));
+    for (auto& other : std::vector<
+           std::string>{"g8", "ga", "gd", "gf", "gm", "g*", "g#", "gt", "gT"})
+    {
+      REQUIRE(vi->command(other));
+    }
   }
 
   SECTION("z")

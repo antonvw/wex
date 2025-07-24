@@ -603,9 +603,8 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
 
   filter_count(command);
 
-  if (wex::vim vim(this, command, type); vim.is_motion())
+  if (wex::vim vim(this, command); vim.is_motion())
   {
-    vim.motion_prep();
     filter_count(command);
   }
 
@@ -633,7 +632,7 @@ bool wex::vi::motion_command_handle(
   size_t parsed = 0;
   auto   start  = get_stc()->GetCurrentPos();
 
-  if (wex::vim vim(this, command, type); vim.is_vim())
+  if (wex::vim vim(this, command); vim.is_vim())
   {
     if (vim.is_motion() && !vim.motion(start, parsed, f_type))
     {
