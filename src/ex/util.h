@@ -20,7 +20,8 @@ T::const_iterator find_from(
   const T& commands,
   /// the command chars, finds the first char that matches
   const std::string& chars,
-  bool               char_as_string = false)
+  /// unless char_as_string is true, then chars are one string
+  bool char_as_string = false)
 {
   if (commands.empty() || chars.empty())
   {
