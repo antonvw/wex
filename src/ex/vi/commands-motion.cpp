@@ -603,7 +603,9 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
 
   filter_count(command);
 
-  if (wex::vim vim(this, command, type); vim.is_motion())
+  wex::vim vim(this, command);
+
+  if (vim.is_motion())
   {
     vim.motion_prep();
     filter_count(command);
@@ -622,24 +624,25 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
     return true;
   }
 
-  return motion_command_handle(type, command, it->second);
+  return motion_command_handle(type, command, it->second, &vim);
 }
 
 bool wex::vi::motion_command_handle(
   motion_t          type,
   std::string&      command,
-  const function_t& f_type)
+  const function_t& f_type,
+  wex::vim*         vim)
 {
   size_t parsed = 0;
   auto   start  = get_stc()->GetCurrentPos();
 
-  if (wex::vim vim(this, command, type); vim.is_vim())
+  if (vim->is_vim())
   {
-    if (vim.is_motion() && !vim.motion(start, parsed, f_type))
+    if (vim->is_motion() && !vim->motion(start, parsed, f_type))
     {
       return false;
     }
-    else if (!vim.is_other() && command.size() > 1)
+    else if (!vim->is_other() && command.size() > 1)
     {
       bell();
       command.clear();

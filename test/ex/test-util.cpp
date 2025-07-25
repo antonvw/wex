@@ -26,7 +26,7 @@ TEST_CASE("wex::ex::utils")
     REQUIRE(wex::esc() == "\x1b");
   }
 
-  SECTION("find_command")
+  SECTION("find_from")
   {
     const std::vector<std::pair<std::string, std::string>> none{};
     const std::vector<std::pair<std::string, std::string>> cmds{
@@ -66,6 +66,16 @@ TEST_CASE("wex::ex::utils")
       wex::find_from<std::vector<std::pair<std::string, std::string>>>(
         cmds,
         "DDD") != cmds.end());
+    REQUIRE(
+      wex::find_from<std::vector<std::pair<std::string, std::string>>>(
+        cmds,
+        "DDD",
+        true) == cmds.end());
+    REQUIRE(
+      wex::find_from<std::vector<std::pair<std::string, std::string>>>(
+        cmds,
+        "DDDD",
+        true) != cmds.end());
   }
 
   SECTION("find_first_of")

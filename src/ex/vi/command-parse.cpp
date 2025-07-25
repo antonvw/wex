@@ -138,7 +138,7 @@ bool wex::vi::parse_command_motion(
   std::string& command,
   bool&        check_other)
 {
-  if (wex::vim vim(this, command, motion); vim.is_vim())
+  if (wex::vim vim(this, command); vim.is_vim())
   {
     if (vim.other())
     {

@@ -315,7 +315,7 @@ wex::vi::commands_t wex::vi::commands_other()
      [&](const std::string& command)
      {
        auto cmd(command);
-       return vim(this, cmd, get_motion(command)).other() ? 2 : 0;
+       return vim(this, cmd).other() ? 2 : 0;
      }},
     {".",
      [&](const std::string& command)

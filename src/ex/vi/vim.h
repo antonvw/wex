@@ -17,11 +17,12 @@ enum class motion_t;
 class vim
 {
 public:
-  /// Returns the motion type for specified command.
-  static vi::motion_t get_motion(const std::string& command);
-
   /// Constructor.
-  vim(vi* vi, std::string& command, vi::motion_t t);
+  vim(
+    /// vi component
+    vi* vi,
+    /// vim command to be executed
+    std::string& command);
 
   /// Returns true if this is a vim motion command.
   bool is_motion() const;
@@ -29,27 +30,45 @@ public:
   /// Returns true if this is a vim other command.
   bool is_other() const;
 
-  /// Returns true if this command starts with a vim command.
+  /// Returns true if this command relates to a vim command.
   bool is_vim() const;
 
-  /// Handles the motion commands.
-  bool motion(int start_pos, size_t& parsed, const vi::function_t& t);
+  /// Handles a motion command.
+  bool motion(
+    /// start_pos used to start selecting text
+    int start_pos,
+    /// indicates how many bytes parsed from executing the vi motion function
+    size_t& parsed,
+    /// vi motion to execute before excuting vim motion
+    const vi::function_t& f);
 
   /// Prepares the motion commands.
   void motion_prep();
 
-  /// Handles other commands.
+  /// Handles a other command.
   bool other();
 
 private:
+  /// commands to be used in lambda, see also vi::commands_t
+  /// (has a return type in function)
+  typedef std::vector<std::pair<
+    /// the command
+    const std::string,
+    /// by this command
+    std::function<void(const std::string& command)>>>
+    commands_t;
+
+  void command_find(const std::string& command);
   bool command_motion(int pos_start);
   bool command_other();
-  void command_z();
+  void command_z_fold(const std::string& command);
 
   vi*          m_vi;
   syntax::stc* m_stc;
 
-  std::string&       m_command;
-  const vi::motion_t m_motion;
+  std::string& m_command;
+
+  const std::string m_command_org;
+  const commands_t  m_motion_commands, m_other_commands;
 };
 }; // namespace wex

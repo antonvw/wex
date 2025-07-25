@@ -19,7 +19,9 @@ T::const_iterator find_from(
   /// with command chars and e.g. a callback
   const T& commands,
   /// the command chars, finds the first char that matches
-  const std::string& chars)
+  const std::string& chars,
+  /// unless char_as_string is true, then chars are one string
+  bool char_as_string = false)
 {
   if (commands.empty() || chars.empty())
   {
@@ -30,12 +32,13 @@ T::const_iterator find_from(
     commands,
     [&](auto const& e)
     {
-      return std::ranges::any_of(
-        e.first,
-        [chars](const auto& p)
-        {
-          return p == chars[0];
-        });
+      return char_as_string ? e.first == chars :
+                              std::ranges::any_of(
+                                e.first,
+                                [chars](const auto& p)
+                                {
+                                  return p == chars[0];
+                                });
     });
 };
 
