@@ -23,7 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - build-gen.sh supports xcodebuild
 - updated git grep dialog to include checkboxes
 - more boost::process::v2 lib used, requiring boost 1.88
-- used released wxWidgets 3.3.0
+- used released wxWidgets 3.3.1
 - allow to enable a log_none
 
 ### Fixed
