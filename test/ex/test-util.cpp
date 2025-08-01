@@ -122,4 +122,11 @@ TEST_CASE("wex::ex::utils")
     REQUIRE(wex::k_s(WXK_CONTROL_A) == "\x1");
     REQUIRE(wex::k_s(WXK_CONTROL_B) == "\x2");
   }
+
+  SECTION("to_reverse")
+  {
+    REQUIRE(wex::to_reverse("") == "");
+    REQUIRE(wex::to_reverse("1") == "1");
+    REQUIRE(wex::to_reverse("aBcDe") == "AbCdE");
+  }
 }

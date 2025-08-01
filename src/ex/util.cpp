@@ -168,3 +168,16 @@ bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
 
   return true;
 }
+
+std::string wex::to_reverse(const std::string& text)
+{
+  std::string s(text);
+  std::ranges::transform(
+    s,
+    std::begin(s),
+    [](const auto& c)
+    {
+      return std::islower(c) ? std::toupper(c) : std::tolower(c);
+    });
+  return s;
+}
