@@ -931,14 +931,17 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   <lexer name="au3"/>
   <lexer name="ave"/>
   <lexer name="avs"/>
-  <lexer display="awk" name="bash" extensions="*.awk">
+  <lexer display="awk" name="vb" extensions="*.awk">
     <keywords set-0="csh">
-      <!-- https://www.computerhope.com/unix/ucsh.htm -->
+      <!-- https://pubs.opengroup.org/onlinepubs/9799919799 -->
       ARGC ARGIND ARGV CONVFMT ENVIRON ERRNO FIELDWIDTHS FILENAME FNR FS
-      IGNORECASE NF NR OFMT OFS ORS RLENGTH RSTART RS RT SUBSEP
+      IGNORECASE NF NR OFMT OFS ORS RLENGTH RS RSTART RT SUBSEP
       BEGIN END if else while do for in break continue delete
       next nextfile function func return exit
-      length printf sprintf substr
+      printf
+      gsub index length match split sprintf sub substr
+      tolower toupper
+      close fflush getline system
     </keywords>
   </lexer>
   <lexer name="baan"/>
