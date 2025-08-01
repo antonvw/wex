@@ -32,18 +32,6 @@ int line_to_fold(syntax::stc* stc)
            stc->GetFoldParent(stc->get_current_line());
 }
 
-std::string reverse(const std::string& text)
-{
-  std::string s(text);
-  std::ranges::transform(
-    s,
-    std::begin(s),
-    [](const auto& c)
-    {
-      return std::islower(c) ? std::toupper(c) : std::tolower(c);
-    });
-  return s;
-}
 } // namespace wex
 
 wex::vim::vim(wex::vi* vi, std::string& command)
@@ -55,7 +43,7 @@ wex::vim::vim(wex::vi* vi, std::string& command)
       {{"g~",
         [&](const std::string& command)
         {
-          m_stc->ReplaceSelection(reverse(m_stc->get_selected_text()));
+          m_stc->ReplaceSelection(to_reverse(m_stc->get_selected_text()));
         }},
        {"gu",
         [&](const std::string& command)
@@ -199,7 +187,10 @@ bool wex::vim::command_motion(int start_pos)
     m_stc->SetSelection(end_pos, start_pos);
   }
 
-  if (const auto& it = find_from<commands_t>(m_motion_commands, m_command_org.substr(0, 2), true);
+  if (const auto& it = find_from<commands_t>(
+        m_motion_commands,
+        m_command_org.substr(0, 2),
+        true);
       it != m_motion_commands.end())
   {
     it->second(m_command_org.substr(0, 2));
@@ -248,7 +239,7 @@ bool wex::vim::is_motion() const
 
 bool wex::vim::is_other() const
 {
-  return !is_motion();
+  return is_vim() && !is_motion();
 }
 
 bool wex::vim::is_vim() const
@@ -265,7 +256,7 @@ bool wex::vim::motion(int start_pos, size_t& parsed, const vi::function_t& f)
   }
 
   // First run the vi motion
-  if ((parsed = f(m_command)) == 0)
+  if (f == nullptr || (parsed = f(m_command)) == 0)
   {
     return false;
   }

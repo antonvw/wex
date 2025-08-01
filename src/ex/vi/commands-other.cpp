@@ -473,11 +473,9 @@ size_t wex::vi::reverse_case(const std::string& command)
   // clang-format off
   REPEAT_WITH_UNDO (
     if (get_stc()->GetCurrentPos() == get_stc()->GetLength()) return 0;
-    auto text(get_stc()->GetTextRange(
+    const auto text(to_reverse(get_stc()->GetTextRange(
       get_stc()->GetCurrentPos(),
-      get_stc()->GetCurrentPos() + 1));
-    if (text.empty()) return 0;
-    islower(text[0]) ? text.UpperCase() : text.LowerCase();
+      get_stc()->GetCurrentPos() + 1)));
     get_stc()->wxStyledTextCtrl::Replace(
       get_stc()->GetCurrentPos(),
       get_stc()->GetCurrentPos() + 1,

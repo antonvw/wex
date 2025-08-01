@@ -44,4 +44,7 @@ T::const_iterator find_from(
 
 /// Returns true if a register is specified by the text (normal or calc).
 bool is_register_valid(const std::string& text);
+
+/// Returns reverse case for each char out of string.
+std::string to_reverse(const std::string& text);
 }; // namespace wex

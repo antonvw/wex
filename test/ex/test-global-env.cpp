@@ -12,6 +12,16 @@
 #include "../src/ex/global-env.h"
 #include "test.h"
 
+void test_global(const std::string& cmd, const wex::addressrange& ar)
+{
+  REQUIRE(wex::addressrange::data().set_global(cmd));
+  wex::global_env ge(ar);
+
+  REQUIRE(ge.has_commands());
+  REQUIRE(ge.global(wex::addressrange::data()));
+  REQUIRE(ge.hits() == 3);
+}
+
 TEST_CASE("wex::global_env")
 {
   auto* stc = new wex::test::stc();
@@ -86,13 +96,7 @@ TEST_CASE("wex::global_env")
 
   SECTION("commands-append")
   {
-    REQUIRE(
-      wex::addressrange::data().set_global("g/he/a|added he <XXX>|a|other"));
-    wex::global_env ge(ar);
-
-    REQUIRE(ge.has_commands());
-    REQUIRE(ge.global(wex::addressrange::data()));
-    REQUIRE(ge.hits() == 3);
+    test_global("g/he/a|added he <XXX>|a|other", ar);
 
     wex::log_none off;
     REQUIRE(wex::addressrange::data().set_global("g/he/a"));
@@ -105,12 +109,7 @@ TEST_CASE("wex::global_env")
 
   SECTION("commands-change")
   {
-    REQUIRE(wex::addressrange::data().set_global("g/he/c|<XXX>"));
-    wex::global_env ge(ar);
-
-    REQUIRE(ge.has_commands());
-    REQUIRE(ge.global(wex::addressrange::data()));
-    REQUIRE(ge.hits() == 3);
+    test_global("g/he/c|<XXX>", ar);
 
     // and check whether undo works
     REQUIRE(ex->get_stc()->get_text().contains("<XXX>"));
@@ -120,32 +119,17 @@ TEST_CASE("wex::global_env")
 
   SECTION("commands-delete")
   {
-    REQUIRE(wex::addressrange::data().set_global("g/he/d"));
-    wex::global_env ge(ar);
-
-    REQUIRE(ge.has_commands());
-    REQUIRE(ge.global(wex::addressrange::data()));
-    REQUIRE(ge.hits() == 3);
+    test_global("g/he/d", ar);
   }
 
   SECTION("commands-insert")
   {
-    REQUIRE(wex::addressrange::data().set_global("g/he/i|<XXX>"));
-    wex::global_env ge(ar);
-
-    REQUIRE(ge.has_commands());
-    REQUIRE(ge.global(wex::addressrange::data()));
-    REQUIRE(ge.hits() == 3);
+    test_global("g/he/i|<XXX>", ar);
   }
 
   SECTION("commands-substitute")
   {
-    REQUIRE(wex::addressrange::data().set_global("g/he/s/ll/LL"));
-    wex::global_env ge(ar);
-
-    REQUIRE(ge.has_commands());
-    REQUIRE(ge.global(wex::addressrange::data()));
-    REQUIRE(ge.hits() == 3);
+    test_global("g/he/s/ll/LL", ar);
   }
 
   delete ex;
