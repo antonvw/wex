@@ -37,7 +37,6 @@ void test_vim_other_command(wex::vim& vim)
 
 TEST_CASE("wex::vim")
 {
-  auto*  stc    = get_stc();
   auto*  vi     = new wex::vi(get_stc());
   size_t parsed = 0;
 
