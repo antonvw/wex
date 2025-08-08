@@ -189,6 +189,10 @@ bool wex::item::persist(bool save) const
       int,
       (reinterpret_cast<wxSpinCtrl*>(m_window))->GetValue());
     PERSISTENT_FOR(
+      FONTPICKERCTRL,
+      wxFont,
+      wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+    PERSISTENT_FOR(
       SPINCTRLDOUBLE,
       double,
       (reinterpret_cast<wxSpinCtrlDouble*>(m_window))->GetValue());
