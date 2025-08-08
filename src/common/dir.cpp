@@ -85,11 +85,10 @@ private:
 
 bool allow_hidden(const std::filesystem::path& p, const data::dir& data)
 {
-  for (auto it = p.begin(); it != p.end(); ++it)
+  for (auto it : p)
   {
     if (
-      it->string() != ".." && it->string() != "." &&
-      it->string().starts_with("."))
+      it.string() != ".." && it.string() != "." && it.string().starts_with("."))
     {
       // This file is hidden, only allow if flag HIDDEN is set.
       return data.type().test(data::dir::HIDDEN);

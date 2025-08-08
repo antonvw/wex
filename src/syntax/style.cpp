@@ -85,7 +85,7 @@ void wex::style::clear()
 
 bool wex::style::contains_default_style() const
 {
-  return (m_no.find(wxSTC_STYLE_DEFAULT) != m_no.end());
+  return m_no.contains(wxSTC_STYLE_DEFAULT);
 }
 
 wxFont wex::style::default_font() const

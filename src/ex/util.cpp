@@ -113,6 +113,7 @@ bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
         case '`':
           if (auto next = std::next(it); next == text.end())
           {
+            /* NOLINTNEXTLINE */
             output += *it;
           }
           else if (const auto line = ex->marker_line(*(next)); line >= 0)
@@ -123,6 +124,7 @@ bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
           }
           else
           {
+            /* NOLINTNEXTLINE */
             output += *it;
           }
           break;

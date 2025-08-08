@@ -438,7 +438,7 @@ const std::string wex::lexer::formatted_text(
 
 bool wex::lexer::is_keyword(const std::string& word) const
 {
-  return m_keywords.find(word) != m_keywords.end();
+  return m_keywords.contains(word);
 }
 
 const std::string wex::lexer::keywords_string(

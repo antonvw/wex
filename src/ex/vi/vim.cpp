@@ -81,13 +81,11 @@ wex::vim::vim(wex::vi* vi, std::string& command)
         {
           const auto pos = m_stc->GetCurrentPos();
           ctags::find(m_stc->get_word_at_pos(pos), m_stc);
-          ;
         }},
        {"gf",
         [&](const std::string& command)
         {
           m_stc->link_open();
-          ;
         }},
        {"gm",
         [&](const std::string& command)

@@ -43,7 +43,7 @@ bool wex::expand_macro(wex::process_data& data, stc* stc)
         1,
         stc->get_current_line() -
           std::min(
-            (int)stc->GetLineCount(),
+            stc->GetLineCount(),
             (int)stc->get_file().ex_stream()->get_context_lines())),
       stc->get_current_line()));
   }

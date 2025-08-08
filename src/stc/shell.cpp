@@ -339,7 +339,7 @@ bool wex::shell::process_char(int key)
           prompt();
         }
         // !.. command, get it from history.
-        else if (m_command.substr(0, 1) == "!")
+        else if (m_command.starts_with("!"))
         {
           if (set_command_from_history(m_command.substr(1)))
           {

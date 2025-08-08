@@ -2,7 +2,7 @@
 // Name:      blame.cpp
 // Purpose:   Implementation of class wex::blame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2024 Anton van Wezenbeek
+// Copyright: (c) 2019-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -51,7 +51,7 @@ build(const std::string& key, const std::string& field, bool first = false)
   return add;
 }
 
-const std::string renamed(":::");
+constexpr std::string renamed(":::");
 } // namespace wex
 
 wex::blame::blame(const pugi::xml_node& node)
