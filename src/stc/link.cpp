@@ -2,7 +2,7 @@
 // Name:      link.cpp
 // Purpose:   Implementation of class wex::link and stc::link... methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -20,7 +20,8 @@
 // failed to determine attributes for the specified path: File name too long
 std::string get_current_line_text(wex::link* link, wex::factory::stc* stc)
 {
-  const std::string& line(stc->GetCurLine().ToStdString());
+  // Do not make a reference.
+  const std::string line(stc->GetCurLine());
 
   if (const size_t mp(500); line.size() >= mp)
   {
@@ -147,7 +148,7 @@ bool wex::stc::link_open(link_t mode, std::string* link)
                  this));
                !mime.string().empty())
       {
-        found = (!mode[LINK_CHECK]) ? mime.open_mime(): true;
+        found = (!mode[LINK_CHECK]) ? mime.open_mime() : true;
       }
     }
   }
