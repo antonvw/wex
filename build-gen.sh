@@ -107,7 +107,12 @@ while getopts ":B:d:D:G:abcghilpstT" opt; do
     ;;
 
     T)
-      option_tidy="-DwexBUILD_TIDY=ON"
+      if [[ "${option_generator}" =~ .*Ninja ]]; then
+        option_tidy="-DwexBUILD_TIDY=ON"
+      else
+        echo "currently clang-tidy only works when using Ninja"
+        exit 1
+      fi
     ;;
 
     :)

@@ -1,11 +1,16 @@
 ---
+# clang-tidy-20
 Checks:
   '-*,
   bugprone-branch-clone,
+  cppcoreguidelines-init-variables,
+  cppcoreguidelines-virtual-class-destructor,
+  misc-unused-parameters,
   modernize-loop-convert,
   modernize-macro-to-enum,
   modernize-make-shared,
   modernize-make-unique,
+  modernize-use-auto,
   modernize-use-bool-literals,
   modernize-use-default-member-init,
   modernize-use-emplace,

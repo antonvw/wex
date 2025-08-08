@@ -45,7 +45,7 @@ private:
     return dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
   };
 
-  const auto value() const { return m_lv->get_item_text(m_index, m_col); };
+  const auto value() const { return m_lv->get_item_text(m_index, m_col); }
 
   vcs_entry*         m_ve;
   wex::listview*     m_lv;

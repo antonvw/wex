@@ -642,7 +642,8 @@ bool wex::vi::motion_command_handle(
     {
       return false;
     }
-    else if (!vim->is_other() && command.size() > 1)
+
+    if (!vim->is_other() && command.size() > 1)
     {
       bell();
       command.clear();

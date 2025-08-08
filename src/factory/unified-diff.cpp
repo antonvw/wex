@@ -60,7 +60,7 @@ wex::factory::unified_diff::unified_diff(const std::string& input)
 
 bool wex::factory::unified_diff::parse()
 {
-  typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
+  using tokenizer = boost::tokenizer<boost::char_separator<char>>;
 
   tokenizer tokens(m_input, boost::char_separator<char>("\r\n"));
 

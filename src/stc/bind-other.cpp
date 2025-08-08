@@ -65,7 +65,7 @@ void hypertext(stc* stc)
       stc->GetCharAt(match_pos + 1) != '!')
   {
     if (const auto& match(stc->get_word_at_pos(match_pos + 1));
-        match.find('/') != 0 &&
+        match.starts_with('/') &&
         stc->GetCharAt(stc->GetCurrentPos() - 2) != '/' &&
         (stc->get_lexer().language() == "xml" ||
          stc->get_lexer().is_keyword(match)) &&

@@ -232,7 +232,7 @@ bool wex::ex_commandline_imp::handle_type(
           m_cl->get_frame()->vi_is_address(m_cl->stc(), current));
 
         set_text(
-          m_mode_visual && current.find(range) != 0 && vi_is_address ?
+          m_mode_visual && current.starts_with(range) && vi_is_address ?
             range + current :
             current);
         SelectAll();
