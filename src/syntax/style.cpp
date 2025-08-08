@@ -95,7 +95,7 @@ wxFont wex::style::default_font() const
 #ifdef __WXOSX__
       14,
 #else
-      12,
+      9,
 #endif
       wxFONTFAMILY_TELETYPE,
       wxFONTSTYLE_NORMAL,
