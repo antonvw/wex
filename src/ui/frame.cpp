@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2024 Anton van Wezenbeek
+// Copyright: (c) 2010-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
@@ -357,8 +357,8 @@ bool wex::frame::add_toolbar_panes(const panes_t& panes)
         pane.Top().ToolbarPane().MinSize(-1, 30);
       }
 
-      // Initially hide special bars.
-      if (pane.name == "OPTIONSBAR")
+      // Initially hide all bars, except the TOOLBAR.
+      if (pane.name != "TOOLBAR")
       {
         pane.Hide();
       }
