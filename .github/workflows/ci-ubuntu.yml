@@ -102,6 +102,6 @@ jobs:
         with:
           name: wex-lib-ubuntu
           path: |
-            data/*.xml
+            data/*.*
             build/**/*.a
             build/**/setup.h

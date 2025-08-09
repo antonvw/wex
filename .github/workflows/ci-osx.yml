@@ -39,6 +39,6 @@ jobs:
         with:
           name: wex-lib-macos
           path: |
-            data/*.xml
+            data/*.*
             build/**/*.dylib
             build/**/setup.h
