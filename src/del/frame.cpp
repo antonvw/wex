@@ -44,8 +44,8 @@ const std::string find_replace_string(bool replace)
 
 const std::string get_some_text(const std::vector<std::string>& text)
 {
-  std::stringstream                        ss, info;
-  std::vector<std::string>::const_iterator tok_iter = text.begin();
+  std::stringstream ss, info;
+  auto              tok_iter = text.begin();
 
   ss << "deleted " << text.size() << " lines";
 

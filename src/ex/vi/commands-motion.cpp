@@ -453,26 +453,15 @@ size_t wex::vi::find_char(const std::string& command)
     case ';':
       d = m_last_find_char_command.front();
       break;
+
     case ',':
       d = m_last_find_char_command.front();
-      if (islower(d))
-      {
-        d = toupper(d);
-      }
-      else
-      {
-        d = tolower(d);
-      }
+      d = islower(d) ? toupper(d) : tolower(d);
       break;
+
     default:
-      if (command.size() > 1)
-      {
-        d = command.front();
-      }
-      else
-      {
-        d = m_last_find_char_command.front();
-      }
+      d =
+        command.size() > 1 ? command.front() : m_last_find_char_command.front();
   }
 
   // clang-format off

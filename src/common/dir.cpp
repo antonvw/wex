@@ -85,7 +85,7 @@ private:
 
 bool allow_hidden(const std::filesystem::path& p, const data::dir& data)
 {
-  for (auto it : p)
+  for (const auto& it : p)
   {
     if (
       it.string() != ".." && it.string() != "." && it.string().starts_with("."))

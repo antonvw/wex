@@ -24,8 +24,8 @@
     }                                                                          \
   }                                                                            \
                                                                                \
-  wxWindow*  win = wxWindow::FindFocus();                                      \
-  classname* cl  = dynamic_cast<classname*>(win);                              \
+  auto* win = wxWindow::FindFocus();                                           \
+  auto* cl  = dynamic_cast<classname*>(win);                                   \
   return cl;
 
 namespace wex
