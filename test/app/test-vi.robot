@@ -93,6 +93,7 @@ info
 	Output Contains	level
 
 macro
+	[Tags]	not on github
 	${date}=	Get Current Date	result_format=%Y-%m-%d
 	Input	@Template-test@
 	Appl
