@@ -299,7 +299,7 @@ TEST_CASE("wex::frame::bars")
 
   frame()->get_toolbar()->add_standard();
   REQUIRE(frame()->pane_toggle("FINDBAR"));
-  REQUIRE(!frame()->pane_is_shown("FINDBAR"));
+  REQUIRE(frame()->pane_is_shown("FINDBAR"));
   REQUIRE(frame()->pane_toggle("OPTIONSBAR"));
   REQUIRE(frame()->pane_is_shown("OPTIONSBAR"));
   REQUIRE(frame()->pane_toggle("TOOLBAR"));

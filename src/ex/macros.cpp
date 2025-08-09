@@ -298,7 +298,14 @@ void wex::macros::parse_node_variable(const pugi::xml_node& node)
 
 const wex::path wex::macros::path() const
 {
-  return wex::path(config::dir(), "wex-macros.xml");
+  const std::string name("wex-macros.xml");
+
+  if (wex::path p(name); p.file_exists())
+  {
+    return p;
+  }
+
+  return wex::path(config::dir(), name);
 }
 
 bool wex::macros::record(const std::string& text, bool new_command)

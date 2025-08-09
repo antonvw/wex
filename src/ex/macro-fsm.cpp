@@ -89,14 +89,24 @@ bool wex::macro_fsm::expand_template(
 
   // Read the file (file name is in variable value), expand
   // all macro variables in it, and set expanded to the result.
-  const path filename(config::dir(), var.get_value());
+  const path filename(
+    m_mode->get_macros()->path().data().parent_path(),
+    var.get_value());
 
   std::ifstream ifs(filename.data());
 
   if (!ifs.is_open())
   {
-    log("could not open template file") << filename;
-    return false;
+    if (std::filesystem::is_symlink(filename.data()))
+    {
+      ifs.open(std::filesystem::read_symlink(filename.data()));
+    }
+
+    if (!ifs.is_open())
+    {
+      log("could not open template file") << filename.data().string();
+      return false;
+    }
   }
 
   set_ask_for_input();
