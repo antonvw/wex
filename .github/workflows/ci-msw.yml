@@ -51,7 +51,7 @@ jobs:
         with:
           name: wex-lib-windows
           path: |
-            data/*.xml
+            data/*.*
             build/**/*.lib
             build/**/setup.h
 
