@@ -16,8 +16,14 @@ jobs:
         with:
           submodules: 'recursive'
 
+      - name: setup 7-Zip
+        uses: milliewalky/setup-7-zip@v2
+        # the 25.01 version gives boost errors: Dangerous link path was ignored
+        with:
+          tag: 24.07
+
       - name: Install boost
-        uses: MarkusJx/install-boost@v2.4.5
+        uses: MarkusJx/install-boost@v2.5.0
         id: install-boost
         with:
           # REQUIRED: Specify the required boost version

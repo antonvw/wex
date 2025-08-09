@@ -3,7 +3,7 @@
 Name:      wex-macros.xml
 Purpose:   vi macros, variables, abbreviations and key maps for wex.
 Author:    Anton van Wezenbeek
-Copyright: (c) 2020-2022, Anton van Wezenbeek
+Copyright: (c) 2020-2025, Anton van Wezenbeek
 
 Both variables and macros have a "name" attribute, you call them
 from vi mode using @name@ (if name starts with an
@@ -114,7 +114,6 @@ Variables are expanded when playing back the macro.
   <!-- TEMPLATE type -->
   <!-- A C Header Template -->  
   <variable name="Cht"              type="TEMPLATE">wex-c-header-template.txt</variable>
-  <variable name="Template-test"    type="TEMPLATE">wex-template-test.txt</variable>
   
   <!-- A macro to test coverage: run in a .h file,
        it finds corresponding method in a test.cpp file -->
