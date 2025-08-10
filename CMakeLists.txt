@@ -30,6 +30,8 @@ set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 set(CMAKE_DISABLE_PRECOMPILE_HEADERS ON)
 
+set(CMAKE_OSX_ARCHITECTURES "arm64")
+
 # see also Findwex, uses same Boost components
 find_package(
   Boost
