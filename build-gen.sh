@@ -132,6 +132,10 @@ uname=$(uname)
 if [[ $uname == "Darwin" ]]; then
   export LLVM_DIR=/usr/local/Cellar/homebrew/opt
 
+  if [[ -z "${option_build}" ]]; then
+    export LDFLAGS="-L/usr/local/Cellar/homebrew/opt/icu4c/lib"
+  fi
+
   if [ -d "$LLVM_DIR" ]; then
     # cmake find_package llvm otherwise gives error
     export CC=${LLVM_DIR}/llvm/bin/clang
