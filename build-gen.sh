@@ -133,7 +133,8 @@ if [[ $uname == "Darwin" ]]; then
   export LLVM_DIR=/usr/local/Cellar/homebrew/opt
 
   if [[ -z "${option_build}" ]]; then
-    export LDFLAGS="-L/usr/local/Cellar/homebrew/opt/icu4c/lib"
+    LOC=`brew --prefix icu4c`
+    export LDFLAGS="-L${LOC}/lib"
   fi
 
   if [ -d "$LLVM_DIR" ]; then
