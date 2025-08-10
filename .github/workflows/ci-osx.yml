@@ -23,7 +23,7 @@ jobs:
         run: brew install cppcheck
 
       - name: Configure
-        run: ./build-gen.sh -b -g -t
+        run: ./build-gen.sh -g -t
         env:
           CC: /opt/homebrew/opt/llvm/bin/clang
           CXX: /opt/homebrew/opt/llvm/bin/clang
@@ -40,5 +40,5 @@ jobs:
           name: wex-lib-macos
           path: |
             data/*.*
-            build/**/*.a
+            build/**/*.dylib
             build/**/setup.h
