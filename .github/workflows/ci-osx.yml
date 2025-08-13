@@ -42,3 +42,4 @@ jobs:
             data/*.*
             build/**/*.dylib
             build/**/setup.h
+            external/**/*.a
