@@ -41,5 +41,5 @@ jobs:
           path: |
             data/*.*
             build/**/*.dylib
+            build/**/*.a
             build/**/setup.h
-            external/**/*.a
