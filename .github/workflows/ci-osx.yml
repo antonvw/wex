@@ -25,8 +25,8 @@ jobs:
       - name: Configure
         run: ./build-gen.sh -g -t
         env:
-          CC: /opt/homebrew/opt/llvm/bin/clang
-          CXX: /opt/homebrew/opt/llvm/bin/clang
+          CC: /opt/homebrew/opt/llvm@19/bin/clang
+          CXX: /opt/homebrew/opt/llvm@19/bin/clang
 
       - name: Run tests
         run: cd build && ctest -VV -I 2,5
