@@ -17,22 +17,22 @@ jobs:
         run: brew install boost
 
       - name: Install llvm
-        run: brew install llvm
+        run: brew install llvm@19
 
       - name: Install cppcheck
         run: brew install cppcheck
 
       - name: Configure
-        run: ./build-gen.sh -G Xcode -g -t
+        run: ./build-gen.sh -g -t
         env:
           CC: /opt/homebrew/opt/llvm/bin/clang
           CXX: /opt/homebrew/opt/llvm/bin/clang
 
       - name: Run tests
-        run: cd build && ctest -C Debug -VV -I 2,5
+        run: cd build && ctest -VV -I 2,5
 
       - name: Run cppcheck
-        run: cd build && xcodebuild -target cppcheck
+        run: cd build && ninja cppcheck
 
       - name: Artifacts
         uses: actions/upload-artifact@v4
