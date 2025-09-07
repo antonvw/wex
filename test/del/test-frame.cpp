@@ -212,7 +212,7 @@ TEST_CASE("wex::del::frame")
   {
     get_stc()->set_text(std::string());
     {
-      wex::config("vcs.VCS").set(-2);
+      wex::config("vcs.VCS").set(0);
       wex::log_none off;
       REQUIRE(!del_frame()->vcs_blame(get_stc()));
     }

@@ -14,10 +14,10 @@ jobs:
           submodules: recursive
 
       - name: Install boost
-        run: brew install boost@1.88 && brew link boost@1.88
+        run: brew install boost
 
       - name: Install llvm
-        run: brew install llvm
+        run: brew install llvm@19
 
       - name: Install cppcheck
         run: brew install cppcheck
@@ -25,8 +25,8 @@ jobs:
       - name: Configure
         run: ./build-gen.sh -g -t
         env:
-          CC: /opt/homebrew/opt/llvm/bin/clang
-          CXX: /opt/homebrew/opt/llvm/bin/clang
+          CC: /opt/homebrew/opt/llvm@19/bin/clang
+          CXX: /opt/homebrew/opt/llvm@19/bin/clang
 
       - name: Run tests
         run: cd build && ctest -VV -I 2,5
