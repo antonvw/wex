@@ -17,6 +17,7 @@ void test_global(const std::string& cmd, const wex::addressrange& ar)
   REQUIRE(wex::addressrange::data().set_global(cmd));
   wex::global_env ge(ar);
 
+  CAPTURE(cmd);
   REQUIRE(ge.has_commands());
   REQUIRE(ge.global(wex::addressrange::data()));
   REQUIRE(ge.hits() == 3);
@@ -30,7 +31,7 @@ TEST_CASE("wex::global_env")
   ALLOW_CALL(*stc, path()).RETURN(p);
 
   stc->set_text(
-    "hello\nhello11\nhello22\ntest\ngcc\nblame\nthis\nyank\ncopy\n\n");
+    "hello\nhello11\nhello22\nhemll\ntest\ngcc\nblame\nthis\nyank\ncopy\n\n");
 
   auto*             ex = new wex::ex(stc);
   wex::addressrange ar(ex, "%");
@@ -48,7 +49,7 @@ TEST_CASE("wex::global_env")
 
   SECTION("commands")
   {
-    REQUIRE(wex::addressrange::data().set_global("g/he/"));
+    REQUIRE(wex::addressrange::data().set_global("g/hel/"));
     wex::global_env ge(ar);
     REQUIRE(!ge.has_commands());
     REQUIRE(ge.global(wex::addressrange::data()));
@@ -96,7 +97,7 @@ TEST_CASE("wex::global_env")
 
   SECTION("commands-append")
   {
-    test_global("g/he/a|added he <XXX>|a|other", ar);
+    test_global("g/hel/a|added he <XXX>|a|other", ar);
 
     wex::log_none off;
     REQUIRE(wex::addressrange::data().set_global("g/he/a"));
@@ -104,12 +105,12 @@ TEST_CASE("wex::global_env")
     REQUIRE(!ge_error.has_commands());
     // now it acts as g/he/, fix for 25.04
     REQUIRE(ge_error.global(wex::addressrange::data()));
-    REQUIRE(ge_error.hits() == 9);
+    REQUIRE(ge_error.hits() == 10);
   }
 
   SECTION("commands-change")
   {
-    test_global("g/he/c|<XXX>", ar);
+    test_global("g/hel/c|<XXX>", ar);
 
     // and check whether undo works
     REQUIRE(ex->get_stc()->get_text().contains("<XXX>"));
@@ -119,17 +120,17 @@ TEST_CASE("wex::global_env")
 
   SECTION("commands-delete")
   {
-    test_global("g/he/d", ar);
+    test_global("g/hel/d", ar);
   }
 
   SECTION("commands-insert")
   {
-    test_global("g/he/i|<XXX>", ar);
+    test_global("g/hel/i|<XXX>", ar);
   }
 
   SECTION("commands-substitute")
   {
-    test_global("g/he/s/ll/LL", ar);
+    test_global("g/hel/s/ll/LL", ar);
   }
 
   delete ex;

@@ -120,6 +120,9 @@ bool wex::addressrange_mark::search()
       m_stc->LineFromPosition(m_stc->GetTargetEnd()) + 1);
   }
 
+  log::trace("addressrange_mark search")
+    << m_data.pattern() << m_data.is_global_command();
+
   return m_stc->SearchInTarget(m_data.pattern()) != -1 &&
          m_ex->marker_add(
            m_markers[marker_t::TARGET],
