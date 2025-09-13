@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [25.10] - 2025-10 [Unreleased]
+## [26.04] - 2026-04 [Unreleased]
+
+## [25.10] - 2025-09-21
 
 ### Added
 
@@ -39,6 +41,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - fixed crash in findbar if all documents were closed
 - fixed match function and regular expression in find_replace_data
 - fixed locale
+- fixed global substitute command
 
 ### Removed
 
@@ -183,7 +186,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
-- possible crash in lisview sorting
+- possible crash in listview sorting
 - ctags::find and empty tag finds next tag
 - rectangular paste
 
@@ -598,7 +601,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - CEdit is used as base for the output
 - Visual C++ 5.0
 
-[Unreleased]: https://github.com/antonvw/wex/compare/v25.04..HEAD
+[Unreleased]: https://github.com/antonvw/wex/compare/v25.10..HEAD
+[25.10]:      https://github.com/antonvw/wex/compare/v25.04...v25.10
 [25.04]:      https://github.com/antonvw/wex/compare/v24.10...v25.04
 [24.10]:      https://github.com/antonvw/wex/compare/v24.04...v24.10
 [24.04]:      https://github.com/antonvw/wex/compare/v23.10.0...v24.04

@@ -82,8 +82,8 @@ private:
   ex*          m_ex;
   syntax::stc* m_stc;
 
-  const addressrange&     m_ar;
-  const data::substitute& m_data;
+  const addressrange&    m_ar;
+  const data::substitute m_data;
 
   // markers used: begin, target, end
   const std::array<char, 3> m_markers;
