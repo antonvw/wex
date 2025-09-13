@@ -106,7 +106,7 @@ TEST_CASE("wex::dir")
       wex::data::dir().file_spec("*.txt").type(
         wex::data::dir::type_t().set(wex::data::dir::FILES))));
 
-    REQUIRE(v.size() == 5);
+    REQUIRE(v.size() == 6);
 
     const auto& v2(wex::get_all_files(
       std::string("./"),
