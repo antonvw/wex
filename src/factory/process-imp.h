@@ -2,23 +2,31 @@
 // Name:      process-imp.h
 // Purpose:   Declaration of class wex::factory::process_imp
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
 #include <atomic>
 #include <queue>
 
-#include <boost/process.hpp>
+#include <boost/process/v1/args.hpp>
+#include <boost/process/v1/async_system.hpp>
+#include <boost/process/v1/group.hpp>
+#include <boost/process/v1/io.hpp>
+#include <boost/process/v1/pipe.hpp>
+#include <boost/process/v1/start_dir.hpp>
+#include <boost/process/v1/system.hpp>
 
-namespace bp = boost::process;
+namespace bp = boost::process::v1;
+
+class wxEvtHandler;
 
 namespace wex::factory
 {
 class process;
 
 /// This class offers methods to support processing. It uses
-/// the boost::process classes.
+/// the boost::process::v1 classes.
 class process_imp
 {
 public:
@@ -29,7 +37,7 @@ public:
   void async_sleep_for(const std::chrono::milliseconds& ms);
 
   /// Runs the exe as a async process.
-  void async_system(process* p, const process_data& data);
+  void async_system(process* p);
 
   /// Returns true if this is a debug process.
   bool is_debug() const { return m_debug; }
@@ -44,7 +52,7 @@ public:
   bool write(const std::string& text);
 
 private:
-  void boost_async_system(process* p, const process_data& data);
+  void boost_async_system(process* p);
   void thread_error(const process* p);
   void thread_input(const process* p);
   void thread_output(const process* p);
@@ -58,7 +66,5 @@ private:
   bp::ipstream m_es, m_is;
   bp::opstream m_os;
   bp::group    m_group;
-
-  process_data m_data;
 };
 }; // namespace wex::factory

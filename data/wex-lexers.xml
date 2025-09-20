@@ -3,7 +3,7 @@
 <!--
 Name:    wex-lexers.xml
 Purpose: Lexers configuration for wex.
-         See scintilla 5.4.2 (https://www.scintilla.org/LexillaHistory.html)
+         See scintilla 5.4.4 (https://www.scintilla.org/LexillaHistory.html)
 Author:  Anton van Wezenbeek
 Copyright: (c) 2009-2025, Anton van Wezenbeek
 -->
@@ -26,8 +26,8 @@ Copyright: (c) 2009-2025, Anton van Wezenbeek
         <def style ="char"> fore:pink </def>
         <def style ="classname"> fore:yellow,bold </def>
         <def style ="command"> fore:steel blue </def>
-        <def style ="comment"> fore:paleturquoise,italic,back:gray 18,eol </def>
-        <def style ="commentdockeyword"> fore:paleturquoise,italic,underline,back:gray 18 </def>
+        <def style ="comment"> fore:paleturquoise,italic,back:gray 10,eol </def>
+        <def style ="commentdockeyword"> fore:paleturquoise,italic,underline,back:gray 10 </def>
         <def style ="error"> fore:red,italic,eol </def>
         <def style ="folder"> blue </def>
         <def style ="folder-back"> light blue </def>
@@ -43,8 +43,8 @@ Copyright: (c) 2009-2025, Anton van Wezenbeek
         <def style ="preprocessor"> fore:grey </def>
         <def style ="processor"> fore:dark grey </def>
         <def style ="string"> fore:#ffab8f </def>
-        <def style ="styledefault"> default-font,back:gray 18,fore:ivory 3 </def>
-        <def style ="styledefault-back"> default-font,back:gray 18,fore:gray 73,eol </def>
+        <def style ="styledefault"> default-font,back:gray 10,fore:ivory 3 </def>
+        <def style ="styledefault-back"> default-font,back:gray 10,fore:gray 73,eol </def>
         <def style ="stylelinenumber"> fore:grey </def>
         <def style ="styleindicatordebug"> blue </def>
         <def style ="styleindicatorfind"> red </def>
@@ -145,7 +145,7 @@ Copyright: (c) 2009-2025, Anton van Wezenbeek
     <marker no="3"> mark_shortarrow,green,warmgrey </marker>
     <marker no="4"> mark_shortarrow,lightblue,warmgrey </marker>
     <marker no="5"> mark_shortarrow,red,warmgrey </marker>
-    
+
     <!-- At this moment we do not have properties -->
     <properties/>
 
@@ -443,7 +443,7 @@ Copyright: (c) 2009-2025, Anton van Wezenbeek
       next prev next_permutation nextafter nexttoward noboolalpha none
       norm normal_distribution noshowbase noshowpoint noshowpos noskipws
       nosubs not1 not2 not_equal_to nothrow nothrow_t
-      notify_all_at_thread_exit nounitbuf nouppercase 
+      notify_all_at_thread_exit nounitbuf nouppercase
       npos nth_element nullopt nullptr_t max_align_t
       numeric_limits oct off_type ofstream once_flag open
       optimize optional ostream ostream_iterator ostreambuf_iterator ostringstream
@@ -931,14 +931,17 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   <lexer name="au3"/>
   <lexer name="ave"/>
   <lexer name="avs"/>
-  <lexer display="awk" name="bash" extensions="*.awk">
+  <lexer display="awk" name="vb" extensions="*.awk">
     <keywords set-0="csh">
-      <!-- https://www.computerhope.com/unix/ucsh.htm -->
+      <!-- https://pubs.opengroup.org/onlinepubs/9799919799 -->
       ARGC ARGIND ARGV CONVFMT ENVIRON ERRNO FIELDWIDTHS FILENAME FNR FS
-      IGNORECASE NF NR OFMT OFS ORS RLENGTH RSTART RS RT SUBSEP
+      IGNORECASE NF NR OFMT OFS ORS RLENGTH RS RSTART RT SUBSEP
       BEGIN END if else while do for in break continue delete
       next nextfile function func return exit
-      length printf sprintf substr
+      printf
+      gsub index length match split sprintf sub substr
+      tolower toupper
+      close fflush getline system
     </keywords>
   </lexer>
   <lexer name="baan"/>
@@ -1031,7 +1034,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   <lexer name="coffeescript"/>
   <lexer name="conf" extensions="*.elp"/>
-  <lexer name="cpp" extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">
+  <lexer name="cpp" extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y;*.sc">
     <styles>
       <style no="commentdockeyworderror"> comment </style>
     </styles>
@@ -1053,6 +1056,20 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     <keywords set="csh"/>
   </lexer>
   <lexer name="css" extensions="*.css">
+    <styles>
+      <style no="identifier"> keyword1 </style>
+      <style no="identifier2"> keyword2 </style>
+      <style no="identifier3"> keyword3 </style>
+      <style no="id"> fore:cadetblue </style>
+      <style no="directive"> fore:seagreen 2 </style>
+      <style no="id"> fore:seagreen 1 </style>
+    </styles>
+    <keywords set-0="css1" set-2="css2" set-3="css3"/>
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+    </properties>
     <keywords set-0="css1" set-2="css2" set-3="css3"/>
   </lexer>
   <lexer name="d"/>
@@ -1703,8 +1720,13 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   <lexer name="toml"/>
   <lexer name="troff"/>
   <lexer name="txt2tags"/>
-  <lexer name="vb">
+  <lexer name="vb" extensions="*.vba;*.bas;*.cls" >
     <keywords set ="vb"/>
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+    </properties>
   </lexer>
   <lexer name="vbscript" macro="vb">
     <keywords set ="vb"/>

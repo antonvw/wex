@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wex::factory::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -174,8 +174,8 @@ public:
   /// Sets the text.
   virtual void set_text(const std::string& value) { SetText(value); }
 
-  /// Shows decimal or hex info of word under cursor.
-  virtual void show_ascii_value() { ; }
+  /// Shows decimal or hex info of word or byte under cursor.
+  virtual void show_ascii_value(bool byte_only = false) { ; }
 
   /// Shows or hides line numbers.
   virtual void show_line_numbers(bool show) { ; }
@@ -342,7 +342,7 @@ protected:
   int  m_margin_text_click{-1};
   bool m_margin_text_is_shown{false};
 
-  const size_t m_margin_divider_number{1}, m_margin_folding_number{2},
+  const int m_margin_divider_number{1}, m_margin_folding_number{2},
     m_margin_line_number{0}, m_margin_text_number{3};
 
   int m_saved_pos{-1}, m_saved_selection_start{-1}, m_saved_selection_end{-1};

@@ -261,7 +261,7 @@ public:
   bool set_hexmode(bool on) override { return get_hexmode().set(on); }
   void set_search_flags(int flags) override;
   void set_text(const std::string& value) override;
-  void show_ascii_value() override;
+  void show_ascii_value(bool byte_only = false) override;
   void show_line_numbers(bool show) override;
   void show_whitespace(bool show) override;
   void sync(bool start = true) override { m_function_repeat.activate(start); }
@@ -297,7 +297,7 @@ private:
   void jump_action();
   void key_action(wxKeyEvent& event);
   void margin_action(wxStyledTextEvent& event);
-  bool mark_diff(size_t line, const marker& marker);
+  bool mark_diff(int line, const marker& marker);
   void mark_modified(const wxStyledTextEvent& event);
   void mouse_action(wxMouseEvent& event);
   void on_styled_text(wxStyledTextEvent& event);

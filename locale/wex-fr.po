@@ -1,26 +1,58 @@
 # wex localization file wex-fr.po
-# Copyright (C) 2017-2021 A.M. van Wezenbeek
+# Copyright (C) 2017-2025 A.M. van Wezenbeek
 # This file is distributed under the same license as the wex package.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: wex 22.04\n"
+"Project-Id-Version: wex 25.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-25 14:03+0200\n"
-"PO-Revision-Date: 2021-06-25 14:08+0200\n"
-"Language: fr\n"
+"POT-Creation-Date: 2025-07-17 19:34+0200\n"
+"PO-Revision-Date: 2017-2025-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"X-Generator: Poedit 3.0\n"
+
+#, c-format
+msgid "%d fewer lines"
+msgstr "%d moins de lignes"
+
+#, c-format
+msgid "%d lines added"
+msgstr "%d lignes ajoutées"
+
+#, c-format
+msgid "%d lines copied"
+msgstr "%d lignes copiées"
+
+#, c-format
+msgid "%d lines moved"
+msgstr "%d lignes déplacé"
+
+#, c-format
+msgid "%d lines yanked"
+msgstr "%d de lignes tirées"
+
+msgid "&Make"
+msgstr "&Faire"
 
 msgid "&Menubar\tCtrl+I"
 msgstr "&Barre de recherche\tCtrl+I"
 
 msgid "&Open In Browser"
 msgstr "&La vue d'ensemble"
+
+msgid "&Search"
+msgstr "&rechercher"
+
+msgid "&Tools"
+msgstr "&Barre d'outils"
+
+msgid "<Skipped>"
+msgstr "<Ignoré>"
 
 msgid "Add files"
 msgstr "Ajouter des fichiers"
@@ -42,6 +74,9 @@ msgstr "Style d’annotation"
 
 msgid "Auto blame"
 msgstr "Auto blâmer"
+
+msgid "Auto complete"
+msgstr "Compléter"
 
 msgid "Auto fold"
 msgstr "&Trier automatiquement"
@@ -73,6 +108,9 @@ msgstr "Comparateur"
 msgid "Context size"
 msgstr "Taille du contexte"
 
+msgid "Datasource"
+msgstr "Sources des données"
+
 msgid "Default font"
 msgstr "Font par défaut"
 
@@ -87,6 +125,9 @@ msgstr "Colonne de bord"
 
 msgid "End of line"
 msgstr "Fin de ligne"
+
+msgid "Error bells"
+msgstr "Cloches d’erreur"
 
 #, c-format
 msgid "Executed: %d commands"
@@ -174,6 +215,9 @@ msgstr "Mot entier"
 
 msgid "Max replacements"
 msgstr "Max remplaçants"
+
+msgid "Password"
+msgstr "Mot de passe"
 
 msgid "Path"
 msgstr "Trajet"
@@ -266,6 +310,12 @@ msgstr "Marqueur indéfini: %c"
 msgid "Unknown macro"
 msgstr "Macro inconnue"
 
+msgid "Use tabs"
+msgstr "Utilisez les onglets"
+
+msgid "User"
+msgstr "Utilisateur"
+
 msgid "View Process"
 msgstr "Voir le processus"
 
@@ -288,11 +338,35 @@ msgstr "l'événement n'est pas trouvé"
 msgid "file: %s does not exist"
 msgstr "fichier: %s n'existe pas"
 
+msgid "stc.Autocomplete maxwidth"
+msgstr "stc.Autocomplete maxwidth"
+
+msgid "stc.Beautifier"
+msgstr "stc.Embellisseur"
+
+msgid "stc.Error bells"
+msgstr "stc.Cloches d’erreur"
+
+msgid "stc.Text font"
+msgstr "stc.Police de texte"
+
+msgid "stc.Use tabs"
+msgstr "stc.Utiliser les onglets"
+
+msgid "tab.Art provider"
+msgstr "tab.fournisseur d’art"
+
 msgid "vi mode"
 msgstr "vi en mode"
 
 msgid "vi tag fullpath"
 msgstr "vi tag fullpath"
+
+msgid "Files"
+msgstr "Fichiers"
+
+msgid "Actions Completed"
+msgstr "Actions Complétés"
 
 msgid "fif.Hidden"
 msgstr "fif.Caché"
@@ -330,11 +404,23 @@ msgstr "Valeur"
 msgid "Options"
 msgstr "&Options"
 
-msgid "Files"
-msgstr "Fichiers"
+msgid "&Find And Replace"
+msgstr ""
 
-msgid "Actions Completed"
-msgstr "Actions Complétés"
+msgid "Columns"
+msgstr ""
+
+msgid "Project Files"
+msgstr ""
+
+msgid "Select Projects"
+msgstr ""
+
+msgid "Open File"
+msgstr ""
+
+msgid "Process"
+msgstr "&Procès"
 
 msgid "Busy"
 msgstr "Occupé"
@@ -342,11 +428,8 @@ msgstr "Occupé"
 msgid "Folders"
 msgstr "Dossiers"
 
-msgid "Open &Recent"
-msgstr "Ouvrez&récents"
-
-msgid "Removed not existing file"
-msgstr "Fichier non existant supprimé"
+msgid "list.Context size"
+msgstr "list.Taille du contexte"
 
 msgid "fif.Max replacements"
 msgstr "fif.Max remplaçants"
@@ -389,20 +472,18 @@ msgstr "Modifié"
 msgid "Synchronized"
 msgstr "Sychroniser les fichiers modifiés"
 
-msgid "Debugger"
-msgstr "Débogueur"
-
-msgid "File Type"
-msgstr "Type de fichier"
-
-msgid "Lines or Items"
-msgstr "Lignes ou éléments"
-
-msgid "Theme"
-msgstr "Thème"
-
 msgid "stc.Search engine"
 msgstr "stc.Moteur de recherche"
+
+msgid "wex library (a library that offers windows ex and vi components)"
+msgstr ""
+"wex bibliothèque (une bibliothèque qui vous offre des components vi et ex)"
+
+msgid "All rights reserved."
+msgstr "Tous droits réservés."
+
+msgid "stc.Wrap scan"
+msgstr "stc.Numérisation d’emballage"
 
 msgid "bottom"
 msgstr "fond"
@@ -416,23 +497,8 @@ msgstr "Regarder dans le bas"
 msgid "hit"
 msgstr "but"
 
-msgid "Error bells"
-msgstr "Cloches d’erreur"
-
 msgid "not found"
 msgstr "pas trouvé"
-
-msgid "Input"
-msgstr "Entrée"
-
-msgid "wex library (a library that offers windows ex and vi components)"
-msgstr "wex bibliothèque (une bibliothèque qui vous offre des components vi et ex)"
-
-msgid "All rights reserved."
-msgstr "Tous droits réservés."
-
-msgid "stc.Wrap scan"
-msgstr "stc.Numérisation d’emballage"
 
 msgid "File Name"
 msgstr "Fichier enregistrer sous"
@@ -473,11 +539,20 @@ msgstr "Aucun"
 msgid "stc.Ex mode show hex"
 msgstr "stc.Ex mode show hex"
 
+msgid "Editor Options"
+msgstr "Options de l'éditeur"
+
 msgid "Show hidden"
 msgstr "Montrer les fichiers cachés"
 
 msgid "&Open"
 msgstr "&Ouvrir"
+
+msgid "Find In Selection"
+msgstr "Trouver en Sélection"
+
+msgid "Replace In Selection"
+msgstr "Remplacez en Sélection"
 
 msgid "replacing with"
 msgstr "remplacer avec"
@@ -485,17 +560,11 @@ msgstr "remplacer avec"
 msgid "Find In Files"
 msgstr "&Rechercher dans les fichiers"
 
+msgid "fif.Max"
+msgstr ""
+
 msgid "Replace In Files"
 msgstr "Remplacer dans les fichiers"
-
-msgid "Editor Options"
-msgstr "Options de l'éditeur"
-
-msgid "Find In Selection"
-msgstr "Trouver en Sélection"
-
-msgid "Replace In Selection"
-msgstr "Remplacez en Sélection"
 
 msgid "Cancelled"
 msgstr "Annulé"
@@ -506,14 +575,113 @@ msgstr "Ajouter des éléments"
 msgid "Add"
 msgstr "Ajouter"
 
+msgid "Opened"
+msgstr "Ouvert"
+
+msgid "Saved"
+msgstr "Sauvé"
+
 msgid "C&ompare"
 msgstr "C&omparateur"
 
-msgid "&Make"
-msgstr "&Faire"
+msgid "&Build"
+msgstr ""
 
 msgid "&Compare With"
 msgstr "&Comparer avec"
+
+msgid "Replace"
+msgstr "Remplacer"
+
+msgid "with"
+msgstr "avec"
+
+msgid "stc.Auto complete"
+msgstr "stc.Saisie automatique"
+
+msgid "stc.Auto indent"
+msgstr "stc.Retrait automatique"
+
+msgid "stc.Auto write"
+msgstr "stc.Écriture automatique"
+
+msgid "stc.Edge line"
+msgstr "stc.Ligne de bord"
+
+msgid "stc.Line numbers"
+msgstr "stc.Numéros de ligne"
+
+msgid "stc.Show mode"
+msgstr "stc.Afficher le mode"
+
+msgid "stc.Show match"
+msgstr "stc.Afficher la correspondance"
+
+msgid "stc.Whitespace visible"
+msgstr "stc.Espace visible"
+
+msgid "stc.End of line"
+msgstr "stc.Fin de ligne"
+
+msgid "stc.Expand tabs"
+msgstr ""
+
+msgid "stc.Wrap line"
+msgstr "stc.Envelopper la ligne"
+
+msgid "stc.Edge column"
+msgstr "stc.Colonne de bord"
+
+msgid "stc.Indent"
+msgstr "stc.retrait"
+
+msgid "stc.Tab width"
+msgstr "stc.Largeur de l’onglet"
+
+msgid "lines added"
+msgstr ""
+
+msgid "lines copied"
+msgstr ""
+
+msgid "fewer lines"
+msgstr ""
+
+msgid "lines moved"
+msgstr ""
+
+msgid "lines yanked"
+msgstr ""
+
+msgid "Macro expanded"
+msgstr "Macro développée"
+
+msgid "Variable expanded"
+msgstr "Variable étendue"
+
+msgid "Macro aborted at"
+msgstr "Macro a joué retour a"
+
+msgid "Macro played back"
+msgstr "Macro a joué retour"
+
+msgid "Macro recording"
+msgstr "Macro enregistre"
+
+msgid "Input"
+msgstr "Entrée"
+
+msgid "Select Macro"
+msgstr "Sélection Macro"
+
+msgid "Enter Macro"
+msgstr "Entrer Macro"
+
+msgid "Could not expand variable"
+msgstr "Impossible de développer variable"
+
+msgid "stc.Auto beautify"
+msgstr "stc.Embellir automatiquement"
 
 msgid "fif.Find what"
 msgstr "stc.Ajouter quoi"
@@ -533,56 +701,11 @@ msgstr "fif.Eemplacer par"
 msgid "fif.Search down"
 msgstr "fif.Recherche vers le bas"
 
-msgid "stc.Edge column"
-msgstr "stc.Colonne de bord"
-
-msgid "Edge line"
-msgstr "Ligne de bord"
-
-msgid "Whitespace visible"
-msgstr "Espace viable"
-
-msgid "Tab draw mode"
-msgstr "Mode de dessin d’onglet"
-
-msgid "Use tabs"
-msgstr "Utilisez les onglets"
-
-msgid "Tab width"
-msgstr "Largeur tab"
-
-msgid "Wrap line"
-msgstr "Enroulez la ligne"
-
-msgid "stc.Indent"
-msgstr "stc.retrait"
-
-msgid "Enter Theme"
-msgstr "Entrer Thème"
-
 msgid "stc.link.Include directory"
 msgstr "stc.link.Include directory"
 
-msgid "Page @PAGENUM@ of @PAGESCNT@"
-msgstr "Page @PAGENUM@ ou @PAGESCNT@"
-
-msgid "Printed"
-msgstr "Imprimé"
-
-msgid "stc.Default font"
-msgstr "stc.Police par défaut"
-
-msgid "stc.Auto complete"
-msgstr "stc.Saisie automatique"
-
-msgid "stc.Auto indent"
-msgstr "stc.Retrait automatique"
-
-msgid "stc.Auto beautify"
-msgstr "stc.Embellir automatiquement"
-
-msgid "stc.Beautifier"
-msgstr "stc.Embellisseur"
+msgid "stc.Auto blame statusbar"
+msgstr ""
 
 msgid "Document is readonly"
 msgstr "Document est en lectureseule"
@@ -593,20 +716,11 @@ msgstr "&Caractère de contrôle"
 msgid "Control Character"
 msgstr "&Caractère de Contrôle"
 
-msgid "stc.Wrap line"
-msgstr "stc.Envelopper la ligne"
-
 msgid "No markers present"
 msgstr "Pas de marquers présents"
 
 msgid "Properties"
 msgstr "Propriété"
-
-msgid "&Preview"
-msgstr "&Aperçu"
-
-msgid "Open"
-msgstr "Ouvrir"
 
 msgid "Edge Column"
 msgstr "Colonne de bord"
@@ -614,8 +728,20 @@ msgstr "Colonne de bord"
 msgid "Edge Column Reset"
 msgstr "Colonne de bord reset"
 
-msgid "&Search"
-msgstr "&rechercher"
+msgid "Checkout Diff"
+msgstr ""
+
+msgid "show hash"
+msgstr ""
+
+msgid "&Toggle Fold\tCtrl+T"
+msgstr "& Fois\tCtrl+T"
+
+msgid "&Fold All Lines\tF9"
+msgstr "&Fois Toutes les Lignes\tF9"
+
+msgid "&Unfold All Lines\tF10"
+msgstr "&Déplier Toutes les Lignes\tF10"
 
 msgid "&Uppercase\tF11"
 msgstr "&Majescule\tF11"
@@ -632,26 +758,20 @@ msgstr "&Trier automatiquement"
 msgid "&Selection"
 msgstr "&Sélectionner"
 
-msgid "&Toggle Fold\tCtrl+T"
-msgstr "& Fois\tCtrl+T"
+msgid "Clear Diffs"
+msgstr ""
 
-msgid "&Fold All Lines\tF9"
-msgstr "&Fois Toutes les Lignes\tF9"
+msgid "&Preview"
+msgstr "&Aperçu"
 
-msgid "&Unfold All Lines\tF10"
-msgstr "&Déplier Toutes les Lignes\tF10"
+msgid "Open"
+msgstr "Ouvrir"
 
-msgid "stc.Show match"
-msgstr "stc.Afficher la correspondance"
+msgid "&Browse"
+msgstr ""
 
 msgid "Not allowed in hex mode"
 msgstr "Pas permis a mode hexadécimal"
-
-msgid "Opened"
-msgstr "Ouvert"
-
-msgid "Saved"
-msgstr "Sauvé"
 
 msgid "Enter Line Number"
 msgstr "Fichier:numéro de ligne"
@@ -659,14 +779,26 @@ msgstr "Fichier:numéro de ligne"
 msgid "Enter Sort Position"
 msgstr "Entrer Position de trier"
 
-msgid "stc.Edge line"
-msgstr "stc.Ligne de bord"
+msgid "stc.margin.Text"
+msgstr "stc.margin.Texte"
+
+msgid "stc.margin.Divider"
+msgstr "stc.margin.diviseur"
+
+msgid "stc.Scroll bars"
+msgstr "stc.Barres de défilement"
+
+msgid "stc.vi mode"
+msgstr "stc.mode vi"
+
+msgid "stc.Default font"
+msgstr "stc.Police par défaut"
 
 msgid "stc.Annotation style"
 msgstr "stc.Style d’annotation"
 
-msgid "stc.Autocomplete maxwidth"
-msgstr "stc.Autocomplete maxwidth"
+msgid "stc.Autocomplete max width"
+msgstr ""
 
 msgid "stc.Caret line"
 msgstr "stc.Ligne de caret"
@@ -677,41 +809,14 @@ msgstr "stc.Plier les drapeaux"
 msgid "stc.Indentation guide"
 msgstr "stc.guide d’indentation"
 
-msgid "stc.margin.Divider"
-msgstr "stc.margin.diviseur"
-
 msgid "stc.Print flags"
 msgstr "stc.Drapeaux d’impression"
 
 msgid "stc.Tab draw mode"
 msgstr "stc.Mode de dessin d’onglet"
 
-msgid "stc.Tab width"
-msgstr "stc.Largeur de l’onglet"
-
-msgid "stc.Scroll bars"
-msgstr "stc.Barres de défilement"
-
-msgid "stc.Use tabs"
-msgstr "stc.Utiliser les onglets"
-
-msgid "stc.End of line"
-msgstr "stc.Fin de ligne"
-
-msgid "stc.Whitespace visible"
-msgstr "stc.Espace visible"
-
 msgid "stc.Wrap visual flags"
 msgstr "stc.Envelopper les drapeaux visuels"
-
-msgid "stc.margin.Folding"
-msgstr "stc.margin.Pliant"
-
-msgid "stc.vi mode"
-msgstr "stc.mode vi"
-
-msgid "stc.Line numbers"
-msgstr "stc.Numéros de ligne"
 
 msgid "stc.Keep zoom"
 msgstr "stc.Garder le zoom"
@@ -727,6 +832,15 @@ msgstr "stc.Blâme automatique"
 
 msgid "stc.vi tag fullpath"
 msgstr "stc.vi tag fullpath"
+
+msgid "Comboboxes"
+msgstr ""
+
+msgid "<i>Beautifiers:</i>"
+msgstr ""
+
+msgid "<i>Others:</i>"
+msgstr ""
 
 msgid "Choices"
 msgstr "Les choix"
@@ -779,11 +893,26 @@ msgstr "Omble chevalier"
 msgid "Whitespace"
 msgstr "Espace"
 
+msgid "Printer"
+msgstr "Imprimé"
+
+msgid "Normal"
+msgstr "Normale"
+
+msgid "Invert on white"
+msgstr "Inverser sur blanc"
+
+msgid "Black on white"
+msgstr "Noir sur blanc"
+
+msgid "Colour on white"
+msgstr "Couleur sur fond blanc"
+
+msgid "Colour on white normal"
+msgstr "Couleur sur fond blanc normale"
+
 msgid "Font"
 msgstr "Police de caractère"
-
-msgid "stc.Text font"
-msgstr "stc.Police de texte"
 
 msgid "Edge"
 msgstr "Bord"
@@ -797,14 +926,20 @@ msgstr "Multiligne"
 msgid "<i>Margins:</i>"
 msgstr "<i>Marges:</i>"
 
+msgid "stc.Autocomplete min size"
+msgstr ""
+
+msgid "blame.Author size"
+msgstr ""
+
 msgid "<i>Line Margins:</i>"
 msgstr "<i>Marges de ligne:</i>"
 
+msgid "stc.margin.Folding"
+msgstr "stc.margin.Pliant"
+
 msgid "stc.margin.Line number"
 msgstr "stc.margin.Numéro de ligne"
-
-msgid "stc.margin.Text"
-msgstr "stc.margin.Texte"
 
 msgid "<i>Max:</i>"
 msgstr "<i>Max:</i>"
@@ -814,6 +949,9 @@ msgstr "stc.max.Visuel de taille"
 
 msgid "stc.max.Size lexer"
 msgstr "stc.max.Lexer de taille"
+
+msgid "Repeater"
+msgstr ""
 
 msgid "Folding"
 msgstr "Pliage"
@@ -848,50 +986,14 @@ msgstr "<i>Matches:<i>"
 msgid "stc.link.Pairs"
 msgstr "stc.Paires de liens"
 
-msgid "Printer"
-msgstr "Imprimé"
-
-msgid "Normal"
-msgstr "Normale"
-
-msgid "Invert on white"
-msgstr "Inverser sur blanc"
-
-msgid "Black on white"
-msgstr "Noir sur blanc"
-
-msgid "Colour on white"
-msgstr "Couleur sur fond blanc"
-
-msgid "Colour on white normal"
-msgstr "Couleur sur fond blanc normale"
-
-msgid "Attach"
-msgstr "Attacher"
-
-msgid "debug.File"
-msgstr "debug.Fichier"
-
-msgid "Debug"
-msgstr "Déboguer"
-
-msgid "Enter Debugger"
-msgstr "Entrer dans le débogueur"
-
 msgid "Select Files"
 msgstr "Les fichiers de projet"
 
 msgid "Enter Byte Offset"
 msgstr "Donne offset variable"
 
-msgid "Process folder"
-msgstr "&Proceès"
-
-msgid "Process"
-msgstr "&Procès"
-
-msgid "Select Process"
-msgstr "Sélection des Projets"
+msgid "Replaced"
+msgstr "Remplacé"
 
 msgid "Readonly attribute changed"
 msgstr "Attribut lecture en seule changé"
@@ -899,32 +1001,38 @@ msgstr "Attribut lecture en seule changé"
 msgid "Readonly"
 msgstr "Lecture seule"
 
-msgid "Replaced"
-msgstr "Remplacé"
+msgid "Edge line"
+msgstr "Ligne de bord"
 
-msgid "vcs.Prefix flags"
-msgstr "vcs.Indicateurs de préfixe"
+msgid "Whitespace visible"
+msgstr "Espace viable"
 
-msgid "vcs.Subcommand"
-msgstr "vcs.Sous-commande"
+msgid "Tab draw mode"
+msgstr "Mode de dessin d’onglet"
 
-msgid "vcs.Revision comment"
-msgstr "vcs.Commentaire de révision"
+msgid "Expand tabs"
+msgstr ""
 
-msgid "vcs.Flags"
-msgstr "vcs.drapeaux"
+msgid "Tab width"
+msgstr "Largeur tab"
 
-msgid "vcs.Base folder"
-msgstr "vcs.Dossier de base"
+msgid "Wrap line"
+msgstr "Enroulez la ligne"
 
-msgid "Set VCS"
-msgstr "Set VCS"
+msgid "Enter Theme"
+msgstr "Entrer Thème"
 
-msgid "vcs.Path"
-msgstr "vcs.Path"
+msgid "Page @PAGENUM@ of @PAGESCNT@"
+msgstr "Page @PAGENUM@ ou @PAGESCNT@"
 
-msgid "Select VCS Folder"
-msgstr "Sélectionnez le dossier VCS"
+msgid "Printed"
+msgstr "Imprimé"
+
+msgid "locale"
+msgstr ""
+
+msgid "Select File"
+msgstr "Choisir le dossier"
 
 msgid "All Files"
 msgstr "Tous les fichiers"
@@ -937,6 +1045,12 @@ msgstr "Confirmer"
 
 msgid "Save changes to"
 msgstr "Enregistrer les modifications apportées"
+
+msgid "Open &Recent"
+msgstr "Ouvrez&récents"
+
+msgid "Removed not existing file"
+msgstr "Fichier non existant supprimé"
 
 msgid "&Findbar"
 msgstr "&Barre de recherche"
@@ -953,9 +1067,6 @@ msgstr "&Traiter"
 msgid "Find"
 msgstr "Trouver"
 
-msgid "Replace"
-msgstr "Remplacer"
-
 msgid "Toolbar"
 msgstr "Barre d'outils"
 
@@ -964,6 +1075,9 @@ msgstr "Barre de recherche"
 
 msgid "Optionsbar"
 msgstr "Barre d’options"
+
+msgid "..."
+msgstr ""
 
 msgid "list.Readonly colour"
 msgstr "list.Couleur en lecture seule"
@@ -977,17 +1091,17 @@ msgstr "list.Sélection unique"
 msgid "list.Sort method"
 msgstr "list.Méthode de tri"
 
+msgid "Sort toggle"
+msgstr "Bascule de tri"
+
+msgid "Sort keep order"
+msgstr ""
+
 msgid "Sort ascending"
 msgstr "Trier par ordre croissant"
 
 msgid "Sort descending"
 msgstr "Trier par ordre décroissant"
-
-msgid "Sort toggle"
-msgstr "Bascule de tri"
-
-msgid "list.Context size"
-msgstr "list.Taille du contexte"
 
 msgid "list.Rulers"
 msgstr "list.Règles"
@@ -1034,32 +1148,35 @@ msgstr "&Inverser"
 msgid "Page &Setup"
 msgstr "&Mise en Page"
 
-msgid "&Tools"
-msgstr "&Barre d'outils"
+msgid "vcs.Always ask flags"
+msgstr ""
 
 msgid "tab.Font"
 msgstr "tas.Police de caractère"
 
-msgid "tab.Art provider"
-msgstr "tab.fournisseur d’art"
-
 msgid "Tab Options"
 msgstr "Options d’onglet"
 
-msgid "Datasource"
-msgstr "Sources des données"
+msgid "Debugger"
+msgstr "Débogueur"
 
-msgid "Open ODBC Connection"
-msgstr "Ouvrir une connexion ODBC"
+msgid "File Type"
+msgstr "Type de fichier"
 
-msgid "User"
-msgstr "Utilisateur"
+msgid "Lines or Items"
+msgstr "Lignes ou éléments"
 
-msgid "Password"
-msgstr "Mot de passe"
+msgid "Current line author annotation"
+msgstr ""
 
-msgid "<Skipped>"
-msgstr "<Ignoré>"
+msgid "Current line comments annotation"
+msgstr ""
+
+msgid "Current line date annotation"
+msgstr ""
+
+msgid "Theme"
+msgstr "Thème"
 
 msgid "View process"
 msgstr "Voir le processus"
@@ -1085,64 +1202,53 @@ msgstr "Recherche des cas sensible"
 msgid "Search using regular expressions"
 msgstr "Recherche utilisant des expressions régulières"
 
-msgid "with"
-msgstr "avec"
+msgid "Attach"
+msgstr "Attacher"
 
-msgid "Select File"
-msgstr "Choisir le dossier"
+msgid "debug.File"
+msgstr "debug.Fichier"
 
-msgid "stc.Auto write"
-msgstr "stc.Écriture automatique"
+msgid "Debug"
+msgstr "Déboguer"
 
-msgid "Auto complete"
-msgstr "Compléter"
+msgid "Enter Debugger"
+msgstr "Entrer dans le débogueur"
 
-msgid "stc.Error bells"
-msgstr "stc.Cloches d’erreur"
+msgid "Process folder"
+msgstr "&Proceès"
 
-msgid "stc.Show mode"
-msgstr "stc.Afficher le mode"
+msgid "Select Process"
+msgstr "Sélection des Projets"
 
-#, c-format
-msgid "%d lines added"
-msgstr "%d lignes ajoutées"
+msgid "Select Revision"
+msgstr ""
 
-#, c-format
-msgid "%d lines copied"
-msgstr "%d lignes copiées"
+msgid "vcs.Use unified diff view"
+msgstr ""
 
-#, c-format
-msgid "%d fewer lines"
-msgstr "%d moins de lignes"
+msgid "vcs.Prefix flags"
+msgstr "vcs.Indicateurs de préfixe"
 
-#, c-format
-msgid "%d lines moved"
-msgstr "%d lignes déplacé"
+msgid "vcs.Subcommand"
+msgstr "vcs.Sous-commande"
 
-#, c-format
-msgid "%d lines yanked"
-msgstr "%d de lignes tirées"
+msgid "vcs.Revision comment"
+msgstr "vcs.Commentaire de révision"
 
-msgid "Macro expanded"
-msgstr "Macro développée"
+msgid "vcs.Base folder"
+msgstr "vcs.Dossier de base"
 
-msgid "Variable expanded"
-msgstr "Variable étendue"
+msgid "vcs.Find includes submodules"
+msgstr ""
 
-msgid "Macro aborted at"
-msgstr "Macro a joué retour a"
+msgid "Set VCS"
+msgstr "Set VCS"
 
-msgid "Macro played back"
-msgstr "Macro a joué retour"
+msgid "vcs.Path"
+msgstr "vcs.Path"
 
-msgid "Macro recording"
-msgstr "Macro enregistre"
+msgid "Select VCS Folder"
+msgstr "Sélectionnez le dossier VCS"
 
-msgid "Select Macro"
-msgstr "Sélection Macro"
-
-msgid "Enter Macro"
-msgstr "Entrer Macro"
-
-msgid "Could not expand variable"
-msgstr "Impossible de développer variable"
+msgid "vcs.Flags"
+msgstr "vcs.drapeaux"

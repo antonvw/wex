@@ -2,7 +2,7 @@
 // Name:      test-style.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -17,12 +17,13 @@
 
 TEST_CASE("wex::style")
 {
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(!wex::style().is_ok());
+    REQUIRE(wex::style().default_font().IsOk());
   }
 
-  SUBCASE("constructor-no-value")
+  SECTION("constructor-no-value")
   {
     wex::log_none off;
     for (const auto& style : std::vector<std::pair<
@@ -54,11 +55,11 @@ TEST_CASE("wex::style")
         REQUIRE(!test.is_ok());
       }
     }
-    
+
     REQUIRE(wex::style().default_font_size() > 5);
   }
 
-  SUBCASE("constructor-xml")
+  SECTION("constructor-xml")
   {
     pugi::xml_document doc;
     REQUIRE(doc.load_string("<style no = \"2\">string</style>"));
@@ -81,11 +82,11 @@ TEST_CASE("wex::style")
       std::string::npos);
   }
 
-  SUBCASE("apply")
+  SECTION("apply")
   {
     auto* stc = new wex::test::stc();
 
-    SUBCASE("colour")
+    SECTION("colour")
     {
       wex::log_none off;
       wex::style    style("32", "fore:gray 2,back:ivory 99");
@@ -104,13 +105,13 @@ TEST_CASE("wex::style")
         });
     }
 
-    SUBCASE("empty")
+    SECTION("empty")
     {
       wxStyledTextCtrl s;
       REQUIRE(!wex::style().apply(&s));
     }
 
-    SUBCASE("mark_circle")
+    SECTION("mark_circle")
     {
       wex::style       style("mark_circle", "0");
       wxStyledTextCtrl s;

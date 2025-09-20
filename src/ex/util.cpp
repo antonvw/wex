@@ -2,13 +2,13 @@
 // Name:      util.cpp
 // Purpose:   Implementation of wex ex utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef __WXGTK__
 #include <format>
 #endif
-#include <regex>
+#include <boost/regex.hpp>
 
 #include <wex/core/log.h>
 #include <wex/ex/ex.h>
@@ -16,17 +16,11 @@
 #include <wex/ex/util.h>
 #include <wex/syntax/stc.h>
 
+#include "util.h"
+
 void wex::append_line_no(std::string& text, int line)
 {
-#ifndef __WXGTK__
-  // not yet for gcc 12
   text += std::format("{:6} ", line + 1);
-#else
-  char buffer[8];
-  snprintf(buffer, sizeof(buffer), "%6d ", line + 1);
-
-  text += buffer;
-#endif
 }
 
 const std::string wex::esc()
@@ -81,6 +75,14 @@ wex::get_lines(factory::stc* stc, int start, int end, const std::string& flags)
   return text;
 }
 
+bool wex::is_register_valid(const std::string& text)
+{
+  return text.size() == 2 && (text[0] == '@' || text[0] == WXK_CONTROL_R) &&
+         boost::regex_match(
+           text,
+           boost::regex("^" + std::string(1, text[0]) + "[0-9=\"a-z%._\\*]$"));
+}
+
 const std::string wex::k_s(wxKeyCode key)
 {
   return std::string(1, key);
@@ -111,6 +113,7 @@ bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
         case '`':
           if (auto next = std::next(it); next == text.end())
           {
+            /* NOLINTNEXTLINE */
             output += *it;
           }
           else if (const auto line = ex->marker_line(*(next)); line >= 0)
@@ -121,6 +124,7 @@ bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
           }
           else
           {
+            /* NOLINTNEXTLINE */
             output += *it;
           }
           break;
@@ -167,16 +171,15 @@ bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
   return true;
 }
 
-bool wex::one_letter_after(char c, const std::string& text)
+std::string wex::to_reverse(const std::string& text)
 {
-  return std::regex_match(
-    text,
-    std::regex("^" + std::string(1, c) + "[a-zA-Z]$"));
-}
-
-bool wex::register_after(const std::string& text, const std::string& letter)
-{
-  return std::regex_match(
-    letter,
-    std::regex("^" + text + "[0-9=\"a-z%._\\*]$"));
+  std::string s(text);
+  std::ranges::transform(
+    s,
+    std::begin(s),
+    [](const auto& c)
+    {
+      return std::islower(c) ? std::toupper(c) : std::tolower(c);
+    });
+  return s;
 }

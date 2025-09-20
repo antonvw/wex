@@ -6,7 +6,7 @@
 #            for building wex itself, or for building apps using it
 #            Just run from repo root
 # Author:    Anton van Wezenbeek
-# Copyright: (c) 2024 Anton van Wezenbeek
+# Copyright: (c) 2024-2025 Anton van Wezenbeek
 ################################################################################
 
 usage()
@@ -23,7 +23,6 @@ usage()
   echo "-h       displays usage information and exits"
   echo "-i       build interface bindings for SWIG"
   echo "-l       add locale files"
-  echo "-o       build ODBC"
   echo "-p       prepare only, do not run (ninja) after generating build files"
   echo "-s       build samples binaries as well"
   echo "-t       build tests binaries as well"
@@ -40,14 +39,13 @@ option_dir=build
 option_generator="-G Ninja"
 option_github=
 option_locale=
-option_odbc=
 option_prepare=false
 option_samples=
 option_swig=
 option_tests=
 option_tidy=
 
-while getopts ":B:d:D:G:abcghilopstT" opt; do
+while getopts ":B:d:D:G:abcghilpstT" opt; do
   case $opt in
     a)
       option_asan="-DwexENABLE_ASAN=ON"
@@ -80,7 +78,6 @@ while getopts ":B:d:D:G:abcghilopstT" opt; do
 
     G)
       option_generator="-G ${OPTARG}"
-      option_prepare=true
     ;;
 
     h)
@@ -97,10 +94,6 @@ while getopts ":B:d:D:G:abcghilopstT" opt; do
       option_locale="-DwexENABLE_GETTEXT=ON"
     ;;
 
-    o)
-      option_odbc="-DwexENABLE_ODBC=ON"
-    ;;
-
     p)
       option_prepare=true
     ;;
@@ -114,7 +107,12 @@ while getopts ":B:d:D:G:abcghilopstT" opt; do
     ;;
 
     T)
-      option_tidy="-DwexBUILD_TIDY=ON"
+      if [[ "${option_generator}" =~ .*Ninja ]]; then
+        option_tidy="-DwexBUILD_TIDY=ON"
+      else
+        echo "currently clang-tidy only works when using Ninja"
+        exit 1
+      fi
     ;;
 
     :)
@@ -132,10 +130,18 @@ done
 uname=$(uname)
 
 if [[ $uname == "Darwin" ]]; then
-  # cmake find_package llvm otherwise gives error
   export LLVM_DIR=/usr/local/Cellar/homebrew/opt
-  export CC=${LLVM_DIR}/llvm/bin/clang
-  export CXX=${LLVM_DIR}/llvm/bin/clang
+
+  if [[ -z "${option_build}" ]]; then
+    LOC=$(brew --prefix icu4c)
+    export LDFLAGS="-L${LOC}/lib"
+  fi
+
+  if [ -d "$LLVM_DIR" ]; then
+    # cmake find_package llvm otherwise gives error
+    export CC=${LLVM_DIR}/llvm/bin/clang
+    export CXX=${LLVM_DIR}/llvm/bin/clang
+  fi
 fi
 
 mkdir -p "${option_dir}"
@@ -148,12 +154,15 @@ cmake -B "${option_dir}" "${option_generator}" \
   ${option_coverage} \
   ${option_github} \
   ${option_locale} \
-  ${option_odbc} \
   ${option_samples} \
   ${option_swig} \
   ${option_tests} \
   ${option_tidy}
 
 if [[ "${option_prepare}" == "false" ]]; then
-  cd "${option_dir}" && ninja
+  if [[ "${option_generator}" =~ .*Ninja ]]; then
+    cd "${option_dir}" && ninja
+  elif [[ "${option_generator}" =~ .*Xcode ]]; then
+    cd "${option_dir}" && xcodebuild
+  fi
 fi

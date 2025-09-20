@@ -22,17 +22,18 @@ wex::addressrange_mark::addressrange_mark(
   , m_stc(ar.get_ex()->get_stc())
   , m_undo(m_stc)
   , m_data(subs)
-  , ma_b(global ? 'x' : '#')
-  , ma_t(global ? 'y' : 'T')
-  , ma_e(global ? 'z' : '$')
+  , m_markers{global ? 'X' : 'T', global ? 'Y' : 'U', global ? 'Z' : 'V'}
 {
 }
 
 wex::addressrange_mark::~addressrange_mark()
 {
-  m_ex->marker_delete(ma_b);
-  m_ex->marker_delete(ma_e);
-  m_ex->marker_delete(ma_t);
+  std::ranges::all_of(
+    m_markers,
+    [this](const char a)
+    {
+      return m_ex->marker_delete(a);
+    });
 }
 
 void wex::addressrange_mark::end(bool indicator_clear)
@@ -83,17 +84,17 @@ wex::addressrange_mark::mark_t wex::addressrange_mark::get_type() const
 
 int wex::addressrange_mark::marker_begin() const
 {
-  return m_ex->marker_line(ma_b);
+  return m_ex->marker_line(m_markers[marker_t::BEGIN]);
 }
 
 int wex::addressrange_mark::marker_end() const
 {
-  return m_ex->marker_line(ma_e);
+  return m_ex->marker_line(m_markers[marker_t::END]);
 }
 
 int wex::addressrange_mark::marker_target() const
 {
-  return m_ex->marker_line(ma_t);
+  return m_ex->marker_line(m_markers[marker_t::TARGET]);
 }
 
 bool wex::addressrange_mark::search()
@@ -115,12 +116,17 @@ bool wex::addressrange_mark::search()
       m_stc->GetLineEndPosition(marker_target()));
 
     return m_ex->marker_add(
-      ma_t,
+      m_markers[marker_t::TARGET],
       m_stc->LineFromPosition(m_stc->GetTargetEnd()) + 1);
   }
 
+  log::trace("addressrange_mark search")
+    << m_data.pattern() << m_data.is_global_command();
+
   return m_stc->SearchInTarget(m_data.pattern()) != -1 &&
-         m_ex->marker_add(ma_t, m_stc->LineFromPosition(m_stc->GetTargetEnd()));
+         m_ex->marker_add(
+           m_markers[marker_t::TARGET],
+           m_stc->LineFromPosition(m_stc->GetTargetEnd()));
 }
 
 bool wex::addressrange_mark::set()
@@ -138,9 +144,13 @@ bool wex::addressrange_mark::set()
   }
 
   if (
-    !m_ex->marker_add(ma_b, m_ar.begin().get_line() - 1) ||
-    !m_ex->marker_add(ma_t, m_ar.begin().get_line() - 1) ||
-    !m_ex->marker_add(ma_e, end_line))
+    !m_ex->marker_add(
+      m_markers[marker_t::BEGIN],
+      m_ar.begin().get_line() - 1) ||
+    !m_ex->marker_add(
+      m_markers[marker_t::TARGET],
+      m_ar.begin().get_line() - 1) ||
+    !m_ex->marker_add(m_markers[marker_t::END], end_line))
   {
     return false;
   }
@@ -161,8 +171,9 @@ void wex::addressrange_mark::set_target(int start)
   m_stc->SetTargetRange(start, m_stc->GetLineEndPosition(marker_end()));
 
   log::trace("addressrange_mark set_target")
-    << m_stc->GetTargetStart() << "," << m_stc->GetTargetEnd() << ma_t
-    << marker_target() << ma_e << marker_end();
+    << m_stc->GetTargetStart() << "," << m_stc->GetTargetEnd()
+    << m_markers[marker_t::TARGET] << marker_target()
+    << m_markers[marker_t::END] << marker_end();
 }
 
 bool wex::addressrange_mark::update(int lines_changed)

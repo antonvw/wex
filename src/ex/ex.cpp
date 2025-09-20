@@ -35,6 +35,14 @@
     output += std::string(config(_("stc.Edge column")).get(80l), '-') + "\n";  \
   }
 
+namespace wex
+{
+bool is_marker_valid(char c)
+{
+  return isgraph(c);
+}
+} // namespace wex
+
 wex::macros wex::ex::m_macros;
 
 wex::ex::ex(wex::syntax::stc* stc, mode_t mode)
@@ -159,7 +167,7 @@ void wex::ex::info_message(const std::string& text, wex::info_message_t type)
   const
 {
   if (const auto lines = get_number_of_lines(text);
-      lines > config("stc.Reported lines").get(5))
+      lines > config("ex-set.reportedlines").get(5))
   {
     std::stringstream msg;
     msg << lines - 1 << " ";
@@ -200,6 +208,12 @@ bool wex::ex::marker_add(char marker, int line)
 {
   if (m_copy || !lexers::get()->is_loaded())
   {
+    return false;
+  }
+
+  if (!is_marker_valid(marker))
+  {
+    wex::log("marker invalid") << std::string(1, marker);
     return false;
   }
 
@@ -356,10 +370,7 @@ int wex::ex::marker_line(char marker) const
     }
   }
 
-  if (config(_("stc.Error bells")).get(true))
-  {
-    wxBell();
-  }
+  bell();
 
   return LINE_NUMBER_UNKNOWN;
 }

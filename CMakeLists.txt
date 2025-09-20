@@ -1,10 +1,14 @@
 cmake_minimum_required(VERSION 3.21)
 
+if(CMAKE_VERSION VERSION_GREATER "3.30.0")
+  cmake_policy(SET CMP0144 OLD)
+  cmake_policy(SET CMP0167 OLD)
+endif()
+
 project(wex)
 
 if(wexBUILD_SHARED)
-  set(BUILD_SHARED_LIBS YES)
-  set(wxBUILD_SHARED ON)
+  set(BUILD_SHARED_LIBS ON)
   add_definitions(-DBOOST_LOG_DYN_LINK)
 
   if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
@@ -14,26 +18,34 @@ if(wexBUILD_SHARED)
     )
   endif()
 else()
-  set(Boost_USE_STATIC_LIBS ON)
   set(wxBUILD_SHARED OFF)
+  set(Boost_USE_STATIC_LIBS ON)
 endif()
 
 if(wexBUILD_GITHUB)
   add_definitions(-DGITHUB)
 endif()
 
-if(APPLE)
-  find_package(LLVM REQUIRED CONFIG)
-endif()
-
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 set(CMAKE_DISABLE_PRECOMPILE_HEADERS ON)
 
+set(CMAKE_OSX_ARCHITECTURES "arm64")
+
+# see also Findwex, uses same Boost components
 find_package(
   Boost
-  1.81.0
-  COMPONENTS log_setup log filesystem program_options date_time regex json url
+  1.88.0
+  COMPONENTS
+    log_setup
+    log
+    filesystem
+    program_options
+    date_time
+    regex
+    json
+    url
+    process
   REQUIRED
 )
 
@@ -52,8 +64,8 @@ execute_process(
 )
 
 include_directories(${Boost_INCLUDE_DIRS})
-include_directories(external/doctest/doctest)
-include_directories(external/trompeloeil/include/doctest)
+include_directories(external/trompeloeil/include/catch2)
+include_directories(external/wxWidgets/3rdparty/catch/single_include/catch2)
 
 set(
   CMAKE_MODULE_PATH
@@ -85,11 +97,9 @@ if(wexENABLE_GETTEXT)
   include(FindGettext)
 endif()
 
-if(wexENABLE_ODBC)
-  find_package(ODBC)
+if(wexBUILD_TESTS)
+  enable_testing()
 endif()
-
-enable_testing()
 
 include(cmake/options.cmake)
 include(cmake/common.cmake)
@@ -125,6 +135,12 @@ separate_arguments(wex_own_LIBRARIES)
 set(WEX_CXX_STANDARD 23) # see also Findwex.cmake, c_cpp_properties.json
 set(CMAKE_CXX_STANDARD ${WEX_CXX_STANDARD})
 
+if(wexBUILD_TESTS)
+  add_definitions(-DwexBUILD_TESTS)
+
+  add_subdirectory(test)
+endif()
+
 add_subdirectory(ci)
 add_subdirectory(src)
 
@@ -136,11 +152,9 @@ if(wexBUILD_SAMPLES)
   add_subdirectory(sample)
 endif()
 
-if(wexBUILD_TESTS)
-  add_subdirectory(test)
+if(wexENABLE_GETTEXT)
+  add_subdirectory(locale)
 endif()
-
-add_subdirectory(locale)
 
 set(CMAKE_INSTALL_MESSAGE LAZY)
 

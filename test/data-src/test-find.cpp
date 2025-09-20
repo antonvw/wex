@@ -2,7 +2,7 @@
 // Name:      data/test-find.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/find.h>
@@ -14,7 +14,7 @@ TEST_CASE("wex::data::find")
   auto* stc = get_stc();
   assert(stc != nullptr);
 
-  SUBCASE("static")
+  SECTION("static")
   {
     wex::data::find::recursive(true);
     REQUIRE(wex::data::find::recursive());
@@ -23,9 +23,9 @@ TEST_CASE("wex::data::find")
     REQUIRE(!wex::data::find::recursive());
   }
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
-    SUBCASE("default")
+    SECTION("default")
     {
       wex::data::find f;
 
@@ -34,7 +34,7 @@ TEST_CASE("wex::data::find")
       REQUIRE(f.text().empty());
     }
 
-    SUBCASE("stc")
+    SECTION("stc")
     {
       stc->DocumentStart();
       wex::data::find f(stc, std::string());
@@ -49,7 +49,7 @@ TEST_CASE("wex::data::find")
       REQUIRE(f.text().empty());
     }
 
-    SUBCASE("stream")
+    SECTION("stream")
     {
       wex::data::find f(std::string(), 5, 6);
 
@@ -64,7 +64,7 @@ TEST_CASE("wex::data::find")
     }
   }
 
-  SUBCASE("find_margin")
+  SECTION("find_margin")
   {
     stc->set_text("line 1\nline 2\nline 3\n");
     stc->DocumentStart();
@@ -81,7 +81,7 @@ TEST_CASE("wex::data::find")
     REQUIRE(line == 1);
   }
 
-  SUBCASE("flags")
+  SECTION("flags")
   {
     wex::data::find f(stc, std::string());
     f.flags(100);
@@ -89,7 +89,7 @@ TEST_CASE("wex::data::find")
     REQUIRE(f.flags() == 100);
   }
 
-  SUBCASE("statustext")
+  SECTION("statustext")
   {
     wex::data::find(stc, "xxx").statustext();
   }

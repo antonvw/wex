@@ -1,11 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      vim.cpp
 // Purpose:   Implementation of wex::vim
-//            http://www.viemu.com/vi-vim-cheat-sheet.gif
+//            https://vim.rtorr.com/
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
 #include <wex/ctags/ctags.h>
 #include <wex/factory/stc-undo.h>
 #include <wex/syntax/stc.h>
@@ -15,117 +16,195 @@
 #include <wx/app.h>
 
 #include <algorithm>
+#include <string>
 
+#include "../util.h"
 #include "vim.h"
 
 namespace wex
 {
-std::string reverse(const std::string& text)
+int line_to_fold(syntax::stc* stc)
 {
-  std::string s(text);
-  std::transform(
-    std::begin(s),
-    std::end(s),
-    std::begin(s),
-    [](const auto& c)
-    {
-      return std::islower(c) ? std::toupper(c) : std::tolower(c);
-    });
-  return s;
+  const auto level = stc->GetFoldLevel(stc->get_current_line());
+
+  return (level & wxSTC_FOLDLEVELHEADERFLAG) ?
+           stc->get_current_line() :
+           stc->GetFoldParent(stc->get_current_line());
 }
+
 } // namespace wex
 
-wex::vim::vim(wex::vi* vi, std::string& command, vi::motion_t t)
+wex::vim::vim(wex::vi* vi, std::string& command)
   : m_vi(vi)
+  , m_stc(vi->get_stc())
   , m_command(command)
-  , m_motion(t)
+  , m_command_org(command)
+  , m_motion_commands(
+      {{"g~",
+        [&](const std::string& command)
+        {
+          m_stc->ReplaceSelection(to_reverse(m_stc->get_selected_text()));
+        }},
+       {"gu",
+        [&](const std::string& command)
+        {
+          m_stc->LowerCase();
+        }},
+       {"gU",
+        [&](const std::string& command)
+        {
+          m_stc->UpperCase();
+        }}})
+  , m_other_commands(
+      {{"g8",
+        [&](const std::string& command)
+        {
+          m_stc->show_ascii_value(true);
+        }},
+       {"g*",
+        [&](const std::string& command)
+        {
+          command_find(command);
+        }},
+       {"g#",
+        [&](const std::string& command)
+        {
+          command_find(command);
+        }},
+       {"ga",
+        [&](const std::string& command)
+        {
+          m_stc->show_ascii_value();
+        }},
+       {"gd",
+        [&](const std::string& command)
+        {
+          const auto pos = m_stc->GetCurrentPos();
+          ctags::find(m_stc->get_word_at_pos(pos), m_stc);
+        }},
+       {"gf",
+        [&](const std::string& command)
+        {
+          m_stc->link_open();
+        }},
+       {"gm",
+        [&](const std::string& command)
+        {
+          const auto ll(m_stc->LineLength(m_stc->get_current_line()));
+          m_vi->command(std::to_string(int(ll / 2)) + "|");
+        }},
+       {"gt",
+        [&](const std::string& command)
+        {
+          m_vi->frame()->page_next();
+        }},
+       {"gT",
+        [&](const std::string& command)
+        {
+          m_vi->frame()->page_prev();
+        }},
+       {"za",
+        [&](const std::string& command)
+        {
+          m_stc->ToggleFold(line_to_fold(m_stc));
+        }},
+       {"zc",
+        [&](const std::string& command)
+        {
+          command_z_fold(command);
+        }},
+       {"zo",
+        [&](const std::string& command)
+        {
+          command_z_fold(command);
+        }},
+       {"zf",
+        [&](const std::string& command)
+        {
+          m_stc->get_lexer().set_property("fold", "1");
+          m_stc->get_lexer().apply();
+          m_stc->fold(true);
+        }},
+       {"zC",
+        [&](const std::string& command)
+        {
+          m_stc->fold(true);
+        }},
+       {"zE",
+        [&](const std::string& command)
+        {
+          m_stc->get_lexer().set_property("fold", "0");
+          m_stc->get_lexer().apply();
+          m_stc->fold(false);
+        }},
+       {"zO",
+        [&](const std::string& command)
+        {
+          for (int i = 0; i < m_stc->get_line_count(); i++)
+          {
+            m_stc->EnsureVisible(i);
+          }
+        }},
+       {"zz",
+        [&](const std::string& command)
+        {
+          m_stc->VerticalCentreCaret();
+        }}})
 {
+}
+
+void wex::vim::command_find(const std::string& command)
+{
+  const auto pos = m_stc->GetCurrentPos();
+
+  find_replace_data::get()->set_find_string(m_stc->get_word_at_pos(pos));
+  m_vi->reset_search_flags();
+  m_stc->find(
+    find_replace_data::get()->get_find_string(),
+    m_vi->search_flags(),
+    command[1] == '*');
 }
 
 bool wex::vim::command_motion(int start_pos)
 {
-  if (!m_vi->get_stc()->is_visual())
+  if (!m_stc->is_visual())
   {
     return false;
   }
 
   stc_undo undo(
-    m_vi->get_stc(),
+    m_stc,
     stc_undo::undo_t().set(stc_undo::UNDO_ACTION).set(stc_undo::UNDO_POS));
 
-  if (const auto end_pos = m_vi->get_stc()->GetCurrentPos();
-      end_pos - start_pos > 0)
+  if (const auto end_pos = m_stc->GetCurrentPos(); end_pos - start_pos > 0)
   {
-    m_vi->get_stc()->SetSelection(start_pos, end_pos);
+    m_stc->SetSelection(start_pos, end_pos);
   }
   else
   {
-    m_vi->get_stc()->SetSelection(end_pos, start_pos);
+    m_stc->SetSelection(end_pos, start_pos);
   }
 
-  switch (m_motion)
+  if (const auto& it = find_from<commands_t>(
+        m_motion_commands,
+        m_command_org.substr(0, 2),
+        true);
+      it != m_motion_commands.end())
   {
-    case vi::motion_t::G_tilde:
-      m_vi->get_stc()->ReplaceSelection(
-        reverse(m_vi->get_stc()->get_selected_text()));
-      break;
-
-    case vi::motion_t::G_u:
-      m_vi->get_stc()->LowerCase();
-      break;
-
-    case vi::motion_t::G_U:
-      m_vi->get_stc()->UpperCase();
-      break;
-
-    default:
-      assert(0);
+    it->second(m_command_org.substr(0, 2));
   }
 
-  m_vi->get_stc()->SelectNone();
+  m_stc->SelectNone();
 
   return true;
 }
 
-bool wex::vim::command_special()
+bool wex::vim::command_other()
 {
-  switch (m_motion)
+  if (const auto& it = find_from<commands_t>(m_other_commands, m_command, true);
+      it != m_other_commands.end())
   {
-    case vi::motion_t::G_a:
-      m_vi->get_stc()->show_ascii_value();
-      break;
-
-    case vi::motion_t::G_d:
-      ctags::find(
-        m_vi->get_stc()->get_word_at_pos(m_vi->get_stc()->GetCurrentPos()),
-        m_vi->get_stc());
-      break;
-
-    case vi::motion_t::G_f:
-      m_vi->get_stc()->link_open();
-      break;
-
-    case vi::motion_t::G_star:
-    case vi::motion_t::G_hash:
-      find_replace_data::get()->set_find_string(
-        m_vi->get_stc()->get_word_at_pos(m_vi->get_stc()->GetCurrentPos()));
-      m_vi->reset_search_flags();
-      m_vi->get_stc()->find(
-        find_replace_data::get()->get_find_string(),
-        m_vi->search_flags(),
-        m_motion == vi::motion_t::G_star);
-      break;
-
-    case vi::motion_t::G_t:
-      if (auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
-          frame != nullptr)
-      {
-        frame->page_next();
-      }
-      break;
-
-    default:
-      assert(0);
+    it->second(m_command);
   }
 
   m_command.erase(0, 2);
@@ -133,57 +212,38 @@ bool wex::vim::command_special()
   return true;
 }
 
-wex::vi::motion_t wex::vim::get_motion(const std::string& command)
+void wex::vim::command_z_fold(const std::string& command)
 {
-  if (command.size() == 1)
+  if (
+    (m_stc->GetFoldExpanded(line_to_fold(m_stc)) &&
+     boost::algorithm::trim_copy(m_command) == "zc") ||
+    (!m_stc->GetFoldExpanded(line_to_fold(m_stc)) &&
+     boost::algorithm::trim_copy(m_command) == "zo"))
   {
-    return wex::vi::motion_t::G;
-  }
-
-  switch (command[1])
-  {
-    case 'a':
-      return wex::vi::motion_t::G_a;
-
-    case 'd':
-      return wex::vi::motion_t::G_d;
-
-    case 'f':
-      return wex::vi::motion_t::G_f;
-
-    case '*':
-      return wex::vi::motion_t::G_star;
-
-    case '#':
-      return wex::vi::motion_t::G_hash;
-
-    case 't':
-      return wex::vi::motion_t::G_t;
-
-    case 'U':
-      return wex::vi::motion_t::G_U;
-
-    case 'u':
-      return wex::vi::motion_t::G_u;
-
-    case '~':
-      return wex::vi::motion_t::G_tilde;
-
-    default:
-      return wex::vi::motion_t::G;
+    m_stc->ToggleFold(line_to_fold(m_stc));
   }
 }
 
 bool wex::vim::is_motion() const
 {
-  return m_motion > vi::motion_t::G_motion_start &&
-         m_motion < vi::motion_t::G_motion_end;
+  const auto& it = std::ranges::find_if(
+    m_motion_commands,
+    [&](auto const& i)
+    {
+      return i.first == m_command_org.substr(0, 2);
+    });
+  return it != m_motion_commands.end();
 }
 
-bool wex::vim::is_special() const
+bool wex::vim::is_other() const
 {
-  return m_motion > vi::motion_t::G_special_start &&
-         m_motion < vi::motion_t::G_special_end;
+  return is_vim() && !is_motion();
+}
+
+bool wex::vim::is_vim() const
+{
+  return !m_command_org.empty() &&
+         (m_command_org[0] == 'g' || m_command_org[0] == 'z');
 }
 
 bool wex::vim::motion(int start_pos, size_t& parsed, const vi::function_t& f)
@@ -193,7 +253,8 @@ bool wex::vim::motion(int start_pos, size_t& parsed, const vi::function_t& f)
     return false;
   }
 
-  if ((parsed = f(m_command)) == 0)
+  // First run the vi motion
+  if (f == nullptr || (parsed = f(m_command)) == 0)
   {
     return false;
   }
@@ -205,15 +266,15 @@ void wex::vim::motion_prep()
 {
   if (is_motion() && m_command.size() > 2)
   {
-    m_command.erase(0, 2);
+    m_command.erase(0, 2); // vi command now skips the g.: ready for motion
   }
 }
 
-bool wex::vim::special()
+bool wex::vim::other()
 {
-  if (is_special() && m_command.size() == 2)
+  if (is_other() && m_command.size() == 2)
   {
-    command_special();
+    command_other();
     return true;
   }
 

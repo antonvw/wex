@@ -2,7 +2,7 @@
 // Name:      test-item-no-config.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ui/item.h>
@@ -15,7 +15,7 @@ TEST_CASE("wex::item-no-config")
 {
   ITEM_START()
 
-  SUBCASE("no-config")
+  SECTION("no-config")
   {
     wex::item::use_config(false);
 

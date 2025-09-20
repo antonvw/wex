@@ -2,8 +2,10 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wex::factory::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
+
+#include <future>
 
 #include <wex/core/log.h>
 #include <wex/factory/process.h>
@@ -26,12 +28,12 @@ void wex::factory::process::async_sleep_for(const std::chrono::milliseconds& ms)
   m_imp->async_sleep_for(ms);
 }
 
-bool wex::factory::process::async_system(const process_data& data)
+bool wex::factory::process::async_system(const wex::process_data& data)
 {
   if (m_eh_out != nullptr)
   {
     m_data = data;
-    m_imp->async_system(this, data); // this is a void
+    m_imp->async_system(this); // this is a void
     return true;
   }
 
@@ -62,10 +64,19 @@ void wex::factory::process::set_handler_out(wxEvtHandler* eh)
 
 bool wex::factory::process::stop()
 {
-  return m_imp->stop(m_eh_debug);
+  try
+  {
+    return m_imp->stop(m_eh_debug);
+  }
+  catch (std::exception& ex)
+  {
+    log(ex) << "stop" << m_data.exe();
+  }
+
+  return false;
 }
 
-int wex::factory::process::system(const process_data& data)
+int wex::factory::process::system(const wex::process_data& data)
 {
   try
   {
@@ -94,7 +105,7 @@ int wex::factory::process::system(const process_data& data)
 
     if (data.std_in().empty())
     {
-      boost::process::std_in
+      boost::process::v1::std_in
         .close(); // e.g. for svn a password is required, not yet ok
       log::trace("closing stdin");
     }

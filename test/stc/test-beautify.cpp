@@ -2,7 +2,7 @@
 // Name:      test-beautify.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -12,7 +12,7 @@
 
 TEST_CASE("wex::beautify")
 {
-  SUBCASE("access")
+  SECTION("access")
   {
     REQUIRE(!wex::beautify().is_supported(wex::lexer("pascal")));
     REQUIRE(wex::beautify().is_supported(wex::lexer("cpp")));
@@ -21,7 +21,7 @@ TEST_CASE("wex::beautify")
   wex::config("stc.Beautifier").set(wex::config::strings_t{{"clang-format"}});
 
 #ifndef __WXMSW__
-  SUBCASE("stc")
+  SECTION("stc")
   {
     auto* stc = get_stc();
 

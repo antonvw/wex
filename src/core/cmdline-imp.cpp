@@ -103,31 +103,32 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
 
   po::notify(m_vm);
 
-  auto loglevel = m_vm.count("level") ? m_vm["level"].as<int>() :
-                                        std::to_underlying(log::level_t_def());
+  auto loglevel = m_vm.contains("level") ?
+                    m_vm["level"].as<int>() :
+                    std::to_underlying(log::level_t_def());
 
-  if (m_vm.count("help") || m_vm.count("version"))
+  if (m_vm.contains("help") || m_vm.contains("version"))
   {
     parse_help(data);
     return false;
   }
 
-  if (m_vm.count("echo"))
+  if (m_vm.contains("echo"))
   {
     m_is_echo = true;
   }
 
-  if (m_vm.count("echo-output"))
+  if (m_vm.contains("echo-output"))
   {
     m_is_output = true;
   }
 
-  if (m_vm.count("output"))
+  if (m_vm.contains("output"))
   {
     m_output = m_vm["output"].as<std::string>();
   }
 
-  if (m_vm.count("quit"))
+  if (m_vm.contains("quit"))
   {
     if (!parse_quit())
     {
@@ -135,12 +136,12 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
     }
   }
 
-  if (m_vm.count("scriptout"))
+  if (m_vm.contains("scriptout"))
   {
     m_scriptout = m_vm["scriptout"].as<std::string>();
   }
 
-  if (m_vm.count("verbose"))
+  if (m_vm.contains("verbose"))
   {
     loglevel = std::to_underlying(log::level_t::TRACE);
   }
@@ -152,7 +153,8 @@ bool wex::cmdline_imp::parse(data::cmdline& data)
 
   log::on_init(
     (log::level_t)loglevel,
-    m_vm.count("logfile") ? m_vm["logfile"].as<std::string>() : std::string());
+    m_vm.contains("logfile") ? m_vm["logfile"].as<std::string>() :
+                               std::string());
 
   return true;
 }
@@ -218,7 +220,7 @@ void wex::cmdline_imp::parse_help(data::cmdline& data)
 {
   if (data.av() != nullptr)
   {
-    if (m_vm.count("help"))
+    if (m_vm.contains("help"))
     {
       std::cout << m_desc;
     }
@@ -230,7 +232,7 @@ void wex::cmdline_imp::parse_help(data::cmdline& data)
   }
   else
   {
-    if (m_vm.count("help"))
+    if (m_vm.contains("help"))
     {
       std::stringstream ss;
       ss << m_desc;
@@ -245,7 +247,7 @@ void wex::cmdline_imp::parse_help(data::cmdline& data)
 
 bool wex::cmdline_imp::parse_quit()
 {
-  const auto quit(m_vm["quit"].as<int>()); 
+  const auto quit(m_vm["quit"].as<int>());
 
   if (quit > 0)
   {
@@ -275,7 +277,7 @@ bool wex::cmdline_imp::parse_quit()
 
     return true;
   }
-  
+
   if (quit == 0)
   {
     return true;

@@ -584,9 +584,8 @@ bool wex::debug::show_dialog(wxWindow* parent)
   std::vector<wex::debug_entry> v;
   menus::load("debug", v);
 
-  std::transform(
-    v.begin(),
-    v.end(),
+  std::ranges::transform(
+    v,
     std::back_inserter(s),
     [](const auto& i)
     {

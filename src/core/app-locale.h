@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      app-locale.h
-// Purpose:   Declaration of wex::file_translations_loader class
+// Purpose:   Declaration of wex::translations class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -12,21 +12,10 @@
 namespace wex
 {
 /// This class offers translations.
-class file_translations_loader : public wxFileTranslationsLoader
+class translations : public wxTranslations
 {
 public:
-  /// Returns the catalog dir found.
-  static auto& catalog_dir() { return m_catalog_dir; }
-
   /// Adds catalogs.
   void add_catalogs(wxLanguage language);
-
-private:
-  /// Loads catalog.
-  wxMsgCatalog*
-  LoadCatalog(const wxString& domain, const wxString& lang) override;
-
-  static inline std::string m_catalog_dir;
-  std::string               m_catalog_file;
 };
 }; // namespace wex

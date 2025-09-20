@@ -2,7 +2,7 @@
 // Name:      ex-stream.cpp
 // Purpose:   Implementation of class wex::ex_stream
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -54,7 +54,17 @@
     }                                                                          \
   }
 
-#include <regex>
+// boost::regex (1.85) has better performance than std::regex (llvm-17):
+/*
+on file with 1000000 filled lines without xxxx
+std::regex:
+2025-04-02 18:29:50.860090 [trace] ex command: :/xxxx/
+2025-04-02 18:30:32.658455 [trace] address: /xxxx/ line 0 ...
+boost::regex:
+2025-04-02 19:26:24.884504 [trace] ex command: :/xxxxxxxx/
+2025-04-02 19:26:26.417143 [trace] address: /xxxxxxxx/ line 0 ...
+*/
+#include <boost/regex.hpp>
 
 wex::ex_stream::ex_stream(wex::ex* ex)
   : m_context_lines(40)
@@ -200,13 +210,13 @@ bool wex::ex_stream::find_data(const data::find& f)
 
   const bool use_regex(m_ex->search_flags() & wxSTC_FIND_REGEXP);
 
-  std::regex r;
+  boost::regex r;
 
   try
   {
     if (use_regex)
     {
-      r = std::regex(f.text());
+      r = boost::regex(f.text());
     }
   }
   catch (std::exception& e)
@@ -226,7 +236,7 @@ bool wex::ex_stream::find_data(const data::find& f)
   {
     found =
       ((!use_regex && strstr(m_current_line, f.text().c_str()) != nullptr) ||
-       (use_regex && std::regex_search(m_current_line, r)));
+       (use_regex && boost::regex_search(m_current_line, r)));
   }
 
   return find_finish(f, found);
@@ -486,7 +496,6 @@ void wex::ex_stream::goto_line(int no)
 
   m_stream->clear();
 
-  log::status(std::string());
   log::trace("ex stream goto_line")
     << no << "current" << m_line_no << "pos" << (int)m_stream->tellg();
 

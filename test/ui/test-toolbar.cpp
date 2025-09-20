@@ -2,7 +2,7 @@
 // Name:      test-toolbar.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/defs.h>
@@ -12,7 +12,7 @@
 
 TEST_CASE("wex::toolbar")
 {
-  SUBCASE("controls")
+  SECTION("controls")
   {
     frame()->get_toolbar()->add_standard(false);
     frame()->get_toolbar()->add_tool(
@@ -52,13 +52,13 @@ TEST_CASE("wex::toolbar")
     frame()->pane_show("OPTIONSBAR");
   }
 
-  SUBCASE("controls")
+  SECTION("controls")
   {
     REQUIRE(!frame()->get_options_toolbar()->set_checkbox("XX", true));
     REQUIRE(frame()->get_options_toolbar()->set_checkbox("ONE", false));
   }
 
-  SUBCASE("events")
+  SECTION("events")
   {
     // Send events to the find toolbar.
     wxKeyEvent event(wxEVT_CHAR);
@@ -71,7 +71,7 @@ TEST_CASE("wex::toolbar")
     }
   }
 
-  SUBCASE("hide")
+  SECTION("hide")
   {
     frame()->pane_show("FINDBAR", false);
     frame()->pane_show("OPTIONSBAR", false);

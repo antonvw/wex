@@ -2,7 +2,7 @@
 // Name:      test-menu.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -15,13 +15,13 @@ TEST_CASE("wex::menu")
   wex::config(_("vcs.Base folder"))
     .set(wex::config::strings_t{wxGetCwd().ToStdString()});
 
-  SUBCASE("default constructor")
+  SECTION("default constructor")
   {
     auto* menu = new wex::menu;
     REQUIRE(menu->append({{}, {}, {}, {}}) == 0);
   }
 
-  SUBCASE("constructor items")
+  SECTION("constructor items")
   {
     auto* menu = new wex::menu(
       {{wxID_SAVE},
@@ -41,7 +41,7 @@ TEST_CASE("wex::menu")
     frame()->Update();
   }
 
-  SUBCASE("style")
+  SECTION("style")
   {
     auto* menu = new wex::menu;
     REQUIRE(menu->style() == wex::menu::menu_t_def());

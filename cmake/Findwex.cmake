@@ -30,22 +30,36 @@ endif()
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
+# wx version used
+# should match the wxWidgets module branch checkout or clone
+if(MSVC)
+  set(wx_BASE_LIB 33)
+else()
+  set(wx_BASE_LIB 3.3)
+endif()
+
 set(CMAKE_CXX_STANDARD 23)
+
+if(CMAKE_VERSION VERSION_GREATER "3.30.0")
+  cmake_policy(SET CMP0144 OLD)
+  cmake_policy(SET CMP0167 OLD)
+endif()
 
 find_package(
   Boost
-  1.81.0
-  COMPONENTS log_setup log filesystem program_options date_time regex json url
+  1.88.0
+  COMPONENTS
+    log_setup
+    log
+    filesystem
+    program_options
+    date_time
+    regex
+    json
+    url
+    process
   REQUIRED
 )
-
-find_package(ODBC QUIET)
-
-if(ODBC_FOUND)
-  add_definitions(-DwexUSE_ODBC)
-else()
-  set(ODBC_LIBRARIES "")
-endif()
 
 if(WIN32)
   add_definitions(-D__WXMSW__)
@@ -64,21 +78,19 @@ elseif(APPLE)
 
   set(cpp_LIBRARIES stdc++)
 
-  set(apple_LIBRARIES wxjpeg-3.3 wxpng-3.3 ${ICONV_LIBRARIES} ${ZLIB_LIBRARIES})
+  set(
+    apple_LIBRARIES
+    wxjpeg-${wx_BASE_LIB}
+    wxpng-${wx_BASE_LIB}
+    ${ICONV_LIBRARIES}
+    ${ZLIB_LIBRARIES}
+  )
 elseif(UNIX)
   add_definitions(-D__WXGTK3__ -D__WXGTK__)
 
   set(PLATFORM "gtk3")
 
-  if(CENTOS)
-    set(
-      cpp_std_LIBRARIES
-      /usr/gnat/lib64/libstdc++.a
-      /usr/gnat/lib64/libstdc++fs.a
-    )
-  else()
-    set(cpp_std_LIBRARIES stdc++ stdc++fs)
-  endif()
+  set(cpp_std_LIBRARIES stdc++ stdc++fs)
 
   find_package(JPEG)
   find_package(PNG)
@@ -107,6 +119,7 @@ elseif(UNIX)
     -lcairo
     -lgobject-2.0
     -lglib-2.0
+    -lxkbcommon
   )
 else()
   message(FATAL_ERROR "Unsupported platform")
@@ -139,14 +152,14 @@ if(MSVC)
 
   set(
     wx_LIBRARIES
-    wx${PLATFORM}33u${USE_DEBUG}_aui
-    wx${PLATFORM}33u${USE_DEBUG}_stc
-    wx${PLATFORM}33u${USE_DEBUG}_html
-    wx${PLATFORM}33u${USE_DEBUG}_core
-    wx${PLATFORM}33u${USE_DEBUG}_qa
-    wx${PLATFORM}33u${USE_DEBUG}_gl
-    wxbase33u${USE_DEBUG}
-    wxbase33u${USE_DEBUG}_net
+    wx${PLATFORM}${wx_BASE_LIB}u${USE_DEBUG}_aui
+    wx${PLATFORM}${wx_BASE_LIB}u${USE_DEBUG}_stc
+    wx${PLATFORM}${wx_BASE_LIB}u${USE_DEBUG}_html
+    wx${PLATFORM}${wx_BASE_LIB}u${USE_DEBUG}_core
+    wx${PLATFORM}${wx_BASE_LIB}u${USE_DEBUG}_qa
+    wx${PLATFORM}${wx_BASE_LIB}u${USE_DEBUG}_gl
+    wxbase${wx_BASE_LIB}u${USE_DEBUG}
+    wxbase${wx_BASE_LIB}u${USE_DEBUG}_net
     wxjpeg
     wxpng
     wxzlib
@@ -159,16 +172,22 @@ if(MSVC)
 else()
   set(
     wx_LIBRARIES
-    wx_${PLATFORM}u_aui-3.3
-    wx_${PLATFORM}u_stc-3.3
-    wx_${PLATFORM}u_html-3.3
-    wx_${PLATFORM}u_core-3.3
-    wx_baseu-3.3
-    wx_baseu_net-3.3
+    wx_${PLATFORM}u_aui-${wx_BASE_LIB}
+    wx_${PLATFORM}u_stc-${wx_BASE_LIB}
+    wx_${PLATFORM}u_html-${wx_BASE_LIB}
+    wx_${PLATFORM}u_core-${wx_BASE_LIB}
+    wx_baseu-${wx_BASE_LIB}
+    wx_baseu_net-${wx_BASE_LIB}
   )
 
   if(NOT APPLE AND NOT wexBUILD_SHARED)
-    set(wx_LIBRARIES ${wx_LIBRARIES} wxscintilla-3.3)
+    set(
+      wx_LIBRARIES
+      ${wx_LIBRARIES}
+      wxscintilla-${wx_BASE_LIB}
+      wxlexilla-${wx_BASE_LIB}
+      wxregexu-${wx_BASE_LIB}
+    )
   endif()
 
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
@@ -226,7 +245,6 @@ if(${wex_FOUND})
     ${apple_LIBRARIES}
     ${Boost_LIBRARIES}
     ${cpp_LIBRARIES}
-    ${ODBC_LIBRARIES}
   )
 else()
   message(FATAL_ERROR "No suitable wex found in: " ${wex_INCLUDES})

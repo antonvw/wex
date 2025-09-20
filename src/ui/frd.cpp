@@ -2,7 +2,7 @@
 // Name:      frd.cpp
 // Purpose:   Implementation of wex::find_replace_data class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -44,14 +44,15 @@ bool wex::find_replace_data::match(const std::string& text, const data::find& f)
 
   if (is_regex())
   {
-    std::regex::flag_type flags = std::regex::ECMAScript;
+    boost::regex::flag_type flags = boost::regex::ECMAScript;
 
-    if (match_case())
+    if (!match_case())
     {
-      flags |= std::regex::icase;
+      flags |= boost::regex::icase;
     }
 
-    if (std::smatch m; std::regex_match(text, m, std::regex(f.text(), flags)))
+    if (boost::smatch m;
+        boost::regex_match(text, m, boost::regex(f.text(), flags)))
     {
       return true;
     }

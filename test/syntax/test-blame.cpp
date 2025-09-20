@@ -2,7 +2,7 @@
 // Name:      test-blame.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2022 Anton van Wezenbeek
+// Copyright: (c) 2019-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "../factory/test.h"
@@ -11,7 +11,7 @@
 
 TEST_CASE("wex::blame")
 {
-  SUBCASE("default-constructor")
+  SECTION("default-constructor")
   {
     REQUIRE(!wex::blame().use());
     REQUIRE(!wex::blame().use());
@@ -22,7 +22,7 @@ TEST_CASE("wex::blame")
     REQUIRE(wex::blame().vcs_name().empty());
   }
 
-  SUBCASE("constructor-xml")
+  SECTION("constructor-xml")
   {
     pugi::xml_document doc;
 
@@ -74,14 +74,14 @@ TEST_CASE("wex::blame")
     REQUIRE(!blame.info().contains("A unknown user"));
   }
 
-  SUBCASE("set")
+  SECTION("set")
   {
     wex::blame blame;
     blame.caption("hello world");
     REQUIRE(blame.caption() == "hello world");
   }
 
-  SUBCASE("skip_info")
+  SECTION("skip_info")
   {
     wex::blame blame;
     REQUIRE(!blame.skip_info());
@@ -90,7 +90,7 @@ TEST_CASE("wex::blame")
     REQUIRE(blame.skip_info());
   }
 
-  SUBCASE("static")
+  SECTION("static")
   {
     auto* stc = new wex::test::stc();
     stc->set_text("more text\notherline\nother line");

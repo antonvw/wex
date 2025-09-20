@@ -134,6 +134,7 @@ const wex::path wex::factory::link::find_filename(
 
   // The harddrive letter is filtered, it does not work
   // when adding it to match.
+  /* NOLINTNEXTLINE */
   std::string text_filter(text);
   std::string prefix;
 

@@ -2,7 +2,7 @@
 // Name:      test-item-dialog.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019 Anton van Wezenbeek
+// Copyright: (c) 2019-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/test/test.h>
@@ -10,8 +10,6 @@
 #include <wex/ui/item-dialog.h>
 
 #include <vector>
-
-TEST_SUITE_BEGIN("wex::item");
 
 void check_item_values(wex::item_dialog* dlg, bool default_is_set)
 {
@@ -66,11 +64,11 @@ TEST_CASE("wex::item_dialog")
 
   const std::vector<wex::item> items_empty{};
 
-  SUBCASE("no config")
+  SECTION("no config")
   {
     wex::item::use_config(false);
 
-    SUBCASE("items")
+    SECTION("items")
     {
       auto* dlg = new wex::item_dialog(
         items,
@@ -84,7 +82,7 @@ TEST_CASE("wex::item_dialog")
       wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxOK));
     }
 
-    SUBCASE("items_default")
+    SECTION("items_default")
     {
       auto* dlg = new wex::item_dialog(
         items_default,
@@ -106,18 +104,18 @@ TEST_CASE("wex::item_dialog")
       wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxAPPLY));
     }
 
-    SUBCASE("items_empty")
+    SECTION("items_empty")
     {
       auto* dlg = new wex::item_dialog(items_empty);
       dlg->Show();
     }
   }
 
-  SUBCASE("config")
+  SECTION("config")
   {
     wex::item::use_config(true);
 
-    SUBCASE("items_default")
+    SECTION("items_default")
     {
       auto* dlg = new wex::item_dialog(
         items_default,
@@ -132,7 +130,7 @@ TEST_CASE("wex::item_dialog")
       wxPostEvent(dlg, wxCommandEvent(wxEVT_BUTTON, wxCANCEL));
     }
 
-    SUBCASE("items")
+    SECTION("items")
     {
       auto* dlg = new wex::item_dialog(
         items,
@@ -146,5 +144,3 @@ TEST_CASE("wex::item_dialog")
     }
   }
 }
-
-TEST_SUITE_END();

@@ -2,7 +2,7 @@
 // Name:      test-ex-commandline-input.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ui/ex-commandline-input.h>
@@ -15,7 +15,7 @@ TEST_CASE("wex::ex_commandline_input")
   auto* cl = new wex::ex_commandline(frame());
   frame()->pane_add(cl->control());
 
-  SUBCASE("none")
+  SECTION("none")
   {
     REQUIRE(
       wex::ex_commandline_input(wex::ex_command::type_t::NONE).get().empty());
@@ -26,7 +26,7 @@ TEST_CASE("wex::ex_commandline_input")
                .set(WXK_UP, cl->control()));
   }
 
-  SUBCASE("find")
+  SECTION("find")
   {
     wex::ex_commandline_input cli(wex::ex_command::type_t::FIND);
     cli.set("one");
@@ -49,7 +49,7 @@ TEST_CASE("wex::ex_commandline_input")
     REQUIRE(cli.values().size() == 4);
   }
 
-  SUBCASE("keys")
+  SECTION("keys")
   {
     wex::ex_commandline_input cli(wex::ex_command::type_t::FIND);
     cli.set(
@@ -98,7 +98,7 @@ TEST_CASE("wex::ex_commandline_input")
     }
   }
 
-  SUBCASE("max")
+  SECTION("max")
   {
     auto* cli = new wex::ex_commandline_input(wex::ex_command::type_t::FIND);
 

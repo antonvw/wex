@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
+#include <wex/core/log-none.h>
 #include <wex/ctags/ctags.h>
 #include <wex/ex/ex.h>
 #include <wex/ex/macros.h>
@@ -27,7 +28,7 @@ TEST_CASE("wex::ex")
   const wex::path p("test.h");
   ALLOW_CALL(*stc, path()).RETURN(p);
 
-  SUBCASE("abbreviations")
+  SECTION("abbreviations")
   {
     REQUIRE(ex->command(":ab t TTTT"));
     const auto& it1 = ex->get_macros().get_abbreviations().find("t");
@@ -42,7 +43,7 @@ TEST_CASE("wex::ex")
       ex->get_macros().get_abbreviations().end());
   }
 
-  SUBCASE("calculator")
+  SECTION("calculator")
   {
     stc->set_text("aaaaa\nbbbbb\nccccc\n");
 
@@ -54,7 +55,7 @@ TEST_CASE("wex::ex")
   }
 
 #ifdef __UNIX__
-  SUBCASE("cd")
+  SECTION("cd")
   {
     wex::path keep;
 
@@ -80,7 +81,7 @@ TEST_CASE("wex::ex")
   }
 #endif
 
-  SUBCASE("commands")
+  SECTION("commands")
   {
     // Most commands are tested using the :so command in stc/test-vi.cpp
     for (const auto& command :
@@ -92,19 +93,19 @@ TEST_CASE("wex::ex")
     }
   }
 
-  SUBCASE("ctags")
+  SECTION("ctags")
   {
     REQUIRE(ex->ctags() != nullptr);
     REQUIRE(wex::ctags::find("test_app"));
     REQUIRE(!wex::ctags::find("xest_app"));
   }
 
-  SUBCASE("edit")
+  SECTION("edit")
   {
     REQUIRE(ex->command(":e test.txt"));
   }
 
-  SUBCASE("general")
+  SECTION("general")
   {
     REQUIRE(ex->frame() == frame());
     REQUIRE(!ex->get_macros().mode().is_recording());
@@ -112,7 +113,7 @@ TEST_CASE("wex::ex")
     ex->info_message("hello world", wex::info_message_t::ADD);
   }
 
-  SUBCASE("global")
+  SECTION("global")
   {
     // Test global delete (previous delete was on found text).
     const int max = 10;
@@ -142,7 +143,7 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->command(":g//p"));
   }
 
-  SUBCASE("input-mode")
+  SECTION("input-mode")
   {
     const std::string eol(ex->get_stc()->eol());
     REQUIRE(ex->command(":a|added"));
@@ -173,7 +174,7 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->command(":1,2#"));
   }
 
-  SUBCASE("invalid-commands")
+  SECTION("invalid-commands")
   {
     ex->get_stc()->add_text("XXX");
 
@@ -203,9 +204,9 @@ TEST_CASE("wex::ex")
     }
   }
 
-  SUBCASE("inverse")
+  SECTION("inverse")
   {
-    SUBCASE("example")
+    SECTION("example")
     {
       stc->set_text("xx0\n"
                     "xx1\n"
@@ -229,7 +230,7 @@ TEST_CASE("wex::ex")
       REQUIRE(!stc->get_text().contains("pp"));
     }
 
-    SUBCASE("extra")
+    SECTION("extra")
     {
       stc->set_text("");
 
@@ -246,7 +247,7 @@ TEST_CASE("wex::ex")
     }
   }
 
-  SUBCASE("is_active")
+  SECTION("is_active")
   {
     REQUIRE(ex->is_active());
     ex->use(wex::ex::mode_t::OFF);
@@ -256,7 +257,7 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->visual() == wex::ex::mode_t::VISUAL);
   }
 
-  SUBCASE("line-data")
+  SECTION("line-data")
   {
     REQUIRE(!ex->line_data().is_ctag());
 
@@ -266,7 +267,7 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->line_data().is_ctag());
   }
 
-  SUBCASE("map")
+  SECTION("map")
   {
     REQUIRE(ex->command(":map :xx :%d"));
     REQUIRE(ex->command(":xx"));
@@ -274,7 +275,7 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->command(":unm xx"));
   }
 
-  SUBCASE("marker_and_register_expansion")
+  SECTION("marker_and_register_expansion")
   {
     stc->set_text("this is some text");
     REQUIRE(ex->command(":ky"));
@@ -305,12 +306,13 @@ TEST_CASE("wex::ex")
 #endif
   }
 
-  SUBCASE("markers")
+  SECTION("markers")
   {
     REQUIRE(ex->marker_add('a'));
     REQUIRE(ex->marker_line('a') != -1);
     REQUIRE(!ex->marker_goto("a"));
     REQUIRE(ex->marker_goto("\'a"));
+    REQUIRE(!ex->marker_goto("\' "));
     REQUIRE(ex->marker_delete('a'));
     REQUIRE(!ex->marker_delete('b'));
     REQUIRE(!ex->marker_goto("\'a"));
@@ -323,9 +325,12 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->command(":'t,'us/s/w/"));
     REQUIRE(ex->command(":'t,$s/s/w/"));
     REQUIRE(ex->command(":1,'us/s/w/"));
+
+    wex::log_none off;
+    REQUIRE(!ex->marker_add(' '));
   }
 
-  SUBCASE("print")
+  SECTION("print")
   {
     ex->print("This is printed");
     REQUIRE(ex->get_print_text() == "This is printed");
@@ -341,7 +346,7 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->get_print_text() == "this is some text$\nnext line$\n");
   }
 
-  SUBCASE("range")
+  SECTION("range")
   {
     for (const auto& cmd : std::vector<std::string>{
            "<",
@@ -381,7 +386,7 @@ TEST_CASE("wex::ex")
     REQUIRE(!ex->command(":" + wex::ex_command::selection_range() + ">>"));
   }
 
-  SUBCASE("read")
+  SECTION("read")
   {
 #ifdef __UNIX__
     REQUIRE(ex->command(":r !echo qwerty"));
@@ -389,7 +394,7 @@ TEST_CASE("wex::ex")
 #endif
   }
 
-  SUBCASE("registers")
+  SECTION("registers")
   {
     wex::ex::set_registers_delete("x");
     wex::ex::set_register_yank("test");
@@ -412,22 +417,22 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->get_stc()->get_selected_text().empty());
   }
 
-  SUBCASE("search_flags")
+  SECTION("search_flags")
   {
     REQUIRE((ex->search_flags() & wxSTC_FIND_REGEXP) > 0);
   }
 
-  SUBCASE("substitute")
+  SECTION("substitute")
   {
     stc->set_text("we have ccccc yyyy zzzz");
 
-    SUBCASE("eol")
+    SECTION("eol")
     {
       REQUIRE(ex->command(":%s/z$/z>"));
       REQUIRE(stc->get_text() == "we have ccccc yyyy zzzz>");
     }
 
-    SUBCASE("regular")
+    SECTION("regular")
     {
       REQUIRE(ex->command(":%s/ccccc/ddd"));
       REQUIRE(stc->get_text() == "we have ddd yyyy zzzz");
@@ -442,7 +447,7 @@ TEST_CASE("wex::ex")
       REQUIRE(!ex->command(":.s/ *//g"));
     }
 
-    SUBCASE("tilde")
+    SECTION("tilde")
     {
       stc->set_text("we have xxxxx yyyyy zzzzz");
       REQUIRE(ex->command(":%s/x+/vvvvv/"));
@@ -465,7 +470,7 @@ TEST_CASE("wex::ex")
     }
   }
 
-  SUBCASE("text-input")
+  SECTION("text-input")
   {
     const std::string eol(ex->get_stc()->eol());
     stc->set_text("xyz\n");
@@ -478,7 +483,7 @@ TEST_CASE("wex::ex")
     REQUIRE(stc->get_text() == "new\n");
   }
 
-  SUBCASE("yank")
+  SECTION("yank")
   {
     stc->set_text("xyz\n");
     REQUIRE(ex->command(":1,5ya"));

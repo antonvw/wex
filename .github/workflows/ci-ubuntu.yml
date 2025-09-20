@@ -19,10 +19,9 @@ jobs:
         with:
           # REQUIRED: Specify the required boost version
           # A list of supported versions can be found here:
-          # https://github.com/actions/boost-versions/blob/main/versions-manifest.json
-          boost_version: 1.86.0
-          # OPTIONAL: Specify a platform version
-          platform_version: 20.04
+          # https://github.com/MarkusJx/prebuilt-boost/blob/main/versions-manifest.json
+          boost_version: 1.88.0
+          platform_version: 24.04
 
       - name: Install gtk
         run:
@@ -45,10 +44,8 @@ jobs:
       - name: Install robotframework
         run: sudo pip install robotframework
 
-      - name: Configure
-        # adding -s samples switch should result in app running,
-        # but then the headless test keeps on running
-        run: ./build-gen.sh -b -c -g -p -t -B ${{steps.install-boost.outputs.BOOST_ROOT}}
+      - name: Configure for coverage
+        run: ./build-gen.sh -b -c -g -p -s -t -B ${{steps.install-boost.outputs.BOOST_ROOT}}
         env:
           BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
           CC: gcc-14
@@ -57,23 +54,54 @@ jobs:
       - name: Make using ninja
         run: cd build && ninja
 
-      - name: Headless Test
-        # currently skip wex-test-del, it segfaults, wait for gcc-14?
-        run: cd build &&
-          ninja lcov-prep &&
-          xvfb-run --auto-servernum ctest -VV -E del &&
+      # Upload the del binary, which we will need to debug the core
+      - uses: actions/upload-artifact@v4
+        with:
+          name: executable
+          path: build/test/del/wex-test-del
+
+      - name: Set cores to get stored in /cores
+        run: |
+          sudo mkdir /cores
+          sudo chmod 777 /cores
+          # Core filenames will be of the form executable.pid.timestamp:
+          sudo bash -c 'echo "/cores/%e.%p.%t" > /proc/sys/kernel/core_pattern'
+
+      - name: Headless test
+        run: |
+          ulimit -c unlimited
+          cd build
+          ninja lcov-prep
+          xvfb-run --auto-servernum ctest -VV
           ninja lcov
         env:
           NO_AT_BRIDGE: 1
 
+      - name: Artifact coredump
+        uses: actions/upload-artifact@v4
+        if: ${{ failure() }}  # Run only if something went wrong
+        with:
+          name: coredump
+          path: /cores
+
+      - name: Coveralls
+        run: cd build && coveralls -r 9vV6skuIGeagBBkz5TCZNI12ezUv12gOj --format=lcov --file=src/app.run
+
+      - name: Cleanup
+        run: rm -rf build
+
+      - name: Reconfigure and build for artifacts without testing
+        run: ./build-gen.sh -b -g -B ${{steps.install-boost.outputs.BOOST_ROOT}}
+        env:
+          BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
+          CC: gcc-14
+          CXX: g++-14
+
       - name: Artifacts
-        # see build-gen, currently a static build
         uses: actions/upload-artifact@v4
         with:
           name: wex-lib-ubuntu
           path: |
+            data/*.*
             build/**/*.a
             build/**/setup.h
-
-      - name: Coveralls
-        run: cd build && coveralls -r 9vV6skuIGeagBBkz5TCZNI12ezUv12gOj --format=lcov --file=src/app.run

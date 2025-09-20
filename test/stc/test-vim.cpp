@@ -2,27 +2,32 @@
 // Name:      test-vim.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/vi/vi.h>
 
 #include "test.h"
 
-TEST_CASE("wex::vim" * doctest::may_fail())
+TEST_CASE("wex::vim", "[!mayfail]")
 {
   auto* stc = get_stc();
   auto* vi  = &get_stc()->get_vi();
   stc->set_text("xxxxxxxxxx second\nxxxxxxxx");
 
-  SUBCASE("invalid")
+  SECTION("begin")
   {
-    REQUIRE(!vi->command("gc"));
-    REQUIRE(!vi->command("gcdefg"));
-    REQUIRE(!vi->command("g5"));
+    REQUIRE(!vi->command("g"));
   }
 
-  SUBCASE("motion")
+  SECTION("invalid")
+  {
+    REQUIRE(vi->command("gc"));
+    REQUIRE(vi->command("gcdefg"));
+    REQUIRE(vi->command("g5"));
+  }
+
+  SECTION("motion")
   {
     REQUIRE(vi->command("gUw"));
     REQUIRE(vi->get_stc()->get_text() == "XXXXXXXXXX second\nxxxxxxxx");
@@ -38,15 +43,23 @@ TEST_CASE("wex::vim" * doctest::may_fail())
     REQUIRE(vi->get_stc()->get_text() == "XXXXXXXXXX SECOND\nXXXXXXXX");
   }
 
-  SUBCASE("special")
+  SECTION("other")
   {
-    REQUIRE(vi->command("ga"));
-    REQUIRE(vi->command("gd"));
-    REQUIRE(vi->command("gf"));
+    for (auto& other : std::vector<
+           std::string>{"g8", "ga", "gd", "gf", "gm", "g*", "g#", "gt", "gT"})
+    {
+      REQUIRE(vi->command(other));
+    }
+  }
 
-    REQUIRE(vi->command("g*"));
-    REQUIRE(vi->command("g#"));
-
-    REQUIRE(vi->command("gt"));
+  SECTION("z")
+  {
+    for (auto& fold : std::vector<
+           std::string>{"za", "zo", "zc", "zE", "zf", "zz", "zC", "zO"})
+    {
+      CAPTURE(fold);
+      REQUIRE(vi->command(fold));
+      REQUIRE(vi->last_command() != fold);
+    }
   }
 }

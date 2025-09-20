@@ -55,19 +55,19 @@ using boost::describe::operators::operator<<;
 
 TEST_CASE("wex::reflection")
 {
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(wex::reflection().log().str().empty());
   }
 
-  SUBCASE("boost")
+  SECTION("boost")
   {
     std::stringstream ss;
     ss << test_reflect();
     REQUIRE(ss.str().contains("hello"));
   }
 
-  SUBCASE("log")
+  SECTION("log")
   {
     wex::reflection rfl(
       {REFLECT_ADD("x", std::string()), REFLECT_ADD("y", std::string("yyy"))});
@@ -76,7 +76,7 @@ TEST_CASE("wex::reflection")
     REQUIRE(rfl.log().str().contains("x, y: yyy"));
   }
 
-  SUBCASE("log-skip-empty")
+  SECTION("log-skip-empty")
   {
     wex::reflection rfl(
       {REFLECT_ADD("x", std::string()), REFLECT_ADD("y", std::string("yyy"))},
@@ -85,7 +85,7 @@ TEST_CASE("wex::reflection")
     REQUIRE(rfl.log().str() == "y: yyy\n");
   }
 
-  SUBCASE("member")
+  SECTION("member")
   {
     test_reflect reflect;
 

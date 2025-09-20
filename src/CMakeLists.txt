@@ -15,19 +15,20 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
   add_custom_target(
     lcov-prep
     # prepare initial tracefile
-    lcov --ignore-errors mismatch --ignore-errors empty,empty --rc
-    geninfo_unexecuted_blocks=1 --base-directory ./ --gcov-tool ${wexGCOV_USE}
-    --capture --rc branch_coverage=1 --initial --directory ./ --output-file
-    app.base
+    lcov --ignore-errors negative --ignore-errors mismatch --ignore-errors
+    empty,empty --rc geninfo_unexecuted_blocks=1 --base-directory ./ --gcov-tool
+    ${wexGCOV_USE} --capture --rc branch_coverage=1 --initial --directory ./
+    --output-file app.base
   )
 
   add_custom_target(
     lcov
     # capture results
     COMMAND
-      lcov --ignore-errors mismatch --ignore-errors empty,empty --rc
-      geninfo_unexecuted_blocks=1 --base-directory ./ --gcov-tool ${wexGCOV_USE}
-      --capture --rc branch_coverage=1 --directory ./ --output-file app.run
+      lcov --ignore-errors negative --ignore-errors mismatch --ignore-errors
+      empty,empty --rc geninfo_unexecuted_blocks=1 --base-directory ./
+      --gcov-tool ${wexGCOV_USE} --capture --rc branch_coverage=1 --directory ./
+      --output-file app.run
     # combine tracefiles
     COMMAND
       lcov --gcov-tool ${wexGCOV_USE} --add-tracefile app.base --rc
@@ -35,9 +36,8 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
     # remove output that we are not interested in
     COMMAND
       lcov --gcov-tool ${wexGCOV_USE} --remove app.run "*boost/*" "*/usr/*"
-      "*external/*" "*/test/*" "*factory/grid*"
-      "*include/wex/factory/text-window.h" --rc branch_coverage=1 --output-file
-      app.run
+      "*external/*" "*/test/*" "*include/wex/factory/text-window.h" --rc
+      branch_coverage=1 --output-file app.run
     COMMENT "Running lcov"
     VERBATIM
   )
@@ -74,7 +74,7 @@ add_subdirectory(stc)
 add_subdirectory(vcs)
 add_subdirectory(del)
 
-if(${CMAKE_BUILD_TYPE} STREQUAL "Debug" AND MSVC)
+if(CMAKE_BUILD_TYPE MATCHES "Debug" AND MSVC)
   set_target_properties(
     ${wex_own_LIBRARIES}
     PROPERTIES

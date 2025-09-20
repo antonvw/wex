@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      doctest.h
+// Name:      unittest.h
 // Purpose:   Declaration of classes for unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023-2024 Anton van Wezenbeek
+// Copyright: (c) 2023-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,15 +10,20 @@
 #include <wex/core/app.h>
 #include <wex/core/path.h>
 
-#include <doctest.h>
+#include <catch.hpp>
+
+namespace Catch
+{
+class Session;
+}
 
 namespace wex
 {
 namespace test
 {
-/// Offers the doctest based class info.
+/// Offers the session based class info.
 /// Your test application should be derived from this class.
-class doctester
+class unittest
 {
 public:
   // Static methods
@@ -30,18 +35,20 @@ public:
 
   // Other methods.
 
-  /// Performs doctest init.
+  /// Performs session init.
   bool on_init(wex::app* app);
 
-  /// Performs doctest activation.
+  /// Performs session activation.
   void on_run(wex::app* app);
 
-  /// Use context when running. You should first call this method
-  /// to construct the context.
-  bool use_context(wex::app* app, int argc, char* argv[]);
+  /// Start testing.
+  bool start(wex::app* app, int argc, char* argv[]);
 
 private:
-  doctest::Context*  m_context{nullptr};
+  Catch::Session* m_session{nullptr};
+
+  bool m_exit_after_test{true};
+
   static inline path m_path;
 };
 } // namespace test

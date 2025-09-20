@@ -16,6 +16,8 @@
 
 namespace wex
 {
+class vim;
+
 /// Offers a class that extends ex class with vi behaviour.
 class vi : public ex
 {
@@ -110,7 +112,8 @@ private:
   bool motion_command_handle(
     motion_t          type,
     std::string&      command,
-    const function_t& t);
+    const function_t& t,
+    wex::vim*         vim);
   bool other_command(std::string& command);
   bool parse_command(std::string& command);
   bool parse_command_handle(std::string& command);

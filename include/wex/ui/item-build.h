@@ -2,7 +2,7 @@
 // Name:      item-build.h
 // Purpose:   Methods to build items
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2023 Anton van Wezenbeek
+// Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -15,6 +15,10 @@ namespace wex
 const item add_combobox_with_max(
   const std::string& name_combo,
   const std::string& name_max,
+  const data::item&  data = data::item());
+
+/// Returns an item consisting of a combobox for finding text.
+const item add_find_text(
   const data::item&  data = data::item());
 
 /// Returns a vector of items to show a header from

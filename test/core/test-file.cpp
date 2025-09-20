@@ -2,7 +2,7 @@
 // Name:      test-file.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/file.h>
@@ -12,7 +12,7 @@
 
 TEST_CASE("wex::file")
 {
-  SUBCASE("basic")
+  SECTION("basic")
   {
     REQUIRE(!wex::file("XXXXX").is_open());
 
@@ -51,7 +51,7 @@ TEST_CASE("wex::file")
     REQUIRE(create.write(std::string("OK")));
   }
 
-  SUBCASE("append")
+  SECTION("append")
   {
     wex::file f(
       wex::path("test-create"),
@@ -62,13 +62,13 @@ TEST_CASE("wex::file")
   }
 
   // file should be closed before remove (at least for windows)
-  SUBCASE("remove")
+  SECTION("remove")
   {
     REQUIRE(remove("test-create") == 0);
     REQUIRE(remove("test-xxx") == 0);
   }
 
-  SUBCASE("save")
+  SECTION("save")
   {
     wex::file file(
       wex::test::get_path("test.h"),
@@ -81,7 +81,7 @@ TEST_CASE("wex::file")
     REQUIRE(remove("test-save") == 0);
   }
 
-  SUBCASE("timing")
+  SECTION("timing")
   {
     const int  max      = 100;
     const auto ex_start = std::chrono::system_clock::now();
@@ -96,6 +96,6 @@ TEST_CASE("wex::file")
     const auto ex_milli = std::chrono::duration_cast<std::chrono::milliseconds>(
       std::chrono::system_clock::now() - ex_start);
 
-    CHECK_LT(ex_milli.count(), 5000);
+    REQUIRE(ex_milli.count() < 5000);
   }
 }

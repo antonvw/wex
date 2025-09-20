@@ -2,7 +2,7 @@
 // Name:      test-vi-motion.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023-2024 Anton van Wezenbeek
+// Copyright: (c) 2023-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex/util.h>
@@ -18,7 +18,7 @@ TEST_CASE("wex::vi-motion")
   auto* stc = get_stc();
   auto* vi  = new wex::vi(get_stc());
 
-  SUBCASE("find")
+  SECTION("find")
   {
     stc->set_text("some text to find another find");
     REQUIRE(vi->mode().is_command());
@@ -35,7 +35,7 @@ TEST_CASE("wex::vi-motion")
   }
 
   // Test motion commands: navigate, yank, delete, and change.
-  SUBCASE("motion")
+  SECTION("motion")
   {
     stc->set_text("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
     wex::find_replace_data::get()->set_find_string("xx");

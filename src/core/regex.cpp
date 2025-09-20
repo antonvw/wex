@@ -2,7 +2,7 @@
 // Name:      core/regex.cpp
 // Purpose:   Implementation of class wex::regex
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -11,12 +11,11 @@
 #include <wex/core/regex.h>
 
 #define FILL_DATA(TYPE, ACTION)                                                \
-  [](const TYPE& reg_v, std::regex::flag_type flags)                           \
+  [](const TYPE& reg_v, boost::regex::flag_type flags)                         \
   {                                                                            \
     regex_t v;                                                                 \
-    std::for_each(                                                             \
-      reg_v.begin(),                                                           \
-      reg_v.end(),                                                             \
+    std::ranges::for_each(                                                     \
+      reg_v,                                                                   \
       [&v, flags](const auto& e)                                               \
       {                                                                        \
         ACTION;                                                                \
@@ -36,28 +35,28 @@ wex::regex::regex(const data& d)
 {
 }
 
-wex::regex::regex(const std::string& str, std::regex::flag_type flags)
+wex::regex::regex(const std::string& str, boost::regex::flag_type flags)
   : m_datas({{{str, nullptr}, flags}})
   , m_it(m_datas.end())
 {
 }
 
 wex::regex::regex(
-  const std::string&    str,
-  function_t            f,
-  std::regex::flag_type flags)
+  const std::string&      str,
+  function_t              f,
+  boost::regex::flag_type flags)
   : m_datas({{{str, f}, flags}})
   , m_it(m_datas.end())
 {
 }
 
-wex::regex::regex(const regex_v_t& regex, std::regex::flag_type flags)
+wex::regex::regex(const regex_v_t& regex, boost::regex::flag_type flags)
   : m_datas(FILL_DATA(regex_v_t, v.emplace_back(regex_c_t(e, nullptr), flags)))
   , m_it(m_datas.end())
 {
 }
 
-wex::regex::regex(const regex_v_c_t& regex, std::regex::flag_type flags)
+wex::regex::regex(const regex_v_c_t& regex, boost::regex::flag_type flags)
   : m_datas(FILL_DATA(regex_v_c_t, v.emplace_back(e, flags)))
   , m_it(m_datas.end())
 {
@@ -78,9 +77,11 @@ int wex::regex::find(const std::string& text, find_t how)
     m_datas,
     [this, text, how](auto const& reg)
     {
-      if (std::match_results<std::string::const_iterator> m;
-          ((how == find_t::MATCH && std::regex_match(text, m, reg.regex())) ||
-           (how == find_t::SEARCH && std::regex_search(text, m, reg.regex()))))
+      if (boost::match_results<std::string::const_iterator> m;
+          reg.regex().status() == 0 &&
+          ((how == find_t::MATCH && boost::regex_match(text, m, reg.regex())) ||
+           (how == find_t::SEARCH &&
+            boost::regex_search(text, m, reg.regex()))))
       {
         if (m.size() > 1)
         {
@@ -118,16 +119,16 @@ int wex::regex::match_no() const
 }
 
 bool wex::regex::replace(
-  std::string&                          text,
-  const std::string&                    replacement,
-  std::regex_constants::match_flag_type flag_type) const
+  std::string&                            text,
+  const std::string&                      replacement,
+  boost::regex_constants::match_flag_type flag_type) const
 {
   if (m_it == m_datas.end())
   {
     return false;
   }
 
-  text = std::regex_replace(text, m_it->regex(), replacement, flag_type);
+  text = boost::regex_replace(text, m_it->regex(), replacement, flag_type);
 
   return true;
 }
@@ -137,7 +138,7 @@ int wex::regex::search(const std::string& text)
   return find(text, find_t::SEARCH);
 }
 
-wex::regex::data::data(const regex_c_t& regex, std::regex::flag_type flags)
+wex::regex::data::data(const regex_c_t& regex, boost::regex::flag_type flags)
   : m_text(regex.first)
   , m_function(regex.second)
 {
@@ -146,13 +147,15 @@ wex::regex::data::data(const regex_c_t& regex, std::regex::flag_type flags)
 
 wex::regex::data::data() = default;
 
-void wex::regex::data::init(const regex_c_t& regex, std::regex::flag_type flags)
+void wex::regex::data::init(
+  const regex_c_t&        regex,
+  boost::regex::flag_type flags)
 {
   try
   {
-    m_regex = std::regex(m_text, flags);
+    m_regex = boost::regex(m_text, flags);
   }
-  catch (std::regex_error& e)
+  catch (boost::regex_error& e)
   {
     log(e) << m_text << "code:" << static_cast<int>(e.code());
   }

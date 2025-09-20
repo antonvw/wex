@@ -7,6 +7,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <wex/core/config.h>
+#include <wex/core/core.h>
 #include <wex/ex/addressrange.h>
 #include <wex/ex/macros.h>
 #include <wex/ex/util.h>
@@ -233,18 +234,18 @@ wex::vi::commands_t wex::vi::commands_motion()
     {"\'`",
      [&](const std::string& command)
      {
-       if (one_letter_after(command[0], command))
+       if (command.size() == 2)
        {
-         const auto pos = get_stc()->GetCurrentPos();
-         marker_goto(command);
-
-         if (command[0] == '\'' && m_mode.get() == vi_mode::state_t::COMMAND)
+         if (const auto pos = get_stc()->GetCurrentPos(); marker_goto(command))
          {
-           get_stc()->Home();
-         }
-         else
-         {
-           visual_extend(pos, get_stc()->GetCurrentPos());
+           if (command[0] == '\'' && m_mode.get() == vi_mode::state_t::COMMAND)
+           {
+             get_stc()->Home();
+           }
+           else
+           {
+             visual_extend(pos, get_stc()->GetCurrentPos());
+           }
          }
 
          return 2;
@@ -452,26 +453,15 @@ size_t wex::vi::find_char(const std::string& command)
     case ';':
       d = m_last_find_char_command.front();
       break;
+
     case ',':
       d = m_last_find_char_command.front();
-      if (islower(d))
-      {
-        d = toupper(d);
-      }
-      else
-      {
-        d = tolower(d);
-      }
+      d = islower(d) ? toupper(d) : tolower(d);
       break;
+
     default:
-      if (command.size() > 1)
-      {
-        d = command.front();
-      }
-      else
-      {
-        d = m_last_find_char_command.front();
-      }
+      d =
+        command.size() > 1 ? command.front() : m_last_find_char_command.front();
   }
 
   // clang-format off
@@ -602,7 +592,9 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
 
   filter_count(command);
 
-  if (wex::vim vim(this, command, type); vim.is_motion())
+  wex::vim vim(this, command);
+
+  if (vim.is_motion())
   {
     vim.motion_prep();
     filter_count(command);
@@ -621,22 +613,30 @@ bool wex::vi::motion_command(motion_t type, std::string& command)
     return true;
   }
 
-  return motion_command_handle(type, command, it->second);
+  return motion_command_handle(type, command, it->second, &vim);
 }
 
 bool wex::vi::motion_command_handle(
   motion_t          type,
   std::string&      command,
-  const function_t& f_type)
+  const function_t& f_type,
+  wex::vim*         vim)
 {
   size_t parsed = 0;
   auto   start  = get_stc()->GetCurrentPos();
 
-  if (wex::vim vim(this, command, type); vim.is_motion())
+  if (vim->is_vim())
   {
-    if (!vim.motion(start, parsed, f_type))
+    if (vim->is_motion() && !vim->motion(start, parsed, f_type))
     {
       return false;
+    }
+
+    if (!vim->is_other() && command.size() > 1)
+    {
+      bell();
+      command.clear();
+      return true;
     }
   }
   else

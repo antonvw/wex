@@ -78,20 +78,30 @@ to_container<T>::to_container(const std::string& in, const std::string& delims)
     in,
     boost::char_separator<char>(delims.c_str()));
 
-  for (auto it = tok.begin(); it != tok.end(); ++it)
-  {
-    std::string token(*it);
+  auto it = tok.begin();
 
-    // if escape space, add next token
-    while (token.back() == '\\')
+  while (it != tok.end())
+  {
+    std::string word(*it);
+
+    // if escape (space), remove escape and append space and next word
+    while (word.back() == '\\' && it != tok.end())
     {
+      word.pop_back();
+      word.append(" ");
+
       if (++it != tok.end())
       {
-        token = token.substr(0, token.size() - 1) + " " + *it;
+        word.append(*it);
       }
     }
 
-    m_container.emplace_back(token);
+    m_container.emplace_back(word);
+
+    if (it != tok.end())
+    {
+      ++it;
+    }
   }
 }
 

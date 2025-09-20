@@ -28,11 +28,11 @@ std::string get_range(const std::string& text, int begin, int start)
 }
 } // namespace wex
 
-void wex::expand_macro(wex::process_data& data, stc* stc)
+bool wex::expand_macro(wex::process_data& data, stc* stc)
 {
-  if (!data.exe().contains("%LINES"))
+  if (!data.exe().contains("%LINES") || stc == nullptr)
   {
-    return;
+    return false;
   }
 
   if (!stc->is_visual())
@@ -43,7 +43,7 @@ void wex::expand_macro(wex::process_data& data, stc* stc)
         1,
         stc->get_current_line() -
           std::min(
-            (int)stc->GetLineCount(),
+            stc->GetLineCount(),
             (int)stc->get_file().ex_stream()->get_context_lines())),
       stc->get_current_line()));
   }
@@ -59,6 +59,8 @@ void wex::expand_macro(wex::process_data& data, stc* stc)
     data.exe(
       get_range(data.exe(), stc->get_current_line(), stc->get_current_line()));
   }
+
+  return true;
 }
 
 bool wex::vcs_diff(const std::string& command)
@@ -83,9 +85,8 @@ bool wex::vcs_execute(
   {
     if (vcs.show_dialog(data) == wxID_OK)
     {
-      std::for_each(
-        files.begin(),
-        files.end(),
+      std::ranges::for_each(
+        files,
         [frame, id](const auto& it)
         {
           if (wex::vcs vcs({it}, id); vcs.execute())
@@ -116,7 +117,7 @@ bool wex::vcs_execute(
   }
   else
   {
-    vcs.request();
+    vcs.request(data);
   }
 
   return true;

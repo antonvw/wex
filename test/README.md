@@ -30,4 +30,4 @@ some functions are not tested:
 - has a main.cpp, that either directly calls wex::test::app
   or an instance of a class derived from it
 
-- has a separate binary that executes unit tests using doctest
+- has a separate binary that executes unit tests using catch2

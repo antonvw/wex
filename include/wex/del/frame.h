@@ -194,6 +194,8 @@ public:
   void vcs_add_path(factory::link*) override;
   bool vcs_annotate_commit(syntax::stc*, int line, const std::string& commit_id)
     override;
+  std::string
+  vcs_annotate_line(factory::stc* s, const std::string& pane) const override;
   void vcs_append(menu*, const menu_item* i) const override;
   bool vcs_blame(syntax::stc*) override;
   bool vcs_blame_revision(

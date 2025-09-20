@@ -2,7 +2,7 @@
 // Name:      test-unified-diff.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024 Anton van Wezenbeek
+// Copyright: (c) 2024-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -12,7 +12,7 @@
 
 TEST_CASE("wex::unified_diff")
 {
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     const wex::path   p("test.h");
     auto*             entry = load_git_entry();

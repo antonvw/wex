@@ -65,7 +65,7 @@ void hypertext(stc* stc)
       stc->GetCharAt(match_pos + 1) != '!')
   {
     if (const auto& match(stc->get_word_at_pos(match_pos + 1));
-        match.find('/') != 0 &&
+        match.starts_with('/') &&
         stc->GetCharAt(stc->GetCurrentPos() - 2) != '/' &&
         (stc->get_lexer().language() == "xml" ||
          stc->get_lexer().is_keyword(match)) &&
@@ -350,6 +350,17 @@ void wex::stc::bind_other()
       if (event.GetUpdated() & wxSTC_UPDATE_SELECTION)
       {
         m_frame->update_statusbar(this, "PaneInfo");
+
+        if (wex::config(_("stc.Auto blame statusbar")).get(false))
+        {
+          for (const auto& pane : m_frame->panes_blame_format())
+          {
+            if (m_frame->get_statusbar()->pane_is_shown(pane.first))
+            {
+              m_frame->update_statusbar(this, pane.first);
+            }
+          }
+        }
       }
     });
 }

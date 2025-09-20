@@ -2,7 +2,7 @@
 // Name:      test-lexer.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2024 Anton van Wezenbeek
+// Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -16,7 +16,7 @@ TEST_CASE("wex::lexer")
 {
   wex::lexer lexer;
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(!lexer.is_ok());
     REQUIRE(!lexer.apply());
@@ -28,7 +28,7 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.line_size() > 0);
   }
 
-  SUBCASE("constructor-lexer")
+  SECTION("constructor-lexer")
   {
     REQUIRE(wex::lexer("cpp").is_ok());
     REQUIRE(wex::lexer("pascal").is_ok());
@@ -36,18 +36,18 @@ TEST_CASE("wex::lexer")
     REQUIRE(!wex::lexer().set("xxx"));
   }
 
-  SUBCASE("constructor-stc")
+  SECTION("constructor-stc")
   {
     auto*      stc = new wex::test::stc();
     wex::lexer l(stc);
     REQUIRE(l.get_stc() == stc);
   }
 
-  SUBCASE("constructor-xml")
+  SECTION("constructor-xml")
   {
     pugi::xml_document doc;
 
-    SUBCASE("valid")
+    SECTION("valid")
     {
       REQUIRE(doc.load_string("\
       <lexer name=\"cpp\"\
@@ -83,7 +83,7 @@ TEST_CASE("wex::lexer")
     }
 
 #ifdef __WXGTK__
-    SUBCASE("exclude")
+    SECTION("exclude")
     {
       REQUIRE(doc.load_string("<lexer name=\"pascal\" exclude=\"Unix\">\
       </lexer>"));
@@ -96,7 +96,7 @@ TEST_CASE("wex::lexer")
     }
 #endif
 
-    SUBCASE("no-macros")
+    SECTION("no-macros")
     {
       REQUIRE(doc.load_string("<lexer name=\"xyz\" tabwidth=\"12\">\
         <keywords set-0=\"cisco-0\" set-1=\"cisco-1\" set-2=\"cisco-2,cisco-3\">\
@@ -116,7 +116,7 @@ TEST_CASE("wex::lexer")
     }
   }
 
-  SUBCASE("align_text")
+  SECTION("align_text")
   {
     REQUIRE(!lexer.align_text("    code improvements", "", true, true)
                .contains("    code"));
@@ -126,7 +126,7 @@ TEST_CASE("wex::lexer")
       std::string("// headertest").size());
   }
 
-  SUBCASE("assign")
+  SECTION("assign")
   {
     auto*      stc = new wex::test::stc();
     wex::lexer lexer2(stc);
@@ -147,7 +147,7 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer2.attribs().empty());
   }
 
-  SUBCASE("clear")
+  SECTION("clear")
   {
     lexer.set("markdown");
     REQUIRE(!lexer.attribs().empty());
@@ -160,7 +160,7 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.attrib(_("Edge line")) == -1);
   }
 
-  SUBCASE("comment_complete")
+  SECTION("comment_complete")
   {
     REQUIRE(lexer.set("pascal"));
     REQUIRE(lexer.display_lexer() == "pascal");
@@ -170,7 +170,7 @@ TEST_CASE("wex::lexer")
       std::regex(" +\\*\\)")));
   }
 
-  SUBCASE("keywords")
+  SECTION("keywords")
   {
     REQUIRE(lexer.set("cpp"));
     REQUIRE(!lexer.keywords().empty());
@@ -209,9 +209,9 @@ TEST_CASE("wex::lexer")
     REQUIRE(!lexer.keyword_starts_with("xx"));
   }
 
-  SUBCASE("make_comment")
+  SECTION("make_comment")
   {
-    SUBCASE("formatted")
+    SECTION("formatted")
     {
       CAPTURE(lexer.make_comment("test", true));
       REQUIRE(lexer.make_comment("test", true).starts_with("test"));
@@ -219,7 +219,7 @@ TEST_CASE("wex::lexer")
       REQUIRE(lexer.make_comment("test\ntest2", true).starts_with("test"));
     }
 
-    SUBCASE("prefix")
+    SECTION("prefix")
     {
       CAPTURE(lexer.make_comment("commit xyz\n    code improvements"));
       REQUIRE(lexer.make_comment("commit xyz\n    code improvements")
@@ -230,12 +230,12 @@ TEST_CASE("wex::lexer")
     }
   }
 
-  SUBCASE("make_single_line_comment")
+  SECTION("make_single_line_comment")
   {
     REQUIRE(lexer.make_single_line_comment("test").starts_with("test"));
   }
 
-  SUBCASE("property")
+  SECTION("property")
   {
     lexer.set_property("test", "value");
     lexer.set_property("other", "one");
@@ -244,7 +244,7 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.properties().back().value() == "one");
   }
 
-  SUBCASE("set")
+  SECTION("set")
   {
     REQUIRE(lexer.set("xsl"));
     REQUIRE(lexer.language() == "xml");
@@ -301,7 +301,7 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.get_stc() == stc);
   }
 
-  SUBCASE("several methods")
+  SECTION("several methods")
   {
     REQUIRE(lexer.set("cpp"));
     REQUIRE(lexer.display_lexer() == "cpp");

@@ -1,0 +1,45 @@
+name: github-ci-osx
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install boost
+        run: brew install boost
+
+      - name: Install llvm
+        run: brew install llvm@19
+
+      - name: Install cppcheck
+        run: brew install cppcheck
+
+      - name: Configure
+        run: ./build-gen.sh -g -t -b -G Xcode
+        env:
+          CC: /opt/homebrew/opt/llvm@19/bin/clang
+          CXX: /opt/homebrew/opt/llvm@19/bin/clang
+
+      - name: Run tests
+        run: cd build && ctest -C Debug -VV -I 2,5
+
+      - name: Run cppcheck
+        run: cd build && xcodebuild -target cppcheck
+
+      - name: Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: wex-lib-macos
+          path: |
+            data/*.*
+            build/**/*.dylib
+            build/**/*.a
+            build/**/setup.h

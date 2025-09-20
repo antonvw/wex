@@ -12,6 +12,17 @@
 #include "../src/ex/global-env.h"
 #include "test.h"
 
+void test_global(const std::string& cmd, const wex::addressrange& ar)
+{
+  REQUIRE(wex::addressrange::data().set_global(cmd));
+  wex::global_env ge(ar);
+
+  CAPTURE(cmd);
+  REQUIRE(ge.has_commands());
+  REQUIRE(ge.global(wex::addressrange::data()));
+  REQUIRE(ge.hits() == 3);
+}
+
 TEST_CASE("wex::global_env")
 {
   auto* stc = new wex::test::stc();
@@ -20,12 +31,12 @@ TEST_CASE("wex::global_env")
   ALLOW_CALL(*stc, path()).RETURN(p);
 
   stc->set_text(
-    "hello\nhello11\nhello22\ntest\ngcc\nblame\nthis\nyank\ncopy\n\n");
+    "hello\nhello11\nhello22\nhemll\ntest\ngcc\nblame\nthis\nyank\ncopy\n\n");
 
   auto*             ex = new wex::ex(stc);
   wex::addressrange ar(ex, "%");
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(wex::addressrange::data().set_global("g/xx/"));
     wex::global_env ge(ar);
@@ -36,9 +47,9 @@ TEST_CASE("wex::global_env")
     REQUIRE(ge.hits() == 0);
   }
 
-  SUBCASE("commands")
+  SECTION("commands")
   {
-    REQUIRE(wex::addressrange::data().set_global("g/he/"));
+    REQUIRE(wex::addressrange::data().set_global("g/hel/"));
     wex::global_env ge(ar);
     REQUIRE(!ge.has_commands());
     REQUIRE(ge.global(wex::addressrange::data()));
@@ -63,7 +74,7 @@ TEST_CASE("wex::global_env")
     REQUIRE(inv2.hits() == 9);
   }
 
-  SUBCASE("commands-2addr")
+  SECTION("commands-2addr")
   {
     REQUIRE(wex::addressrange::data().set_global("g/he/d"));
     wex::addressrange ar(ex, "1,2");
@@ -84,15 +95,9 @@ TEST_CASE("wex::global_env")
     REQUIRE(inv.hits() == 2);
   }
 
-  SUBCASE("commands-append")
+  SECTION("commands-append")
   {
-    REQUIRE(
-      wex::addressrange::data().set_global("g/he/a|added he <XXX>|a|other"));
-    wex::global_env ge(ar);
-
-    REQUIRE(ge.has_commands());
-    REQUIRE(ge.global(wex::addressrange::data()));
-    REQUIRE(ge.hits() == 3);
+    test_global("g/hel/a|added he <XXX>|a|other", ar);
 
     wex::log_none off;
     REQUIRE(wex::addressrange::data().set_global("g/he/a"));
@@ -100,17 +105,12 @@ TEST_CASE("wex::global_env")
     REQUIRE(!ge_error.has_commands());
     // now it acts as g/he/, fix for 25.04
     REQUIRE(ge_error.global(wex::addressrange::data()));
-    REQUIRE(ge_error.hits() == 9);
+    REQUIRE(ge_error.hits() == 10);
   }
 
-  SUBCASE("commands-change")
+  SECTION("commands-change")
   {
-    REQUIRE(wex::addressrange::data().set_global("g/he/c|<XXX>"));
-    wex::global_env ge(ar);
-
-    REQUIRE(ge.has_commands());
-    REQUIRE(ge.global(wex::addressrange::data()));
-    REQUIRE(ge.hits() == 3);
+    test_global("g/hel/c|<XXX>", ar);
 
     // and check whether undo works
     REQUIRE(ex->get_stc()->get_text().contains("<XXX>"));
@@ -118,34 +118,19 @@ TEST_CASE("wex::global_env")
     REQUIRE(!ex->get_stc()->get_text().contains("<XXX>"));
   }
 
-  SUBCASE("commands-delete")
+  SECTION("commands-delete")
   {
-    REQUIRE(wex::addressrange::data().set_global("g/he/d"));
-    wex::global_env ge(ar);
-
-    REQUIRE(ge.has_commands());
-    REQUIRE(ge.global(wex::addressrange::data()));
-    REQUIRE(ge.hits() == 3);
+    test_global("g/hel/d", ar);
   }
 
-  SUBCASE("commands-insert")
+  SECTION("commands-insert")
   {
-    REQUIRE(wex::addressrange::data().set_global("g/he/i|<XXX>"));
-    wex::global_env ge(ar);
-
-    REQUIRE(ge.has_commands());
-    REQUIRE(ge.global(wex::addressrange::data()));
-    REQUIRE(ge.hits() == 3);
+    test_global("g/hel/i|<XXX>", ar);
   }
 
-  SUBCASE("commands-substitute")
+  SECTION("commands-substitute")
   {
-    REQUIRE(wex::addressrange::data().set_global("g/he/s/ll/LL"));
-    wex::global_env ge(ar);
-
-    REQUIRE(ge.has_commands());
-    REQUIRE(ge.global(wex::addressrange::data()));
-    REQUIRE(ge.hits() == 3);
+    test_global("g/hel/s/ll/LL", ar);
   }
 
   delete ex;

@@ -239,7 +239,7 @@ bool wex::lexer::apply() const
   }
 
   // Reset keywords, also if no lexer is available.
-  for (size_t setno = 0; setno < wxSTC_KEYWORDSET_MAX; setno++)
+  for (int setno = 0; setno < wxSTC_KEYWORDSET_MAX; setno++)
   {
     m_stc->SetKeyWords(setno, std::string());
   }
@@ -438,7 +438,7 @@ const std::string wex::lexer::formatted_text(
 
 bool wex::lexer::is_keyword(const std::string& word) const
 {
-  return m_keywords.find(word) != m_keywords.end();
+  return m_keywords.contains(word);
 }
 
 const std::string wex::lexer::keywords_string(

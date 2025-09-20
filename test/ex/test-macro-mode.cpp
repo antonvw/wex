@@ -2,7 +2,7 @@
 // Name:      test-macro-mode.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2024 Anton van Wezenbeek
+// Copyright: (c) 2019-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -19,7 +19,7 @@ TEST_CASE("wex::macro_mode")
 
   REQUIRE(macros.load_document());
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     wex::macro_mode mode(&macros);
 
@@ -29,7 +29,7 @@ TEST_CASE("wex::macro_mode")
     REQUIRE(mode.get_macros() == &macros);
   }
 
-  SUBCASE("expand")
+  SECTION("expand")
   {
     wex::macro_mode mode(&macros);
     std::string     expanded;
@@ -37,7 +37,7 @@ TEST_CASE("wex::macro_mode")
     REQUIRE(!mode.expand(nullptr, wex::variable("test"), expanded));
   }
 
-  SUBCASE("transition")
+  SECTION("transition")
   {
     wex::log_none   off;
     wex::macro_mode mode(&macros);

@@ -2,7 +2,7 @@
 // Name:      test-commandline-imp.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024 Anton van Wezenbeek
+// Copyright: (c) 2024-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ui/ex-commandline-input.h>
@@ -21,12 +21,20 @@ TEST_CASE("wex::ex_commandline_imp")
 
   stc->set_text("hello\nhello11\nhello22\ntest\ngcc\nblame\nthis\nyank\ncopy");
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     wex::ex_commandline_imp cli(cl, control, wex::data::window());
 
     REQUIRE(cli.text_not_expanded().empty());
     REQUIRE(cli.handle("/hello"));
     REQUIRE(cli.handle('c'));
+  }
+
+  SECTION("on")
+  {
+    wex::ex_commandline_imp cli(cl, control, wex::data::window());
+
+    REQUIRE(!cli.handle('\t'));
+    REQUIRE(!cli.handle(WXK_ESCAPE));
   }
 }

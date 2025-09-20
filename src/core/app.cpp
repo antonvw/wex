@@ -3,7 +3,7 @@
 // Purpose:   Implementation of wex::app class
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2009-2025 Anton van Wezenbeek
-// ////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/app.h>
 #include <wex/core/config.h>
@@ -35,11 +35,6 @@ int first_init()
 
 int wex::app::m_first_init = first_init();
 
-const std::string wex::app::get_catalog_dir() const
-{
-  return file_translations_loader::catalog_dir();
-}
-
 const wxUILocale& wex::app::get_locale()
 {
   return wxUILocale::GetCurrent();
@@ -58,9 +53,6 @@ int wex::app::OnExit()
     std::cout << e.what() << "\n";
   }
 
-  delete wxTranslations::Get();
-  delete m_loader;
-
   return wxApp::OnExit();
 }
 
@@ -70,18 +62,21 @@ bool wex::app::OnInit()
 
   config::on_init();
 
-  // Construct translation, from now on things will be translated.
   set_language();
 
   if (m_language != wxLANGUAGE_UNKNOWN && m_language != wxLANGUAGE_DEFAULT)
   {
-    m_loader = new file_translations_loader();
-    wxUILocale::FromTag(wxUILocale::GetLanguageCanonicalName(m_language));
-    wxTranslations::Set(new wxTranslations());
-    wxTranslations::Get()->SetLanguage(m_language);
-    wxTranslations::Get()->SetLoader(m_loader);
+    if (!wxUILocale::UseDefault())
+    {
+      log("failed to initialize the default system locale");
+    }
 
-    m_loader->add_catalogs(m_language);
+    // Construct translation, from now on strings will be translated.
+    auto* trans = new translations();
+    wxTranslations::Set(trans);
+    trans->SetLanguage(m_language);
+
+    trans->add_catalogs(m_language);
   }
 
   wxTheClipboard->UsePrimarySelection(true);
@@ -89,11 +84,6 @@ bool wex::app::OnInit()
   SetAppearance(Appearance::Dark);
 
   return true; // do not call base class: we have our own cmd line processing
-}
-
-wxLanguage wex::app::get_default_language() const
-{
-  return wxLANGUAGE_DEFAULT;
 }
 
 void wex::app::set_language()
@@ -114,6 +104,6 @@ void wex::app::set_language()
   }
   else
   {
-    m_language = get_default_language();
+    m_language = wxLANGUAGE_DEFAULT;
   }
 }

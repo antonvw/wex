@@ -2,7 +2,7 @@
 // Name:      test-link.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -49,7 +49,7 @@ TEST_CASE("wex::factory::link")
 {
   auto* stc = new wex::test::stc();
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     wex::config(_("stc.link.Include directory"))
       .set(wex::config::strings_t{{"/usr/bin"}});
@@ -108,7 +108,7 @@ TEST_CASE("wex::factory::link")
     link(lnk, "test-special.h:10:2", special, 10, 2);
   }
 
-  SUBCASE("mime")
+  SECTION("mime")
   {
     wex::factory::link lnk;
 
@@ -122,7 +122,7 @@ TEST_CASE("wex::factory::link")
     REQUIRE(lnk.get_path("xx", data, stc).empty());
   }
 
-  SUBCASE("url")
+  SECTION("url")
   {
     wex::factory::link lnk;
     wex::config(_("stc.link.Include directory"))

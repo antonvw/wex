@@ -2,7 +2,7 @@
 // Name:      dir.cpp
 // Purpose:   Implementation of class wex::dir
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -85,11 +85,10 @@ private:
 
 bool allow_hidden(const std::filesystem::path& p, const data::dir& data)
 {
-  for (auto it = p.begin(); it != p.end(); ++it)
+  for (const auto& it : p)
   {
     if (
-      it->string() != ".." && it->string() != "." &&
-      it->string().starts_with("."))
+      it.string() != ".." && it.string() != "." && it.string().starts_with("."))
     {
       // This file is hidden, only allow if flag HIDDEN is set.
       return data.type().test(data::dir::HIDDEN);
@@ -257,18 +256,14 @@ int wex::dir::run() const
         }
       }
     }
-    else
+    else if (!std::ranges::all_of(
+               fs::directory_iterator(m_dir.data()),
+               [&](const fs::directory_entry& p)
+               {
+                 return traverse(p);
+               }))
     {
-      if (fs::directory_iterator di(m_dir.data()), end; !std::all_of(
-            di,
-            end,
-            [&](const fs::directory_entry& p)
-            {
-              return traverse(p);
-            }))
-      {
-        log::trace("iterating aborted");
-      }
+      log::trace("iterating aborted");
     }
   }
   catch (fs::filesystem_error& e)

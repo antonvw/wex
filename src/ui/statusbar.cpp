@@ -82,9 +82,8 @@ std::vector<item> pane_dialog_items(const std::vector<statusbar_pane>& panes)
 {
   std::vector<item> v_i(add_header({"pane", "width", "style"}));
 
-  std::for_each(
-    panes.begin(),
-    panes.end(),
+  std::ranges::for_each(
+    panes,
     [&v_i](const auto& it)
     {
       if (it.is_shown())
@@ -246,9 +245,8 @@ void wex::statusbar::pane_dialog()
       .ShowModal() == wxID_OK)
   {
     std::vector<statusbar_pane> v_p;
-    std::transform(
-      m_panes.begin(),
-      m_panes.end(),
+    std::ranges::transform(
+      m_panes,
       std::back_inserter(v_p),
       [](const auto& it)
       {
@@ -264,6 +262,19 @@ void wex::statusbar::pane_dialog()
 
     setup(m_frame, v_p);
   }
+}
+
+bool wex::statusbar::pane_is_shown(const std::string& pane) const
+{
+  for (auto& it : m_panes)
+  {
+    if (it.name() == pane)
+    {
+      return it.is_shown();
+    }
+  }
+
+  return false;
 }
 
 bool wex::statusbar::pane_show(const std::string& pane, bool show)

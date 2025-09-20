@@ -2,7 +2,7 @@
 // Name:      data/window.cpp
 // Purpose:   Implementation of wex::data::window
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/window.h>
@@ -13,7 +13,7 @@ wex::data::window::window()
 {
   if (m_parent == nullptr && wxTheApp != nullptr)
   {
-    m_parent = dynamic_cast<wxWindow*>(wxTheApp->GetTopWindow());
+    m_parent = wxTheApp->GetTopWindow();
   }
 }
 

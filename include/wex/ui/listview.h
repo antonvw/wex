@@ -2,7 +2,7 @@
 // Name:      listview.h
 // Purpose:   Declaration of wex::listview and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -148,7 +148,6 @@ private:
   void bind_other();
 
   const std::string build_page();
-  const std::string context(const std::string& line, int pos) const;
   void              copy_selection_to_clipboard();
   void              edit_delete();
 

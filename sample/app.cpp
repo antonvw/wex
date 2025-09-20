@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wex sample app class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "app.h"
@@ -21,7 +21,9 @@ bool app::OnInit()
            [&](bool on)
            {
              if (!on)
+             {
                return;
+             }
              m_data.flags(
                wex::data::stc::window_t().set(wex::data::stc::WIN_EX),
                wex::data::control::OR);
@@ -46,9 +48,8 @@ bool app::OnInit()
          {{"files", "input file[:line number][:column number]"},
           [&](const std::vector<std::string>& v)
           {
-            std::transform(
-              v.begin(),
-              v.end(),
+            std::ranges::transform(
+              v,
               std::back_inserter(m_files),
               [](const auto& v)
               {
@@ -65,8 +66,7 @@ bool app::OnInit()
   f->Show(true);
   f->update();
 
-  wex::log::status("Locale")
-    << get_locale().GetName().ToStdString() << "dir" << get_catalog_dir();
+  wex::log::status("Locale") << get_locale().GetName().ToStdString();
 
   return true;
 }

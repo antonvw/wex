@@ -2,7 +2,7 @@
 // Name:      test-ctags.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016-2024 Anton van Wezenbeek
+// Copyright: (c) 2016-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -21,7 +21,7 @@ TEST_CASE("wex::ctags")
 
   wex::ctags_entry::register_image(stc);
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     // default auto_complete
     REQUIRE(wex::ctags(stc).auto_complete("test_").starts_with("test_app"));
@@ -40,7 +40,7 @@ TEST_CASE("wex::ctags")
     REQUIRE(wex::ctags::close());
   }
 
-  SUBCASE("existing-ctags")
+  SECTION("existing-ctags")
   {
     REQUIRE(wex::ctags::open("test-ctags"));
 
@@ -63,7 +63,7 @@ TEST_CASE("wex::ctags")
     REQUIRE(!wex::ctags::close());
   }
 
-  SUBCASE("non-existing-ctags")
+  SECTION("non-existing-ctags")
   {
     wex::log_none off;
     REQUIRE(!wex::ctags::open("xxx"));

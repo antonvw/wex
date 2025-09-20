@@ -2,14 +2,14 @@
 // Name:      test.h
 // Purpose:   Declaration of classes for unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#include <wex/test/doctest.h>
+#include <wex/test/unittest.h>
 
-// after doctest
+// after test include
 #include <trompeloeil.hpp>
 
 namespace wex
@@ -21,12 +21,12 @@ const wex::path get_path(
   const std::string& file = std::string(),
   wex::path::log_t        = path::log_t());
 
-/// Offers the doctest based test application,
+/// Offers the unittest based test application,
 /// with lib specific init and exit.
 /// Your test application should be derived from this class.
 class app
   : public wex::app
-  , public doctester
+  , public unittest
 {
 public:
   // Virtual interface
@@ -36,12 +36,9 @@ public:
 
   /// Start event loop and start testing.
   int OnRun() override;
-
-private:
-  wxLanguage get_default_language() const override;
 };
 
-/// Connects main proc and test app. All doctests will start.
+/// Connects main proc and test app. All tests will start.
 ///
 /// E.g.:
 /// int main (int argc, char* argv[])

@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/trim_all.hpp>
 #include <boost/tokenizer.hpp>
 #include <sstream>
 #include <wex/wex.h>
@@ -43,8 +44,8 @@ const std::string find_replace_string(bool replace)
 
 const std::string get_some_text(const std::vector<std::string>& text)
 {
-  std::stringstream                        ss, info;
-  std::vector<std::string>::const_iterator tok_iter = text.begin();
+  std::stringstream ss, info;
+  auto              tok_iter = text.begin();
 
   ss << "deleted " << text.size() << " lines";
 
@@ -146,10 +147,7 @@ wex::del::frame::frame(
   ex::get_macros().load_document();
 
   const std::vector<item> f{
-    {find_replace_data::get()->text_find(),
-     item::COMBOBOX,
-     std::any(),
-     data::control().is_required(true)},
+    {add_find_text()},
     {m_text_in_files,
      item::COMBOBOX,
      default_extensions(),
@@ -795,6 +793,38 @@ bool wex::del::frame::vcs_annotate_commit(
   }
 
   return false;
+}
+
+std::string wex::del::frame::vcs_annotate_line(
+  factory::stc*      stc,
+  const std::string& pane) const
+{
+  const auto it = panes_blame_format().find(pane);
+
+  if (it == panes_blame_format().end())
+  {
+    log("no blame pane") << pane;
+    return std::string();
+  }
+
+  wex::log_none off; // prevent log errors, such as illegal line
+  wex::vcs      vcs{{stc->path()}};
+
+  if (const auto& line(std::to_string(stc->get_current_line() + 1));
+      vcs.execute("blame -L " + line + "," + line + " " + stc->path().string()))
+  {
+    off.enable();
+
+    if (const auto& commit_hash(find_before(vcs.entry().std_out(), " "));
+        !commit_hash.starts_with("000000") &&
+        vcs.execute(
+          "log " + commit_hash + " -n 1 --date=short --format=" + it->second))
+    {
+      return boost::algorithm::trim_all_copy(vcs.entry().std_out());
+    }
+  }
+
+  return std::string();
 }
 
 void wex::del::frame::vcs_append(wex::menu* menu, const menu_item* item) const

@@ -214,9 +214,8 @@ void wex::shell::expand()
       m_auto_complete_list = t->vector;
       AutoCompShow(
         prefix.length(),
-        std::accumulate(
-          t->vector.begin(),
-          t->vector.end(),
+        std::ranges::fold_left(
+          t->vector,
           std::string(),
           [&](const std::string& a, const std::string& b)
           {
@@ -340,7 +339,7 @@ bool wex::shell::process_char(int key)
           prompt();
         }
         // !.. command, get it from history.
-        else if (m_command.substr(0, 1) == "!")
+        else if (m_command.starts_with("!"))
         {
           if (set_command_from_history(m_command.substr(1)))
           {

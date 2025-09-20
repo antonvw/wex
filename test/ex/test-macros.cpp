@@ -2,7 +2,7 @@
 // Name:      test-macros.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2024 Anton van Wezenbeek
+// Copyright: (c) 2019-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -13,14 +13,14 @@
 
 #include "test.h"
 
-TEST_CASE("wex::macros" * doctest::may_fail())
+TEST_CASE("wex::macros", "[!mayfail]")
 {
   auto* stc = get_stc();
   auto* ex  = new wex::ex(stc);
 
   wex::macros macros;
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(macros.get_abbreviations().empty());
     REQUIRE(!macros.path().empty());
@@ -35,7 +35,7 @@ TEST_CASE("wex::macros" * doctest::may_fail())
 
   REQUIRE(macros.load_document());
 
-  SUBCASE("abbreviations")
+  SECTION("abbreviations")
   {
     for (auto& abbrev : wex::test::get_abbreviations())
     {
@@ -56,7 +56,7 @@ TEST_CASE("wex::macros" * doctest::may_fail())
     REQUIRE(macros.save_document());
   }
 
-  SUBCASE("add-erase")
+  SECTION("add-erase")
   {
     macros.mode().transition("qA", ex);
     macros.record("w");
@@ -73,7 +73,7 @@ TEST_CASE("wex::macros" * doctest::may_fail())
     REQUIRE(!macros.erase());
   }
 
-  SUBCASE("builtin-variables")
+  SECTION("builtin-variables")
   {
     for (auto& builtin : get_builtin_variables())
     {
@@ -88,7 +88,7 @@ TEST_CASE("wex::macros" * doctest::may_fail())
     REQUIRE(!macros.mode().expand(ex, wex::variable("x"), expanded));
   }
 
-  SUBCASE("environment-variables")
+  SECTION("environment-variables")
   {
 #ifdef __UNIX__
     for (auto& env : std::vector<std::string>{"HOME", "PWD"})
@@ -98,14 +98,14 @@ TEST_CASE("wex::macros" * doctest::may_fail())
 #endif
   }
 
-  SUBCASE("load")
+  SECTION("load")
   {
     REQUIRE(macros.size() > 0);
     REQUIRE(!macros.is_recorded("d"));
     REQUIRE(!macros.get_keys_map().empty());
   }
 
-  SUBCASE("map")
+  SECTION("map")
   {
     macros.set_key_map("4", "www");
     macros.set_map("Z", "www");
@@ -114,7 +114,7 @@ TEST_CASE("wex::macros" * doctest::may_fail())
     REQUIRE(macros.get_keys_map().find(444) == macros.get_keys_map().end());
   }
 
-  SUBCASE("record-and-playback")
+  SECTION("record-and-playback")
   {
     ex->get_stc()->set_text("hello");
     REQUIRE(macros.mode().transition("qa") == 2);
@@ -157,7 +157,7 @@ TEST_CASE("wex::macros" * doctest::may_fail())
     REQUIRE(!macros.get().empty());
   }
 
-  SUBCASE("recursive")
+  SECTION("recursive")
   {
     macros.mode().transition("qA", ex);
     macros.record("@");
@@ -167,7 +167,7 @@ TEST_CASE("wex::macros" * doctest::may_fail())
     REQUIRE(macros.mode().transition("@a", ex));
   }
 
-  SUBCASE("registers")
+  SECTION("registers")
   {
     REQUIRE(!macros.get_register('a').empty());
     REQUIRE(!macros.get_registers().empty());
@@ -186,7 +186,7 @@ TEST_CASE("wex::macros" * doctest::may_fail())
   // Test input macro variables (requires input).
   // Test template macro variables (requires input).
 
-  SUBCASE("save")
+  SECTION("save")
   {
     macros.set_abbreviation("TEST", "document is_modified");
     REQUIRE(macros.is_modified());

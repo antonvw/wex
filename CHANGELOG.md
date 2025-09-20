@@ -4,7 +4,49 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [25.10] - 2025-10 [Unreleased]
+## [26.04] - 2026-04 [Unreleased]
+
+## [25.10] - 2025-09-21
+
+### Added
+
+- editor pages can be pinned to prevent moving them
+- added more vim g and z commands
+- added showing blame current line in statusbar
+- added pane_is_shown to statusbar
+
+### Changed
+
+- upgrade to lexilla 5.4.4
+- replaced one_letter_after by internal is_marker_valid
+- replaced register_after by internal is_register_valid
+- used catch lib from wxWidgets instead of doctest lib for unit tests
+- used wxFONTFAMILY_TELETYPE instead of wxFONTFAMILY_DEFAULT as default font
+- build-gen.sh supports xcodebuild
+- updated git grep dialog to include checkboxes
+- more boost::process::v2 lib used, requiring boost 1.88
+- used released wxWidgets 3.3.1
+- allow to enable a log_none
+
+### Fixed
+
+- fixed allow adding markers for which isgraph is true
+- fixed CSS macro's and added folding
+- improved performance on regular expression searching by using
+  boost::regular expression instead of std::regular expression
+- fixed some ex settings such as errorbells
+- fixed recording using escape
+- prevent git grep on selection with multiple lines
+- fixed git grep and spaces at end
+- fixed crash in findbar if all documents were closed
+- fixed match function and regular expression in find_replace_data
+- fixed locale
+- fixed global substitute command
+
+### Removed
+
+- removed ODBC support and otlv4 lib: moved to wex-db lib
+- removed queue_thread
 
 ## [25.04] - 2025-03-16
 
@@ -33,7 +75,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - listview standard column sizes are configurable
 - wex::quoted uses std::quoted and includes a delim character
 - stc context menu and properties only shown if no selection active
-- removed get_word, use istringstream instead
 
 ### Fixed
 
@@ -49,6 +90,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - lexer dialog respects edge mode and folding settings
 - ex mode get previous line
 - item::choices_t and item::choices_bool_t use an ordered container
+
+### Removed
+
+- removed get_word, use istringstream instead
 
 ## [24.10] - 2024-09-22
 
@@ -141,7 +186,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
-- possible crash in lisview sorting
+- possible crash in listview sorting
 - ctags::find and empty tag finds next tag
 - rectangular paste
 
@@ -556,7 +601,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - CEdit is used as base for the output
 - Visual C++ 5.0
 
-[Unreleased]: https://github.com/antonvw/wex/compare/v25.04..HEAD
+[Unreleased]: https://github.com/antonvw/wex/compare/v25.10..HEAD
+[25.10]:      https://github.com/antonvw/wex/compare/v25.04...v25.10
 [25.04]:      https://github.com/antonvw/wex/compare/v24.10...v25.04
 [24.10]:      https://github.com/antonvw/wex/compare/v24.04...v24.10
 [24.04]:      https://github.com/antonvw/wex/compare/v23.10.0...v24.04

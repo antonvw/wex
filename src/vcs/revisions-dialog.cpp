@@ -45,7 +45,7 @@ private:
     return dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
   };
 
-  const auto value() const { return m_lv->get_item_text(m_index, m_col); };
+  const auto value() const { return m_lv->get_item_text(m_index, m_col); }
 
   vcs_entry*         m_ve;
   wex::listview*     m_lv;
@@ -174,10 +174,6 @@ int wex::vcs_entry::revisions_dialog(
        {"author", wex::column::STRING_MEDIUM},
        {"hash", wex::column::STRING_SMALL}});
 
-    bind_rev(vb, repo_path, tl, "branches");
-    bind_rev(vt, repo_path, tl, "tags");
-    bind_rev(lv, repo_path, tl, "hash");
-
     lv->field_separator('');
   }
   else
@@ -185,6 +181,10 @@ int wex::vcs_entry::revisions_dialog(
     lv->clear();
     m_item_dialog->SetTitle(file.filename() + " " + _("Select Revision"));
   }
+
+  bind_rev(vb, repo_path, tl, "branches");
+  bind_rev(vt, repo_path, tl, "tags");
+  bind_rev(lv, repo_path, tl, "hash");
 
   vb->load(from_git(*this, "branch -a", 2));
   vt->load(from_git(*this, "tag")); // --sort=-creatordate

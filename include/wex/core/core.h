@@ -2,7 +2,7 @@
 // Name:      core.h
 // Purpose:   Include file for wex core utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -11,12 +11,8 @@
 #include <string>
 #include <vector>
 
-class wxWindow;
-
 namespace wex
 {
-class path;
-
 /*! \file */
 
 /// Tries to auto_complete text from a vector of strings,
@@ -27,8 +23,11 @@ bool auto_complete_text(
   const std::string& text,
   /// vector with completed text
   const std::vector<std::string>& v,
-  /// expansion of text to one of the strings from the vector
+  /// expansion of text to the last match from the vector
   std::string& s);
+
+/// Bells if enabled in config.
+bool bell();
 
 /// Launch default browser.
 /// Returns false if no browser configured or url could not be opened.

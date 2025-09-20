@@ -2,7 +2,7 @@
 // Name:      test-auto-indent.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -18,12 +18,12 @@ TEST_CASE("wex::auto_indent")
 
   wex::auto_indent ai(stc);
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(ai.use());
   }
 
-  SUBCASE("level")
+  SECTION("level")
   {
     REQUIRE(stc->get_lexer().set("cpp", true));
     REQUIRE(stc->GetIndent() == 2);
@@ -33,7 +33,7 @@ TEST_CASE("wex::auto_indent")
     ai.on_char(stc->eol().front()); // fold level == 0
   }
 
-  SUBCASE("newline")
+  SECTION("newline")
   {
     stc->set_text("  \n  line with indentation");
     stc->SetEOLMode(wxSTC_EOL_CR);
@@ -44,7 +44,7 @@ TEST_CASE("wex::auto_indent")
     REQUIRE(stc->get_line_count() == 2);
   }
 
-  SUBCASE("other")
+  SECTION("other")
   {
     stc->set_text("  \n  line with indentation");
     stc->DocumentEnd();
@@ -53,7 +53,7 @@ TEST_CASE("wex::auto_indent")
     REQUIRE(stc->get_line_count() == 2);
   }
 
-  SUBCASE("use")
+  SECTION("use")
   {
     wex::config(_("stc.Auto indent")).set(true);
     REQUIRE(wex::auto_indent::use());

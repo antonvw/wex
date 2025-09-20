@@ -2,7 +2,7 @@
 // Name:      wex.i 
 // Purpose:   SWIG interface file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023-2024 Anton van Wezenbeek
+// Copyright: (c) 2023-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 %include <std_filesystem.i>
@@ -27,7 +27,6 @@
 %include "../include/wex/core/file-status.h"
 %include "../include/wex/core/function-repeat.h"
 %include "../include/wex/core/interruptible.h"
-%include "../include/wex/core/queue-thread.h"
 %include "../include/wex/core/regex.h"
 %include "../include/wex/core/regex-part.h"
 %include "../include/wex/core/tokenize.h"

@@ -2,7 +2,7 @@
 // Name:      test-log.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2023 Anton van Wezenbeek
+// Copyright: (c) 2018-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/file.h>
@@ -13,7 +13,7 @@
 
 TEST_CASE("wex::log")
 {
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(wex::log().get().empty());
     wex::log() << "default constructor";
@@ -21,7 +21,7 @@ TEST_CASE("wex::log")
     REQUIRE(wex::log("hello world").get() == "hello world");
   }
 
-  SUBCASE("debug")
+  SECTION("debug")
   {
     std::stringstream ss;
     ss << "the great white";
@@ -41,12 +41,12 @@ TEST_CASE("wex::log")
     REQUIRE(log.get().contains("\""));
   }
 
-  SUBCASE("info")
+  SECTION("info")
   {
     wex::log::info() << "info";
   }
 
-  SUBCASE("level")
+  SECTION("level")
   {
     const auto current = wex::log::get_level();
 
@@ -57,7 +57,7 @@ TEST_CASE("wex::log")
     REQUIRE(wex::log::get_level() == current);
   }
 
-  SUBCASE("off")
+  SECTION("off")
   {
     const auto current = wex::log::get_level();
 
@@ -83,11 +83,11 @@ TEST_CASE("wex::log")
     }
   }
 
-  SUBCASE("status")
+  SECTION("status")
   {
     wex::log log(wex::log::status("status"));
 
-    SUBCASE("path")
+    SECTION("path")
     {
       log << wex::test::get_path("test.h");
       log << "hello world";
@@ -99,20 +99,20 @@ TEST_CASE("wex::log")
       REQUIRE(!log.get().contains("\""));
     }
 
-    SUBCASE("string")
+    SECTION("string")
     {
       log << std::string("one");
       REQUIRE(log.get().starts_with("status: "));
     }
   }
 
-  SUBCASE("trace")
+  SECTION("trace")
   {
     wex::log::trace("trace") << wex::test::get_path("test.h");
     wex::log::trace("trace") << "hello world";
   }
 
-  SUBCASE("warning")
+  SECTION("warning")
   {
     wex::log::warning("warning") << "hello";
   }

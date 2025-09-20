@@ -2,7 +2,7 @@
 // Name:      data/test-item.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
@@ -11,7 +11,7 @@
 
 TEST_CASE("wex::data::item")
 {
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(wex::data::item().apply() == nullptr);
     REQUIRE(wex::data::item().columns() == 1);
@@ -30,7 +30,7 @@ TEST_CASE("wex::data::item")
               .is_required());
   }
 
-  SUBCASE("operator")
+  SECTION("operator")
   {
     wex::data::item item;
     item.is_persistent(false).is_readonly(true).is_regex(true).apply(
@@ -46,7 +46,7 @@ TEST_CASE("wex::data::item")
     REQUIRE(copy.is_regex());
   }
 
-  SUBCASE("set")
+  SECTION("set")
   {
     wex::data::item item;
     item.is_regex(true);

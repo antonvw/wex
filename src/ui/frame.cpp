@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2024 Anton van Wezenbeek
+// Copyright: (c) 2010-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
@@ -103,7 +103,11 @@ const std::string win_frame = "window.frame", win_max = "window.maximized";
 
 wex::frame::frame(size_t maxFiles, const data::window& data)
   : m_file_history(maxFiles, wxID_FILE1)
-  , m_toggled_panes(
+  , m_panes_blame_format(
+      {{"PaneBlameAuthor", "%an"},
+       {"PaneBlameDate", "%ad"},
+       {"PaneBlameComments", "%s"}})
+  , m_panes_toggle(
       {{{"FINDBAR", _("&Findbar")}, ID_VIEW_LOWEST + 1},
        {{"OPTIONSBAR", _("&Optionsbar")}, ID_VIEW_LOWEST + 2},
        {{"TOOLBAR", _("&Toolbar")}, ID_VIEW_LOWEST + 3},
@@ -272,7 +276,7 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
       m_optionsbar->set_checkbox(info->name, false);
     });
 
-  for (const auto& it : m_toggled_panes)
+  for (const auto& it : m_panes_toggle)
   {
     Bind(
       wxEVT_UPDATE_UI,
@@ -353,8 +357,8 @@ bool wex::frame::add_toolbar_panes(const panes_t& panes)
         pane.Top().ToolbarPane().MinSize(-1, 30);
       }
 
-      // Initially hide special bars.
-      if (pane.name == "OPTIONSBAR")
+      // Initially hide all bars, except the TOOLBAR.
+      if (pane.name != "TOOLBAR")
       {
         pane.Hide();
       }
@@ -794,6 +798,8 @@ bool wex::frame::Show(bool show)
 void wex::frame::sync_close_all(wxWindowID id)
 {
   set_find_focus(nullptr);
+
+  m_findbar->sync_close_all(id);
 
   show_ex_bar(SHOW_BAR_SYNC_CLOSE_ALL);
 }

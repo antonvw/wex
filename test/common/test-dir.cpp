@@ -2,7 +2,7 @@
 // Name:      test-dir.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -32,7 +32,7 @@ void test_files(const std::string& spec, size_t count, bool hidden = false)
 
 TEST_CASE("wex::dir")
 {
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     wex::dir dir(wex::test::get_path());
 
@@ -47,9 +47,9 @@ TEST_CASE("wex::dir")
     REQUIRE(dir2.data().file_spec() == "*.h");
   }
 
-  SUBCASE("find_files")
+  SECTION("find_files")
   {
-    SUBCASE("dirs")
+    SECTION("dirs")
     {
       wex::dir dir(
         wex::path("../../"),
@@ -61,17 +61,17 @@ TEST_CASE("wex::dir")
       REQUIRE(dir.find_files() == 1);
     }
 
-    SUBCASE("flat")
+    SECTION("flat")
     {
       test_files("*.h", 2, false);
     }
 
-    SUBCASE("hidden")
+    SECTION("hidden")
     {
       test_files("*.h", 3, true);
     }
 
-    SUBCASE("recursive")
+    SECTION("recursive")
     {
       wex::dir dir(wex::path("../../"), wex::data::dir().file_spec("*.h"));
 
@@ -84,7 +84,7 @@ TEST_CASE("wex::dir")
       REQUIRE(limit.find_files() == 25);
     }
 
-    SUBCASE("thread")
+    SECTION("thread")
     {
       wex::dir dir(
         wex::path("./"),
@@ -99,14 +99,14 @@ TEST_CASE("wex::dir")
     }
   }
 
-  SUBCASE("get_all_files")
+  SECTION("get_all_files")
   {
     const auto& v(wex::get_all_files(
       std::string("./"),
       wex::data::dir().file_spec("*.txt").type(
         wex::data::dir::type_t().set(wex::data::dir::FILES))));
 
-    REQUIRE(v.size() == 5);
+    REQUIRE(v.size() == 6);
 
     const auto& v2(wex::get_all_files(
       std::string("./"),
@@ -119,7 +119,7 @@ TEST_CASE("wex::dir")
     REQUIRE(v2.front().contains("\\ "));
   }
 
-  SUBCASE("invalid")
+  SECTION("invalid")
   {
     wex::dir dir(
       wex::path("xxxx"),

@@ -2,7 +2,7 @@
 // Name:      test-statusbar.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ui/statusbar.h>
@@ -11,7 +11,7 @@
 
 TEST_CASE("wex::statusbar")
 {
-  SUBCASE("setup")
+  SECTION("setup")
   {
     get_statusbar()->setup(
       frame(),
@@ -42,6 +42,7 @@ TEST_CASE("wex::statusbar")
     REQUIRE(get_statusbar()->set_statustext("GoodBye", "LastPane"));
 
     REQUIRE(get_statusbar()->get_statustext("Pane0") == "hello0");
+    REQUIRE(get_statusbar()->pane_is_shown("Pane0"));
     REQUIRE(
       (reinterpret_cast<wxStatusBar*>(get_statusbar()))->GetStatusText(1) ==
       "hello0");
@@ -50,6 +51,7 @@ TEST_CASE("wex::statusbar")
     REQUIRE(get_statusbar()->get_statustext("Panexxx").empty());
 
     REQUIRE(get_statusbar()->pane_show("Pane0", false));
+    REQUIRE(!get_statusbar()->pane_is_shown("Pane0"));
     REQUIRE(
       (reinterpret_cast<wxStatusBar*>(get_statusbar()))->GetStatusText(1) ==
       "hello1");
@@ -72,7 +74,7 @@ TEST_CASE("wex::statusbar")
     REQUIRE(get_statusbar()->get_statustext("LastPane") == "BackAgain");
   }
 
-  SUBCASE("statusbar_pane")
+  SECTION("statusbar_pane")
   {
     wex::statusbar_pane pane1("PaneInfo", 15);
     REQUIRE(pane1.help_text() == "Lines or Items");
@@ -86,7 +88,7 @@ TEST_CASE("wex::statusbar")
     pane1.hidden_text("hidden");
     REQUIRE(pane1.hidden_text() == "hidden");
 
-    SUBCASE("setup")
+    SECTION("setup")
     {
       get_statusbar()->setup(
         frame(),
@@ -97,7 +99,7 @@ TEST_CASE("wex::statusbar")
       REQUIRE(get_statusbar()->GetFieldsCount() == 6);
     }
 
-    SUBCASE("setup-with-text")
+    SECTION("setup-with-text")
     {
       get_statusbar()->setup(
         frame(),

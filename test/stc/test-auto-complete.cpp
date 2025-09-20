@@ -2,7 +2,7 @@
 // Name:      test-auto-complete.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/stc/auto-complete.h>
@@ -17,7 +17,7 @@ TEST_CASE("wex::auto_complete")
 
   wex::auto_complete ac(stc);
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(ac.use());
     REQUIRE(ac.insert().empty());
@@ -25,7 +25,7 @@ TEST_CASE("wex::auto_complete")
     REQUIRE(ac.variable("none").empty());
   }
 
-  SUBCASE("clear")
+  SECTION("clear")
   {
     REQUIRE(!ac.on_char('x'));
     REQUIRE(!ac.on_char('y'));
@@ -36,7 +36,7 @@ TEST_CASE("wex::auto_complete")
     REQUIRE(ac.inserts().find("xyz") != ac.inserts().end());
   }
 
-  SUBCASE("complete")
+  SECTION("complete")
   {
     REQUIRE(!ac.complete(std::string()));
     REQUIRE(ac.complete("test_app"));
@@ -64,7 +64,7 @@ TEST_CASE("wex::auto_complete")
     REQUIRE(ac.inserts().size() == 2);
   }
 
-  SUBCASE("stc")
+  SECTION("stc")
   {
     REQUIRE(stc->get_fold_level() == 0);
 
@@ -111,7 +111,7 @@ TEST_CASE("wex::auto_complete")
 #endif
   }
 
-  SUBCASE("sync")
+  SECTION("sync")
   {
     REQUIRE(ac.sync());
     REQUIRE(!ac.sync());
@@ -125,7 +125,7 @@ TEST_CASE("wex::auto_complete")
     REQUIRE(!ac.sync());
   }
 
-  SUBCASE("use")
+  SECTION("use")
   {
     REQUIRE(ac.use());
 

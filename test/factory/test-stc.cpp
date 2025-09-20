@@ -2,7 +2,7 @@
 // Name:      test-stc.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2024 Anton van Wezenbeek
+// Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "test.h"
@@ -14,7 +14,7 @@ TEST_CASE("wex::factory::stc")
   ALLOW_CALL(*stc, is_visual()).RETURN(true);
   stc->set_text("more text\notherline\nother line");
 
-  SUBCASE("margin")
+  SECTION("margin")
   {
     REQUIRE(stc->margin_divider_number() >= 0);
     REQUIRE(stc->margin_folding_number() >= 0);
@@ -52,7 +52,7 @@ TEST_CASE("wex::factory::stc")
     REQUIRE(stc->get_margin_text_click() == -1);
   }
 
-  SUBCASE("motion")
+  SECTION("motion")
   {
     stc->BigWordLeft();
     stc->BigWordLeftExtend();
@@ -83,7 +83,7 @@ TEST_CASE("wex::factory::stc")
     stc->WordRightEndRectExtend();
   }
 
-  SUBCASE("other")
+  SECTION("other")
   {
     stc->bind_wx();
 
@@ -105,14 +105,14 @@ TEST_CASE("wex::factory::stc")
     REQUIRE(stc->get_line_count_request() == 1);
   }
 
-  SUBCASE("position")
+  SECTION("position")
   {
     stc->position_restore();
     stc->position_save();
     REQUIRE(stc->position_restore());
   }
 
-  SUBCASE("text")
+  SECTION("text")
   {
     stc->clear();
     stc->add_text("baan");
@@ -122,7 +122,7 @@ TEST_CASE("wex::factory::stc")
     REQUIRE(stc->get_text() == "baanbaan");
   }
 
-  SUBCASE("virtual")
+  SECTION("virtual")
   {
     REQUIRE(!stc->vi_command(wex::line_data()));
 

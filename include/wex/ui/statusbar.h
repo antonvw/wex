@@ -63,6 +63,9 @@ public:
   /// or is not shown.
   const std::string get_statustext(const std::string& pane) const;
 
+  /// Returns true if pane is shown.
+  bool pane_is_shown(const std::string& pane) const;
+
   /// Shows or hides the pane.
   /// Returns true if pane visibility actually changed.
   bool pane_show(const std::string& pane, bool show);

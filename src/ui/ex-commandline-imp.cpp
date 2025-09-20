@@ -2,7 +2,7 @@
 // Name:      ex-commandline-imp.cpp
 // Purpose:   Implementation of wex::ex_commandline_imp class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <utility>
@@ -232,7 +232,7 @@ bool wex::ex_commandline_imp::handle_type(
           m_cl->get_frame()->vi_is_address(m_cl->stc(), current));
 
         set_text(
-          m_mode_visual && current.find(range) != 0 && vi_is_address ?
+          m_mode_visual && current.starts_with(range) && vi_is_address ?
             range + current :
             current);
         SelectAll();
@@ -271,8 +271,6 @@ void wex::ex_commandline_imp::init()
 {
   SetUseHorizontalScrollBar(false);
   SetUseVerticalScrollBar(false);
-  SetFont(config(_("stc.Text font"))
-            .get(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)));
 
   get_lexer().set(lexer(this));
   reset_margins();

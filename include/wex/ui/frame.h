@@ -16,6 +16,7 @@
 #include <wex/ui/statusbar.h>
 #include <wx/aui/framemanager.h>
 
+#include <map>
 #include <utility>
 #include <vector>
 
@@ -71,7 +72,7 @@ public:
 
   /// Toggled panes type.
   typedef std::vector<std::pair<std::pair<std::string, std::string>, int>>
-    toggled_panes_t;
+    panes_toggle_t;
 
   /// Default constructor, registers the aui manager, and creates the bars.
   frame(
@@ -349,6 +350,15 @@ public:
   /// Returns number of panes.
   size_t panes() const;
 
+  /// Returns statusbar field blame pane formats.
+  const std::map<std::string, std::string>& panes_blame_format() const
+  {
+    return m_panes_blame_format;
+  };
+
+  /// Returns the toggled panes.
+  const auto& panes_toggle() const { return m_panes_toggle; }
+
   /// Sets debug entry.
   void set_debug_entry(wex::debug_entry* de) { m_debug_entry = de; }
 
@@ -379,9 +389,6 @@ public:
 
   /// Shows or hide process pane.
   void show_process(bool show);
-
-  /// Returns the toggled panes.
-  const auto& toggled_panes() const { return m_toggled_panes; }
 
   /// overridden methods
 
@@ -419,7 +426,8 @@ private:
 
   std::ofstream* m_ofs{nullptr};
 
-  const toggled_panes_t m_toggled_panes;
+  const std::map<std::string, std::string> m_panes_blame_format;
+  const panes_toggle_t                     m_panes_toggle;
 
   wxFindReplaceDialog* m_find_replace_dialog{nullptr};
 

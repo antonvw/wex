@@ -2,7 +2,7 @@
 // Name:      test-debug-entry.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2023 Anton van Wezenbeek
+// Copyright: (c) 2019-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/test/test.h>
@@ -10,7 +10,7 @@
 
 TEST_CASE("wex::debug_entry")
 {
-  SUBCASE("default constructor")
+  SECTION("default constructor")
   {
     wex::debug_entry entry;
 
@@ -28,7 +28,7 @@ TEST_CASE("wex::debug_entry")
     }
   }
 
-  SUBCASE("constructor using xml")
+  SECTION("constructor using xml")
   {
     pugi::xml_document doc;
     REQUIRE(doc.load_string("\

@@ -2,7 +2,7 @@
 // Name:      vi/test-vi.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2024 Anton van Wezenbeek
+// Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -42,7 +42,7 @@ TEST_CASE("wex::vi")
   // First load macros.
   REQUIRE(wex::ex::get_macros().load_document());
 
-  SUBCASE("calc")
+  SECTION("calc")
   {
     stc->set_text("this text contains xx");
     REQUIRE(vi->command("i"));
@@ -63,17 +63,17 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command(""));
   }
 
-  SUBCASE("delete")
+  SECTION("delete")
   {
     stc->set_text("XXXXX\nYYYYY  \nZZZZZ\n");
 
-    SUBCASE("normal")
+    SECTION("normal")
     {
       REQUIRE(vi->command("x"));
       REQUIRE(stc->get_text() == "XXXX\nYYYYY  \nZZZZZ\n");
     }
 
-    SUBCASE("block")
+    SECTION("block")
     {
       start_block(vi);
       REQUIRE(vi->command("2j"));
@@ -83,7 +83,7 @@ TEST_CASE("wex::vi")
       change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     }
 
-    SUBCASE("selection")
+    SECTION("selection")
     {
       REQUIRE(vi->command("/ +"));
       REQUIRE(vi->command("d"));
@@ -91,9 +91,9 @@ TEST_CASE("wex::vi")
     }
   }
 
-  SUBCASE("change")
+  SECTION("change")
   {
-    SUBCASE("normal")
+    SECTION("normal")
     {
       change_prep("cw", vi, stc);
       REQUIRE(stc->GetLineText(0) == "zzzsecond third");
@@ -110,7 +110,7 @@ TEST_CASE("wex::vi")
     start_block(vi);
     REQUIRE(vi->command("2j"));
 
-    SUBCASE("block")
+    SECTION("block")
     {
       // Next should be the OK..
       // REQUIRE(vi->command("ce"));
@@ -120,7 +120,7 @@ TEST_CASE("wex::vi")
       change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     }
 
-    SUBCASE("block-select")
+    SECTION("block-select")
     {
       REQUIRE(vi->command("l"));
       REQUIRE(vi->command("l"));
@@ -131,7 +131,7 @@ TEST_CASE("wex::vi")
     }
   }
 
-  SUBCASE("insert")
+  SECTION("insert")
   {
     stc->set_text("aaaaa");
     REQUIRE(vi->mode().is_command());
@@ -212,13 +212,13 @@ TEST_CASE("wex::vi")
     REQUIRE(!vi->mode().is_insert());
   }
 
-  SUBCASE("invalid command")
+  SECTION("invalid command")
   {
     REQUIRE(!vi->command(":xxx"));
     change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
   }
 
-  SUBCASE("is_active")
+  SECTION("is_active")
   {
     REQUIRE(vi->is_active());
     vi->use(wex::ex::mode_t::OFF);
@@ -227,7 +227,7 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->is_active());
   }
 
-  SUBCASE("maps")
+  SECTION("maps")
   {
     stc->set_text("this text is not needed");
     vi->command(":map " + std::to_string(WXK_CONTROL_G) + " :%d");
@@ -237,7 +237,7 @@ TEST_CASE("wex::vi")
 
   // on_char(), on_key_down() : see stc/test-vi.cpp
 
-  SUBCASE("put")
+  SECTION("put")
   {
     stc->set_text("the chances of anything coming from mars\n");
     REQUIRE(vi->command("yy"));
@@ -248,7 +248,7 @@ TEST_CASE("wex::vi")
       100 * sizeof("the chances of anything coming from mars"));
   }
 
-  SUBCASE("put-special")
+  SECTION("put-special")
   {
     // Put should not put text within a line, but after it, or before it.
     stc->set_text("the chances of anything coming from mars\n");
@@ -266,7 +266,7 @@ TEST_CASE("wex::vi")
     REQUIRE(!stc->get_text().contains("mathe"));
   }
 
-  SUBCASE("registers")
+  SECTION("registers")
   {
     stc->set_text("");
     const std::string ctrl_r = "\x12";
@@ -290,7 +290,7 @@ TEST_CASE("wex::vi")
     REQUIRE(stc->get_text().contains("XXXXX"));
   }
 
-  SUBCASE("substitute")
+  SECTION("substitute")
   {
     stc->set_text("999");
     REQUIRE(vi->command(":1,$s/xx/yy/g")); // so &, ~ are ok
@@ -306,7 +306,7 @@ TEST_CASE("wex::vi")
     REQUIRE(stc->get_text().contains("yy"));
   }
 
-  SUBCASE("tags")
+  SECTION("tags")
   {
     stc->set_text("no tag");
     REQUIRE(vi->command("Q"));
@@ -317,7 +317,7 @@ TEST_CASE("wex::vi")
     vi->append_insert_text("hello world");
   }
 
-  SUBCASE("visual mode")
+  SECTION("visual mode")
   {
     stc->set_text("123456789");
     vi->mode().visual();

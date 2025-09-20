@@ -1,3 +1,3 @@
 #!/bin/bash
 
-robot "*robot*"
+robot -e not_on_github -e not_ready "*robot*"

@@ -2,7 +2,7 @@
 // Name:      test-temp-filename.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/file.h>
@@ -11,7 +11,7 @@
 
 TEST_CASE("wex::temp_filename")
 {
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     wex::temp_filename tmpx, tmpy;
 
@@ -20,7 +20,7 @@ TEST_CASE("wex::temp_filename")
     REQUIRE(tmpx.name() != tmpy.name());
   }
 
-  SUBCASE("constructor-cleanup")
+  SECTION("constructor-cleanup")
   {
     wex::temp_filename tmpx(true);
     wex::path          p;

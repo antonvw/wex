@@ -88,7 +88,7 @@ wex::auto_complete_filename(const std::string& text)
   // alias to filename
   const auto& prefix(path.filename());
 
-  // get all matching files
+  // get all matching files (not recursive)
   const auto& v(get_all_files(
     path.parent_path(),
     data::dir()
@@ -177,9 +177,8 @@ bool wex::lexers_dialog(syntax::stc* stc)
 {
   std::vector<std::string> s;
 
-  std::transform(
-    lexers::get()->get_lexers().begin(),
-    lexers::get()->get_lexers().end(),
+  std::ranges::transform(
+    lexers::get()->get_lexers(),
     std::back_inserter(s),
     [](const auto& i)
     {

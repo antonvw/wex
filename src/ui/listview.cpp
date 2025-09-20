@@ -106,7 +106,7 @@ const std::vector<item> config_items()
        {_("Font"),
         {{_("list.Font"),
           item::FONTPICKERCTRL,
-          wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)}}},
+          style().default_font()}}},
        {_("Margin"),
         {{"col.DATE", 0, 150, 80},
          {"col.FLOAT", 0, 120, 80},
@@ -507,20 +507,6 @@ void wex::listview::config_get()
   SetSingleStyle(wxLC_SINGLE_SEL, iv.find<bool>(_("list.Single selection")));
 
   items_update();
-}
-
-const std::string wex::listview::context(const std::string& line, int pos) const
-{
-  int context_size = config(_("list.Context size")).get(10);
-
-  if (pos == -1 || context_size <= 0)
-  {
-    return line;
-  }
-
-  return (context_size > pos ? std::string(context_size - pos, ' ') :
-                               std::string()) +
-         line.substr(context_size < pos ? pos - context_size : 0);
 }
 
 void wex::listview::copy_selection_to_clipboard()
@@ -973,9 +959,8 @@ bool wex::listview::load(const strings_t& l)
 
     int i = 0;
 
-    std::for_each(
-      tok.begin(),
-      tok.end(),
+    std::ranges::for_each(
+      tok,
       [this, &i](const auto&)
       {
         append_columns({{std::to_string(i++ + 1), column::STRING_MEDIUM, 100}});
@@ -1146,7 +1131,7 @@ void wex::listview::process_match(const wxCommandEvent& event)
 
   item.insert();
   item.set_item(_("Line No"), std::to_string(m->line_no() + 1));
-  item.set_item(_("Line"), context(m->line(), m->pos()));
+  item.set_item(_("Line"), m->context());
   item.set_item(
     _("Match"),
     m->tool().id() == ID_TOOL_REPORT_FIND ?

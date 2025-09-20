@@ -2,7 +2,7 @@
 // Name:      sort.h
 // Purpose:   Declaration of wex::sort class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -50,7 +50,8 @@ public:
     const std::string& separators);
 
 private:
-  template <typename T> const std::string get_column(T first, T last);
+  template <typename T>
+  const std::string get_column(const T& first, const T& last);
   template <typename T>
   const std::string get_lines(std::vector<std::string>& lines, T it);
 

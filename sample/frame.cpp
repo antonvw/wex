@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex sample class frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/generic/numdlgg.h>
@@ -37,7 +37,7 @@ enum
 
 frame::frame(app* app)
   : m_notebook(new wex::notebook(wex::data::window().style(
-      wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_WINDOWLIST_BUTTON)))
+      wex::notebook::default_style_t | wxAUI_NB_WINDOWLIST_BUTTON)))
   , m_app(app)
   , m_grid(new wex::grid(wex::data::window().parent(m_notebook)))
   , m_listview(new wex::listview(wex::data::window().parent(m_notebook)))

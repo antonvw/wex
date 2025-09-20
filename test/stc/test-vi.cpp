@@ -2,7 +2,7 @@
 // Name:      stc/test-vi.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -42,7 +42,7 @@ TEST_CASE("wex::vi")
   stc->set_text("");
 
   // see also ex/test-ex.cpp
-  SUBCASE("calculator")
+  SECTION("calculator")
   {
     stc->set_text("aaaaa\nbbbbb\nccccc\n");
 
@@ -59,12 +59,12 @@ TEST_CASE("wex::vi")
     REQUIRE(frame()->entry_dialog_calls() == 4);
   }
 
-  SUBCASE("change")
+  SECTION("change")
   {
     stc->set_text("aaaaa\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");
     auto* vi = &stc->get_vi();
 
-    SUBCASE("normal")
+    SECTION("normal")
     {
       vi->command("ce");
       vi->command("OK");
@@ -72,7 +72,7 @@ TEST_CASE("wex::vi")
         stc->get_text() == "OK\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");
     }
 
-    SUBCASE("selection")
+    SECTION("selection")
     {
       vi->mode().visual();
       vi->command("w");
@@ -89,7 +89,7 @@ TEST_CASE("wex::vi")
     change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
   }
 
-  SUBCASE("enter")
+  SECTION("enter")
   {
     stc->set_text("aaaaa\nbbbbb\nccccc\n");
 
@@ -97,7 +97,7 @@ TEST_CASE("wex::vi")
     REQUIRE(stc->get_text() == "aaaaa\nbbbbb\nccccc\n");
   }
 
-  SUBCASE("find")
+  SECTION("find")
   {
     stc->set_text("find findnottext to another find");
     REQUIRE(vi->command("l"));
@@ -105,7 +105,7 @@ TEST_CASE("wex::vi")
     REQUIRE(stc->GetCurrentPos() == 32);
   }
 
-  SUBCASE("goto") // goto, /, ?, n and N.
+  SECTION("goto") // goto, /, ?, n and N.
   {
     stc->set_text("aaaaa\nbbbbb\nccccc\naaaaa\ne\nf\ng\nh\ni\nj\nk\n");
     vi->reset_search_flags();
@@ -141,7 +141,7 @@ TEST_CASE("wex::vi")
     }
   }
 
-  SUBCASE("mark")
+  SECTION("mark")
   {
     stc->set_text("some text with marker and pos\nmore\nmore");
     REQUIRE(vi->command("2w"));
@@ -156,11 +156,11 @@ TEST_CASE("wex::vi")
     REQUIRE(stc->GetCurrentPos() == 10);
   }
 
-  SUBCASE("navigate")
+  SECTION("navigate")
   {
     stc->set_text("{a brace and a close brace}");
 
-    SUBCASE("brace")
+    SECTION("brace")
     {
       REQUIRE(vi->command("%"));
       REQUIRE(stc->GetCurrentPos() == 26);
@@ -168,20 +168,20 @@ TEST_CASE("wex::vi")
       REQUIRE(stc->GetCurrentPos() == 0);
     }
 
-    SUBCASE("brace-visual")
+    SECTION("brace-visual")
     {
       REQUIRE(vi->command("y%"));
       REQUIRE(stc->GetSelectedText().size() == 27);
     }
 
-    SUBCASE("delete")
+    SECTION("delete")
     {
       REQUIRE(vi->command(wex::k_s(WXK_DELETE)));
       REQUIRE(stc->get_text().starts_with("a brace"));
     }
   }
 
-  SUBCASE("number")
+  SECTION("number")
   {
     change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     wxKeyEvent event(wxEVT_CHAR);
@@ -202,7 +202,7 @@ TEST_CASE("wex::vi")
     }
   }
 
-  SUBCASE("on_char")
+  SECTION("on_char")
   {
     wxKeyEvent event(wxEVT_CHAR);
     event.m_uniChar = 'i';
@@ -222,7 +222,7 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->inserted_text().contains(vi->get_stc()->eol()));
   }
 
-  SUBCASE("put-block")
+  SECTION("put-block")
   {
     stc->set_text("XXXXX\nYYYYY  \nZZZZZ\n");
 
@@ -234,10 +234,10 @@ TEST_CASE("wex::vi")
     REQUIRE(vi->command("h"));
     REQUIRE(vi->command("p"));
 
-    WARN(stc->get_text() == "XXXXXX\nYYYYYY  \nZZZZZZ\n");
+    CHECK(stc->get_text() == "XXXXXX\nYYYYYY  \nZZZZZZ\n");
   }
 
-  SUBCASE("registers")
+  SECTION("registers")
   {
     stc->get_file().file_new(wex::path("test.h"));
     const std::string ctrl_r = "\x12";
@@ -266,7 +266,7 @@ TEST_CASE("wex::vi")
     REQUIRE(stc->get_text() == "no control r");
   }
 
-  SUBCASE("right-while-in-insert")
+  SECTION("right-while-in-insert")
   {
     stc->set_text("this text contains xx");
 
@@ -283,7 +283,7 @@ TEST_CASE("wex::vi")
     change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
   }
 
-  SUBCASE("select")
+  SECTION("select")
   {
     stc->set_text("this text contains xx");
 
@@ -308,7 +308,7 @@ TEST_CASE("wex::vi")
     REQUIRE(stc->get_selected_text().empty());
   }
 
-  SUBCASE("set")
+  SECTION("set")
   {
     stc->set_text("xx\nxx\nyy\nzz\n");
 
@@ -358,7 +358,7 @@ TEST_CASE("wex::vi")
     REQUIRE(!stc->GetUseTabs());
 
     REQUIRE(vi->command(":set report=10"));
-    REQUIRE(wex::config("stc.Reported lines").get(5) == 10);
+    REQUIRE(wex::config("ex-set.reportedlines").get(5) == 10);
 
     REQUIRE(vi->command(":set ve=5"));
     REQUIRE(std::to_underlying(wex::log::get_level()) == 5);
@@ -368,11 +368,11 @@ TEST_CASE("wex::vi")
   }
 
 #ifndef __WXMSW__
-  SUBCASE("source")
+  SECTION("source")
   {
     stc->set_text("xx\nxx\nyy\nzz\n");
 
-    SUBCASE("so")
+    SECTION("so")
     {
       // necesary for the ~ in test-source
       wex::find_replace_data::get()->set_find_string("xx");
@@ -380,17 +380,17 @@ TEST_CASE("wex::vi")
       REQUIRE(vi->command(":so test-source.txt"));
     }
 
-    SUBCASE("full")
+    SECTION("full")
     {
       REQUIRE(vi->command(":source test-source.txt"));
     }
 
-    SUBCASE("not-existing")
+    SECTION("not-existing")
     {
       REQUIRE(!vi->command(":so test-surce.txt"));
     }
 
-    SUBCASE("invalid")
+    SECTION("invalid")
     {
       // and skip the error message for recursive line
       wex::log_none off;
@@ -401,7 +401,7 @@ TEST_CASE("wex::vi")
   }
 #endif
 
-  SUBCASE("stream")
+  SECTION("stream")
   {
     stc->set_text("\n\n\n\n\n\n");
     stc->visual(false);
@@ -424,14 +424,14 @@ TEST_CASE("wex::vi")
     stc->visual(true);
   }
 
-  SUBCASE("substitute")
+  SECTION("substitute")
   {
     stc->set_text("xx\nxx\nyy\nzz\n");
     REQUIRE(vi->command(":%s/$/OK"));
     REQUIRE(stc->get_text() == "xxOK\nxxOK\nyyOK\nzzOK\n");
   }
 
-  SUBCASE("syntax")
+  SECTION("syntax")
   {
     REQUIRE(stc->open(wex::path("test.md")));
     stc->get_lexer().set("markdown");
@@ -442,7 +442,7 @@ TEST_CASE("wex::vi")
     REQUIRE(stc->get_lexer().display_lexer() == "markdown");
   }
 
-  SUBCASE("tab")
+  SECTION("tab")
   {
     stc->clear();
 
@@ -469,7 +469,7 @@ TEST_CASE("wex::vi")
     change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
   }
 
-  SUBCASE("visual")
+  SECTION("visual")
   {
     stc->set_text("this text contains xx");
 
@@ -516,7 +516,7 @@ TEST_CASE("wex::vi")
       "this text contains xx\nand yy on other line");
   }
 
-  SUBCASE("others")
+  SECTION("others")
   {
     // Test WXK_NONE.
     stc->set_text("the chances of anything coming from mars\n");

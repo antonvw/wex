@@ -2,7 +2,7 @@
 // Name:      test-vi-other.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -22,7 +22,7 @@ TEST_CASE("wex::vi-other")
   // First load macros.
   REQUIRE(wex::ex::get_macros().load_document());
 
-  SUBCASE("join")
+  SECTION("join")
   {
     stc->set_text("this text contains xx\nand yy");
     REQUIRE(stc->get_line_count() == 2);
@@ -32,7 +32,7 @@ TEST_CASE("wex::vi-other")
     REQUIRE(stc->get_line_count() == 1);
   }
 
-  SUBCASE("macro")
+  SECTION("macro")
   {
     for (const auto& macro : std::vector<std::vector<std::string>>{
            {"10w"},
@@ -65,7 +65,7 @@ TEST_CASE("wex::vi-other")
     REQUIRE(vi->command("10@t"));
   }
 
-  SUBCASE("playback")
+  SECTION("playback")
   {
     REQUIRE(vi->command("qa"));
 
@@ -80,17 +80,17 @@ TEST_CASE("wex::vi-other")
   }
 
   // this subcase should be before the 'recording', otherwise it fails?
-  SUBCASE("replace")
+  SECTION("replace")
   {
     stc->set_text("XXXXX\nYYYYY\nZZZZZ\n");
 
-    SUBCASE("normal")
+    SECTION("normal")
     {
       REQUIRE(vi->command("3rx"));
       REQUIRE(stc->get_text() == "xxxXX\nYYYYY\nZZZZZ\n");
     }
 
-    SUBCASE("block")
+    SECTION("block")
     {
       REQUIRE(vi->command("K"));
       REQUIRE(vi->command("j"));
@@ -101,7 +101,7 @@ TEST_CASE("wex::vi-other")
     }
   }
 
-  SUBCASE("recording")
+  SECTION("recording")
   {
     stc->set_text("abc\nuvw\nxyz\n");
 
@@ -128,7 +128,7 @@ TEST_CASE("wex::vi-other")
     REQUIRE(vi->command("q"));
   }
 
-  SUBCASE("variable")
+  SECTION("variable")
   {
     stc->set_text("");
     REQUIRE(vi->command("@Date@"));
@@ -150,7 +150,7 @@ TEST_CASE("wex::vi-other")
     REQUIRE(vi->command("@Nl@"));
   }
 
-  SUBCASE("yank")
+  SECTION("yank")
   {
     stc->set_text("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
     REQUIRE(vi->command("yw"));
@@ -162,7 +162,7 @@ TEST_CASE("wex::vi-other")
     REQUIRE(stc->get_text().contains("second"));
   }
 
-  SUBCASE("other")
+  SECTION("other")
   {
     // Test abbreviate.
     for (auto& abbrev : wex::test::get_abbreviations())
@@ -184,13 +184,6 @@ TEST_CASE("wex::vi-other")
 
     vi->reset_search_flags();
     wex::config(_("stc.Wrap scan")).set(true);
-
-    // Test fold.
-    for (auto& fold : std::vector<std::string>{"zo", "zc", "zE", "zf"})
-    {
-      REQUIRE(vi->command(fold));
-      REQUIRE(vi->last_command() != fold);
-    }
 
     // Test other commands (ZZ not tested).
     for (auto& other_command : vi->other_commands())

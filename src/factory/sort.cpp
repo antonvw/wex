@@ -2,7 +2,7 @@
 // Name:      sort.cpp
 // Purpose:   Implementation of wex::sort class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -25,7 +25,7 @@ wex::factory::sort::sort(sort_t sort_t, size_t pos, size_t len)
 }
 
 template <typename T>
-const std::string wex::factory::sort::get_column(T first, T last)
+const std::string wex::factory::sort::get_column(const T& first, const T& last)
 {
   std::string text;
 

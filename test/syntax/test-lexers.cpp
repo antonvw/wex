@@ -12,7 +12,7 @@
 
 TEST_CASE("wex::lexers")
 {
-  SUBCASE("get")
+  SECTION("get")
   {
     auto* l = wex::lexers::set(nullptr);
     REQUIRE(l != nullptr);
@@ -38,7 +38,7 @@ TEST_CASE("wex::lexers")
     delete m;
   }
 
-  SUBCASE("apply_default_style")
+  SECTION("apply_default_style")
   {
     wex::lexers::get()->apply_default_style(
       [=](const std::string& back)
@@ -49,7 +49,7 @@ TEST_CASE("wex::lexers")
       });
   }
 
-  SUBCASE("apply_macro")
+  SECTION("apply_macro")
   {
     for (const auto& macro : std::vector<
            std::pair<std::pair<std::string, std::string>, std::string>>{
@@ -69,7 +69,7 @@ TEST_CASE("wex::lexers")
     }
   }
 
-  SUBCASE("find_by")
+  SECTION("find_by")
   {
     REQUIRE(
       wex::lexers::get()
@@ -102,7 +102,7 @@ TEST_CASE("wex::lexers")
     }
   }
 
-  SUBCASE("keywords")
+  SECTION("keywords")
   {
     REQUIRE(!wex::lexers::get()->keywords("cpp").empty());
     REQUIRE(!wex::lexers::get()->keywords("csh").empty());
@@ -111,7 +111,7 @@ TEST_CASE("wex::lexers")
     REQUIRE(wex::lexers::get()->keywords(std::string()).empty());
   }
 
-  SUBCASE("markers")
+  SECTION("markers")
   {
     REQUIRE(wex::lexers::get()->marker_is_loaded(wex::marker(0)));
     REQUIRE(wex::lexers::get()->marker_max_no_used() > 4);
@@ -119,12 +119,12 @@ TEST_CASE("wex::lexers")
     REQUIRE(wex::lexers::get()->get_marker(wex::marker(0)).is_ok());
   }
 
-  SUBCASE("properties")
+  SECTION("properties")
   {
     REQUIRE(wex::lexers::get()->properties().empty());
   }
 
-  SUBCASE("rest")
+  SECTION("rest")
   {
     REQUIRE(!wex::lexers::get()->path().empty());
 

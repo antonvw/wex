@@ -2,6 +2,8 @@ file(GLOB_RECURSE wexSETUP_H ${CMAKE_BINARY_DIR}/*setup.h)
 # use only first element from list
 list(GET wexSETUP_H 0 wexSETUP_H)
 
+include(GNUInstallDirs)
+
 # functions
 
 function(wex_config)
@@ -112,11 +114,6 @@ function(wex_install)
   )
 
   install(
-    FILES ${CMAKE_SOURCE_DIR}/external/doctest/doctest/doctest.h
-    DESTINATION ${WEX_INSTALL_DIR}
-  )
-
-  install(
     DIRECTORY
       ${CMAKE_SOURCE_DIR}/external/wxMaterialDesignArtProvider/MaterialDesign/
     DESTINATION ${WEX_INSTALL_DIR}
@@ -127,12 +124,11 @@ function(wex_install)
     DESTINATION ${WEX_INSTALL_DIR}
   )
 
-  if(ODBC_FOUND)
-    install(
-      FILES ${CMAKE_SOURCE_DIR}/external/otl/otlv4.h
-      DESTINATION ${WEX_INSTALL_DIR}
-    )
-  endif()
+  install(
+    FILES
+      ${CMAKE_SOURCE_DIR}/external/wxWidgets/3rdparty/catch/single_include/catch2/catch.hpp
+    DESTINATION ${WEX_INSTALL_DIR}
+  )
 
   install(FILES ${wexSETUP_H} DESTINATION ${WEX_INSTALL_DIR}/wx)
 
@@ -210,19 +206,26 @@ function(wex_process_po_files)
         set(locale "fr_FR")
       endif()
 
-      gettext_process_po_files(
-        ${locale}
-        ALL
-        INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
-        PO_FILES ${filename}
+      gettext_process_po_files(${locale} ALL PO_FILES ${filename})
+
+      install(
+        FILES "${CMAKE_CURRENT_BINARY_DIR}/wex-${lang}.gmo"
+        DESTINATION ${LOCALE_INSTALL_DIR}/${locale}/LC_MESSAGES
+        RENAME "wex.mo"
       )
 
       set(wxWidgets_ROOT_DIR ${CMAKE_SOURCE_DIR}/external/wxWidgets)
+
       gettext_process_po_files(
         ${locale}
         ALL
-        INSTALL_DESTINATION ${LOCALE_INSTALL_DIR}
         PO_FILES ${wxWidgets_ROOT_DIR}/locale/${lang}.po
+      )
+
+      install(
+        FILES "${CMAKE_CURRENT_BINARY_DIR}/${lang}.gmo"
+        DESTINATION ${LOCALE_INSTALL_DIR}/${locale}/LC_MESSAGES
+        RENAME "wxstd.mo"
       )
     endforeach()
   endif()
@@ -230,22 +233,14 @@ endfunction()
 
 function(wex_target_link_all)
   if(${ARGC} STREQUAL "0")
-    set(wex_use_LIBRARIES ${wex_own_LIBRARIES} ${ODBC_LIBRARIES})
+    set(wex_use_LIBRARIES ${wex_own_LIBRARIES})
   else()
     set(wex_use_LIBRARIES ${ARGN})
   endif()
 
   separate_arguments(wex_use_LIBRARIES)
 
-  if(CENTOS)
-    set(
-      cpp_std_LIBRARIES
-      /usr/gnat/lib64/libstdc++.a
-      /usr/gnat/lib64/libstdc++fs.a
-    )
-  else()
-    set(cpp_std_LIBRARIES X11 pthread stdc++ stdc++fs)
-  endif()
+  set(cpp_std_LIBRARIES X11 pthread stdc++ stdc++fs)
 
   set(
     wxWidgets_LIBRARIES
@@ -306,15 +301,12 @@ endfunction(add_test_libs)
 
 function(wex_test_app libs)
   add_test_libs(${libs})
+
   add_executable(${PROJECT_NAME} ${SRCS})
 
   get_property(tmp GLOBAL PROPERTY test_libs)
 
-  if(ODBC_FOUND)
-    wex_target_link_all(${tmp} ${ODBC_LIBRARIES})
-  else()
-    wex_target_link_all(${tmp})
-  endif()
+  wex_target_link_all(${tmp})
 
   add_test(
     NAME ${PROJECT_NAME}
@@ -328,7 +320,7 @@ endfunction()
 if(WIN32)
   set(LOCALE_INSTALL_DIR bin)
 else()
-  set(LOCALE_INSTALL_DIR share/locale/)
+  set(LOCALE_INSTALL_DIR ${CMAKE_INSTALL_LOCALEDIR})
 endif()
 
 if(MSVC)

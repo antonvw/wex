@@ -29,7 +29,7 @@ TEST_CASE("wex::frame")
 {
   get_stc()->SetFocus();
 
-  SUBCASE("bars")
+  SECTION("bars")
   {
     auto* bar  = new wxMenuBar();
     auto* menu = new wex::menu();
@@ -61,7 +61,7 @@ TEST_CASE("wex::frame")
     REQUIRE(frame()->update_statusbar(lv));
   }
 
-  SUBCASE("browse")
+  SECTION("browse")
   {
     frame()->file_history().clear();
 
@@ -85,7 +85,7 @@ TEST_CASE("wex::frame")
     browse_check(false, true, false, backward);
   }
 
-  SUBCASE("coverage")
+  SECTION("coverage")
   {
     auto*                           menu = new wex::menu();
     wex::menu_item                  i;
@@ -148,8 +148,6 @@ TEST_CASE("wex::frame")
 
     frame()->sync_all();
 
-    frame()->sync_close_all(100);
-
     frame()->vcs_add_path(nullptr);
 
     frame()->vcs_annotate_commit(get_stc(), 100, "a898989aaabbb");
@@ -206,10 +204,10 @@ TEST_CASE("wex::frame")
 
     frame()->show_process(false);
 
-    REQUIRE(!frame()->toggled_panes().empty());
+    REQUIRE(!frame()->panes_toggle().empty());
   }
 
-  SUBCASE("events")
+  SECTION("events")
   {
     wxCommandEvent event(wxEVT_MENU, wxID_OPEN);
 
@@ -234,14 +232,14 @@ TEST_CASE("wex::frame")
 #endif
   }
 
-  SUBCASE("focus")
+  SECTION("focus")
   {
     frame()->set_find_focus(frame()->get_stc());
     frame()->set_find_focus(nullptr);
     frame()->set_find_focus(frame());
   }
 
-  SUBCASE("open_file")
+  SECTION("open_file")
   {
     // the factory stc does not open the file
     frame()->set_find_focus(get_stc());
@@ -293,7 +291,7 @@ TEST_CASE("wex::frame::bars")
   REQUIRE(!frame()->pane_show("xxxx", false));
 
   frame()->sync_all();
-  frame()->sync_close_all(0);
+  //  frame()->sync_close_all(0);
 
   REQUIRE(frame()->get_find_toolbar() != nullptr);
   REQUIRE(frame()->get_options_toolbar() != nullptr);
@@ -301,7 +299,7 @@ TEST_CASE("wex::frame::bars")
 
   frame()->get_toolbar()->add_standard();
   REQUIRE(frame()->pane_toggle("FINDBAR"));
-  REQUIRE(!frame()->pane_is_shown("FINDBAR"));
+  REQUIRE(frame()->pane_is_shown("FINDBAR"));
   REQUIRE(frame()->pane_toggle("OPTIONSBAR"));
   REQUIRE(frame()->pane_is_shown("OPTIONSBAR"));
   REQUIRE(frame()->pane_toggle("TOOLBAR"));

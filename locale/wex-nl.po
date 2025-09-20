@@ -1,26 +1,58 @@
 # wex localization file wex-nl.po
-# Copyright (C) 2017-2021 A.M. van Wezenbeek
+# Copyright (C) 2017-2025 A.M. van Wezenbeek
 # This file is distributed under the same license as the wex package.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: wex 22.04\n"
+"Project-Id-Version: wex 25.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-25 14:03+0200\n"
-"PO-Revision-Date: 2021-06-25 14:09+0200\n"
-"Language: nl\n"
+"POT-Creation-Date: 2025-07-17 19:34+0200\n"
+"PO-Revision-Date: 2017-2025-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"X-Generator: Poedit 3.0\n"
+
+#, c-format
+msgid "%d fewer lines"
+msgstr "%d regels minder"
+
+#, c-format
+msgid "%d lines added"
+msgstr "%d regels meer"
+
+#, c-format
+msgid "%d lines copied"
+msgstr "%d regels gekopieerd"
+
+#, c-format
+msgid "%d lines moved"
+msgstr "%d regels verplaatst"
+
+#, c-format
+msgid "%d lines yanked"
+msgstr "%d regels yanked"
+
+msgid "&Make"
+msgstr "&Maken"
 
 msgid "&Menubar\tCtrl+I"
 msgstr "&Menubalk\tCtrl+I"
 
 msgid "&Open In Browser"
 msgstr "&Openen in browser"
+
+msgid "&Search"
+msgstr "Zoeken"
+
+msgid "&Tools"
+msgstr "&Hulpmiddelen"
+
+msgid "<Skipped>"
+msgstr "<Overgeslagen>"
 
 msgid "Add files"
 msgstr "Bestanden toevoegen"
@@ -42,6 +74,9 @@ msgstr "Aantekening stijl"
 
 msgid "Auto blame"
 msgstr "Auto blame"
+
+msgid "Auto complete"
+msgstr "Auto completeren"
 
 msgid "Auto fold"
 msgstr "Automatisch opvouwen"
@@ -73,6 +108,9 @@ msgstr "Vergelijker"
 msgid "Context size"
 msgstr "Context grootte"
 
+msgid "Datasource"
+msgstr "Databron"
+
 msgid "Default font"
 msgstr "Standaard lettertype"
 
@@ -87,6 +125,9 @@ msgstr "Kantlijn kolom"
 
 msgid "End of line"
 msgstr "Zichtbaar maken einde regel"
+
+msgid "Error bells"
+msgstr "Alarm"
 
 #, c-format
 msgid "Executed: %d commands"
@@ -171,6 +212,9 @@ msgstr "Heel woord"
 
 msgid "Max replacements"
 msgstr "Max vervangingen"
+
+msgid "Password"
+msgstr "Wachtwoord"
 
 msgid "Path"
 msgstr "Pad"
@@ -260,6 +304,12 @@ msgstr "Onbekende marker: %c"
 msgid "Unknown macro"
 msgstr "Onbekende macro"
 
+msgid "Use tabs"
+msgstr "Gebruik tabs"
+
+msgid "User"
+msgstr "Gebruiker"
+
 msgid "View Process"
 msgstr "Proces zichtbaar maken"
 
@@ -276,11 +326,35 @@ msgstr "gebeurtenis niet gevonden"
 msgid "file: %s does not exist"
 msgstr "bestand: %s bestaat niet"
 
+msgid "stc.Autocomplete maxwidth"
+msgstr "stc.Auto completeren max"
+
+msgid "stc.Beautifier"
+msgstr "stc.Verfraaier"
+
+msgid "stc.Error bells"
+msgstr "stc.Alarm"
+
+msgid "stc.Text font"
+msgstr "stc.Tekst font"
+
+msgid "stc.Use tabs"
+msgstr "stc.Gebruik tabs"
+
+msgid "tab.Art provider"
+msgstr "tab.Opmaak"
+
 msgid "vi mode"
 msgstr "vi modus"
 
 msgid "vi tag fullpath"
 msgstr "vi tag volledig pad"
+
+msgid "Files"
+msgstr "Bestanden"
+
+msgid "Actions Completed"
+msgstr "Acties uitgevoerd"
 
 msgid "fif.Hidden"
 msgstr "fit.Verborgen"
@@ -318,11 +392,23 @@ msgstr "Waarde"
 msgid "Options"
 msgstr "Opties"
 
-msgid "Files"
-msgstr "Bestanden"
+msgid "&Find And Replace"
+msgstr "&Zoeken en Vervangen"
 
-msgid "Actions Completed"
-msgstr "Acties uitgevoerd"
+msgid "Columns"
+msgstr "Kolommen"
+
+msgid "Project Files"
+msgstr "Project bestanden"
+
+msgid "Select Projects"
+msgstr "Selecteer Projecten"
+
+msgid "Open File"
+msgstr "Bestand openen"
+
+msgid "Process"
+msgstr "Proces"
 
 msgid "Busy"
 msgstr "Bezig"
@@ -330,11 +416,8 @@ msgstr "Bezig"
 msgid "Folders"
 msgstr "Mappen"
 
-msgid "Open &Recent"
-msgstr "&Laatste openen"
-
-msgid "Removed not existing file"
-msgstr "Niet bestaand bestand verwijderd"
+msgid "list.Context size"
+msgstr "list.Context grootte"
 
 msgid "fif.Max replacements"
 msgstr "fit.Max vervangingen"
@@ -377,20 +460,17 @@ msgstr "Gewijzigd"
 msgid "Synchronized"
 msgstr "Gesynchroniseerd"
 
-msgid "Debugger"
-msgstr "Debugger"
-
-msgid "File Type"
-msgstr "Bestands type"
-
-msgid "Lines or Items"
-msgstr "Regels of onderdelen"
-
-msgid "Theme"
-msgstr "Thema"
-
 msgid "stc.Search engine"
 msgstr "stc.Zoek machine"
+
+msgid "wex library (a library that offers windows ex and vi components)"
+msgstr "wex bibliotheek (een bibliotheek voor vi en ex windows componenten)"
+
+msgid "All rights reserved."
+msgstr "Alle rechten voorbehouden."
+
+msgid "stc.Wrap scan"
+msgstr "stc.Regel doorloop"
 
 msgid "bottom"
 msgstr "einde"
@@ -404,23 +484,8 @@ msgstr "Zoeken naar"
 msgid "hit"
 msgstr "passeert"
 
-msgid "Error bells"
-msgstr "Alarm"
-
 msgid "not found"
 msgstr "niet gevonden"
-
-msgid "Input"
-msgstr "Invoer"
-
-msgid "wex library (a library that offers windows ex and vi components)"
-msgstr "wex bibliotheek (een bibliotheek voor vi en ex windows componenten)"
-
-msgid "All rights reserved."
-msgstr "Alle rechten voorbehouden."
-
-msgid "stc.Wrap scan"
-msgstr "stc.Regel doorloop"
 
 msgid "File Name"
 msgstr "Bestands naam"
@@ -461,11 +526,20 @@ msgstr "Geen"
 msgid "stc.Ex mode show hex"
 msgstr "stc.Ex modus toon hex"
 
+msgid "Editor Options"
+msgstr "Editor opties"
+
 msgid "Show hidden"
 msgstr "Zichtbaar maken wat verborgen is"
 
 msgid "&Open"
 msgstr "&Openen"
+
+msgid "Find In Selection"
+msgstr "Zoeken In selectie"
+
+msgid "Replace In Selection"
+msgstr "Vervangen in selectie"
 
 msgid "replacing with"
 msgstr "vervangen door"
@@ -473,17 +547,11 @@ msgstr "vervangen door"
 msgid "Find In Files"
 msgstr "Zoeken In bestanden"
 
+msgid "fif.Max"
+msgstr "fif.Max"
+
 msgid "Replace In Files"
 msgstr "Vervangen in bestanden"
-
-msgid "Editor Options"
-msgstr "Editor opties"
-
-msgid "Find In Selection"
-msgstr "Zoeken In selectie"
-
-msgid "Replace In Selection"
-msgstr "Vervangen in selectie"
 
 msgid "Cancelled"
 msgstr "Geannuleerd"
@@ -494,14 +562,113 @@ msgstr "Elementen toevoegen"
 msgid "Add"
 msgstr "Toevoegen"
 
+msgid "Opened"
+msgstr "Geopend"
+
+msgid "Saved"
+msgstr "Opgeslagen"
+
 msgid "C&ompare"
 msgstr "&Vergelijken"
 
-msgid "&Make"
-msgstr "&Maken"
+msgid "&Build"
+msgstr "&Bouwen"
 
 msgid "&Compare With"
 msgstr "Vergelijken &met"
+
+msgid "Replace"
+msgstr "Vervangen"
+
+msgid "with"
+msgstr "met"
+
+msgid "stc.Auto complete"
+msgstr "stc.Auto completeren"
+
+msgid "stc.Auto indent"
+msgstr "stc.Auto inspringen"
+
+msgid "stc.Auto write"
+msgstr "stc.Auto schrijven"
+
+msgid "stc.Edge line"
+msgstr "stc.Kantlijn"
+
+msgid "stc.Line numbers"
+msgstr "stc.Regel nummers"
+
+msgid "stc.Show mode"
+msgstr "stc.Modus zichtbaar maken"
+
+msgid "stc.Show match"
+msgstr "stc.Toon treffer"
+
+msgid "stc.Whitespace visible"
+msgstr "stc.Witruimte zichtbaar maken"
+
+msgid "stc.End of line"
+msgstr "stc.Regeleinde"
+
+msgid "stc.Expand tabs"
+msgstr "stc.Expanderen tabs"
+
+msgid "stc.Wrap line"
+msgstr "stc.Visuele regel doorloop"
+
+msgid "stc.Edge column"
+msgstr "stc.Kantlijn kolom"
+
+msgid "stc.Indent"
+msgstr "stc.Inspringen"
+
+msgid "stc.Tab width"
+msgstr "stc.Tab breedte"
+
+msgid "lines added"
+msgstr "Regels toegevoegd"
+
+msgid "lines copied"
+msgstr "Regels gekopieerd"
+
+msgid "fewer lines"
+msgstr "regels minder"
+
+msgid "lines moved"
+msgstr "regels verplaatst"
+
+msgid "lines yanked"
+msgstr "regels gekopieerd"
+
+msgid "Macro expanded"
+msgstr "Variabele geëxpandeerd"
+
+msgid "Variable expanded"
+msgstr "Variabele geëxpandeerd"
+
+msgid "Macro aborted at"
+msgstr "Macro afgebroken bij"
+
+msgid "Macro played back"
+msgstr "Macro afgespeeld"
+
+msgid "Macro recording"
+msgstr "Macro aan het opnemen"
+
+msgid "Input"
+msgstr "Invoer"
+
+msgid "Select Macro"
+msgstr "Macro selecteren"
+
+msgid "Enter Macro"
+msgstr "Geef macro"
+
+msgid "Could not expand variable"
+msgstr "Variabele kan niet worden geëxpandeerd"
+
+msgid "stc.Auto beautify"
+msgstr "stc.Auto verfraaien"
 
 msgid "fif.Find what"
 msgstr "fif.Zoeken"
@@ -521,56 +688,11 @@ msgstr "fif.Vervangen door"
 msgid "fif.Search down"
 msgstr "fif.Omlaag zoeken"
 
-msgid "stc.Edge column"
-msgstr "stc.Kantlijn kolom"
-
-msgid "Edge line"
-msgstr "Kantlijn regel"
-
-msgid "Whitespace visible"
-msgstr "Spaties zichtbaar"
-
-msgid "Tab draw mode"
-msgstr "Tab teken modus"
-
-msgid "Use tabs"
-msgstr "Gebruik tabs"
-
-msgid "Tab width"
-msgstr "Tab breedte"
-
-msgid "Wrap line"
-msgstr "Regel doorloop"
-
-msgid "stc.Indent"
-msgstr "stc.Inspringen"
-
-msgid "Enter Theme"
-msgstr "Geef thema"
-
 msgid "stc.link.Include directory"
 msgstr "stc.Include map"
 
-msgid "Page @PAGENUM@ of @PAGESCNT@"
-msgstr "Pagina @PAGENUM@ van @PAGESCNT@"
-
-msgid "Printed"
-msgstr "Afgedrukt"
-
-msgid "stc.Default font"
-msgstr "stc.Standaard lettertype"
-
-msgid "stc.Auto complete"
-msgstr "stc.Auto completeren"
-
-msgid "stc.Auto indent"
-msgstr "stc.Auto inspringen"
-
-msgid "stc.Auto beautify"
-msgstr "stc.Auto verfraaien"
-
-msgid "stc.Beautifier"
-msgstr "stc.Verfraaier"
+msgid "stc.Auto blame statusbar"
+msgstr "stc.Auto blame statusbalk"
 
 msgid "Document is readonly"
 msgstr "Document is alleen lezen"
@@ -581,20 +703,11 @@ msgstr "Geef controle karakter"
 msgid "Control Character"
 msgstr "Controle karakter"
 
-msgid "stc.Wrap line"
-msgstr "stc.Visuele regel doorloop"
-
 msgid "No markers present"
 msgstr "Geen markers aanwezig"
 
 msgid "Properties"
 msgstr "Eigenschappen"
-
-msgid "&Preview"
-msgstr "&Preview"
-
-msgid "Open"
-msgstr "Openen"
 
 msgid "Edge Column"
 msgstr "Kantlijn Kolom"
@@ -602,8 +715,20 @@ msgstr "Kantlijn Kolom"
 msgid "Edge Column Reset"
 msgstr "Kantlijn Kolom Reset"
 
-msgid "&Search"
-msgstr "Zoeken"
+msgid "Checkout Diff"
+msgstr "Checkout Verschil"
+
+msgid "show hash"
+msgstr "hash laten zien"
+
+msgid "&Toggle Fold\tCtrl+T"
+msgstr "&Op/uitvouwen\tCtrl-T"
+
+msgid "&Fold All Lines\tF9"
+msgstr "&Alle regels opvouwen\tF9"
+
+msgid "&Unfold All Lines\tF10"
+msgstr "&Alle regels uitvouwen\tF10"
 
 msgid "&Uppercase\tF11"
 msgstr "&Hoofdletter\tF11"
@@ -620,26 +745,20 @@ msgstr "&Sorteren"
 msgid "&Selection"
 msgstr "&Selectie"
 
-msgid "&Toggle Fold\tCtrl+T"
-msgstr "&Op/uitvouwen\tCtrl-T"
+msgid "Clear Diffs"
+msgstr "Verschillen legen"
 
-msgid "&Fold All Lines\tF9"
-msgstr "&Alle regels opvouwen\tF9"
+msgid "&Preview"
+msgstr "&Preview"
 
-msgid "&Unfold All Lines\tF10"
-msgstr "&Alle regels uitvouwen\tF10"
+msgid "Open"
+msgstr "Openen"
 
-msgid "stc.Show match"
-msgstr "stc.Toon treffer"
+msgid "&Browse"
+msgstr "&Browse"
 
 msgid "Not allowed in hex mode"
 msgstr "Niet toegestaan in hexadecimale modus"
-
-msgid "Opened"
-msgstr "Geopend"
-
-msgid "Saved"
-msgstr "Opgeslagen"
 
 msgid "Enter Line Number"
 msgstr "Geef regel nummer"
@@ -647,14 +766,26 @@ msgstr "Geef regel nummer"
 msgid "Enter Sort Position"
 msgstr "Geef sorteer positie"
 
-msgid "stc.Edge line"
-msgstr "stc.Kantlijn"
+msgid "stc.margin.Text"
+msgstr "stc.margin.Tekst"
+
+msgid "stc.margin.Divider"
+msgstr "stc.margin.Splitser"
+
+msgid "stc.Scroll bars"
+msgstr "stc.Schuifbalken"
+
+msgid "stc.vi mode"
+msgstr "stc.vi modus"
+
+msgid "stc.Default font"
+msgstr "stc.Standaard lettertype"
 
 msgid "stc.Annotation style"
 msgstr "stc.Aantekening stijl"
 
-msgid "stc.Autocomplete maxwidth"
-msgstr "stc.Auto completeren max"
+msgid "stc.Autocomplete max width"
+msgstr "stc.Autocompletei max width"
 
 msgid "stc.Caret line"
 msgstr "stc.Cursor regel"
@@ -665,41 +796,14 @@ msgstr "stc.Vouw vlaggen"
 msgid "stc.Indentation guide"
 msgstr "stc.Inspring gids"
 
-msgid "stc.margin.Divider"
-msgstr "stc.margin.Splitser"
-
 msgid "stc.Print flags"
 msgstr "stc.Afdruk vlaggen"
 
 msgid "stc.Tab draw mode"
 msgstr "stc.Tab teken modus"
 
-msgid "stc.Tab width"
-msgstr "stc.Tab breedte"
-
-msgid "stc.Scroll bars"
-msgstr "stc.Schuifbalken"
-
-msgid "stc.Use tabs"
-msgstr "stc.Gebruik tabs"
-
-msgid "stc.End of line"
-msgstr "stc.Regeleinde"
-
-msgid "stc.Whitespace visible"
-msgstr "stc.Witruimte zichtbaar maken"
-
 msgid "stc.Wrap visual flags"
 msgstr "stc.Visuele regel doorloop"
-
-msgid "stc.margin.Folding"
-msgstr "stc.margin.Vouwen"
-
-msgid "stc.vi mode"
-msgstr "stc.vi modus"
-
-msgid "stc.Line numbers"
-msgstr "stc.Regel nummers"
 
 msgid "stc.Keep zoom"
 msgstr "stc.Bewaar vergroten"
@@ -715,6 +819,15 @@ msgstr "stc.Auto blame"
 
 msgid "stc.vi tag fullpath"
 msgstr "stc.vi tag volledig pad"
+
+msgid "Comboboxes"
+msgstr "Comboboxen"
+
+msgid "<i>Beautifiers:</i>"
+msgstr "<i>Beautifiers:</i>"
+
+msgid "<i>Others:</i>"
+msgstr "<i>Others:</i>"
 
 msgid "Choices"
 msgstr "Keuzes"
@@ -767,11 +880,26 @@ msgstr "Karakter"
 msgid "Whitespace"
 msgstr "Spaties"
 
+msgid "Printer"
+msgstr "Printer"
+
+msgid "Normal"
+msgstr "Normaal"
+
+msgid "Invert on white"
+msgstr "Geïnverteerd op wit"
+
+msgid "Black on white"
+msgstr "Zwart op wit"
+
+msgid "Colour on white"
+msgstr "Kleuren op wit"
+
+msgid "Colour on white normal"
+msgstr "Kleuren op wit normaal"
+
 msgid "Font"
 msgstr "Lettertype"
-
-msgid "stc.Text font"
-msgstr "stc.Tekst font"
 
 msgid "Edge"
 msgstr "Kantlijn"
@@ -785,14 +913,20 @@ msgstr "Meerdere regels"
 msgid "<i>Margins:</i>"
 msgstr "<i>Breedtes:</i>"
 
+msgid "stc.Autocomplete min size"
+msgstr "stc.Autocomplete min size"
+
+msgid "blame.Author size"
+msgstr "blame.Author size"
+
 msgid "<i>Line Margins:</i>"
 msgstr "<i>Regel breedtes:</i>"
 
+msgid "stc.margin.Folding"
+msgstr "stc.margin.Vouwen"
+
 msgid "stc.margin.Line number"
 msgstr "stc.margin.Regel nummer"
-
-msgid "stc.margin.Text"
-msgstr "stc.margin.Tekst"
 
 msgid "<i>Max:</i>"
 msgstr "<i>Maximaal:</i>"
@@ -802,6 +936,9 @@ msgstr "stc.max.Grootte visueel"
 
 msgid "stc.max.Size lexer"
 msgstr "stc.max.Grootte lexer"
+
+msgid "Repeater"
+msgstr "Herhaler"
 
 msgid "Folding"
 msgstr "Vouwen"
@@ -836,50 +973,14 @@ msgstr "<i>Treffers:</i>"
 msgid "stc.link.Pairs"
 msgstr "stc.Link paren"
 
-msgid "Printer"
-msgstr "Printer"
-
-msgid "Normal"
-msgstr "Normaal"
-
-msgid "Invert on white"
-msgstr "Geïnverteerd op wit"
-
-msgid "Black on white"
-msgstr "Zwart op wit"
-
-msgid "Colour on white"
-msgstr "Kleuren op wit"
-
-msgid "Colour on white normal"
-msgstr "Kleuren op wit normaal"
-
-msgid "Attach"
-msgstr "Attach"
-
-msgid "debug.File"
-msgstr "debug.Bestand"
-
-msgid "Debug"
-msgstr "Debuggen"
-
-msgid "Enter Debugger"
-msgstr "Geef debugger"
-
 msgid "Select Files"
 msgstr "Bestanden selecteren"
 
 msgid "Enter Byte Offset"
 msgstr "Byte offset invoeren"
 
-msgid "Process folder"
-msgstr "Proces map"
-
-msgid "Process"
-msgstr "Proces"
-
-msgid "Select Process"
-msgstr "Proces selecteren"
+msgid "Replaced"
+msgstr "Vervangen"
 
 msgid "Readonly attribute changed"
 msgstr "Alleen-lezen attribuut gewijzigd"
@@ -887,32 +988,38 @@ msgstr "Alleen-lezen attribuut gewijzigd"
 msgid "Readonly"
 msgstr "Alleen lezen"
 
-msgid "Replaced"
-msgstr "Vervangen"
+msgid "Edge line"
+msgstr "Kantlijn regel"
 
-msgid "vcs.Prefix flags"
-msgstr "vcs.Prefix vlaggen"
+msgid "Whitespace visible"
+msgstr "Spaties zichtbaar"
 
-msgid "vcs.Subcommand"
-msgstr "vcs.Subkommando"
+msgid "Tab draw mode"
+msgstr "Tab teken modus"
 
-msgid "vcs.Revision comment"
-msgstr "vcs.Revisie commentaar"
+msgid "Expand tabs"
+msgstr "Expanderen tabs"
 
-msgid "vcs.Flags"
-msgstr "vcs.Vlaggen"
+msgid "Tab width"
+msgstr "Tab breedte"
 
-msgid "vcs.Base folder"
-msgstr "vcs.Basis map"
+msgid "Wrap line"
+msgstr "Regel doorloop"
 
-msgid "Set VCS"
-msgstr "VCS instellen"
+msgid "Enter Theme"
+msgstr "Geef thema"
 
-msgid "vcs.Path"
-msgstr "vcs.Pad"
+msgid "Page @PAGENUM@ of @PAGESCNT@"
+msgstr "Pagina @PAGENUM@ van @PAGESCNT@"
 
-msgid "Select VCS Folder"
-msgstr "VCS map selecteren"
+msgid "Printed"
+msgstr "Afgedrukt"
+
+msgid "locale"
+msgstr "locale"
+
+msgid "Select File"
+msgstr "Selecteer bestanden"
 
 msgid "All Files"
 msgstr "Alle bestanden"
@@ -925,6 +1032,12 @@ msgstr "Bevestigen"
 
 msgid "Save changes to"
 msgstr "Wijzigingen opslaan in"
+
+msgid "Open &Recent"
+msgstr "&Laatste openen"
+
+msgid "Removed not existing file"
+msgstr "Niet bestaand bestand verwijderd"
 
 msgid "&Findbar"
 msgstr "&Zoekbalk"
@@ -941,9 +1054,6 @@ msgstr "&Proces"
 msgid "Find"
 msgstr "Zoeken"
 
-msgid "Replace"
-msgstr "Vervangen"
-
 msgid "Toolbar"
 msgstr "Werkbalk"
 
@@ -952,6 +1062,9 @@ msgstr "Zoekbalk"
 
 msgid "Optionsbar"
 msgstr "Optiesbalk"
+
+msgid "..."
+msgstr "..."
 
 msgid "list.Readonly colour"
 msgstr "list.Alleen lezen kleur"
@@ -965,17 +1078,17 @@ msgstr "list.Enkelvoudig selecteren"
 msgid "list.Sort method"
 msgstr "list.Sorteer methode"
 
+msgid "Sort toggle"
+msgstr "Sorteren afwisselen"
+
+msgid "Sort keep order"
+msgstr "Sorteer bewaar volgorde"
+
 msgid "Sort ascending"
 msgstr "Omlaag sorteren"
 
 msgid "Sort descending"
 msgstr "Omhoog sorteren"
-
-msgid "Sort toggle"
-msgstr "Sorteren afwisselen"
-
-msgid "list.Context size"
-msgstr "list.Context grootte"
 
 msgid "list.Rulers"
 msgstr "list.Regels"
@@ -1022,32 +1135,35 @@ msgstr "&Inverteren"
 msgid "Page &Setup"
 msgstr "Pagina-&instelling"
 
-msgid "&Tools"
-msgstr "&Hulpmiddelen"
+msgid "vcs.Always ask flags"
+msgstr "vcs.Always ask flags"
 
 msgid "tab.Font"
 msgstr "tab.Font"
 
-msgid "tab.Art provider"
-msgstr "tab.Opmaak"
-
 msgid "Tab Options"
 msgstr "Tab opties"
 
-msgid "Datasource"
-msgstr "Databron"
+msgid "Debugger"
+msgstr "Debugger"
 
-msgid "Open ODBC Connection"
-msgstr "ODBC verbinding openen"
+msgid "File Type"
+msgstr "Bestands type"
 
-msgid "User"
-msgstr "Gebruiker"
+msgid "Lines or Items"
+msgstr "Regels of onderdelen"
 
-msgid "Password"
-msgstr "Wachtwoord"
+msgid "Current line author annotation"
+msgstr "Current line author annotation"
 
-msgid "<Skipped>"
-msgstr "<Overgeslagen>"
+msgid "Current line comments annotation"
+msgstr "Current line comments annotation"
+
+msgid "Current line date annotation"
+msgstr "Current line date annotation"
+
+msgid "Theme"
+msgstr "Thema"
 
 msgid "View process"
 msgstr "Proces zichtbaar maken"
@@ -1073,64 +1189,53 @@ msgstr "Zoeken identieke hoofdletters/kleine letters"
 msgid "Search using regular expressions"
 msgstr "Zoeken met reguliere expressie"
 
-msgid "with"
-msgstr "met"
+msgid "Attach"
+msgstr "Attach"
 
-msgid "Select File"
-msgstr "Selecteer bestanden"
+msgid "debug.File"
+msgstr "debug.Bestand"
 
-msgid "stc.Auto write"
-msgstr "stc.Auto schrijven"
+msgid "Debug"
+msgstr "Debuggen"
 
-msgid "Auto complete"
-msgstr "Auto completeren"
+msgid "Enter Debugger"
+msgstr "Geef debugger"
 
-msgid "stc.Error bells"
-msgstr "stc.Alarm"
+msgid "Process folder"
+msgstr "Proces map"
 
-msgid "stc.Show mode"
-msgstr "stc.Modus zichtbaar maken"
+msgid "Select Process"
+msgstr "Proces selecteren"
 
-#, c-format
-msgid "%d lines added"
-msgstr "%d regels meer"
+msgid "Select Revision"
+msgstr "Select Revision"
 
-#, c-format
-msgid "%d lines copied"
-msgstr "%d regels gekopieerd"
+msgid "vcs.Use unified diff view"
+msgstr "vcs.Use unified diff view"
 
-#, c-format
-msgid "%d fewer lines"
-msgstr "%d regels minder"
+msgid "vcs.Prefix flags"
+msgstr "vcs.Prefix vlaggen"
 
-#, c-format
-msgid "%d lines moved"
-msgstr "%d regels verplaatst"
+msgid "vcs.Subcommand"
+msgstr "vcs.Subkommando"
 
-#, c-format
-msgid "%d lines yanked"
-msgstr "%d regels yanked"
+msgid "vcs.Revision comment"
+msgstr "vcs.Revisie commentaar"
 
-msgid "Macro expanded"
-msgstr "Variabele geëxpandeerd"
+msgid "vcs.Base folder"
+msgstr "vcs.Basis map"
 
-msgid "Variable expanded"
-msgstr "Variabele geëxpandeerd"
+msgid "vcs.Find includes submodules"
+msgstr "vcs.Find includes submodules"
 
-msgid "Macro aborted at"
-msgstr "Macro afgebroken bij"
+msgid "Set VCS"
+msgstr "VCS instellen"
 
-msgid "Macro played back"
-msgstr "Macro afgespeeld"
+msgid "vcs.Path"
+msgstr "vcs.Pad"
 
-msgid "Macro recording"
-msgstr "Macro aan het opnemen"
+msgid "Select VCS Folder"
+msgstr "VCS map selecteren"
 
-msgid "Select Macro"
-msgstr "Macro selecteren"
-
-msgid "Enter Macro"
-msgstr "Geef macro"
-
-msgid "Could not expand variable"
-msgstr "Variabele kan niet worden geëxpandeerd"
+msgid "vcs.Flags"
+msgstr "vcs.Vlaggen"

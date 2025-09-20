@@ -26,9 +26,8 @@ const std::any get_value_prim(const wex::item* item)
     {
       const auto& choices(
         std::any_cast<wex::item::choices_t>(item->data().initial()));
-      return std::any(std::accumulate(
-        choices.begin(),
-        choices.end(),
+      return std::any(std::ranges::fold_left(
+        choices,
         0L,
         [](long a, const auto& b)
         {

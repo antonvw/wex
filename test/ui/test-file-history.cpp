@@ -2,7 +2,7 @@
 // Name:      test-filehistory.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/file.h>
@@ -13,7 +13,7 @@
 
 TEST_CASE("wex::file_history")
 {
-  SUBCASE("default constructor")
+  SECTION("default constructor")
   {
     wex::file_history history;
     history.clear();
@@ -43,7 +43,7 @@ TEST_CASE("wex::file_history")
     history.save();
   }
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     wex::file_history history(4, 1000, "MY-KEY");
     REQUIRE(history.empty());
@@ -54,7 +54,7 @@ TEST_CASE("wex::file_history")
     history.save();
   }
 
-  SUBCASE("delete")
+  SECTION("delete")
   {
     wex::file_history history;
     history.clear();

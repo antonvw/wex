@@ -2,7 +2,7 @@
 // Name:      cmdline.cpp
 // Purpose:   Implementation of wex::cmdline class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -137,24 +137,22 @@ wex::cmdline::~cmdline()
   delete m_parser;
 }
 
-void wex::cmdline::get_all(std::string& help) const
+std::string wex::cmdline::get_all() const
 {
-  help += std::accumulate(
-            m_options.begin(),
-            m_options.end(),
-            std::string(),
-            [this](const std::string& a, const auto& b)
-            {
-              return a + get_option(b, m_cfg);
-            }) +
-          std::accumulate(
-            m_switches.begin(),
-            m_switches.end(),
-            std::string(),
-            [this](const std::string& a, const auto& b)
-            {
-              return a + get_switch(b, m_cfg);
-            });
+  return std::ranges::fold_left(
+           m_options,
+           std::string(),
+           [this](const std::string& a, const auto& b)
+           {
+             return a + get_option(b, m_cfg);
+           }) +
+         std::ranges::fold_left(
+           m_switches,
+           std::string(),
+           [this](const std::string& a, const auto& b)
+           {
+             return a + get_switch(b, m_cfg);
+           });
 }
 
 std::string wex::cmdline::get_output()
@@ -202,9 +200,8 @@ void wex::cmdline::init()
   {
     const size_t p_n{0}, p_d{1}; // par name, description
 
-    std::for_each(
-      m_switches.begin(),
-      m_switches.end(),
+    std::ranges::for_each(
+      m_switches,
       [this](const auto& it)
       {
         m_parser->m_desc.add_options()(
@@ -214,9 +211,8 @@ void wex::cmdline::init()
         m_parser->add_function(it.first[p_n], it.second);
       });
 
-    std::for_each(
-      m_options.begin(),
-      m_options.end(),
+    std::ranges::for_each(
+      m_options,
       [this](const auto& it)
       {
         m_parser->add_function(
@@ -313,9 +309,7 @@ bool wex::cmdline::parse_set(data::cmdline& data) const
     {{"all",
       [&, this](const regex::match_t& m)
       {
-        std::string help;
-        get_all(help);
-        data.help(help);
+        data.help(get_all());
       }},
      // [nooption ...]
      {"no([a-z0-9]+)(.*)",

@@ -2,7 +2,7 @@
 // Name:      notebook.h
 // Purpose:   Declaration of class wex::notebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -35,11 +35,14 @@ public:
   /// so you can use that id in frame::on_command_item_dialog.
   static int config_dialog(const data::window& data = data::window());
 
+  /// Returns notebook default style.
+  static inline long default_style_t =
+    wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_PIN_ON_ACTIVE_TAB;
+
   // Other methods.
 
   /// Default constructor.
-  notebook(
-    const data::window& data = data::window().style(wxAUI_NB_DEFAULT_STYLE));
+  notebook(const data::window& data = data::window().style(default_style_t));
 
   /// Adds the page with given key and fills the keys.
   wxWindow* add_page(const data::notebook& data);
@@ -130,9 +133,9 @@ template <class T> bool wex::notebook::for_each(int id)
 {
   m_frame->set_find_focus(nullptr);
 
-  wxWindowUpdateLocker locker(
-    m_frame != nullptr ? reinterpret_cast<wxWindow*>(m_frame) :
-                         reinterpret_cast<wxWindow*>(this));
+  wxWindowUpdateLocker locker(reinterpret_cast<wxWindow*>(m_frame));
+
+  const bool keys_empty(m_keys.empty());
 
   // The page should be an int (no), otherwise page >= 0 never fails!
   for (int page = GetPageCount() - 1; page >= 0; page--)
@@ -202,10 +205,11 @@ template <class T> bool wex::notebook::for_each(int id)
     }
   }
 
-  if (m_frame != nullptr && m_keys.empty())
+  if (!keys_empty && m_keys.empty())
   {
     m_frame->sync_close_all(GetId());
   }
+
   return true;
 };
 

@@ -14,7 +14,7 @@ TEST_CASE("wex::del::file")
   auto* lv = new wex::del::file(get_project());
   del_frame()->pane_add(lv);
 
-  SUBCASE("constructor")
+  SECTION("constructor")
   {
     REQUIRE(lv->get_file().path() == get_project());
 
@@ -26,7 +26,7 @@ TEST_CASE("wex::del::file")
   }
 
 #ifdef __UNIX__
-  SUBCASE("add")
+  SECTION("add")
   {
     lv->add_items(
       "./",
@@ -35,7 +35,7 @@ TEST_CASE("wex::del::file")
   }
 #endif
 
-  SUBCASE("columns")
+  SECTION("columns")
   {
     lv->append_columns(
       {{"String", wex::column::STRING_SMALL}, {"Number", wex::column::INT}});
@@ -46,7 +46,7 @@ TEST_CASE("wex::del::file")
   }
 
 #ifndef __WXMSW__
-  SUBCASE("event")
+  SECTION("event")
   {
     for (auto id : std::vector<int>{wxID_ADD, wxID_EDIT, wxID_REPLACE_ALL})
     {
@@ -56,7 +56,7 @@ TEST_CASE("wex::del::file")
   }
 #endif
 
-  SUBCASE("load-save")
+  SECTION("load-save")
   {
     REQUIRE(lv->file_load(get_project()));
 #ifndef __WXMSW__
@@ -67,7 +67,7 @@ TEST_CASE("wex::del::file")
     REQUIRE(remove("test-del.prj.bck") == 0);
   }
 
-  SUBCASE("paste")
+  SECTION("paste")
   {
     lv->clear();
     REQUIRE(lv->item_from_text("test1\ntest2\n"));

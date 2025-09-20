@@ -26,7 +26,7 @@ TEST_CASE("wex::vcs_entry")
                           "  </commands>"
                           "</vcs>"));
 
-  SUBCASE("default constructor")
+  SECTION("default constructor")
   {
     REQUIRE(wex::vcs_entry().admin_dir().empty());
     REQUIRE(wex::vcs_entry().get_commands().empty());
@@ -35,7 +35,7 @@ TEST_CASE("wex::vcs_entry")
       wex::vcs_entry::flags_location_t::POSTFIX);
   }
 
-  SUBCASE("constructor using xml")
+  SECTION("constructor using xml")
   {
     wex::vcs_entry entry(doc.document_element());
     REQUIRE(entry.name() == "git");
@@ -85,7 +85,7 @@ TEST_CASE("wex::vcs_entry")
 #endif
   }
 
-  SUBCASE("blame")
+  SECTION("blame")
   {
     auto*      stc = get_stc();
     wex::blame blame;
@@ -101,7 +101,59 @@ TEST_CASE("wex::vcs_entry")
     stc->get_file().reset_contents_changed();
   }
 
-  SUBCASE("setup_exclude")
+  SECTION("execute-grep")
+  {
+    pugi::xml_document dc;
+
+    REQUIRE(dc.load_string("<vcs name=\"git\" admin-dir=\"./\" log-flags=\"-n "
+                           "1\" blame-format=\" yyyy\">"
+                           "  <commands>"
+                           "     <command> grep </command>"
+                           "  </commands>"
+                           "</vcs>"));
+
+    wex::vcs_entry entry(dc.document_element());
+    REQUIRE(entry.name() == "git");
+    REQUIRE(entry.get_command().get_command() == "grep");
+
+    auto* stc = get_stc();
+    stc->set_text("hello world");
+    stc->SelectAll();
+
+    REQUIRE(!entry.execute());
+    REQUIRE(!entry.std_out().contains("usage: "));
+
+    REQUIRE(!entry.execute(std::string(), wex::test::get_path("test.h")));
+  }
+
+// on MSW: SIGSEGV - Segmentation violation signal
+// Building for: Visual Studio 17 2022
+// The CXX compiler identification is MSVC 19.44.35209.0
+#ifndef __WXMSW__
+  SECTION("execute-show")
+  {
+    pugi::xml_document dc;
+
+    REQUIRE(dc.load_string("<vcs name=\"git\" admin-dir=\"./\" log-flags=\"-n "
+                           "1\" blame-format=\" yyyy\">"
+                           "  <commands>"
+                           "     <command> show </command>"
+                           "  </commands>"
+                           "</vcs>"));
+
+    wex::vcs_entry entry(dc.document_element());
+    REQUIRE(entry.name() == "git");
+    REQUIRE(entry.get_command().get_command() == "show");
+
+    REQUIRE(entry.execute());
+    REQUIRE(!entry.std_out().contains("usage: "));
+
+    wex::log_none of;
+    REQUIRE(!entry.execute(std::string(), wex::test::get_path("test.h")));
+  }
+#endif
+
+  SECTION("setup_exclude")
   {
     REQUIRE(wex::vcs::load_document());
     wex::vcs       vcs(std::vector<wex::path>{wex::test::get_path("test.h")});

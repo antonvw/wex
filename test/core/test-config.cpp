@@ -2,7 +2,7 @@
 // Name:      test-config.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -12,15 +12,33 @@
 
 TEST_CASE("wex::config")
 {
-  SUBCASE("default constructor")
+  SECTION("default constructor")
   {
     REQUIRE(wex::config().get("x") == "x");
     REQUIRE(!wex::config().is_child());
     REQUIRE(!wex::config().child_start());
     REQUIRE(!wex::config().child_end());
+    REQUIRE(wex::config::store_is_active());
   }
 
-  SUBCASE("dir")
+  SECTION("static")
+  {
+    REQUIRE(wex::config::store_is_active());
+
+    REQUIRE(!wex::config::on_init());
+
+    REQUIRE(wex::config::store_is_active());
+
+    wex::config::discard();
+
+    const auto& p(wex::config::path());
+
+    REQUIRE(!p.empty());
+
+    wex::config::set_path(p);
+  }
+
+  SECTION("dir")
   {
 #ifdef __WXMSW__
     REQUIRE(!wex::config::dir().empty());
@@ -29,7 +47,7 @@ TEST_CASE("wex::config")
 #endif
   }
 
-  SUBCASE("getters")
+  SECTION("getters")
   {
     const wex::config::statusbar_t sb{
       {"one", {"normal"}, 2},
@@ -58,7 +76,7 @@ TEST_CASE("wex::config")
     wex::config::save();
   }
 
-  SUBCASE("get-set-first-of")
+  SECTION("get-set-first-of")
   {
     REQUIRE(wex::config("l").get_first_of("l:0") == "");
     REQUIRE(wex::config("l").get_first_of("l:1") == "l");
@@ -77,7 +95,7 @@ TEST_CASE("wex::config")
     REQUIRE(wex::config("m").get_first_of() == "xxx");
   }
 
-  SUBCASE("setters")
+  SECTION("setters")
   {
     wex::config("y").set(4);
     REQUIRE(wex::config("y").exists());
@@ -126,10 +144,12 @@ TEST_CASE("wex::config")
     wex::config::save();
   }
 
-  SUBCASE("constructor child")
+  SECTION("constructor child")
   {
     wex::config c("parent", "child-x");
     REQUIRE(c.is_child());
+
+    REQUIRE(c.children() == 0);
 
     c.item("child-x").set("x");
     REQUIRE(c.item("child-x").get("y") == "x");
@@ -138,7 +158,7 @@ TEST_CASE("wex::config")
     REQUIRE(wex::config("parent.child-y").get("z") == "y");
   }
 
-  SUBCASE("child")
+  SECTION("child")
   {
     wex::config c("child");
 
@@ -150,6 +170,7 @@ TEST_CASE("wex::config")
     c.item("child-y").set(2);
     c.item("child-z").set(3);
 
+    REQUIRE(c.children() == 3);
     REQUIRE(!c.item("child").exists());
     REQUIRE(c.item("child-x").get(99) == 1);
     REQUIRE(c.item("child-y").get(99) == 2);
@@ -164,7 +185,7 @@ TEST_CASE("wex::config")
     REQUIRE(c.item("child.child-z").get(99) == 3);
   }
 
-  SUBCASE("dotted-item")
+  SECTION("dotted-item")
   {
     wex::config("number.v").set(8);
     REQUIRE(!wex::config("number.v").is_child());
@@ -176,7 +197,7 @@ TEST_CASE("wex::config")
     REQUIRE(wex::config("vector.v").get(wex::config::ints_t{}).size() == 3);
   }
 
-  SUBCASE("hierarchy")
+  SECTION("hierarchy")
   {
     wex::config("world.asia.china.cities").set("bejing");
     wex::config("world.europe.netherlands.cities").set("amsterdam");
@@ -188,7 +209,7 @@ TEST_CASE("wex::config")
     REQUIRE(wex::config("world.europe.netherlands.rivers").get() == "rijn");
   }
 
-  SUBCASE("toggle")
+  SECTION("toggle")
   {
     wex::config c("toggle");
     c.set(true);
