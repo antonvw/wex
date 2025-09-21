@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- Added regex flag to git grep
+- Added regular expression flag to git grep
 
 ## [25.10] - 2025-09-21
 
