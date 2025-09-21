@@ -18,6 +18,12 @@
 
 namespace wex
 {
+std::string
+cfg_do(const std::string& key, const std::string& on, const std::string& off)
+{
+  return std::string(config(key).get(true) ? on : off);
+}
+
 bool execute_grep(const std::string& bin, const path& tl)
 {
   auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
@@ -33,7 +39,8 @@ bool execute_grep(const std::string& bin, const path& tl)
         {add_find_text(),
          item::choices_bool_t{
            find_replace_data::get()->text_match_case(),
-           find_replace_data::get()->text_match_word()}},
+           find_replace_data::get()->text_match_word(),
+           find_replace_data::get()->text_regex()}},
         wex::data::window().title("git grep"));
     }
 
@@ -63,9 +70,9 @@ bool execute_grep(const std::string& bin, const path& tl)
   }
   else
   {
-    const std::string flag(
-      config(find_replace_data::get()->text_match_case()).get(true) ? "" :
-                                                                      " -i ");
+    const auto& ic(
+      cfg_do(find_replace_data::get()->text_match_case(), " ", " -i "));
+    const auto& re(cfg_do(find_replace_data::get()->text_regex(), " -E ", " "));
 
     const std::string finds(
       config(find_replace_data::get()->text_match_word()).get(true) ?
@@ -73,9 +80,10 @@ bool execute_grep(const std::string& bin, const path& tl)
         find);
 
     frame->process_async_system(
-      process_data(bin + " grep -n " + flag + finds).start_dir(tl.string()));
+      process_data(bin + " grep -n " + ic + re + finds).start_dir(tl.string()));
   }
 
   return true;
 }
+
 } // namespace wex
