@@ -35,14 +35,13 @@ jobs:
       - name: Add msbuild
         uses: microsoft/setup-msbuild@v2
 
-      - name: Set branch-based environment variables
-        uses: iamtheyammer/branch-env-vars@v1.1.2
-        with:
-          bevOverwrite: true
-          BUILD_CONFIG: |
-            master:Release
-            develop:Release
-            !default:Debug
+      - name: Set BUILD_CONFIG
+        if: ${GITHUB_REF##*/} == "master" || ${GITHUB_REF##*/} == "develop"
+        run: echo "BUILD_CONFIG=Release" >> "$env:GITHUB_ENV"
+
+      - name:
+        if: ${GITHUB_REF##*/} != "master" && ${GITHUB_REF##*/} != "develop"
+        run: echo "BUILD_CONFIG=Debug" >> "$env:GITHUB_ENV"
 
       - name: Configure
         shell: pwsh
@@ -52,7 +51,7 @@ jobs:
       - name: Build
         working-directory: build
         run: |
-          msbuild /noLogo /m /p:Configuration=$BUILD_CONFIG ALL_BUILD.vcxproj
+          msbuild /noLogo /m /p:Configuration=$env:BUILD_CONFIG ALL_BUILD.vcxproj
 
       - name: Artifacts
         # see build-gen, currently a static build
@@ -68,6 +67,6 @@ jobs:
       - name: Run tests
         uses: threeal/ctest-action@v1.1.0
         with:
-          build-config: $BUILD_CONFIG
+          build-config: $env:BUILD_CONFIG
           tests-regex: co|fa|sy|da|ui|ct|vi|stc|vcs|del
           verbose: true
