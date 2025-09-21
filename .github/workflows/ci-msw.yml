@@ -35,15 +35,23 @@ jobs:
       - name: Add msbuild
         uses: microsoft/setup-msbuild@v2
 
+      - name: Set branch-based environment variables
+        uses: iamtheyammer/branch-env-vars@v1.2.2
+        with:
+          BUILD_CONFIG: |
+            master:Release
+            develop:Release
+            !default:Debug
+
       - name: Configure
         shell: pwsh
         run: |
-          .\build-gen.ps1 -boost_dir ${{steps.install-boost.outputs.BOOST_ROOT}} -tests -prepare
+          .\build-gen.ps1 -boost_dir ${{steps.install-boost.outputs.BOOST_ROOT}} -tests -prepare -samples
 
       - name: Build
         working-directory: build
         run: |
-          msbuild /noLogo /m /p:Configuration=Release ALL_BUILD.vcxproj
+          msbuild /noLogo /m /p:Configuration=$BUILD_CONFIG ALL_BUILD.vcxproj
 
       - name: Artifacts
         # see build-gen, currently a static build
@@ -54,10 +62,11 @@ jobs:
             data/*.*
             build/**/*.lib
             build/**/setup.h
+            build/**/*.exe
 
       - name: Run tests
         uses: threeal/ctest-action@v1.1.0
         with:
-          build-config: Release
+          build-config: $BUILD_CONFIG
           tests-regex: co|fa|sy|da|ui|ct|vi|stc|vcs|del
           verbose: true
