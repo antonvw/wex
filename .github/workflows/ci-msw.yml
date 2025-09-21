@@ -38,6 +38,7 @@ jobs:
       - name: Set branch-based environment variables
         uses: iamtheyammer/branch-env-vars@v1.2.2
         with:
+          bevOverwrite: true
           BUILD_CONFIG: |
             master:Release
             develop:Release
