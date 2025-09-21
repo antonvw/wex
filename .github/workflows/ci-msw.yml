@@ -36,7 +36,7 @@ jobs:
         uses: microsoft/setup-msbuild@v2
 
       - name: Set branch-based environment variables
-        uses: iamtheyammer/branch-env-vars@v1.2.2
+        uses: iamtheyammer/branch-env-vars@v1.1.2
         with:
           bevOverwrite: true
           BUILD_CONFIG: |
