@@ -36,11 +36,11 @@ jobs:
         uses: microsoft/setup-msbuild@v2
 
       - name: Set BUILD_CONFIG release
-        if: "${GITHUB_REF##*/}" == "master" || "${GITHUB_REF##*/}" == "develop"
+        if: "${{ github.ref_name }}" == "master" || "${{ github.ref_name }}" == "develop"
         run: echo "BUILD_CONFIG=Release" >> "$env:GITHUB_ENV"
 
       - name: Set BUILD_CONFIG debug
-        if: "${GITHUB_REF##*/}" != "master" && "${GITHUB_REF##*/}" != "develop"
+        if: "${{ github.ref_name }}" != "master" && "${{ github.ref_name }}" != "develop"
         run: echo "BUILD_CONFIG=Debug" >> "$env:GITHUB_ENV"
 
       - name: Configure
