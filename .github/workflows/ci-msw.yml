@@ -61,7 +61,24 @@ jobs:
 
       - name: Run tests
         uses: threeal/ctest-action@v1.1.0
+        if:
+          contains('
+            refs/heads/develop
+            refs/heads/master
+          ', github.ref)
         with:
-          build-config: $env:BUILD_CONFIG
+          build-config: Release
+          tests-regex: co|fa|sy|da|ui|ct|vi|stc|vcs|del
+          verbose: true
+
+      - name: Run tests
+        uses: threeal/ctest-action@v1.1.0
+        if:
+          !contains('
+            refs/heads/develop
+            refs/heads/master
+          ', github.ref)
+        with:
+          build-config: Debug
           tests-regex: co|fa|sy|da|ui|ct|vi|stc|vcs|del
           verbose: true
