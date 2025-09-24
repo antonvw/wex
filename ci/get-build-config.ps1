@@ -4,9 +4,9 @@
 # Author:    Anton van Wezenbeek
 # Copyright: (c) 2025 Anton van Wezenbeek
 ################################################################################
- 
+
 $branch = git rev-parse --abbrev-ref HEAD
- 
+
 if (($branch -eq "master") -or ($branch -eq "develop" ))
 {
     Write-Output "Release"
