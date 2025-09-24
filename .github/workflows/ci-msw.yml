@@ -74,10 +74,10 @@ jobs:
       - name: Run tests
         uses: threeal/ctest-action@v1.1.0
         if:
-          !contains('
+          contains('
             refs/heads/develop
             refs/heads/master
-          ', github.ref)
+          ', github.ref) == false
         with:
           build-config: Debug
           tests-regex: co|fa|sy|da|ui|ct|vi|stc|vcs|del
