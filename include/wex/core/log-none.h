@@ -13,7 +13,8 @@ namespace wex
 class log_none
 {
 public:
-  /// Default constructor, disables logging.
+  /// Default constructor, disables logging during lifetime,
+  /// unless trace logging is enabled, then it is not disabled.
   log_none();
 
   /// Enables logging to previous level.
