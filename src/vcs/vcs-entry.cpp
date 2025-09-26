@@ -5,8 +5,6 @@
 // Copyright: (c) 2010-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <boost/algorithm/string.hpp>
-#include <boost/tokenizer.hpp>
 #include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
@@ -171,23 +169,13 @@ const std::string wex::vcs_entry::get_branch(const std::string& wd) const
 {
   wex::log_none off;
 
-  if (process p; name() == "git" &&
-                 p.system(process_data(bin() + " branch").start_dir(wd)) == 0)
+  if (process p;
+      name() == "git" &&
+      p.system(
+        process_data(bin() + " rev-parse --abbrev-ref HEAD").start_dir(wd)) ==
+        0)
   {
-    const auto& tok(boost::tokenizer<boost::char_separator<char>>(
-      p.std_out(),
-      boost::char_separator<char>("\r\n")));
-
-    if (const auto& it = std::ranges::find_if(
-          tok,
-          [](const auto& i)
-          {
-            return i.starts_with('*');
-          });
-        it != tok.end())
-    {
-      return boost::algorithm::trim_copy(it->substr(1));
-    }
+    return p.std_out();
   }
 
   return std::string();
