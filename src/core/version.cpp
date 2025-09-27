@@ -5,11 +5,10 @@
 // Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/core/core.h>
+#include <sstream>
+
 #include <wex/core/version.h>
 #include <wx/translation.h>
-
-#include <sstream>
 
 const wex::version_info wex::get_version_info()
 {
@@ -17,6 +16,7 @@ const wex::version_info wex::get_version_info()
     {"wex",
      26,
      4,
+     0,
      0,
      _("wex library (a library that offers windows ex and vi components)"),
      "(c) 1998-2025, Anton van Wezenbeek. " + _("All rights reserved.")});
@@ -37,9 +37,33 @@ const std::string wex::version_info::description() const
   return m_version.GetDescription();
 }
 
-const std::string wex::version_info::get(bool include_name) const
+const std::string wex::version_info::get(exclude_t type) const
 {
-  return include_name ?
-           m_version.GetVersionString().ToStdString() :
-           find_after(m_version.GetVersionString().ToStdString(), " ");
+  if (type.none())
+  {
+    return m_version.GetVersionString();
+  }
+
+  std::stringstream version;
+
+  if (!type.test(EXCLUDE_NAME))
+  {
+    version << m_version.GetName() << " ";
+  }
+
+  version << m_version.GetMajor() << "." << m_version.GetMinor();
+
+  if (
+    !type.test(EXCLUDE_MICRO) &&
+    (m_version.GetMicro() != 0 || m_version.GetRevision() != 0))
+  {
+    version << "." << m_version.GetMicro();
+  }
+
+  if (!type.test(EXCLUDE_MICRO) && m_version.GetRevision() != 0)
+  {
+    version << "." << m_version.GetRevision();
+  }
+
+  return version.str();
 }
