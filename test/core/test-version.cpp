@@ -55,6 +55,19 @@ TEST_CASE("wex::version_info")
         wex::version_info::EXCLUDE_MICRO)) == "hello 5.6");
   }
 
+  SECTION("constructor-no-micro-revision")
+  {
+    const wex::version_info info({"hello", 5, 6, 0, 15});
+
+    REQUIRE(info.get() == "hello 5.6.0.15");
+    REQUIRE(
+      info.get(wex::version_info::exclude_t().set(
+        wex::version_info::EXCLUDE_NAME)) == "5.6.0.15");
+    REQUIRE(
+      info.get(wex::version_info::exclude_t().set(
+        wex::version_info::EXCLUDE_MICRO)) == "hello 5.6");
+  }
+
   SECTION("get_version_info")
   {
     REQUIRE(!wex::get_version_info().get().empty());

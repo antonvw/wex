@@ -53,7 +53,9 @@ const std::string wex::version_info::get(exclude_t type) const
 
   version << m_version.GetMajor() << "." << m_version.GetMinor();
 
-  if (!type.test(EXCLUDE_MICRO) && m_version.GetMicro() != 0)
+  if (
+    !type.test(EXCLUDE_MICRO) &&
+    (m_version.GetMicro() != 0 || m_version.GetRevision() != 0))
   {
     version << "." << m_version.GetMicro();
   }
