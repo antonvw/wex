@@ -1,8 +1,8 @@
 # wex library
 
 This library is written in the c++ language, and offers classes
-to add vi or ex functionality as specified in
-"The Open Group Base Specifications Issue 8, 2024 edition"
+to add vi or ex functionality as specified in [The Open Group Base Specifications](
+https://pubs.opengroup.org/onlinepubs/9799919799)
 to your apps.
 
 ## wex c++ libraries
