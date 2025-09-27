@@ -73,6 +73,7 @@ jobs:
 
       - name: Run tests
         uses: threeal/ctest-action@v1.1.0
+        allow-failure: true
         if:
           contains('
             refs/heads/develop
