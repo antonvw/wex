@@ -19,18 +19,7 @@ namespace wex
 class cmdline_imp;
 class config;
 
-/// Offers a command line class. Besides offering the
-/// switches, options and params, it also adds standard options:
-/// - logfile,D:     sets log file
-/// - echo,e:        echo commands (sets is_output)
-/// - help,h:        displays usage information and exits
-/// - quit,q:        quits after specified number of seconds
-/// - version,r:     displays version information and exits
-/// - verbose,v:     activates maximum (trace) verbosity
-/// - level,V:       activates verbosity down from verbose level
-/// - scriptout,w:   script out append (echo to file) (sets get_scriptout)
-/// - echo-output,x: echo output commands (process, statusbar) (sets is_echo)
-/// - output,X:      output commands append to file (sets get_output)
+/// Offers a command line class, that supports switches, options and params.
 class cmdline
 {
 public:
@@ -88,7 +77,9 @@ public:
   /// Returns this setting, default events are not preferred.
   static bool use_events();
 
-  /// Default constructor, adds standard options.
+  /// Default constructor, adds next options:
+  /// - help,h:    sets usage information and sets exit condition
+  /// - version,r: sets version information and sets exit condition
   cmdline(
     /// switches
     const cmd_switches_t& s = cmd_switches_t(),
@@ -96,7 +87,16 @@ public:
     const cmd_options_t& o = cmd_options_t(),
     /// params
     const cmd_params_t& p = cmd_params_t(),
-    /// add standard options
+    /// if specified, adds the next options:
+    /// - logfile,D:     sets log file
+    /// - echo,e:        echo commands (sets is_output)
+    /// - quit,q:        quits after specified number of seconds
+    /// - verbose,v:     activates maximum (trace) verbosity
+    /// - level,V:       activates verbosity down from verbose level
+    /// - scriptout,w:   script out append (echo to file) (sets get_scriptout)
+    /// - echo-output,x: echo output commands (process, statusbar) (sets
+    /// is_echo)
+    /// - output,X:      output commands append to file (sets get_output)
     bool add_standard_options = true);
 
   /// Destructor.
