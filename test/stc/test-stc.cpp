@@ -27,6 +27,11 @@ TEST_CASE("wex::stc")
   stc->get_vi().command("\x1b");
   wex::config(_("stc.Wrap scan")).set(true);
 
+  SECTION("add_search_path")
+  {
+    REQUIRE(!stc->add_search_path(wex::path("xxxxxxx")));
+  }
+
   SECTION("auto_complete")
   {
     stc->auto_complete()->use(true);

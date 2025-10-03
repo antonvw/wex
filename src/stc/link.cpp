@@ -79,6 +79,11 @@ wex::link::get_path(const std::string& text, line_data& data, factory::stc* stc)
   return factory::link::get_path(text, data, stc);
 }
 
+bool wex::stc::add_search_path(const wex::path& p)
+{
+  return m_link->add_path(p);
+}
+
 bool wex::stc::link_open()
 {
   return link_open(link_t().set(LINK_OPEN).set(LINK_OPEN_MIME));

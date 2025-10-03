@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2024 Anton van Wezenbeek
+// Copyright: (c) 2008-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -97,6 +97,9 @@ public:
   virtual bool process_char(int c) { return false; }
 
   // Other methods.
+
+  /// Adds a search path.
+  bool add_search_path(const wex::path& p);
 
   /// Returns auto_complete.
   auto* auto_complete() { return m_auto_complete; }

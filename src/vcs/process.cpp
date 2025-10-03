@@ -2,8 +2,10 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wex::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
+
+#include <boost/algorithm/string.hpp>
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
@@ -61,6 +63,15 @@ bool wex::process::async_system(const process_data& data_in)
   }
 
   m_shell->set_process(this);
+
+  if (data.exe().starts_with("git"))
+  {
+    if (process p;
+        p.system(process_data(data).exe("git rev-parse --show-toplevel")) == 0)
+    {
+      m_shell->add_search_path(path(boost::algorithm::trim_copy(p.std_out())));
+    }
+  }
 
   if (
     m_frame->debug_entry() != nullptr &&
