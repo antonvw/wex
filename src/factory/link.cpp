@@ -30,9 +30,9 @@ public:
 
   bool add_path(const path& p)
   {
-    if (p.dir_exists() && !find(p))
+    if (p.dir_exists() && !std::ranges::contains(m_paths, p.string()))
     {
-      m_paths.emplace_back(p.string());
+      m_paths.emplace_front(p.string());
       return true;
     }
 
@@ -50,16 +50,6 @@ public:
     }
 
     return wex::path();
-  };
-
-  bool find(const path& p) const
-  {
-    return std::ranges::any_of(
-      m_paths,
-      [p](const auto& it)
-      {
-        return p.string() == it;
-      });
   };
 
 private:

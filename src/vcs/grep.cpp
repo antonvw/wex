@@ -71,8 +71,8 @@ bool execute_grep(const std::string& bin, const path& tl)
   else
   {
     const auto& ic(
-      cfg_do(find_replace_data::get()->text_match_case(), " ", " -i "));
-    const auto& re(cfg_do(find_replace_data::get()->text_regex(), " -E ", " "));
+      cfg_do(find_replace_data::get()->text_match_case(), "", " -i "));
+    const auto& re(cfg_do(find_replace_data::get()->text_regex(), " -E ", ""));
 
     const std::string finds(
       config(find_replace_data::get()->text_match_word()).get(true) ?

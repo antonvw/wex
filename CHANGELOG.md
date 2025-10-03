@@ -8,11 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- Added regular expression flag to git grep
+- added regular expression flag to git grep
+- added add_path to wex::factory::link
 
 ### Changed
 
 - version_info allows to explicitly exclude micro version number
+
+### Fixed
+
+- fixed opening a link from git grep results
 
 ## [25.10] - 2025-09-21
 

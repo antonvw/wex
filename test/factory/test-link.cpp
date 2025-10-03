@@ -55,6 +55,14 @@ TEST_CASE("wex::factory::link")
       .set(wex::config::strings_t{{"/usr/bin"}});
     wex::factory::link lnk;
 
+    // Test add_path not added: already present
+    REQUIRE(!lnk.add_path(wex::path("/usr/bin")));
+
+    // And a new path
+    REQUIRE(lnk.add_path(wex::path("/etc/")));
+    REQUIRE(!lnk.add_path(wex::path("/etc/")));
+    REQUIRE(!lnk.add_path(wex::path("yyyyyyy")));
+
     // Test empty, or invalid paths.
     link(lnk, "");
     link(lnk, "xxxx");
