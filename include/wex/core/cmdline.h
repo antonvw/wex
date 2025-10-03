@@ -79,7 +79,7 @@ public:
 
   /// Default constructor, adds next options:
   /// - help,h:    sets usage information and sets exit condition
-  /// - version,r: sets version information and sets exit condition
+  /// - version,R: sets version information and sets exit condition
   cmdline(
     /// switches
     const cmd_switches_t& s = cmd_switches_t(),

@@ -54,7 +54,7 @@ wex::cmdline_imp::cmdline_imp(bool add_standard_options, config& cfg)
   // clang-format off
   m_desc.add_options()
     ("help,h", "displays usage information and exits")
-    ("version,r", "displays version information and exits");
+    ("version,R", "displays version information and exits");
   // clang-format on
 
   if (add_standard_options)
