@@ -35,14 +35,6 @@ int wex::test::app::OnRun()
   return wex::app::OnRun();
 }
 
-std::vector<std::pair<std::string, std::string>> wex::test::get_abbreviations()
-{
-  return std::vector<std::pair<std::string, std::string>>{
-    {"XX", "GREAT"}, // see also test-source.txt
-    {"YY", "WHITE"},
-    {"ZZ", "SHARK"}};
-}
-
 int wex::test::main(int argc, char* argv[], wex::test::app* app)
 {
 #ifndef __WXMSW__

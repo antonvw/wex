@@ -37,7 +37,7 @@ TEST_CASE("wex::macros", "[!mayfail]")
 
   SECTION("abbreviations")
   {
-    for (auto& abbrev : wex::test::get_abbreviations())
+    for (const auto& abbrev : wex::test::get_abbreviations())
     {
       macros.set_abbreviation(abbrev.first, abbrev.second);
 
@@ -75,7 +75,7 @@ TEST_CASE("wex::macros", "[!mayfail]")
 
   SECTION("builtin-variables")
   {
-    for (auto& builtin : get_builtin_variables())
+    for (const auto& builtin : wex::test::get_builtin_variables())
     {
       CAPTURE(builtin);
       REQUIRE(macros.mode().transition("@" + builtin + "@", ex));
