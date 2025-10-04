@@ -265,7 +265,7 @@ wex::debug::get_args(const std::string& command, stc* stc)
                .apply(
                  [&](wxWindow* user, const std::any& value, bool save)
                  {
-                   lv = ((wex::listview*)user);
+                   lv = dynamic_cast<wex::listview*>(user);
                    if (save && lv->GetFirstSelected() != -1)
                    {
                      args =

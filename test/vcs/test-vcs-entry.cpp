@@ -162,14 +162,11 @@ TEST_CASE("wex::vcs_entry")
 
     REQUIRE(v.has_value());
     REQUIRE(v->size() > 5);
-    REQUIRE(
-      std::ranges::find(
-        *v,
-        wex::path(vcs.toplevel()).append(wex::path("external/wxWidgets"))) !=
-      v->end());
-    REQUIRE(
-      std::ranges::find(
-        *v,
-        wex::path(vcs.toplevel()).append(wex::path("build"))) != v->end());
+    REQUIRE(std::ranges::contains(
+      *v,
+      wex::path(vcs.toplevel()).append(wex::path("external/wxWidgets"))));
+    REQUIRE(std::ranges::contains(
+      *v,
+      wex::path(vcs.toplevel()).append(wex::path("build"))));
   }
 }
