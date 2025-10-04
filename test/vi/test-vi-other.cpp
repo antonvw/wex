@@ -165,7 +165,7 @@ TEST_CASE("wex::vi-other")
   SECTION("other")
   {
     // Test abbreviate.
-    for (auto& abbrev : wex::test::get_abbreviations())
+    for (const auto& abbrev : wex::test::get_abbreviations())
     {
       REQUIRE(vi->command(":ab " + abbrev.first + " " + abbrev.second));
       REQUIRE(vi->command("iabbreviation " + abbrev.first + " "));
@@ -176,7 +176,8 @@ TEST_CASE("wex::vi-other")
     }
 
     // Test special delete commands.
-    for (auto& delete_command : std::vector<std::string>{"dgg", "3dw", "d3w"})
+    for (const auto& delete_command :
+         std::vector<std::string>{"dgg", "3dw", "d3w"})
     {
       REQUIRE(vi->command(delete_command));
       REQUIRE(vi->last_command() == delete_command);
@@ -186,7 +187,7 @@ TEST_CASE("wex::vi-other")
     wex::config(_("stc.Wrap scan")).set(true);
 
     // Test other commands (ZZ not tested).
-    for (auto& other_command : vi->other_commands())
+    for (const auto& other_command : vi->other_commands())
     {
       if (other_command.first == "ZZ")
       {
@@ -205,7 +206,7 @@ TEST_CASE("wex::vi-other")
         other_command.first.front() != '\x12' &&
         other_command.first.front() != '@')
       {
-        for (auto c : other_command.first)
+        for (const auto c : other_command.first)
         {
           // prevent wex::browser_search
           if (c == 'U')

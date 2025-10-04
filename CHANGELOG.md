@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - version_info allows to explicitly exclude micro version number
+- moved get_abbreviations from test library to ex testing
 
 ### Fixed
 
