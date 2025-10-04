@@ -138,11 +138,11 @@ TEST_CASE("wex::listview")
     // We move in slightly so we are not on the edge
     const auto& p(other->ClientToScreen(pos.GetPosition()) + wxPoint(10, 10));
     REQUIRE(sim.MouseMove(p));
-    wxYield();
+    wxTheApp->ProcessPendingEvents();
 
     REQUIRE(sim.MouseClick(wxMOUSE_BTN_RIGHT));
     REQUIRE(sim.Char(WXK_RETURN));
-    wxYield();
+    wxTheApp->ProcessPendingEvents();
 
     CHECK(other->GetItemCount() == 0);
   }

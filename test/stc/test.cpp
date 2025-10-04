@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation of general test functions.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "test.h"
@@ -51,7 +51,7 @@ void event(wxWindow* win, const std::string& ids)
     event(win, id);
   }
 
-  wxYield();
+  wxTheApp->ProcessPendingEvents();
 }
 
 void event(wxWindow* win, int id, wxEventType type)
@@ -60,5 +60,5 @@ void event(wxWindow* win, int id, wxEventType type)
   ke.m_keyCode = id;
   wxPostEvent(win, ke);
 
-  wxYield();
+  wxTheApp->ProcessPendingEvents();
 }
