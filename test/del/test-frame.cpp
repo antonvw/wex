@@ -229,7 +229,7 @@ TEST_CASE("wex::del::frame")
     get_stc()->SetFocus();
     wxMouseEvent event(wxEVT_LEFT_DOWN);
     wxPostEvent(get_stc(), event);
-    wxYield();
+    wxTheApp->ProcessPendingEvents();
     REQUIRE(!get_stc()->find("b6aae80e3a"));
   }
 

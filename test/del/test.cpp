@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation for wex del unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/dir.h>
@@ -43,7 +43,7 @@ TEST_CASE("wex::del")
 
   find_in_files(files, lv);
 
-  wxYield();
+  wxTheApp->ProcessPendingEvents();
 
 #ifdef __UNIX__
   REQUIRE(lv->GetItemCount() == 1);
@@ -57,7 +57,7 @@ TEST_CASE("wex::del")
 
   find_in_files(files, lv);
 
-  wxYield();
+  wxTheApp->ProcessPendingEvents();
 
   const auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(
     std::chrono::system_clock::now() - start);
