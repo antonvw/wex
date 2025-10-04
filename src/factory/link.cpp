@@ -138,10 +138,10 @@ const wex::path wex::factory::link::find_filename(
 #endif
 
   // file[:line[:column]]
-  // the first is to match file names without spaces,
+  // the first is to match file names without spaces, startig with ./,
   // to match xx ./vnc.env.sh yy
   const regex::regex_v_t t(
-    {"(\\.[\\0-9A-Za-z_/.-]+) .*",
+    {"(\\./[\\0-9A-Za-z_/.-]+) .*",
      "^([\\0-9A-Za-z _/.-]+):?([0-9]*):?([0-9]*)"});
 
   if (regex v(t); v.search(text_filter) > 0)

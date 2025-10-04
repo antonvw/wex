@@ -102,6 +102,7 @@ TEST_CASE("wex::factory::link")
     link(lnk, "who:50", "/usr/bin/who", 50);
     link(lnk, "who:50:", "/usr/bin/who", 50);
     link(lnk, "who:50:6", "/usr/bin/who", 50, 6);
+    link(lnk, "who:50:6 . ignore this", "/usr/bin/who", 50, 6);
     link(lnk, "who:500000", "/usr/bin/who", 500000);
     link(lnk, "who:500000:599", "/usr/bin/who", 500000, 599);
     link(lnk, "skip skip who:50", "/usr/bin/who", 50);
