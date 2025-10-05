@@ -52,20 +52,16 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
     REQUIRE(entry.admin_dir() == ".git");
     REQUIRE(entry.get_flags().empty());
 
-#ifndef __WXMSW__
-    // the get_branch gives error on msw
     REQUIRE(entry.get_branch("/tmp").empty());
     REQUIRE(!entry.get_branch().empty());
     REQUIRE(!entry.get_branch().starts_with(" "));
     REQUIRE(!entry.get_branch().starts_with("*"));
     REQUIRE(!entry.std_out().empty());
-#endif
     entry.show_output();
 
     wex::menu menu;
     REQUIRE(entry.build_menu(5, &menu) == 2);
 
-#ifndef __WXMSW__
     // This should have no effect.
     REQUIRE(!entry.set_command(5));
     REQUIRE(!entry.set_command(wex::ID_EDIT_VCS_LOWEST));
@@ -82,7 +78,6 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
     auto* other = new wex::vcs_entry(doc.document_element());
     REQUIRE(other->execute(std::string(), wex::path()));
     other->show_output();
-#endif
   }
 
   SECTION("blame")
@@ -92,11 +87,9 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
     wex::lexers::get()->apply_margin_text_style(stc, &blame);
     auto* entry = load_git_entry();
 
-#ifndef __WXMSW__
     REQUIRE(
       entry->system(wex::process_data().args(
         "blame " + wex::test::get_path("test.h").string())) == 0);
-#endif
 
     stc->get_file().reset_contents_changed();
   }
@@ -144,7 +137,7 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
     REQUIRE(entry.get_command().get_command() == "show");
 
     REQUIRE(entry.execute());
-    REQUIRE(!entry.std_out().contains("usage: git"));
+    REQUIRE(!entry.std_out().empty());
 
     wex::log_none off;
     REQUIRE(!entry.execute(std::string(), wex::test::get_path("test.h")));
