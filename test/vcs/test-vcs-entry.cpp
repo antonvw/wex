@@ -18,7 +18,7 @@ TEST_CASE("wex::vcs_entry")
 {
   pugi::xml_document doc;
 
-  REQUIRE(doc.load_string("<vcs name=\"git\" admin-dir=\"./\" log-flags=\"-n "
+  REQUIRE(doc.load_string("<vcs name=\"git\" admin-dir=\".git\" log-flags=\"-n "
                           "1\" blame-format=\" yyyy\">"
                           "  <commands>"
                           "     <command> help </command>"
@@ -49,7 +49,7 @@ TEST_CASE("wex::vcs_entry")
     REQUIRE(entry.get_commands().size() == 2);
     REQUIRE(!entry.bin().empty());
     REQUIRE(!entry.get_command().get_command().empty());
-    REQUIRE(entry.admin_dir() == "./");
+    REQUIRE(entry.admin_dir() == ".git");
     REQUIRE(entry.get_flags().empty());
 
 #ifndef __WXMSW__
@@ -105,12 +105,13 @@ TEST_CASE("wex::vcs_entry")
   {
     pugi::xml_document dc;
 
-    REQUIRE(dc.load_string("<vcs name=\"git\" admin-dir=\"./\" log-flags=\"-n "
-                           "1\" blame-format=\" yyyy\">"
-                           "  <commands>"
-                           "     <command> grep </command>"
-                           "  </commands>"
-                           "</vcs>"));
+    REQUIRE(
+      dc.load_string("<vcs name=\"git\" admin-dir=\".git\" log-flags=\"-n "
+                     "1\" blame-format=\" yyyy\">"
+                     "  <commands>"
+                     "     <command> grep </command>"
+                     "  </commands>"
+                     "</vcs>"));
 
     wex::vcs_entry entry(dc.document_element());
     REQUIRE(entry.name() == "git");
@@ -134,12 +135,13 @@ TEST_CASE("wex::vcs_entry")
   {
     pugi::xml_document dc;
 
-    REQUIRE(dc.load_string("<vcs name=\"git\" admin-dir=\"./\" log-flags=\"-n "
-                           "1\" blame-format=\" yyyy\">"
-                           "  <commands>"
-                           "     <command> show </command>"
-                           "  </commands>"
-                           "</vcs>"));
+    REQUIRE(
+      dc.load_string("<vcs name=\"git\" admin-dir=\".git\" log-flags=\"-n "
+                     "1\" blame-format=\" yyyy\">"
+                     "  <commands>"
+                     "     <command> show </command>"
+                     "  </commands>"
+                     "</vcs>"));
 
     wex::vcs_entry entry(dc.document_element());
     REQUIRE(entry.name() == "git");
