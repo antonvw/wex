@@ -74,7 +74,7 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
     REQUIRE(entry.get_flags().empty());
     REQUIRE(!entry.std_out().empty());
     REQUIRE(entry.execute()); // executes just git, shows help
-    REQUIRE(entry.std_out().contains("usage: "));
+    REQUIRE(entry.std_out().contains("usage: git"));
     entry.show_output();
 
     REQUIRE(entry.system(wex::process_data("help")) == 0);
@@ -127,9 +127,6 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
     REQUIRE(!entry.execute(std::string(), wex::test::get_path("test.h")));
   }
 
-// on MSW: SIGSEGV - Segmentation violation signal
-// Building for: Visual Studio 17 2022
-// The CXX compiler identification is MSVC 19.44.35209.0
   SECTION("execute-show")
   {
     pugi::xml_document dc;
@@ -147,7 +144,7 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
     REQUIRE(entry.get_command().get_command() == "show");
 
     REQUIRE(entry.execute());
-    REQUIRE(!entry.std_out().contains("usage: "));
+    REQUIRE(!entry.std_out().contains("usage: git"));
 
     wex::log_none off;
     REQUIRE(!entry.execute(std::string(), wex::test::get_path("test.h")));
