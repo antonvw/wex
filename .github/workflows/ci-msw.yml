@@ -29,7 +29,7 @@ jobs:
           # REQUIRED: Specify the required boost version
           # A list of supported versions can be found here:
           # https://github.com/MarkusJx/prebuilt-boost/blob/main/versions-manifest.json
-          boost_version: 1.88.0
+          boost_version: 1.89.0
           platform_version: 2022
 
       - name: Add msbuild
@@ -59,7 +59,7 @@ jobs:
             build/**/setup.h
             build/**/*.exe
 
-      - name: Run tests
+      - name: Run release tests
         uses: threeal/ctest-action@v1.1.0
         if:
           contains('
@@ -71,7 +71,7 @@ jobs:
           tests-regex: co|fa|sy|da|ui|ct|vi|stc|vcs|del
           verbose: true
 
-      - name: Run tests
+      - name: Run debug tests
         uses: threeal/ctest-action@v1.1.0
         continue-on-error: true
         if:
