@@ -28,12 +28,15 @@ wex::addressrange_mark::addressrange_mark(
 
 wex::addressrange_mark::~addressrange_mark()
 {
-  std::ranges::all_of(
+  if (!std::ranges::all_of(
     m_markers,
     [this](const char a)
     {
       return m_ex->marker_delete(a);
-    });
+    }))
+  {
+    log("cleanup addressrange markers failed");
+  }
 }
 
 void wex::addressrange_mark::end(bool indicator_clear)
