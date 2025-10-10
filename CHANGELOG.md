@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 
 - fixed opening a link from git grep results
+- fixed hypertext autocomplete
 
 ## [25.10] - 2025-09-21
 
