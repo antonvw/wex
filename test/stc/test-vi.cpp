@@ -185,8 +185,8 @@ TEST_CASE("wex::vi")
   {
     change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     wxKeyEvent event(wxEVT_CHAR);
-    event.m_keyCode = WXK_CONTROL_J;
-    event.m_uniChar = WXK_CONTROL_J;
+    event.m_keyCode = WXK_CONTROL_K;
+    event.m_uniChar = WXK_CONTROL_K;
     event.SetRawControlDown(true);
 
     for (const auto& number :
@@ -541,7 +541,7 @@ TEST_CASE("wex::vi")
            WXK_CONTROL_E,
            WXK_CONTROL_F,
            WXK_CONTROL_G,
-           WXK_CONTROL_J,
+           WXK_CONTROL_K,
            WXK_CONTROL_P,
            WXK_CONTROL_Q})
     {
