@@ -28,6 +28,12 @@ bool execute_grep(const std::string& bin, const path& tl)
 {
   auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
   auto* stc   = frame->get_stc();
+
+  if (stc == nullptr)
+  {
+    return false;
+  }
+
   auto  text(stc->get_selected_text());
   static item_dialog* dlg = nullptr;
 
