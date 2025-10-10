@@ -5,6 +5,8 @@
 // Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <filesystem>
+
 #include <wex/core/log-none.h>
 #include <wex/core/path.h>
 #include <wex/factory/defs.h>
@@ -52,7 +54,11 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
     REQUIRE(entry.admin_dir() == ".git");
     REQUIRE(entry.get_flags().empty());
 
+#ifdef __WXMSW__
+    REQUIRE(entry.get_branch("\\windows").empty());
+#else
     REQUIRE(entry.get_branch("/tmp").empty());
+#endif
     REQUIRE(!entry.get_branch().empty());
     REQUIRE(!entry.get_branch().starts_with(" "));
     REQUIRE(!entry.get_branch().starts_with("*"));
