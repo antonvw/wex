@@ -164,7 +164,6 @@ void wex::stc::bind_all()
   m_frame->bind_accelerators(
     this,
     {{wxACCEL_CTRL, 'D', id::stc::hex_dec_calltip},
-     {wxACCEL_CTRL, 'K', ID_EDIT_CONTROL_CHAR},
      {wxACCEL_CTRL, 'Y', wxID_REDO},
      {wxACCEL_CTRL, 'Z', wxID_UNDO},
      {wxACCEL_CTRL, '=', id::stc::zoom_in},
