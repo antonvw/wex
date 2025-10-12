@@ -38,7 +38,7 @@ public:
   // Other methods
 
   /// Returns locale language.
-  auto get_language() const { return m_language; }
+  wxLanguage get_language() const { return m_language; }
 
 private:
   void set_language();

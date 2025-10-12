@@ -2,7 +2,7 @@
 // Name:      data/layout.h
 // Purpose:   Declaration of wex::data::layout class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023 Anton van Wezenbeek
+// Copyright: (c) 2023-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -31,13 +31,13 @@ public:
   wxWindow* parent() { return m_parent; };
 
   /// Returns the base sizer.
-  auto* sizer() { return m_sizer; };
+  sizer_t* sizer() { return m_sizer; };
 
   /// Grows last row of sizer. Returns false if row cannot grow.
   bool sizer_grow_row();
 
   /// Returns the layout sizer.
-  auto* sizer_layout() { return m_fgz; };
+  sizer_t* sizer_layout() { return m_fgz; };
 
   /// Creates the sizer layout.
   bool sizer_layout_create(sizer_t* rhs);

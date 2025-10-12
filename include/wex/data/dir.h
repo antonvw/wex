@@ -2,7 +2,7 @@
 // Name:      data/dir.h
 // Purpose:   Declaration of class wex::data::dir
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -36,7 +36,7 @@ public:
   static type_t type_t_def() { return type_t().set().set(HIDDEN, false); }
 
   /// Returns the dir spec.
-  const auto& dir_spec() const { return m_dir_spec; }
+  const std::string& dir_spec() const { return m_dir_spec; }
 
   /// Sets dir specs.
   dir& dir_spec(const std::string& rhs)
@@ -46,7 +46,7 @@ public:
   }
 
   /// Returns the file spec.
-  const auto& file_spec() const { return m_file_spec; }
+  const std::string& file_spec() const { return m_file_spec; }
 
   /// Sets file specs.
   dir& file_spec(const std::string& rhs, bool is_regex = false)
@@ -57,7 +57,7 @@ public:
   }
 
   /// Returns frd.
-  auto* find_replace_data() const { return m_frd; }
+  factory::find_replace_data* find_replace_data() const { return m_frd; }
 
   /// Sets frd.
   dir& find_replace_data(factory::find_replace_data* rhs)
@@ -80,7 +80,7 @@ public:
   }
 
   /// Returns type.
-  auto type() const { return m_flags; }
+  type_t type() const { return m_flags; }
 
   /// Sets type.
   dir& type(const type_t& rhs)
@@ -90,7 +90,7 @@ public:
   }
 
   /// Returns vcs.
-  auto* vcs() const { return m_vcs; }
+  factory::vcs* vcs() const { return m_vcs; }
 
   /// Sets vcs.
   dir& vcs(factory::vcs* rhs)

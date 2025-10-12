@@ -54,28 +54,28 @@ public:
   bool parse();
 
   /// Returns path from.
-  const auto& path_from() const { return m_path[0]; };
+  const path& path_from() const { return m_path[0]; };
 
   /// Returns path to.
-  const auto& path_to() const { return m_path[1]; };
+  const path& path_to() const { return m_path[1]; };
 
   /// Returns start number for the from file.
-  const auto& range_from_start() const { return m_range[0]; };
+  int range_from_start() const { return m_range[0]; };
 
   /// Returns count number for the from file.
-  const auto& range_from_count() const { return m_range[1]; };
+  int range_from_count() const { return m_range[1]; };
 
   /// Returns start number for the to file.
-  const auto& range_to_start() const { return m_range[2]; };
+  int range_to_start() const { return m_range[2]; };
 
   /// Returns count number for the to file.
-  const auto& range_to_count() const { return m_range[3]; };
+  int range_to_count() const { return m_range[3]; };
 
   /// Returns text added.
-  const auto& text_added() const { return m_text[1]; };
+  const std::vector<std::string>& text_added() const { return m_text[1]; };
 
   /// Returns text removed.
-  const auto& text_removed() const { return m_text[0]; };
+  const std::vector<std::string>& text_removed() const { return m_text[0]; };
 
 protected:
   std::array<path, 2> m_path;

@@ -31,13 +31,13 @@ public:
   ctags_entry() = default;
 
   /// Returns access member.
-  const auto& access() const { return m_access; }
+  const std::string& access() const { return m_access; }
 
   /// Sets access member.
   ctags_entry& access(const std::string& v);
 
   /// Returns class member.
-  const auto& class_name() const { return m_class; }
+  const std::string& class_name() const { return m_class; }
 
   /// Sets class member.
   ctags_entry& class_name(const std::string& v);
@@ -46,10 +46,10 @@ public:
   void clear();
 
   /// Returns entry.
-  auto& entry() { return m_entry; }
+  tagEntry& entry() { return m_entry; }
 
   /// Returns const entry.
-  const auto& entry() const { return m_entry; }
+  const tagEntry& entry() const { return m_entry; }
 
   /// Returns complete entry as a string.
   /// Contains image and name, and might assign
@@ -112,7 +112,7 @@ public:
   bool is_variable() const { return m_kind == "v"; }
 
   /// Returns kind.
-  auto& kind() const { return m_kind; }
+  const std::string& kind() const { return m_kind; }
 
   /// Sets kind of tag. The value depends on the language.  For C and
   /// C++ these kinds are recommended:
@@ -134,7 +134,7 @@ public:
   const std::stringstream log() const;
 
   /// Returns signature member.
-  const auto& signature() const { return m_signature; }
+  const std::string& signature() const { return m_signature; }
 
   /// Sets signature member.
   ctags_entry& signature(const std::string& v);

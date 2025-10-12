@@ -2,7 +2,7 @@
 // Name:      hexmode.h
 // Purpose:   Declaration of class wex::hexmode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -39,7 +39,7 @@ public:
 
   /// Returns the buffer.
   /// The buffer contains the normal text, without hex info.
-  const auto& buffer() const { return m_buffer; }
+  const std::string& buffer() const { return m_buffer; }
 
   /// Shows a control char dialog.
   void control_char_dialog(const std::string& caption);

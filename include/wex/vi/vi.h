@@ -2,7 +2,7 @@
 // Name:      vi.h
 // Purpose:   Declaration of class wex::vi
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2024 Anton van Wezenbeek
+// Copyright: (c) 2009-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -53,19 +53,19 @@ public:
   bool command_finish(bool user_input);
 
   /// Returns inserted text.
-  const auto& inserted_text() const { return m_insert_text; }
+  const std::string& inserted_text() const { return m_insert_text; }
 
   /// Returns last entered command.
-  const auto& last_command() const { return m_last_command; }
+  const std::string& last_command() const { return m_last_command; }
 
   /// Returns the mode we are in.
-  const auto& mode() const { return m_mode; }
+  const vi_mode& mode() const { return m_mode; }
 
   /// Returns writeable mode.
-  auto& mode() { return m_mode; }
+  vi_mode& mode() { return m_mode; }
 
   /// Returns motion commands.
-  const auto& motion_commands() const { return m_motion_commands; }
+  const commands_t& motion_commands() const { return m_motion_commands; }
 
   /// Handles char events.
   /// Returns true if event is allowed to be skipped.
@@ -79,7 +79,7 @@ public:
   bool on_key_down(const wxKeyEvent& event);
 
   /// Returns other commands.
-  const auto& other_commands() const { return m_other_commands; }
+  const commands_t& other_commands() const { return m_other_commands; }
 
   /// Extend visual selection.
   void visual_extend(int start_pos, int end_pos) const;

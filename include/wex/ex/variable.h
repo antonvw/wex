@@ -2,7 +2,7 @@
 // Name:      variable.h
 // Purpose:   Declaration of class wex::variable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2021 Anton van Wezenbeek
+// Copyright: (c) 2019-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -38,10 +38,10 @@ public:
   bool expand(std::string& value, ex* ex = nullptr) const;
 
   /// Returns variable name.
-  const auto& get_name() const { return m_name; }
+  const std::string& get_name() const { return m_name; }
 
   /// Returns variable value.
-  const auto& get_value() const { return m_value; }
+  const std::string& get_value() const { return m_value; }
 
   /// Returns true if this variable is a built in.
   bool is_builtin() const;

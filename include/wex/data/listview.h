@@ -2,7 +2,7 @@
 // Name:      data/listview.h
 // Purpose:   Declaration of wex::data::listview
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2024 Anton van Wezenbeek
+// Copyright: (c) 2017-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -66,7 +66,7 @@ public:
   listview(data::window& data);
 
   /// Returns control data.
-  const auto& control() const { return m_data; }
+  const data::control& control() const { return m_data; }
 
   /// Sets control data.
   listview& control(const data::control& data)
@@ -76,10 +76,10 @@ public:
   };
 
   /// Returns listview.
-  auto* get_listview() { return m_listview; };
+  factory::listview* get_listview() { return m_listview; };
 
   /// Returns image type.
-  const auto& image() const { return m_image_type; }
+  const image_t& image() const { return m_image_type; }
 
   /// Sets image type.
   listview& image(image_t type);
@@ -88,13 +88,13 @@ public:
   bool inject();
 
   /// Returns lexer.
-  const auto& lexer() const { return m_lexer; }
+  const wex::lexer* lexer() const { return m_lexer; }
 
   /// Sets lexer.
   listview& lexer(const wex::lexer* lexer);
 
   /// Returns menu flags.
-  const auto& menu() const { return m_menu_flags; }
+  const menu_t& menu() const { return m_menu_flags; }
 
   /// Sets menu flags.
   listview&
@@ -110,7 +110,7 @@ public:
   listview& set_listview(factory::listview* rhs);
 
   /// Returns type.
-  const auto& type() const { return m_type; }
+  const type_t& type() const { return m_type; }
 
   /// Sets type.
   listview& type(type_t type);
@@ -119,7 +119,7 @@ public:
   const std::string type_description() const;
 
   /// Returns window data.
-  const auto& window() const { return m_data.window(); }
+  const data::window& window() const { return m_data.window(); }
 
   /// Sets window data.
   listview& window(const data::window& data)

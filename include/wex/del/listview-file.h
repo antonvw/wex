@@ -2,7 +2,7 @@
 // Name:      listview-file.h
 // Purpose:   Declaration of class wex::del::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -39,11 +39,11 @@ public:
   file& get_file() { return *this; }
 
   // Access to members.
-  const auto& text_addfiles() const { return m_text_add_files; }
-  const auto& text_addfolders() const { return m_text_add_folders; }
-  const auto& text_addrecursive() const { return m_text_add_recursive; }
-  const auto& text_addwhat() const { return m_text_add_what; }
-  const auto& text_infolder() const { return m_text_in_folder; }
+  const std::string& text_addfiles() const { return m_text_add_files; }
+  const std::string& text_addfolders() const { return m_text_add_folders; }
+  const std::string& text_addrecursive() const { return m_text_add_recursive; }
+  const std::string& text_addwhat() const { return m_text_add_what; }
+  const std::string& text_infolder() const { return m_text_in_folder; }
 
   // Virtual interface
   bool is_contents_changed() const final { return m_contents_changed; }

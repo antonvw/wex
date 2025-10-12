@@ -64,10 +64,10 @@ public:
   static int config_dialog(const data::window& data = data::window());
 
   /// Returns config items.
-  static auto* config_items() { return m_config_items; }
+  static std::vector<item>* config_items() { return m_config_items; }
 
   /// Returns the config dialog.
-  static auto* get_config_dialog() { return m_config_dialog; }
+  static item_dialog* get_config_dialog() { return m_config_dialog; }
 
   /// Saves static data in config.
   /// Invoked once during app::on_exit.

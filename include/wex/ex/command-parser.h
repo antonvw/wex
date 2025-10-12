@@ -2,7 +2,7 @@
 // Name:      command-parser.h
 // Purpose:   Declaration of class wex::command_parser
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -47,19 +47,19 @@ public:
   /// The command.
   /// mostly a one letter string like "z" for adjust_window
   /// mostly a one letter string like "p" for print
-  auto& command() const { return m_cmd; }
+  const std::string& command() const { return m_cmd; }
 
   /// Returns true if parsing was ok.
   bool is_ok() const { return m_is_ok; }
 
   /// The range.
-  auto& range() const { return m_range; }
+  const std::string& range() const { return m_range; }
 
   /// The text (rest), not the original supplied text.
-  auto& text() const { return m_text; }
+  const std::string& text() const { return m_text; }
 
   /// The type that is parsed.
-  auto type() const { return m_type; }
+  address_t type() const { return m_type; }
 
 private:
   bool parse(parse_t);

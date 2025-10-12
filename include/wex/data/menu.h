@@ -2,7 +2,7 @@
 // Name:      data/menu.h
 // Purpose:   Declaration of wex::data::menu class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -26,7 +26,7 @@ public:
   menu& action(const action_t& rhs);
 
   /// Returns art.
-  auto& art() const { return m_artid; }
+  const wxArtID& art() const { return m_artid; }
 
   /// Sets art.
   menu& art(const wxArtID& rhs);
@@ -35,7 +35,7 @@ public:
   void bind(int id) const;
 
   /// Returns help text.
-  auto& help_text() const { return m_help_text; }
+  const std::string& help_text() const { return m_help_text; }
 
   /// Sets help text.
   menu& help_text(const std::string& rhs);

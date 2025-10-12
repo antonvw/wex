@@ -183,7 +183,7 @@ public:
   /// Item access / nested values.
 
   /// Returns the item.
-  auto& item() const { return m_item; }
+  const std::string& item() const { return m_item; }
 
   /// Sets the item, and returns config.
   config& item(const std::string& item);

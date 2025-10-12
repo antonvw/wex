@@ -2,7 +2,7 @@
 // Name:      hexmode.h
 // Purpose:   Declaration of class wex::factory::hexmode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -36,13 +36,13 @@ public:
   virtual ~hexmode() = default;
 
   /// Returns number of bytes per line.
-  auto bytes_per_line() const { return m_bytes_per_line; }
+  size_t bytes_per_line() const { return m_bytes_per_line; }
 
   /// Returns each hex field.
-  auto each_hex_field() const { return m_each_hex_field; }
+  size_t each_hex_field() const { return m_each_hex_field; }
 
   /// Returns stc component.
-  auto* get_stc() { return m_stc; }
+  factory::stc* get_stc() { return m_stc; }
 
   /// Returns true if hex mode is on.
   bool is_active() const { return m_is_active; }

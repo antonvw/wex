@@ -2,7 +2,7 @@
 // Name:      data/window.h
 // Purpose:   Declaration of wex::data::window
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2022 Anton van Wezenbeek
+// Copyright: (c) 2009-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -37,7 +37,7 @@ public:
   }
 
   /// Returns button flags.
-  const auto& button() const { return m_button; }
+  const long button() const { return m_button; }
 
   /// Sets buttons flags.
   /// This is a bit list of the following flags:
@@ -54,37 +54,37 @@ public:
   window& button(long button);
 
   /// Returns window id.
-  const auto& id() const { return m_id; }
+  const wxWindowID id() const { return m_id; }
 
   /// Sets window id.
   window& id(wxWindowID id);
 
   /// Returns name.
-  const auto& name() const { return m_name; }
+  const std::string& name() const { return m_name; }
 
   /// Sets window name.
   window& name(const std::string& name);
 
   /// Returns parent.
-  auto parent() const { return m_parent; }
+  wxWindow* parent() const { return m_parent; }
 
   /// Sets parent.
   window& parent(wxWindow* parent);
 
   /// Returns window pos.
-  const auto& pos() const { return m_pos; }
+  const wxPoint& pos() const { return m_pos; }
 
   /// Sets window pos.
   window& pos(const wxPoint& point);
 
   /// Returns window size.
-  const auto& size() const { return m_size; }
+  const wxSize& size() const { return m_size; }
 
   /// Sets window size.
   window& size(const wxSize& size);
 
   /// Returns window style.
-  const auto& style() const { return m_style; }
+  const long style() const { return m_style; }
 
   /// Sets window style.
   /// The style bits available depend on the context.
@@ -92,13 +92,13 @@ public:
   window& style(long style);
 
   /// Returns window title.
-  const auto& title() const { return m_title; }
+  const std::string& title() const { return m_title; }
 
   /// Sets window title.
   window& title(const std::string& title);
 
   /// Returns wildcard.
-  const auto& wildcard() const { return m_wildcard; }
+  const std::string& wildcard() const { return m_wildcard; }
 
   /// Sets wildcard.
   /// if wildcard is default and file is initialized,

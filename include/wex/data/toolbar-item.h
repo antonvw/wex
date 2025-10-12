@@ -2,7 +2,7 @@
 // Name:      data/toolbar.h
 // Purpose:   Declaration of wex::data::toolbar_item
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -25,7 +25,7 @@ public:
   };
 
   /// Returns bitmap bundle.
-  const auto& bitmap() const { return m_bitmap; }
+  const wxBitmapBundle& bitmap() const { return m_bitmap; }
 
   /// Sets bitmap bundle.
   toolbar_item& bitmap(const wxBitmapBundle& rhs);

@@ -292,7 +292,7 @@ public:
   void set_margin_text_click(int line) { m_margin_text_click = line; }
 
   /// Returns renamed.
-  auto& vcs_renamed() const { return m_renamed; }
+  const std::string& vcs_renamed() const { return m_renamed; }
 
   // These methods are not yet available in scintilla, create stubs
   // (for the vi MOTION macro).
