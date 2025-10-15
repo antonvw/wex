@@ -61,7 +61,8 @@ public:
   const std::string& flags_key() const { return m_flags_key; }
 
   /// Returns the current command.
-  const T& get_command() const
+  // Do not return a reference.
+  const T get_command() const
   {
     return m_commands.empty() ? T() : m_commands.at(m_command_index);
   };

@@ -2,7 +2,7 @@
 // Name:      dialog.h
 // Purpose:   Declaration of wex::dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-20235Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
