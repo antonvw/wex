@@ -2,7 +2,7 @@
 // Name:      vcs.h
 // Purpose:   Declaration of wex::vcs class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -74,10 +74,10 @@ public:
   int config_dialog(const data::window& data = data::window()) const;
 
   /// Returns the current writeable vcs entry.
-  auto& entry() { return *m_entry; }
+  vcs_entry& entry() { return *m_entry; }
 
   /// Returns the current readonly vcs entry.
-  const auto& entry() const { return *m_entry; }
+  const vcs_entry& entry() const { return *m_entry; }
 
   /// Executes the current vcs command for the current
   /// vcs entry, and collects the output.

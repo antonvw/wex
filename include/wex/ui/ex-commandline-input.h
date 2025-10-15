@@ -2,7 +2,7 @@
 // Name:      ex-commandline-input.h
 // Purpose:   Declaration of wex::ex_commandline_input class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -69,10 +69,10 @@ public:
   void set(const values_t& values);
 
   /// Returns type.
-  auto type() const { return m_type; }
+  ex_command::type_t type() const { return m_type; }
 
   /// Returns the values.
-  const auto& values() const { return m_values; }
+  const values_t& values() const { return m_values; }
 
 private:
   const ex_command::type_t m_type;

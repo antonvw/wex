@@ -2,7 +2,7 @@
 // Name:      frd.h
 // Purpose:   Declaration of wex::find_replace_data class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ///////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -37,7 +37,10 @@ public:
   // Other methods.
 
   /// Returns the find strings.
-  const auto& get_find_strings() const { return m_find_strings.values(); }
+  const ex_commandline_input::values_t& get_find_strings() const
+  {
+    return m_find_strings.values();
+  }
 
   /// Returns the replace strings.
   const auto& get_replace_strings() const

@@ -81,7 +81,11 @@ public:
   bool is_visual() const;
 
   /// Returns insert commands.
-  const auto& insert_commands() const { return m_insert_commands; }
+  const std::vector<std::pair<int, std::function<void()>>>&
+  insert_commands() const
+  {
+    return m_insert_commands;
+  }
 
   /// Returns mode as a string.
   const std::string str() const;

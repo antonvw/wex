@@ -2,7 +2,7 @@
 // Name:      process.h
 // Purpose:   Declaration of class wex::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -27,7 +27,7 @@ public:
 
   /// Returns the shell component
   /// (might be nullptr if prepare_output is not yet invoked).
-  static auto* get_shell() { return m_shell; }
+  static shell* get_shell() { return m_shell; }
 
   /// Construct the shell component, and returns it.
   static shell* prepare_output(wxWindow* parent);
@@ -62,7 +62,7 @@ public:
   // Other methods.
 
   /// Returns the frame.
-  auto* get_frame() { return m_frame; }
+  frame* get_frame() { return m_frame; }
 
 private:
   static inline shell* m_shell = nullptr;

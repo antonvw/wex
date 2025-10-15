@@ -2,7 +2,7 @@
 // Name:      printing.h
 // Purpose:   Include file for wex::printing class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -45,10 +45,10 @@ public:
   // Other methods.
 
   /// Returns the html printer.
-  auto* get_html_printer() { return m_html_printer.get(); }
+  wxHtmlEasyPrinting* get_html_printer() { return m_html_printer.get(); }
 
   /// Returns the printer.
-  auto* get_printer() { return m_printer.get(); }
+  wxPrinter* get_printer() { return m_printer.get(); }
 
 private:
   printing();

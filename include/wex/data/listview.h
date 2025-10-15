@@ -79,7 +79,7 @@ public:
   factory::listview* get_listview() { return m_listview; };
 
   /// Returns image type.
-  const image_t& image() const { return m_image_type; }
+  image_t image() const { return m_image_type; }
 
   /// Sets image type.
   listview& image(image_t type);

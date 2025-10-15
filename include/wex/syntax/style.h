@@ -60,7 +60,7 @@ public:
   int default_font_size() const;
 
   /// Returns the original define.
-  const auto& define() const { return m_define; }
+  const std::string& define() const { return m_define; }
 
   /// Returns true if this style is valid.
   bool is_ok() const { return !m_no.empty() && !m_value.empty(); }
@@ -70,10 +70,10 @@ public:
   int number() const;
 
   /// Returns the lexer numbers.
-  const auto& numbers() const { return m_no; }
+  const std::set<int>& numbers() const { return m_no; }
 
   /// Returns the value.
-  const auto& value() const { return m_value; }
+  const std::string& value() const { return m_value; }
 
 private:
   void set(const pugi::xml_node& node, const std::string& macro);

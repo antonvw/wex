@@ -22,22 +22,22 @@ class find_replace_data
 public:
   // Static interface.
 
-  /// Returns text.
+  /// Returns find text.
   static const std::string& text_find() { return m_text_find; }
 
-  /// Returns text.
+  /// Returns match case text.
   static const std::string& text_match_case() { return m_text_match_case; }
 
-  /// Returns text.
+  /// Returns match word text.
   static const std::string& text_match_word() { return m_text_match_word; }
 
-  /// Returns text.
+  /// Returns regex text.
   static const std::string& text_regex() { return m_text_regex; }
 
-  /// Returns text.
+  /// Returns replace with text.
   static const std::string& text_replace_with() { return m_text_replace_with; }
 
-  /// Returns text.
+  /// Returns search down text.
   static const std::string& text_search_down() { return m_text_search_down; }
 
   // Other methods.

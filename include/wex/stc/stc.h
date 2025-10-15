@@ -102,13 +102,13 @@ public:
   bool add_search_path(const wex::path& p);
 
   /// Returns auto_complete.
-  auto* auto_complete() { return m_auto_complete; }
+  class auto_complete* auto_complete() { return m_auto_complete; }
 
   /// Sets the configurable parameters to values currently in config.
   void config_get();
 
   /// Returns associated data.
-  const auto& data() const { return m_data; }
+  const data::stc& data() const { return m_data; }
 
   /// Returns diffs.
   const unified_diffs& diffs() const { return m_diffs; };
@@ -124,16 +124,16 @@ public:
   bool find_next(bool stc_find_string = true);
 
   /// Returns the file.
-  auto& get_file() { return m_file; }
+  stc_file& get_file() { return m_file; }
 
   /// Returns frame.
-  auto get_frame() { return m_frame; }
+  frame* get_frame() { return m_frame; }
 
   /// Returns hex mode component.
-  const auto& get_hexmode() const { return m_hexmode; }
+  const hexmode& get_hexmode() const { return m_hexmode; }
 
   /// Returns writable hex mode component.
-  auto& get_hexmode() { return m_hexmode; }
+  hexmode& get_hexmode() { return m_hexmode; }
 
   /// Returns vi component.
   const vi& get_vi() const;

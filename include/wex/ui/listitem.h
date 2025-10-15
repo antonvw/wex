@@ -2,7 +2,7 @@
 // Name:      listitem.h
 // Purpose:   Declaration of class wex::listitem
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2024 Anton van Wezenbeek
+// Copyright: (c) 2009-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -31,10 +31,10 @@ public:
   void erase() { m_listview->DeleteItem(GetId()); }
 
   /// Returns the file spec.
-  const auto file_spec() const { return m_file_spec; }
+  const std::string& file_spec() const { return m_file_spec; }
 
   /// Returns the listview.
-  auto* get_listview() const { return m_listview; }
+  listview* get_listview() const { return m_listview; }
 
   /// Inserts the item at index (if -1 at the end of the listview),
   /// and sets all attributes.
@@ -47,7 +47,7 @@ public:
   std::stringstream log() const;
 
   /// Returns the path.
-  const auto& path() const { return m_path; }
+  const wex::path& path() const { return m_path; }
 
   /// Sets the item text using column name.
   /// Returns false if text could not be set.

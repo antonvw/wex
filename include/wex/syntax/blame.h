@@ -2,7 +2,7 @@
 // Name:      blame.h
 // Purpose:   Declaration of class wex::blame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2024 Anton van Wezenbeek
+// Copyright: (c) 2019-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -99,7 +99,7 @@ public:
   explicit blame(const pugi::xml_node& node = pugi::xml_node());
 
   /// Returns the suitable blame caption.
-  const auto& caption() const { return m_caption; };
+  const std::string& caption() const { return m_caption; };
 
   /// Sets a suitable blame caption.
   void caption(const std::string& text) { m_caption = text; };
@@ -110,13 +110,13 @@ public:
   const std::string info() const;
 
   /// Returns line number (starting with line 0).
-  const auto line_no() const { return m_line_no; };
+  int line_no() const { return m_line_no; };
 
   /// Sets line number, to override the one from parsed text.
   void line_no(int no) { m_line_no = no; };
 
   /// Returns rest of line text (without blame).
-  const auto& line_text() const { return m_line_text; };
+  const std::string& line_text() const { return m_line_text; };
 
   /// Parses blame text and returns false if there was an error
   bool parse(
@@ -138,7 +138,7 @@ public:
   margin_style_t style() const { return m_style; };
 
   /// Returns vcs name for which this blaming is done.
-  const auto& vcs_name() const { return m_name; };
+  const std::string& vcs_name() const { return m_name; };
 
 private:
   bool is_renamed_path() const;

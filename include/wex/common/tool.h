@@ -68,7 +68,7 @@ public:
   };
 
   /// Returns all the tool info.
-  static tool_info_t get_tool_info() { return m_tool_info; }
+  static tool_info_t& get_tool_info() { return m_tool_info; }
 
   // Other methods.
 

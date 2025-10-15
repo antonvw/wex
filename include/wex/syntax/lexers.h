@@ -105,7 +105,7 @@ public:
   const indicator& get_indicator(const indicator& indicator) const;
 
   /// Returns the lexers.
-  const auto& get_lexers() const { return m_lexers; }
+  const std::vector<lexer>& get_lexers() const { return m_lexers; }
 
   /// Returns the macros for specified lexer.
   const name_values_t& get_macros(const std::string& lexer) const;
@@ -115,7 +115,7 @@ public:
   const marker& get_marker(const marker& marker) const;
 
   /// Returns number of themes (should at least contain empty theme).
-  auto get_themes_size() const { return m_theme_macros.size(); }
+  size_t get_themes_size() const { return m_theme_macros.size(); }
 
   /// Returns true if specified indicator is available.
   bool indicator_is_loaded(const indicator& indic) const
@@ -145,10 +145,13 @@ public:
   int marker_max_no_used() const { return m_max_no_marker; }
 
   /// Returns the path.
-  const auto& path() const { return m_path; }
+  const wex::path& path() const { return m_path; }
 
   /// Returns global properties.
-  const auto& properties() const { return m_global_properties; }
+  const std::vector<property>& properties() const
+  {
+    return m_global_properties;
+  }
 
   /// Restores the theme from previous theme.
   void restore_theme() { m_theme = m_theme_previous; }
@@ -158,7 +161,7 @@ public:
   bool show_theme_dialog(wxWindow* parent);
 
   /// Returns the current theme.
-  const auto& theme() const { return m_theme; }
+  const std::string& theme() const { return m_theme; }
 
   /// Returns the theme macros for the current theme.
   const name_values_t& theme_macros() const;
