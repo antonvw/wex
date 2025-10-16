@@ -176,7 +176,7 @@ const std::string wex::find_tail(const std::string& text, size_t max_chars)
   return text;
 }
 
-int wex::get_number_of_lines(const std::string& text, bool trim)
+size_t wex::get_number_of_lines(const std::string& text, bool trim)
 {
   if (text.empty())
   {
@@ -187,15 +187,13 @@ int wex::get_number_of_lines(const std::string& text, bool trim)
 
   // If text contains \r\n, assume a DOS file, count only \n.
   // Otherwise, count all endings.
-  return ((trimmed.contains("\r\n")) ?
-            std::count(trimmed.begin(), trimmed.end(), '\n') :
-            std::count_if(
-              trimmed.begin(),
-              trimmed.end(),
-              [](auto i)
-              {
-                return i == '\n' || i == '\r';
-              })) +
+  return ((trimmed.contains("\r\n")) ? std::ranges::count(trimmed, '\n') :
+                                       std::ranges::count_if(
+                                         trimmed,
+                                         [](auto i)
+                                         {
+                                           return i == '\n' || i == '\r';
+                                         })) +
          1;
 }
 
