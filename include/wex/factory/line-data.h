@@ -19,7 +19,7 @@ class line_data
 {
 public:
   /// Returns column.
-  const int col() const { return m_col; }
+  int col() const { return m_col; }
 
   /// Sets column.
   /// Goes to column if col_number > 0
@@ -39,7 +39,7 @@ public:
   line_data& is_ctag(bool rhs);
 
   /// Returns line number.
-  const int line() const { return m_line; }
+  int line() const { return m_line; }
 
   /// Sets line number.
   /// Goes to the line if > 0, if -1 goes to end of file

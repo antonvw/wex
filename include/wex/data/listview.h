@@ -110,7 +110,7 @@ public:
   listview& set_listview(factory::listview* rhs);
 
   /// Returns type.
-  const type_t& type() const { return m_type; }
+  type_t type() const { return m_type; }
 
   /// Sets type.
   listview& type(type_t type);

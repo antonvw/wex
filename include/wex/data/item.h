@@ -105,7 +105,7 @@ public:
   item& is_regex(bool rhs);
 
   /// Returns label type.
-  const label_t label_type() const { return m_label_type; }
+  label_t label_type() const { return m_label_type; }
 
   /// Sets label type.
   item& label_type(label_t rhs);
@@ -140,7 +140,7 @@ public:
   /// Returns validate regex.
   const std::string& validate_re() const { return m_validate_re; }
 
-  /// Sets validator regex.
+  /// Sets validate regex.
   item& validate_re(const std::string& rhs);
 
   /// Returns the process callback for window config

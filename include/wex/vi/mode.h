@@ -2,7 +2,7 @@
 // Name:      mode.h
 // Purpose:   Declaration of class wex::vi_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -81,6 +81,7 @@ public:
   bool is_visual() const;
 
   /// Returns insert commands.
+  /// Each command pairs the char command with a function to do.
   const std::vector<std::pair<int, std::function<void()>>>&
   insert_commands() const
   {

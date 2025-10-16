@@ -37,7 +37,7 @@ public:
   }
 
   /// Returns button flags.
-  const long button() const { return m_button; }
+  long button() const { return m_button; }
 
   /// Sets buttons flags.
   /// This is a bit list of the following flags:
@@ -54,7 +54,7 @@ public:
   window& button(long button);
 
   /// Returns window id.
-  const wxWindowID id() const { return m_id; }
+  wxWindowID id() const { return m_id; }
 
   /// Sets window id.
   window& id(wxWindowID id);

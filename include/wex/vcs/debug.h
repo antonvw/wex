@@ -55,6 +55,7 @@ public:
   bool apply_breakpoints(stc* stc) const;
 
   /// Returns breakpoints.
+  /// Each breakpoint is a tuple of filename, id and line.
   const std::unordered_map<std::string, std::tuple<path, int, int>>&
   breakpoints() const
   {
