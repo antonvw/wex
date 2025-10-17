@@ -2,7 +2,7 @@
 // Name:      tool.h
 // Purpose:   Declaration of wex::tool classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2024 Anton van Wezenbeek
+// Copyright: (c) 2008-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -31,13 +31,13 @@ public:
   }
 
   /// Returns the helptext.
-  const auto& help_text() const { return m_help_text; }
+  const std::string& help_text() const { return m_help_text; }
 
   /// Returns the info.
-  const auto& info() const { return m_info; }
+  const std::string& info() const { return m_info; }
 
   /// Returns the text.
-  const auto& text() const { return m_text; }
+  const std::string& text() const { return m_text; }
 
 private:
   std::string m_help_text, m_info, m_text;
@@ -50,6 +50,9 @@ template <class T> class statistics;
 class tool
 {
 public:
+  /// Type for collecting the tool info.
+  typedef std::unordered_map<window_id, tool_info> tool_info_t;
+
   // Static interface.
 
   /// Adds your own info to the tool.
@@ -65,7 +68,7 @@ public:
   };
 
   /// Returns all the tool info.
-  static const auto& get_tool_info() { return m_tool_info; }
+  static tool_info_t& get_tool_info() { return m_tool_info; }
 
   // Other methods.
 
@@ -78,7 +81,7 @@ public:
   };
 
   /// Returns the tool id.
-  auto id() const { return m_id; }
+  window_id id() const { return m_id; }
 
   /// Returns info about current tool.
   const std::string info() const;
@@ -93,8 +96,7 @@ public:
   }
 
 private:
-  typedef std::unordered_map<window_id, tool_info> tool_info_t;
-  window_id                                        m_id;
+  window_id m_id;
 
   static tool_info_t m_tool_info;
 };

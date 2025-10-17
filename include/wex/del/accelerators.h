@@ -2,7 +2,7 @@
 // Name:      accelerators.h
 // Purpose:   Declaration of class wex::accelerators
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2021 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -33,7 +33,7 @@ public:
   void set(wxWindow* parent);
 
   /// Returns number of accelerators.
-  auto size() const { return m_size; }
+  size_t size() const { return m_size; }
 
 private:
   size_t              m_size;

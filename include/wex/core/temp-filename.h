@@ -2,7 +2,7 @@
 // Name:      temp-filename.h
 // Purpose:   Declaration of class wex::temp_filename
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -24,7 +24,7 @@ public:
   ~temp_filename();
 
   /// Returns the name (fullpath) of the temp file.
-  const auto& name() const { return m_name; }
+  const std::string& name() const { return m_name; }
 
 private:
   const bool        m_cleanup{false};

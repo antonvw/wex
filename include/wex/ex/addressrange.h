@@ -2,7 +2,7 @@
 // Name:      addressrange.h
 // Purpose:   Declaration of class wex::addressrange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2024 Anton van Wezenbeek
+// Copyright: (c) 2015-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -40,7 +40,7 @@ public:
   // Static methods.
 
   /// Returns substitute data.
-  static auto& data() { return m_substitute; }
+  static data::substitute& data() { return m_substitute; }
 
   /// Constructor for a range from current position
   /// extending with number of lines.
@@ -73,19 +73,19 @@ public:
     const std::string& range);
 
   /// Returns begin address.
-  auto& begin() const { return m_begin; }
+  const address& begin() const { return m_begin; }
 
   /// Copies range to destination.
   bool copy(const address& destination) const;
 
   /// Returns end address.
-  auto& end() const { return m_end; }
+  const address& end() const { return m_end; }
 
   /// Deletes range.
   bool erase() const;
 
   /// Returns find indicator.
-  auto& find_indicator() const { return m_find_indicator; }
+  const indicator& find_indicator() const { return m_find_indicator; }
 
   /// Returns ex component.
   ex* get_ex() const { return m_ex; }

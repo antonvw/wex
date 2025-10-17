@@ -2,7 +2,7 @@
 // Name:      presentation.h
 // Purpose:   Declaration of class wex::presentation
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2022 Anton van Wezenbeek
+// Copyright: (c) 2019-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -43,10 +43,10 @@ public:
   void apply(wxStyledTextCtrl* stc) const;
 
   /// Returns background colour.
-  const auto& background_colour() const { return m_background_colour; }
+  const std::string& background_colour() const { return m_background_colour; }
 
   /// Returns foreground colour.
-  const auto& foreground_colour() const { return m_foreground_colour; }
+  const std::string& foreground_colour() const { return m_foreground_colour; }
 
   /// Returns true if this presentation is valid.
   bool is_ok() const;

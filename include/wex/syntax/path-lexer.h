@@ -2,7 +2,7 @@
 // Name:      path-lexer.h
 // Purpose:   Declaration of class wex::path_lexer
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -26,7 +26,7 @@ public:
   bool is_build() const;
 
   /// Returns the lexer.
-  const auto& lexer() const { return m_lexer; }
+  const wex::lexer& lexer() const { return m_lexer; }
 
 private:
   const wex::lexer m_lexer;

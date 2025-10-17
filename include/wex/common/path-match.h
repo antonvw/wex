@@ -38,19 +38,19 @@ public:
   const std::string context() const;
 
   /// Returns matching line.
-  auto& line() const { return m_line; }
+  const std::string& line() const { return m_line; }
 
   /// Returns matching line no.
-  auto line_no() const { return m_line_no; }
+  size_t line_no() const { return m_line_no; }
 
   /// Returns path containing match.
-  auto& path() const { return m_path; }
+  const wex::path& path() const { return m_path; }
 
   /// Returns start pos of match.
-  auto pos() const { return m_pos; }
+  int pos() const { return m_pos; }
 
   /// Returns tool.
-  auto& tool() const { return m_tool; }
+  const wex::tool& tool() const { return m_tool; }
 
 private:
   const wex::path   m_path;

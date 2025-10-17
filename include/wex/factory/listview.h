@@ -63,7 +63,7 @@ public:
   void set_is_sorted_ascending(sort_t type);
 
   /// Returns the column type.
-  auto type() const { return m_type; }
+  type_t type() const { return m_type; }
 
 private:
   const type_t m_type                = INVALID;

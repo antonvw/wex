@@ -58,19 +58,20 @@ public:
   };
 
   /// Returns the flags key.
-  const auto& flags_key() const { return m_flags_key; }
+  const std::string& flags_key() const { return m_flags_key; }
 
   /// Returns the current command.
-  const auto get_command() const
+  // Do not return a reference.
+  const T get_command() const
   {
     return m_commands.empty() ? T() : m_commands.at(m_command_index);
   };
 
   /// Returns all the commands.
-  const auto& get_commands() const { return m_commands; }
+  const std::vector<T>& get_commands() const { return m_commands; }
 
   /// Returns the name for this group of commands.
-  const auto& name() const { return m_name; }
+  const std::string& name() const { return m_name; }
 
   /// Sets the current command.
   /// Returns true if command was set.

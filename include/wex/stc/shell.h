@@ -2,7 +2,7 @@
 // Name:      shell.h
 // Purpose:   Declaration of class wex::shell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -79,7 +79,7 @@ public:
   const std::string get_history() const;
 
   /// Returns the prompt.
-  const auto& get_prompt() const { return m_prompt; }
+  const std::string& get_prompt() const { return m_prompt; }
 
   /// Returns whether shell processing is enabled.
   bool is_enabled() const { return m_enabled; }

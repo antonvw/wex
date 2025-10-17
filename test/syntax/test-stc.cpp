@@ -50,7 +50,7 @@ TEST_CASE("wex::syntax::stc")
     wex::lexer lexer2(stc);
     REQUIRE(lexer2.get_stc() == stc);
     lexer2.set("markdown");
-    REQUIRE(!lexer2.attribs().empty());
+    REQUIRE(!lexer2.is_attribs_empty());
     REQUIRE(lexer2.attrib(_("Edge line")) == wxSTC_EDGE_NONE);
     REQUIRE(stc->GetEdgeMode() == wxSTC_EDGE_NONE);
 

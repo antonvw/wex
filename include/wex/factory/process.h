@@ -2,7 +2,7 @@
 // Name:      process.h
 // Purpose:   Declaration of class wex::factory::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -71,10 +71,10 @@ public:
   void set_handler_out(wxEvtHandler* eh);
 
   /// Returns the stderr.
-  const auto& std_err() const { return m_stderr; }
+  const std::string& std_err() const { return m_stderr; }
 
   /// Returns the stdout.
-  const auto& std_out() const { return m_stdout; }
+  const std::string& std_out() const { return m_stdout; }
 
   // Stops the async process.
   bool stop();

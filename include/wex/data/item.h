@@ -2,7 +2,7 @@
 // Name:      data/item.h
 // Purpose:   Declaration of wex::data::item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -51,37 +51,37 @@ public:
   item(const data::control& data = data::control());
 
   /// Returns apply.
-  const auto& apply() const { return m_apply; }
+  const user_apply_t& apply() const { return m_apply; }
 
   /// Sets apply.
   item& apply(const user_apply_t& rhs);
 
   /// Returns the number of columns for the current page.
-  auto columns() const { return m_major_dimension; }
+  int columns() const { return m_major_dimension; }
 
   /// Sets columns.
   item& columns(int rhs);
 
   /// Returns control data.
-  const auto& control() const { return m_data; }
+  const data::control& control() const { return m_data; }
 
   /// Sets control data.
   item& control(const data::control& rhs);
 
   /// Returns image list.
-  const auto image_list() const { return m_image_list; }
+  wxImageList* image_list() const { return m_image_list; }
 
   /// Sets image list.
   item& image_list(wxImageList* il);
 
   /// Returns increment value;
-  const auto& inc() const { return m_inc; }
+  const std::any& inc() const { return m_inc; }
 
   /// Sets inc.
   item& inc(const std::any& rhs);
 
   /// Returns the initial value.
-  const auto& initial() const { return m_initial; }
+  const std::any& initial() const { return m_initial; }
 
   /// Sets initial.
   item& initial(const std::any& rhs);
@@ -105,43 +105,49 @@ public:
   item& is_regex(bool rhs);
 
   /// Returns label type.
-  const auto label_type() const { return m_label_type; }
+  label_t label_type() const { return m_label_type; }
 
   /// Sets label type.
   item& label_type(label_t rhs);
 
   /// Returns max value.
-  const auto& max() const { return m_max; }
+  const std::any& max() const { return m_max; }
 
   /// Sets max.
   item& max(const std::any& rhs);
 
   /// Returns min value.
-  const auto& min() const { return m_min; }
+  const std::any& min() const { return m_min; }
 
   /// Sets min.
   item& min(const std::any& rhs);
 
   /// Return the process callback for window creation
-  auto& user_window_create() const { return m_user_window_create_t; }
+  const user_window_create_t& user_window_create() const
+  {
+    return m_user_window_create_t;
+  }
 
   /// Sets user window create.
   item& user_window_create(const user_window_create_t& rhs);
 
   /// Returns validate.
-  const auto validate() const { return m_validate; }
+  const user_validate_t validate() const { return m_validate; }
 
   /// Sets validator.
   item& validate(const user_validate_t& rhs);
 
   /// Returns validate regex.
-  const auto& validate_re() const { return m_validate_re; }
+  const std::string& validate_re() const { return m_validate_re; }
 
-  /// Sets validator regex.
+  /// Sets validate regex.
   item& validate_re(const std::string& rhs);
 
   /// Returns the process callback for window config
-  auto& user_window_to_config() const { return m_user_window_to_config_t; }
+  const user_window_to_config_t& user_window_to_config() const
+  {
+    return m_user_window_to_config_t;
+  }
 
   /// Sets user window config.
   item& user_window_to_config(const user_window_to_config_t& rhs);

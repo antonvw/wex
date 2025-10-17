@@ -55,7 +55,7 @@ public:
   };
 
   /// Returns keys.
-  const auto& get_keys() const { return m_keys; }
+  const std::map<std::string, int>& get_keys() const { return m_keys; }
 
   /// Sets key to value, and refreshes grid.
   const T set(const std::string& key, T value) override

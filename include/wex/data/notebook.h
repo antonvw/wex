@@ -2,7 +2,7 @@
 // Name:      data/notebook.h
 // Purpose:   Declaration of wex::data::notebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2022 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -18,13 +18,13 @@ class notebook
 {
 public:
   /// Returns bitmap bundle for the page
-  const auto& bitmap() const { return m_bitmap; }
+  const wxBitmapBundle& bitmap() const { return m_bitmap; }
 
   /// Sets bitmap bundle.
   notebook& bitmap(const wxBitmapBundle& rhs);
 
   /// Returns caption for the page, if empty uses key as caption.
-  const auto& caption() const { return m_caption; }
+  const std::string& caption() const { return m_caption; }
 
   /// Sets caption.
   notebook& caption(const std::string& rhs);
@@ -36,7 +36,7 @@ public:
   notebook& index(size_t rhs);
 
   /// Returns key for the page.
-  const auto& key() const { return m_key; }
+  const std::string& key() const { return m_key; }
 
   /// Sets key.
   notebook& key(const std::string& rhs);

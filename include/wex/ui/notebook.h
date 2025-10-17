@@ -138,7 +138,7 @@ template <class T> bool wex::notebook::for_each(int id)
   const bool keys_empty(m_keys.empty());
 
   // The page should be an int (no), otherwise page >= 0 never fails!
-  for (int page = GetPageCount() - 1; page >= 0; page--)
+  for (int page = (int)GetPageCount() - 1; page >= 0; page--)
   {
     switch (T* win = reinterpret_cast<T*>(GetPage(page)); id)
     {

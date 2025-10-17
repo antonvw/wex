@@ -2,7 +2,7 @@
 // Name:      ex.h
 // Purpose:   Declaration of class wex::ex
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012-2024 Anton van Wezenbeek
+// Copyright: (c) 2012-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -54,7 +54,7 @@ public:
   // Static interface.
 
   /// Returns the macros.
-  static auto& get_macros() { return m_macros; }
+  static macros& get_macros() { return m_macros; }
 
   /// Returns text to be inserted.
   static const std::string register_insert();
@@ -101,24 +101,25 @@ public:
   void copy(const ex* ex);
 
   /// Returns the ctags.
-  auto& ctags() { return m_ctags; }
+  wex::ctags* ctags() { return m_ctags; }
 
   /// Cuts selected text to yank register,
   /// and updates delete registers.
   void cut();
 
   /// The ex stream (used if in ex mode).
+  // Gives error when auto is replaced.
   auto       ex_stream() { return m_ex_stream; }
   const auto ex_stream() const { return m_ex_stream; }
 
   /// Returns the frame.
-  auto* frame() { return m_frame; }
+  wex::frame* frame() { return m_frame; }
 
   /// Returns command.
-  const auto& get_command() const { return m_command; }
+  const ex_command& get_command() const { return m_command; }
 
   /// Returns last printed text.
-  const auto& get_print_text() const { return m_print_text; }
+  const std::string& get_print_text() const { return m_print_text; }
 
   /// Returns stc component.
   syntax::stc* get_stc() const;
@@ -127,13 +128,13 @@ public:
   void info_message(const std::string& text, info_message_t type) const;
 
   /// Returns whether ex is active.
-  auto is_active() const { return m_mode != mode_t::OFF; }
+  bool is_active() const { return m_mode != mode_t::OFF; }
 
   /// Returns whether text specifies an address.
   bool is_address(const std::string& text);
 
   /// Returns line data.
-  const auto& line_data() const { return m_data; }
+  const wex::line_data& line_data() const { return m_data; }
 
   /// Adds marker at the specified line.
   /// Returns true if marker could be added.
@@ -174,7 +175,7 @@ public:
   void reset_search_flags();
 
   /// Returns search flags.
-  auto search_flags() const { return m_search_flags; }
+  int search_flags() const { return m_search_flags; }
 
   /// Sets the whole word flag in search flags.
   void search_whole_word();
@@ -198,7 +199,7 @@ protected:
   bool auto_write();
 
   /// Returns current register name.
-  auto register_name() const { return m_register; }
+  char register_name() const { return m_register; }
 
   /// Sets register name.
   /// Setting register 0 results in

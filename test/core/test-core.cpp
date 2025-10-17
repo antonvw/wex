@@ -109,6 +109,8 @@ TEST_CASE("wex::core")
   {
     REQUIRE(wex::get_string_set({"one", "two", "three"}) == "one three two ");
     REQUIRE(wex::get_string_set({"one", "two", "three"}, 4) == "three ");
+    REQUIRE(
+      wex::get_string_set({"one", "two", "three"}, 0, "t") == "three two ");
   }
 
   SECTION("icompare")

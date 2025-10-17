@@ -2,7 +2,7 @@
 // Name:      macro-mode.h
 // Purpose:   Implementation of class wex::macro_mode
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -46,7 +46,7 @@ public:
   const std::string get_macro() const;
 
   /// Returns the macros collection.
-  auto* get_macros() { return m_macros; }
+  macros* get_macros() { return m_macros; }
 
   /// Are we playing back?
   bool is_playback() const;

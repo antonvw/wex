@@ -2,7 +2,7 @@
 // Name:      data/control.h
 // Purpose:   Declaration of wex::data::control
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -34,7 +34,7 @@ public:
   };
 
   /// Returns col.
-  const auto col() const { return line_data::col(); }
+  int col() const { return line_data::col(); }
 
   /// Sets column.
   control& col(int col)
@@ -44,7 +44,7 @@ public:
   };
 
   /// Returns command.
-  const auto& command() const { return line_data::command(); }
+  const std::string& command() const { return line_data::command(); }
 
   /// Sets command.
   // This is necessary for code ui/ctags.cpp.
@@ -54,16 +54,8 @@ public:
     return *this;
   }
 
-  /// Sets is_ctag.
-  // This is necessary for code ui/ctags.cpp.
-  control& is_ctag(bool rhs)
-  {
-    line_data::is_ctag(rhs);
-    return *this;
-  }
-
   /// Returns find.
-  const auto& find() const { return m_find; }
+  const std::string& find() const { return m_find; }
 
   /// Sets find.
   /// If not empty selects the text on that line (if line was specified)
@@ -75,7 +67,7 @@ public:
     int find_flags = 0);
 
   /// Returns find flags.
-  const auto find_flags() const { return m_find_flags; }
+  int find_flags() const { return m_find_flags; }
 
   /// Sets specified flags.
   /// This is used by the other data classes as generic
@@ -112,7 +104,7 @@ public:
     return *this;
   };
 
-  /// injects data.
+  /// Injects data.
   /// If there is a callback specified, injects current data in it:
   /// - if line available: goto line
   /// - if col available: goto col
@@ -130,8 +122,16 @@ public:
     /// callback to inject vi command
     const std::function<bool(void)>& command = nullptr) const;
 
+  /// Sets is_ctag.
+  // This is necessary for code ui/ctags.cpp.
+  control& is_ctag(bool rhs)
+  {
+    line_data::is_ctag(rhs);
+    return *this;
+  }
+
   /// Returns required.
-  const auto is_required() const { return m_is_required; }
+  bool is_required() const { return m_is_required; }
 
   /// Sets required.
   control& is_required(bool required)
@@ -142,7 +142,7 @@ public:
 
   /// Returns line.
   // This is necessary for code wxID_JUMP_TO in ui/listview.cpp.
-  const auto line() const { return line_data::line(); }
+  int line() const { return line_data::line(); }
 
   /// Sets line number.
   /// Goes to the line if > 0, if -1 goes to end of file
@@ -153,13 +153,13 @@ public:
   };
 
   /// Returns validator.
-  const auto validator() const { return m_validator; }
+  const wxValidator* validator() const { return m_validator; }
 
   /// Sets validator.
   control& validator(wxValidator* validator);
 
   /// Returns window data.
-  const auto& window() const { return m_data; }
+  const data::window& window() const { return m_data; }
 
   /// Sets window data.
   control& window(const data::window& data)

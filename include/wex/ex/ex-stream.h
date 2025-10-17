@@ -2,7 +2,7 @@
 // Name:      ex-stream.h
 // Purpose:   Declaration of class wex::ex_stream
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -123,7 +123,7 @@ public:
   bool substitute(const addressrange& range, const data::substitute& data);
 
   /// Returns text value, as result of doing a get_lines.
-  auto& text() const { return m_text; }
+  const std::string& text() const { return m_text; }
 
   /// Writes working stream to file.
   /// Returns false if internal streams are not valid.

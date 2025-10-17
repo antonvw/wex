@@ -50,10 +50,10 @@ public:
     bool fold_all = false);
 
   /// Returns the lexer.
-  const auto& get_lexer() const { return m_lexer; }
+  const lexer& get_lexer() const { return m_lexer; }
 
-  /// Returns the lexer.
-  auto& get_lexer() { return m_lexer; }
+  /// Returns the lexer writable.
+  lexer& get_lexer() { return m_lexer; }
 
   /// Returns renamed revision.
   std::string margin_get_revision_renamed() const;

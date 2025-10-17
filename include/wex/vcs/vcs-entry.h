@@ -2,7 +2,7 @@
 // Name:      vcs-entry.h
 // Purpose:   Declaration of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2024 Anton van Wezenbeek
+// Copyright: (c) 2010-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -52,7 +52,7 @@ public:
   // Other methods.
 
   /// Returns the administrative directory.
-  const auto& admin_dir() const { return m_admin_dir; }
+  const std::string& admin_dir() const { return m_admin_dir; }
 
   /// Returns binary.
   const std::string bin() const;
@@ -79,7 +79,7 @@ public:
     const std::string& wd = std::string());
 
   /// Returns flags location.
-  auto flags_location() const { return m_flags_location; }
+  flags_location_t flags_location() const { return m_flags_location; }
 
   /// Returns blame info.
   const blame& get_blame() const { return m_blame; }

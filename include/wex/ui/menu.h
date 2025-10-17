@@ -2,7 +2,7 @@
 // Name:      menu.h
 // Purpose:   Declaration of wex::menu class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -55,10 +55,10 @@ public:
   size_t append(const menu_items_t& items);
 
   /// Returns the style.
-  auto& style() const { return m_style; }
+  menu_t style() const { return m_style; }
 
   /// Sets the style.
-  auto& style() { return m_style; }
+  menu_t& style() { return m_style; }
 
 private:
   /// Appends edit menu items, depending on the style

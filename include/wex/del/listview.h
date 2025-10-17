@@ -2,7 +2,7 @@
 // Name:      listview.h
 // Purpose:   Declaration of class wex::del::listview
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -30,8 +30,8 @@ public:
   static data::listview::type_t type_tool(const tool& tool);
 
 protected:
-  void  build_popup_menu(menu& menu) override;
-  auto* get_frame() { return m_frame; }
+  void   build_popup_menu(menu& menu) override;
+  frame* get_frame() { return m_frame; }
 
 private:
   void build_popup_menu_multiple(const menu_env* env, menu& menu);

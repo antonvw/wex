@@ -57,10 +57,10 @@ public:
   statusbar_pane& help(const std::string& rhs);
 
   /// Returns statusbar pane help text.
-  const auto& help_text() const { return m_help_text; }
+  const std::string& help_text() const { return m_help_text; }
 
   /// Returns hidden text.
-  const auto& hidden_text() const { return m_hidden; }
+  const std::string& hidden_text() const { return m_hidden; }
 
   /// Sets hidden text.
   statusbar_pane& hidden_text(const std::string& text);
@@ -69,7 +69,7 @@ public:
   bool is_shown() const { return m_is_shown; }
 
   /// Returns statusbar pane name.
-  const auto& name() const { return m_name; }
+  const std::string& name() const { return m_name; }
 
   /// Sets whether this pane is shown.
   /// Resets the hidden text if show is true.

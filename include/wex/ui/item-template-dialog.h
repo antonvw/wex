@@ -80,7 +80,7 @@ public:
     const std::string& page = std::string());
 
   /// Returns all items.
-  const auto& get_items() const { return m_items; }
+  const std::vector<T>& get_items() const { return m_items; }
 
   /// Returns the item actual value for specified label, or
   /// empty object if item does not exist.

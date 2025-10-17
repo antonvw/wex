@@ -2,7 +2,7 @@
 // Name:      menu-item.h
 // Purpose:   Declaration of wex::menu_item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -128,22 +128,22 @@ public:
   void append(wex::menu* menu) const;
 
   /// Returns data.
-  auto& data() const { return m_data; }
+  const data::menu& data() const { return m_data; }
 
   /// Returns menu item id.
-  auto id() const { return m_id; }
+  wxWindowID id() const { return m_id; }
 
   /// Returns modality.
   bool is_modal() const { return m_modal; }
 
   /// Returns menu item name.
-  auto& name() const { return m_name; }
+  const std::string& name() const { return m_name; }
 
   /// Returns path.
-  const auto& path() const { return m_path; }
+  const wex::path& path() const { return m_path; }
 
   /// Returns menu item type.
-  auto type() const { return m_type; }
+  type_t type() const { return m_type; }
 
 private:
   void append_panes(wex::menu* menu) const;

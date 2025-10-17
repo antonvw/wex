@@ -2,7 +2,7 @@
 // Name:      macros.h
 // Purpose:   Declaration of class wex::macros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -77,7 +77,7 @@ public:
   const commands_t get() const;
 
   /// Returns abbreviations.
-  const auto& get_abbreviations() const { return m_abbreviations; }
+  const strings_map_t& get_abbreviations() const { return m_abbreviations; }
 
   /// Returns keys map.
   const keys_map_t& get_keys_map(key_t type = key_t::NORMAL) const;
@@ -86,7 +86,7 @@ public:
   const commands_t get_macro_commands(const std::string& macro) const;
 
   /// Returns (string) map.
-  const auto& get_map() const { return m_map; }
+  const strings_map_t& get_map() const { return m_map; }
 
   /// Returns content of register.
   const std::string get_register(char name) const;
@@ -96,7 +96,7 @@ public:
   const commands_t get_registers() const;
 
   /// Returns variables.
-  const auto& get_variables() const { return m_variables; }
+  const variables_map_t& get_variables() const { return m_variables; }
 
   /// Returns true if xml structure has been modified
   /// without being saved.
@@ -114,10 +114,10 @@ public:
   bool load_document();
 
   /// Returns the mode we are in.
-  auto& mode() { return m_mode; }
+  macro_mode& mode() { return m_mode; }
 
   /// Returns the mode we are in.
-  const auto& mode() const { return m_mode; }
+  const macro_mode& mode() const { return m_mode; }
 
   /// Returns the path with xml document.
   const wex::path path() const;
@@ -164,7 +164,7 @@ public:
   bool set_register(char name, const std::string& value);
 
   /// Returns number of macros and variables available.
-  auto size() const { return m_macros.size() + m_variables.size(); }
+  size_t size() const { return m_macros.size() + m_variables.size(); }
 
   /// Does a recorded macro or variable starts with text.
   bool starts_with(const std::string_view& text);

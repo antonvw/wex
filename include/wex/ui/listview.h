@@ -61,10 +61,10 @@ public:
   void config_get();
 
   /// Returns associated data.
-  const auto& data() const { return m_data; }
+  const data::listview& data() const { return m_data; }
 
   /// Returns the field separator.
-  const auto& field_separator() const { return m_field_separator; }
+  char field_separator() const { return m_field_separator; }
 
   /// Sets the field separator.
   void field_separator(char sep) { m_field_separator = sep; }

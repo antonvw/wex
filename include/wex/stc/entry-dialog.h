@@ -37,7 +37,7 @@ public:
     const data::stc& stc_data = data::stc());
 
   /// Returns stc component.
-  auto* get_stc() { return m_stc; }
+  wex::stc* get_stc() { return m_stc; }
 
   /// Sets a validator regular expression (case sensitive) for the stc contents.
   /// The validator is cleared after each valid wxID_OK, or after wxID_CANCEL.
