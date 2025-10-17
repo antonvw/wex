@@ -193,6 +193,12 @@ void wex::lexers::apply_margin_text_style(factory::stc* stc, const blame* blame)
 
   switch (blame->style())
   {
+    case blame::margin_style_t::NOT_COMMITTED:
+      stc->MarginSetStyle(
+        blame->line_no(),
+        m_style_no_text_margin_not_committed);
+      break;
+
     case blame::margin_style_t::DAY:
       stc->MarginSetStyle(blame->line_no(), m_style_no_text_margin_day);
       break;
@@ -556,6 +562,10 @@ void wex::lexers::parse_node_global(const pugi::xml_node& node)
         if (style.define() == "style_textmargin")
         {
           m_style_no_text_margin = style.number();
+        }
+        else if (style.define() == "style_textmargin_not_committed")
+        {
+          m_style_no_text_margin_not_committed = style.number();
         }
         else if (style.define() == "style_textmargin_day")
         {

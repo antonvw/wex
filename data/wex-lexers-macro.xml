@@ -59,6 +59,7 @@ Copyright: (c) 2009-2025, Anton van Wezenbeek
       <def no ="style_indentguide"/>
       <def no ="style_calltip"/>
       <def no ="style_textmargin"> 55 </def>
+      <def no ="style_textmargin_not_committed"/>
       <def no ="style_textmargin_day"/>
       <def no ="style_textmargin_week"/>
       <def no ="style_textmargin_month"/>

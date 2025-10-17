@@ -210,9 +210,10 @@ private:
 
   std::string m_folding_background_colour, m_folding_foreground_colour;
 
-  int m_style_no_text_margin{-1}, m_style_no_text_margin_day{-1},
-    m_style_no_text_margin_week{-1}, m_style_no_text_margin_month{-1},
-    m_style_no_text_margin_year{-1}, m_max_no_marker{-1};
+  int m_style_no_text_margin{-1}, m_style_no_text_margin_not_committed{-1},
+    m_style_no_text_margin_day{-1}, m_style_no_text_margin_week{-1},
+    m_style_no_text_margin_month{-1}, m_style_no_text_margin_year{-1},
+    m_max_no_marker{-1};
 
   bool m_is_loaded{false};
 
