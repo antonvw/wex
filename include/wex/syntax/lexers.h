@@ -196,6 +196,7 @@ private:
   std::set<indicator> m_indicators;
   std::set<marker>    m_markers;
 
+  std::unordered_map<std::string, int>           m_style_no_text;
   std::unordered_map<std::string, name_values_t> m_macros, m_theme_colours;
 
   std::vector<property> m_global_properties;
@@ -210,10 +211,7 @@ private:
 
   std::string m_folding_background_colour, m_folding_foreground_colour;
 
-  int m_style_no_text_margin{-1}, m_style_no_text_margin_not_committed{-1},
-    m_style_no_text_margin_day{-1}, m_style_no_text_margin_week{-1},
-    m_style_no_text_margin_month{-1}, m_style_no_text_margin_year{-1},
-    m_max_no_marker{-1};
+  int m_max_no_marker{-1};
 
   bool m_is_loaded{false};
 
