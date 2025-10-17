@@ -48,6 +48,7 @@ Copyright: (c) 2009-2025, Anton van Wezenbeek
         <def style ="stylelinenumber"> fore:grey </def>
         <def style ="styleindicatordebug"> blue </def>
         <def style ="styleindicatorfind"> red </def>
+        <def style ="styletextmargin-not-committed"> back:green </def>
         <def style ="styletextmargin-day"> back:blue </def>
         <def style ="styletextmargin-week"> back:lightsteelblue 3 </def>
         <def style ="styletextmargin-month"> back:gray 45 </def>
@@ -90,6 +91,7 @@ Copyright: (c) 2009-2025, Anton van Wezenbeek
         <def style ="styledefault"> default-font,back:white,fore:black </def>
         <def style ="styledefault-back"> default-font,back:gray 95,fore:green,eol </def>
         <def style ="stylelinenumber"> back:white,fore:blue </def>
+        <def style ="styletextmargin-not-committed"> back:blue </def>
         <def style ="styletextmargin-day"> back:blue </def>
         <def style ="styletextmargin-week"> back:lightsteelblue </def>
         <def style ="styletextmargin-month"> back:lightblue </def>
@@ -154,6 +156,7 @@ Copyright: (c) 2009-2025, Anton van Wezenbeek
     <style no="style_linenumber"> stylelinenumber </style>
     <style no="style_bracelight"> bracelight </style>
     <style no="style_textmargin"> styletextmargin </style>
+    <style no="style_textmargin_not_committed"> styletextmargin-not-committed </style>
     <style no="style_textmargin_day"> styletextmargin-day </style>
     <style no="style_textmargin_week"> styletextmargin-week </style>
     <style no="style_textmargin_month"> styletextmargin-month </style>

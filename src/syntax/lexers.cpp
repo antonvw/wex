@@ -191,30 +191,19 @@ void wex::lexers::apply_margin_text_style(factory::stc* stc, const blame* blame)
     return;
   }
 
-  switch (blame->style())
+  if (blame->style() != blame::margin_style_t::UNKNOWN)
   {
-    case blame::margin_style_t::DAY:
-      stc->MarginSetStyle(blame->line_no(), m_style_no_text_margin_day);
-      break;
+    const std::unordered_map<blame::margin_style_t, std::string> styles{
+      {blame::margin_style_t::NOT_COMMITTED, "style_textmargin_not_committed"},
+      {blame::margin_style_t::DAY, "style_textmargin_day"},
+      {blame::margin_style_t::MONTH, "style_textmargin_month"},
+      {blame::margin_style_t::OTHER, "style_textmargin"},
+      {blame::margin_style_t::WEEK, "style_textmargin_week"},
+      {blame::margin_style_t::YEAR, "style_textmargin_year"}};
 
-    case blame::margin_style_t::MONTH:
-      stc->MarginSetStyle(blame->line_no(), m_style_no_text_margin_month);
-      break;
-
-    case blame::margin_style_t::OTHER:
-      stc->MarginSetStyle(blame->line_no(), m_style_no_text_margin);
-      break;
-
-    case blame::margin_style_t::WEEK:
-      stc->MarginSetStyle(blame->line_no(), m_style_no_text_margin_week);
-      break;
-
-    case blame::margin_style_t::YEAR:
-      stc->MarginSetStyle(blame->line_no(), m_style_no_text_margin_year);
-      break;
-
-    case blame::margin_style_t::UNKNOWN:
-      break;
+    stc->MarginSetStyle(
+      blame->line_no(),
+      m_style_no_text.at(styles.at(blame->style())));
   }
 
   if (!blame->info().empty() && !blame->skip_info())
@@ -553,25 +542,9 @@ void wex::lexers::parse_node_global(const pugi::xml_node& node)
       }
       else
       {
-        if (style.define() == "style_textmargin")
+        if (style.define().starts_with("style_textmargin"))
         {
-          m_style_no_text_margin = style.number();
-        }
-        else if (style.define() == "style_textmargin_day")
-        {
-          m_style_no_text_margin_day = style.number();
-        }
-        else if (style.define() == "style_textmargin_week")
-        {
-          m_style_no_text_margin_week = style.number();
-        }
-        else if (style.define() == "style_textmargin_month")
-        {
-          m_style_no_text_margin_month = style.number();
-        }
-        else if (style.define() == "style_textmargin_year")
-        {
-          m_style_no_text_margin_year = style.number();
+          m_style_no_text[style.define()] = style.number();
         }
 
         m_styles.emplace_back(style);

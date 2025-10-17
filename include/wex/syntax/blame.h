@@ -79,12 +79,13 @@ public:
   /// Margin text style type.
   enum class margin_style_t
   {
-    UNKNOWN, ///< no style
-    DAY,     ///< within a day
-    WEEK,    ///< within a week
-    MONTH,   ///< within a month
-    YEAR,    ///< within a year
-    OTHER    ///< more than a year
+    UNKNOWN,       ///< no style
+    NOT_COMMITTED, ///< not yet committed
+    DAY,           ///< within a day
+    WEEK,          ///< within a week
+    MONTH,         ///< within a month
+    YEAR,          ///< within a year
+    OTHER          ///< more than a year
   };
 
   // Static interface.
@@ -145,7 +146,8 @@ private:
   bool parse_compact(const std::string& line, const regex& r);
   bool parse_full(const std::string& line, const regex& r);
 
-  margin_style_t get_style(const std::string& text) const;
+  margin_style_t
+  get_style(const std::string& hash, const std::string& text) const;
 
   std::string m_blame_format, m_caption, m_date_format, m_info, m_line_text,
     m_name, m_path;
