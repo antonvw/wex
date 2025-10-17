@@ -84,7 +84,7 @@ public:
   /// Sets image type.
   listview& image(image_t type);
 
-  /// injects data.
+  /// Injects data into the listview (if it was set).
   bool inject();
 
   /// Returns lexer.
@@ -94,7 +94,7 @@ public:
   listview& lexer(const wex::lexer* lexer);
 
   /// Returns menu flags.
-  const menu_t& menu() const { return m_menu_flags; }
+  menu_t menu() const { return m_menu_flags; }
 
   /// Sets menu flags.
   listview&

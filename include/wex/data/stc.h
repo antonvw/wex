@@ -139,7 +139,7 @@ public:
   /// Sets indicator type.
   stc& indicator_no(indicator_t t);
 
-  /// injects data.
+  /// Injects data.
   bool inject() const;
 
   /// Returns menu flags.

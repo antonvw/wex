@@ -54,14 +54,6 @@ public:
     return *this;
   }
 
-  /// Sets is_ctag.
-  // This is necessary for code ui/ctags.cpp.
-  control& is_ctag(bool rhs)
-  {
-    line_data::is_ctag(rhs);
-    return *this;
-  }
-
   /// Returns find.
   const std::string& find() const { return m_find; }
 
@@ -112,7 +104,7 @@ public:
     return *this;
   };
 
-  /// injects data.
+  /// Injects data.
   /// If there is a callback specified, injects current data in it:
   /// - if line available: goto line
   /// - if col available: goto col
@@ -129,6 +121,14 @@ public:
     const std::function<bool(void)>& find = nullptr,
     /// callback to inject vi command
     const std::function<bool(void)>& command = nullptr) const;
+
+  /// Sets is_ctag.
+  // This is necessary for code ui/ctags.cpp.
+  control& is_ctag(bool rhs)
+  {
+    line_data::is_ctag(rhs);
+    return *this;
+  }
 
   /// Returns required.
   bool is_required() const { return m_is_required; }
