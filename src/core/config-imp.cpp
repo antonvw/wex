@@ -12,6 +12,7 @@
 #include <wex/core/file.h>
 #include <wex/core/log.h>
 #include <wx/app.h>
+#include <wx/stdpaths.h>
 
 #include "config-imp.h"
 
@@ -34,6 +35,26 @@ wex::config_imp::config_imp(const config_imp* c, const std::string& item)
       m_json = json::object();
     }
   }
+}
+
+const wex::path wex::config_imp::dir()
+{
+  const std::vector<wex::path> dirs(
+    {wex::path({wxGetHomeDir(), ".config", name()}),
+     wex::path({wxGetHomeDir(), ".config", "wex"})});
+
+  if (const auto& it = std::ranges::find_if(
+        dirs,
+        [](const auto& p)
+        {
+          return p.dir_exists();
+        });
+      it != dirs.end())
+  {
+    return *it;
+  }
+
+  return wex::path(wxPathOnly(wxStandardPaths::Get().GetExecutablePath()));
 }
 
 size_t wex::config_imp::elements() const
@@ -96,11 +117,16 @@ bool wex::config_imp::exists(const std::string& item) const
   return !jv->is_null();
 }
 
+const std::string wex::config_imp::name()
+{
+  return wxTheApp == nullptr ? "wex" : wxTheApp->GetAppName().Lower();
+}
+
 void wex::config_imp::read()
 {
   if (m_path.empty())
   {
-    m_path = wex::path(config::dir(), wxTheApp->GetAppName().Lower() + ".json");
+    m_path = wex::path(dir(), name() + ".json");
   }
 
   if (wex::file fs(m_path, std::ios_base::in); fs.is_open())

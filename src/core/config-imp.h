@@ -24,6 +24,9 @@ class config_imp
 public:
   /// Static interface.
 
+  /// Returns the config path for user data files.
+  static const wex::path dir();
+
   /// Returns config path.
   static auto path() { return m_path; }
 
@@ -75,6 +78,9 @@ public:
 private:
   template <typename T>
   json::value& accessor(const std::string& item, const T& def);
+
+  /// Returns name of the config.
+  static const std::string name();
 
   void elements(const json::object& o, size_t& total) const;
 
