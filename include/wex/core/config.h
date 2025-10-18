@@ -57,6 +57,8 @@ public:
   /// Initializes the store, and reads previous file.
   /// This should be done before first use of config,
   /// and is done in app::OnInit.
+  /// If app::OnInit is not invoked (no wxApp),
+  /// on_init is called during construction.
   static bool on_init();
 
   /// Returns the current config path.
