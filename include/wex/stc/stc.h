@@ -307,8 +307,8 @@ private:
   void show_properties();
   void sort_action(const wxCommandEvent& event);
 
-  const marker m_marker_change{marker(1)}, m_marker_diff_add{marker(3)},
-    m_marker_diff_change{marker(4)}, m_marker_diff_del{marker(5)};
+  const marker              m_marker_change{marker(1)};
+  const std::vector<marker> m_marker_diffs{marker(3), marker(4), marker(5)};
 
   bool m_skip{false};
 

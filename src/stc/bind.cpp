@@ -690,10 +690,12 @@ bool wex::stc::current_line_contains_diff_marker()
 {
   const auto mg = MarkerGet(get_current_line());
 
-  return (
-    mg &
-    ((1 << m_marker_diff_add.number()) | (1 << m_marker_diff_change.number()) |
-     (1 << m_marker_diff_del.number())));
+  return std::ranges::any_of(
+    m_marker_diffs,
+    [this, mg](const auto& it)
+    {
+      return mg & (1 << it.number());
+    });
 }
 
 void wex::stc::eol_action(const wxCommandEvent& event)
@@ -993,11 +995,14 @@ void wex::stc::vcs_clear_diffs()
 {
   if (m_diffs.size() > 0)
   {
+    std::ranges::for_each(
+      m_marker_diffs,
+      [this](const auto& it)
+      {
+        MarkerDeleteAll(it.number());
+      });
     m_diffs.clear();
     AnnotationClearAll();
-    MarkerDeleteAll(m_marker_diff_add.number());
-    MarkerDeleteAll(m_marker_diff_change.number());
-    MarkerDeleteAll(m_marker_diff_del.number());
     IndicatorClearRange(0, GetTextLength() - 1);
     m_marker_identifiers.clear();
     m_diffs.status();
