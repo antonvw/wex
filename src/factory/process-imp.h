@@ -10,14 +10,11 @@
 #include <queue>
 
 #include <boost/process/v1/args.hpp>
-#include <boost/process/v1/async_system.hpp>
 #include <boost/process/v1/group.hpp>
 #include <boost/process/v1/io.hpp>
-#include <boost/process/v1/pipe.hpp>
 #include <boost/process/v1/start_dir.hpp>
-#include <boost/process/v1/system.hpp>
 
-namespace bp = boost::process::v1;
+namespace bp1 = boost::process::v1;
 
 class wxEvtHandler;
 
@@ -63,8 +60,8 @@ private:
   std::atomic<bool> m_debug{false};
   std::atomic<bool> m_is_running{false};
 
-  bp::ipstream m_es, m_is;
-  bp::opstream m_os;
-  bp::group    m_group;
+  bp1::ipstream m_es, m_is;
+  bp1::opstream m_os;
+  bp1::group    m_group;
 };
 }; // namespace wex::factory

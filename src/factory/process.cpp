@@ -10,6 +10,8 @@
 #include <wex/core/log.h>
 #include <wex/factory/process.h>
 
+#include <boost/process/v1/system.hpp>
+
 #include "data-to-std-in.h"
 #include "process-imp.h"
 
@@ -84,13 +86,13 @@ int wex::factory::process::system(const wex::process_data& data)
     data_to_std_in           data_std_in(data);
 
     // clang-format off
-    const int ec = bp::system(
+    const int ec = bp1::system(
       data.exe_path(),
-      bp::args = data.args(),
-      bp::start_dir = data.start_dir(),
-      bp::std_in < data_std_in.std_in(),
-      bp::std_out > of,
-      bp::std_err > ef);
+      bp1::args = data.args(),
+      bp1::start_dir = data.start_dir(),
+      bp1::std_in < data_std_in.std_in(),
+      bp1::std_out > of,
+      bp1::std_err > ef);
     // clang-format on
 
     if (of.valid())
