@@ -12,6 +12,8 @@
 #include <wex/factory/process.h>
 #include <wx/event.h>
 
+#include <boost/process/v1/async_system.hpp>
+
 #include "process-imp.h"
 
 #define WEX_POST(ID, TEXT, DEST)                                               \
@@ -56,7 +58,7 @@ void wex::factory::process_imp::async_system(process* p)
 
 void wex::factory::process_imp::boost_async_system(process* p)
 {
-  bp::async_system(
+  bp1::async_system(
     *m_io.get(),
     [this, p](boost::system::error_code error, int i)
     {
@@ -77,11 +79,11 @@ void wex::factory::process_imp::boost_async_system(process* p)
 
     // clang-format off
     p->data().exe_path(),
-    bp::args = p->data().args(),
-    bp::start_dir = p->data().start_dir(),
-    bp::std_err > m_es,
-    bp::std_in < m_os, 
-    bp::std_out > m_is,
+    bp1::args = p->data().args(),
+    bp1::start_dir = p->data().start_dir(),
+    bp1::std_err > m_es,
+    bp1::std_in < m_os,
+    bp1::std_out > m_is,
     m_group);
   // clang-format on
 
