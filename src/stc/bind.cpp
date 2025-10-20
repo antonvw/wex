@@ -688,13 +688,11 @@ bool wex::stc::check_brace(int pos)
 
 bool wex::stc::current_line_contains_diff_marker()
 {
-  const auto mg = MarkerGet(get_current_line());
-
   return std::ranges::any_of(
     m_marker_diffs,
-    [this, mg](const auto& it)
+    [this](const auto& it)
     {
-      return mg & (1 << it.number());
+      return MarkerGet(get_current_line()) & (1 << it.number());
     });
 }
 
