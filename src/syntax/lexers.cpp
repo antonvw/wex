@@ -636,7 +636,7 @@ void wex::lexers::parse_node_theme(const pugi::xml_node& node)
       {
         if (const auto& it = tmpMacros.find(style); it != tmpMacros.end())
         {
-          log("macro style") << style << child << already exists ";
+          log("macro style") << style << child << "already exists";
         }
         else
         {
