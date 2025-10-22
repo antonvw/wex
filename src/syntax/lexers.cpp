@@ -20,6 +20,13 @@
 #include <functional>
 #include <numeric>
 
+#define COLOUR_ADD(NAME, ITEM)                                                \
+  {"NAME",                                                                    \
+   [&](factory::stc* stc, const std::string& colour)                          \
+   {                                                                          \
+     stc->ITEM(colour.c_str());                                               \
+   }}
+
 wex::lexers::lexers()
   : m_path(wex::path(config::dir(), "wex-lexers.xml"))
   , m_path_macro(wex::path(config::dir(), "wex-lexers-macro.xml"))
@@ -36,6 +43,14 @@ wex::lexers::lexers()
        REFLECT_ADD("texts", m_texts.size()),
        REFLECT_ADD("theme colours", m_theme_colours.size()),
        REFLECT_ADD("theme macros", m_theme_macros.size())})
+  , m_colours(
+      {COLOUR_ADD("caretforeground", SetCaretForeground),
+       COLOUR_ADD("caretlinebackground", SetCaretLineBackground),
+       COLOUR_ADD("edge", SetEdgeColour),
+       COLOUR_ADD("selbackground", SetSelBackground),
+       COLOUR_ADD("selforeground", SetSelForeground),
+       COLOUR_ADD("calltipbackground", CallTipSetBackground),
+       COLOUR_ADD("calltipforeground", CallTipSetForeground)})
 {
 }
 
@@ -54,25 +69,14 @@ void wex::lexers::apply(factory::stc* stc) const
 {
   m_default_style.apply(stc);
 
-  for (const auto& i : m_indicators)
-  {
-    i.apply(stc);
-  }
-  for (const auto& p : m_global_properties)
-  {
-    p.apply(stc);
-  }
-  for (const auto& m : m_markers)
-  {
-    m.apply(stc);
-  }
+  for_each_style(m_styles, stc);
+  for_each_style(m_indicators, stc);
+  for_each_style(m_global_properties, stc);
+  for_each_style(m_markers, stc);
 
   if (stc->is_hexmode())
   {
-    for (const auto& s : m_styles_hex)
-    {
-      s.apply(stc);
-    }
+    for_each_style(m_styles_hex, stc);
   }
 }
 
@@ -108,12 +112,9 @@ void wex::lexers::apply_global_styles(factory::stc* stc)
   m_default_style.apply(stc);
 
   stc->StyleClearAll();
-
-  for (const auto& s : m_styles)
-  {
-    s.apply(stc);
-  }
-
+  
+  for_each_style(m_styles, stc);
+  
   stc->SetFoldMarginHiColour(
     true,
     !m_folding_background_colour.empty() ?
@@ -130,37 +131,14 @@ void wex::lexers::apply_global_styles(factory::stc* stc)
   if (const auto& colour_it = m_theme_colours.find(m_theme);
       colour_it != m_theme_colours.end())
   {
-    for (const auto& it : colour_it->second)
+    std::ranges::for_each(colour_it->second, [stc, this](const auto& it)
     {
-      if (it.first == "caretforeground")
+      if (const auto& col_it = m_colours.find(it.first);
+          col_it != m_colours.end())
       {
-        stc->SetCaretForeground(it.second.c_str());
+        col_it(stc, it.second);
       }
-      else if (it.first == "caretlinebackground")
-      {
-        stc->SetCaretLineBackground(it.second.c_str());
-      }
-      else if (it.first == "selbackground")
-      {
-        stc->SetSelBackground(true, it.second.c_str());
-      }
-      else if (it.first == "selforeground")
-      {
-        stc->SetSelForeground(true, it.second.c_str());
-      }
-      else if (it.first == "calltipbackground")
-      {
-        stc->CallTipSetBackground(it.second.c_str());
-      }
-      else if (it.first == "calltipforeground")
-      {
-        stc->CallTipSetForeground(it.second.c_str());
-      }
-      else if (it.first == "edge")
-      {
-        stc->SetEdgeColour(it.second.c_str());
-      }
-    }
+    });
   }
 }
 

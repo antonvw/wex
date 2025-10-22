@@ -205,6 +205,10 @@ private:
 
   std::vector<std::pair<std::string, std::string>> m_texts;
 
+  const std::unordered_map<
+    std::string,
+    std::function<void(factory::stc* stc, const std::string& colour)>> m_colours;
+
   style m_default_style;
 
   const wex::path m_path, m_path_macro;
