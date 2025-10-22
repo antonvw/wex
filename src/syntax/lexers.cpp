@@ -20,11 +20,11 @@
 #include <functional>
 #include <numeric>
 
-#define COLOUR_ADD(NAME, ITEM)                                                \
-  {NAME,                                                                    \
-   [&](factory::stc* stc, const std::string& colour)                          \
-   {                                                                          \
-     stc->ITEM(colour.c_str());                                               \
+#define COLOUR_ADD(NAME, ITEM)                                                 \
+  {NAME,                                                                       \
+   [&](factory::stc* stc, const std::string& colour)                           \
+   {                                                                           \
+     stc->ITEM(colour.c_str());                                                \
    }}
 
 wex::lexers::lexers()
@@ -112,9 +112,9 @@ void wex::lexers::apply_global_styles(factory::stc* stc)
   m_default_style.apply(stc);
 
   stc->StyleClearAll();
-  
+
   for_each_style(m_styles, stc);
-  
+
   stc->SetFoldMarginHiColour(
     true,
     !m_folding_background_colour.empty() ?
@@ -140,7 +140,7 @@ void wex::lexers::apply_global_styles(factory::stc* stc)
       }
       else
       {
-        log("apply_global_styles colour") << it.first;
+        log("apply_global_styles") << "unknown colour style:" << it.first;
       }
     }
   }
@@ -392,7 +392,7 @@ void wex::lexers::load_document_check()
     {
       if (!it.first.empty() && it.second.empty())
       {
-        log("theme") << it.first << " is unknown";
+        log("theme") << it.first << "is unknown";
       }
     }
   }
@@ -576,7 +576,7 @@ void wex::lexers::parse_node_macro_def(
     {
       if (const auto& it = macro_map.find(no); it != macro_map.end())
       {
-        log("macro") << no << macro << " already exists";
+        log("macro") << no << macro << "already exists";
       }
       else
       {
@@ -636,7 +636,7 @@ void wex::lexers::parse_node_theme(const pugi::xml_node& node)
       {
         if (const auto& it = tmpMacros.find(style); it != tmpMacros.end())
         {
-          log("macro style") << style << child << " already exists";
+          log("macro style") << style << child << already exists ";
         }
         else
         {
