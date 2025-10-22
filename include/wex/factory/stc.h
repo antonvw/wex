@@ -324,6 +324,15 @@ public:
   void WordRightRectExtend();
   void WordRightEndRectExtend();
 
+  void SetSelForegroundUse(const wxColour& fore)
+  {
+    SetSelForeground(true, fore);
+  }
+  void SetSelBackgroundUse(const wxColour& back)
+  {
+    SetSelBackground(true, back);
+  }
+
   /// Override methods from text_window.
 
   bool find(const std::string& text, int find_flags = -1, bool find_next = true)

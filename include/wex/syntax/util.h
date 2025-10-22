@@ -16,13 +16,15 @@ namespace wex
 /// Applies all styles in the set to the given stc.
 /// It is required that T offers an apply function taking wxStyledTextCtrl* as
 /// parameter.
-template<typename T>
-void style::for_each_style(const T& styles, wxStyledTextCtrl* stc)
+template <typename T>
+void for_each_style(const T& styles, wxStyledTextCtrl* stc)
 {
-  std::ranges::for_each(styles, [stc](const auto& s)
-  {
-    s.apply(stc);
-  });
+  std::ranges::for_each(
+    styles,
+    [stc](const auto& s)
+    {
+      s.apply(stc);
+    });
 };
 
 /// Parses properties node.

@@ -21,7 +21,7 @@
 #include <numeric>
 
 #define COLOUR_ADD(NAME, ITEM)                                                \
-  {"NAME",                                                                    \
+  {NAME,                                                                    \
    [&](factory::stc* stc, const std::string& colour)                          \
    {                                                                          \
      stc->ITEM(colour.c_str());                                               \
@@ -47,8 +47,8 @@ wex::lexers::lexers()
       {COLOUR_ADD("caretforeground", SetCaretForeground),
        COLOUR_ADD("caretlinebackground", SetCaretLineBackground),
        COLOUR_ADD("edge", SetEdgeColour),
-       COLOUR_ADD("selbackground", SetSelBackground),
-       COLOUR_ADD("selforeground", SetSelForeground),
+       COLOUR_ADD("selbackground", SetSelBackgroundUse),
+       COLOUR_ADD("selforeground", SetSelForegroundUse),
        COLOUR_ADD("calltipbackground", CallTipSetBackground),
        COLOUR_ADD("calltipforeground", CallTipSetForeground)})
 {
@@ -131,14 +131,18 @@ void wex::lexers::apply_global_styles(factory::stc* stc)
   if (const auto& colour_it = m_theme_colours.find(m_theme);
       colour_it != m_theme_colours.end())
   {
-    std::ranges::for_each(colour_it->second, [stc, this](const auto& it)
+    for (const auto& it : colour_it->second)
     {
       if (const auto& col_it = m_colours.find(it.first);
           col_it != m_colours.end())
       {
-        col_it(stc, it.second);
+        col_it->second(stc, it.second);
       }
-    });
+      else
+      {
+        log("apply_global_styles colour") << it.first;
+      }
+    }
   }
 }
 
