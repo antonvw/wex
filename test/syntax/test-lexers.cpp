@@ -8,6 +8,8 @@
 #include <wex/syntax/lexers.h>
 #include <wex/test/test.h>
 
+#include "test.h"
+
 // see also test-stc
 
 TEST_CASE("wex::lexers")

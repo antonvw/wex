@@ -82,8 +82,8 @@ TEST_CASE("wex::factory::stc")
     stc->WordRightRectExtend();
     stc->WordRightEndRectExtend();
 
-    stc->SetSelForegroundUse(wxColour(wxRED));
-    stc->SetSelBackgroundUse(wxColour(wxBLUE));
+    stc->SetSelForegroundUse(wxColour(*wxRED));
+    stc->SetSelBackgroundUse(wxColour(*wxBLUE));
   }
 
   SECTION("other")
