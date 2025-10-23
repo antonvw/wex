@@ -40,6 +40,8 @@ TEST_CASE("wex::lexers")
 
   SECTION("apply_default_style")
   {
+    REQUIRE(!wex::lexers::get()->apply_default_style(nullptr));
+
     wex::lexers::get()->apply_default_style(
       [=](const std::string& back)
       {
@@ -47,6 +49,16 @@ TEST_CASE("wex::lexers")
       [=](const std::string& fore)
       {
       });
+  }
+
+  SECTION("apply_global_styles")
+  {
+    REQUIRE(!wex::lexers::get()->apply_global_styles(nullptr));
+
+    auto* stc = new wex::test::stc();
+    stc->set_text("more text\notherline\nother line");
+
+    REQUIRE(wex::lexers::get()->apply_global_styles(stc));
   }
 
   SECTION("apply_macro")

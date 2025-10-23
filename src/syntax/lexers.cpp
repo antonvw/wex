@@ -80,10 +80,15 @@ void wex::lexers::apply(factory::stc* stc) const
   }
 }
 
-void wex::lexers::apply_default_style(
+bool wex::lexers::apply_default_style(
   const std::function<void(const std::string&)>& back,
   const std::function<void(const std::string&)>& fore) const
 {
+  if (back == nullptr && fore == nullptr)
+  {
+    return false;
+  }
+
   if (regex r(",back:(.*),");
       back != nullptr && r.match(m_default_style.value()) > 0)
   {
@@ -95,11 +100,20 @@ void wex::lexers::apply_default_style(
   {
     fore(r[0]);
   }
+
+  return true;
 }
 
 // No longer const, as it updates m_default_colours.
-void wex::lexers::apply_global_styles(factory::stc* stc)
+bool wex::lexers::apply_global_styles(factory::stc* stc)
 {
+  if (stc == nullptr)
+  {
+    return false;
+  }
+
+  bool is_ok = true;
+
   if (m_default_colours.empty())
   {
     m_default_colours["caretforeground"] = "grey"; // otherwise white was chosen
@@ -141,9 +155,12 @@ void wex::lexers::apply_global_styles(factory::stc* stc)
       else
       {
         log("apply_global_styles") << "unknown colour style:" << it.first;
+        is_ok = false;
       }
     }
   }
+
+  return is_ok;
 }
 
 const std::string wex::lexers::apply_macro(

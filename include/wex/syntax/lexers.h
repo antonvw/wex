@@ -62,13 +62,13 @@ public:
   void apply(factory::stc* stc) const;
 
   /// Applies default style to functions for back and foreground colours.
-  void apply_default_style(
+  bool apply_default_style(
     const std::function<void(const std::string&)>& back,
     const std::function<void(const std::string&)>& fore = nullptr) const;
 
   /// Sets global styles (and colours and indicators)
   /// for current theme for specified component.
-  void apply_global_styles(factory::stc* stc);
+  bool apply_global_styles(factory::stc* stc);
 
   /// Applies macro to text:
   /// if text is referring to a macro, text is replaced by the macro value.
