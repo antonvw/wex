@@ -431,8 +431,7 @@ bool wex::stc::mark_diff(int line, const marker& marker)
   if (const auto& it = m_marker_identifiers.find(line);
       it != m_marker_identifiers.end())
   {
-    log::status("diff marker already present, skipped processing");
-    return false;
+    log::trace("diff marker already present, added other marker");
   }
 
   if (const int id = MarkerAdd(line, marker.number()); id != -1)
@@ -692,17 +691,17 @@ bool wex::stc::unified_diff_set_markers(const factory::unified_diff* uni)
 {
   if (uni->range_from_start() == uni->range_to_start())
   {
-    return mark_diff(uni->range_from_start(), m_marker_diff_change);
+    return mark_diff(uni->range_from_start(), m_marker_diffs[1]);
   }
 
   if (uni->range_from_count() > 0)
   {
-    return mark_diff(uni->range_from_start(), m_marker_diff_del);
+    return mark_diff(uni->range_from_start(), m_marker_diffs[2]);
   }
 
   if (uni->range_to_count() > 0)
   {
-    return mark_diff(uni->range_to_start(), m_marker_diff_add);
+    return mark_diff(uni->range_to_start(), m_marker_diffs[0]);
   }
 
   log("no suitable marker found");

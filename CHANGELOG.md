@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - fixed opening a link from git grep results
 - fixed hypertext autocomplete
 - fixed recording increment macro
+- fixed git diff processing error
 
 ## [25.10] - 2025-09-21
 
