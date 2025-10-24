@@ -52,6 +52,10 @@ public:
   /// Finishes vi command.
   bool command_finish(bool user_input);
 
+  /// Returns count of commands (if not specified it is one).
+  /// After command finish, count is reset back to one.
+  int count() const { return m_count; }
+
   /// Returns inserted text.
   const std::string& inserted_text() const { return m_insert_text; }
 

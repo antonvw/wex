@@ -96,8 +96,10 @@ public:
   /// Is the begin and address '< and '>.
   bool is_selection() const;
 
-  /// joins range.
-  bool join() const;
+  /// Joins range.
+  /// Default uses vi, or ex mode, that adds a space in between
+  /// joined lines. When using vim mode, no space is added.
+  bool join(bool vim_mode = false) const;
 
   /// Parses this addressrange based on command parser.
   /// Returns true if command is valid.

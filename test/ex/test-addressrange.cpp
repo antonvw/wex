@@ -185,9 +185,22 @@ TEST_CASE("wex::addressrange")
   SECTION("join")
   {
     stc->set_text("a\nb\nc\nd\ne\nf\ng\n");
-    REQUIRE(wex::addressrange(ex, "%").join());
-    REQUIRE(stc->get_text().contains("a"));
-    REQUIRE(stc->get_line_count() == 1);
+
+    SECTION("vi")
+    {
+      REQUIRE(wex::addressrange(ex, "%").join());
+      REQUIRE(stc->get_text().contains("a"));
+      REQUIRE(stc->get_text().contains(" "));
+      REQUIRE(stc->get_line_count() == 1);
+    }
+
+    SECTION("vim")
+    {
+      REQUIRE(wex::addressrange(ex, "%").join(true));
+      REQUIRE(stc->get_text().contains("a"));
+      REQUIRE(!stc->get_text().contains(" "));
+      REQUIRE(stc->get_line_count() == 1);
+    }
   }
 
   SECTION("move")

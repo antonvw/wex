@@ -536,7 +536,7 @@ bool wex::addressrange::is_selection() const
          ex_command::selection_range();
 }
 
-bool wex::addressrange::join() const
+bool wex::addressrange::join(bool vim_mode) const
 {
   if (!m_stc->is_visual())
   {
@@ -553,7 +553,18 @@ bool wex::addressrange::join() const
   m_stc->SetTargetRange(
     m_stc->PositionFromLine(m_begin.get_line() - 1),
     m_stc->PositionFromLine(m_end.get_line() - 1));
-  m_stc->LinesJoin();
+
+  if (!vim_mode)
+  {
+    m_stc->LinesJoin();
+  }
+  else
+  {
+    std::string text(m_stc->GetTargetText());
+    boost::algorithm::replace_all(text, "\r", "");
+    boost::algorithm::replace_all(text, "\n", "");
+    m_stc->ReplaceTarget(text);
+  }
 
   return true;
 }
