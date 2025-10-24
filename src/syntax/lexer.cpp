@@ -233,10 +233,10 @@ bool wex::lexer::apply() const
     return false;
   }
 
-  for (const auto& it : m_properties)
+  std::ranges::for_each(m_properties, [&](const auto& p)
   {
-    it.apply_reset(m_stc);
-  }
+    p.apply_reset(m_stc);
+  });
 
   // Reset keywords, also if no lexer is available.
   for (int setno = 0; setno < wxSTC_KEYWORDSET_MAX; setno++)
@@ -248,21 +248,15 @@ bool wex::lexer::apply() const
 
   if (!lexers::get()->theme().empty())
   {
-    for (const auto& k : m_keywords_set)
+    std::ranges::for_each(m_keywords_set, [&](const auto& k)
     {
       m_stc->SetKeyWords(k.first, get_string_set(k.second));
-    }
+    });
 
     lexers::get()->apply(m_stc);
 
-    for (const auto& p : m_properties)
-    {
-      p.apply(m_stc);
-    }
-    for (const auto& s : m_styles)
-    {
-      s.apply(m_stc);
-    }
+    for_each_style(m_properties, m_stc);
+    for_each_style(m_styles, m_stc);
   }
 
   // And finally colour the entire document.
@@ -281,16 +275,18 @@ bool wex::lexer::apply() const
       break;
 
     default:
-      for (const auto& c : m_edge_columns)
-      {
-        m_stc->MultiEdgeAddLine(c, m_stc->GetEdgeColour());
-      }
+      std::ranges::for_each(
+        m_edge_columns,
+        [&](auto const& c)
+        {
+          m_stc->MultiEdgeAddLine(c, m_stc->GetEdgeColour());
+        });
   }
 
-  for (const auto& i : m_attribs)
+  std::ranges::for_each(m_attribs, [&](const auto& i)
   {
     std::get<2>(i)(m_stc, std::get<1>(i));
-  }
+  });
 
   return true;
 }

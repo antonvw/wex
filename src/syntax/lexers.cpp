@@ -20,6 +20,13 @@
 #include <functional>
 #include <numeric>
 
+#define COLOUR_ADD(NAME, ITEM)                                                 \
+  {NAME,                                                                       \
+   [&](factory::stc* stc, const std::string& colour)                           \
+   {                                                                           \
+     stc->ITEM(colour.c_str());                                                \
+   }}
+
 wex::lexers::lexers()
   : m_path(wex::path(config::dir(), "wex-lexers.xml"))
   , m_path_macro(wex::path(config::dir(), "wex-lexers-macro.xml"))
@@ -36,6 +43,14 @@ wex::lexers::lexers()
        REFLECT_ADD("texts", m_texts.size()),
        REFLECT_ADD("theme colours", m_theme_colours.size()),
        REFLECT_ADD("theme macros", m_theme_macros.size())})
+  , m_colours(
+      {COLOUR_ADD("caretforeground", SetCaretForeground),
+       COLOUR_ADD("caretlinebackground", SetCaretLineBackground),
+       COLOUR_ADD("edge", SetEdgeColour),
+       COLOUR_ADD("selbackground", SetSelBackgroundUse),
+       COLOUR_ADD("selforeground", SetSelForegroundUse),
+       COLOUR_ADD("calltipbackground", CallTipSetBackground),
+       COLOUR_ADD("calltipforeground", CallTipSetForeground)})
 {
 }
 
@@ -54,32 +69,26 @@ void wex::lexers::apply(factory::stc* stc) const
 {
   m_default_style.apply(stc);
 
-  for (const auto& i : m_indicators)
-  {
-    i.apply(stc);
-  }
-  for (const auto& p : m_global_properties)
-  {
-    p.apply(stc);
-  }
-  for (const auto& m : m_markers)
-  {
-    m.apply(stc);
-  }
+  for_each_style(m_styles, stc);
+  for_each_style(m_indicators, stc);
+  for_each_style(m_global_properties, stc);
+  for_each_style(m_markers, stc);
 
   if (stc->is_hexmode())
   {
-    for (const auto& s : m_styles_hex)
-    {
-      s.apply(stc);
-    }
+    for_each_style(m_styles_hex, stc);
   }
 }
 
-void wex::lexers::apply_default_style(
+bool wex::lexers::apply_default_style(
   const std::function<void(const std::string&)>& back,
   const std::function<void(const std::string&)>& fore) const
 {
+  if (back == nullptr && fore == nullptr)
+  {
+    return false;
+  }
+
   if (regex r(",back:(.*),");
       back != nullptr && r.match(m_default_style.value()) > 0)
   {
@@ -91,11 +100,20 @@ void wex::lexers::apply_default_style(
   {
     fore(r[0]);
   }
+
+  return true;
 }
 
 // No longer const, as it updates m_default_colours.
-void wex::lexers::apply_global_styles(factory::stc* stc)
+bool wex::lexers::apply_global_styles(factory::stc* stc)
 {
+  if (stc == nullptr)
+  {
+    return false;
+  }
+
+  bool is_ok = true;
+
   if (m_default_colours.empty())
   {
     m_default_colours["caretforeground"] = "grey"; // otherwise white was chosen
@@ -109,10 +127,7 @@ void wex::lexers::apply_global_styles(factory::stc* stc)
 
   stc->StyleClearAll();
 
-  for (const auto& s : m_styles)
-  {
-    s.apply(stc);
-  }
+  for_each_style(m_styles, stc);
 
   stc->SetFoldMarginHiColour(
     true,
@@ -132,36 +147,20 @@ void wex::lexers::apply_global_styles(factory::stc* stc)
   {
     for (const auto& it : colour_it->second)
     {
-      if (it.first == "caretforeground")
+      if (const auto& col_it = m_colours.find(it.first);
+          col_it != m_colours.end())
       {
-        stc->SetCaretForeground(it.second.c_str());
+        col_it->second(stc, it.second);
       }
-      else if (it.first == "caretlinebackground")
+      else
       {
-        stc->SetCaretLineBackground(it.second.c_str());
-      }
-      else if (it.first == "selbackground")
-      {
-        stc->SetSelBackground(true, it.second.c_str());
-      }
-      else if (it.first == "selforeground")
-      {
-        stc->SetSelForeground(true, it.second.c_str());
-      }
-      else if (it.first == "calltipbackground")
-      {
-        stc->CallTipSetBackground(it.second.c_str());
-      }
-      else if (it.first == "calltipforeground")
-      {
-        stc->CallTipSetForeground(it.second.c_str());
-      }
-      else if (it.first == "edge")
-      {
-        stc->SetEdgeColour(it.second.c_str());
+        log("apply_global_styles") << "unknown colour style:" << it.first;
+        is_ok = false;
       }
     }
   }
+
+  return is_ok;
 }
 
 const std::string wex::lexers::apply_macro(
@@ -410,7 +409,7 @@ void wex::lexers::load_document_check()
     {
       if (!it.first.empty() && it.second.empty())
       {
-        log("theme") << it.first << " is unknown";
+        log("theme") << it.first << "is unknown";
       }
     }
   }
@@ -594,7 +593,7 @@ void wex::lexers::parse_node_macro_def(
     {
       if (const auto& it = macro_map.find(no); it != macro_map.end())
       {
-        log("macro") << no << macro << " already exists";
+        log("macro") << no << macro << "already exists";
       }
       else
       {
@@ -654,7 +653,7 @@ void wex::lexers::parse_node_theme(const pugi::xml_node& node)
       {
         if (const auto& it = tmpMacros.find(style); it != tmpMacros.end())
         {
-          log("macro style") << style << child << " already exists";
+          log("macro style") << style << child << "already exists";
         }
         else
         {
