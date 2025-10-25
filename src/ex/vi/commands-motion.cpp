@@ -430,11 +430,12 @@ size_t wex::vi::find_char(const std::string& command)
   {
     if (command[0] == ';' || command[0] == ',')
     {
-      if (m_last_find_char_command.empty())
+      if (m_last_find_char == 0)
       {
         return (size_t)0;
       }
-      c = m_last_find_char_command.back();
+
+      c = m_last_find_char;
     }
     else
     {
@@ -451,17 +452,16 @@ size_t wex::vi::find_char(const std::string& command)
   switch (command[0])
   {
     case ';':
-      d = m_last_find_char_command.front();
+      d = m_last_find_char;
       break;
 
     case ',':
-      d = m_last_find_char_command.front();
+      d = m_last_find_char;
       d = islower(d) ? toupper(d) : tolower(d);
       break;
 
     default:
-      d =
-        command.size() > 1 ? command.front() : m_last_find_char_command.front();
+      d = command.size() > 1 ? command.front() : m_last_find_char;
   }
 
   // clang-format off
@@ -474,7 +474,7 @@ size_t wex::vi::find_char(const std::string& command)
 
   if (command[0] != ',' && command[0] != ';')
   {
-    m_last_find_char_command = command;
+    m_last_find_char = command.back();
   }
 
   if (tolower(d) == 't')

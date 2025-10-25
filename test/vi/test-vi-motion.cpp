@@ -34,6 +34,23 @@ TEST_CASE("wex::vi-motion")
     REQUIRE(stc->GetCurrentPos() == 30);
   }
 
+  SECTION("find-char")
+  {
+    stc->set_text("xxxxxxxxxx second\nxxxxxxxx\naaaaaaaaaa\n");
+    REQUIRE(vi->command(";x")); // just finds x
+    REQUIRE(!vi->command("fy"));
+    REQUIRE(vi->command("fx"));
+    REQUIRE(!stc->get_selected_text().empty());
+    REQUIRE(vi->command("Fx"));
+    REQUIRE(!stc->get_selected_text().empty());
+    REQUIRE(vi->command("tx"));
+    REQUIRE(stc->get_selected_text().empty());
+    REQUIRE(vi->command("Tx"));
+    REQUIRE(stc->get_selected_text().empty());
+    REQUIRE(vi->command(";"));
+    REQUIRE(vi->command(","));
+  }
+
   // Test motion commands: navigate, yank, delete, and change.
   SECTION("motion")
   {

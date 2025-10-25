@@ -5,7 +5,6 @@
 // Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <thread>
 #include <wex/core/config.h>
 #include <wex/core/log-none.h>
 #include <wex/core/log.h>
