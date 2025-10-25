@@ -10,6 +10,7 @@
 #include <optional>
 #include <pugixml.hpp>
 #include <set>
+#include <wex/core/types.h>
 #include <wex/core/vcs-command.h>
 #include <wex/syntax/blame.h>
 #include <wex/syntax/lexer.h>
@@ -111,16 +112,18 @@ public:
   void show_output(const std::string& caption = std::string()) const override;
 
 private:
-  int revisions_dialog(
-    const std::string& path,
-    const wex::path&   tl,
-    const wex::path&   file);
-
   void bind_rev(
     listview*          lv,
     const std::string& repo_path,
     const path&        tl,
     const std::string& col);
+
+  strings_t from_git(const std::string& ask, size_t offset = 0);
+
+  int revisions_dialog(
+    const std::string& path,
+    const wex::path&   tl,
+    const wex::path&   file);
 
   // no const, as entry is set using operator= in vcs.
   flags_location_t m_flags_location{flags_location_t::POSTFIX};

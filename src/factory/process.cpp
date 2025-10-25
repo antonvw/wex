@@ -15,10 +15,7 @@
 #include "data-to-std-in.h"
 #include "process-imp.h"
 
-wex::factory::process::process()
-  : m_imp(std::make_shared<process_imp>())
-{
-}
+wex::factory::process::process() {}
 
 wex::factory::process::~process()
 {
@@ -27,13 +24,17 @@ wex::factory::process::~process()
 
 void wex::factory::process::async_sleep_for(const std::chrono::milliseconds& ms)
 {
-  m_imp->async_sleep_for(ms);
+  if (m_imp != nullptr)
+  {
+    m_imp->async_sleep_for(ms);
+  }
 }
 
 bool wex::factory::process::async_system(const wex::process_data& data)
 {
   if (m_eh_out != nullptr)
   {
+    m_imp  = std::make_shared<process_imp>();
     m_data = data;
     m_imp->async_system(this); // this is a void
     return true;
@@ -46,12 +47,12 @@ bool wex::factory::process::async_system(const wex::process_data& data)
 
 bool wex::factory::process::is_debug() const
 {
-  return m_imp->is_debug();
+  return m_imp != nullptr && m_imp->is_debug();
 }
 
 bool wex::factory::process::is_running() const
 {
-  return m_imp->is_running();
+  return m_imp != nullptr && m_imp->is_running();
 }
 
 void wex::factory::process::set_handler_dbg(wxEvtHandler* eh)
@@ -68,7 +69,7 @@ bool wex::factory::process::stop()
 {
   try
   {
-    return m_imp->stop(m_eh_debug);
+    return m_imp != nullptr && m_imp->stop(m_eh_debug);
   }
   catch (std::exception& ex)
   {
@@ -145,5 +146,5 @@ int wex::factory::process::system(const wex::process_data& data)
 
 bool wex::factory::process::write(const std::string& text)
 {
-  return m_imp->write(text);
+  return m_imp != nullptr && m_imp->write(text);
 }

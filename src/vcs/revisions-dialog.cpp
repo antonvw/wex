@@ -47,11 +47,11 @@ private:
 
   const auto value() const { return m_lv->get_item_text(m_index, m_col); }
 
-  vcs_entry*         m_ve;
-  wex::listview*     m_lv;
-  long               m_index;
-  const path&        m_tl;
-  const std::string &m_repo_path, m_col;
+  vcs_entry*           m_ve;
+  const wex::listview* m_lv;
+  const long           m_index;
+  const path&          m_tl;
+  const std::string &  m_repo_path, m_col;
 };
 
 void rev_data::do_compare()
@@ -77,26 +77,6 @@ void rev_data::do_open()
   }
 };
 
-strings_t
-from_git(const vcs_entry& e, const std::string& ask, size_t offset = 0)
-{
-  process pro;
-  pro.system(process_data(e.bin() + " " + ask));
-
-  strings_t values{};
-
-  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
-         pro.std_out(),
-         boost::char_separator<char>("\r\n")))
-  {
-    if (const auto& line(it); !line.contains("HEAD ->"))
-    {
-      values.emplace_back(offset == 0 ? line : line.substr(offset));
-    }
-  }
-
-  return values;
-}
 } // namespace wex
 
 void wex::vcs_entry::bind_rev(
@@ -126,6 +106,26 @@ void wex::vcs_entry::bind_rev(
       },
       ID_EDIT_REV_COMPARE,
       ID_EDIT_REV_OPEN}});
+}
+
+wex::strings_t wex::vcs_entry::from_git(const std::string& ask, size_t offset)
+{
+  process pro;
+  pro.system(process_data(bin() + " " + ask));
+
+  strings_t values{};
+
+  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+         pro.std_out(),
+         boost::char_separator<char>("\r\n")))
+  {
+    if (const auto& line(it); !line.contains("HEAD ->"))
+    {
+      values.emplace_back(offset == 0 ? line : line.substr(offset));
+    }
+  }
+
+  return values;
 }
 
 int wex::vcs_entry::revisions_dialog(
@@ -186,8 +186,8 @@ int wex::vcs_entry::revisions_dialog(
   bind_rev(vt, repo_path, tl, "tags");
   bind_rev(lv, repo_path, tl, "hash");
 
-  vb->load(from_git(*this, "branch -a", 2));
-  vt->load(from_git(*this, "tag")); // --sort=-creatordate
+  vb->load(from_git("branch -a", 2));
+  vt->load(from_git("tag")); // --sort=-creatordate
 
   process pro;
   pro.system(
