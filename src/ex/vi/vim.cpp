@@ -8,6 +8,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <wex/ctags/ctags.h>
+#include <wex/ex/addressrange.h>
 #include <wex/factory/stc-undo.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
@@ -86,6 +87,11 @@ wex::vim::vim(wex::vi* vi, std::string& command)
         [&](const std::string& command)
         {
           m_stc->link_open();
+        }},
+       {"gJ",
+        [&](const std::string& command)
+        {
+          addressrange(m_vi, m_vi->count() + 1).join(true);
         }},
        {"gm",
         [&](const std::string& command)

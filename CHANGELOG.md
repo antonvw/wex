@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - added regular expression flag to git grep
 - added add_path to wex::factory::link
 - added separate styling for not yet committed lines
+- added vim gJ command
 
 ### Changed
 
