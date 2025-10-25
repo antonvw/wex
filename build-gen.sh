@@ -164,5 +164,7 @@ if [[ "${option_prepare}" == "false" ]]; then
     cd "${option_dir}" && ninja
   elif [[ "${option_generator}" =~ .*Xcode ]]; then
     cd "${option_dir}" && xcodebuild
+  elif [[ "${option_generator}" =~ .*Unix.* ]]; then
+    cd "${option_dir}" && make
   fi
 fi
