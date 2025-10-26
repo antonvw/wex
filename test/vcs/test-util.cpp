@@ -13,6 +13,7 @@
 
 TEST_CASE("wex::utils")
 {
+  // see also del test-frame.cpp
   SECTION("execute_grep")
   {
     get_stc()->SetFocus();
@@ -23,7 +24,8 @@ TEST_CASE("wex::utils")
     file.make_absolute();
     wex::vcs vcs(std::vector<wex::path>{file});
 
-    REQUIRE(wex::execute_grep("xx", vcs.toplevel()));
+    REQUIRE(!wex::execute_grep("xx", vcs.toplevel()));
+    REQUIRE(!wex::execute_grep("git", vcs.toplevel()));
   }
 
   SECTION("expand_macro")

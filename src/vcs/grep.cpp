@@ -34,7 +34,7 @@ bool execute_grep(const std::string& bin, const path& tl)
     return false;
   }
 
-  auto  text(stc->get_selected_text());
+  auto                text(stc->get_selected_text());
   static item_dialog* dlg = nullptr;
 
   if (text.empty())
@@ -43,6 +43,7 @@ bool execute_grep(const std::string& bin, const path& tl)
     {
       dlg = new item_dialog(
         {add_find_text(),
+         item(_("fif.In files"), item::COMBOBOX),
          item::choices_bool_t{
            find_replace_data::get()->text_match_case(),
            find_replace_data::get()->text_match_word(),
@@ -79,14 +80,24 @@ bool execute_grep(const std::string& bin, const path& tl)
     const auto& ic(
       cfg_do(find_replace_data::get()->text_match_case(), "", " -i "));
     const auto& re(cfg_do(find_replace_data::get()->text_regex(), " -E ", ""));
+    std::string fif(config(_("fif.In files")).get_first_of());
+
+    if (!fif.empty())
+    {
+      fif = " -- " + fif;
+    }
 
     const std::string finds(
       config(find_replace_data::get()->text_match_word()).get(true) ?
         "\\b" + find + "\\b" :
         find);
 
-    frame->process_async_system(
-      process_data(bin + " grep -n " + ic + re + finds).start_dir(tl.string()));
+    if (!frame->process_async_system(
+          process_data(bin + " grep -n " + ic + re + finds + fif)
+            .start_dir(tl.string())))
+    {
+      return false;
+    }
   }
 
   return true;
