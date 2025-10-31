@@ -37,8 +37,8 @@ public:
   auto hits() const { return m_hits; }
 
 private:
-  bool command(const block_lines& block, const std::string& text) const;
-  bool for_each(const block_lines& match) const;
+  bool command(const block_lines& block, const std::string& text);
+  bool for_each(const block_lines& match);
   bool process(const block_lines& block);
   bool process_inverse(
     const addressrange_mark& am,
@@ -48,6 +48,7 @@ private:
   const addressrange m_ar;
 
   std::vector<std::string> m_commands;
+  std::set<int>            m_lines_skip;
 
   int          m_hits{0};
   bool         m_recursive{false};

@@ -118,6 +118,11 @@ TEST_CASE("wex::global_env")
     REQUIRE(!ex->get_stc()->get_text().contains("<XXX>"));
   }
 
+  SECTION("commands-copy")
+  {
+    test_global("g/hel/t10", ar);
+  }
+
   SECTION("commands-delete")
   {
     test_global("g/hel/d", ar);
@@ -126,6 +131,11 @@ TEST_CASE("wex::global_env")
   SECTION("commands-insert")
   {
     test_global("g/hel/i|<XXX>", ar);
+  }
+
+  SECTION("commands-move")
+  {
+    test_global("g/hel/m10", ar);
   }
 
   SECTION("commands-substitute")

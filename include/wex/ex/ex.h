@@ -9,6 +9,7 @@
 
 #include <wex/core/regex.h>
 #include <wex/core/type-to-value.h>
+#include <wex/ex/command-parser.h>
 #include <wex/factory/ex-command.h>
 #include <wex/factory/line-data.h>
 #include <wex/syntax/lexer-props.h>
@@ -48,6 +49,7 @@ enum class info_message_t
 /// Offers a class that adds ex editor to wex::syntax::stc.
 class ex
 {
+  friend class command_parser;
   friend class macro_mode;
 
 public:
@@ -96,6 +98,12 @@ public:
 
   /// Returns calculated value of text.
   std::optional<int> calculator(const std::string& text);
+
+  /// Returns parsed text (after a valid command).
+  const command_parser_data& command_parsed_data() const
+  {
+    return m_command_parsed_data;
+  };
 
   /// Copies data from other component.
   void copy(const ex* ex);
@@ -263,6 +271,8 @@ private:
     m_marker_numbers;
 
   std::string m_print_text;
+
+  command_parser_data m_command_parsed_data;
 };
 
 /// Expands all markers and registers in command.

@@ -8,6 +8,7 @@
 #include <boost/tokenizer.hpp>
 #include <wex/core/log.h>
 #include <wex/ex/addressrange.h>
+#include <wex/ex/command-parser.h>
 #include <wex/ex/ex.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
@@ -71,19 +72,39 @@ wex::global_env::global_env(const addressrange& ar)
   }
 }
 
-bool wex::global_env::command(const block_lines& block, const std::string& text)
-  const
+bool wex::global_env::command(const block_lines& block, const std::string& exe)
 {
-  if (const auto cmd(":" + block.get_range() + text); !m_ex->command(cmd))
+  if (const auto cmd(":" + block.get_range() + exe); !m_ex->command(cmd))
   {
     m_ex->frame()->show_ex_message(cmd + " failed");
     return false;
   }
 
+  address a(m_ex, m_ex->command_parsed_data().text());
+
+  int line = m_ex->command_parsed_data().command() == "m" ? a.get_line() - 2 :
+                                                            a.get_line();
+
+  while (m_lines_skip.contains(line) &&
+         line < m_ex->get_stc()->get_line_count())
+  {
+    line++;
+  }
+
+  if (line < m_ex->get_stc()->get_line_count())
+  {
+    m_lines_skip.insert(line);
+    log::trace("skip") << line << m_ex->command_parsed_data().command();
+  }
+  else
+  {
+    log::trace("skip") << a.get_line() << "reaches end";
+  }
+
   return true;
 }
 
-bool wex::global_env::for_each(const block_lines& match) const
+bool wex::global_env::for_each(const block_lines& match)
 {
   return !has_commands() ? match.set_indicator(m_ar.find_indicator()) :
                            std::ranges::all_of(
@@ -98,7 +119,7 @@ bool wex::global_env::for_each(const block_lines& match) const
 /*
 example for global inverse and match block / inverse block
 v/yy/d
-text   mbs    ibs    ibe   ex action  
+text   mbs    ibs    ibe   ex action
 xx0
 xx1
 yy2    2      0      2     -> :1,2d
@@ -130,6 +151,8 @@ bool wex::global_env::global(const data::substitute& data)
   const bool infinite =
     (m_recursive && data.commands() != "$" && data.commands() != "1" &&
      data.commands() != "d");
+
+  m_lines_skip.clear();
 
   block_lines ib(
     m_stc,
@@ -189,6 +212,13 @@ bool wex::global_env::global(const data::substitute& data)
 bool wex::global_env::process(const block_lines& block)
 {
   block.log();
+
+  if (m_lines_skip.contains(
+        block.start() + (m_ex->command_parsed_data().command() == "m" ? 1 : 0)))
+  {
+    m_stc->SetTargetStart(m_stc->GetTargetEnd());
+    return true;
+  }
 
   if (!for_each(block))
   {
