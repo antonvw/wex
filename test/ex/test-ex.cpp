@@ -123,6 +123,7 @@ TEST_CASE("wex::ex")
     }
     const int lines = stc->get_line_count();
     REQUIRE(ex->command(":g/xxxx/d"));
+    REQUIRE(ex->command_parsed_data().command() == "g");
     REQUIRE(stc->get_line_count() == lines - max);
 
     stc->AppendText("line xxxx 6 added\n");

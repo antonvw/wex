@@ -80,25 +80,9 @@ bool wex::global_env::command(const block_lines& block, const std::string& exe)
     return false;
   }
 
-  address a(m_ex, m_ex->command_parsed_data().text());
-
-  int line = m_ex->command_parsed_data().command() == "m" ? a.get_line() - 2 :
-                                                            a.get_line();
-
-  while (m_lines_skip.contains(line) &&
-         line < m_ex->get_stc()->get_line_count())
+  if (m_ex->command_parsed_data().is_global_skip())
   {
-    line++;
-  }
-
-  if (line < m_ex->get_stc()->get_line_count())
-  {
-    m_lines_skip.insert(line);
-    log::trace("skip") << line << m_ex->command_parsed_data().command();
-  }
-  else
-  {
-    log::trace("skip") << a.get_line() << "reaches end";
+    skip(block);
   }
 
   return true;
@@ -251,4 +235,28 @@ bool wex::global_env::process_inverse(
   }
 
   return true;
+}
+
+void wex::global_env::skip(const block_lines& block)
+{
+  const address a(m_ex, m_ex->command_parsed_data().text());
+
+  int line = m_ex->command_parsed_data().command() == "m" ? a.get_line() - 2 :
+                                                            a.get_line();
+
+  while (m_lines_skip.contains(line) &&
+         line < m_ex->get_stc()->get_line_count())
+  {
+    line++;
+  }
+
+  if (line < m_ex->get_stc()->get_line_count())
+  {
+    m_lines_skip.insert(line);
+    log::trace("skip") << line << m_ex->command_parsed_data().command();
+  }
+  else
+  {
+    log::trace("skip") << a.get_line() << "reaches end";
+  }
 }

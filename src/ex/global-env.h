@@ -44,6 +44,7 @@ private:
     const addressrange_mark& am,
     const block_lines&       block,
     block_lines&             inverse);
+  void skip(const block_lines& block);
 
   const addressrange m_ar;
 
