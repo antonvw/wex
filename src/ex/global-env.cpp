@@ -197,11 +197,17 @@ bool wex::global_env::process(const block_lines& block)
 {
   block.log();
 
-  if (m_lines_skip.contains(
-        block.start() + (m_ex->command_parsed_data().command() == "m" ? 1 : 0)))
+  if (const int line(
+        block.start() + (m_ex->command_parsed_data().command() == "m" ? -1 : 0));
+      m_lines_skip.contains(line))
   {
+    log::trace("skipping") << line;
     m_stc->SetTargetStart(m_stc->GetTargetEnd());
     return true;
+  }
+  else
+  {
+    log::trace("check skip, does not contain") << line;
   }
 
   if (!for_each(block))
@@ -253,7 +259,7 @@ void wex::global_env::skip(const block_lines& block)
   if (line < m_ex->get_stc()->get_line_count())
   {
     m_lines_skip.insert(line);
-    log::trace("skip") << line << m_ex->command_parsed_data().command();
+    log::trace("skip add") << line << m_ex->command_parsed_data().command();
   }
   else
   {

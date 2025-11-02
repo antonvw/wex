@@ -12,15 +12,19 @@
 #include "../src/ex/global-env.h"
 #include "test.h"
 
-void test_global(const std::string& cmd, const wex::addressrange& ar)
+void test_global(
+  const std::string&       cmd,
+  const wex::addressrange& ar,
+  bool                     pass = true,
+  int                      hits = 3)
 {
   REQUIRE(wex::addressrange::data().set_global(cmd));
   wex::global_env ge(ar);
 
   CAPTURE(cmd);
   REQUIRE(ge.has_commands());
-  REQUIRE(ge.global(wex::addressrange::data()));
-  REQUIRE(ge.hits() == 3);
+  REQUIRE(ge.global(wex::addressrange::data()) == pass);
+  REQUIRE(ge.hits() == (pass ? 3 : 0));
 }
 
 TEST_CASE("wex::global_env")
@@ -135,7 +139,10 @@ TEST_CASE("wex::global_env")
 
   SECTION("commands-move")
   {
+    test_global("g/hel/m1", ar, false); // match is within dest
+    test_global("g/hel/m5", ar);
     test_global("g/hel/m10", ar);
+    test_global("g/hem/m8", ar, true, 1);
   }
 
   SECTION("commands-substitute")
