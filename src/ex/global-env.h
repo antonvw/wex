@@ -52,6 +52,7 @@ private:
   std::set<int>            m_lines_skip;
 
   int          m_hits{0};
+  char         m_marker{0};
   bool         m_recursive{false};
   ex*          m_ex;
   syntax::stc* m_stc;

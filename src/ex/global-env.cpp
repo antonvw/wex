@@ -190,6 +190,12 @@ bool wex::global_env::global(const data::substitute& data)
 
   am.end(data.is_clear());
 
+  if (m_marker != 0)
+  {
+    m_ex->marker_delete(m_marker);
+    m_marker = 0;
+  }
+
   return true;
 }
 
@@ -198,16 +204,12 @@ bool wex::global_env::process(const block_lines& block)
   block.log();
 
   if (const int line(
-        block.start() + (m_ex->command_parsed_data().command() == "m" ? -1 : 0));
+        block.start() + (m_ex->command_parsed_data().command() == "m" ? 1 : 0));
       m_lines_skip.contains(line))
   {
     log::trace("skipping") << line;
     m_stc->SetTargetStart(m_stc->GetTargetEnd());
     return true;
-  }
-  else
-  {
-    log::trace("check skip, does not contain") << line;
   }
 
   if (!for_each(block))
@@ -247,8 +249,13 @@ void wex::global_env::skip(const block_lines& block)
 {
   const address a(m_ex, m_ex->command_parsed_data().text());
 
-  int line = m_ex->command_parsed_data().command() == "m" ? a.get_line() - 2 :
-                                                            a.get_line();
+  if (m_marker == 0)
+  {
+    m_marker = '[';
+    a.marker_add(m_marker);
+  }
+
+  int line = m_ex->marker_line(m_marker) + 1;
 
   while (m_lines_skip.contains(line) &&
          line < m_ex->get_stc()->get_line_count())

@@ -24,7 +24,7 @@ void test_global(
   CAPTURE(cmd);
   REQUIRE(ge.has_commands());
   REQUIRE(ge.global(wex::addressrange::data()) == pass);
-  REQUIRE(ge.hits() == (pass ? 3 : 0));
+  REQUIRE(ge.hits() == (pass ? hits : 0));
 }
 
 TEST_CASE("wex::global_env")

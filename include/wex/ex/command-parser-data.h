@@ -13,19 +13,20 @@ namespace wex
 {
 class ex;
 
+/// This class offers data for the ex command parser.
 class command_parser_data
 {
 public:
   /// Default constructor.
   command_parser_data(const std::string& text = std::string());
 
+  /// The command.
+  /// This mostly is a one letter string like "z" for adjust_window
+  /// or "p" for print.
+  const std::string& command() const { return m_cmd; }
+
   /// Returns true if this command can be skipped.
   bool is_global_skip() const;
-
-  /// The command.
-  /// mostly a one letter string like "z" for adjust_window
-  /// mostly a one letter string like "p" for print
-  const std::string& command() const { return m_cmd; }
 
   /// The range.
   const std::string& range() const { return m_range; }
