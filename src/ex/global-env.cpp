@@ -263,13 +263,16 @@ void wex::global_env::skip(const block_lines& block)
     line++;
   }
 
-  if (line < m_ex->get_stc()->get_line_count())
+  if (line <= m_ex->get_stc()->get_line_count())
   {
-    m_lines_skip.insert(line);
-    log::trace("skip add") << line << m_ex->command_parsed_data().command();
+    if (!m_lines_skip.contains(line))
+    {
+      m_lines_skip.insert(line);
+      log::trace("skip add line") << line << m_ex->command_parsed_data().command();
+    }
   }
   else
   {
-    log::trace("skip") << a.get_line() << "reaches end";
+    log::trace("skip line") << a.get_line() << "reaches end";
   }
 }
