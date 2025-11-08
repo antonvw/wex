@@ -72,6 +72,15 @@ wex::global_env::global_env(const addressrange& ar)
   }
 }
 
+wex::global_env::~global_env()
+{
+  if (m_marker != 0)
+  {
+    m_ex->marker_delete(m_marker);
+    m_marker = 0;
+  }
+}
+
 bool wex::global_env::command(const block_lines& block, const std::string& exe)
 {
   if (const auto cmd(":" + block.get_range() + exe); !m_ex->command(cmd))
@@ -82,7 +91,7 @@ bool wex::global_env::command(const block_lines& block, const std::string& exe)
 
   if (m_ex->command_parsed_data().is_global_skip())
   {
-    skip(block);
+    skip(block.get_range() + exe);
   }
 
   return true;
@@ -190,12 +199,6 @@ bool wex::global_env::global(const data::substitute& data)
 
   am.end(data.is_clear());
 
-  if (m_marker != 0)
-  {
-    m_ex->marker_delete(m_marker);
-    m_marker = 0;
-  }
-
   return true;
 }
 
@@ -207,7 +210,7 @@ bool wex::global_env::process(const block_lines& block)
         block.start() + (m_ex->command_parsed_data().command() == "m" ? 1 : 0));
       m_lines_skip.contains(line))
   {
-    log::trace("skipping") << line;
+    log::debug("skipping") << line;
     m_stc->SetTargetStart(m_stc->GetTargetEnd());
     return true;
   }
@@ -245,7 +248,7 @@ bool wex::global_env::process_inverse(
   return true;
 }
 
-void wex::global_env::skip(const block_lines& block)
+void wex::global_env::skip(const std::string& info)
 {
   const address a(m_ex, m_ex->command_parsed_data().text());
 
@@ -255,24 +258,51 @@ void wex::global_env::skip(const block_lines& block)
     a.marker_add(m_marker);
   }
 
-  int line = m_ex->marker_line(m_marker) + 1;
+  if (const auto& line = skip_get_line(); line)
+  {
+    m_lines_skip.insert(*line);
+    log::debug("skip inserted") << *line << info;
+  }
+  else
+  {
+    log::trace("skip ignored") << a.get_line() << "all skipped";
+  }
+}
 
-  while (m_lines_skip.contains(line) &&
-         line < m_ex->get_stc()->get_line_count())
+std::optional<int> wex::global_env::skip_get_line() const
+{
+  int line = m_ex->marker_line(m_marker);
+
+  if (line < m_ex->get_stc()->get_line_count() - 1)
   {
     line++;
   }
 
-  if (line <= m_ex->get_stc()->get_line_count())
+  while (m_lines_skip.contains(line))
   {
-    if (!m_lines_skip.contains(line))
+    if (m_ex->command_parsed_data().command() == "m")
     {
-      m_lines_skip.insert(line);
-      log::trace("skip add line") << line << m_ex->command_parsed_data().command();
+      if (line > 0)
+      {
+        line--;
+      }
+      else
+      {
+        return std::nullopt;
+      }
+    }
+    else
+    {
+      if (line < m_ex->get_stc()->get_line_count())
+      {
+        line++;
+      }
+      else
+      {
+        return std::nullopt;
+      }
     }
   }
-  else
-  {
-    log::trace("skip line") << a.get_line() << "reaches end";
-  }
+  
+  return line;
 }

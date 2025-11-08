@@ -143,6 +143,7 @@ TEST_CASE("wex::global_env")
     test_global("g/hel/m5", ar);
     test_global("g/hel/m10", ar);
     test_global("g/hem/m8", ar, true, 1);
+    test_global("g/hem/m$", ar, true, 1);
   }
 
   SECTION("commands-substitute")

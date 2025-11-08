@@ -26,6 +26,9 @@ public:
   /// the global command.
   explicit global_env(const addressrange& ar);
 
+  /// Destructor.
+  ~global_env();
+
   /// Runs the global commands using specified data.
   /// Returns false if an error occurred.
   bool global(const data::substitute& data);
@@ -44,7 +47,8 @@ private:
     const addressrange_mark& am,
     const block_lines&       block,
     block_lines&             inverse);
-  void skip(const block_lines& block);
+  void               skip(const std::string& info);
+  std::optional<int> skip_get_line() const;
 
   const addressrange m_ar;
 
