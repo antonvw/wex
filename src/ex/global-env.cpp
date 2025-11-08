@@ -303,6 +303,6 @@ std::optional<int> wex::global_env::skip_get_line() const
       }
     }
   }
-  
+
   return line;
 }
