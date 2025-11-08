@@ -366,9 +366,12 @@ bool wex::addressrange::general(
 
   stc_undo undo(m_stc);
 
+  const int count = m_stc->get_line_count();
+
   if (f())
   {
-    m_stc->goto_line(dest_line - 1);
+    const int diff = count - m_stc->get_line_count();
+    m_stc->goto_line(dest_line - diff);
     m_stc->add_text(m_ex->register_text());
   }
 

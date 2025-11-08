@@ -29,11 +29,11 @@ wex::addressrange_mark::addressrange_mark(
 wex::addressrange_mark::~addressrange_mark()
 {
   if (!std::ranges::all_of(
-    m_markers,
-    [this](const char a)
-    {
-      return m_ex->marker_delete(a);
-    }))
+        m_markers,
+        [this](const char a)
+        {
+          return m_ex->marker_delete(a);
+        }))
   {
     log("cleanup addressrange markers failed");
   }
@@ -70,7 +70,7 @@ wex::addressrange_mark::mark_t wex::addressrange_mark::get_type() const
       return mark_t::GLOBAL_APPEND;
     }
 
-    if (m_data.commands() == "d")
+    if (m_data.commands() == "d" || m_data.commands().starts_with("m"))
     {
       return m_data.is_inverse() ? mark_t::GLOBAL_DELETE_INVERSE :
                                    mark_t::GLOBAL_DELETE;
@@ -173,10 +173,19 @@ void wex::addressrange_mark::set_target(int start)
 {
   m_stc->SetTargetRange(start, m_stc->GetLineEndPosition(marker_end()));
 
+  std::stringstream str;
+
+  str << "(";
+  std::ranges::for_each(
+    m_markers,
+    [this, &str](const auto& it)
+    {
+      str << it << "->" << m_ex->marker_line(it) << " ";
+    });
+  str << ")";
+
   log::trace("addressrange_mark set_target")
-    << m_stc->GetTargetStart() << "," << m_stc->GetTargetEnd()
-    << m_markers[marker_t::TARGET] << marker_target()
-    << m_markers[marker_t::END] << marker_end();
+    << m_stc->GetTargetStart() << "," << m_stc->GetTargetEnd() << str;
 }
 
 bool wex::addressrange_mark::update(int lines_changed)

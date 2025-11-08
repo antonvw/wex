@@ -2,13 +2,14 @@
 // Name:      command-parser.cpp
 // Purpose:   Implementation of class wex::command_parser
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
 #include <wex/core/log.h>
 #include <wex/ex/addressrange.h>
 #include <wex/ex/command-parser.h>
+#include <wex/ex/ex.h>
 #include <wex/factory/control.h>
 #include <wex/syntax/stc.h>
 
@@ -16,7 +17,7 @@ wex::command_parser::command_parser(
   ex*                ex,
   const std::string& text,
   parse_t            type)
-  : m_text(text)
+  : command_parser_data(text)
   , m_ex(ex)
 {
   m_is_ok = m_text.empty() ? false : parse(type);
@@ -75,6 +76,8 @@ bool wex::command_parser::parse(parse_t type)
     log(e) << m_cmd;
     return false;
   }
+
+  m_ex->m_command_parsed_data = *this;
 
   return true;
 }
