@@ -105,7 +105,7 @@ wex::lexer::lexer(const pugi::xml_node* node)
         m_command_end   = "-->";
       }
 
-      parse_childen(node);
+      parse_children(node);
     }
   }
 }
@@ -233,10 +233,12 @@ bool wex::lexer::apply() const
     return false;
   }
 
-  std::ranges::for_each(m_properties, [&](const auto& p)
-  {
-    p.apply_reset(m_stc);
-  });
+  std::ranges::for_each(
+    m_properties,
+    [&](const auto& p)
+    {
+      p.apply_reset(m_stc);
+    });
 
   // Reset keywords, also if no lexer is available.
   for (int setno = 0; setno < wxSTC_KEYWORDSET_MAX; setno++)
@@ -248,10 +250,12 @@ bool wex::lexer::apply() const
 
   if (!lexers::get()->theme().empty())
   {
-    std::ranges::for_each(m_keywords_set, [&](const auto& k)
-    {
-      m_stc->SetKeyWords(k.first, get_string_set(k.second));
-    });
+    std::ranges::for_each(
+      m_keywords_set,
+      [&](const auto& k)
+      {
+        m_stc->SetKeyWords(k.first, get_string_set(k.second));
+      });
 
     lexers::get()->apply(m_stc);
 
@@ -283,10 +287,12 @@ bool wex::lexer::apply() const
         });
   }
 
-  std::ranges::for_each(m_attribs, [&](const auto& i)
-  {
-    std::get<2>(i)(m_stc, std::get<1>(i));
-  });
+  std::ranges::for_each(
+    m_attribs,
+    [&](const auto& i)
+    {
+      std::get<2>(i)(m_stc, std::get<1>(i));
+    });
 
   return true;
 }
@@ -693,7 +699,7 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
   }
 }
 
-void wex::lexer::parse_childen(const pugi::xml_node* node)
+void wex::lexer::parse_children(const pugi::xml_node* node)
 {
   for (const auto& child : node->children())
   {

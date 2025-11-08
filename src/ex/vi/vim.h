@@ -39,7 +39,7 @@ public:
     int start_pos,
     /// indicates how many bytes parsed from executing the vi motion function
     size_t& parsed,
-    /// vi motion to execute before excuting vim motion
+    /// vi motion to execute before executing vim motion
     const vi::function_t& f);
 
   /// Prepares the motion commands.
