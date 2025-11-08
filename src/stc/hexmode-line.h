@@ -2,7 +2,7 @@
 // Name:      stc/hexmode-line.h
 // Purpose:   Declaration of class hexmode_line
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/stc/hexmode.h>
@@ -33,7 +33,7 @@ public:
   /// Inserts text.
   bool insert(const std::string& text);
 
-  /// Returns true if this is the acii field.
+  /// Returns true if this is the ascii field.
   bool is_ascii_field() const;
 
   /// Returns true if this is the hex field.

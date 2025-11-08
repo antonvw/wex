@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      comands-other.cpp
+// Name:      commands-other.cpp
 // Purpose:   Implementation of wex::vi::commands_other
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020-2025 Anton van Wezenbeek

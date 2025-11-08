@@ -39,7 +39,7 @@ public:
 
   // Other methods.
 
-  /// Returns number of differences found duing parsing.
+  /// Returns number of differences found during parsing.
   size_t differences() const { return m_diffs; };
 
   /// Returns true if this is the first diff of a chunk.

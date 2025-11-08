@@ -186,7 +186,7 @@ private:
     bool               fill_out_with_space,
     bool               fill_out) const;
   void parse_attrib(const pugi::xml_node* node);
-  void parse_childen(const pugi::xml_node* node);
+  void parse_children(const pugi::xml_node* node);
   void parse_keyword(const pugi::xml_node* node);
 
   // The scintilla name for this lexer cannot be const,
