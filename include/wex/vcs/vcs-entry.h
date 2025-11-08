@@ -113,12 +113,12 @@ public:
 
 private:
   void bind_rev(
-    listview*          lv,
-    const std::string& repo_path,
-    const path&        tl,
-    const std::string& col);
+    listview*           lv,
+    const std::string&  repo_path,
+    const process_data& data,
+    const std::string&  col);
 
-  strings_t from_git(const std::string& ask, size_t offset = 0);
+  strings_t execute_and_parse(const process_data& data, size_t offset = 0);
 
   int revisions_dialog(
     const std::string& path,
