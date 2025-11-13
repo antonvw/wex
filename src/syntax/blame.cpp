@@ -61,6 +61,7 @@ wex::blame::blame(const pugi::xml_node& node)
   , m_name(node.attribute("name").value())
   , m_path_original("xxxxx")
 {
+  config("blame.author").set(false);
 }
 
 wex::blame::margin_style_t
@@ -130,6 +131,11 @@ std::string wex::blame::margin_renamed(const factory::stc* stc)
 
   return !revision.contains(renamed) ? std::string() :
                                        find_after(revision, renamed);
+}
+
+int wex::blame::margin_text_default_size()
+{
+  return 200;
 }
 
 bool wex::blame::parse(const path& p, const std::string& text)
