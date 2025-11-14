@@ -141,10 +141,6 @@ bool wex::global_env::global(const data::substitute& data)
     return false;
   }
 
-  const bool infinite =
-    (m_recursive && data.commands() != "$" && data.commands() != "1" &&
-     data.commands() != "d");
-
   m_lines_skip.clear();
 
   block_lines ib(
@@ -167,17 +163,10 @@ bool wex::global_env::global(const data::substitute& data)
     }
     else
     {
-      if (!process(mb))
+      if (!process(am, mb))
       {
         return false;
       }
-    }
-
-    if (m_hits > 50 && infinite)
-    {
-      m_ex->frame()->show_ex_message(
-        "possible infinite loop at " + mb.get_range());
-      return false;
     }
 
     if (!am.update(m_stc->get_line_count() - lines))
@@ -191,7 +180,7 @@ bool wex::global_env::global(const data::substitute& data)
     ib.start(am.marker_target());
     ib.end(am.marker_end() + 1);
 
-    if (ib.is_available() && !process(ib))
+    if (ib.is_available() && !process(am, ib))
     {
       return false;
     }
@@ -202,16 +191,26 @@ bool wex::global_env::global(const data::substitute& data)
   return true;
 }
 
-bool wex::global_env::process(const block_lines& block)
+bool wex::global_env::process(addressrange_mark& am, const block_lines& block)
 {
   block.log();
 
-  if (const int line(
-        block.start() + (m_ex->command_parsed_data().command() == "m" ? 1 : 0));
-      m_lines_skip.contains(line))
+  int line(block.start() + 1);
+  bool skip = false;
+
+  while (m_lines_skip.contains(line) && line < m_ex->get_stc()->get_line_count())
   {
-    log::debug("skipping") << line;
-    m_stc->SetTargetStart(m_stc->GetTargetEnd());
+     if (!am.skip(line))
+     {
+       return false;
+     }
+
+     skip = true;
+     line++;
+  }
+
+  if (skip)
+  {
     return true;
   }
 
@@ -226,14 +225,14 @@ bool wex::global_env::process(const block_lines& block)
 }
 
 bool wex::global_env::process_inverse(
-  const addressrange_mark& am,
+  addressrange_mark& am,
   const block_lines&       mb,
   block_lines&             ib)
 {
   // If there is a previous inverse block, process it.
   if (ib < mb)
   {
-    if (ib.finish(mb); !process(ib))
+    if (ib.finish(mb); !process(am, ib))
     {
       return false;
     }
@@ -258,7 +257,7 @@ void wex::global_env::skip(const std::string& info)
     a.marker_add(m_marker);
   }
 
-  if (const auto& line = skip_get_line(); line)
+  if (const auto& line = skip_marker_line(); line)
   {
     m_lines_skip.insert(*line);
     log::debug("skip inserted") << *line << info;
@@ -269,7 +268,7 @@ void wex::global_env::skip(const std::string& info)
   }
 }
 
-std::optional<int> wex::global_env::skip_get_line() const
+std::optional<int> wex::global_env::skip_marker_line() const
 {
   int line = m_ex->marker_line(m_marker);
 

@@ -125,6 +125,10 @@ TEST_CASE("wex::global_env")
   SECTION("commands-copy")
   {
     test_global("g/hel/t10", ar);
+    ex->get_stc()->Undo();
+    test_global("g/hel/t$", ar);
+    ex->get_stc()->Undo();
+    test_global("g/a/t8", ar, true, 2);
   }
 
   SECTION("commands-delete")
@@ -142,6 +146,7 @@ TEST_CASE("wex::global_env")
     test_global("g/hel/m1", ar, false); // match is within dest
     test_global("g/hel/m5", ar);
     test_global("g/hel/m10", ar);
+    test_global("g/hel/m$", ar);
     test_global("g/hem/m8", ar, true, 1);
     test_global("g/hem/m$", ar, true, 1);
   }

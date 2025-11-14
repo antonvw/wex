@@ -37,25 +37,25 @@ public:
   bool has_commands() const { return !m_commands.empty(); }
 
   /// Returns number of hits.
-  auto hits() const { return m_hits; }
+  size_t hits() const { return m_hits; }
 
 private:
   bool command(const block_lines& block, const std::string& text);
   bool for_each(const block_lines& match);
-  bool process(const block_lines& block);
+  bool process(addressrange_mark& am, const block_lines& block);
   bool process_inverse(
-    const addressrange_mark& am,
+    addressrange_mark& am,
     const block_lines&       block,
     block_lines&             inverse);
   void               skip(const std::string& info);
-  std::optional<int> skip_get_line() const;
+  std::optional<int> skip_marker_line() const;
 
   const addressrange m_ar;
 
   std::vector<std::string> m_commands;
-  std::set<int>            m_lines_skip;
+  std::set<int>            m_lines_skip; // ex lines starting at 1
 
-  int          m_hits{0};
+  size_t       m_hits{0};
   char         m_marker{0};
   bool         m_recursive{false};
   ex*          m_ex;

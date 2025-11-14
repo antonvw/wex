@@ -188,6 +188,13 @@ void wex::addressrange_mark::set_target(int start)
     << m_stc->GetTargetStart() << "," << m_stc->GetTargetEnd() << str;
 }
 
+bool wex::addressrange_mark::skip(int line)
+{
+  log::debug("skipping") << line;
+
+  return m_ex->marker_add(m_markers[marker_t::TARGET], line);
+}
+
 bool wex::addressrange_mark::update(int lines_changed)
 {
   int target_start = 0;

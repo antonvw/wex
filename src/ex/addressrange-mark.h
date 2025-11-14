@@ -53,6 +53,9 @@ public:
   /// Sets markers and target, returns false if markers could not be added.
   bool set();
 
+  /// Skips specified line.
+  bool skip(int line);
+
   /// Updates target.
   /// The lines_changed indicates number of lines that was
   /// changed since last update.
