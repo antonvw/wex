@@ -94,6 +94,9 @@ public:
   /// or empty string if no rename present.
   static std::string margin_renamed(const factory::stc* stc);
 
+  /// Returns default size for the text margin.
+  static int margin_text_default_size();
+
   // Other methods.
 
   /// Default constructor using xml node.
