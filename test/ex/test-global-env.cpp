@@ -129,6 +129,7 @@ TEST_CASE("wex::global_env")
     test_global("g/hel/t$", ar);
     ex->get_stc()->Undo();
     test_global("g/a/t8", ar, true, 2);
+    REQUIRE(ex->marker_line('[') == wex::LINE_NUMBER_UNKNOWN);
   }
 
   SECTION("commands-delete")

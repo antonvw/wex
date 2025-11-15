@@ -195,18 +195,23 @@ bool wex::global_env::process(addressrange_mark& am, const block_lines& block)
 {
   block.log();
 
-  int line(block.start() + 1);
+  int line(
+    block.start() + (m_ex->command_parsed_data().command() == "m" ||
+                         m_ex->command_parsed_data().text().ends_with('$') ?
+                       1 :
+                       0));
   bool skip = false;
 
-  while (m_lines_skip.contains(line) && line < m_ex->get_stc()->get_line_count())
+  while (m_lines_skip.contains(line) &&
+         line < m_ex->get_stc()->get_line_count())
   {
-     if (!am.skip(line))
-     {
-       return false;
-     }
+    if (!am.skip(line))
+    {
+      return false;
+    }
 
-     skip = true;
-     line++;
+    skip = true;
+    line++;
   }
 
   if (skip)
@@ -226,8 +231,8 @@ bool wex::global_env::process(addressrange_mark& am, const block_lines& block)
 
 bool wex::global_env::process_inverse(
   addressrange_mark& am,
-  const block_lines&       mb,
-  block_lines&             ib)
+  const block_lines& mb,
+  block_lines&       ib)
 {
   // If there is a previous inverse block, process it.
   if (ib < mb)
@@ -260,11 +265,13 @@ void wex::global_env::skip(const std::string& info)
   if (const auto& line = skip_marker_line(); line)
   {
     m_lines_skip.insert(*line);
-    log::debug("skip inserted") << *line << info;
+    log::debug("skip inserted line")
+      << *line << "marker" << m_ex->marker_line(m_marker) << info << "from"
+      << m_ex->command_parsed_data().text();
   }
   else
   {
-    log::trace("skip ignored") << a.get_line() << "all skipped";
+    log::trace("skip ignored line") << a.get_line() << "all skipped";
   }
 }
 

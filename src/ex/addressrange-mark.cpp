@@ -190,7 +190,7 @@ void wex::addressrange_mark::set_target(int start)
 
 bool wex::addressrange_mark::skip(int line)
 {
-  log::debug("skipping") << line;
+  log::debug("skipping line") << line;
 
   return m_ex->marker_add(m_markers[marker_t::TARGET], line);
 }
