@@ -2,7 +2,7 @@
 // Name:      address.cpp
 // Purpose:   Implementation of class wex::address
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013-2024 Anton van Wezenbeek
+// Copyright: (c) 2013-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <charconv>
@@ -332,7 +332,7 @@ bool wex::address::parse(const command_parser& cp)
 
     case 'k':
     case 'm':
-      return !cp.text().empty() ? marker_add(cp.text()[0]) : false;
+      return cp.text().size() == 1 ? marker_add(cp.text()[0]) : false;
 
     case 'p':
       if (cp.command() == "pu")
