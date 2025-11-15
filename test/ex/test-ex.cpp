@@ -91,6 +91,9 @@ TEST_CASE("wex::ex")
       REQUIRE(ex->command(command));
       REQUIRE(ex->get_command().command().empty());
     }
+
+    REQUIRE(!ex->command(":kzz"));
+    REQUIRE(!ex->command(":k10"));
   }
 
   SECTION("ctags")
