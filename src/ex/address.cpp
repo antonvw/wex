@@ -290,11 +290,7 @@ bool wex::address::marker_add(char marker) const
     return false;
   }
 
-  const int correct(
-    (!m_ex->command_parsed_data().text().empty() &&
-     m_ex->command_parsed_data().text().ends_with('$')) ?
-      1 :
-      0);
+  const int correct(m_ex->command_parsed_data().text().ends_with('$') ? 1 : 0);
 
   return get_line() > 0 && m_ex->marker_add(marker, get_line() - 1 - correct);
 }
