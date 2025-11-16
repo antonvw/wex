@@ -16,6 +16,8 @@
 #include <wex/ui/item-dialog.h>
 #include <wx/app.h>
 
+#include "util.h"
+
 namespace wex
 {
 std::string
@@ -84,7 +86,7 @@ bool execute_grep(const std::string& bin, const path& tl)
 
     if (!fif.empty())
     {
-      fif = " -- " + fif;
+      fif = path_spec(fif);
     }
 
     const std::string finds(

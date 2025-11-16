@@ -28,6 +28,10 @@ bool execute_grep(
 /// Return false if no such macro is present.
 bool expand_macro(wex::process_data& data, stc* stc);
 
+/// Returns path specs from file types.
+/// E.g. *.h;*.cpp -> -- "*.h" "*.cpp"
+std::string path_spec(const std::string& extentions);
+
 /// Returns true if command is a diff command and config Use
 /// unified diff view is set.
 bool vcs_diff(const std::string& command);

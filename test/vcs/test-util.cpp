@@ -40,6 +40,12 @@ TEST_CASE("wex::utils")
     REQUIRE(!data.exe().contains("%LINES"));
   }
 
+  SECTION("path_spec")
+  {
+    REQUIRE(wex::path_spec(std::string()).empty());
+    REQUIRE(wex::path_spec("*.h;*.cpp") == " -- *.h *.cpp");
+  }
+
   SECTION("vcs_diff")
   {
     REQUIRE(!wex::vcs_diff(""));
