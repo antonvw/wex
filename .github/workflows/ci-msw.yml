@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: 'recursive'
 
@@ -23,7 +23,7 @@ jobs:
           tag: 24.07
 
       - name: Install boost
-        uses: MarkusJx/install-boost@v2.5.0
+        uses: MarkusJx/install-boost@v2.5.1
         id: install-boost
         with:
           # REQUIRED: Specify the required boost version
@@ -50,7 +50,7 @@ jobs:
 
       - name: Artifacts
         # see build-gen, currently a static build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: wex-lib-windows
           path: |

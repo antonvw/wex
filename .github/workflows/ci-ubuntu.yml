@@ -9,12 +9,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: recursive
 
       - name: Install boost
-        uses: MarkusJx/install-boost@v2.5.0
+        uses: MarkusJx/install-boost@v2.5.1
         id: install-boost
         with:
           # REQUIRED: Specify the required boost version
@@ -55,7 +55,7 @@ jobs:
         run: cd build && ninja
 
       # Upload the del binary, which we will need to debug the core
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: executable
           path: build/test/del/wex-test-del
@@ -78,7 +78,7 @@ jobs:
           NO_AT_BRIDGE: 1
 
       - name: Artifact coredump
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ failure() }}  # Run only if something went wrong
         with:
           name: coredump
@@ -98,7 +98,7 @@ jobs:
           CXX: g++-14
 
       - name: Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: wex-lib-ubuntu
           path: |
