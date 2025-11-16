@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
+#include <boost/tokenizer.hpp>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
 #include <wex/ex/ex-stream.h>
@@ -61,6 +62,25 @@ bool wex::expand_macro(wex::process_data& data, stc* stc)
   }
 
   return true;
+}
+
+std::string wex::path_spec(const std::string& extensions)
+{
+  if (extensions.empty())
+  {
+    return std::string();
+  }
+
+  std::string pathspec(" --");
+
+  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+         extensions,
+         boost::char_separator<char>(";")))
+  {
+    pathspec += " " + it;
+  }
+
+  return pathspec;
 }
 
 bool wex::vcs_diff(const std::string& command)
