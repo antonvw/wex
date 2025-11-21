@@ -216,7 +216,7 @@ void wex::factory::process_imp::thread_output(const process* p)
           {
             log::debug("async_system") << "write:" << text;
 
-            os << text << std::endl;
+            os << text << "\n";
 
             if (debug)
             {

@@ -2,10 +2,11 @@
 // Name:      ex-stream-line.cpp
 // Purpose:   Implementation of class wex::ex_stream_line
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cassert>
+#include <utility>
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
 #include <wex/ex/ex.h>
@@ -16,17 +17,17 @@
 #include "ex-stream-line.h"
 
 wex::ex_stream_line::ex_stream_line(
-  file*                   work,
-  action_t                type,
-  const addressrange&     range,
-  const std::string&      text,
-  const data::substitute& data,
-  char                    name,
-  const address&          dest)
+  file*               work,
+  action_t            type,
+  const addressrange& range,
+  std::string         text,
+  data::substitute    data,
+  char                name,
+  const address&      dest)
   : m_action(type)
   , m_file(work)
-  , m_text(text)
-  , m_data(data)
+  , m_text(std::move(text))
+  , m_data(std::move(data))
   , m_register(name)
   , m_dest(dest.get_line() - 1)
   , m_begin(range.begin().get_line() - 1)

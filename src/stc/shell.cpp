@@ -19,10 +19,11 @@
 
 #include <numeric>
 #include <ranges>
+#include <utility>
 
 wex::shell::shell(
   const data::stc&   data,
-  const std::string& prompt,
+  std::string        prompt,
   const std::string& command_end)
   : stc(
       std::string(),
@@ -35,7 +36,7 @@ wex::shell::shell(
   // Take care that m_commands_iterator is valid.
   , m_commands_iterator(m_commands.end())
   , m_commands_save_in_config(100)
-  , m_prompt(prompt)
+  , m_prompt(std::move(prompt))
 {
   // Override defaults from config.
   SetEdgeMode(wxSTC_EDGE_NONE);

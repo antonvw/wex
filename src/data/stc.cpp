@@ -2,7 +2,7 @@
 // Name:      data/stc.cpp
 // Purpose:   Implementation of wex::data::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2023 Anton van Wezenbeek
+// Copyright: (c) 2017-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -11,10 +11,12 @@
 #include <wex/syntax/indicator.h>
 #include <wex/syntax/stc.h>
 
+#include <utility>
+
 wex::data::stc::stc() = default;
 
-wex::data::stc::stc(const data::control& data)
-  : m_data(data)
+wex::data::stc::stc(data::control data)
+  : m_data(std::move(data))
 {
 }
 

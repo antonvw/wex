@@ -28,7 +28,7 @@ public:
   typedef std::bitset<2> exclude_t;
 
   /// Default constructor.
-  explicit version_info(const wxVersionInfo& info = wxVersionInfo());
+  explicit version_info(wxVersionInfo info = wxVersionInfo());
 
   /// Returns copyright.
   const std::string copyright() const;

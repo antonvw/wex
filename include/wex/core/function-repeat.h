@@ -22,9 +22,9 @@ public:
 
   /// Constructor.
   function_repeat(
-    const std::string& name, ///< name for the repeater
-    wxEvtHandler*      evt,  ///< where event will be handled
-    repeat_t           t     ///< the function to be repeated
+    std::string   name, ///< name for the repeater
+    wxEvtHandler* evt,  ///< where event will be handled
+    repeat_t      t     ///< the function to be repeated
   );
 
   /// Destructor.

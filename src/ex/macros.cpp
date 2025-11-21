@@ -5,7 +5,9 @@
 // Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
 #include <boost/algorithm/string.hpp>
+#include <numeric>
 #include <wex/common/util.h>
 #include <wex/core/app.h>
 #include <wex/core/config.h>
@@ -16,9 +18,6 @@
 #include <wex/ex/macros.h>
 #include <wex/syntax/lexer-props.h>
 #include <wex/ui/frame.h>
-
-#include <algorithm>
-#include <numeric>
 
 wex::macros::macros()
   : m_mode(this)
@@ -76,7 +75,7 @@ const wex::macros::commands_t wex::macros::get() const
       return i.first;
     });
 
-  std::sort(v.begin(), v.end());
+  std::ranges::sort(v);
 
   return v;
 }

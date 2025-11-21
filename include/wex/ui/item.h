@@ -462,7 +462,7 @@ private:
     type_t             type,
     const std::string& label = std::string(),
     const std::any&    value = std::string(),
-    const data::item&        = data::item());
+    data::item         = data::item());
 
   data::layout::sizer_t* add(data::layout& layout) const;
   data::layout::sizer_t* add_browse_button(wxSizer* sizer) const;

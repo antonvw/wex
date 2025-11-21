@@ -13,6 +13,7 @@
 #include <wex/factory/unified-diff.h>
 
 #include <iostream>
+#include <utility>
 
 #define NEXT_TOKEN                                                             \
   if (++tok_iter == tokens.end())                                              \
@@ -52,8 +53,8 @@ size_t stoi(const std::string& i)
 }
 } // namespace wex
 
-wex::factory::unified_diff::unified_diff(const std::string& input)
-  : m_input(input)
+wex::factory::unified_diff::unified_diff(std::string input)
+  : m_input(std::move(input))
 {
   m_range.fill({0});
 }

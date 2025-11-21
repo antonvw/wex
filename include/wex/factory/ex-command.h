@@ -46,7 +46,7 @@ public:
   explicit ex_command(factory::stc* stc = nullptr);
 
   /// Constructor, sets command text.
-  explicit ex_command(const std::string& text);
+  explicit ex_command(std::string text);
 
   /// Appends a char.
   ex_command& append(char c)

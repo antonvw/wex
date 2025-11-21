@@ -26,7 +26,7 @@ public:
     /// tool that caused the match
     const tool& t,
     /// matching line
-    const std::string& line,
+    std::string line,
     /// line number containing match
     size_t line_no,
     /// pos on line where match starts, -1 not known

@@ -2,11 +2,13 @@
 // Name:      property.cpp
 // Purpose:   Implementation of wex::property class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
 #include <wex/syntax/property.h>
+
+#include <utility>
 
 wex::property::property(const pugi::xml_node& node)
 {
@@ -22,9 +24,9 @@ wex::property::property(const pugi::xml_node& node)
   }
 }
 
-wex::property::property(const std::string& name, const std::string& value)
-  : m_name(name)
-  , m_value(value)
+wex::property::property(std::string name, std::string value)
+  : m_name(std::move(name))
+  , m_value(std::move(value))
 {
 }
 

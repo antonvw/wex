@@ -10,6 +10,7 @@
 
 #include <iomanip>
 #include <sstream>
+#include <utility>
 
 using namespace ::std::chrono;
 
@@ -45,8 +46,8 @@ wex::now(const std::string& format, chrono::precision_t precision)
   return chrono(format, precision).get_time(std::chrono::system_clock::now());
 }
 
-wex::chrono::chrono(const std::string& format, precision_t precision)
-  : m_format(format)
+wex::chrono::chrono(std::string format, precision_t precision)
+  : m_format(std::move(format))
   , m_precision(precision)
 {
 }

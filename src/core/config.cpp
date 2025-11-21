@@ -10,6 +10,8 @@
 #include <wx/colour.h>
 #include <wx/font.h>
 
+#include <utility>
+
 #include "config-imp.h"
 
 namespace wex
@@ -25,8 +27,8 @@ wex::config::config(const std::string& item)
   config::item(item);
 }
 
-wex::config::config(const std::string& parent, const std::string& child)
-  : m_item(child)
+wex::config::config(const std::string& parent, std::string child)
+  : m_item(std::move(child))
   , m_local(new config_imp(m_store, parent))
 {
 }

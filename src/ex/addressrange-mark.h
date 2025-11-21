@@ -28,9 +28,9 @@ class addressrange_mark
 public:
   /// Constructor, specify addressrange, substitute data, and global option.
   addressrange_mark(
-    const addressrange&     ar,
-    const data::substitute& subs,
-    bool                    global = false);
+    const addressrange& ar,
+    data::substitute    subs,
+    bool                global = false);
 
   /// Destructor, removes markers.
   ~addressrange_mark();

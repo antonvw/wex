@@ -11,46 +11,45 @@
 #include <wex/ui/frame.h>
 #include <wex/ui/menu.h>
 
+#include <utility>
+
 wex::menu_item::menu_item(type_t type)
   : m_type(type)
 {
 }
 
-wex::menu_item::menu_item(
-  wxWindowID         id,
-  const std::string& name,
-  const data::menu&  data)
+wex::menu_item::menu_item(wxWindowID id, std::string name, data::menu data)
   : m_id(id)
   , m_type(MENU)
-  , m_data(data)
-  , m_name(name)
+  , m_data(std::move(data))
+  , m_name(std::move(name))
 {
   m_data.bind(m_id);
 }
 
 wex::menu_item::menu_item(
-  wxWindowID         id,
-  const std::string& name,
-  type_t             type,
-  const data::menu&  data)
+  wxWindowID  id,
+  std::string name,
+  type_t      type,
+  data::menu  data)
   : m_id(id)
   , m_type(type)
-  , m_name(name)
-  , m_data(data)
+  , m_name(std::move(name))
+  , m_data(std::move(data))
 {
   m_data.bind(m_id);
 }
 
 wex::menu_item::menu_item(
-  wex::menu*         submenu,
-  const std::string& name,
-  wxWindowID         id,
-  const data::menu&  data)
+  wex::menu*  submenu,
+  std::string name,
+  wxWindowID  id,
+  data::menu  data)
   : m_id(id)
   , m_type(SUBMENU)
-  , m_name(name)
+  , m_name(std::move(name))
   , m_menu(submenu)
-  , m_data(data)
+  , m_data(std::move(data))
 {
   m_data.bind(m_id);
 }
@@ -68,14 +67,11 @@ wex::menu_item::menu_item(
   m_data.bind(m_id);
 }
 
-wex::menu_item::menu_item(
-  wxWindowID        id,
-  file_history&     history,
-  const data::menu& data)
+wex::menu_item::menu_item(wxWindowID id, file_history& history, data::menu data)
   : m_id(id)
   , m_type(HISTORY)
   , m_history(&history)
-  , m_data(data)
+  , m_data(std::move(data))
 {
   m_data.bind(m_id);
 }

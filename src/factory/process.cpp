@@ -15,7 +15,7 @@
 #include "data-to-std-in.h"
 #include "process-imp.h"
 
-wex::factory::process::process() {}
+wex::factory::process::process() = default;
 
 wex::factory::process::~process()
 {

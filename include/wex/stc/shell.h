@@ -39,7 +39,7 @@ public:
     const data::stc& data = data::stc(),
     /// Give the command used to end a line.
     /// The default uses the eol.
-    const std::string& prompt = ">",
+    std::string prompt = ">",
     /// The command used to end a line.
     const std::string& command_end = std::string());
 

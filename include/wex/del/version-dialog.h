@@ -52,7 +52,7 @@ public:
     /// version info
     const version_info& info,
     /// about info
-    const about_info& about = about_info());
+    about_info about = about_info());
 
   /// Returns the about info.
   const about_info& about() const { return m_about; }

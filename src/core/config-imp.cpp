@@ -156,7 +156,7 @@ void wex::config_imp::save() const
 {
   if (std::ofstream fs(m_path.string()); fs.is_open())
   {
-    fs << std::setw(2) << m_json << std::endl;
+    fs << std::setw(2) << m_json << "\n";
   }
   else
   {

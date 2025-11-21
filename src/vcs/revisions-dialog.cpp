@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
+#include <utility>
 #include <wex/core/config.h>
 #include <wex/factory/bind.h>
 #include <wex/ui/frame.h>
@@ -20,18 +21,18 @@ class rev_data
 {
 public:
   rev_data(
-    vcs_entry*         ve,
-    wex::listview*     lv,
-    long               index,
+    vcs_entry*          ve,
+    wex::listview*      lv,
+    long                index,
     const process_data& data,
-    const std::string& repo_path,
-    const std::string& col)
+    const std::string&  repo_path,
+    std::string         col)
     : m_ve(ve)
     , m_lv(lv)
     , m_index(index)
     , m_data(data)
     , m_repo_path(repo_path)
-    , m_col(col)
+    , m_col(std::move(col))
   {
     ;
   }
@@ -57,7 +58,8 @@ private:
 void rev_data::do_compare()
 {
   if (
-    m_ve->system(process_data(m_data).exe("diff -U0 " + value() + " " + m_repo_path)) == 0)
+    m_ve->system(
+      process_data(m_data).exe("diff -U0 " + value() + " " + m_repo_path)) == 0)
   {
     unified_diff(path(m_repo_path), m_ve, frame()).parse();
   }
@@ -68,7 +70,8 @@ void rev_data::do_open()
   config(m_ve->flags_key()).set(value());
 
   if (
-    m_ve->system(process_data(m_data).exe("show " + value() + ":" + m_repo_path)) == 0)
+    m_ve->system(
+      process_data(m_data).exe("show " + value() + ":" + m_repo_path)) == 0)
   {
     frame()->open_file_vcs(path(m_repo_path), *m_ve, data::stc());
     config(m_ve->flags_key()).set(std::string());
@@ -88,7 +91,8 @@ void wex::vcs_entry::bind_rev(
     [=, this](wxMouseEvent& event)
     {
       event.Skip();
-      rev_data(this, lv, lv->GetFirstSelected(), data, repo_path, col).do_open();
+      rev_data(this, lv, lv->GetFirstSelected(), data, repo_path, col)
+        .do_open();
     });
 
   bind(lv).command(
@@ -106,7 +110,8 @@ void wex::vcs_entry::bind_rev(
       ID_EDIT_REV_OPEN}});
 }
 
-wex::strings_t wex::vcs_entry::execute_and_parse(const process_data& data, size_t offset)
+wex::strings_t
+wex::vcs_entry::execute_and_parse(const process_data& data, size_t offset)
 {
   process pro;
   pro.system(data);
@@ -194,7 +199,8 @@ int wex::vcs_entry::revisions_dialog(
   pro.system(
     // this query should follow the columns as specified above,
     // and using same field separator as used for the listview
-    data.exe(bin() + " log --date=short --pretty=format:%ad%s%an%h " + repo_path));
+    data.exe(
+      bin() + " log --date=short --pretty=format:%ad%s%an%h " + repo_path));
   lv->item_from_text(pro.std_out());
 
   return m_item_dialog->Show();

@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <charconv>
+#include <utility>
 
 #include <wex/core/core.h>
 #include <wex/core/file.h>
@@ -68,8 +69,8 @@ wex::address::address(ex* ex, int line)
 {
 }
 
-wex::address::address(ex* ex, const std::string& address)
-  : m_address(address)
+wex::address::address(ex* ex, std::string address)
+  : m_address(std::move(address))
   , m_ex(ex)
 {
 }

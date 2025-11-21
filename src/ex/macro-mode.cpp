@@ -5,6 +5,7 @@
 // Copyright: (c) 2017-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include <wex/core/core.h>
 #include <wex/core/regex.h>
@@ -30,7 +31,7 @@ bool show_dialog(
   {
     wxArrayString macros;
     macros.resize(v.size());
-    std::copy(v.begin(), v.end(), macros.begin());
+    std::ranges::copy(v, macros.begin());
 
     wxSingleChoiceDialog dialog(
       parent,

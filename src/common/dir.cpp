@@ -15,6 +15,7 @@
 #include <wx/translation.h>
 
 #include <thread>
+#include <utility>
 
 namespace fs = std::filesystem;
 
@@ -99,12 +100,9 @@ bool allow_hidden(const std::filesystem::path& p, const data::dir& data)
 }
 }; // namespace wex
 
-wex::dir::dir(
-  const wex::path&      dir,
-  const wex::data::dir& data,
-  wxEvtHandler*         eh)
+wex::dir::dir(const wex::path& dir, wex::data::dir data, wxEvtHandler* eh)
   : m_dir(dir)
-  , m_data(data)
+  , m_data(std::move(data))
   , m_eh(eh)
   , m_tool(ID_TOOL_ADD)
 {

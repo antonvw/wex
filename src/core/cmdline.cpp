@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <iostream>
 #include <numeric>
+#include <utility>
 
 namespace wex
 {
@@ -119,14 +120,14 @@ std::string get_switch(
       it.first[p_d].c_str());
 
 wex::cmdline::cmdline(
-  const cmd_switches_t& s,
-  const cmd_options_t&  o,
-  const cmd_params_t&   p,
+  cmd_switches_t  s,
+  cmd_options_t   o,
+  cmd_params_t    p,
   bool                  add_standard_options)
   : m_cfg(new config())
-  , m_options(o)
-  , m_params(p)
-  , m_switches(s)
+  , m_options(std::move(o))
+  , m_params(std::move(p))
+  , m_switches(std::move(s))
   , m_add_standard_options(add_standard_options)
 {
 }

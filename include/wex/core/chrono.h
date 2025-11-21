@@ -31,8 +31,8 @@ public:
 
   /// Default constructor.
   chrono(
-    const std::string& format    = TIME_FORMAT,
-    precision_t        precision = precision_t::SEC);
+    std::string format    = TIME_FORMAT,
+    precision_t precision = precision_t::SEC);
 
   /// Returns time string for a time_t. Precision is not used.
   std::string get_time(time_t tt) const;

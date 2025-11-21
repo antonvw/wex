@@ -18,7 +18,7 @@ class command_parser_data
 {
 public:
   /// Default constructor.
-  command_parser_data(const std::string& text = std::string());
+  command_parser_data(std::string text = std::string());
 
   /// The command.
   /// This mostly is a one letter string like "z" for adjust_window

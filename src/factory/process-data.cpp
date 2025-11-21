@@ -9,6 +9,7 @@
 #include <numeric>
 
 #include <boost/process/v2/environment.hpp>
+#include <utility>
 
 #include <wex/common/tostring.h>
 #include <wex/core/core.h>
@@ -17,9 +18,9 @@
 
 namespace bp = boost::process::v2;
 
-wex::process_data::process_data(const std::string& exe, const std::string& args)
-  : m_exe(exe)
-  , m_args(args)
+wex::process_data::process_data(std::string exe, std::string args)
+  : m_exe(std::move(exe))
+  , m_args(std::move(args))
 {
 }
 

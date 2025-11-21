@@ -21,9 +21,9 @@ public:
   /// or as separate args.
   process_data(
     /// the exe
-    const std::string& exe = std::string(),
+    std::string exe = std::string(),
     /// the args
-    const std::string& args = std::string());
+    std::string args = std::string());
 
   /// Returns args as a vector of strings,
   /// or empty vector if no args were provided to the exe.

@@ -10,18 +10,20 @@
 #include <wex/ex/ex.h>
 #include <wex/syntax/stc.h>
 
+#include <utility>
+
 #include "addressrange-mark.h"
 #include "block-lines.h"
 
 wex::addressrange_mark::addressrange_mark(
-  const addressrange&     ar,
-  const data::substitute& subs,
-  bool                    global)
+  const addressrange& ar,
+  data::substitute    subs,
+  bool                global)
   : m_ar(ar)
   , m_ex(ar.get_ex())
   , m_stc(ar.get_ex()->get_stc())
   , m_undo(m_stc)
-  , m_data(subs)
+  , m_data(std::move(subs))
   , m_markers{global ? 'X' : 'T', global ? 'Y' : 'U', global ? 'Z' : 'V'}
 {
 }

@@ -12,6 +12,8 @@
 
 #include <wx/generic/dirctrlg.h>
 
+#include <utility>
+
 // Do not give an error if columns do not exist.
 // E.g. the LIST_PROCESS has none of the file columns.
 wex::listitem::listitem(listview* lv, long itemnumber)
@@ -37,12 +39,12 @@ wex::listitem::listitem(listview* lv, long itemnumber)
 }
 
 wex::listitem::listitem(
-  listview*          listview,
-  const wex::path&   filename,
-  const std::string& filespec)
+  listview*        listview,
+  const wex::path& filename,
+  std::string      filespec)
   : m_listview(listview)
   , m_path(filename)
-  , m_file_spec(filespec)
+  , m_file_spec(std::move(filespec))
 {
   SetId(-1);
 }

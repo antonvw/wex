@@ -46,7 +46,7 @@ public:
     }
   }
 
-  ~process_dir() { m_listview->sort_column("Name", SORT_ASCENDING); }
+  ~process_dir() override { m_listview->sort_column("Name", SORT_ASCENDING); }
 
 private:
   bool on_dir(const path& p) const final
