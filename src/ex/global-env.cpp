@@ -11,7 +11,6 @@
 #include <wex/ex/command-parser.h>
 #include <wex/ex/ex.h>
 #include <wex/syntax/stc.h>
-#include <wex/ui/frd.h>
 #include <wex/ui/frame.h>
 
 #include "addressrange-mark.h"
@@ -188,12 +187,6 @@ bool wex::global_env::global(const data::substitute& data)
   }
 
   am.end(data.is_clear());
-
-  if (m_hits > 0 && !data.is_inverse() && data.commands() != "d")
-  {
-    find_replace_data::get()->set_find_string(data.pattern());
-    m_stc->find(data.pattern());
-  }
 
   return true;
 }
