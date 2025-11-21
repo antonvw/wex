@@ -23,7 +23,7 @@ public:
   static void set_argument(const std::string& val);
 
   /// Default constructor.
-  explicit variable(const std::string& name = std::string());
+  explicit variable(std::string name = std::string());
 
   /// Constructor that sets members using specified xml node.
   explicit variable(const pugi::xml_node& node);

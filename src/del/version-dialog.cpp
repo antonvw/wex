@@ -14,6 +14,7 @@
 #include <boost/version.hpp>
 #include <ctags/main/ctags.h>
 #include <pugixml.hpp>
+#include <utility>
 
 #include <wex/del/version-dialog.h>
 
@@ -86,8 +87,8 @@ wex::version_info_dialog::version_info_dialog(const about_info& about)
 
 wex::version_info_dialog::version_info_dialog(
   const version_info& info,
-  const about_info&   about)
-  : m_about(about)
+  about_info          about)
+  : m_about(std::move(about))
 {
   m_about.SetVersion(
     info.get(version_info::exclude_t().set(version_info::EXCLUDE_NAME)));

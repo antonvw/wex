@@ -48,7 +48,7 @@ public:
     user_window_to_config_t;
 
   /// Default constructor from control data.
-  item(const data::control& data = data::control());
+  item(data::control data = data::control());
 
   /// Returns apply.
   const user_apply_t& apply() const { return m_apply; }

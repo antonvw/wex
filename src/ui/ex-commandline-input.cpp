@@ -15,12 +15,13 @@
 #include <wx/textentry.h>
 
 #include <charconv>
+#include <utility>
 
 wex::ex_commandline_input::ex_commandline_input(
   ex_command::type_t type,
-  const std::string& name)
+  std::string        name)
   : m_type(type)
-  , m_name(name)
+  , m_name(std::move(name))
   , m_values(config(m_name).get(values_t{}))
   , m_iterator(m_values.cbegin())
   , m_reflect(

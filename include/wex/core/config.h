@@ -112,7 +112,7 @@ public:
   /// c.item("w").set(3);
   /// const auto i(c.get("y.u", 9));
   /// @endcode
-  config(const std::string& parent, const std::string& child);
+  config(const std::string& parent, std::string child);
 
   /// Destructor, calls child_end.
   ~config();

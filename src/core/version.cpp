@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
+#include <utility>
 
 #include <wex/core/version.h>
 #include <wx/translation.h>
@@ -22,8 +23,8 @@ const wex::version_info wex::get_version_info()
      "(c) 1998-2025, Anton van Wezenbeek. " + _("All rights reserved.")});
 }
 
-wex::version_info::version_info(const wxVersionInfo& info)
-  : m_version(info)
+wex::version_info::version_info(wxVersionInfo info)
+  : m_version(std::move(info))
 {
 }
 

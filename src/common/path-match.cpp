@@ -9,6 +9,8 @@
 #include <wex/core/config.h>
 #include <wx/wx.h>
 
+#include <utility>
+
 wex::path_match::path_match(const wex::path& p)
   : m_path(p)
 {
@@ -16,12 +18,12 @@ wex::path_match::path_match(const wex::path& p)
 }
 
 wex::path_match::path_match(
-  const wex::path&   p,
-  const wex::tool&   t,
-  const std::string& line,
-  size_t             line_no,
-  int                pos)
-  : m_line(line)
+  const wex::path& p,
+  const wex::tool& t,
+  std::string      line,
+  size_t           line_no,
+  int              pos)
+  : m_line(std::move(line))
   , m_path(p)
   , m_pos(pos)
   , m_line_no(line_no)

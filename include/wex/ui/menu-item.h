@@ -72,31 +72,31 @@ public:
     /// menu item id
     wxWindowID id,
     /// menu name or text
-    const std::string& name = std::string(),
+    std::string name = std::string(),
     /// menu data
-    const data::menu& data = data::menu());
+    data::menu data = data::menu());
 
   /// Constructor for a checkable item.
   menu_item(
     /// menu item id
     wxWindowID id,
     /// menu name or text
-    const std::string& name,
+    std::string name,
     /// Constructor for a CHECK or RADIO item.
     type_t type,
     /// menu data
-    const data::menu& data = data::menu());
+    data::menu data = data::menu());
 
   /// Constructor for a SUBMENU item.
   menu_item(
     /// menu submenu
     menu* submenu,
     /// menu name or text
-    const std::string& name,
+    std::string name,
     /// menu item id
     wxWindowID id = wxID_ANY,
     /// menu data
-    const data::menu& data = data::menu());
+    data::menu data = data::menu());
 
   /// Constructor for a VCS submenu item.
   menu_item(
@@ -117,7 +117,7 @@ public:
     /// object for maintaining / retrieving history
     file_history& history,
     /// menu data
-    const data::menu& data = data::menu());
+    data::menu data = data::menu());
 
   /// Constructor for PANES menu items.
   menu_item(

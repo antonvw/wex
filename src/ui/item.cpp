@@ -7,6 +7,7 @@
 
 #include <charconv>
 #include <sstream>
+#include <utility>
 
 #include <wex/common/tocontainer.h>
 #include <wex/common/util.h>
@@ -31,9 +32,9 @@ wex::item::item(
   type_t             type,
   const std::string& label,
   const std::any&    value,
-  const data::item&  data)
+  data::item         data)
   : m_type(type)
-  , m_data(data)
+  , m_data(std::move(data))
   , m_label(label)
   , m_label_window(rfind_after(label, "."))
   , m_sizer_flags(

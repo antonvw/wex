@@ -2,9 +2,10 @@
 // Name:      data/substitute.cpp
 // Purpose:   Implementation of class wex::data::substitute
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
@@ -76,8 +77,8 @@ bool wex::data::substitute::set(const std::string& command_org)
     // Restore a / for all occurrences of the special char.
     if (escaped)
     {
-      std::replace(m_pattern.begin(), m_pattern.end(), '\x01', '/');
-      std::replace(m_replacement.begin(), m_replacement.end(), '\x01', '/');
+      std::ranges::replace(m_pattern, '\x01', '/');
+      std::ranges::replace(m_replacement, '\x01', '/');
     }
 
     return true;

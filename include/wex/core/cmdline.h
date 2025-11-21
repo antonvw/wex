@@ -82,11 +82,11 @@ public:
   /// - version,R: sets version information and sets exit condition
   cmdline(
     /// switches
-    const cmd_switches_t& s = cmd_switches_t(),
+    cmd_switches_t s = cmd_switches_t(),
     /// options
-    const cmd_options_t& o = cmd_options_t(),
+    cmd_options_t o = cmd_options_t(),
     /// params
-    const cmd_params_t& p = cmd_params_t(),
+    cmd_params_t p = cmd_params_t(),
     /// if specified, adds the next options:
     /// - logfile,D:     sets log file
     /// - echo,e:        echo commands (sets is_output)

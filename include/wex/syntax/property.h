@@ -20,7 +20,7 @@ public:
   explicit property(const pugi::xml_node& node = pugi::xml_node());
 
   /// Constructor using name, value pair.
-  property(const std::string& name, const std::string& value);
+  property(std::string name, std::string value);
 
   /// Applies this property to stc component.
   void apply(wxStyledTextCtrl* stc) const;

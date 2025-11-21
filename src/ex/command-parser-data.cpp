@@ -7,8 +7,10 @@
 
 #include <wex/ex/command-parser-data.h>
 
-wex::command_parser_data::command_parser_data(const std::string& text)
-  : m_text(text)
+#include <utility>
+
+wex::command_parser_data::command_parser_data(std::string text)
+  : m_text(std::move(text))
 {
 }
 

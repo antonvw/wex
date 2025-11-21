@@ -2,7 +2,7 @@
 // Name:      blaming.h
 // Purpose:   Implementation of class wex::blaming
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -22,7 +22,7 @@ public:
     /// stc component (for margin revision id etc).
     factory::stc* stc,
     /// offset
-    const std::string& offset);
+    std::string offset);
 
   /// Executes blaming.
   /// Returns false in case of error.

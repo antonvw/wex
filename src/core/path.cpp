@@ -2,9 +2,10 @@
 // Name:      path.cpp
 // Purpose:   Implementation of class wex::path
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2024 Anton van Wezenbeek
+// Copyright: (c) 2017-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
 #include <boost/algorithm/string.hpp>
 
 #include <wex/core/log.h>
@@ -210,7 +211,7 @@ bool wex::path::open_mime() const
 const std::vector<wex::path> wex::path::paths() const
 {
   std::vector<path> v;
-  std::copy(m_path.begin(), m_path.end(), back_inserter(v));
+  std::ranges::copy(m_path, back_inserter(v));
   return v;
 }
 

@@ -85,7 +85,7 @@ public:
   stc();
 
   /// Constructor from control data.
-  stc(const data::control& data);
+  stc(data::control data);
 
   /// Constructor from window data.
   stc(const data::window& data);

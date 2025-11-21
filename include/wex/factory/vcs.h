@@ -63,7 +63,7 @@ public:
   /// Constructor.
   vcs_admin(
     /// the vcs admin dir or file
-    const std::string& admin,
+    std::string admin,
     /// the current path
     const path& p);
 

@@ -2,13 +2,15 @@
 // Name:      blaming.cpp
 // Purpose:   Implementation of class wex::blaming
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/data/stc.h>
 #include <wex/factory/stc.h>
+
+#include <utility>
 
 #include "blaming.h"
 
@@ -26,8 +28,8 @@ const std::vector<path> paths(factory::stc* stc)
 }
 } // namespace wex
 
-wex::blaming::blaming(factory::stc* stc, const std::string& offset)
-  : m_offset(offset)
+wex::blaming::blaming(factory::stc* stc, std::string offset)
+  : m_offset(std::move(offset))
   , m_revision(stc->margin_get_revision_id())
   , m_renamed(stc->vcs_renamed())
   , m_vcs(paths(stc))

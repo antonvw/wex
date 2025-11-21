@@ -27,7 +27,7 @@ public:
   /// Constructor.
   unified_diff(
     /// Provide input, that is conform unified diff format output.
-    const std::string& input = std::string());
+    std::string input = std::string());
 
   /// Virtual interface
 

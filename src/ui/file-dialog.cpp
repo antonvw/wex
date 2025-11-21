@@ -61,11 +61,17 @@ wex::file_dialog::file_dialog(wex::file* file, const data::window& data)
         const std::string wildcard(
           it.display_lexer() + " (" + it.extensions() + ") |" +
           it.extensions());
-        wildcards =
-          (allow_ext == file->path().extension() &&
-               matches_one_of(file->path().filename(), it.extensions()) ?
-             wildcard + "|" + wildcards :
-             wildcards + "|" + wildcard);
+
+        if (
+          allow_ext == file->path().extension() &&
+          matches_one_of(file->path().filename(), it.extensions()))
+        {
+          wildcards.insert(0, wildcard + "|");
+        }
+        else
+        {
+          wildcards.append("|" + wildcard);
+        }
       }
     }
 

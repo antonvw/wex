@@ -23,9 +23,9 @@ public:
 
   /// Constructor using a path, to be inserted later on.
   listitem(
-    listview*          listview,
-    const path&        filename,
-    const std::string& filespec = std::string());
+    listview*    listview,
+    const path&  filename,
+    std::string  filespec = std::string());
 
   // Deletes this item from the listview.
   void erase() { m_listview->DeleteItem(GetId()); }
