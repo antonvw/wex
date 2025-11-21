@@ -2,7 +2,8 @@ file(GLOB_RECURSE SRCS ../src/*.cpp ../src/syntax/wex/*.cpp ../sample/*.cpp)
 file(GLOB_RECURSE INCLUDES ../include/*.h)
 file(GLOB MDS ../*.md)
 file(GLOB_RECURSE MDSR ../doc/*.md ../src/*.md ../test/*.md)
-file(GLOB SHELLS ../*.sh ../test/*.sh ../locale/*.sh)
+file(GLOB SHELLS ../*.sh ../locale/*.sh)
+file(GLOB_RECURSE SHELLSR ../test/*.sh)
 
 if(NOT WIN32)
   add_custom_target(
@@ -72,7 +73,7 @@ if(NOT WIN32)
 
   add_custom_target(
     shellcheck
-    COMMAND shellcheck ${SHELLS}
+    COMMAND shellcheck ${SHELLS} ${SHELLSR}
     COMMENT "shellcheck"
     VERBATIM
   )
