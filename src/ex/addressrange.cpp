@@ -24,6 +24,7 @@
 #include <wex/factory/stc-undo.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
 #include <wx/app.h>
 #include <wx/msgdlg.h>
 
@@ -404,6 +405,12 @@ bool wex::addressrange::global(const command_parser& cp) const
 
   if (g.hits() > 0)
   {
+    if (!m_substitute.is_inverse() && m_substitute.commands() != "d")
+    {
+      find_replace_data::get()->set_find_string(m_substitute.pattern());
+      m_stc->find(m_substitute.pattern());
+    }
+
     m_ex->frame()->show_ex_message(
       g.has_commands() ? "executed: " + std::to_string(g.hits()) + " commands" :
                          "found: " + std::to_string(g.hits()) + " matches");
