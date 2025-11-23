@@ -95,6 +95,40 @@ TEST_CASE("wex::unified_diffs")
     REQUIRE(diffs.pos() == 0);
   }
 
+  SECTION("insert-multiple")
+  {
+    wex::factory::unified_diff uni(
+      "diff --git a/CHANGELOG.md b/CHANGELOG.md\n"
+      "index 3ec9678a0..b86633ed9 100644\n"
+      "--- a/CHANGELOG.md\n"
+      "+++ b/CHANGELOG.md\n"
+      "@@ -11 +11 @@ The format is based on [Keep a "
+      "Changelog](https://keepachangelog.com/en/1.1.0/).\n"
+      "-- added regular expression flag and in files to git grep\n"
+      "+- regular expression flag and in files to git grep\n"
+      "diff --git a/README.md b/README.md\n"
+      "index 833ef555e..b3678cae0 100644\n"
+      "--- a/README.md\n"
+      "+++ b/README.md\n"
+      "@@ -3 +3 @@\n"
+      "-wex contains a library that offers c++ ex and vi functionality.\n"
+      "+contains a library that offers c++ ex and vi functionality.    \n");
+
+    REQUIRE(uni.parse());
+
+    wex::unified_diffs diffs(stc);
+
+    // we are already on the second (last of the diffs)
+    REQUIRE(uni.type() == wex::factory::unified_diff::diff_t::LAST);
+    diffs.insert(&uni);
+
+    REQUIRE(diffs.size() == 1);
+    REQUIRE(diffs.pos() == 1);
+    REQUIRE(diffs.next());
+    REQUIRE(!diffs.next());
+    REQUIRE(stc->get_current_line() == 2);
+  }
+
   SECTION("insert-other")
   {
     wex::factory::unified_diff uni(

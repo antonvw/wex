@@ -24,6 +24,15 @@ namespace factory
 class unified_diff
 {
 public:
+  /// Type for this diff.
+  enum class diff_t
+  {
+    FIRST,   ///< the first diff from input
+    OTHER,   ///< other diffs from input
+    LAST,    ///< the last diff from input
+    UNKNOWN, ///< no diff found
+  };
+
   /// Constructor.
   unified_diff(
     /// Provide input, that is conform unified diff format output.
@@ -77,6 +86,9 @@ public:
   /// Returns text removed.
   const std::vector<std::string>& text_removed() const { return m_text[0]; };
 
+  /// Returns the difference type.
+  diff_t type() const { return m_type; };
+
 protected:
   std::array<path, 2> m_path;
 
@@ -89,6 +101,8 @@ private:
   std::array<std::vector<std::string>, 2> m_text;
 
   bool m_is_first{true}, m_is_last{false};
+
+  diff_t m_type{diff_t::UNKNOWN};
 
   std::string m_input;
 };

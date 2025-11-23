@@ -68,6 +68,7 @@ bool wex::factory::unified_diff::parse()
   tokenizer::iterator tok_iter = tokens.begin();
 
   m_diffs = 0;
+  m_type  = diff_t::UNKNOWN;
 
   while (tok_iter != tokens.end())
   {
@@ -80,6 +81,7 @@ bool wex::factory::unified_diff::parse()
 
     m_is_first = true;
     m_is_last  = false;
+    m_type     = (m_type == diff_t::UNKNOWN ? diff_t::FIRST : diff_t::OTHER);
 
     // Next come one or more chunks of differences
     while (tok_iter != tokens.end())
@@ -103,6 +105,8 @@ bool wex::factory::unified_diff::parse()
       CHANGES_LINES(1, 0);
       CHANGES_LINES(3, 1);
 
+      log::trace("diff parse")
+        << std::to_underlying(m_type) << m_path[0].string() << m_diffs;
       if (!report_diff())
       {
         return false;
@@ -120,6 +124,12 @@ bool wex::factory::unified_diff::parse()
   }
 
   m_is_last = true;
+
+  if (m_type != diff_t::UNKNOWN)
+  {
+    m_type = diff_t::LAST;
+    log::trace("diff parse LAST") << m_path[0].string() << " " << m_diffs;
+  }
 
   report_diff();
   report_diff_finish();

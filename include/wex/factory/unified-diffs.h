@@ -44,12 +44,14 @@ public:
   /// Inserts a unified diff.
   void insert(const factory::unified_diff* diff);
 
-  /// Goto next diff line on stc. If at end, goes to next stc.
+  /// Goto next diff line on stc. If at end (we are not
+  /// on the last of all differenced), goes to the next stc.
   /// If on first position of stc, goes to first diff line.
   bool next();
 
   /// Returns position of iterator in the collection.
-  /// The first element has number 1.
+  /// The first element has number 1, 0 is returned if
+  /// no differences are present.
   size_t pos() const;
 
   /// Goto previous diff line on stc. If at begin, goes to previous stc.

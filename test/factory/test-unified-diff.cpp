@@ -34,6 +34,7 @@ TEST_CASE("wex::factory::unified_diff")
   {
     mock_unified_diff uni("");
 
+    REQUIRE(uni.type() == wex::factory::unified_diff::diff_t::UNKNOWN);
     REQUIRE_CALL(uni, report_diff()).RETURN(false);
     REQUIRE_CALL(uni, report_diff_finish());
     REQUIRE(uni.is_first());
@@ -41,6 +42,7 @@ TEST_CASE("wex::factory::unified_diff")
     REQUIRE(uni.parse());
     REQUIRE(uni.is_first());
     REQUIRE(uni.is_last());
+    REQUIRE(uni.type() == wex::factory::unified_diff::diff_t::UNKNOWN);
     REQUIRE(uni.differences() == 0);
     REQUIRE(uni.range_from_count() == 0);
     REQUIRE(uni.range_to_count() == 0);
@@ -99,6 +101,7 @@ TEST_CASE("wex::factory::unified_diff")
     REQUIRE(uni.text_removed().empty());
     REQUIRE(!uni.is_first());
     REQUIRE(uni.is_last());
+    REQUIRE(uni.type() == wex::factory::unified_diff::diff_t::LAST);
   }
 
   SECTION("parse-valid-other")

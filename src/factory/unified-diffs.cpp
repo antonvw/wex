@@ -2,7 +2,7 @@
 // Name:      unified-diffs.cpp
 // Purpose:   Implementation of class unified_diffs
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024 Anton van Wezenbeek
+// Copyright: (c) 2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -35,7 +35,7 @@ bool wex::unified_diffs::checkout(size_t line)
     {
       const int first(m_stc->PositionFromLine(it->second.range_to_start() - 1));
       const int last(m_stc->PositionFromLine(
-        it->second.range_to_start()  - 1 + it->second.range_to_count()));
+        it->second.range_to_start() - 1 + it->second.range_to_count()));
       m_stc->DeleteRange(first, last - first);
     }
 
@@ -106,6 +106,18 @@ bool wex::unified_diffs::next()
   if (m_stc->GetCurrentPos() == 0)
   {
     return first();
+  }
+
+  if (m_lines_it == m_lines.end())
+  {
+    return false;
+  }
+
+  if (m_lines_it->second.type() == factory::unified_diff::diff_t::LAST)
+  {
+    log::trace("diff next") << m_lines_it->second.path_from().string() << "TYPE"
+                            << std::to_underlying(m_lines_it->second.type());
+    return false;
   }
 
   if (m_lines_it == m_lines.end() || m_lines_it == std::prev(m_lines.end()))
