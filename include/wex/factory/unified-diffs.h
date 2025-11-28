@@ -38,6 +38,9 @@ public:
   /// Goto last diff line on stc.
   bool end();
 
+  /// Finishes diff.
+  bool finish(const factory::unified_diff* diff);
+
   /// Goto first diff line on stc.
   bool first();
 

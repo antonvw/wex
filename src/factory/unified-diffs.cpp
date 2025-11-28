@@ -67,6 +67,18 @@ bool wex::unified_diffs::end()
   return true;
 }
 
+bool wex::unified_diffs::finish(const factory::unified_diff* diff)
+{
+  if (m_lines.empty())
+  {
+    return false;
+  }
+
+  m_lines[m_lines_it->first] = *diff;
+
+  return true;
+}
+
 bool wex::unified_diffs::first()
 {
   if (m_lines.empty())
@@ -77,6 +89,8 @@ bool wex::unified_diffs::first()
   m_lines_it = m_lines.begin();
 
   m_stc->goto_line(m_lines_it->first);
+
+  m_lines_it->second.trace("unified_diffs::first");
 
   return true;
 }
@@ -113,11 +127,11 @@ bool wex::unified_diffs::next()
     return false;
   }
 
+  m_lines_it->second.trace("unified_diffs::next");
+
   if (m_lines_it->second.type() == factory::unified_diff::diff_t::LAST)
   {
-    log::trace("diff next") << m_lines_it->second.path_from().string() << "TYPE"
-                            << std::to_underlying(m_lines_it->second.type());
-    return false;
+    // return false;
   }
 
   if (m_lines_it == m_lines.end() || m_lines_it == std::prev(m_lines.end()))
