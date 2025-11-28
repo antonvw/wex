@@ -41,8 +41,6 @@ bool wex::unified_diff::report_diff()
     {
       return false;
     }
-
-    m_diffs++;
   }
 
   return true;
@@ -50,5 +48,6 @@ bool wex::unified_diff::report_diff()
 
 void wex::unified_diff::report_diff_finish()
 {
+  m_frame->vcs_unified_diff(m_vcs_entry, this);
   m_frame->page_restore();
 }

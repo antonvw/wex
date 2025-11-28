@@ -54,9 +54,11 @@ TEST_CASE("wex::unified_diffs")
       "-- added git diff option\n"
       "+- test\n");
 
+    wex::unified_diffs diffs(stc);
+
+    REQUIRE(!diffs.finish(&uni));
     REQUIRE(uni.parse());
 
-    wex::unified_diffs diffs(stc);
     diffs.insert(&uni);
 
     REQUIRE(diffs.size() == 2); // only last difference
@@ -64,8 +66,10 @@ TEST_CASE("wex::unified_diffs")
     REQUIRE(diffs.next());
     REQUIRE(stc->get_current_line() == 37);
     REQUIRE(diffs.pos() == 1);
-    REQUIRE(diffs.next()); // we are on the last element
-    REQUIRE(diffs.pos() == 2);
+    REQUIRE(uni.type() == wex::factory::unified_diff::diff_t::LAST);
+    REQUIRE(!diffs.next()); // we are on the last element
+    REQUIRE(diffs.pos() == 1);
+    REQUIRE(diffs.end());
     REQUIRE(diffs.prev());
     REQUIRE(!diffs.prev());
     REQUIRE(diffs.end());
@@ -93,6 +97,40 @@ TEST_CASE("wex::unified_diffs")
     REQUIRE(!diffs.next());
     REQUIRE(!diffs.prev());
     REQUIRE(diffs.pos() == 0);
+  }
+
+  SECTION("insert-multiple")
+  {
+    wex::factory::unified_diff uni(
+      "diff --git a/CHANGELOG.md b/CHANGELOG.md\n"
+      "index 3ec9678a0..b86633ed9 100644\n"
+      "--- a/CHANGELOG.md\n"
+      "+++ b/CHANGELOG.md\n"
+      "@@ -11 +11 @@ The format is based on [Keep a "
+      "Changelog](https://keepachangelog.com/en/1.1.0/).\n"
+      "-- added regular expression flag and in files to git grep\n"
+      "+- regular expression flag and in files to git grep\n"
+      "diff --git a/README.md b/README.md\n"
+      "index 833ef555e..b3678cae0 100644\n"
+      "--- a/README.md\n"
+      "+++ b/README.md\n"
+      "@@ -3 +3 @@\n"
+      "-wex contains a library that offers c++ ex and vi functionality.\n"
+      "+contains a library that offers c++ ex and vi functionality.    \n");
+
+    REQUIRE(uni.parse());
+
+    wex::unified_diffs diffs(stc);
+
+    // we are already on the second (last of the diffs)
+    REQUIRE(uni.type() == wex::factory::unified_diff::diff_t::LAST);
+    diffs.insert(&uni);
+
+    REQUIRE(diffs.size() == 1);
+    REQUIRE(diffs.pos() == 1);
+    REQUIRE(diffs.next());
+    REQUIRE(!diffs.next());
+    REQUIRE(stc->get_current_line() == 2);
   }
 
   SECTION("insert-other")

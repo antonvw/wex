@@ -68,6 +68,7 @@ bool wex::factory::unified_diff::parse()
   tokenizer::iterator tok_iter = tokens.begin();
 
   m_diffs = 0;
+  m_type  = diff_t::UNKNOWN;
 
   while (tok_iter != tokens.end())
   {
@@ -80,22 +81,23 @@ bool wex::factory::unified_diff::parse()
 
     m_is_first = true;
     m_is_last  = false;
+    m_type     = (m_type == diff_t::UNKNOWN ? diff_t::FIRST : diff_t::OTHER);
 
-    // Next come one or more chunks of differences
+    // Next come one or more hunks of differences
     while (tok_iter != tokens.end())
     {
-      regex r_chunk("@@ -([0-9]+),?([0-9]*) \\+([0-9]+),?([0-9]*) @@.*");
+      regex r_hunk("@@ -([0-9]+),?([0-9]*) \\+([0-9]+),?([0-9]*) @@.*");
 
-      if (r_chunk.match(*tok_iter) != 4)
+      if (r_hunk.match(*tok_iter) != 4)
       {
-        log("unified_diff") << *tok_iter << r_chunk.size();
+        log("unified_diff") << *tok_iter << r_hunk.size();
         return false;
       }
 
-      m_range[0] = wex::stoi(r_chunk[0]);
-      m_range[1] = wex::stoi(r_chunk[1]);
-      m_range[2] = wex::stoi(r_chunk[2]);
-      m_range[3] = wex::stoi(r_chunk[3]);
+      m_range[0] = wex::stoi(r_hunk[0]);
+      m_range[1] = wex::stoi(r_hunk[1]);
+      m_range[2] = wex::stoi(r_hunk[2]);
+      m_range[3] = wex::stoi(r_hunk[3]);
 
       m_text.fill({});
 
@@ -108,21 +110,40 @@ bool wex::factory::unified_diff::parse()
         return false;
       }
 
+      trace("hunk");
+
+      m_diffs++;
+
       m_is_first = false;
+      m_type     = diff_t::OTHER;
 
       if (++tok_iter != tokens.end() && !(*tok_iter).starts_with("@@"))
       {
         m_is_last = true;
-        report_diff();
-        break; // this was last chunk, continue with header lines
+
+        if (!report_diff())
+        {
+          return false;
+        }
+        trace("last");
+        m_diffs++;
+
+        break; // this was last hunk, continue with header lines
       }
     }
   }
 
   m_is_last = true;
 
-  report_diff();
+  if (m_type != diff_t::UNKNOWN)
+  {
+    m_type = diff_t::LAST;
+    m_diffs--;
+  }
+
   report_diff_finish();
+
+  trace("finished");
 
   return true;
 }
@@ -143,4 +164,40 @@ bool wex::factory::unified_diff::parse_header(
   p = path(re[0]);
 
   return true;
+}
+
+void wex::factory::unified_diff::trace(const std::string& text) const
+{
+  using boost::describe::operators::operator<<;
+
+  std::stringstream str;
+  str << "type: " << boost::describe::enum_to_string(m_type, "none") << " "
+      << *this << " ranges: ";
+
+  std::ranges::for_each(
+    m_range,
+    [this, &str](const auto& it)
+    {
+      str << std::to_string(it) << ",";
+    });
+
+  str << " text sizes: ";
+
+  std::ranges::for_each(
+    m_text,
+    [this, &str](const auto& it)
+    {
+      str << it.size() << ",";
+    });
+
+  str << " paths: ";
+
+  std::ranges::for_each(
+    m_path,
+    [this, &str](const auto& it)
+    {
+      str << it.string() << ",";
+    });
+
+  log::trace("unified_diff::" + text) << str.str();
 }

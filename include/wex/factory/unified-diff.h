@@ -10,6 +10,8 @@
 #include <array>
 #include <string>
 
+#include <boost/describe.hpp>
+
 #include <wex/core/path.h>
 
 namespace wex
@@ -24,6 +26,15 @@ namespace factory
 class unified_diff
 {
 public:
+  /// Type for this diff.
+  enum class diff_t
+  {
+    FIRST,   ///< the first diff from input
+    OTHER,   ///< other diffs from input
+    LAST,    ///< the last diff from input
+    UNKNOWN, ///< no diff found
+  };
+
   /// Constructor.
   unified_diff(
     /// Provide input, that is conform unified diff format output.
@@ -31,7 +42,7 @@ public:
 
   /// Virtual interface
 
-  /// Do something with a diff, and update diff.
+  /// Do something with a diff.
   virtual bool report_diff() { return true; };
 
   /// The last diff has been generated, we are finished.
@@ -42,10 +53,10 @@ public:
   /// Returns number of differences found during parsing.
   size_t differences() const { return m_diffs; };
 
-  /// Returns true if this is the first diff of a chunk.
+  /// Returns true if this is the first diff of a hunk.
   bool is_first() const { return m_is_first; };
 
-  /// Returns true if this is the last diff of a chunk.
+  /// Returns true if this is the last diff of a hunk.
   bool is_last() const { return m_is_last; };
 
   /// Parses the input.
@@ -77,10 +88,17 @@ public:
   /// Returns text removed.
   const std::vector<std::string>& text_removed() const { return m_text[0]; };
 
+  /// Logs this diff as trace logging.
+  void trace(const std::string& text) const;
+
+  /// Returns the difference type.
+  diff_t type() const { return m_type; };
+
+  /// Copies type from org.
+  void type_from(const unified_diff& org) { m_type = org.type(); };
+
 protected:
   std::array<path, 2> m_path;
-
-  size_t m_diffs{0};
 
 private:
   bool parse_header(const std::string& r, const std::string& line, path& p);
@@ -90,7 +108,20 @@ private:
 
   bool m_is_first{true}, m_is_last{false};
 
+  diff_t m_type{diff_t::UNKNOWN};
+
+  size_t m_diffs{0};
+
   std::string m_input;
+
+  BOOST_DESCRIBE_CLASS(
+    unified_diff,
+    (),
+    (),
+    (),
+    (m_is_first, m_is_last, m_diffs))
+
+  BOOST_DESCRIBE_NESTED_ENUM(diff_t, FIRST, OTHER, LAST, UNKNOWN)
 };
 }; // namespace factory
 }; // namespace wex

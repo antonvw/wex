@@ -2,7 +2,7 @@
 // Name:      unified-diffs.cpp
 // Purpose:   Implementation of class unified_diffs
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024 Anton van Wezenbeek
+// Copyright: (c) 2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -35,7 +35,7 @@ bool wex::unified_diffs::checkout(size_t line)
     {
       const int first(m_stc->PositionFromLine(it->second.range_to_start() - 1));
       const int last(m_stc->PositionFromLine(
-        it->second.range_to_start()  - 1 + it->second.range_to_count()));
+        it->second.range_to_start() - 1 + it->second.range_to_count()));
       m_stc->DeleteRange(first, last - first);
     }
 
@@ -67,6 +67,18 @@ bool wex::unified_diffs::end()
   return true;
 }
 
+bool wex::unified_diffs::finish(const factory::unified_diff* diff)
+{
+  if (m_lines.empty())
+  {
+    return false;
+  }
+
+  m_lines[m_last_inserted_key] = *diff;
+
+  return true;
+}
+
 bool wex::unified_diffs::first()
 {
   if (m_lines.empty())
@@ -77,6 +89,8 @@ bool wex::unified_diffs::first()
   m_lines_it = m_lines.begin();
 
   m_stc->goto_line(m_lines_it->first);
+
+  m_lines_it->second.trace("unified_diffs::first");
 
   return true;
 }
@@ -93,6 +107,9 @@ void wex::unified_diffs::insert(const factory::unified_diff* diff)
     m_lines[diff->range_to_start() - 1] = *diff;
   }
 
+  m_last_inserted_key =
+    std::max(diff->range_from_start() - 1, diff->range_to_start() - 1);
+
   m_lines_it = m_lines.begin();
 }
 
@@ -108,6 +125,16 @@ bool wex::unified_diffs::next()
     return first();
   }
 
+  if (m_lines_it == m_lines.end())
+  {
+    return false;
+  }
+
+  if (m_lines_it->second.type() == factory::unified_diff::diff_t::LAST)
+  {
+    return false;
+  }
+
   if (m_lines_it == m_lines.end() || m_lines_it == std::prev(m_lines.end()))
   {
     if (auto* frame = dynamic_cast<factory::frame*>(wxTheApp->GetTopWindow());
@@ -120,6 +147,7 @@ bool wex::unified_diffs::next()
   }
 
   m_lines_it++;
+  m_lines_it->second.trace("unified_diffs::next");
 
   m_stc->goto_line(m_lines_it->first);
 
@@ -157,6 +185,7 @@ bool wex::unified_diffs::prev()
   }
 
   m_lines_it--;
+  m_lines_it->second.trace("unified_diffs::prev");
 
   m_stc->goto_line(m_lines_it->first);
 
