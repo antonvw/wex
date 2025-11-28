@@ -115,11 +115,11 @@ bool wex::factory::unified_diff::parse()
       m_diffs++;
 
       m_is_first = false;
+      m_type     = diff_t::OTHER;
 
       if (++tok_iter != tokens.end() && !(*tok_iter).starts_with("@@"))
       {
         m_is_last = true;
-        m_type    = diff_t::OTHER;
 
         if (!report_diff())
         {
@@ -138,6 +138,7 @@ bool wex::factory::unified_diff::parse()
   if (m_type != diff_t::UNKNOWN)
   {
     m_type = diff_t::LAST;
+    m_diffs--;
   }
 
   report_diff_finish();

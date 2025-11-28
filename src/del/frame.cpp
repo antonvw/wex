@@ -1001,6 +1001,8 @@ bool wex::del::frame::vcs_unified_diff(
       if (diff->type() == factory::unified_diff::diff_t::LAST)
       {
         stc->diffs().finish(diff);
+        stc->diffs().status();
+        return true;
       }
 
       stc->diffs().first();

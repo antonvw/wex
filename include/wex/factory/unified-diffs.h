@@ -70,6 +70,8 @@ public:
 private:
   factory::stc* m_stc{nullptr};
 
+  int m_last_inserted_key{0};
+
   std::map<int, factory::unified_diff>                 m_lines;
   std::map<int, factory::unified_diff>::const_iterator m_lines_it;
 };

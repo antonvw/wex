@@ -54,9 +54,11 @@ TEST_CASE("wex::unified_diffs")
       "-- added git diff option\n"
       "+- test\n");
 
+    wex::unified_diffs diffs(stc);
+
+    REQUIRE(!diffs.finish(&uni));
     REQUIRE(uni.parse());
 
-    wex::unified_diffs diffs(stc);
     diffs.insert(&uni);
 
     REQUIRE(diffs.size() == 2); // only last difference
@@ -64,8 +66,10 @@ TEST_CASE("wex::unified_diffs")
     REQUIRE(diffs.next());
     REQUIRE(stc->get_current_line() == 37);
     REQUIRE(diffs.pos() == 1);
-    REQUIRE(diffs.next()); // we are on the last element
-    REQUIRE(diffs.pos() == 2);
+    REQUIRE(uni.type() == wex::factory::unified_diff::diff_t::LAST);
+    REQUIRE(!diffs.next()); // we are on the last element
+    REQUIRE(diffs.pos() == 1);
+    REQUIRE(diffs.end());
     REQUIRE(diffs.prev());
     REQUIRE(!diffs.prev());
     REQUIRE(diffs.end());
