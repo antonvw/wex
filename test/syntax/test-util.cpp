@@ -6,10 +6,31 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/syntax/util.h>
-#include <wex/test/test.h>
+
+#include "test.h"
 
 TEST_CASE("wex::factory::utils")
 {
+  auto* stc = new wex::test::stc();
+  stc->set_text("more text\notherline\nother line");
+
+  SECTION("find_xml_root")
+  {
+    REQUIRE(wex::find_xml_root(stc) == 0);
+
+    stc->set_text("more text\notherline\nother <this is a root> line");
+    REQUIRE(wex::find_xml_root(stc) == 2);
+
+    stc->set_text("more text\notherline\nother <?this is a not root> line");
+    REQUIRE(wex::find_xml_root(stc) == 0);
+  }
+
+  SECTION("for_each")
+  {
+    std::vector<wex::style> styles;
+    wex::for_each_style(styles, stc);
+  }
+
   SECTION("node_properties")
   {
     std::vector<wex::property> properties;

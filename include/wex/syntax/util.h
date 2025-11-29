@@ -13,6 +13,9 @@
 
 namespace wex
 {
+/// Returns line containing the xml root in stc document, or 0 if none.
+int find_xml_root(wxStyledTextCtrl* stc);
+
 /// Applies all styles in the set to the given stc.
 /// It is required that T offers an apply function taking wxStyledTextCtrl* as
 /// parameter.
