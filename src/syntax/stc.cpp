@@ -9,6 +9,7 @@
 #include <wex/core/log.h>
 #include <wex/syntax/lexers.h>
 #include <wex/syntax/stc.h>
+#include <wex/syntax/util.h>
 
 wex::syntax::stc::stc(const data::window& data)
   : factory::stc(data)
@@ -40,8 +41,10 @@ void wex::syntax::stc::fold_all()
     return;
   }
 
+  // skip the root xml, not very useful to fold that one
+  const int  root         = (xml ? find_xml_root(this) + 1 : 0);
   const auto current_line = get_current_line();
-  int        line         = (json ? 1 : 0);
+  int        line         = (json ? 1 : root);
 
   while (line < get_line_count())
   {
