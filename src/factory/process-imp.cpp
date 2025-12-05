@@ -89,6 +89,8 @@ void wex::factory::process_imp::boost_async_system(process* p)
 
   log::debug("async_system")
     << p->data().exe() << "wd:" << p->data().start_dir();
+
+  WEX_POST(ID_SHELL_APPEND, p->data().exe() + "\n", p->m_eh_out)
 }
 
 bool wex::factory::process_imp::stop(wxEvtHandler* e)

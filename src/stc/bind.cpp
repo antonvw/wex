@@ -36,7 +36,7 @@ bool do_show_hash(stc* stc, const std::function<void(const std::string&)>& f)
 {
   const auto line(stc->GetLineText(stc->GetCurrentLine()));
 
-  if (regex r("commit ([a-z[0-9]+$)"); r.match(line) > 0)
+  if (regex r("commit ([a-z0-9]+$)"); r.match(line) > 0)
   {
     if (f)
     {
