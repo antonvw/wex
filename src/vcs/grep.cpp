@@ -80,8 +80,8 @@ bool execute_grep(const std::string& bin, const path& tl)
   else
   {
     const auto& ic(
-      cfg_do(find_replace_data::get()->text_match_case(), "", " -i "));
-    const auto& re(cfg_do(find_replace_data::get()->text_regex(), " -E ", ""));
+      cfg_do(find_replace_data::get()->text_match_case(), "", " -i"));
+    const auto& re(cfg_do(find_replace_data::get()->text_regex(), " -E", ""));
     std::string fif(config(_("fif.In files")).get_first_of());
 
     if (!fif.empty())
@@ -95,7 +95,7 @@ bool execute_grep(const std::string& bin, const path& tl)
         find);
 
     if (!frame->process_async_system(
-          process_data(bin + " grep -n " + ic + re + finds + fif)
+          process_data(bin + " grep -n" + ic + re + " " + finds + fif)
             .start_dir(tl.string())))
     {
       return false;

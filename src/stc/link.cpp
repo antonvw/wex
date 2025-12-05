@@ -14,6 +14,20 @@
 #include <wex/ui/item-vector.h>
 #include <wx/app.h>
 
+namespace wex
+{
+data::control& check_for_grep(stc* stc, data::control& data)
+{
+  const auto line(stc->GetLineText(0));
+
+  if (regex r("git grep -n (-i )?(-E )?([a-z_0-9]+)"); r.search(line) > 2)
+  {
+    data.find(r[2]);
+  }
+
+  return data;
+}
+
 // prevent very long lines to be returned, e.g. by json config files,
 // as that causes:
 // std::exception:filesystem error: in posix_stat:
@@ -51,6 +65,7 @@ std::string get_current_line_text(wex::link* link, wex::factory::stc* stc)
 
   return line;
 }
+} // namespace wex
 
 std::string wex::link::get_link_pairs(const std::string& text) const
 {
@@ -123,7 +138,7 @@ bool wex::stc::link_open(link_t mode, std::string* link)
         }
         else if (!mode[LINK_CHECK])
         {
-          m_frame->open_file(path, data);
+          m_frame->open_file(path, check_for_grep(this, data));
         }
 
         found = true;
