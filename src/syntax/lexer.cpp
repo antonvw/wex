@@ -42,11 +42,11 @@ int convert_int_attrib(
   return -1;
 }
 
-/// Tokenizes the complete string into a vector of integers (size_t).
+/// Tokenizes the complete string into a vector of integers.
 /// Returns the filled in vector.
 auto tokenize_int(const std::string& text, const char* sep = " \t\r\n")
 {
-  std::vector<size_t> tokens;
+  std::vector<int> tokens;
 
   for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
          text,
