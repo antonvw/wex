@@ -200,7 +200,7 @@ private:
   // each keyword set in a separate keyword set
   std::unordered_map<int, std::set<std::string>> m_keywords_set;
   std::set<std::string>                          m_keywords;
-  std::vector<size_t>   m_edge_columns; // last one is used for line size
+  std::vector<int>      m_edge_columns; // last one is used for line size
   std::vector<property> m_properties;
   std::vector<style>    m_styles;
   std::vector<std::tuple<
