@@ -939,12 +939,14 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <!-- https://pubs.opengroup.org/onlinepubs/9799919799 -->
       ARGC ARGIND ARGV CONVFMT ENVIRON ERRNO FIELDWIDTHS FILENAME FNR FS
       IGNORECASE NF NR OFMT OFS ORS RLENGTH RS RSTART RT SUBSEP
-      BEGIN END if else while do for in break continue delete
+      BEGIN END
+      if else while do for in break continue delete
       next nextfile function func return exit
-      printf
+      print printf
       gsub index length match split sprintf sub substr
       tolower toupper
       close fflush getline system
+      system strtime
     </keywords>
   </lexer>
   <lexer name="baan"/>
