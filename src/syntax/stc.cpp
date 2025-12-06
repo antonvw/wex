@@ -41,8 +41,11 @@ void wex::syntax::stc::fold_all()
     return;
   }
 
+  const int skip =
+    (path().filename() == lexers::get()->path_macro().filename() ? 1 : 0);
+
   // skip the root xml, not very useful to fold that one
-  const int  root         = (xml ? find_xml_root(this) + 1 : 0);
+  const int  root         = (xml ? find_xml_root(this, skip) + 1 : 0);
   const auto current_line = get_current_line();
   int        line         = (json ? 1 : root);
 

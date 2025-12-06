@@ -23,6 +23,17 @@ TEST_CASE("wex::factory::utils")
 
     stc->set_text("more text\notherline\nother <?this is a not root> line");
     REQUIRE(wex::find_xml_root(stc) == 0);
+
+    stc->set_text("more text\notherline\nother <this is a root> line");
+    REQUIRE(wex::find_xml_root(stc, 1) == 0);
+
+    stc->set_text(
+      "more text\notherline\nother <this is a root> line\n<other root>");
+    REQUIRE(wex::find_xml_root(stc, 0) == 2);
+
+    stc->set_text(
+      "more text\notherline\nother <this is a root> line\n<other root>");
+    REQUIRE(wex::find_xml_root(stc, 1) == 3);
   }
 
   SECTION("for_each")
