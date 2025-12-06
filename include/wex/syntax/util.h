@@ -2,7 +2,7 @@
 // Name:      util.h
 // Purpose:   Declaration of syntax util functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2023 Anton van Wezenbeek
+// Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -14,7 +14,11 @@
 namespace wex
 {
 /// Returns line containing the xml root in stc document, or 0 if none.
-int find_xml_root(wxStyledTextCtrl* stc);
+int find_xml_root(
+  /// the stc component
+  wxStyledTextCtrl* stc,
+  /// number of roots to skip
+  size_t skip = 0);
 
 /// Applies all styles in the set to the given stc.
 /// It is required that T offers an apply function taking wxStyledTextCtrl* as

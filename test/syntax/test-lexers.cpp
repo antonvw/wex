@@ -141,6 +141,7 @@ TEST_CASE("wex::lexers")
   SECTION("rest")
   {
     REQUIRE(!wex::lexers::get()->path().empty());
+    REQUIRE(!wex::lexers::get()->path_macro().empty());
 
     REQUIRE(!wex::lexers::get()->get_macros("global").empty());
     REQUIRE(!wex::lexers::get()->get_macros("cpp").empty());

@@ -9,19 +9,27 @@
 #include <wex/syntax/util.h>
 #include <wx/choicdlg.h>
 
-int wex::find_xml_root(wxStyledTextCtrl* stc)
+int wex::find_xml_root(wxStyledTextCtrl* stc, size_t skip)
 {
   stc->SetSearchFlags(wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX);
-  stc->SetTargetRange(0, 1000);
 
-  const auto pos(stc->SearchInTarget("<[^?].*>"));
+  int start_pos = 0;
 
-  if (pos == -1)
+  for (int i = 0; i <= skip; i++)
   {
-    return 0;
+    stc->SetTargetRange(start_pos, 1000);
+
+    start_pos = stc->SearchInTarget("<[^?].*>");
+
+    if (start_pos == -1)
+    {
+      return 0;
+    }
+
+    start_pos++;
   }
 
-  return stc->LineFromPosition(pos);
+  return stc->LineFromPosition(start_pos);
 }
 
 void wex::node_properties(

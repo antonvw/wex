@@ -147,6 +147,9 @@ public:
   /// Returns the path.
   const wex::path& path() const { return m_path; }
 
+  /// Returns the path macro.
+  const wex::path& path_macro() const { return m_path_macro; }
+
   /// Returns global properties.
   const std::vector<property>& properties() const
   {
@@ -207,7 +210,8 @@ private:
 
   const std::unordered_map<
     std::string,
-    std::function<void(factory::stc* stc, const std::string& colour)>> m_colours;
+    std::function<void(factory::stc* stc, const std::string& colour)>>
+    m_colours;
 
   style m_default_style;
 
