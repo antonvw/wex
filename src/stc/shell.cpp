@@ -54,15 +54,29 @@ wex::shell::shell(
   bind(this).command(
     {{[=, this](wxCommandEvent& event)
       {
-        AppendText(event.GetString());
+        m_text += event.GetString();
         get_frame()->output(event.GetString());
       },
       ID_SHELL_APPEND},
+
      {[=, this](wxCommandEvent& event)
       {
         AppendText(event.GetString());
       },
       ID_SHELL_APPEND_ERROR},
+
+     {[=, this](wxCommandEvent& event)
+      {
+        AppendText(m_text);
+      },
+      ID_SHELL_APPEND_FINISH},
+
+     {[=, this](wxCommandEvent& event)
+      {
+        m_text.clear();
+      },
+      ID_SHELL_APPEND_START},
+
      {[=, this](wxCommandEvent& event)
       {
         AppendText(event.GetString());
