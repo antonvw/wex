@@ -926,9 +926,12 @@ bool wex::addressrange::substitute(const command_parser& cp)
 
   am.end();
 
-  m_ex->frame()->show_ex_message(
-    "Replaced: " + std::to_string(nr_replacements) +
-    " occurrences of: " + data.pattern());
+  if (!m_substitute.is_global_command())
+  {
+    m_ex->frame()->show_ex_message(
+      "Replaced: " + std::to_string(nr_replacements) +
+      " occurrences of: " + data.pattern());
+  }
 
   return true;
 }

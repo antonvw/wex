@@ -26,11 +26,8 @@ class stc;
 class addressrange_mark
 {
 public:
-  /// Constructor, specify addressrange, substitute data, and global option.
-  addressrange_mark(
-    const addressrange& ar,
-    data::substitute    subs,
-    bool                global = false);
+  /// Constructor, specify addressrange, substitute data.
+  addressrange_mark(const addressrange& ar, data::substitute subs);
 
   /// Destructor, removes markers.
   ~addressrange_mark();
