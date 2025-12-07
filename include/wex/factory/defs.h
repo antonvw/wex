@@ -2,7 +2,7 @@
 // Name:      defs.h
 // Purpose:   Common defs for all wex classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -84,6 +84,9 @@ enum window_id
 
   ID_SHELL_APPEND,
   ID_SHELL_APPEND_ERROR,
+  ID_SHELL_APPEND_FINISH,
+  ID_SHELL_APPEND_START,
+
   ID_SHELL_COMMAND,
   ID_SHELL_COMMAND_STOP,
 

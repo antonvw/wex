@@ -90,6 +90,7 @@ void wex::factory::process_imp::boost_async_system(process* p)
   log::debug("async_system")
     << p->data().exe() << "wd:" << p->data().start_dir();
 
+  WEX_POST(ID_SHELL_APPEND_START, "", p->m_eh_out)
   WEX_POST(ID_SHELL_APPEND, p->data().exe() + "\n", p->m_eh_out)
 }
 
@@ -194,6 +195,8 @@ void wex::factory::process_imp::thread_input(const process* p)
           text.clear();
         }
       }
+
+      WEX_POST(ID_SHELL_APPEND_FINISH, "", out)
     });
 
   t.detach();

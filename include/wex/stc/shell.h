@@ -130,7 +130,7 @@ private:
   strings_t::const_iterator m_commands_iterator;
   std::vector<std::string>  m_auto_complete_list;
 
-  std::string m_command, m_prompt;
+  std::string m_command, m_prompt, m_text;
 
   int m_command_start_pos =
     0; /// position after the prompt from where commands can be inserted
