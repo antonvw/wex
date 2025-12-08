@@ -54,6 +54,9 @@ public:
   /// Sets pattern, commands from text (for global substitute).
   bool set_global(const std::string& text);
 
+  /// Resets the m_global_command, after global has finished.
+  void set_global_ready();
+
   /// Sets options only.
   void set_options(const std::string& text);
 
