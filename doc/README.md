@@ -37,6 +37,10 @@ possibly followed by:
   run-clang-tidy -fix
 ```
 
+To check performance issues you can use the Instruments app for MacOS as
+provided by Apple. Especially use the Timer Profiler, no special
+build is needed.
+
 It benefits from the following wxWidgets libraries:
 
 ## wxWidgets libraries
