@@ -37,7 +37,7 @@ possibly followed by:
   run-clang-tidy -fix
 ```
 
-To check performance issues you can use the Instruments app for MacOS as
+To check performance issues you can use the Instruments app for macOS as
 provided by Apple. Especially use the Timer Profiler, no special
 build is needed.
 
