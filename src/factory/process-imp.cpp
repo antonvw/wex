@@ -159,22 +159,23 @@ void wex::factory::process_imp::thread_input(const process* p)
      &is   = m_is]
     {
       std::string text, line;
-      line.reserve(1100);
-      text.reserve(1100);
-      int  linesize = 0;
+      line.reserve(600);
+      text.reserve(600);
+      int linesize = 0;
 
       while (is.good())
       {
         text.push_back(is.get());
         linesize++;
 
-        if (linesize > 1000)
+        if (linesize > 500)
         {
-          text += "...";
+          text += "...\n";
           WEX_POST(ID_SHELL_APPEND, text, out)
           is.ignore(max_size, '\n');
           text.clear();
           line.clear();
+          linesize = 0;
         }
         else if (isspace(text.back()))
         {
