@@ -174,6 +174,7 @@ void wex::factory::process_imp::thread_input(const process* p)
           WEX_POST(ID_SHELL_APPEND, text, out)
           is.ignore(max_size, '\n');
           text.clear();
+          line.clear();
         }
         else if (isspace(text.back()))
         {
