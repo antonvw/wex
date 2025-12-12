@@ -948,6 +948,11 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       close fflush getline system
       system strtime
     </keywords>
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+    </properties>
   </lexer>
   <lexer name="baan"/>
   <lexer name="bash" extensions="*.bash;*.sh">
