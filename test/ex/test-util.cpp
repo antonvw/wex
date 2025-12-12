@@ -110,6 +110,7 @@ TEST_CASE("wex::ex::utils")
   {
     REQUIRE(wex::is_register_valid("@6"));
     REQUIRE(wex::is_register_valid("@x"));
+    REQUIRE(wex::is_register_valid("@%"));
 
     REQUIRE(!wex::is_register_valid("@6 "));
     REQUIRE(!wex::is_register_valid("@ "));

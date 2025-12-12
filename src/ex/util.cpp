@@ -80,7 +80,7 @@ bool wex::is_register_valid(const std::string& text)
   return text.size() == 2 && (text[0] == '@' || text[0] == WXK_CONTROL_R) &&
          boost::regex_match(
            text,
-           boost::regex("^" + std::string(1, text[0]) + "[0-9=\"a-z%._\\*]$"));
+           boost::regex("^" + std::string(1, text[0]) + "[0-9=\"a-z%.%_\\*]$"));
 }
 
 const std::string wex::k_s(wxKeyCode key)
