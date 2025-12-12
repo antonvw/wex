@@ -403,6 +403,8 @@ bool wex::addressrange::global(const command_parser& cp) const
     return false;
   }
 
+  m_substitute.set_global_ready();
+
   if (g.hits() > 0)
   {
     if (!m_substitute.is_inverse() && m_substitute.commands() != "d")
@@ -874,7 +876,11 @@ bool wex::addressrange::substitute(const command_parser& cp)
     return false;
   }
 
-  m_substitute = data;
+  if (!m_substitute.is_global_command())
+  {
+    m_substitute = data;
+  }
+
   m_stc->set_search_flags(searchFlags);
 
   int        nr_replacements = 0;
@@ -926,9 +932,12 @@ bool wex::addressrange::substitute(const command_parser& cp)
 
   am.end();
 
-  m_ex->frame()->show_ex_message(
-    "Replaced: " + std::to_string(nr_replacements) +
-    " occurrences of: " + data.pattern());
+  if (!m_substitute.is_global_command())
+  {
+    m_ex->frame()->show_ex_message(
+      "Replaced: " + std::to_string(nr_replacements) +
+      " occurrences of: " + data.pattern());
+  }
 
   return true;
 }

@@ -133,7 +133,7 @@ pp14
 // clang-format on
 bool wex::global_env::global(const data::substitute& data)
 {
-  addressrange_mark am(m_ar, data, true); // global
+  addressrange_mark am(m_ar, data);
 
   if (!am.set())
   {

@@ -17,14 +17,16 @@
 
 wex::addressrange_mark::addressrange_mark(
   const addressrange& ar,
-  data::substitute    subs,
-  bool                global)
+  data::substitute    subs)
   : m_ar(ar)
   , m_ex(ar.get_ex())
   , m_stc(ar.get_ex()->get_stc())
   , m_undo(m_stc)
   , m_data(std::move(subs))
-  , m_markers{global ? 'X' : 'T', global ? 'Y' : 'U', global ? 'Z' : 'V'}
+  , m_markers{
+      subs.is_global_command() ? 'X' : 'T',
+      subs.is_global_command() ? 'Y' : 'U',
+      subs.is_global_command() ? 'Z' : 'V'}
 {
 }
 
@@ -175,19 +177,22 @@ void wex::addressrange_mark::set_target(int start)
 {
   m_stc->SetTargetRange(start, m_stc->GetLineEndPosition(marker_end()));
 
-  std::stringstream str;
+  if (log::get_level() == log::level_t::TRACE)
+  {
+    std::stringstream str;
 
-  str << "(";
-  std::ranges::for_each(
-    m_markers,
-    [this, &str](const auto& it)
-    {
-      str << it << "->" << m_ex->marker_line(it) << " ";
-    });
-  str << ")";
+    str << "(";
+    std::ranges::for_each(
+      m_markers,
+      [this, &str](const auto& it)
+      {
+        str << it << "->" << m_ex->marker_line(it) << " ";
+      });
+    str << ")";
 
-  log::trace("addressrange_mark set_target")
-    << m_stc->GetTargetStart() << "," << m_stc->GetTargetEnd() << str;
+    log::trace("addressrange_mark set_target")
+      << m_stc->GetTargetStart() << "," << m_stc->GetTargetEnd() << str;
+  }
 }
 
 bool wex::addressrange_mark::skip(int line)

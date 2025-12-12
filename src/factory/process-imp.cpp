@@ -24,6 +24,8 @@
     wxPostEvent(DEST, event);                                                  \
   }
 
+constexpr auto max_size = std::numeric_limits<std::streamsize>::max();
+
 wex::factory::process_imp::process_imp()
   : m_io(std::make_shared<boost::asio::io_context>())
   , m_queue(std::make_shared<std::queue<std::string>>())
@@ -157,20 +159,23 @@ void wex::factory::process_imp::thread_input(const process* p)
      &is   = m_is]
     {
       std::string text, line;
-      line.reserve(1000000);
-      text.reserve(1000000);
-      int  linesize = 0;
-      bool error    = false;
+      line.reserve(600);
+      text.reserve(600);
+      int linesize = 0;
 
-      while (is.good() && !error)
+      while (is.good())
       {
         text.push_back(is.get());
         linesize++;
 
-        if (linesize > 20000)
+        if (linesize > 500)
         {
-          error = true;
-          WEX_POST(ID_SHELL_APPEND, "\n*** LINE LIMIT ***\n", out)
+          text += "...\n";
+          WEX_POST(ID_SHELL_APPEND, text, out)
+          is.ignore(max_size, '\n');
+          text.clear();
+          line.clear();
+          linesize = 0;
         }
         else if (isspace(text.back()))
         {

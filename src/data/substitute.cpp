@@ -128,6 +128,11 @@ bool wex::data::substitute::set_global(const std::string& text)
   return true;
 }
 
+void wex::data::substitute::set_global_ready()
+{
+  m_global_command = false;
+}
+
 void wex::data::substitute::set_options(const std::string& text)
 {
   m_options = text;
