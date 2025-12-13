@@ -2,7 +2,7 @@
 // Name:      accelerators.cpp
 // Purpose:   Implementation of class wex::accelerators
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/del/accelerators.h>
@@ -16,6 +16,11 @@ wex::accelerators::accelerators(
   const std::vector<wxAcceleratorEntry>& v,
   bool                                   debug)
 {
+  if (v.empty())
+  {
+    return;
+  }
+
   auto* frame(dynamic_cast<del::frame*>(wxTheApp->GetTopWindow()));
 
   m_size =
@@ -52,5 +57,8 @@ wex::accelerators::~accelerators()
 
 void wex::accelerators::set(wxWindow* parent)
 {
-  parent->SetAcceleratorTable(wxAcceleratorTable(m_size, m_entries));
+  if (parent != nullptr && m_entries != nullptr)
+  {
+    parent->SetAcceleratorTable(wxAcceleratorTable(m_size, m_entries));
+  }
 }
