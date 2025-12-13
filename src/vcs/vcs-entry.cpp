@@ -80,6 +80,11 @@ bool wex::vcs_entry::execute(
   const path&        p,
   const std::string& wd)
 {
+  if (bin().empty())
+  {
+    return false;
+  }
+  
   m_lexer = path_lexer(p).lexer();
   const path& tl(factory::vcs_admin(admin_dir(), p).toplevel());
 
@@ -188,6 +193,11 @@ const std::string wex::vcs_entry::get_flags() const
 
 bool wex::vcs_entry::log(const path& p, const std::string& id)
 {
+  if (bin().empty())
+  {
+    return false;
+  }
+  
   const std::string separator = (!m_log_flags.empty() ? " " : std::string());
   std::string       command   = bin() + " log ";
 
