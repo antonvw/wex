@@ -195,12 +195,6 @@ void wex::stc::add_text_block(const std::string& text)
     });
 }
 
-void wex::stc::append_text(const std::string& text)
-{
-  Allocate(GetTextLength() + text.size());
-  AppendTextRaw(text.data(), text.size());
-}
-
 bool wex::stc::auto_indentation(int c)
 {
   return auto_indent(this).on_char(c);

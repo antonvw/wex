@@ -22,6 +22,12 @@ wex::factory::stc::stc(const wex::data::window& data)
 {
 }
 
+void wex::factory::stc::append_text(const std::string& text)
+{
+  Allocate(GetTextLength() + text.size());
+  AppendTextRaw(text.data(), text.size());
+}
+
 void wex::factory::stc::bind_wx()
 {
   wex::bind(this).command(
