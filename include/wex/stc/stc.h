@@ -216,8 +216,6 @@ public:
 
   void add_text_block(const std::string& text) override;
 
-  void append_text(const std::string& text) override;
-
   bool auto_indentation(int c) override;
 
   bool find(const std::string& text, int find_flags = -1, bool find_next = true)

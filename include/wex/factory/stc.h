@@ -57,9 +57,6 @@ public:
   /// Adds text block mode.
   virtual void add_text_block(const std::string& text) { AddText(text); }
 
-  /// Appends text (to end).
-  virtual void append_text(const std::string& text) { AppendText(text); }
-
   /// After pressing enter, starts new line at same place
   /// as previous line.
   virtual bool auto_indentation(int c) { return false; }
@@ -222,6 +219,9 @@ public:
   virtual void visual(bool on) { ; }
 
   // Other methods.
+
+  /// Appends text (to end).
+  void append_text(const std::string& text);
 
   /// Binds wx methods.
   void bind_wx();
