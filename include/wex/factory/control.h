@@ -14,6 +14,13 @@
 #include <bitset>
 #include <functional>
 
+class wxStyledTextCtrl;
+
+namespace wex::factory
+{
+class find_replace_data;
+};
+
 namespace wex::data
 {
 /// Offers user data to be used by ctrl classes (as listview, stc).
@@ -32,6 +39,10 @@ public:
     SET, ///< set value
     XOR, ///< xor this flag
   };
+
+  /// If specified stc contains a grep line, updates find.
+  control&
+  check_for_grep(const factory::find_replace_data& data, wxStyledTextCtrl* stc);
 
   /// Returns col.
   int col() const { return line_data::col(); }
