@@ -6,7 +6,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/control.h>
-#include <wex/test/test.h>
+#include <wex/factory/frd.h>
+
+#include "test.h"
 
 TEST_CASE("wex::data::control")
 {
@@ -15,6 +17,29 @@ TEST_CASE("wex::data::control")
     REQUIRE(wex::data::control().col() == wex::data::NUMBER_NOT_SET);
     REQUIRE(wex::data::control().line() == wex::data::NUMBER_NOT_SET);
     REQUIRE(!wex::data::control().is_required());
+  }
+
+  SECTION("check_for_grep")
+  {
+    auto*                           stc = new wex::test::stc();
+    wex::factory::find_replace_data frd;
+    wex::data::control              control;
+
+    stc->set_text("git grep -n AAAA");
+    control.check_for_grep(frd, stc);
+    REQUIRE(control.find() == "AAAA");
+
+    stc->set_text("git grep -n -i -E \\bBBBB");
+    control.check_for_grep(frd, stc);
+    REQUIRE(control.find() == "BBBB");
+
+    stc->set_text("git grep -n -i -E dd_x_y_zz other");
+    control.check_for_grep(frd, stc);
+    REQUIRE(control.find() == "dd_x_y_zz");
+
+    stc->set_text("git grep -n AA_aa");
+    control.check_for_grep(frd, stc);
+    REQUIRE(control.find() == "AA_aa");
   }
 
   SECTION("inject")

@@ -8,6 +8,7 @@
 #include <wex/core/config.h>
 #include <wex/core/log.h>
 #include <wex/factory/frd.h>
+#include <wex/factory/util.h>
 #include <wx/fdrepdlg.h>
 #include <wx/translation.h>
 
@@ -154,14 +155,7 @@ void wex::factory::find_replace_data::set_regex(bool value)
 
   try
   {
-    boost::regex::flag_type flags = boost::regex::ECMAScript;
-
-    if (!match_case())
-    {
-      flags |= boost::regex::icase;
-    }
-
-    m_regex     = boost::regex(get_find_string(), flags);
+    m_regex     = boost::regex(get_find_string(), get_regex_flags(*this));
     m_use_regex = true;
 
     log::trace("frd set_regex") << get_find_string();
