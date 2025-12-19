@@ -1641,6 +1641,8 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     <keywords set-0="rfw-basic" set-1="rfw-core">
     </keywords>
   </lexer>
+  <lexer display="rsi" extensions="*.rsi" name="fortran">
+  </lexer>
   <lexer name="ruby" extensions="*.rb" exclude="Macintosh">
     <properties>
       <property name="fold"> 1 </property>
