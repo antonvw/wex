@@ -425,6 +425,9 @@ size_t wex::vi::find_char(const std::string& command)
   }
 
   char c; // char to find
+  char d = isalpha(command[0]) ?
+             command[0] :
+             'a'; // char for direction (only case is important)
 
   if (command.size() == 1)
   {
@@ -436,6 +439,7 @@ size_t wex::vi::find_char(const std::string& command)
       }
 
       c = m_last_find_char;
+      d = m_last_find_dir;
     }
     else
     {
@@ -447,25 +451,13 @@ size_t wex::vi::find_char(const std::string& command)
     c = command[1];
   }
 
-  char d; // char specifying direction
-
-  switch (command[0])
+  if (command[0] == ',')
   {
-    case ';':
-      d = m_last_find_char;
-      break;
-
-    case ',':
-      d = m_last_find_char;
-      d = islower(d) ? toupper(d) : tolower(d);
-      break;
-
-    default:
-      d = command.size() > 1 ? command.front() : m_last_find_char;
+    d = !isupper(d) ? toupper(d) : tolower(d);
   }
 
   // clang-format off
-  REPEAT (if (!get_stc()->find(std::string(1, c), 0, islower(d) > 0))
+  REPEAT (if (!get_stc()->find(std::string(1, c), -1, isupper(d) == 0))
   {
     m_command.clear();
     return (size_t)0;
@@ -475,6 +467,7 @@ size_t wex::vi::find_char(const std::string& command)
   if (command[0] != ',' && command[0] != ';')
   {
     m_last_find_char = command.back();
+    m_last_find_dir  = command.front();
   }
 
   if (tolower(d) == 't')
