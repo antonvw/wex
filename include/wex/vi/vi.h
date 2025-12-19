@@ -136,7 +136,7 @@ private:
   void   yank_range(int start);
 
   static inline std::string m_last_command;
-  static inline char        m_last_find_char{0};
+  static inline char        m_last_find_char{0}, m_last_find_dir{0};
 
   bool m_control_down{false}, m_count_present{false}, m_dot{false},
     m_search_forward{true}, m_visual_mode_from_shift{false};

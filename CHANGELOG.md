@@ -30,6 +30,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - fixed git diff processing error
 - fixed possible crash when finding previous char using ; or ,
 - fixed global move and copy commands
+- fixed vi find char when char is not alpha numeric
 
 ## [25.10] - 2025-09-21
 

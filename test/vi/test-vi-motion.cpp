@@ -49,6 +49,14 @@ TEST_CASE("wex::vi-motion")
     REQUIRE(stc->get_selected_text().empty());
     REQUIRE(vi->command(";"));
     REQUIRE(vi->command(","));
+
+    // case insensitive find does not seem to work
+
+    stc->set_text("xxxxxxxxxx%\nxxxxxxxxxx%\nxxxxxxxxxx%\nxxxxxxxxxx%\n");
+    REQUIRE(vi->command("f%"));
+    REQUIRE(stc->GetCurrentPos() == 11);
+    REQUIRE(vi->command(";"));
+    REQUIRE(stc->GetCurrentPos() == 23);
   }
 
   // Test motion commands: navigate, yank, delete, and change.
