@@ -25,6 +25,8 @@ namespace factory
 /// -U0 (no context).
 class unified_diff
 {
+  friend class unified_diff_parser;
+
 public:
   /// Type for this diff.
   enum class diff_t
@@ -52,6 +54,9 @@ public:
 
   /// Returns number of differences found during parsing.
   size_t differences() const { return m_diffs; };
+
+  /// Returns input.
+  const std::string& input() const { return m_input; };
 
   /// Returns true if this is the first diff of a hunk.
   bool is_first() const { return m_is_first; };

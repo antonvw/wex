@@ -37,6 +37,7 @@ TEST_CASE("wex::factory::unified_diff")
     REQUIRE(uni.type() == wex::factory::unified_diff::diff_t::UNKNOWN);
     //    REQUIRE_CALL(uni, report_diff()).RETURN(false);
     REQUIRE_CALL(uni, report_diff_finish());
+    REQUIRE(uni.input().empty());
     REQUIRE(uni.is_first());
     REQUIRE(!uni.is_last());
     REQUIRE(uni.parse());
@@ -91,6 +92,7 @@ TEST_CASE("wex::factory::unified_diff")
 
     PARSE_AND_MOCK_CHECK(5);
 
+    REQUIRE(!uni.input().empty());
     REQUIRE(uni.path_from().string() == "CHANGELOG.md");
     REQUIRE(uni.path_to().string() == "CHANGELOG.md");
     REQUIRE(uni.range_from_start() == 38);
