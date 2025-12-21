@@ -14,11 +14,12 @@
 
 namespace bp = boost::parser;
 
-enum action_t_str
+enum line_action_t
 {
   ACTION_DEL,
   ACTION_ADD,
   ACTION_BOTH,
+  ACTION_UNKNOWN,
 };
 
 struct diff
@@ -39,14 +40,16 @@ wex::factory::unified_diff_parser::unified_diff_parser(unified_diff* diff)
 
 bool wex::factory::unified_diff_parser::parse()
 {
-  bp::symbols<int> const actions = {
+  bp::symbols<int> const line_actions = {
     {"-", ACTION_DEL},
     {"+", ACTION_ADD},
     {" ", ACTION_BOTH}};
 
-  auto const action = [this](auto& ctx)
+  int action = ACTION_UNKNOWN;
+
+  auto const action_diff = [this](auto& ctx)
   {
-    std::cout << "Got one!\n";
+    log::debug("unified_diff_parser") << "action_diff";
     diff x;
 
     m_diff->m_path[0] = wex::path(x.path_a);
@@ -81,6 +84,12 @@ bool wex::factory::unified_diff_parser::parse()
     }
   };
 
+  auto action_set = [&action](auto& ctx)
+  {
+    action = _attr(ctx);
+    log::debug("unified_diff_parser") << "action_set" << action;
+  };
+
   // (Skip the first lines)
   // The unified output format starts with a two-line header:
   // --- from-file from-file-modification-time
@@ -90,24 +99,28 @@ bool wex::factory::unified_diff_parser::parse()
   // line-from-either-file
   // line-from-either-file...
 
-  auto const skip_lines = bp::omit[*(bp::char_ - "--- a/")];
+  auto const parser_diff_lines =
+    bp::lexeme[+(line_actions[action_set] >> +(bp::char_ - bp::eol))];
+
+  auto const parser_hunk =
+    bp::lit("@@") >> bp::repeat(2)[bp::int_ >> ',' >> bp::int_ | bp::int_] >>
+      bp::lit("@@") >> bp::lexeme[+(bp::char_ - bp::eol)] >> parser_diff_lines;
 
   auto const parser_diff =
     bp::lit("--- a/") >> +(bp::char_ - "+++ b/") >> bp::lit("+++ b/") >>
     +(bp::char_ - "@@") >>
-    +(bp::lit("@@") >> bp::repeat(2)[bp::int_ >> ',' >> bp::int_ | bp::int_] >>
-      bp::lit("@@")) >>
-    *(bp::char_ - bp::eol); // >> bp::eol >>
-                            //    +(bp::char_);
-                            //    +(actions >> +bp::char_);
+    +parser_hunk;
 
-  auto const action_parser = skip_lines >> +(parser_diff[action]);
+  auto const parser_skip = bp::omit[*(bp::char_ - "--- a/")];
+
+  auto const parser_all = parser_skip >> +parser_diff;
 
   if (const auto result = bp::parse(
         m_diff->input(),
-        action_parser,
+        parser_all,
         bp::ws,
-        log::get_level() == log::level_t::TRACE ? bp::trace::on : bp::trace::off);
+        log::get_level() == log::level_t::TRACE ? bp::trace::on :
+                                                  bp::trace::off);
       result)
   {
     return true;
