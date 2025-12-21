@@ -14,23 +14,6 @@
 
 namespace bp = boost::parser;
 
-enum line_action_t
-{
-  ACTION_DEL,
-  ACTION_ADD,
-  ACTION_BOTH,
-  ACTION_UNKNOWN,
-};
-
-struct diff
-{
-  std::string path_a, path_b;
-
-  std::vector<std::vector<std::variant<std::pair<int, int>, int>>> hunks;
-
-  std::vector<std::string> files;
-};
-
 wex::factory::unified_diff_parser::unified_diff_parser(unified_diff* diff)
   : m_diff(diff)
 {
@@ -40,32 +23,24 @@ wex::factory::unified_diff_parser::unified_diff_parser(unified_diff* diff)
 
 bool wex::factory::unified_diff_parser::parse()
 {
-  bp::symbols<int> const line_actions = {
-    {"-", ACTION_DEL},
-    {"+", ACTION_ADD},
-    {" ", ACTION_BOTH}};
-
-  int action = ACTION_UNKNOWN;
-
   auto const action_diff = [this](const auto& ctx)
   {
-    auto tpl          = _attr(ctx);
+    const auto tpl    = _attr(ctx);
     m_diff->m_path[0] = wex::path(std::get<0>(tpl));
     m_diff->m_path[1] = wex::path(std::get<1>(tpl));
 
     log::debug("unified_diff_parser") << "action_diff" << m_diff->m_path[0];
-    diff x;
 
-    for (const auto& hunk : x.hunks)
+    for (const auto& hunk : std::get<2>(tpl))
     {
       int index = 0;
 
-      for (const auto& number : hunk)
+      for (const auto& number : std::get<0>(hunk))
       {
-        if (const auto* val = std::get_if<std::pair<int, int>>(&number); val)
+        if (const auto* val = std::get_if<std::tuple<int, int>>(&number); val)
         {
-          m_diff->m_range[index]     = val->first;
-          m_diff->m_range[index + 1] = val->second;
+          m_diff->m_range[index]     = std::get<0>(*val);
+          m_diff->m_range[index + 1] = std::get<1>(*val);
         }
         else
         {
@@ -76,6 +51,21 @@ bool wex::factory::unified_diff_parser::parse()
         index += 2;
       }
 
+      for (const auto& file : std::get<1>(hunk))
+      {
+        switch (file[0])
+        {
+          case '+':
+            m_diff->m_text[0].push_back(file.substr(1));
+            break;
+          case '-':
+            m_diff->m_text[1].push_back(file.substr(1));
+            break;
+          case ' ':
+            break;
+        }
+      }
+
       m_diff->m_type =
         (m_diff->m_type == unified_diff::diff_t::UNKNOWN ?
            unified_diff::diff_t::FIRST :
@@ -83,12 +73,6 @@ bool wex::factory::unified_diff_parser::parse()
 
       m_diff->report_diff();
     }
-  };
-
-  auto action_set = [&action](auto& ctx)
-  {
-    action = _attr(ctx);
-    log::debug("unified_diff_parser") << "action_set" << action;
   };
 
   // (Skip the first lines)
@@ -101,7 +85,7 @@ bool wex::factory::unified_diff_parser::parse()
   // line-from-either-file...
 
   auto const parser_diff_lines =
-    bp::lexeme[+(line_actions[action_set] >> +(bp::char_ - bp::eol))];
+    bp::lexeme[+(bp::char_ >> +(bp::char_ - bp::eol))];
 
   auto const parser_hunk =
     bp::lit("@@") >> bp::repeat(2)[bp::int_ >> ',' >> bp::int_ | bp::int_] >>
