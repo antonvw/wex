@@ -7,8 +7,6 @@
 
 #pragma once
 
-#include <string>
-
 namespace wex
 {
 namespace factory
@@ -16,10 +14,7 @@ namespace factory
 
 class unified_diff;
 
-/// Offers a class that parses a unified diff string and report diffs
-/// for a derived class.
-/// Context is not expected, you have to create a diff using
-/// -U0 (no context).
+/// Offers a class that implements the parsing for the unified diff class.
 class unified_diff_parser
 {
 public:
@@ -27,7 +22,7 @@ public:
   unified_diff_parser(unified_diff* diff);
 
   /// Parse the unified diff input into the unified_diff object.
-  /// Returns true and fills diff data if input can be parsed correctly.
+  /// Returns true and fills diff data if input is parsed correctly.
   bool parse();
 
 private:
