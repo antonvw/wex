@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/parser/parser.hpp>
+#include <wex/core/log.h>
 #include <wex/factory/unified-diff.h>
 
 #include "unified-diff-parser.h"
@@ -36,7 +37,7 @@ wex::factory::unified_diff_parser::unified_diff_parser(unified_diff* diff)
   m_diff->m_type  = unified_diff::diff_t::UNKNOWN;
 }
 
-bool wex::factory::unified_diff_parser::parse(bool trace_mode)
+bool wex::factory::unified_diff_parser::parse()
 {
   bp::symbols<int> const actions = {
     {"-", ACTION_DEL},
@@ -106,7 +107,7 @@ bool wex::factory::unified_diff_parser::parse(bool trace_mode)
         m_diff->input(),
         action_parser,
         bp::ws,
-        trace_mode ? bp::trace::on : bp::trace::off);
+        log::get_level() == log::level_t::TRACE ? bp::trace::on : bp::trace::off);
       result)
   {
     return true;

@@ -32,7 +32,7 @@ TEST_CASE("wex::factory::unified_diff_parser")
 
     wex::factory::unified_diff_parser parser(&uni);
 
-    REQUIRE(parser.parse(false));
+    REQUIRE(parser.parse());
   }
   
   SECTION("parse")
@@ -47,6 +47,6 @@ TEST_CASE("wex::factory::unified_diff_parser")
 
     wex::factory::unified_diff_parser parser(&uni);
 
-    REQUIRE(parser.parse(true));
+    REQUIRE(parser.parse());
   }
 }

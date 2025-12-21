@@ -28,7 +28,7 @@ public:
 
   /// Parse the unified diff input into the unified_diff object.
   /// Returns true and fills diff data if input can be parsed correctly.
-  bool parse(bool trace_mode = false);
+  bool parse();
 
 private:
   unified_diff* m_diff;
