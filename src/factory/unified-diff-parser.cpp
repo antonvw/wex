@@ -47,13 +47,14 @@ bool wex::factory::unified_diff_parser::parse()
 
   int action = ACTION_UNKNOWN;
 
-  auto const action_diff = [this](auto& ctx)
+  auto const action_diff = [this](const auto& ctx)
   {
-    log::debug("unified_diff_parser") << "action_diff";
-    diff x;
+    auto tpl          = _attr(ctx);
+    m_diff->m_path[0] = wex::path(std::get<0>(tpl));
+    m_diff->m_path[1] = wex::path(std::get<1>(tpl));
 
-    m_diff->m_path[0] = wex::path(x.path_a);
-    m_diff->m_path[1] = wex::path(x.path_b);
+    log::debug("unified_diff_parser") << "action_diff" << m_diff->m_path[0];
+    diff x;
 
     for (const auto& hunk : x.hunks)
     {
@@ -104,16 +105,15 @@ bool wex::factory::unified_diff_parser::parse()
 
   auto const parser_hunk =
     bp::lit("@@") >> bp::repeat(2)[bp::int_ >> ',' >> bp::int_ | bp::int_] >>
-      bp::lit("@@") >> bp::lexeme[+(bp::char_ - bp::eol)] >> parser_diff_lines;
+    bp::lit("@@") >> bp::lexeme[+(bp::char_ - bp::eol)] >> parser_diff_lines;
 
-  auto const parser_diff =
-    bp::lit("--- a/") >> +(bp::char_ - "+++ b/") >> bp::lit("+++ b/") >>
-    +(bp::char_ - "@@") >>
-    +parser_hunk;
+  auto const parser_diff = bp::lit("--- a/") >> +(bp::char_ - "+++ b/") >>
+                           bp::lit("+++ b/") >> +(bp::char_ - "@@") >>
+                           +parser_hunk;
 
   auto const parser_skip = bp::omit[*(bp::char_ - "--- a/")];
 
-  auto const parser_all = parser_skip >> +parser_diff;
+  auto const parser_all = parser_skip >> +parser_diff[action_diff];
 
   if (const auto result = bp::parse(
         m_diff->input(),

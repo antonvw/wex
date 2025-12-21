@@ -20,21 +20,20 @@ TEST_CASE("wex::factory::unified_diff_parser")
     REQUIRE(!parser.parse());
   }
 
-  SECTION("simpel")
+  SECTION("parse-invalid")
   {
     wex::factory::unified_diff uni(
       "diff --git a/CHANGELOG.md b/CHANGELOG.md\n"
       "index e4a9c0522..b2637803a 100644\n"
       "--- a/CHANGELOG.md\n"
       "+++ b/CHANGELOG.md\n"
-      "@@ -15,0 +16 @@ The format is based on ...\n"
-      "+- used boost::parser");
+      "@@ -15,0 +16 @@ The format is based on ...\n");
 
     wex::factory::unified_diff_parser parser(&uni);
 
-    REQUIRE(parser.parse());
+    REQUIRE(!parser.parse());
   }
-  
+
   SECTION("parse")
   {
     wex::factory::unified_diff uni(
