@@ -66,6 +66,7 @@ boost::algorithm          | uses find_tail, icontains, iequals, replace_all, to_
 boost::describe           | to add reflection
 boost::json               | to implement wex::config
 boost::log                | to implement wex::log
+boost::parser             | to implement wex::unified_diff
 boost::process            | to implement wex::process
 boost::program_options    | to implement wex::cmdline
 boost::regular expression | to implement the wex::regular expression and regex_part

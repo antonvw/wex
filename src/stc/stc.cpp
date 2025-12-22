@@ -434,7 +434,8 @@ bool wex::stc::mark_diff(int line, const marker& marker)
     return true;
   }
 
-  log("could not add diff marker") << marker.number() << "to line:" << line;
+  log("could not add diff marker")
+    << marker.number() << "to line:" << line << path().string();
 
   return false;
 }

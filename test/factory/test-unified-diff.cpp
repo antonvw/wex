@@ -36,12 +36,12 @@ TEST_CASE("wex::factory::unified_diff")
 
     REQUIRE(uni.type() == wex::factory::unified_diff::diff_t::UNKNOWN);
     //    REQUIRE_CALL(uni, report_diff()).RETURN(false);
-    REQUIRE_CALL(uni, report_diff_finish());
+    REQUIRE(uni.input().empty());
     REQUIRE(uni.is_first());
     REQUIRE(!uni.is_last());
-    REQUIRE(uni.parse());
+    REQUIRE(!uni.parse());
     REQUIRE(uni.is_first());
-    REQUIRE(uni.is_last());
+    REQUIRE(!uni.is_last());
     REQUIRE(uni.type() == wex::factory::unified_diff::diff_t::UNKNOWN);
     REQUIRE(uni.differences() == 0);
     REQUIRE(uni.range_from_count() == 0);
@@ -89,8 +89,9 @@ TEST_CASE("wex::factory::unified_diff")
       "@@ -38,0 +37 @@ The format is based on [Keep a Changelog].\n"
       "+- test\n");
 
-    PARSE_AND_MOCK_CHECK(5);
+    PARSE_AND_MOCK_CHECK(4);
 
+    REQUIRE(!uni.input().empty());
     REQUIRE(uni.path_from().string() == "CHANGELOG.md");
     REQUIRE(uni.path_to().string() == "CHANGELOG.md");
     REQUIRE(uni.range_from_start() == 38);
@@ -133,7 +134,7 @@ TEST_CASE("wex::factory::unified_diff")
       "+  const vcs_entry* m_vcs_entry{nullptr};\n"
       "+  factory::frame*  m_frame{nullptr};\n");
 
-    PARSE_AND_MOCK_CHECK(6);
+    PARSE_AND_MOCK_CHECK(4);
 
     REQUIRE(uni.path_from().string() == "include/wex/vcs/unified-diff.h");
     REQUIRE(uni.path_to().string() == "include/wex/vcs/unified-diff.h");

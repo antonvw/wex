@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - no longer use auto keyword in public interfaces
 - more stricter usage of setting ex marker
 - improved xml fold all
+- used boost::parser for processing git diff
 
 ### Fixed
 
