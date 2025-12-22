@@ -21,19 +21,12 @@ wex::factory::unified_diff::unified_diff(std::string input)
 
 bool wex::factory::unified_diff::parse()
 {
-  unified_diff_parser parser(this);
-
-  if (!parser.parse())
-  {
-    return false;
-  }
-
-  return true;
+  return unified_diff_parser(this).parse();
 }
 
 void wex::factory::unified_diff::trace(const std::string& text) const
 {
-  if (log::get_level() != log::level_t::DEBUG)
+  if (log::get_level() != log::level_t::TRACE)
   {
     return;
   }
@@ -69,5 +62,5 @@ void wex::factory::unified_diff::trace(const std::string& text) const
       str << it.string() << ",";
     });
 
-  log::debug("unified_diff::" + text) << str.str();
+  log::trace("unified_diff::" + text) << str.str();
 }
