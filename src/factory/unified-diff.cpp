@@ -9,6 +9,7 @@
 #include <wex/core/log.h>
 #include <wex/factory/unified-diff.h>
 
+#include <algorithm>
 #include <utility>
 
 #include "unified-diff-parser.h"
