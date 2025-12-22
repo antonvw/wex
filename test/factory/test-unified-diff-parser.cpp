@@ -37,18 +37,16 @@ TEST_CASE("wex::factory::unified_diff_parser")
 
   SECTION("parse")
   {
+    // clang-format off
     wex::factory::unified_diff uni(
-      "diff --git a/include/wex/factory/unified-diff.h "
-      "b/include/wex/factory/unified-diff.h\n"
+      "diff --git a/include/wex/factory/unified-diff.h b/include/wex/factory/unified-diff.h\n"
       "index 44e6b792c..da59e94ec 100644\n"
       "--- a/include/wex/factory/unified-diff.h\n"
       "+++ b/include/wex/factory/unified-diff.h\n"
       "@@ -109,2 +108,0 @@ private:\n"
-      "-  bool parse_header(const std::string& r, const std::string& line, "
-      "path& p);\n"
+      "-  bool parse_header(const std::string& r, const std::string& line, path& p);\n"
       "-\n"
-      "diff --git a/test/factory/test-unified-diff.cpp "
-      "b/test/factory/test-unified-diff.cpp\n"
+      "diff --git a/test/factory/test-unified-diff.cpp b/test/factory/test-unified-diff.cpp\n"
       "index 98830c141..3a08abd31 100644\n"
       "--- a/test/factory/test-unified-diff.cpp\n"
       "+++ b/test/factory/test-unified-diff.cpp\n"
@@ -57,6 +55,7 @@ TEST_CASE("wex::factory::unified_diff_parser")
       "@@ -43 +42 @@ TEST_CASE(\"wex::factory::unified_diff\")\n"
       "-    REQUIRE(uni.parse());\n"
       "+    REQUIRE(!uni.parse());\n");
+    // clang-format on
 
     wex::factory::unified_diff_parser parser(&uni);
 

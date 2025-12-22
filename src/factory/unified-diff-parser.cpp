@@ -68,17 +68,26 @@ bool wex::factory::unified_diff_parser::parse()
 
       m_diff->m_text.fill({});
 
-      for (const auto& file : std::get<1>(hunk))
+      for (const auto& line : std::get<1>(hunk))
       {
-        switch (file[0])
+        auto fix(line);
+
+        if (line.starts_with("\n"))
+        {
+          fix = fix.substr(1);
+        }
+
+        switch (fix[0])
         {
           case '+':
-            m_diff->m_text[1].push_back(file.substr(1));
+            m_diff->m_text[1].push_back(fix.substr(1));
             break;
           case '-':
-            m_diff->m_text[0].push_back(file.substr(1));
+            m_diff->m_text[0].push_back(fix.substr(1));
             break;
           case ' ':
+            m_diff->m_text[0].push_back(fix.substr(1));
+            m_diff->m_text[1].push_back(fix.substr(1));
             break;
         }
       }
@@ -110,8 +119,8 @@ bool wex::factory::unified_diff_parser::parse()
   // line-from-either-file
   // line-from-either-file...
 
-  auto const parser_diff_lines =
-    bp::lexeme[+(bp::char_ >> +(bp::char_ - bp::eol - "--- a/" - "@@"))];
+  auto const parser_diff_lines = bp::lexeme[+(
+    bp::char_ >> +(bp::char_ - bp::eol - "--- a/" - "@@" - "diff --"))];
 
   auto const parser_hunk =
     bp::lit("@@") >> bp::repeat(2)[bp::int_ >> ',' >> bp::int_ | bp::int_] >>

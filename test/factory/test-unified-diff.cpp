@@ -89,7 +89,7 @@ TEST_CASE("wex::factory::unified_diff")
       "@@ -38,0 +37 @@ The format is based on [Keep a Changelog].\n"
       "+- test\n");
 
-    PARSE_AND_MOCK_CHECK(5);
+    PARSE_AND_MOCK_CHECK(4);
 
     REQUIRE(!uni.input().empty());
     REQUIRE(uni.path_from().string() == "CHANGELOG.md");
@@ -134,7 +134,7 @@ TEST_CASE("wex::factory::unified_diff")
       "+  const vcs_entry* m_vcs_entry{nullptr};\n"
       "+  factory::frame*  m_frame{nullptr};\n");
 
-    PARSE_AND_MOCK_CHECK(6);
+    PARSE_AND_MOCK_CHECK(4);
 
     REQUIRE(uni.path_from().string() == "include/wex/vcs/unified-diff.h");
     REQUIRE(uni.path_to().string() == "include/wex/vcs/unified-diff.h");
