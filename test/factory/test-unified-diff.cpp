@@ -36,13 +36,12 @@ TEST_CASE("wex::factory::unified_diff")
 
     REQUIRE(uni.type() == wex::factory::unified_diff::diff_t::UNKNOWN);
     //    REQUIRE_CALL(uni, report_diff()).RETURN(false);
-    REQUIRE_CALL(uni, report_diff_finish());
     REQUIRE(uni.input().empty());
     REQUIRE(uni.is_first());
     REQUIRE(!uni.is_last());
-    REQUIRE(uni.parse());
+    REQUIRE(!uni.parse());
     REQUIRE(uni.is_first());
-    REQUIRE(uni.is_last());
+    REQUIRE(!uni.is_last());
     REQUIRE(uni.type() == wex::factory::unified_diff::diff_t::UNKNOWN);
     REQUIRE(uni.differences() == 0);
     REQUIRE(uni.range_from_count() == 0);

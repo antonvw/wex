@@ -106,8 +106,6 @@ protected:
   std::array<path, 2> m_path;
 
 private:
-  bool parse_header(const std::string& r, const std::string& line, path& p);
-
   std::array<int, 4>                      m_range;
   std::array<std::vector<std::string>, 2> m_text;
 

@@ -27,6 +27,8 @@ public:
 
 private:
   unified_diff* m_diff;
+
+  int m_hunk_no{0};
 };
 }; // namespace factory
 }; // namespace wex
