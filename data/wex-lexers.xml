@@ -3,7 +3,7 @@
 <!--
 Name:    wex-lexers.xml
 Purpose: Lexers configuration for wex.
-         See scintilla 5.4.4 (https://www.scintilla.org/LexillaHistory.html)
+         See lexilla 5.4.6 (https://www.scintilla.org/LexillaHistory.html)
 Author:  Anton van Wezenbeek
 Copyright: (c) 2009-2025, Anton van Wezenbeek
 -->
@@ -1666,6 +1666,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       select then until while time
     </keywords>
   </lexer>
+  <lexer name="sinex"/>
   <lexer name="smalltalk"/>
   <lexer name="SML"/>
   <lexer name="sorcins"/>

@@ -3,7 +3,7 @@
 <!--
 Name:      wex-lexers-macro.xml
 Purpose:   Lexers configuration for wex.
-           See lexilla 5.4.4 (https://www.scintilla.org/LexillaHistory.html)
+           See lexilla 5.4.6 (https://www.scintilla.org/LexillaHistory.html)
 Author:    Anton van Wezenbeek
 Copyright: (c) 2009-2025, Anton van Wezenbeek
 -->
@@ -622,6 +622,7 @@ Copyright: (c) 2009-2025, Anton van Wezenbeek
       <def no ="kw_secondary"/>
       <def no ="kw_tertiary"/>
       <def no ="kw_type"/>
+      <def no ="stringeol"/>
     </def>
 
     <def name = "dataflex">
@@ -1567,6 +1568,7 @@ Copyright: (c) 2009-2025, Anton van Wezenbeek
       <def no ="keyword2"/>
       <def no ="keyword3"/>
       <def no ="keyword4"/>
+      <def no ="stringeol"/>
     </def>
 
     <def name = "nncrontab">
@@ -2087,7 +2089,14 @@ Copyright: (c) 2009-2025, Anton van Wezenbeek
       <def no ="classname"/>
       <def no ="preprocessor"/>
     </def>
-
+    <def name = "sinex">
+      <def no ="default"/>
+      <def no ="commentline"/>
+      <def no ="block_start"/>
+      <def no ="block_end"/>
+      <def no ="date"/>
+      <def no ="number"/>
+    </def>
     <def name = "smalltalk">
       <def no ="default"/>
       <def no ="string"/>
@@ -2297,6 +2306,7 @@ Copyright: (c) 2009-2025, Anton van Wezenbeek
       <def no ="triple_string_dq"/>
       <def no ="escapechar"/>
       <def no ="datetime"/>
+      <def no ="stringeol"/>
     </def>
 
     <def name = "troff">
@@ -2498,6 +2508,7 @@ Copyright: (c) 2009-2025, Anton van Wezenbeek
       <def no ="kw_tertiary"/>
       <def no ="kw_type"/>
       <def no ="identifier_string"/>
+      <def no ="stringeol"/>
     </def>
 
   </macro>
