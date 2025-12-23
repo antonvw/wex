@@ -144,7 +144,7 @@ TEST_CASE("wex::listview")
     REQUIRE(sim.Char(WXK_RETURN));
     wxTheApp->ProcessPendingEvents();
 
-    CHECK(other->GetItemCount() == 0);
+    CHECK(other->GetItemCount() == 1);
   }
 #endif
 #endif

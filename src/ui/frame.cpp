@@ -10,6 +10,7 @@
 #include <wex/core/cmdline.h>
 #include <wex/core/config.h>
 #include <wex/core/file.h>
+#include <wex/core/log.h>
 #include <wex/factory/bind.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/listview.h>
@@ -446,14 +447,18 @@ bool wex::frame::browse(const wxCommandEvent& event)
 wxPanel* wex::frame::create_ex_panel()
 {
   // An ex panel starts with small static text for : or /, then
-  // comes the ex ex_commandline for getting user input.
-  auto* panel = new wxPanel(this);
-  auto* text  = new wxStaticText(panel, wxID_ANY, "  ");
-  m_ex_commandline =
-    new ex_commandline(this, text, data::window().parent(panel));
+  // comes the ex_commandline for getting user input.
+  auto* panel      = new wxPanel(this);
+  auto* text       = new wxStaticText(panel, wxID_ANY, "  ");
+  m_ex_commandline = new ex_commandline(
+    this,
+    text,
+    data::window().parent(panel).size(
+      wxSize(100, style().default_font_size() + 10)));
 
   auto* sizer = new wxFlexGridSizer(3);
   sizer->AddGrowableCol(2);
+  sizer->AddGrowableRow(0);
   sizer->Add(text, wxSizerFlags().Top()); // similar to ex_commandline->control
   sizer->AddSpacer(2);
   sizer->Add(m_ex_commandline->control(), wxSizerFlags().Expand());
@@ -590,8 +595,10 @@ wxWindow* wex::frame::pane_get(const std::string& pane)
 bool wex::frame::pane_maximize(const std::string& pane)
 {
   auto& info = m_manager.GetPane(pane);
+
   if (!info.IsOk())
   {
+    log("pane_maximize") << pane << "not OK";
     return false;
   }
 
@@ -603,8 +610,10 @@ bool wex::frame::pane_maximize(const std::string& pane)
 bool wex::frame::pane_restore(const std::string& pane)
 {
   auto& info = m_manager.GetPane(pane);
+
   if (!info.IsOk())
   {
+    log("pane_restore") << pane << "not OK";
     return false;
   }
 
@@ -616,8 +625,10 @@ bool wex::frame::pane_restore(const std::string& pane)
 bool wex::frame::pane_set(const std::string& pane, const wxAuiPaneInfo& info)
 {
   auto& current = m_manager.GetPane(pane);
+
   if (!current.IsOk())
   {
+    log("pane_set") << pane << "not OK";
     return false;
   }
 
@@ -645,8 +656,10 @@ bool wex::frame::pane_set_height_lines(
 bool wex::frame::pane_show(const std::string& pane, bool show)
 {
   auto& info = m_manager.GetPane(pane);
+
   if (!info.IsOk())
   {
+    log("pane_show") << pane << "not OK";
     return false;
   }
 
