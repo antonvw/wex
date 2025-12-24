@@ -659,7 +659,7 @@ bool wex::frame::pane_show(const std::string& pane, bool show)
 
   if (!info.IsOk())
   {
-    log("pane_show") << pane << "not OK";
+    log::trace("pane_show") << pane << "not OK";
     return false;
   }
 

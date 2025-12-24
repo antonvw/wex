@@ -134,5 +134,6 @@ bool wex::factory::unified_diff_parser::parse()
   auto const parser_all =
     +(parser_skip >> +parser_diff[action_diff]) >> bp::eoi[action_eoi];
 
-  return bp::parse(m_diff->input(), parser_all, bp::ws);
+  return m_diff->input().empty() ||
+         bp::parse(m_diff->input(), parser_all, bp::ws);
 }
