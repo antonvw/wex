@@ -23,9 +23,9 @@
 
 %include "../include/wex/core/app.h"
 %include "../include/wex/core/chrono.h"
+%include "../include/wex/core/cmdline-data.h"
 %include "../include/wex/core/config.h"
 %include "../include/wex/core/core.h"
-%include "../include/wex/core/cmdline-data.h"
 %include "../include/wex/core/file-status.h"
 %include "../include/wex/core/function-repeat.h"
 %include "../include/wex/core/interruptible.h"
@@ -39,6 +39,7 @@
 
 %include "../include/wex/factory/control.h"
 %include "../include/wex/factory/defs.h"
+%include "../include/wex/factory/ex-command.h"
 %include "../include/wex/factory/frd.h"
 %include "../include/wex/factory/process-data.h"
 %include "../include/wex/factory/sort.h"

@@ -4,7 +4,7 @@ if(NOT Python_FOUND)
   return()
 endif()
 
-find_package(SWIG 4.3.0 COMPONENTS python)
+find_package(SWIG 4.4.1 COMPONENTS python)
 include(UseSWIG)
 
 if(NOT SWIG_FOUND)
