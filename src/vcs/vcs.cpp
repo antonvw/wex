@@ -422,11 +422,13 @@ int wex::vcs::show_dialog(const data::window& arg)
     return wxID_CANCEL;
   }
 
+  const bool is_asked(
+    (!config(_("vcs.Always ask flags")).get(true) &&
+     m_entry->get_command().type().test(wex::menu_command::IS_ASKED)));
+
   if (
     m_entry->get_command().get_command() == "grep" ||
-    m_entry->get_command().get_command() == "show" ||
-    (!config(_("vcs.Always ask flags")).get(true) &&
-     m_entry->get_command().type().test(wex::menu_command::IS_ASKED)))
+    m_entry->get_command().get_command() == "show" || is_asked)
   {
     return wxID_OK;
   }
@@ -459,7 +461,7 @@ int wex::vcs::show_dialog(const data::window& arg)
                                             std::any(),
                                             data::control().is_required(true)) :
                                           item(),
-     add_folder && !m_entry->get_command().is_help() ?
+     add_folder && is_asked && !m_entry->get_command().is_help() ?
        item(
          _("vcs.Base folder"),
          item::COMBOBOX_DIR,
