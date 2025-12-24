@@ -39,7 +39,7 @@ TEST_CASE("wex::factory::unified_diff")
     REQUIRE(uni.input().empty());
     REQUIRE(uni.is_first());
     REQUIRE(!uni.is_last());
-    REQUIRE(!uni.parse());
+    REQUIRE(uni.parse());
     REQUIRE(uni.is_first());
     REQUIRE(!uni.is_last());
     REQUIRE(uni.type() == wex::factory::unified_diff::diff_t::UNKNOWN);

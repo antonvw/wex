@@ -17,7 +17,7 @@ TEST_CASE("wex::factory::unified_diff_parser")
     wex::factory::unified_diff        uni("");
     wex::factory::unified_diff_parser parser(&uni);
 
-    REQUIRE(!parser.parse());
+    REQUIRE(parser.parse());
     REQUIRE(uni.differences() == 0);
   }
 

@@ -100,11 +100,6 @@ public:
   /// Returns false if an error occurred.
   bool set_item(long index, int column, const std::string& label);
 
-  /// Sets the item image, using the image list.
-  /// If the listview does not already contain the image, it is added.
-  /// Returns false if an error occurred.
-  bool set_item_image(long item_number, const wxArtID& artid);
-
   /// Sorts on a column specified by column name.
   /// Returns true if column was sorted.
   bool
@@ -165,13 +160,6 @@ private:
   void process_mouse(const wxMouseEvent& event);
 
   bool report_view(const std::string& text);
-  bool set_item_image(long item_number, int iconid)
-  {
-    return (
-      m_data.image() == data::listview::IMAGE_FILE_ICON ?
-        SetItemImage(item_number, iconid) :
-        false);
-  };
 
   char m_field_separator = '\t';
 

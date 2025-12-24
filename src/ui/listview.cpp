@@ -104,9 +104,7 @@ const std::vector<item> config_items()
            {wxLC_VRULES, _("Vertical rulers")}},
           false}}},
        {_("Font"),
-        {{_("list.Font"),
-          item::FONTPICKERCTRL,
-          style().default_font()}}},
+        {{_("list.Font"), item::FONTPICKERCTRL, style().default_font()}}},
        {_("Margin"),
         {{"col.DATE", 0, 150, 80},
          {"col.FLOAT", 0, 120, 80},
@@ -1341,19 +1339,6 @@ bool wex::listview::set_item(long index, int column, const std::string& text)
     log(e) << "index:" << index << "col:" << column << ":" << text;
     return false;
   }
-}
-
-bool wex::listview::set_item_image(long item_number, const wxArtID& artid)
-{
-  if (item_number < 0 || item_number >= GetItemCount())
-  {
-    return false;
-  }
-
-  return (
-    m_data.image() == data::listview::IMAGE_ART ?
-      SetItemImage(item_number, get_art_id(artid)) :
-      false);
 }
 
 bool wex::listview::sort_column(int column_no, sort_t sort_method)

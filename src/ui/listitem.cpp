@@ -137,17 +137,6 @@ void wex::listitem::set_readonly(bool readonly)
 
 void wex::listitem::update()
 {
-  if (m_path.dir_exists())
-  {
-    SetImage(wxFileIconsTable::folder);
-  }
-  else if (
-    m_listview->data().image() == data::listview::IMAGE_FILE_ICON &&
-    m_path.stat().is_ok())
-  {
-    SetImage(wxFileIconsTable::file);
-  }
-
   set_readonly(m_path.stat().is_readonly());
 
   m_listview->SetItem(*this);
