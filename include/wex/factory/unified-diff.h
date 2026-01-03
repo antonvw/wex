@@ -112,7 +112,7 @@ private:
   std::array<int, 4>                      m_range;
   std::array<std::vector<std::string>, 2> m_text;
 
-  bool m_is_first{true}, m_is_last{false};
+  bool m_is_first{true}, m_is_last{true};
 
   diff_t m_type{diff_t::UNKNOWN};
 
