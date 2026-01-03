@@ -2,7 +2,7 @@
 // Name:      unified-diff.h
 // Purpose:   Declaration of class wex::factory::unified_diff
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024-2025 Anton van Wezenbeek
+// Copyright: (c) 2024-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -41,6 +41,9 @@ public:
   unified_diff(
     /// Provide input, that is conform unified diff format output.
     std::string input = std::string());
+
+  /// Destructor.
+  virtual ~unified_diff() = default;
 
   /// Virtual interface
 

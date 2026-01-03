@@ -3,7 +3,7 @@
 // Purpose:   Implementation of unified_diff_parser
 //            https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2025 Anton van Wezenbeek
+// Copyright: (c) 2025-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/parser/parser.hpp>
@@ -19,7 +19,7 @@ wex::factory::unified_diff_parser::unified_diff_parser(unified_diff* diff)
   m_diff->m_range.fill({0});
   m_diff->m_diffs    = 0;
   m_diff->m_is_first = true;
-  m_diff->m_is_last  = false;
+  m_diff->m_is_last  = true;
   m_diff->m_type     = unified_diff::diff_t::UNKNOWN;
 }
 
@@ -35,7 +35,9 @@ bool wex::factory::unified_diff_parser::parse()
     for (const auto& hunk : std::get<2>(tpl))
     {
       int index = 0;
-      m_hunk_no++;
+
+      m_diff->m_is_first = (hunk == *std::get<2>(tpl).begin());
+      m_diff->m_is_last  = (hunk == std::get<2>(tpl).back());
 
       for (const auto& number : std::get<0>(hunk))
       {
@@ -58,11 +60,6 @@ bool wex::factory::unified_diff_parser::parse()
         }
 
         index += 2;
-      }
-
-      if (m_hunk_no > 1)
-      {
-        m_diff->m_is_first = false;
       }
 
       m_diff->m_text.fill({});
@@ -103,8 +100,7 @@ bool wex::factory::unified_diff_parser::parse()
 
   auto const action_eoi = [this](const auto& ctx)
   {
-    m_diff->m_is_last = true;
-    m_diff->m_type    = unified_diff::diff_t::LAST;
+    m_diff->m_type = unified_diff::diff_t::LAST;
     m_diff->report_diff_finish();
     m_diff->trace("finish");
   };
