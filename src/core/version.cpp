@@ -2,7 +2,7 @@
 // Name:      version.cpp
 // Purpose:   Implementation of wex::version_info
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2025 Anton van Wezenbeek
+// Copyright: (c) 2011-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
@@ -20,7 +20,7 @@ const wex::version_info wex::get_version_info()
      0,
      0,
      _("wex library (a library that offers windows ex and vi components)"),
-     "(c) 1998-2025, Anton van Wezenbeek. " + _("All rights reserved.")});
+     "(c) 1998-2026, Anton van Wezenbeek. " + _("All rights reserved.")});
 }
 
 wex::version_info::version_info(wxVersionInfo info)

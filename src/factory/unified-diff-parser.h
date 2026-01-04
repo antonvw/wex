@@ -2,7 +2,7 @@
 // Name:      unified-diff-parser.h
 // Purpose:   Declaration of class wex::factory::unified_diff_parser
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2025 Anton van Wezenbeek
+// Copyright: (c) 2025-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -27,8 +27,6 @@ public:
 
 private:
   unified_diff* m_diff;
-
-  int m_hunk_no{0};
 };
 }; // namespace factory
 }; // namespace wex
