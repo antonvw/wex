@@ -2,7 +2,7 @@
 // Name:      process.h
 // Purpose:   Declaration of class wex::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2025 Anton van Wezenbeek
+// Copyright: (c) 2011-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -13,6 +13,7 @@
 namespace wex
 {
 class frame;
+class item_dialog;
 class shell;
 
 /// Offers a process, capturing execution output.
@@ -65,8 +66,9 @@ public:
   frame* get_frame() { return m_frame; }
 
 private:
-  static inline shell* m_shell = nullptr;
-  static std::string   m_working_dir_key;
+  static inline item_dialog* m_config_dialog = nullptr;
+  static inline shell*       m_shell         = nullptr;
+  static std::string         m_working_dir_key;
 
   void set_frame();
 
