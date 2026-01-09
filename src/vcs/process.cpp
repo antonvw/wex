@@ -93,26 +93,32 @@ bool wex::process::async_system(const process_data& data_in)
 
 int wex::process::config_dialog(const data::window& par)
 {
-  wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
-  validator.SetCharExcludes("?%*\"");
-  const data::window      data(data::window(par).title(_("Select Process")));
-  const std::vector<item> v{
-    {_("Process"),
-     item::COMBOBOX,
-     std::any(),
-     data::control().validator(&validator).is_required(true)},
-    {m_working_dir_key,
-     item::COMBOBOX_DIR,
-     std::any(),
-     data::control().is_required(true)}};
+  const data::window data(data::window(par).title(_("Select Process")));
+
+  if (m_config_dialog == nullptr)
+  {
+    wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
+    validator.SetCharExcludes("?%*\"");
+
+    const std::vector<item> v{
+      {_("Process"),
+       item::COMBOBOX,
+       std::any(),
+       data::control().validator(&validator).is_required(true)},
+      {m_working_dir_key,
+       item::COMBOBOX_DIR,
+       std::any(),
+       data::control().is_required(true)}};
+
+    m_config_dialog = new item_dialog(v, data);
+  }
 
   if (data.button() & wxAPPLY)
   {
-    auto* dlg = new item_dialog(v, data);
-    return dlg->Show();
+    return m_config_dialog->Show();
   }
 
-  return item_dialog(v, data).ShowModal();
+  return m_config_dialog->ShowModal();
 }
 
 wex::shell* wex::process::prepare_output(wxWindow* parent)
