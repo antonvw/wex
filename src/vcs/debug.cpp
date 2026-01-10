@@ -2,7 +2,7 @@
 // Name:      debug.cpp
 // Purpose:   Implementation of class wex::debug
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016-2025 Anton van Wezenbeek
+// Copyright: (c) 2016-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -518,10 +518,6 @@ void wex::debug::process_stdout(const std::string& text)
     is_finished();
     m_stdout.clear();
   }
-  else if (clear_breakpoints(m_stdout))
-  {
-    m_stdout.clear();
-  }
   else if (regex v("error: "); v.search(m_stdout) == 0)
   {
     m_stdout.clear();
@@ -536,7 +532,7 @@ void wex::debug::process_stdout(const std::string& text)
     }
     m_stdout.clear();
   }
-  else if (!m_stdout.contains("{"))
+  else if (!m_stdout.contains("{") || clear_breakpoints(m_stdout))
   {
     m_stdout.clear();
   }

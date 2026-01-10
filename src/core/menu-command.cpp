@@ -2,7 +2,7 @@
 // Name:      menu-command.cpp
 // Purpose:   Implementation of wex::menu_command class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -25,23 +25,41 @@ wex::menu_command::menu_command(const pugi::xml_node& node)
         const std::string text(node.attribute("type").value());
         type_t            id;
         if (text.empty() || (!text.contains("popup") && !text.contains("main")))
+        {
           id.set(IS_POPUP).set(IS_MAIN);
+        }
         if (text.contains("popup"))
+        {
           id.set(IS_POPUP);
+        }
         if (text.contains("main"))
+        {
           id.set(IS_MAIN);
+        }
         if (text.contains("separator"))
+        {
           id.set(SEPARATOR);
+        }
         if (text.contains("ellipses"))
+        {
           id.set(ELLIPSES);
+        }
         if (text.contains("ellipses-is-asked"))
+        {
           id.set(IS_ASKED);
+        }
         if (text.contains("is-lines"))
+        {
           id.set(IS_LINES);
+        }
         if (text.contains("is-selected"))
+        {
           id.set(IS_SELECTED);
+        }
         if (text.contains("is-visual"))
+        {
           id.set(IS_VISUAL);
+        }
 
         return id;
       }(node))
@@ -59,9 +77,8 @@ const std::string wex::menu_command::get_command(include_t type) const
 
   if (command.contains("&") && !type[INCLUDE_ACCELL])
   {
-    command.erase(
-      std::remove(command.begin(), command.end(), '&'),
-      command.end());
+    const auto e = std::ranges::remove(command, '&');
+    command.erase(e.begin(), e.end());
   }
 
   return command;

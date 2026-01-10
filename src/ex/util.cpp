@@ -2,7 +2,7 @@
 // Name:      util.cpp
 // Purpose:   Implementation of wex ex utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2025 Anton van Wezenbeek
+// Copyright: (c) 2020-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef __WXGTK__
@@ -106,25 +106,24 @@ bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
   {
     for (auto it = text.begin(); it != text.end(); ++it)
     {
+      bool current = false;
       switch (*it)
       {
         // Replace marker.
         case '\'':
         case '`':
-          if (auto next = std::next(it); next == text.end())
+          if (const auto next = std::next(it); next != text.end())
           {
-            /* NOLINTNEXTLINE */
-            output += *it;
+            if (const auto line = ex->marker_line(*(next)); line >= 0)
+            {
+              output += std::to_string(line + 1);
+              ++it;
+              changed = true;
+              current = true;
+            }
           }
-          else if (const auto line = ex->marker_line(*(next)); line >= 0)
+          if (!current)
           {
-            output += std::to_string(line + 1);
-            ++it;
-            changed = true;
-          }
-          else
-          {
-            /* NOLINTNEXTLINE */
             output += *it;
           }
           break;
