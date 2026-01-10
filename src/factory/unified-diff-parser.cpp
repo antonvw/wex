@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/parser/parser.hpp>
+#include <wex/core/log.h>
 #include <wex/factory/unified-diff.h>
 
 #include "unified-diff-parser.h"
@@ -130,5 +131,12 @@ bool wex::factory::unified_diff_parser::parse()
   auto const parser_all =
     *(parser_skip >> +parser_diff[action_diff]) >> bp::eoi[action_eoi];
 
-  return bp::parse(m_diff->input(), parser_all, bp::ws);
+  const bool res = bp::parse(m_diff->input(), parser_all, bp::ws);
+
+  if (!res)
+  {
+    log("unified_diff_parsing") << m_diff->input();
+  }
+
+  return res;
 }
