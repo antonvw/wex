@@ -5,7 +5,7 @@ Name:    wex-lexers.xml
 Purpose: Lexers configuration for wex.
          See lexilla 5.4.6 (https://www.scintilla.org/LexillaHistory.html)
 Author:  Anton van Wezenbeek
-Copyright: (c) 2009-2025, Anton van Wezenbeek
+Copyright: (c) 2009-2026, Anton van Wezenbeek
 -->
 
 <lexers>
@@ -168,6 +168,7 @@ Copyright: (c) 2009-2025, Anton van Wezenbeek
     <!--  cpp files like #include <map> really do not have a .h extension
          (e.g. /usr/include/c++/3.3.5/map) so add here. -->
     <text no="cpp"> // </text>
+    <text no="diff"> diff -- </text>
     <text no="phpscript"> &lt;?php </text>
     <text no="csh"> #!/bin/csh </text>
     <text no="python"> #!/bin/env python </text>

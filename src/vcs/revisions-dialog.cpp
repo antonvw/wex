@@ -2,7 +2,7 @@
 // Name:      revisions-dialog.cpp
 // Purpose:   Implementation of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024-2025 Anton van Wezenbeek
+// Copyright: (c) 2024-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -14,6 +14,8 @@
 #include <wex/ui/listview.h>
 #include <wex/vcs/unified-diff.h>
 #include <wex/vcs/vcs-entry.h>
+
+#include "util.h"
 
 namespace wex
 {
@@ -61,7 +63,17 @@ void rev_data::do_compare()
     m_ve->system(
       process_data(m_data).exe("diff -U0 " + value() + " " + m_repo_path)) == 0)
   {
-    unified_diff(path(m_repo_path), m_ve, frame()).parse();
+    if (vcs_diff("diff"))
+    {
+      unified_diff(path(m_repo_path), m_ve, frame()).parse();
+    }
+    else
+    {
+      frame()->open_file_vcs(
+        path(m_repo_path + " " + value()),
+        *m_ve,
+        data::stc());
+    }
   }
 };
 
