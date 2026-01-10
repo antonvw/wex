@@ -63,11 +63,9 @@ void rev_data::do_compare()
     m_ve->system(
       process_data(m_data).exe("diff -U0 " + value() + " " + m_repo_path)) == 0)
   {
-    if (vcs_diff("diff"))
-    {
-      unified_diff(path(m_repo_path), m_ve, frame()).parse();
-    }
-    else
+    if (
+      !vcs_diff("diff") ||
+      !unified_diff(path(m_repo_path), m_ve, frame()).parse())
     {
       frame()->open_file_vcs(
         path(m_repo_path + " " + value()),
