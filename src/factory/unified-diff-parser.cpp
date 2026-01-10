@@ -136,6 +136,7 @@ bool wex::factory::unified_diff_parser::parse()
   if (!res)
   {
     log("unified_diff_parsing") << m_diff->input();
+    log::status("Unified diff parsing failed");
   }
 
   return res;
