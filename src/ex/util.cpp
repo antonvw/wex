@@ -106,6 +106,7 @@ bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
   {
     for (auto it = text.begin(); it != text.end(); ++it)
     {
+      bool current = false;
       switch (*it)
       {
         // Replace marker.
@@ -118,9 +119,10 @@ bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
               output += std::to_string(line + 1);
               ++it;
               changed = true;
+              current = true;
             }
           }
-          if (!changed)
+          if (!current)
           {
             output += *it;
           }
