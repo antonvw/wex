@@ -76,6 +76,7 @@ jobs:
           ninja lcov
         env:
           NO_AT_BRIDGE: 1
+          GDK_BACKEND: x11
 
       - name: Artifact coredump
         uses: actions/upload-artifact@v6
