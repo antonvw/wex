@@ -2,7 +2,7 @@
 // Name:      test-unified-diffs.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024-2025 Anton van Wezenbeek
+// Copyright: (c) 2024-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/unified-diffs.h>
@@ -29,6 +29,8 @@ TEST_CASE("wex::unified_diffs")
     REQUIRE(!diffs.prev());
     REQUIRE(!diffs.checkout(0));
     REQUIRE(stc->get_line_count() == 51);
+    wex::factory::unified_diff uni;
+    REQUIRE(!diffs.finish(&uni));
   }
 
   SECTION("insert")
@@ -81,9 +83,9 @@ TEST_CASE("wex::unified_diffs")
     REQUIRE(stc->get_current_line() == 37);
     REQUIRE(diffs.checkout(37));
     REQUIRE(diffs.size() == 1);
-    CAPTURE(stc->get_text());
     REQUIRE(stc->get_text().contains("added git diff option"));
     REQUIRE(stc->get_line_count() == 51); // -38,1  and +45
+    REQUIRE(diffs.finish(&uni));
 
     diffs.insert(&uni); // back to first
     REQUIRE(diffs.pos() == 1);

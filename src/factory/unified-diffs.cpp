@@ -2,7 +2,7 @@
 // Name:      unified-diffs.cpp
 // Purpose:   Implementation of class unified_diffs
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2025 Anton van Wezenbeek
+// Copyright: (c) 2025-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -74,9 +74,16 @@ bool wex::unified_diffs::finish(const factory::unified_diff* diff)
     return false;
   }
 
-  m_lines[m_last_inserted_key] = *diff;
-
-  return true;
+  if (auto it = m_lines.find(m_last_inserted_key); it == m_lines.end())
+  {
+    log("unified_diffs finish") << m_last_inserted_key << "not present";
+    return false;
+  }
+  else
+  {
+    it->second = *diff;
+    return true;
+  }
 }
 
 bool wex::unified_diffs::first()
@@ -125,17 +132,14 @@ bool wex::unified_diffs::next()
     return first();
   }
 
-  if (m_lines_it == m_lines.end())
+  if (
+    m_lines_it == m_lines.end() ||
+    m_lines_it->second.type() == factory::unified_diff::diff_t::LAST)
   {
     return false;
   }
 
-  if (m_lines_it->second.type() == factory::unified_diff::diff_t::LAST)
-  {
-    return false;
-  }
-
-  if (m_lines_it == m_lines.end() || m_lines_it == std::prev(m_lines.end()))
+  if (m_lines_it == std::prev(m_lines.end()))
   {
     if (auto* frame = dynamic_cast<factory::frame*>(wxTheApp->GetTopWindow());
         frame != nullptr)
@@ -171,6 +175,11 @@ bool wex::unified_diffs::prev()
   if (m_stc->GetCurrentPos() >= m_stc->GetLength() - 2)
   {
     return end();
+  }
+
+  if (m_lines_it->second.type() == factory::unified_diff::diff_t::FIRST)
+  {
+    return false;
   }
 
   if (m_lines_it == m_lines.begin())
