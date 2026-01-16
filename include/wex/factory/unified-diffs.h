@@ -2,7 +2,7 @@
 // Name:      unified-diffs.h
 // Purpose:   Declaration of class unified_diffs
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024 Anton van Wezenbeek
+// Copyright: (c) 2024-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -20,7 +20,8 @@ class stc;
 
 /// Offers a class that collects unified diff invocations to be able
 /// to iterate through the differences, show them on the stc component,
-/// or checkout the difference.
+/// or checkout a difference. For each single diff the insert should be 
+/// called, and after the last one finish should be called.
 class unified_diffs
 {
 public:
@@ -38,7 +39,8 @@ public:
   /// Goto last diff line on stc.
   bool end();
 
-  /// Finishes diff.
+  /// Finishes diff: the diff should already be inserted, and
+  /// is now overwritten by the new  diff.
   bool finish(const factory::unified_diff* diff);
 
   /// Goto first diff line on stc.
@@ -48,7 +50,7 @@ public:
   void insert(const factory::unified_diff* diff);
 
   /// Goto next diff line on stc. If at end (we are not
-  /// on the last of all differenced), goes to the next stc.
+  /// on the last of all differences), goes to the next stc.
   /// If on first position of stc, goes to first diff line.
   bool next();
 
