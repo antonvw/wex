@@ -69,6 +69,8 @@ bool wex::unified_diffs::end()
 
 bool wex::unified_diffs::finish(const factory::unified_diff* diff)
 {
+  assert(diff != nullptr);
+
   if (m_lines.empty())
   {
     return false;
@@ -177,7 +179,9 @@ bool wex::unified_diffs::prev()
     return end();
   }
 
-  if (m_lines_it->second.type() == factory::unified_diff::diff_t::FIRST)
+  if (
+    m_lines_it == m_lines.end() ||
+    m_lines_it->second.type() == factory::unified_diff::diff_t::FIRST)
   {
     return false;
   }
