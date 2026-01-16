@@ -72,11 +72,10 @@ jobs:
           ulimit -c unlimited
           cd build
           ninja lcov-prep
-          xvfb-run --auto-servernum ctest -VV
+          xvfb-run --auto-servernum env GDK_BACKEND=x11 ctest -VV
           ninja lcov
         env:
           NO_AT_BRIDGE: 1
-          GDK_BACKEND: x11
 
       - name: Artifact coredump
         uses: actions/upload-artifact@v6
