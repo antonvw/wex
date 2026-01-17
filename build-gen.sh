@@ -44,7 +44,6 @@ option_samples=
 option_swig=
 option_tests=
 option_tidy=
-option_wayland="-U wxHAVE_WAYLAND_PROTOCOLS"
 
 while getopts ":B:d:D:G:abcghilpstT" opt; do
   case $opt in
@@ -158,8 +157,7 @@ cmake -B "${option_dir}" "${option_generator}" \
   ${option_samples} \
   ${option_swig} \
   ${option_tests} \
-  ${option_tidy} \
-  ${option_wayland}
+  ${option_tidy}
 
 if [[ "${option_prepare}" == "false" ]]; then
   if [[ "${option_generator}" =~ .*Ninja ]]; then
