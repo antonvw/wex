@@ -17,7 +17,7 @@ option(wxUSE_MEDIACTRL "Use mediactrl" OFF)
 option(wxUSE_PROPGRID "Use propgrid" OFF)
 option(wxUSE_RIBBON "Use ribbon" OFF)
 option(wxUSE_RICHTEXT "Use richtext" OFF)
-option(wxUSE_WAYLAND "Use richtext" NO)
+option(wxUSE_WAYLAND "Use richtext" OFF)
 
 set(wxHAVE_WAYLAND_CLIENT OFF)
 set(wxUSE_REGEX builtin)
