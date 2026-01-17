@@ -18,6 +18,8 @@ option(wxUSE_PROPGRID "Use propgrid" OFF)
 option(wxUSE_RIBBON "Use ribbon" OFF)
 option(wxUSE_RICHTEXT "Use richtext" OFF)
 option(wxUSE_WAYLAND "Use richtext" NO)
+
+set(wxHAVE_WAYLAND_CLIENT OFF)
 set(wxUSE_REGEX builtin)
 
 option(wxUSE_STD_STRING_CONV_IN_WXSTRING "Use std::string" ON)
