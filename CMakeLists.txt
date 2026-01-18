@@ -24,7 +24,6 @@ endif()
 
 if(wexBUILD_GITHUB)
   add_definitions(-DGITHUB)
-  add_definitions(-UwxHAVE_WAYLAND_PROTOCOLS)
 endif()
 
 set(Boost_USE_MULTITHREADED ON)
