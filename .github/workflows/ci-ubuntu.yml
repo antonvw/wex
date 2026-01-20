@@ -45,7 +45,7 @@ jobs:
         run: sudo pip install robotframework
 
       - name: Wayland
-        run: sudo apt install wayland-protocols
+        run: sudo apt-get install wayland-protocols libwayland-client0
 
       - name: Configure for coverage
         run: ./build-gen.sh -b -c -g -p -s -t -B ${{steps.install-boost.outputs.BOOST_ROOT}}
