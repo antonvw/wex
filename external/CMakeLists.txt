@@ -8,8 +8,6 @@ endif ()
 include_directories("../include")
 
 add_definitions(-D SCI_NAMESPACE)
-add_definitions(-U GDK_WINDOWING_WAYLAND)
-add_definitions(-U wxHAVE_WAYLAND_CLIENT)
 
 add_subdirectory(wxWidgets)
 
