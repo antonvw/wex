@@ -44,6 +44,9 @@ jobs:
       - name: Install robotframework
         run: sudo pip install robotframework
 
+      - name: Wayland
+        run: sudo apt install wayland-protocols
+
       - name: Configure for coverage
         run: ./build-gen.sh -b -c -g -p -s -t -B ${{steps.install-boost.outputs.BOOST_ROOT}}
         env:
