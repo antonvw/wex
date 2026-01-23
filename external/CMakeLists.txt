@@ -11,6 +11,11 @@ add_definitions(-D SCI_NAMESPACE)
 
 add_subdirectory(wxWidgets)
 
+set(wxBINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
+set(wxOUTPUT_DIR ${wxBINARY_DIR}/lib)
+
+include(wxWidgets/build/cmake/init.cmake)
+
 add_custom_target(ctags-build
   COMMAND ./autogen.sh
   COMMAND ./configure

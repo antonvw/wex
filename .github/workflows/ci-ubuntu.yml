@@ -44,6 +44,9 @@ jobs:
       - name: Install robotframework
         run: sudo pip install robotframework
 
+      - name: Wayland
+        run: sudo apt-get install wayland-protocols libwayland-client0
+
       - name: Configure for coverage
         run: ./build-gen.sh -b -c -g -p -s -t -B ${{steps.install-boost.outputs.BOOST_ROOT}}
         env:
@@ -72,7 +75,7 @@ jobs:
           ulimit -c unlimited
           cd build
           ninja lcov-prep
-          xvfb-run --auto-servernum ctest -VV
+          xvfb-run --auto-servernum env GDK_BACKEND=x11 ctest -VV
           ninja lcov
         env:
           NO_AT_BRIDGE: 1
