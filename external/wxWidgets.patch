@@ -8,13 +8,3 @@ index 1efa85e255..20ba26ac42 100644
  wx_add_library(wxqa ${QA_FILES})
 -wx_lib_link_libraries(wxqa PUBLIC wxxml)
 +wx_lib_link_libraries(wxqa PUBLIC)
-diff --git a/src/gtk/app.cpp b/src/gtk/app.cpp
-index d0783da0a9..e7ac29d0b1 100644
---- a/src/gtk/app.cpp
-+++ b/src/gtk/app.cpp
-@@ -32 +32,4 @@
--#include "wx/gtk/private/wayland.h"
-+
-+#ifdef #ifdef GDK_WINDOWING_WAYLAND
-+  #include "wx/gtk/private/wayland.h"
-+#endif
