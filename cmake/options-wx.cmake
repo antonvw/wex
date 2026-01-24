@@ -24,4 +24,3 @@ option(wxUSE_XRC "Use XRC" OFF)
 
 set(wxUSE_REGEX builtin)
 set(wxUSE_STD_STRING_CONV_IN_WXSTRING 1)
-set(wxUSE_WAYLAND 0)
