@@ -51,8 +51,6 @@ find_package(
 
 set(user $ENV{USER} CACHE INTERNAL "keep user")
 
-include(cmake/options-wx.cmake)
-
 execute_process(
   COMMAND git apply ${CMAKE_SOURCE_DIR}/external/wxWidgets.patch
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets
@@ -72,9 +70,17 @@ set(
   "${CMAKE_SOURCE_DIR}/external/wxWidgets/build/cmake/modules"
 )
 
-add_subdirectory(external)
+set(wxBINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
+set(wxOUTPUT_DIR ${wxBINARY_DIR}/lib)
 
+include(external/wxWidgets/build/cmake/functions.cmake)
+include(external/wxWidgets/build/cmake/options.cmake)
+include(cmake/options-wx.cmake)
+
+include(external/wxWidgets/build/cmake/init.cmake)
 include(external/wxWidgets/build/cmake/toolkit.cmake)
+
+add_subdirectory(external)
 
 file(READ src/core/version.cpp WEX_VERSION_CONTENTS)
 string(
