@@ -94,7 +94,7 @@ jobs:
         run: rm -rf build
 
       - name: Reconfigure and build for artifacts without testing
-        run: ./build-gen.sh -b -g -B ${{steps.install-boost.outputs.BOOST_ROOT}}
+        run: ./build-gen.sh -g -B ${{steps.install-boost.outputs.BOOST_ROOT}}
         env:
           BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
           CC: gcc-14
@@ -106,5 +106,5 @@ jobs:
           name: wex-lib-ubuntu
           path: |
             data/*.*
-            build/**/*.a
+            build/**/*.so
             build/**/setup.h
