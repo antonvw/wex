@@ -128,12 +128,13 @@ void wex::factory::process_imp::thread_error(const process* p)
      &es   = m_es]
     {
       std::string text;
+      char c;
 
-      while (es.good())
+      while (es.get(c))
       {
-        text.push_back(es.get());
+        text.push_back(c);
 
-        if (text.back() == '\n')
+        if (c == '\n')
         {
           WEX_POST(ID_SHELL_APPEND_ERROR, text, out)
 
@@ -161,10 +162,11 @@ void wex::factory::process_imp::thread_input(const process* p)
       std::string text, line;
       line.reserve(600);
       text.reserve(600);
+      char c;
 
-      while (is.good())
+      while (is.get(c))
       {
-        text.push_back(is.get());
+        text.push_back(c);
 
         if (debug)
         {
@@ -184,7 +186,7 @@ void wex::factory::process_imp::thread_input(const process* p)
           is.ignore(max_size, '\n');
           text.clear();
         }
-        else if (isspace(text.back()))
+        else if (isspace(c))
         {
           WEX_POST(ID_SHELL_APPEND, text, out)
           text.clear();
