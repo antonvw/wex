@@ -2,7 +2,7 @@
 // Name:      process-imp.cpp
 // Purpose:   Implementation of class wex::factory::process_imp
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -128,12 +128,13 @@ void wex::factory::process_imp::thread_error(const process* p)
      &es   = m_es]
     {
       std::string text;
+      char c;
 
-      while (es.good())
+      while (es.get(c))
       {
-        text.push_back(es.get());
+        text.push_back(c);
 
-        if (text.back() == '\n')
+        if (c == '\n')
         {
           WEX_POST(ID_SHELL_APPEND_ERROR, text, out)
 
@@ -161,42 +162,33 @@ void wex::factory::process_imp::thread_input(const process* p)
       std::string text, line;
       line.reserve(600);
       text.reserve(600);
-      int linesize = 0;
+      char c;
 
-      while (is.good())
+      while (is.get(c))
       {
-        text.push_back(is.get());
-        linesize++;
+        text.push_back(c);
 
-        if (linesize > 500)
+        if (debug)
+        {
+          line.append(text);
+
+          if (line.size() > 3)
+          {
+            WEX_POST(ID_DEBUG_STDOUT, line, dbg)
+            line.clear();
+          }
+        }
+
+        if (text.size() > 500)
         {
           text += "...\n";
           WEX_POST(ID_SHELL_APPEND, text, out)
           is.ignore(max_size, '\n');
           text.clear();
-          line.clear();
-          linesize = 0;
         }
-        else if (isspace(text.back()))
+        else if (std::isspace(static_cast<unsigned char>(c)))
         {
           WEX_POST(ID_SHELL_APPEND, text, out)
-
-          if (text.back() == '\n')
-          {
-            linesize = 0;
-          }
-
-          if (debug)
-          {
-            line.append(text);
-
-            if (line.back() == '\n')
-            {
-              WEX_POST(ID_DEBUG_STDOUT, line, dbg)
-              line.clear();
-            }
-          }
-
           text.clear();
         }
       }
