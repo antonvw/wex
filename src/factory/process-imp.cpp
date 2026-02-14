@@ -186,7 +186,7 @@ void wex::factory::process_imp::thread_input(const process* p)
           is.ignore(max_size, '\n');
           text.clear();
         }
-        else if (isspace(c))
+        else if (std::isspace(static_cast<unsigned char>(c)))
         {
           WEX_POST(ID_SHELL_APPEND, text, out)
           text.clear();
