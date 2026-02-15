@@ -65,8 +65,12 @@ bool wex::factory::unified_diff_parser::parse()
 
       m_diff->m_text.fill({});
 
+      int i = 0;
+
       for (const auto& line : std::get<1>(hunk))
       {
+        log::trace("unified_diff hunk") << i << line;
+
         auto fix(line);
 
         if (line.starts_with("\n"))
@@ -86,7 +90,11 @@ bool wex::factory::unified_diff_parser::parse()
             m_diff->m_text[0].push_back(fix.substr(1));
             m_diff->m_text[1].push_back(fix.substr(1));
             break;
+          default:
+            log("unified_diff unexpected hunk") << i << fix;
         }
+
+        i++;
       }
 
       m_diff->m_type =
