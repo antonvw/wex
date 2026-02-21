@@ -123,21 +123,24 @@ bool wex::factory::unified_diff_parser::parse()
   // line-from-either-file
   // line-from-either-file...
 
-  auto const parser_diff_lines = +(
-    bp::char_("-+ ") >> bp::lexeme[*(bp::char_ - bp::eol - "--- a/" - "@@" - "diff --")]);
+  auto const parser_diff_lines =
+    *(bp::char_("-+ ") >
+      bp::lexeme[*(bp::char_ - bp::eol - "\n--- a/" - "\n@@" - "\ndiff --")]);
 
   auto const parser_hunk =
-    bp::lit("@@") >> bp::repeat(2)[(bp::int_ >> ',' >> bp::int_) | bp::int_] >>
-    bp::lit("@@") >> bp::omit[bp::lexeme[+(bp::char_ - bp::eol)]] >> parser_diff_lines;
+    bp::lit("@@") > bp::repeat(2)[(bp::int_ >> ',' >> bp::int_) | bp::int_] >>
+    bp::lit("@@") > bp::omit[bp::lexeme[+(bp::char_ - bp::eol)]] >
+    parser_diff_lines;
 
   auto const parser_diff = bp::lit("--- a/") >> +(bp::char_ - "+++ b/") >>
-                           bp::lit("+++ b/") >> +(bp::char_ - "@@" - "diff --") >>
-                           +parser_hunk;
+                           bp::lit("+++ b/") >>
+                           +(bp::char_ - "@@" - "diff --") >> +parser_hunk;
 
-  auto const parser_skip = bp::omit[*(bp::char_ - "--- a/")];
+  auto const parser_skip =
+    bp::omit[bp::lexeme[*(bp::char_ - (bp::eol >> "--- a/"))]];
 
   auto const parser_all =
-    *(parser_skip >> +parser_diff[action_diff]) >> bp::eoi[action_eoi];
+    *(parser_skip >> +parser_diff[action_diff]) > bp::eoi[action_eoi];
 
   const bool res = bp::parse(m_diff->input(), parser_all, bp::ws);
 

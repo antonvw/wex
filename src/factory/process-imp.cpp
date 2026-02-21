@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
-
 #include <wex/core/log.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/process.h>

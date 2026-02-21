@@ -28,7 +28,7 @@ TEST_CASE("wex::factory::unified_diff_parser")
       "index e4a9c0522..b2637803a 100644\n"
       "--- a/CHANGELOG.md\n"
       "+++ b/CHANGELOG.md\n"
-      "@@ -15,0 +16 @@ The format is based on ...\n");
+      "@ -15,0 +16 @@ The format is based on ...\n");
 
     wex::factory::unified_diff_parser parser(&uni);
 
