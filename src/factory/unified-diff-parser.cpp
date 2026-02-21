@@ -71,27 +71,20 @@ bool wex::factory::unified_diff_parser::parse()
       {
         log::trace("unified_diff hunk") << i << line;
 
-        auto fix(line);
-
-        if (line.starts_with("\n"))
-        {
-          fix = fix.substr(1);
-        }
-
-        switch (fix[0])
+        switch (line[0])
         {
           case '+':
-            m_diff->m_text[1].push_back(fix.substr(1));
+            m_diff->m_text[1].push_back(line.substr(1));
             break;
           case '-':
-            m_diff->m_text[0].push_back(fix.substr(1));
+            m_diff->m_text[0].push_back(line.substr(1));
             break;
           case ' ':
-            m_diff->m_text[0].push_back(fix.substr(1));
-            m_diff->m_text[1].push_back(fix.substr(1));
+            m_diff->m_text[0].push_back(line.substr(1));
+            m_diff->m_text[1].push_back(line.substr(1));
             break;
           default:
-            log("unified_diff unexpected hunk") << i << fix;
+            log("unified_diff unexpected hunk") << i << line;
         }
 
         i++;
