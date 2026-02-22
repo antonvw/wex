@@ -52,12 +52,13 @@ find_package(
 set(user $ENV{USER} CACHE INTERNAL "keep user")
 
 execute_process(
-  COMMAND git apply ${CMAKE_SOURCE_DIR}/external/wxWidgets.patch
+  COMMAND
+    git apply --reverse --check ${CMAKE_SOURCE_DIR}/external/wxWidgets.patch
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets
 )
 
 execute_process(
-  COMMAND git apply ${CMAKE_SOURCE_DIR}/external/lexilla.patch
+  COMMAND git apply --reverse --check${CMAKE_SOURCE_DIR}/external/lexilla.patch
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/lexilla
 )
 
