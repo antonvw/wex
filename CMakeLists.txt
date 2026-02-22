@@ -51,15 +51,33 @@ find_package(
 
 set(user $ENV{USER} CACHE INTERNAL "keep user")
 
+# first patch
 execute_process(
-  COMMAND git apply ${CMAKE_SOURCE_DIR}/external/wxWidgets.patch
+  COMMAND git status
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets
+  OUTPUT_VARIABLE git_STATUS
 )
 
+if(NOT ${git_STATUS} MATCHES "qa/")
+  execute_process(
+    COMMAND git apply ${CMAKE_SOURCE_DIR}/external/wxWidgets.patch
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets
+  )
+endif()
+
+# second patch
 execute_process(
-  COMMAND git apply ${CMAKE_SOURCE_DIR}/external/lexilla.patch
+  COMMAND git status
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/lexilla
+  OUTPUT_VARIABLE git_STATUS
 )
+
+if(NOT ${git_STATUS} MATCHES "Lexilla.cxx")
+  execute_process(
+    COMMAND git apply ${CMAKE_SOURCE_DIR}/external/lexilla.patch
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/lexilla
+  )
+endif()
 
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(external/trompeloeil/include/catch2)
