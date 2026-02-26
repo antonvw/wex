@@ -35,7 +35,7 @@ jobs:
         run: cd build && xcodebuild -target cppcheck
 
       - name: Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: wex-lib-macos
           path: |
