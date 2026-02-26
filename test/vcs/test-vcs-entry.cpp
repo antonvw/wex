@@ -2,7 +2,7 @@
 // Name:      test-vcs-entry.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2025 Anton van Wezenbeek
+// Copyright: (c) 2015-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <filesystem>
@@ -35,6 +35,7 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
     REQUIRE(
       wex::vcs_entry().flags_location() ==
       wex::vcs_entry::flags_location_t::POSTFIX);
+    REQUIRE(wex::vcs_entry().get_diff_flags().contains("U0"));
   }
 
   SECTION("constructor using xml")
@@ -53,6 +54,7 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
     REQUIRE(!entry.get_command().get_command().empty());
     REQUIRE(entry.admin_dir() == ".git");
     REQUIRE(entry.get_flags().empty());
+    REQUIRE(entry.get_diff_flags().contains("U0"));
 
 #ifdef __WXMSW__
     REQUIRE(entry.get_branch("\\windows").empty());

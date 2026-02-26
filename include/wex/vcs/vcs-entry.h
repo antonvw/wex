@@ -2,7 +2,7 @@
 // Name:      vcs-entry.h
 // Purpose:   Declaration of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2025 Anton van Wezenbeek
+// Copyright: (c) 2010-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -87,6 +87,9 @@ public:
 
   /// Returns blame info.
   blame& get_blame() { return m_blame; }
+
+  /// Returns diff flags.
+  const std::string get_diff_flags() const;
 
   /// Returns the name of current branch.
   const std::string get_branch(const std::string& wd = std::string()) const;

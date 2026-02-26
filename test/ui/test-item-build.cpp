@@ -2,12 +2,22 @@
 // Name:      test-item-build.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2025 Anton van Wezenbeek
+// Copyright: (c) 2022-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ui/item-build.h>
 
 #include "test.h"
+
+TEST_CASE("wex::add_checkboxes")
+{
+  const auto& items(
+    wex::add_checkboxes({{"1", true}, {"2", true}, {"3", false}}));
+
+  REQUIRE(items.size() == 3);
+  REQUIRE(items.front().label() == "1");
+  REQUIRE(items.front().type() == wex::item::CHECKBOX);
+}
 
 TEST_CASE("wex::add_combobox_with_max")
 {

@@ -60,8 +60,9 @@ private:
 void rev_data::do_compare()
 {
   if (
-    m_ve->system(
-      process_data(m_data).exe("diff -U0 " + value() + " " + m_repo_path)) == 0)
+    m_ve->system(process_data(m_data).exe(
+      "diff " + m_ve->get_diff_flags() + " " + value() + " " + m_repo_path)) ==
+    0)
   {
     if (
       !vcs_diff("diff") ||

@@ -2,7 +2,7 @@
 // Name:      vcs-entry.cpp
 // Purpose:   Implementation of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2025 Anton van Wezenbeek
+// Copyright: (c) 2010-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/util.h>
@@ -131,7 +131,7 @@ bool wex::vcs_entry::execute(
   {
     if (get_command().get_command() == "diff")
     {
-      flags = "-U0";
+      flags = get_diff_flags();
     }
     else if (get_command().ask_flags())
     {
@@ -186,6 +186,18 @@ const std::string wex::vcs_entry::get_branch(const std::string& wd) const
   return std::string();
 }
 
+const std::string wex::vcs_entry::get_diff_flags() const
+{
+  std::string flags = "-U0";
+  
+  if (config("vcs.Use unified diff view").get(true))
+  {
+    flags += " -b";
+  }
+    
+  return flags;
+}
+  
 const std::string wex::vcs_entry::get_flags() const
 {
   return config(flags_key()).get();
