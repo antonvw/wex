@@ -6,14 +6,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
-#include <numeric>
 
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/spirit/home/x3.hpp>
 #include <boost/spirit/home/x3/support/ast/variant.hpp>
 
 #include <wex/ex/ex-stream.h>
-#include <wex/ex/ex.h>
 #include <wex/factory/stc.h>
 
 #include "eval-imp.h"
@@ -224,8 +222,8 @@ evaluator_imp::eval(const wex::ex* ex, const std::string& text)
     ast::program program;
     ast::eval    eval(ex);
 
-    auto                                 iter = text.begin();
-    boost::spirit::x3::ascii::space_type space;
+    auto                  iter = text.begin();
+    x3::ascii::space_type space;
     const bool r = phrase_parse(iter, text.end(), calc, space, program);
 
     if (r && iter == text.end())

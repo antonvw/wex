@@ -5,6 +5,8 @@
 // Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma once
+
 #include <expected>
 
 #include <wex/ex/ex.h>

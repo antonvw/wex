@@ -5,7 +5,6 @@
 // Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/ex/ex.h>
 #include <wex/factory/stc.h>
 
 #include "eval-imp.h"
