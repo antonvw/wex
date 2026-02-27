@@ -1,6 +1,8 @@
+---
 name: github-ci-osx
 
-on: [push]
+on:
+  push:
 
 jobs:
   build:
