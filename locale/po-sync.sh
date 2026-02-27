@@ -4,7 +4,9 @@ files="*.po"
 
 function determine_files
 {
-  find ../ -type d \( -path ../external -o -path ../test \) -prune -o -type f \( -name *.cpp -o -name *.h \) -print > locs
+  find ../ \
+    -type d \( -path ../external -o -path ../test \) -prune -o \
+    -type f \( -name "*.cpp" -o -name "*.h" \) -print > locs
 }
 
 function create_mo()
@@ -17,7 +19,7 @@ function create_mo()
       xgettext -F -j -k_ -o "$f" --no-location --copyright-holder="A.M. van Wezenbeek" -f locs
       substitute "$f"
     else
-      echo $f does not exist
+      echo "$f" does not exist
     fi
   done
 }
