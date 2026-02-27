@@ -149,11 +149,14 @@ int wex::vcs::config_dialog(const data::window& par) const
   // use a radiobox
   std::vector<item> v{{"vcs.VCS", choices, true, data::item().columns(cols)}};
 
-  v.append_range(add_checkboxes(
+  // append checkboxes (using append_range gives error on gcc-14)
+  const auto& c(add_checkboxes(
     {{_("vcs.Always ask flags"), true},
      {_("vcs.Find includes submodules"), false},
      {_("vcs.Use unified diff view"), true},
      {_("vcs.Ignore whitespace"), false}}));
+
+  v.insert(v.end(), c.begin(), c.end());
 
   std::transform(
     m_store->begin() + 1,
