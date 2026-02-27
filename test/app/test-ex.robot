@@ -116,6 +116,7 @@ stream
 	Ex Mode
 
 substitute
+	[Tags]	not on github
 	Input	:a|line has text
 	...	:a|line has a tiger
 	...	:a|line has simon and simon and garfunkel
