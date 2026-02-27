@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - added regular expression flag and "in files" to git grep
   and improved handling matches
-- added ingore whitespace flag to git diff
+- added ignore whitespace flag to git diff
 - added add_path to wex::factory::link
 - added separate styling for not yet committed lines
 - added vim gJ command
