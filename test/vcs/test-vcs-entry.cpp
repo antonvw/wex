@@ -7,6 +7,7 @@
 
 #include <filesystem>
 
+#include <wex/core/config.h>
 #include <wex/core/log-none.h>
 #include <wex/core/path.h>
 #include <wex/factory/defs.h>
@@ -36,6 +37,10 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
       wex::vcs_entry().flags_location() ==
       wex::vcs_entry::flags_location_t::POSTFIX);
     REQUIRE(wex::vcs_entry().get_diff_flags().contains("U0"));
+    wex::config(_("vcs.Ignore whitespace")).set(false);
+    REQUIRE(!wex::vcs_entry().get_diff_flags().contains("-b"));
+    wex::config(_("vcs.Ignore whitespace")).set(true);
+    REQUIRE(wex::vcs_entry().get_diff_flags().contains("-b"));
   }
 
   SECTION("constructor using xml")

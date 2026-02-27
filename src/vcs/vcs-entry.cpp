@@ -190,7 +190,7 @@ const std::string wex::vcs_entry::get_diff_flags() const
 {
   std::string flags = "-U0";
   
-  if (config("vcs.Use unified diff view").get(true))
+  if (config("vcs.Ignore whitespace").get(true))
   {
     flags += " -b";
   }
