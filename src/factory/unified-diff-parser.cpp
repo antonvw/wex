@@ -117,25 +117,26 @@ bool wex::factory::unified_diff_parser::parse()
   // line-from-either-file...
 
   auto const parser_diff_lines =
-    *(bp::char_("-+ ") >
-      bp::lexeme[*(bp::char_ - bp::eol - "\n--- a/" - "\n@@" - "\ndiff --")]);
+    *(bp::eol >> bp::char_("-+ ") >
+      *(bp::char_ - bp::eol - "\n--- a/" - "\n@@" - "\ndiff --"));
 
   auto const parser_hunk =
-    bp::lit("@@") > bp::repeat(2)[(bp::int_ >> ',' >> bp::int_) | bp::int_] >>
-    bp::lit("@@") > bp::omit[bp::lexeme[+(bp::char_ - bp::eol)]] >
-    parser_diff_lines;
+    bp::lit("\n@@") >
+    bp::skip(bp::ws)
+      [bp::repeat(2)[(bp::int_ >> ',' >> bp::int_) | bp::int_] >>
+       bp::lit("@@")] > bp::omit[*(bp::char_ - bp::eol)] > parser_diff_lines;
 
-  auto const parser_diff = bp::lit("--- a/") >> +(bp::char_ - "+++ b/") >>
-                           bp::lit("+++ b/") >>
-                           +(bp::char_ - "@@" - "diff --") >> +parser_hunk;
+  auto const parser_diff = bp::lit("\n--- a/") >> +(bp::char_ - "\n+++ b/") >>
+                           bp::lit("\n+++ b/") >>
+                           +(bp::char_ - "\n@@" - "\ndiff --") >> +parser_hunk;
 
-  auto const parser_skip =
-    bp::omit[bp::lexeme[*(bp::char_ - (bp::eol >> "--- a/"))]];
+  auto const parser_skip = bp::omit[*(bp::char_ - (bp::eol >> "--- a/"))];
 
   auto const parser_all =
-    *(parser_skip >> +parser_diff[action_diff]) > bp::eoi[action_eoi];
+    *(parser_skip >> +parser_diff[action_diff]) > *bp::ws > bp::eoi[action_eoi];
 
-  const bool res = bp::parse(m_diff->input(), parser_all, bp::ws);
+  const bool res =
+    m_diff->input().empty() || bp::parse(m_diff->input(), parser_all);
 
   if (!res)
   {

@@ -2,7 +2,7 @@
 // Name:      vcs.cpp
 // Purpose:   Implementation of wex::vcs class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2025 Anton van Wezenbeek
+// Copyright: (c) 2011-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -12,6 +12,7 @@
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
+#include <wex/ui/item-build.h>
 #include <wex/ui/item-dialog.h>
 #include <wex/ui/menus.h>
 #include <wex/vcs/vcs.h>
@@ -89,9 +90,10 @@ wex::vcs::vcs(const std::vector<wex::path>& files, int command_no)
     if (m_files.size() == 1 && !m_files[0].file_exists())
     {
       config(_("vcs.Base folder"))
-        .set_first_of(factory::vcs_admin(m_entry->admin_dir(), m_files[0])
-                        .toplevel()
-                        .string());
+        .set_first_of(
+          factory::vcs_admin(m_entry->admin_dir(), m_files[0])
+            .toplevel()
+            .string());
     }
 
     if (m_entry->set_command(command_no))
@@ -147,13 +149,14 @@ int wex::vcs::config_dialog(const data::window& par) const
   // use a radiobox
   std::vector<item> v{{"vcs.VCS", choices, true, data::item().columns(cols)}};
 
-  config(_("vcs.Always ask flags")).get(true);
-  config(_("vcs.Find includes submodules")).get(false);
-  config(_("vcs.Use unified diff view")).get(true);
+  // append checkboxes (using append_range gives error on gcc-14)
+  const auto& c(add_checkboxes(
+    {{_("vcs.Always ask flags"), true},
+     {_("vcs.Find includes submodules"), false},
+     {_("vcs.Use unified diff view"), true},
+     {_("vcs.Ignore whitespace"), false}}));
 
-  v.emplace_back(_("vcs.Always ask flags"), item::CHECKBOX);
-  v.emplace_back(_("vcs.Find includes submodules"), item::CHECKBOX);
-  v.emplace_back(_("vcs.Use unified diff view"), item::CHECKBOX);
+  v.insert(v.end(), c.begin(), c.end());
 
   std::transform(
     m_store->begin() + 1,
@@ -226,13 +229,14 @@ bool wex::vcs::execute()
 
   if (m_files.size() > 1)
   {
-    args = clipboard_add(std::ranges::fold_left(
-      m_files,
-      std::string(),
-      [](const std::string& a, const wex::path& b)
-      {
-        return a + quoted_find(b.string()) + " ";
-      }));
+    args = clipboard_add(
+      std::ranges::fold_left(
+        m_files,
+        std::string(),
+        [](const std::string& a, const wex::path& b)
+        {
+          return a + quoted_find(b.string()) + " ";
+        }));
   }
   else if (m_entry->name() == "git")
   {
