@@ -58,7 +58,7 @@ jobs:
         run: cd build && ninja
 
       # Upload the del binary, which we will need to debug the core
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: executable
           path: build/test/del/wex-test-del
@@ -81,7 +81,7 @@ jobs:
           NO_AT_BRIDGE: 1
 
       - name: Artifact coredump
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: ${{ failure() }}  # Run only if something went wrong
         with:
           name: coredump
@@ -101,7 +101,7 @@ jobs:
           CXX: g++-14
 
       - name: Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: wex-lib-ubuntu
           path: |
