@@ -9,14 +9,14 @@
 
 #include <expected>
 
-#include <wex/ex/ex.h>
-
 namespace wex
 {
+class evaluator;
+
 class evaluator_imp
 {
 public:
   std::expected<int, std::string>
-  eval(const wex::ex* ex, const std::string& text);
+  eval(const evaluator* ev, const std::string& text);
 };
 }; // namespace wex
