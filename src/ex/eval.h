@@ -2,7 +2,7 @@
 // Name:      eval.h
 // Purpose:   Declaration of class wex::evaluator
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2024 Anton van Wezenbeek
+// Copyright: (c) 2019-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -18,20 +18,27 @@ class ex;
 class evaluator
 {
 public:
-  /// Default constructor.
-  evaluator();
+  /// Constructor, specify the ex component, e.g. for line number (.).
+  evaluator(const ex* ex);
 
   /// Destructor.
   ~evaluator();
 
   /// Returns calculated value.
   std::expected<int, std::string> eval(
-    /// the ex component, e.g. for line number (.) if present in text
-    const ex* ex,
     /// text containing the expression to be evaluated
-    const std::string& text) const;
+    const std::string& text);
+
+  /// Returns token calculation, is called from eval.
+  /// Returns 0 if error.
+  int eval_token(
+    /// token to be evaluated
+    const std::string& token,
+    /// number of be added or substracted
+    int rhs = 0) const;
 
 private:
   evaluator_imp* m_eval;
+  const wex::ex* m_ex{nullptr};
 };
 }; // namespace wex
