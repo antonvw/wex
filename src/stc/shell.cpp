@@ -2,7 +2,7 @@
 // Name:      shell.cpp
 // Purpose:   Implementation of class wex::shell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2025 Anton van Wezenbeek
+// Copyright: (c) 2011-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -61,7 +61,7 @@ wex::shell::shell(
           return;
         }
 
-        if (text.back() == '\n')
+        if (std::isspace(text.back()))
         {
           AppendText(m_text + text);
           m_text.clear();
@@ -70,7 +70,7 @@ wex::shell::shell(
         {
           m_text += text;
         }
-        get_frame()->output(event.GetString());
+        get_frame()->output(text);
       },
       ID_SHELL_APPEND},
 

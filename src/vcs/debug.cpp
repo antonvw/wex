@@ -436,7 +436,7 @@ void wex::debug::process_stdout(const std::string& text)
 {
   m_stdout += text;
 
-  log::trace("debug stdout") << m_stdout << m_path;
+  log::trace("debug stdout") << m_stdout;
   data::stc data;
 
   if (MATCH(BREAKPOINT_NO_FILE_LINE) == 3)

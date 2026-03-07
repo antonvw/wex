@@ -127,7 +127,7 @@ void wex::factory::process_imp::thread_error(const process* p)
      &es   = m_es]
     {
       std::string text;
-      char c;
+      char        c;
 
       while (es.get(c))
       {
@@ -169,9 +169,9 @@ void wex::factory::process_imp::thread_input(const process* p)
 
         if (debug)
         {
-          line.append(text);
+          line.push_back(c);
 
-          if (line.size() > 3)
+          if (c == '\n')
           {
             WEX_POST(ID_DEBUG_STDOUT, line, dbg)
             line.clear();
@@ -217,7 +217,8 @@ void wex::factory::process_imp::thread_output(const process* p)
           {
             log::debug("async_system") << "write:" << text;
 
-            os << text << "\n";
+            // use endl instead of \n to flush the data
+            os << text << std::endl;
 
             if (debug)
             {

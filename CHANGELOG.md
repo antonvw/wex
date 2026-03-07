@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [26.04] - 2026-04 [Unreleased]
+## [26.04] - 2026-03-14
 
 ### Added
 
@@ -34,6 +34,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - fixed possible crash when finding previous char using ; or ,
 - fixed global move and copy commands
 - fixed vi find char when char is not alpha numeric
+- fixed debugging
 
 ## [25.10] - 2025-09-21
 
