@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [26.04] - 2026-04 [Unreleased]
+## [26.10] - 2026-10 [Unreleased]
+
+## [26.04] - 2026-03-14
 
 ### Added
 
@@ -34,6 +36,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - fixed possible crash when finding previous char using ; or ,
 - fixed global move and copy commands
 - fixed vi find char when char is not alpha numeric
+- fixed debugging
 
 ## [25.10] - 2025-09-21
 
@@ -630,7 +633,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - CEdit is used as base for the output
 - Visual C++ 5.0
 
-[Unreleased]: https://github.com/antonvw/wex/compare/v25.10..HEAD
+[Unreleased]: https://github.com/antonvw/wex/compare/v26.04..HEAD
+[26.04]:      https://github.com/antonvw/wex/compare/v25.10...v26.04
 [25.10]:      https://github.com/antonvw/wex/compare/v25.04...v25.10
 [25.04]:      https://github.com/antonvw/wex/compare/v24.10...v25.04
 [24.10]:      https://github.com/antonvw/wex/compare/v24.04...v24.10
