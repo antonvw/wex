@@ -633,7 +633,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - CEdit is used as base for the output
 - Visual C++ 5.0
 
-[Unreleased]: https://github.com/antonvw/wex/compare/v25.10..HEAD
+[Unreleased]: https://github.com/antonvw/wex/compare/v26.04..HEAD
 [26.04]:      https://github.com/antonvw/wex/compare/v25.10...v26.04
 [25.10]:      https://github.com/antonvw/wex/compare/v25.04...v25.10
 [25.04]:      https://github.com/antonvw/wex/compare/v24.10...v25.04
