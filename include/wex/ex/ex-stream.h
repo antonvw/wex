@@ -2,7 +2,7 @@
 // Name:      ex-stream.h
 // Purpose:   Declaration of class wex::ex_stream
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2025 Anton van Wezenbeek
+// Copyright: (c) 2020-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -160,7 +160,8 @@ private:
 
   const size_t m_buffer_size, m_context_lines;
 
-  size_t m_line_size_requested{0}, m_line_size_current, m_line_size_default{0};
+  size_t m_line_size_requested{0}, m_line_size_current{0},
+    m_line_size_default{0};
 
   std::fstream* m_stream{nullptr}; // pointer in m_file to actual stream
   file *        m_file{nullptr}, *m_temp{nullptr}, *m_work{nullptr};

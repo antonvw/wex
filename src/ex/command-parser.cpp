@@ -2,7 +2,7 @@
 // Name:      command-parser.cpp
 // Purpose:   Implementation of class wex::command_parser
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -19,8 +19,8 @@ wex::command_parser::command_parser(
   parse_t            type)
   : command_parser_data(text)
   , m_ex(ex)
+  , m_is_ok(m_text.empty() ? false : parse(type))
 {
-  m_is_ok = m_text.empty() ? false : parse(type);
 }
 
 bool wex::command_parser::parse(parse_t type)
@@ -99,46 +99,48 @@ bool wex::command_parser::parse_other()
   const auto& cmds_1addr(address(m_ex).regex_commands());
   const auto& cmds_2addr(addressrange(m_ex).regex_commands());
 
-  if (regex v({// 2addr % range
-               {"^%" + cmds_2addr,
-                [&](const regex::match_t& m)
-                {
-                  m_type  = address_t::TWO_ADDR;
-                  m_range = "%";
-                  m_cmd   = m[0];
-                  m_text  = m[1];
-                }},
-               // 1addr (or none)
-               {"^(" + addr + ")?" + cmds_1addr,
-                [&](const regex::match_t& m)
-                {
-                  m_type  = address_t::ONE_ADDR;
-                  m_range = m[0];
-                  m_cmd   = m[1];
-                  m_text  = boost::algorithm::trim_left_copy(m[2]);
-                  log::trace("ex 1addr") << m_range;
-                }},
-               // 2addr
-               {"^(" + addr + "),(" + addr + ")" + cmds_2addr,
-                [&](const regex::match_t& m)
-                {
-                  m_type  = address_t::TWO_ADDR;
-                  m_range = m[0] + "," + m[1];
-                  m_cmd   = m[2];
-                  m_text  = m[3];
-                  log::trace("ex 2addr") << m_range;
-                }},
-               // 2addr
-               {"^(" + addr + ")?" + cmds_2addr,
-                [&](const regex::match_t& m)
-                {
-                  m_type  = address_t::TWO_ADDR;
-                  m_range = m[0];
-                  m_cmd   = m[1];
-                  m_text  = m[2];
-                  log::trace("ex 2addr") << m_range;
-                }}});
-      v.match(m_text) <= 1)
+  if (
+    regex v(
+      {// 2addr % range
+       {"^%" + cmds_2addr,
+        [&](const regex::match_t& m)
+        {
+          m_type  = address_t::TWO_ADDR;
+          m_range = "%";
+          m_cmd   = m[0];
+          m_text  = m[1];
+        }},
+       // 1addr (or none)
+       {"^(" + addr + ")?" + cmds_1addr,
+        [&](const regex::match_t& m)
+        {
+          m_type  = address_t::ONE_ADDR;
+          m_range = m[0];
+          m_cmd   = m[1];
+          m_text  = boost::algorithm::trim_left_copy(m[2]);
+          log::trace("ex 1addr") << m_range;
+        }},
+       // 2addr
+       {"^(" + addr + "),(" + addr + ")" + cmds_2addr,
+        [&](const regex::match_t& m)
+        {
+          m_type  = address_t::TWO_ADDR;
+          m_range = m[0] + "," + m[1];
+          m_cmd   = m[2];
+          m_text  = m[3];
+          log::trace("ex 2addr") << m_range;
+        }},
+       // 2addr
+       {"^(" + addr + ")?" + cmds_2addr,
+        [&](const regex::match_t& m)
+        {
+          m_type  = address_t::TWO_ADDR;
+          m_range = m[0];
+          m_cmd   = m[1];
+          m_text  = m[2];
+          log::trace("ex 2addr") << m_range;
+        }}});
+    v.match(m_text) <= 1)
   {
     m_type = address_t::NO_ADDR;
   }
@@ -161,17 +163,18 @@ bool wex::command_parser::parse_selection()
 
   const auto& cmds_2addr(addressrange(m_ex).regex_commands());
 
-  if (regex r(
-        {{ex_command::selection_range() + cmds_2addr,
-          [&](const regex::match_t& m)
-          {
-            m_type  = address_t::TWO_ADDR;
-            m_range = ex_command::selection_range();
-            m_cmd   = m[0];
-            m_text  = m[1];
-            log::trace("ex selection") << m_range;
-          }}});
-      r.match(m_text) == 2)
+  if (
+    regex r(
+      {{ex_command::selection_range() + cmds_2addr,
+        [&](const regex::match_t& m)
+        {
+          m_type  = address_t::TWO_ADDR;
+          m_range = ex_command::selection_range();
+          m_cmd   = m[0];
+          m_text  = m[1];
+          log::trace("ex selection") << m_range;
+        }}});
+    r.match(m_text) == 2)
   {
     return true;
   }

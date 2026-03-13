@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::factory::unified_diff
 //            https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024-2025 Anton van Wezenbeek
+// Copyright: (c) 2024-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
@@ -16,6 +16,7 @@
 
 wex::factory::unified_diff::unified_diff(std::string input)
   : m_input(std::move(input))
+  , m_range{0, 0, 0, 0}
 {
 }
 

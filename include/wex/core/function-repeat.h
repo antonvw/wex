@@ -2,7 +2,7 @@
 // Name:      function-repeat.h
 // Purpose:   Declaration of class wex::function_repeat
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023-2024 Anton van Wezenbeek
+// Copyright: (c) 2023-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -45,7 +45,7 @@ private:
   wxEvtHandler* m_handler;
   wxTimer*      m_timer{nullptr};
 
-  wxWindowID m_timer_id;
+  wxWindowID m_timer_id{wxID_ANY};
 
   repeat_t m_f;
 

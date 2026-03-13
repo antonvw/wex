@@ -46,7 +46,7 @@ struct ex
 
 struct signed_
 {
-  char    sign;
+  char    sign{0};
   operand operand_;
 };
 

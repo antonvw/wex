@@ -2,7 +2,7 @@
 // Name:      command-parser.h
 // Purpose:   Declaration of class wex::command_parser
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -58,9 +58,9 @@ private:
   bool parse_other();
   bool parse_selection();
 
+  ex* m_ex;
+
   bool      m_is_ok{false};
   address_t m_type{address_t::NO_ADDR};
-
-  ex* m_ex;
 };
 }; // namespace wex

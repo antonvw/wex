@@ -76,16 +76,14 @@ bool wex::unified_diffs::finish(const factory::unified_diff* diff)
     return false;
   }
 
-  if (auto it = m_lines.find(m_last_inserted_key); it == m_lines.end())
-  {
-    log("unified_diffs finish") << m_last_inserted_key << "not present";
-    return false;
-  }
-  else
+  if (auto it = m_lines.find(m_last_inserted_key); it != m_lines.end())
   {
     it->second = *diff;
     return true;
   }
+
+  log("unified_diffs finish") << m_last_inserted_key << "not present";
+  return false;
 }
 
 bool wex::unified_diffs::first()
@@ -143,8 +141,9 @@ bool wex::unified_diffs::next()
 
   if (m_lines_it == std::prev(m_lines.end()))
   {
-    if (auto* frame = dynamic_cast<factory::frame*>(wxTheApp->GetTopWindow());
-        frame != nullptr)
+    if (
+      auto* frame = dynamic_cast<factory::frame*>(wxTheApp->GetTopWindow());
+      frame != nullptr)
     {
       frame->page_next(true);
     }
@@ -188,8 +187,9 @@ bool wex::unified_diffs::prev()
 
   if (m_lines_it == m_lines.begin())
   {
-    if (auto* frame = dynamic_cast<factory::frame*>(wxTheApp->GetTopWindow());
-        frame != nullptr)
+    if (
+      auto* frame = dynamic_cast<factory::frame*>(wxTheApp->GetTopWindow());
+      frame != nullptr)
     {
       frame->page_prev(true);
     }
