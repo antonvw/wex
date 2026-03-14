@@ -2,7 +2,7 @@
 // Name:      test-addressrange-mark.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024-2025 Anton van Wezenbeek
+// Copyright: (c) 2024-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex/addressrange.h>
@@ -38,12 +38,7 @@ TEST_CASE("wex::addressrange_mark", "[!mayfail]")
 
     delete arm;
 
-    REQUIRE(ex->marker_line('x') == wex::LINE_NUMBER_UNKNOWN);
-    REQUIRE(ex->marker_line('y') == wex::LINE_NUMBER_UNKNOWN);
-    REQUIRE(ex->marker_line('z') == wex::LINE_NUMBER_UNKNOWN);
-    REQUIRE(ex->marker_line('T') == wex::LINE_NUMBER_UNKNOWN);
-    REQUIRE(ex->marker_line('#') == wex::LINE_NUMBER_UNKNOWN);
-    REQUIRE(ex->marker_line('$') == wex::LINE_NUMBER_UNKNOWN);
+    REQUIRE(stc->MarkerNext(0, 0xFFFF) == -1); // check no markers left
   }
 
   delete ex;
