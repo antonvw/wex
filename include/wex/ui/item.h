@@ -388,10 +388,10 @@ public:
   bool apply(bool save = true) const;
 
   /// Returns item data.
-  const auto& data() const { return m_data; }
+  const data::item& data() const { return m_data; }
 
   /// Returns item listview data.
-  const auto& data_listview() const { return m_data_listview; }
+  const data::listview& data_listview() const { return m_data_listview; }
 
   /// Returns true if this item is empty.
   bool empty() const { return m_type == EMPTY; }
@@ -404,13 +404,13 @@ public:
   bool is_notebook() const;
 
   /// Is this item allowed to be expanded on a row.
-  auto is_row_growable() const { return m_is_row_growable; }
+  bool is_row_growable() const { return m_is_row_growable; }
 
   /// Returns the label.
-  const auto& label() const { return m_label; }
+  const std::string& label() const { return m_label; }
 
   /// Returns the label window.
-  const auto& label_window() const { return m_label_window; }
+  const std::string& label_window() const { return m_label_window; }
 
   /// layouts this item (creates the window) using the specified layout.
   /// It returns the flex grid sizer that was used for creating the item
@@ -421,7 +421,7 @@ public:
   std::stringstream log() const;
 
   /// Returns the page.
-  const auto& page() const { return m_page; }
+  const std::string& page() const { return m_page; }
 
   /// Sets this item to be growable.
   /// Default whether the item row is growable is determined
@@ -439,7 +439,7 @@ public:
   bool to_config(bool save) const;
 
   /// Returns the type.
-  auto type() const { return m_type; }
+  type_t type() const { return m_type; }
 
   /// If validate callback has been provided calls validate.
   // Otherwise returns true.
@@ -450,7 +450,7 @@ public:
 
   /// Returns the window (first call layout, to create it,
   /// otherwise it is nullptr).
-  auto* window() const { return m_window; }
+  wxWindow* window() const { return m_window; }
 
 private:
   typedef std::vector<std::function<
@@ -462,7 +462,7 @@ private:
     type_t             type,
     const std::string& label = std::string(),
     const std::any&    value = std::string(),
-    const data::item&        = data::item());
+    data::item         = data::item());
 
   data::layout::sizer_t* add(data::layout& layout) const;
   data::layout::sizer_t* add_browse_button(wxSizer* sizer) const;

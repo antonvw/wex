@@ -2,7 +2,7 @@
 // Name:      stc-blame-margin.cpp
 // Purpose:   Implementation of class wex::syntax::stc blame_margin methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022 Anton van Wezenbeek
+// Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -11,8 +11,9 @@
 
 void wex::syntax::stc::blame_margin(const wex::blame* blame)
 {
-  const int margin_blame(config(_("stc.margin.Text")).get(-1));
-  const int w(std::max(
+  const auto margin_blame(
+    config(_("stc.margin.Text")).get(blame::margin_text_default_size()));
+  const auto w(std::max(
     config(_("stc.Default font"))
         .get(wxFont(
           12,

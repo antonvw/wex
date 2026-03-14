@@ -2,7 +2,7 @@
 // Name:      vi.h
 // Purpose:   Declaration of class wex::vi
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2024 Anton van Wezenbeek
+// Copyright: (c) 2009-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -52,20 +52,24 @@ public:
   /// Finishes vi command.
   bool command_finish(bool user_input);
 
+  /// Returns count of commands (if not specified it is one).
+  /// After command finish, count is reset back to one.
+  int count() const { return m_count; }
+
   /// Returns inserted text.
-  const auto& inserted_text() const { return m_insert_text; }
+  const std::string& inserted_text() const { return m_insert_text; }
 
   /// Returns last entered command.
-  const auto& last_command() const { return m_last_command; }
+  const std::string& last_command() const { return m_last_command; }
 
   /// Returns the mode we are in.
-  const auto& mode() const { return m_mode; }
+  const vi_mode& mode() const { return m_mode; }
 
   /// Returns writeable mode.
-  auto& mode() { return m_mode; }
+  vi_mode& mode() { return m_mode; }
 
   /// Returns motion commands.
-  const auto& motion_commands() const { return m_motion_commands; }
+  const commands_t& motion_commands() const { return m_motion_commands; }
 
   /// Handles char events.
   /// Returns true if event is allowed to be skipped.
@@ -79,7 +83,7 @@ public:
   bool on_key_down(const wxKeyEvent& event);
 
   /// Returns other commands.
-  const auto& other_commands() const { return m_other_commands; }
+  const commands_t& other_commands() const { return m_other_commands; }
 
   /// Extend visual selection.
   void visual_extend(int start_pos, int end_pos) const;
@@ -132,7 +136,7 @@ private:
   void   yank_range(int start);
 
   static inline std::string m_last_command;
-  static inline std::string m_last_find_char_command;
+  static inline char        m_last_find_char{0}, m_last_find_dir{0};
 
   bool m_control_down{false}, m_count_present{false}, m_dot{false},
     m_search_forward{true}, m_visual_mode_from_shift{false};

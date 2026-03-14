@@ -2,7 +2,7 @@
 // Name:      ex-commandline-input.h
 // Purpose:   Declaration of wex::ex_commandline_input class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -31,7 +31,7 @@ public:
     /// the ex_command type used to get config values
     ex_command::type_t type,
     /// the name, as used in config to store values
-    const std::string& name = "ex-cmd.other");
+    std::string name = "ex-cmd.other");
 
   /// Destructor, writes values (with a max for integers on the list) to config.
   ~ex_commandline_input();
@@ -69,10 +69,10 @@ public:
   void set(const values_t& values);
 
   /// Returns type.
-  auto type() const { return m_type; }
+  ex_command::type_t type() const { return m_type; }
 
   /// Returns the values.
-  const auto& values() const { return m_values; }
+  const values_t& values() const { return m_values; }
 
 private:
   const ex_command::type_t m_type;

@@ -2,8 +2,10 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wex::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
+
+#include <boost/algorithm/string.hpp>
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
@@ -62,6 +64,15 @@ bool wex::process::async_system(const process_data& data_in)
 
   m_shell->set_process(this);
 
+  if (data.exe().starts_with("git"))
+  {
+    if (process p;
+        p.system(process_data(data).exe("git rev-parse --show-toplevel")) == 0)
+    {
+      m_shell->add_search_path(path(boost::algorithm::trim_copy(p.std_out())));
+    }
+  }
+
   if (
     m_frame->debug_entry() != nullptr &&
     !m_frame->debug_entry()->name().empty() &&
@@ -82,26 +93,32 @@ bool wex::process::async_system(const process_data& data_in)
 
 int wex::process::config_dialog(const data::window& par)
 {
-  wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
-  validator.SetCharExcludes("?%*\"");
-  const data::window      data(data::window(par).title(_("Select Process")));
-  const std::vector<item> v{
-    {_("Process"),
-     item::COMBOBOX,
-     std::any(),
-     data::control().validator(&validator).is_required(true)},
-    {m_working_dir_key,
-     item::COMBOBOX_DIR,
-     std::any(),
-     data::control().is_required(true)}};
+  const data::window data(data::window(par).title(_("Select Process")));
+
+  if (m_config_dialog == nullptr)
+  {
+    wxTextValidator validator(wxFILTER_EXCLUDE_CHAR_LIST);
+    validator.SetCharExcludes("?%*\"");
+
+    const std::vector<item> v{
+      {_("Process"),
+       item::COMBOBOX,
+       std::any(),
+       data::control().validator(&validator).is_required(true)},
+      {m_working_dir_key,
+       item::COMBOBOX_DIR,
+       std::any(),
+       data::control().is_required(true)}};
+
+    m_config_dialog = new item_dialog(v, data);
+  }
 
   if (data.button() & wxAPPLY)
   {
-    auto* dlg = new item_dialog(v, data);
-    return dlg->Show();
+    return m_config_dialog->Show();
   }
 
-  return item_dialog(v, data).ShowModal();
+  return m_config_dialog->ShowModal();
 }
 
 wex::shell* wex::process::prepare_output(wxWindow* parent)

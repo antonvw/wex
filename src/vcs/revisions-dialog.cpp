@@ -2,10 +2,11 @@
 // Name:      revisions-dialog.cpp
 // Purpose:   Implementation of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024-2025 Anton van Wezenbeek
+// Copyright: (c) 2024-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
+#include <utility>
 #include <wex/core/config.h>
 #include <wex/factory/bind.h>
 #include <wex/ui/frame.h>
@@ -14,24 +15,26 @@
 #include <wex/vcs/unified-diff.h>
 #include <wex/vcs/vcs-entry.h>
 
+#include "util.h"
+
 namespace wex
 {
 class rev_data
 {
 public:
   rev_data(
-    vcs_entry*         ve,
-    wex::listview*     lv,
-    long               index,
-    const path&        tl,
-    const std::string& repo_path,
-    const std::string& col)
+    vcs_entry*          ve,
+    wex::listview*      lv,
+    long                index,
+    const process_data& data,
+    const std::string&  repo_path,
+    std::string         col)
     : m_ve(ve)
     , m_lv(lv)
     , m_index(index)
-    , m_tl(tl)
+    , m_data(data)
     , m_repo_path(repo_path)
-    , m_col(col)
+    , m_col(std::move(col))
   {
     ;
   }
@@ -47,20 +50,29 @@ private:
 
   const auto value() const { return m_lv->get_item_text(m_index, m_col); }
 
-  vcs_entry*         m_ve;
-  wex::listview*     m_lv;
-  long               m_index;
-  const path&        m_tl;
-  const std::string &m_repo_path, m_col;
+  vcs_entry*           m_ve;
+  const wex::listview* m_lv;
+  const long           m_index;
+  const process_data&  m_data;
+  const std::string &  m_repo_path, m_col;
 };
 
 void rev_data::do_compare()
 {
   if (
-    m_ve->system(process_data("diff -U0 " + value() + " " + m_repo_path)
-                   .start_dir(m_tl.string())) == 0)
+    m_ve->system(process_data(m_data).exe(
+      "diff " + m_ve->get_diff_flags() + " " + value() + " " + m_repo_path)) ==
+    0)
   {
-    unified_diff(path(m_repo_path), m_ve, frame()).parse();
+    if (
+      !vcs_diff("diff") ||
+      !unified_diff(path(m_repo_path), m_ve, frame()).parse())
+    {
+      frame()->open_file_vcs(
+        path(m_repo_path + " " + value()),
+        *m_ve,
+        data::stc());
+    }
   }
 };
 
@@ -69,19 +81,51 @@ void rev_data::do_open()
   config(m_ve->flags_key()).set(value());
 
   if (
-    m_ve->system(process_data("show " + value() + ":" + m_repo_path)
-                   .start_dir(m_tl.string())) == 0)
+    m_ve->system(
+      process_data(m_data).exe("show " + value() + ":" + m_repo_path)) == 0)
   {
     frame()->open_file_vcs(path(m_repo_path), *m_ve, data::stc());
     config(m_ve->flags_key()).set(std::string());
   }
 };
 
-strings_t
-from_git(const vcs_entry& e, const std::string& ask, size_t offset = 0)
+} // namespace wex
+
+void wex::vcs_entry::bind_rev(
+  wex::listview*      lv,
+  const std::string&  repo_path,
+  const process_data& data,
+  const std::string&  col)
+{
+  lv->Bind(
+    wxEVT_LEFT_DCLICK,
+    [=, this](wxMouseEvent& event)
+    {
+      event.Skip();
+      rev_data(this, lv, lv->GetFirstSelected(), data, repo_path, col)
+        .do_open();
+    });
+
+  bind(lv).command(
+    {{[=, this](const wxCommandEvent& event)
+      {
+        for (auto i = lv->GetFirstSelected(); i != -1;
+             i      = lv->GetNextSelected(i))
+        {
+          event.GetId() == ID_EDIT_REV_COMPARE ?
+            rev_data(this, lv, i, data, repo_path, col).do_compare() :
+            rev_data(this, lv, i, data, repo_path, col).do_open();
+        }
+      },
+      ID_EDIT_REV_COMPARE,
+      ID_EDIT_REV_OPEN}});
+}
+
+wex::strings_t
+wex::vcs_entry::execute_and_parse(const process_data& data, size_t offset)
 {
   process pro;
-  pro.system(process_data(e.bin() + " " + ask));
+  pro.system(data);
 
   strings_t values{};
 
@@ -96,36 +140,6 @@ from_git(const vcs_entry& e, const std::string& ask, size_t offset = 0)
   }
 
   return values;
-}
-} // namespace wex
-
-void wex::vcs_entry::bind_rev(
-  wex::listview*     lv,
-  const std::string& repo_path,
-  const path&        tl,
-  const std::string& col)
-{
-  lv->Bind(
-    wxEVT_LEFT_DCLICK,
-    [=, this](wxMouseEvent& event)
-    {
-      event.Skip();
-      rev_data(this, lv, lv->GetFirstSelected(), tl, repo_path, col).do_open();
-    });
-
-  bind(lv).command(
-    {{[=, this](const wxCommandEvent& event)
-      {
-        for (auto i = lv->GetFirstSelected(); i != -1;
-             i      = lv->GetNextSelected(i))
-        {
-          event.GetId() == ID_EDIT_REV_COMPARE ?
-            rev_data(this, lv, i, tl, repo_path, col).do_compare() :
-            rev_data(this, lv, i, tl, repo_path, col).do_open();
-        }
-      },
-      ID_EDIT_REV_COMPARE,
-      ID_EDIT_REV_OPEN}});
 }
 
 int wex::vcs_entry::revisions_dialog(
@@ -182,20 +196,22 @@ int wex::vcs_entry::revisions_dialog(
     m_item_dialog->SetTitle(file.filename() + " " + _("Select Revision"));
   }
 
-  bind_rev(vb, repo_path, tl, "branches");
-  bind_rev(vt, repo_path, tl, "tags");
-  bind_rev(lv, repo_path, tl, "hash");
+  process_data data;
+  data.start_dir(tl.string());
 
-  vb->load(from_git(*this, "branch -a", 2));
-  vt->load(from_git(*this, "tag")); // --sort=-creatordate
+  bind_rev(vb, repo_path, data, "branches");
+  bind_rev(vt, repo_path, data, "tags");
+  bind_rev(lv, repo_path, data, "hash");
+
+  vb->load(execute_and_parse(data.exe(bin() + " branch -a"), 2));
+  vt->load(execute_and_parse(data.exe(bin() + " tag"))); // --sort=-creatordate
 
   process pro;
   pro.system(
     // this query should follow the columns as specified above,
     // and using same field separator as used for the listview
-    process_data(
-      bin() + " log --date=short --pretty=format:%ad%s%an%h " + repo_path)
-      .start_dir(tl.string()));
+    data.exe(
+      bin() + " log --date=short --pretty=format:%ad%s%an%h " + repo_path));
   lv->item_from_text(pro.std_out());
 
   return m_item_dialog->Show();

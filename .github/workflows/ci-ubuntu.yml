@@ -1,6 +1,8 @@
+---
 name: github-ci-ubuntu
 
-on: [push]
+on:
+  push:
 
 jobs:
   build:
@@ -9,18 +11,18 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: recursive
 
       - name: Install boost
-        uses: MarkusJx/install-boost@v2.4.5
+        uses: MarkusJx/install-boost@v2.5.1
         id: install-boost
         with:
           # REQUIRED: Specify the required boost version
           # A list of supported versions can be found here:
-          # https://github.com/MarkusJx/prebuilt-boost/blob/main/versions-manifest.json
-          boost_version: 1.88.0
+          # https://github.com/MarkusJx/prebuilt-boost/
+          boost_version: 1.89.0
           platform_version: 24.04
 
       - name: Install gtk
@@ -39,13 +41,20 @@ jobs:
         run: sudo apt-get install ninja-build
 
       - name: Install coveralls
-        run: sudo curl -L https://coveralls.io/coveralls-linux.tar.gz | tar -xz -C /usr/local/bin
+        run: >-
+          sudo curl -L https://coveralls.io/coveralls-linux.tar.gz |
+          tar -xz -C /usr/local/bin
 
       - name: Install robotframework
         run: sudo pip install robotframework
 
+      - name: Wayland
+        run: sudo apt-get install wayland-protocols libwayland-client0
+
       - name: Configure for coverage
-        run: ./build-gen.sh -b -c -g -p -s -t -B ${{steps.install-boost.outputs.BOOST_ROOT}}
+        run: >-
+          ./build-gen.sh -b -c -g -p -s -t -B
+          ${{steps.install-boost.outputs.BOOST_ROOT}}
         env:
           BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
           CC: gcc-14
@@ -55,7 +64,7 @@ jobs:
         run: cd build && ninja
 
       # Upload the del binary, which we will need to debug the core
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: executable
           path: build/test/del/wex-test-del
@@ -72,36 +81,38 @@ jobs:
           ulimit -c unlimited
           cd build
           ninja lcov-prep
-          xvfb-run --auto-servernum ctest -VV
+          xvfb-run --auto-servernum env GDK_BACKEND=x11 ctest -VV
           ninja lcov
         env:
           NO_AT_BRIDGE: 1
 
       - name: Artifact coredump
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: ${{ failure() }}  # Run only if something went wrong
         with:
           name: coredump
           path: /cores
 
       - name: Coveralls
-        run: cd build && coveralls -r 9vV6skuIGeagBBkz5TCZNI12ezUv12gOj --format=lcov --file=src/app.run
+        run: >-
+          cd build && coveralls -r 9vV6skuIGeagBBkz5TCZNI12ezUv12gOj
+          --format=lcov --file=src/app.run
 
       - name: Cleanup
         run: rm -rf build
 
       - name: Reconfigure and build for artifacts without testing
-        run: ./build-gen.sh -b -g -B ${{steps.install-boost.outputs.BOOST_ROOT}}
+        run: ./build-gen.sh -g -B ${{steps.install-boost.outputs.BOOST_ROOT}}
         env:
           BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
           CC: gcc-14
           CXX: g++-14
 
       - name: Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: wex-lib-ubuntu
           path: |
             data/*.*
-            build/**/*.a
+            build/**/*.so
             build/**/setup.h

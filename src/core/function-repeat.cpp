@@ -2,7 +2,7 @@
 // Name:      function-repeat.cpp
 // Purpose:   Implementation of class wex::function_repeat
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023-2024 Anton van Wezenbeek
+// Copyright: (c) 2023-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -20,10 +20,10 @@ enum class wex::function_repeat::action_t
 };
 
 wex::function_repeat::function_repeat(
-  const std::string& name,
-  wxEvtHandler*      evt,
-  repeat_t           f)
-  : m_name(name)
+  std::string   name,
+  wxEvtHandler* evt,
+  repeat_t      f)
+  : m_name(std::move(name))
   , m_handler(evt)
   , m_f(std::move(f))
   , m_reflect(

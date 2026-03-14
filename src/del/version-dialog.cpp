@@ -2,7 +2,7 @@
 // Name:      version-dialog.cpp
 // Purpose:   Implementation of wex::version_info_dialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
@@ -14,6 +14,7 @@
 #include <boost/version.hpp>
 #include <ctags/main/ctags.h>
 #include <pugixml.hpp>
+#include <utility>
 
 #include <wex/del/version-dialog.h>
 
@@ -86,10 +87,11 @@ wex::version_info_dialog::version_info_dialog(const about_info& about)
 
 wex::version_info_dialog::version_info_dialog(
   const version_info& info,
-  const about_info&   about)
-  : m_about(about)
+  about_info          about)
+  : m_about(std::move(about))
 {
-  m_about.SetVersion(info.get(false));
+  m_about.SetVersion(
+    info.get(version_info::exclude_t().set(version_info::EXCLUDE_NAME)));
 
   if (!m_about.HasCopyright())
   {
@@ -98,14 +100,9 @@ wex::version_info_dialog::version_info_dialog(
 
   if (!m_about.HasDescription())
   {
-    if (!info.description().empty())
-    {
-      m_about.SetDescription(info.description());
-    }
-    else
-    {
-      m_about.SetDescription(external_libraries().str());
-    }
+    m_about.SetDescription(
+      !info.description().empty() ? info.description() :
+                                    external_libraries().str());
   }
 }
 

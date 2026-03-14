@@ -9,6 +9,7 @@
 
 #include <wex/wex.h>
 
+#include "../../src/vcs/util.h"
 #include "../vcs/test.h"
 #include "test.h"
 
@@ -115,6 +116,20 @@ TEST_CASE("wex::del::frame")
     wex::process::prepare_output(del_frame());
     REQUIRE(get_stc()->get_vi().command("!ls"));
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  }
+
+  SECTION("process_async_system")
+  {
+    wex::process::prepare_output(del_frame());
+    get_stc()->SetFocus();
+    get_stc()->set_text("HERE");
+    get_stc()->SelectAll();
+
+    wex::path file(wex::test::get_path("test.h"));
+    file.make_absolute();
+    wex::vcs vcs(std::vector<wex::path>{file});
+
+    REQUIRE(wex::execute_grep("git", vcs.toplevel()));
   }
 
   SECTION("set_recent")
@@ -229,7 +244,7 @@ TEST_CASE("wex::del::frame")
     get_stc()->SetFocus();
     wxMouseEvent event(wxEVT_LEFT_DOWN);
     wxPostEvent(get_stc(), event);
-    wxYield();
+    wxTheApp->ProcessPendingEvents();
     REQUIRE(!get_stc()->find("b6aae80e3a"));
   }
 

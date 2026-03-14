@@ -6,7 +6,7 @@
 #            for building wex itself, or for building apps using it
 #            Just run from repo root
 # Author:    Anton van Wezenbeek
-# Copyright: (c) 2024-2025 Anton van Wezenbeek
+# Copyright: (c) 2024-2026 Anton van Wezenbeek
 ################################################################################
 
 usage()
@@ -107,12 +107,7 @@ while getopts ":B:d:D:G:abcghilpstT" opt; do
     ;;
 
     T)
-      if [[ "${option_generator}" =~ .*Ninja ]]; then
-        option_tidy="-DwexBUILD_TIDY=ON"
-      else
-        echo "currently clang-tidy only works when using Ninja"
-        exit 1
-      fi
+      option_tidy="-DwexBUILD_TIDY=ON"
     ;;
 
     :)
@@ -126,6 +121,11 @@ while getopts ":B:d:D:G:abcghilpstT" opt; do
     ;;
   esac
 done
+
+if [[ -n "${option_tidy}" ]] && ! [[ "${option_generator}" =~ .*Ninja ]]; then
+  echo "currently clang-tidy only works when using Ninja"
+  exit 1
+fi
 
 uname=$(uname)
 
@@ -164,5 +164,7 @@ if [[ "${option_prepare}" == "false" ]]; then
     cd "${option_dir}" && ninja
   elif [[ "${option_generator}" =~ .*Xcode ]]; then
     cd "${option_dir}" && xcodebuild
+  elif [[ "${option_generator}" =~ .*Unix.* ]]; then
+    cd "${option_dir}" && make
   fi
 fi

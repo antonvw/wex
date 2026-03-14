@@ -5,7 +5,6 @@
 // Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <thread>
 #include <wex/core/config.h>
 #include <wex/core/log-none.h>
 #include <wex/core/log.h>
@@ -185,8 +184,8 @@ TEST_CASE("wex::vi")
   {
     change_mode(vi, wex::esc(), wex::vi_mode::state_t::COMMAND);
     wxKeyEvent event(wxEVT_CHAR);
-    event.m_keyCode = WXK_CONTROL_J;
-    event.m_uniChar = WXK_CONTROL_J;
+    event.m_keyCode = WXK_CONTROL_K;
+    event.m_uniChar = WXK_CONTROL_K;
     event.SetRawControlDown(true);
 
     for (const auto& number :
@@ -541,7 +540,7 @@ TEST_CASE("wex::vi")
            WXK_CONTROL_E,
            WXK_CONTROL_F,
            WXK_CONTROL_G,
-           WXK_CONTROL_J,
+           WXK_CONTROL_K,
            WXK_CONTROL_P,
            WXK_CONTROL_Q})
     {

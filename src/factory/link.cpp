@@ -30,9 +30,9 @@ public:
 
   bool add_path(const path& p)
   {
-    if (p.dir_exists() && !find(p))
+    if (p.dir_exists() && !std::ranges::contains(m_paths, p.string()))
     {
-      m_paths.emplace_back(p.string());
+      m_paths.emplace_front(p.string());
       return true;
     }
 
@@ -50,16 +50,6 @@ public:
     }
 
     return wex::path();
-  };
-
-  bool find(const path& p) const
-  {
-    return std::ranges::any_of(
-      m_paths,
-      [p](const auto& it)
-      {
-        return p.string() == it;
-      });
   };
 
 private:
@@ -148,10 +138,10 @@ const wex::path wex::factory::link::find_filename(
 #endif
 
   // file[:line[:column]]
-  // the first is to match file names without spaces,
+  // the first is to match file names without spaces, starting with ./,
   // to match xx ./vnc.env.sh yy
   const regex::regex_v_t t(
-    {"(\\.[\\0-9A-Za-z_/.-]+) .*",
+    {"(\\./[\\0-9A-Za-z_/.-]+) .*",
      "^([\\0-9A-Za-z _/.-]+):?([0-9]*):?([0-9]*)"});
 
   if (regex v(t); v.search(text_filter) > 0)

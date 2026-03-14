@@ -51,17 +51,33 @@ find_package(
 
 set(user $ENV{USER} CACHE INTERNAL "keep user")
 
-include(cmake/options-wx.cmake)
-
+# first patch
 execute_process(
-  COMMAND git apply ${CMAKE_SOURCE_DIR}/external/wxWidgets.patch
+  COMMAND git status
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets
+  OUTPUT_VARIABLE git_STATUS
 )
 
+if(NOT ${git_STATUS} MATCHES "qa/")
+  execute_process(
+    COMMAND git apply ${CMAKE_SOURCE_DIR}/external/wxWidgets.patch
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets
+  )
+endif()
+
+# second patch
 execute_process(
-  COMMAND git apply ${CMAKE_SOURCE_DIR}/external/lexilla.patch
+  COMMAND git status
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/lexilla
+  OUTPUT_VARIABLE git_STATUS
 )
+
+if(NOT ${git_STATUS} MATCHES "Lexilla.cxx")
+  execute_process(
+    COMMAND git apply ${CMAKE_SOURCE_DIR}/external/lexilla.patch
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets/src/stc/lexilla
+  )
+endif()
 
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(external/trompeloeil/include/catch2)
@@ -72,9 +88,17 @@ set(
   "${CMAKE_SOURCE_DIR}/external/wxWidgets/build/cmake/modules"
 )
 
-add_subdirectory(external)
+set(wxBINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
+set(wxOUTPUT_DIR ${wxBINARY_DIR}/lib)
 
+include(external/wxWidgets/build/cmake/functions.cmake)
+include(external/wxWidgets/build/cmake/options.cmake)
+include(cmake/options-wx.cmake)
+
+include(external/wxWidgets/build/cmake/init.cmake)
 include(external/wxWidgets/build/cmake/toolkit.cmake)
+
+add_subdirectory(external)
 
 file(READ src/core/version.cpp WEX_VERSION_CONTENTS)
 string(

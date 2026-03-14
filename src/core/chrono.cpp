@@ -2,7 +2,7 @@
 // Name:      chrono.cpp
 // Purpose:   Implementation of wex::chrono class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
@@ -10,11 +10,12 @@
 
 #include <iomanip>
 #include <sstream>
+#include <utility>
 
 using namespace ::std::chrono;
 
 constexpr timespec
-time_point_to_timespec(time_point<system_clock, nanoseconds> tp)
+time_point_to_timespec(const time_point<system_clock, nanoseconds>& tp)
 {
   auto secs = time_point_cast<seconds>(tp);
   auto ns =
@@ -25,7 +26,7 @@ time_point_to_timespec(time_point<system_clock, nanoseconds> tp)
     static_cast<long>(ns.count())};
 }
 
-constexpr nanoseconds timespec_to_duration(timespec ts)
+constexpr nanoseconds timespec_to_duration(const timespec& ts)
 {
   auto duration = seconds{ts.tv_sec} + nanoseconds{ts.tv_nsec};
 
@@ -45,8 +46,8 @@ wex::now(const std::string& format, chrono::precision_t precision)
   return chrono(format, precision).get_time(std::chrono::system_clock::now());
 }
 
-wex::chrono::chrono(const std::string& format, precision_t precision)
-  : m_format(format)
+wex::chrono::chrono(std::string format, precision_t precision)
+  : m_format(std::move(format))
   , m_precision(precision)
 {
 }

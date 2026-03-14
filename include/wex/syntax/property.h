@@ -2,7 +2,7 @@
 // Name:      property.h
 // Purpose:   Declaration of wex::property class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -20,7 +20,7 @@ public:
   explicit property(const pugi::xml_node& node = pugi::xml_node());
 
   /// Constructor using name, value pair.
-  property(const std::string& name, const std::string& value);
+  property(std::string name, std::string value);
 
   /// Applies this property to stc component.
   void apply(wxStyledTextCtrl* stc) const;
@@ -33,13 +33,13 @@ public:
   bool is_ok() const;
 
   /// Returns the name of this property.
-  const auto& name() const { return m_name; }
+  const std::string& name() const { return m_name; }
 
   /// Override this property (so does not apply this property).
   void set(const std::string& value) { m_value = value; }
 
   /// Returns the value of this property.
-  const auto& value() const { return m_value; }
+  const std::string& value() const { return m_value; }
 
 private:
   std::string m_name, m_value;

@@ -2,7 +2,7 @@
 // Name:      path.h
 // Purpose:   Declaration of class wex::path
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2024 Anton van Wezenbeek
+// Copyright: (c) 2017-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -131,7 +131,7 @@ public:
   bool open_mime() const;
 
   /// Returns original path.
-  const auto& original() { return m_path_original; }
+  const std::filesystem::path& original() { return m_path_original; }
 
   /// Returns path path component.
   const std::string parent_path() const
@@ -149,10 +149,10 @@ public:
   void set_log(const log_t& t) { m_log = t; }
 
   /// Returns the stat.
-  const auto& stat() const { return m_stat; }
+  const file_status& stat() const { return m_stat; }
 
   /// Returns the path as a string.
-  const auto string() const { return m_path.string(); }
+  const std::string string() const { return m_path.string(); }
 
 private:
   std::filesystem::path m_path, m_path_original;

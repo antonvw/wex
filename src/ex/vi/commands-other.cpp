@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      comands-other.cpp
+// Name:      commands-other.cpp
 // Purpose:   Implementation of wex::vi::commands_other
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2020-2025 Anton van Wezenbeek
@@ -364,7 +364,7 @@ wex::vi::commands_t wex::vi::commands_other()
        }
        return command.size();
      }},
-    {k_s(WXK_CONTROL_J) + k_s(WXK_CONTROL_L),
+    {k_s(WXK_CONTROL_K) + k_s(WXK_CONTROL_L),
      [&](const std::string& command)
      {
        return inc_or_dec(command);
@@ -403,7 +403,7 @@ size_t wex::vi::inc_or_dec(const std::string& command)
       const std::string word(get_stc()->GetTextRange(start, end).ToStdString());
       int number;
       std::from_chars(word.data(), word.data() + word.size(), number);
-      const auto next = (command == k_s(WXK_CONTROL_J) ? ++number : --number);
+      const auto next = (command == k_s(WXK_CONTROL_K) ? ++number : --number);
 
       std::ostringstream format;
       format.fill(' ');

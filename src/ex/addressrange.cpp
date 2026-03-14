@@ -24,6 +24,7 @@
 #include <wex/factory/stc-undo.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
 #include <wx/app.h>
 #include <wx/msgdlg.h>
 
@@ -366,9 +367,12 @@ bool wex::addressrange::general(
 
   stc_undo undo(m_stc);
 
+  const int count = m_stc->get_line_count();
+
   if (f())
   {
-    m_stc->goto_line(dest_line - 1);
+    const int diff = count - m_stc->get_line_count();
+    m_stc->goto_line(dest_line - diff);
     m_stc->add_text(m_ex->register_text());
   }
 
@@ -399,8 +403,16 @@ bool wex::addressrange::global(const command_parser& cp) const
     return false;
   }
 
+  m_substitute.set_global_ready();
+
   if (g.hits() > 0)
   {
+    if (!m_substitute.is_inverse() && m_substitute.commands() != "d")
+    {
+      find_replace_data::get()->set_find_string(m_substitute.pattern());
+      m_stc->find(m_substitute.pattern());
+    }
+
     m_ex->frame()->show_ex_message(
       g.has_commands() ? "executed: " + std::to_string(g.hits()) + " commands" :
                          "found: " + std::to_string(g.hits()) + " matches");
@@ -536,7 +548,7 @@ bool wex::addressrange::is_selection() const
          ex_command::selection_range();
 }
 
-bool wex::addressrange::join() const
+bool wex::addressrange::join(bool vim_mode) const
 {
   if (!m_stc->is_visual())
   {
@@ -553,7 +565,18 @@ bool wex::addressrange::join() const
   m_stc->SetTargetRange(
     m_stc->PositionFromLine(m_begin.get_line() - 1),
     m_stc->PositionFromLine(m_end.get_line() - 1));
-  m_stc->LinesJoin();
+
+  if (!vim_mode)
+  {
+    m_stc->LinesJoin();
+  }
+  else
+  {
+    std::string text(m_stc->GetTargetText());
+    boost::algorithm::replace_all(text, "\r", "");
+    boost::algorithm::replace_all(text, "\n", "");
+    m_stc->ReplaceTarget(text);
+  }
 
   return true;
 }
@@ -853,7 +876,11 @@ bool wex::addressrange::substitute(const command_parser& cp)
     return false;
   }
 
-  m_substitute = data;
+  if (!m_substitute.is_global_command())
+  {
+    m_substitute = data;
+  }
+
   m_stc->set_search_flags(searchFlags);
 
   int        nr_replacements = 0;
@@ -905,9 +932,12 @@ bool wex::addressrange::substitute(const command_parser& cp)
 
   am.end();
 
-  m_ex->frame()->show_ex_message(
-    "Replaced: " + std::to_string(nr_replacements) +
-    " occurrences of: " + data.pattern());
+  if (!m_substitute.is_global_command())
+  {
+    m_ex->frame()->show_ex_message(
+      "Replaced: " + std::to_string(nr_replacements) +
+      " occurrences of: " + data.pattern());
+  }
 
   return true;
 }

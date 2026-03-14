@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of wex::frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -271,22 +271,22 @@ public:
   bool browse(const wxCommandEvent& event);
 
   /// Returns current debugger.
-  const auto* debug_entry() const { return m_debug_entry; }
+  const wex::debug_entry* debug_entry() const { return m_debug_entry; }
 
   /// Returns file history.
-  auto& file_history() { return m_file_history; }
+  wex::file_history& file_history() { return m_file_history; }
 
   /// Returns the find toolbar.
-  auto* get_find_toolbar() { return m_findbar; }
+  toolbar* get_find_toolbar() { return m_findbar; }
 
   /// Returns the options toolbar.
-  auto* get_options_toolbar() { return m_optionsbar; }
+  toolbar* get_options_toolbar() { return m_optionsbar; }
 
   /// Returns statusbar.
-  auto* get_statusbar() { return m_statusbar; }
+  statusbar* get_statusbar() { return m_statusbar; }
 
   /// Returns the toolbar.
-  auto* get_toolbar() { return m_toolbar; }
+  toolbar* get_toolbar() { return m_toolbar; }
 
   /// Adds a window as a pane, generating a unique name.
   /// Return the name of the pane.
@@ -357,7 +357,7 @@ public:
   };
 
   /// Returns the toggled panes.
-  const auto& panes_toggle() const { return m_panes_toggle; }
+  const panes_toggle_t& panes_toggle() const { return m_panes_toggle; }
 
   /// Sets debug entry.
   void set_debug_entry(wex::debug_entry* de) { m_debug_entry = de; }

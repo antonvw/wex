@@ -2,7 +2,7 @@
 // Name:      debug.cpp
 // Purpose:   Implementation of class wex::debug
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016-2025 Anton van Wezenbeek
+// Copyright: (c) 2016-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -46,7 +46,7 @@ public:
     }
   }
 
-  ~process_dir() { m_listview->sort_column("Name", SORT_ASCENDING); }
+  ~process_dir() override { m_listview->sort_column("Name", SORT_ASCENDING); }
 
 private:
   bool on_dir(const path& p) const final
@@ -265,7 +265,7 @@ wex::debug::get_args(const std::string& command, stc* stc)
                .apply(
                  [&](wxWindow* user, const std::any& value, bool save)
                  {
-                   lv = ((wex::listview*)user);
+                   lv = dynamic_cast<wex::listview*>(user);
                    if (save && lv->GetFirstSelected() != -1)
                    {
                      args =
@@ -436,7 +436,7 @@ void wex::debug::process_stdout(const std::string& text)
 {
   m_stdout += text;
 
-  log::trace("debug stdout") << m_stdout << m_path;
+  log::trace("debug stdout") << m_stdout;
   data::stc data;
 
   if (MATCH(BREAKPOINT_NO_FILE_LINE) == 3)
@@ -518,10 +518,6 @@ void wex::debug::process_stdout(const std::string& text)
     is_finished();
     m_stdout.clear();
   }
-  else if (clear_breakpoints(m_stdout))
-  {
-    m_stdout.clear();
-  }
   else if (regex v("error: "); v.search(m_stdout) == 0)
   {
     m_stdout.clear();
@@ -536,7 +532,7 @@ void wex::debug::process_stdout(const std::string& text)
     }
     m_stdout.clear();
   }
-  else if (!m_stdout.contains("{"))
+  else if (!m_stdout.contains("{") || clear_breakpoints(m_stdout))
   {
     m_stdout.clear();
   }

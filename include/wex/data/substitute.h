@@ -2,7 +2,7 @@
 // Name:      data/substitute.h
 // Purpose:   Declaration of class wex::data::substitute
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -20,7 +20,7 @@ public:
   substitute(const std::string& text = std::string());
 
   /// Returns commands.
-  auto& commands() const { return m_commands; }
+  const std::string& commands() const { return m_commands; }
 
   /// Returns whether clear indicator was asked (:g//)
   bool is_clear() const { return m_clear; }
@@ -42,10 +42,10 @@ public:
   bool is_inverse() const { return m_inverse; }
 
   /// Returns pattern.
-  auto& pattern() const { return m_pattern; }
+  const std::string& pattern() const { return m_pattern; }
 
   /// Returns replacement.
-  auto& replacement() const { return m_replacement; }
+  const std::string& replacement() const { return m_replacement; }
 
   /// Sets pattern, replacement, options from text:
   /// s/pattern/text/options
@@ -53,6 +53,9 @@ public:
 
   /// Sets pattern, commands from text (for global substitute).
   bool set_global(const std::string& text);
+
+  /// Resets the m_global_command, after global has finished.
+  void set_global_ready();
 
   /// Sets options only.
   void set_options(const std::string& text);

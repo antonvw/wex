@@ -2,13 +2,15 @@
 // Name:      data/item.cpp
 // Purpose:   Implementation of wex::data::item
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/item.h>
 
-wex::data::item::item(const data::control& data)
-  : m_data(data)
+#include <utility>
+
+wex::data::item::item(data::control data)
+  : m_data(std::move(data))
 {
 }
 

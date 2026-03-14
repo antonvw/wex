@@ -57,6 +57,8 @@ public:
   /// Initializes the store, and reads previous file.
   /// This should be done before first use of config,
   /// and is done in app::OnInit.
+  /// If app::OnInit is not invoked (no wxApp),
+  /// on_init is called during construction.
   static bool on_init();
 
   /// Returns the current config path.
@@ -110,7 +112,7 @@ public:
   /// c.item("w").set(3);
   /// const auto i(c.get("y.u", 9));
   /// @endcode
-  config(const std::string& parent, const std::string& child);
+  config(const std::string& parent, std::string child);
 
   /// Destructor, calls child_end.
   ~config();
@@ -183,7 +185,7 @@ public:
   /// Item access / nested values.
 
   /// Returns the item.
-  auto& item() const { return m_item; }
+  const std::string& item() const { return m_item; }
 
   /// Sets the item, and returns config.
   config& item(const std::string& item);

@@ -7,6 +7,7 @@
 
 #include <wx/listctrl.h>
 
+#include <wex/core/log-none.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/process-data.h>
 #include <wex/ui/menu.h>
@@ -87,6 +88,8 @@ TEST_CASE("wex::frame")
 
   SECTION("coverage")
   {
+    wex::log_none off;
+
     auto*                           menu = new wex::menu();
     wex::menu_item                  i;
     std::vector<wxAcceleratorEntry> ve;
@@ -286,6 +289,7 @@ TEST_CASE("wex::frame::bars")
   REQUIRE(frame()->file_history().size() > 0);
   REQUIRE(!frame()->file_history().get_history_files(5).empty());
 
+  wex::log_none off;
   frame()->show_ex_message("hello from frame()");
   REQUIRE(!frame()->pane_show("xxxx"));
   REQUIRE(!frame()->pane_show("xxxx", false));

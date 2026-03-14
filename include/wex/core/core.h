@@ -67,13 +67,16 @@ const std::string find_tail(const std::string& text, size_t max_chars = 15);
 
 /// Returns the number of lines in a (trimmed) string.
 /// If text is empty, 0 is returned, otherwise at least 1.
-int get_number_of_lines(const std::string& text, bool trimmed = false);
+size_t get_number_of_lines(const std::string& text, bool trimmed = false);
 
-/// Returns string from set.
+/// Returns string from set, using a space separator.
 const std::string get_string_set(
+  /// the set to use
   const std::set<std::string>& kset,
-  size_t                       min_size = 0,
-  const std::string&           prefix   = std::string());
+  /// only add string from set if its size is at least min_size
+  size_t min_size = 0,
+  /// only add string from set if it starts with the prefix
+  const std::string& prefix = std::string());
 
 /// Returns 0 if both texts are equal, ignoring case.
 int icompare(const std::string& text1, const std::string& text2);

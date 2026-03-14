@@ -58,12 +58,15 @@ TEST_CASE("wex::data::substitute")
   SECTION("set_global")
   {
     wex::data::substitute sub;
+    REQUIRE(!sub.is_global_command());
     REQUIRE(!sub.set_global("xxyy"));
     REQUIRE(!sub.set_global("u/xx/yy"));
     REQUIRE(!sub.is_clear());
     REQUIRE(sub.set_global("g/xx/yy"));
     REQUIRE(!sub.is_inverse());
     REQUIRE(sub.is_global_command());
+    sub.set_global_ready();
+    REQUIRE(!sub.is_global_command());
     REQUIRE(sub.set_global("v/xx/yy"));
     REQUIRE(sub.pattern() == "xx");
     REQUIRE(sub.commands() == "yy");

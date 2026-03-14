@@ -2,7 +2,7 @@
 // Name:      data/find.h
 // Purpose:   Declaration of class wex::data::find
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -29,7 +29,7 @@ public:
   /// Default constructor. Sets members only.
   find(
     /// text to find
-    const std::string& text = std::string(),
+    std::string text = std::string(),
     /// forward
     bool forward = true);
 
@@ -38,14 +38,14 @@ public:
     /// component
     wex::factory::stc* stc,
     /// text to find
-    const std::string& text,
+    std::string text,
     /// forward
     bool forward = true);
 
   /// Constructor. Sets stream info.
   find(
     /// text to find
-    const std::string& text,
+    std::string text,
     /// line
     int line,
     /// stream pos
@@ -84,7 +84,7 @@ public:
   factory::stc* stc() { return m_stc; }
 
   /// Returns text.
-  const auto& text() const { return m_text; }
+  const std::string& text() const { return m_text; }
 
 private:
   const std::string get_find_result() const;

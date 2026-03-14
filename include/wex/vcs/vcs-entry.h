@@ -2,7 +2,7 @@
 // Name:      vcs-entry.h
 // Purpose:   Declaration of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2024 Anton van Wezenbeek
+// Copyright: (c) 2010-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -10,6 +10,7 @@
 #include <optional>
 #include <pugixml.hpp>
 #include <set>
+#include <wex/core/types.h>
 #include <wex/core/vcs-command.h>
 #include <wex/syntax/blame.h>
 #include <wex/syntax/lexer.h>
@@ -52,7 +53,7 @@ public:
   // Other methods.
 
   /// Returns the administrative directory.
-  const auto& admin_dir() const { return m_admin_dir; }
+  const std::string& admin_dir() const { return m_admin_dir; }
 
   /// Returns binary.
   const std::string bin() const;
@@ -79,13 +80,16 @@ public:
     const std::string& wd = std::string());
 
   /// Returns flags location.
-  auto flags_location() const { return m_flags_location; }
+  flags_location_t flags_location() const { return m_flags_location; }
 
   /// Returns blame info.
   const blame& get_blame() const { return m_blame; }
 
   /// Returns blame info.
   blame& get_blame() { return m_blame; }
+
+  /// Returns diff flags.
+  const std::string get_diff_flags() const;
 
   /// Returns the name of current branch.
   const std::string get_branch(const std::string& wd = std::string()) const;
@@ -111,16 +115,18 @@ public:
   void show_output(const std::string& caption = std::string()) const override;
 
 private:
+  void bind_rev(
+    listview*           lv,
+    const std::string&  repo_path,
+    const process_data& data,
+    const std::string&  col);
+
+  strings_t execute_and_parse(const process_data& data, size_t offset = 0);
+
   int revisions_dialog(
     const std::string& path,
     const wex::path&   tl,
     const wex::path&   file);
-
-  void bind_rev(
-    listview*          lv,
-    const std::string& repo_path,
-    const path&        tl,
-    const std::string& col);
 
   // no const, as entry is set using operator= in vcs.
   flags_location_t m_flags_location{flags_location_t::POSTFIX};

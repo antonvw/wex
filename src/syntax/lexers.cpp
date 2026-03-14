@@ -20,6 +20,13 @@
 #include <functional>
 #include <numeric>
 
+#define COLOUR_ADD(NAME, ITEM)                                                 \
+  {NAME,                                                                       \
+   [&](factory::stc* stc, const std::string& colour)                           \
+   {                                                                           \
+     stc->ITEM(colour.c_str());                                                \
+   }}
+
 wex::lexers::lexers()
   : m_path(wex::path(config::dir(), "wex-lexers.xml"))
   , m_path_macro(wex::path(config::dir(), "wex-lexers-macro.xml"))
@@ -36,6 +43,14 @@ wex::lexers::lexers()
        REFLECT_ADD("texts", m_texts.size()),
        REFLECT_ADD("theme colours", m_theme_colours.size()),
        REFLECT_ADD("theme macros", m_theme_macros.size())})
+  , m_colours(
+      {COLOUR_ADD("caretforeground", SetCaretForeground),
+       COLOUR_ADD("caretlinebackground", SetCaretLineBackground),
+       COLOUR_ADD("edge", SetEdgeColour),
+       COLOUR_ADD("selbackground", SetSelBackgroundUse),
+       COLOUR_ADD("selforeground", SetSelForegroundUse),
+       COLOUR_ADD("calltipbackground", CallTipSetBackground),
+       COLOUR_ADD("calltipforeground", CallTipSetForeground)})
 {
 }
 
@@ -54,32 +69,26 @@ void wex::lexers::apply(factory::stc* stc) const
 {
   m_default_style.apply(stc);
 
-  for (const auto& i : m_indicators)
-  {
-    i.apply(stc);
-  }
-  for (const auto& p : m_global_properties)
-  {
-    p.apply(stc);
-  }
-  for (const auto& m : m_markers)
-  {
-    m.apply(stc);
-  }
+  for_each_style(m_styles, stc);
+  for_each_style(m_indicators, stc);
+  for_each_style(m_global_properties, stc);
+  for_each_style(m_markers, stc);
 
   if (stc->is_hexmode())
   {
-    for (const auto& s : m_styles_hex)
-    {
-      s.apply(stc);
-    }
+    for_each_style(m_styles_hex, stc);
   }
 }
 
-void wex::lexers::apply_default_style(
+bool wex::lexers::apply_default_style(
   const std::function<void(const std::string&)>& back,
   const std::function<void(const std::string&)>& fore) const
 {
+  if (back == nullptr && fore == nullptr)
+  {
+    return false;
+  }
+
   if (regex r(",back:(.*),");
       back != nullptr && r.match(m_default_style.value()) > 0)
   {
@@ -91,11 +100,20 @@ void wex::lexers::apply_default_style(
   {
     fore(r[0]);
   }
+
+  return true;
 }
 
 // No longer const, as it updates m_default_colours.
-void wex::lexers::apply_global_styles(factory::stc* stc)
+bool wex::lexers::apply_global_styles(factory::stc* stc)
 {
+  if (stc == nullptr)
+  {
+    return false;
+  }
+
+  bool is_ok = true;
+
   if (m_default_colours.empty())
   {
     m_default_colours["caretforeground"] = "grey"; // otherwise white was chosen
@@ -109,10 +127,7 @@ void wex::lexers::apply_global_styles(factory::stc* stc)
 
   stc->StyleClearAll();
 
-  for (const auto& s : m_styles)
-  {
-    s.apply(stc);
-  }
+  for_each_style(m_styles, stc);
 
   stc->SetFoldMarginHiColour(
     true,
@@ -132,36 +147,20 @@ void wex::lexers::apply_global_styles(factory::stc* stc)
   {
     for (const auto& it : colour_it->second)
     {
-      if (it.first == "caretforeground")
+      if (const auto& col_it = m_colours.find(it.first);
+          col_it != m_colours.end())
       {
-        stc->SetCaretForeground(it.second.c_str());
+        col_it->second(stc, it.second);
       }
-      else if (it.first == "caretlinebackground")
+      else
       {
-        stc->SetCaretLineBackground(it.second.c_str());
-      }
-      else if (it.first == "selbackground")
-      {
-        stc->SetSelBackground(true, it.second.c_str());
-      }
-      else if (it.first == "selforeground")
-      {
-        stc->SetSelForeground(true, it.second.c_str());
-      }
-      else if (it.first == "calltipbackground")
-      {
-        stc->CallTipSetBackground(it.second.c_str());
-      }
-      else if (it.first == "calltipforeground")
-      {
-        stc->CallTipSetForeground(it.second.c_str());
-      }
-      else if (it.first == "edge")
-      {
-        stc->SetEdgeColour(it.second.c_str());
+        log("apply_global_styles") << "unknown colour style:" << it.first;
+        is_ok = false;
       }
     }
   }
+
+  return is_ok;
 }
 
 const std::string wex::lexers::apply_macro(
@@ -191,30 +190,19 @@ void wex::lexers::apply_margin_text_style(factory::stc* stc, const blame* blame)
     return;
   }
 
-  switch (blame->style())
+  if (blame->style() != blame::margin_style_t::UNKNOWN)
   {
-    case blame::margin_style_t::DAY:
-      stc->MarginSetStyle(blame->line_no(), m_style_no_text_margin_day);
-      break;
+    const std::unordered_map<blame::margin_style_t, std::string> styles{
+      {blame::margin_style_t::NOT_COMMITTED, "style_textmargin_not_committed"},
+      {blame::margin_style_t::DAY, "style_textmargin_day"},
+      {blame::margin_style_t::MONTH, "style_textmargin_month"},
+      {blame::margin_style_t::OTHER, "style_textmargin"},
+      {blame::margin_style_t::WEEK, "style_textmargin_week"},
+      {blame::margin_style_t::YEAR, "style_textmargin_year"}};
 
-    case blame::margin_style_t::MONTH:
-      stc->MarginSetStyle(blame->line_no(), m_style_no_text_margin_month);
-      break;
-
-    case blame::margin_style_t::OTHER:
-      stc->MarginSetStyle(blame->line_no(), m_style_no_text_margin);
-      break;
-
-    case blame::margin_style_t::WEEK:
-      stc->MarginSetStyle(blame->line_no(), m_style_no_text_margin_week);
-      break;
-
-    case blame::margin_style_t::YEAR:
-      stc->MarginSetStyle(blame->line_no(), m_style_no_text_margin_year);
-      break;
-
-    case blame::margin_style_t::UNKNOWN:
-      break;
+    stc->MarginSetStyle(
+      blame->line_no(),
+      m_style_no_text.at(styles.at(blame->style())));
   }
 
   if (!blame->info().empty() && !blame->skip_info())
@@ -421,7 +409,7 @@ void wex::lexers::load_document_check()
     {
       if (!it.first.empty() && it.second.empty())
       {
-        log("theme") << it.first << " is unknown";
+        log("theme") << it.first << "is unknown";
       }
     }
   }
@@ -553,25 +541,9 @@ void wex::lexers::parse_node_global(const pugi::xml_node& node)
       }
       else
       {
-        if (style.define() == "style_textmargin")
+        if (style.define().starts_with("style_textmargin"))
         {
-          m_style_no_text_margin = style.number();
-        }
-        else if (style.define() == "style_textmargin_day")
-        {
-          m_style_no_text_margin_day = style.number();
-        }
-        else if (style.define() == "style_textmargin_week")
-        {
-          m_style_no_text_margin_week = style.number();
-        }
-        else if (style.define() == "style_textmargin_month")
-        {
-          m_style_no_text_margin_month = style.number();
-        }
-        else if (style.define() == "style_textmargin_year")
-        {
-          m_style_no_text_margin_year = style.number();
+          m_style_no_text[style.define()] = style.number();
         }
 
         m_styles.emplace_back(style);
@@ -621,7 +593,7 @@ void wex::lexers::parse_node_macro_def(
     {
       if (const auto& it = macro_map.find(no); it != macro_map.end())
       {
-        log("macro") << no << macro << " already exists";
+        log("macro") << no << macro << "already exists";
       }
       else
       {
@@ -681,7 +653,7 @@ void wex::lexers::parse_node_theme(const pugi::xml_node& node)
       {
         if (const auto& it = tmpMacros.find(style); it != tmpMacros.end())
         {
-          log("macro style") << style << child << " already exists";
+          log("macro style") << style << child << "already exists";
         }
         else
         {

@@ -2,7 +2,7 @@
 // Name:      type-to-value.h
 // Purpose:   Declaration of class wex::type_to_value
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2022 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -26,10 +26,10 @@ public:
   };
 
   /// Returns value as a string.
-  const auto& get() const { return m_v; }
+  const std::string& get() const { return m_v; }
 
   /// Returns value as a string.
-  const auto& get_string() const { return m_v; }
+  const std::string& get_string() const { return m_v; }
 
 private:
   const std::string& m_v;
@@ -57,7 +57,9 @@ public:
   int get() const
   {
     if (m_i != 0)
+    {
       return m_i;
+    }
 
     try
     {
@@ -80,10 +82,12 @@ public:
   };
 
   /// Returns value as a string.
-  const auto get_string() const
+  const std::string get_string() const
   {
     if (!m_s.empty())
+    {
       return m_s;
+    }
 
     try
     {

@@ -2,7 +2,7 @@
 
 This library is written in the c++ language, and offers classes
 to add vi or ex functionality as specified in
-"The Open Group Base Specifications Issue 8, 2024 edition"
+[The Open Group Base Specifications]( https://pubs.opengroup.org/onlinepubs/9799919799)
 to your apps.
 
 ## wex c++ libraries
@@ -37,6 +37,10 @@ possibly followed by:
   run-clang-tidy -fix
 ```
 
+To check performance issues you can use the Instruments app for macOS as
+provided by Apple. Especially use the Timer Profiler, no special
+build is needed.
+
 It benefits from the following wxWidgets libraries:
 
 ## wxWidgets libraries
@@ -62,6 +66,7 @@ boost::algorithm          | uses find_tail, icontains, iequals, replace_all, to_
 boost::describe           | to add reflection
 boost::json               | to implement wex::config
 boost::log                | to implement wex::log
+boost::parser             | to implement wex::unified_diff
 boost::process            | to implement wex::process
 boost::program_options    | to implement wex::cmdline
 boost::regular expression | to implement the wex::regular expression and regex_part

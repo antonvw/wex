@@ -42,6 +42,8 @@ TEST_CASE("wex::vi")
   // First load macros.
   REQUIRE(wex::ex::get_macros().load_document());
 
+  REQUIRE(vi->count() == 1);
+
   SECTION("calc")
   {
     stc->set_text("this text contains xx");
@@ -77,6 +79,7 @@ TEST_CASE("wex::vi")
     {
       start_block(vi);
       REQUIRE(vi->command("2j"));
+      REQUIRE(vi->count() == 1);
       REQUIRE(vi->command(" "));
       REQUIRE(vi->command("x"));
       REQUIRE(stc->get_text() == "XXXX\nYYYY  \nZZZZ\n");

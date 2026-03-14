@@ -7,10 +7,10 @@
 
 #include <wex/core/config.h>
 #include <wex/core/log.h>
-#include <wx/app.h>
 #include <wx/colour.h>
 #include <wx/font.h>
-#include <wx/stdpaths.h>
+
+#include <utility>
 
 #include "config-imp.h"
 
@@ -27,8 +27,8 @@ wex::config::config(const std::string& item)
   config::item(item);
 }
 
-wex::config::config(const std::string& parent, const std::string& child)
-  : m_item(child)
+wex::config::config(const std::string& parent, std::string child)
+  : m_item(std::move(child))
   , m_local(new config_imp(m_store, parent))
 {
 }
@@ -81,18 +81,7 @@ size_t wex::config::children() const
 
 const wex::path wex::config::dir()
 {
-  if (const wex::path p(
-        {wxGetHomeDir(), ".config", wxTheApp->GetAppName().Lower()});
-      p.dir_exists())
-  {
-    return p;
-  }
-  if (const wex::path p({wxGetHomeDir(), ".config", "wex"}); p.dir_exists())
-  {
-    return p;
-  }
-
-  return wex::path(wxPathOnly(wxStandardPaths::Get().GetExecutablePath()));
+  return config_imp::dir();
 }
 
 bool wex::config::empty() const
@@ -234,6 +223,11 @@ const std::string wex::config::get_first_of(const std::string& def) const
 
 wex::config_imp* wex::config::get_store() const
 {
+  if (m_store == nullptr)
+  {
+    on_init();
+  }
+
   assert(m_store);
 
   if (m_item.contains("."))

@@ -2,10 +2,11 @@
 // Name:      address.cpp
 // Purpose:   Implementation of class wex::address
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2013-2024 Anton van Wezenbeek
+// Copyright: (c) 2013-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <charconv>
+#include <utility>
 
 #include <wex/core/core.h>
 #include <wex/core/file.h>
@@ -68,8 +69,8 @@ wex::address::address(ex* ex, int line)
 {
 }
 
-wex::address::address(ex* ex, const std::string& address)
-  : m_address(address)
+wex::address::address(ex* ex, std::string address)
+  : m_address(std::move(address))
   , m_ex(ex)
 {
 }
@@ -285,12 +286,19 @@ bool wex::address::insert(const std::string& text) const
 
 bool wex::address::marker_add(char marker) const
 {
-  return get_line() > 0 && m_ex->marker_add(marker, get_line() - 1);
+  if (m_ex == nullptr)
+  {
+    return false;
+  }
+
+  const int correct(m_ex->command_parsed_data().text().ends_with('$') ? 1 : 0);
+
+  return get_line() > 0 && m_ex->marker_add(marker, get_line() - 1 - correct);
 }
 
 bool wex::address::marker_delete() const
 {
-  return m_address.size() > 1 && m_address[0] == '\'' &&
+  return m_ex != nullptr && m_address.size() > 1 && m_address[0] == '\'' &&
          m_ex->marker_delete(m_address[1]);
 }
 
@@ -325,7 +333,7 @@ bool wex::address::parse(const command_parser& cp)
 
     case 'k':
     case 'm':
-      return !cp.text().empty() ? marker_add(cp.text()[0]) : false;
+      return cp.text().size() == 1 ? marker_add(cp.text()[0]) : false;
 
     case 'p':
       if (cp.command() == "pu")

@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of wex::data::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2024 Anton van Wezenbeek
+// Copyright: (c) 2017-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -66,8 +66,8 @@ public:
   {
   public:
     /// Access.
-    auto pos_end() const { return m_pos_end; }
-    auto pos_start() const { return m_pos_start; }
+    int  pos_end() const { return m_pos_end; }
+    int  pos_start() const { return m_pos_start; }
     bool is_pos_at_end() const { return m_pos_at_end; }
     bool is_synced() const { return m_synced; }
     bool is_synced_log() const { return m_synced_log; }
@@ -85,16 +85,16 @@ public:
   stc();
 
   /// Constructor from control data.
-  stc(const data::control& data);
+  stc(data::control data);
 
   /// Constructor from window data.
   stc(const data::window& data);
 
   /// Returns control data.
-  auto& control() const { return m_data; }
+  const data::control& control() const { return m_data; }
 
   /// Returns (or sets) control data.
-  auto& control() { return m_data; }
+  data::control& control() { return m_data; }
 
   /// Sets control data.
   stc& control(const data::control& data)
@@ -104,7 +104,7 @@ public:
   };
 
   /// Returns event data.
-  const auto& event() const { return m_event_data; }
+  const event_data& event() const { return m_event_data; }
 
   /// Sets event data.
   stc& event(bool synced)
@@ -114,17 +114,17 @@ public:
   };
 
   /// Returns window flags.
-  const auto& flags() const { return m_win_flags; }
+  window_t flags() const { return m_win_flags; }
 
   /// Set window flags.
   stc&
   flags(window_t flags, data::control::action_t action = data::control::SET);
 
   /// Returns stc.
-  auto* get_stc() { return m_stc; };
+  syntax::stc* get_stc() { return m_stc; };
 
   /// Returns head path.
-  const auto& head_path() const { return m_head_path; }
+  const path& head_path() const { return m_head_path; }
 
   /// Sets head path.
   stc& head_path(const path& r)
@@ -134,16 +134,16 @@ public:
   }
 
   /// Returns indicator type.
-  const auto indicator_no() const { return m_indicator_no; }
+  indicator_t indicator_no() const { return m_indicator_no; }
 
   /// Sets indicator type.
   stc& indicator_no(indicator_t t);
 
-  /// injects data.
+  /// Injects data.
   bool inject() const;
 
   /// Returns menu flags.
-  const auto& menu() const { return m_menu_flags; }
+  menu_t menu() const { return m_menu_flags; }
 
   /// Sets menu flags.
   stc& menu(menu_t flags, data::control::action_t action = data::control::SET);
@@ -166,7 +166,7 @@ public:
   };
 
   /// Returns window data.
-  const auto& window() const { return m_data.window(); }
+  const data::window& window() const { return m_data.window(); }
 
   /// Sets window data.
   stc& window(const data::window& data)

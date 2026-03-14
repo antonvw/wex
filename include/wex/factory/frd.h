@@ -22,23 +22,23 @@ class find_replace_data
 public:
   // Static interface.
 
-  /// Returns text.
-  static const auto& text_find() { return m_text_find; }
+  /// Returns find text.
+  static const std::string& text_find() { return m_text_find; }
 
-  /// Returns text.
-  static const auto& text_match_case() { return m_text_match_case; }
+  /// Returns match case text.
+  static const std::string& text_match_case() { return m_text_match_case; }
 
-  /// Returns text.
-  static const auto& text_match_word() { return m_text_match_word; }
+  /// Returns match word text.
+  static const std::string& text_match_word() { return m_text_match_word; }
 
-  /// Returns text.
-  static const auto& text_regex() { return m_text_regex; }
+  /// Returns regex text.
+  static const std::string& text_regex() { return m_text_regex; }
 
-  /// Returns text.
-  static const auto& text_replace_with() { return m_text_replace_with; }
+  /// Returns replace with text.
+  static const std::string& text_replace_with() { return m_text_replace_with; }
 
-  /// Returns text.
-  static const auto& text_search_down() { return m_text_search_down; }
+  /// Returns search down text.
+  static const std::string& text_search_down() { return m_text_search_down; }
 
   // Other methods.
 
@@ -110,7 +110,7 @@ public:
   void set_search_down(bool value);
 
   /// Returns wx frd.
-  auto* wx() const { return m_frd; }
+  wxFindReplaceData* wx() const { return m_frd; }
 
 private:
   // initializing them using _(), does not work,

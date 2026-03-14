@@ -2,7 +2,7 @@
 // Name:      unified-diffs.h
 // Purpose:   Declaration of class unified_diffs
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024 Anton van Wezenbeek
+// Copyright: (c) 2024-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -20,7 +20,8 @@ class stc;
 
 /// Offers a class that collects unified diff invocations to be able
 /// to iterate through the differences, show them on the stc component,
-/// or checkout the difference.
+/// or checkout a difference. For each single diff the insert should be 
+/// called, and after the last one finish should be called.
 class unified_diffs
 {
 public:
@@ -38,18 +39,24 @@ public:
   /// Goto last diff line on stc.
   bool end();
 
+  /// Finishes diff: the diff should already be inserted, and
+  /// is now overwritten by the new  diff.
+  bool finish(const factory::unified_diff* diff);
+
   /// Goto first diff line on stc.
   bool first();
 
   /// Inserts a unified diff.
   void insert(const factory::unified_diff* diff);
 
-  /// Goto next diff line on stc. If at end, goes to next stc.
+  /// Goto next diff line on stc. If at end (we are not
+  /// on the last of all differences), goes to the next stc.
   /// If on first position of stc, goes to first diff line.
   bool next();
 
   /// Returns position of iterator in the collection.
-  /// The first element has number 1.
+  /// The first element has number 1, 0 is returned if
+  /// no differences are present.
   size_t pos() const;
 
   /// Goto previous diff line on stc. If at begin, goes to previous stc.
@@ -64,6 +71,8 @@ public:
 
 private:
   factory::stc* m_stc{nullptr};
+
+  int m_last_inserted_key{0};
 
   std::map<int, factory::unified_diff>                 m_lines;
   std::map<int, factory::unified_diff>::const_iterator m_lines_it;

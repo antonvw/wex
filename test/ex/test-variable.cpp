@@ -95,7 +95,7 @@ TEST_CASE("wex::variable")
 
   SECTION("builtin")
   {
-    for (const auto& it : get_builtin_variables())
+    for (const auto& it : wex::test::get_builtin_variables())
     {
       const std::string text(
         "<variable name =\"" + it + "\" type=\"BUILTIN\"></variable>");

@@ -2,7 +2,7 @@
 // Name:      stream.h
 // Purpose:   Declaration of wex::stream class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -32,13 +32,13 @@ public:
     wxEvtHandler*                    eh = nullptr);
 
   /// Returns the statistics.
-  const auto& get_statistics() const { return m_stats; }
+  const stream_statistics& get_statistics() const { return m_stats; }
 
   /// Returns the tool.
-  const auto& get_tool() const { return m_tool; }
+  const tool& get_tool() const { return m_tool; }
 
   /// Returns the filename.
-  const auto& path() const { return m_path; }
+  const path_lexer& path() const { return m_path; }
 
   /// Runs the tool.
   bool run_tool();

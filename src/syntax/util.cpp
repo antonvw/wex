@@ -5,8 +5,32 @@
 // Copyright: (c) 2022-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/syntax/stc.h>
 #include <wex/syntax/util.h>
 #include <wx/choicdlg.h>
+
+int wex::find_xml_root(wxStyledTextCtrl* stc, size_t skip)
+{
+  stc->SetSearchFlags(wxSTC_FIND_REGEXP | wxSTC_FIND_CXX11REGEX);
+
+  int start_pos = 0;
+
+  for (int i = 0; i <= skip; i++)
+  {
+    stc->SetTargetRange(start_pos, 1000);
+
+    start_pos = stc->SearchInTarget("<[^?].*>");
+
+    if (start_pos == -1)
+    {
+      return 0;
+    }
+
+    start_pos++;
+  }
+
+  return stc->LineFromPosition(start_pos);
+}
 
 void wex::node_properties(
   const pugi::xml_node*  node,

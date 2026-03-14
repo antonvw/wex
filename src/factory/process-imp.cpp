@@ -2,15 +2,16 @@
 // Name:      process-imp.cpp
 // Purpose:   Implementation of class wex::factory::process_imp
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
-
 #include <wex/core/log.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/process.h>
 #include <wx/event.h>
+
+#include <boost/process/v1/async_system.hpp>
 
 #include "process-imp.h"
 
@@ -21,6 +22,8 @@
     event.SetString(TEXT);                                                     \
     wxPostEvent(DEST, event);                                                  \
   }
+
+constexpr auto max_size = std::numeric_limits<std::streamsize>::max();
 
 wex::factory::process_imp::process_imp()
   : m_io(std::make_shared<boost::asio::io_context>())
@@ -56,7 +59,7 @@ void wex::factory::process_imp::async_system(process* p)
 
 void wex::factory::process_imp::boost_async_system(process* p)
 {
-  bp::async_system(
+  bp1::async_system(
     *m_io.get(),
     [this, p](boost::system::error_code error, int i)
     {
@@ -77,16 +80,19 @@ void wex::factory::process_imp::boost_async_system(process* p)
 
     // clang-format off
     p->data().exe_path(),
-    bp::args = p->data().args(),
-    bp::start_dir = p->data().start_dir(),
-    bp::std_err > m_es,
-    bp::std_in < m_os, 
-    bp::std_out > m_is,
+    bp1::args = p->data().args(),
+    bp1::start_dir = p->data().start_dir(),
+    bp1::std_err > m_es,
+    bp1::std_in < m_os,
+    bp1::std_out > m_is,
     m_group);
   // clang-format on
 
   log::debug("async_system")
     << p->data().exe() << "wd:" << p->data().start_dir();
+
+  WEX_POST(ID_SHELL_APPEND_START, "", p->m_eh_out)
+  WEX_POST(ID_SHELL_APPEND, p->data().exe() + "\n", p->m_eh_out)
 }
 
 bool wex::factory::process_imp::stop(wxEvtHandler* e)
@@ -121,12 +127,13 @@ void wex::factory::process_imp::thread_error(const process* p)
      &es   = m_es]
     {
       std::string text;
+      char        c;
 
-      while (es.good())
+      while (es.get(c))
       {
-        text.push_back(es.get());
+        text.push_back(c);
 
-        if (text.back() == '\n')
+        if (c == '\n')
         {
           WEX_POST(ID_SHELL_APPEND_ERROR, text, out)
 
@@ -152,44 +159,40 @@ void wex::factory::process_imp::thread_input(const process* p)
      &is   = m_is]
     {
       std::string text, line;
-      line.reserve(1000000);
-      text.reserve(1000000);
-      int  linesize = 0;
-      bool error    = false;
+      line.reserve(600);
+      text.reserve(600);
+      char c;
 
-      while (is.good() && !error)
+      while (is.get(c))
       {
-        text.push_back(is.get());
-        linesize++;
+        text.push_back(c);
 
-        if (linesize > 20000)
+        if (debug)
         {
-          error = true;
-          WEX_POST(ID_SHELL_APPEND, "\n*** LINE LIMIT ***\n", out)
+          line.push_back(c);
+
+          if (c == '\n')
+          {
+            WEX_POST(ID_DEBUG_STDOUT, line, dbg)
+            line.clear();
+          }
         }
-        else if (isspace(text.back()))
+
+        if (text.size() > 500)
+        {
+          text += "...\n";
+          WEX_POST(ID_SHELL_APPEND, text, out)
+          is.ignore(max_size, '\n');
+          text.clear();
+        }
+        else if (std::isspace(static_cast<unsigned char>(c)))
         {
           WEX_POST(ID_SHELL_APPEND, text, out)
-
-          if (text.back() == '\n')
-          {
-            linesize = 0;
-          }
-
-          if (debug)
-          {
-            line.append(text);
-
-            if (line.back() == '\n')
-            {
-              WEX_POST(ID_DEBUG_STDOUT, line, dbg)
-              line.clear();
-            }
-          }
-
           text.clear();
         }
       }
+
+      WEX_POST(ID_SHELL_APPEND_FINISH, "", out)
     });
 
   t.detach();
@@ -214,6 +217,7 @@ void wex::factory::process_imp::thread_output(const process* p)
           {
             log::debug("async_system") << "write:" << text;
 
+            // use endl instead of \n to flush the data
             os << text << std::endl;
 
             if (debug)

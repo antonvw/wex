@@ -62,13 +62,13 @@ public:
   void apply(factory::stc* stc) const;
 
   /// Applies default style to functions for back and foreground colours.
-  void apply_default_style(
+  bool apply_default_style(
     const std::function<void(const std::string&)>& back,
     const std::function<void(const std::string&)>& fore = nullptr) const;
 
   /// Sets global styles (and colours and indicators)
   /// for current theme for specified component.
-  void apply_global_styles(factory::stc* stc);
+  bool apply_global_styles(factory::stc* stc);
 
   /// Applies macro to text:
   /// if text is referring to a macro, text is replaced by the macro value.
@@ -105,7 +105,7 @@ public:
   const indicator& get_indicator(const indicator& indicator) const;
 
   /// Returns the lexers.
-  const auto& get_lexers() const { return m_lexers; }
+  const std::vector<lexer>& get_lexers() const { return m_lexers; }
 
   /// Returns the macros for specified lexer.
   const name_values_t& get_macros(const std::string& lexer) const;
@@ -115,7 +115,7 @@ public:
   const marker& get_marker(const marker& marker) const;
 
   /// Returns number of themes (should at least contain empty theme).
-  auto get_themes_size() const { return m_theme_macros.size(); }
+  size_t get_themes_size() const { return m_theme_macros.size(); }
 
   /// Returns true if specified indicator is available.
   bool indicator_is_loaded(const indicator& indic) const
@@ -145,10 +145,16 @@ public:
   int marker_max_no_used() const { return m_max_no_marker; }
 
   /// Returns the path.
-  const auto& path() const { return m_path; }
+  const wex::path& path() const { return m_path; }
+
+  /// Returns the path macro.
+  const wex::path& path_macro() const { return m_path_macro; }
 
   /// Returns global properties.
-  const auto& properties() const { return m_global_properties; }
+  const std::vector<property>& properties() const
+  {
+    return m_global_properties;
+  }
 
   /// Restores the theme from previous theme.
   void restore_theme() { m_theme = m_theme_previous; }
@@ -158,7 +164,7 @@ public:
   bool show_theme_dialog(wxWindow* parent);
 
   /// Returns the current theme.
-  const auto& theme() const { return m_theme; }
+  const std::string& theme() const { return m_theme; }
 
   /// Returns the theme macros for the current theme.
   const name_values_t& theme_macros() const;
@@ -193,6 +199,7 @@ private:
   std::set<indicator> m_indicators;
   std::set<marker>    m_markers;
 
+  std::unordered_map<std::string, int>           m_style_no_text;
   std::unordered_map<std::string, name_values_t> m_macros, m_theme_colours;
 
   std::vector<property> m_global_properties;
@@ -201,15 +208,18 @@ private:
 
   std::vector<std::pair<std::string, std::string>> m_texts;
 
+  const std::unordered_map<
+    std::string,
+    std::function<void(factory::stc* stc, const std::string& colour)>>
+    m_colours;
+
   style m_default_style;
 
   const wex::path m_path, m_path_macro;
 
   std::string m_folding_background_colour, m_folding_foreground_colour;
 
-  int m_style_no_text_margin{-1}, m_style_no_text_margin_day{-1},
-    m_style_no_text_margin_week{-1}, m_style_no_text_margin_month{-1},
-    m_style_no_text_margin_year{-1}, m_max_no_marker{-1};
+  int m_max_no_marker{-1};
 
   bool m_is_loaded{false};
 

@@ -2,7 +2,7 @@
 // Name:      version-dialog.h
 // Purpose:   Declaration of class wex::version_info_dialog and about_info
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -52,10 +52,10 @@ public:
     /// version info
     const version_info& info,
     /// about info
-    const about_info& about = about_info());
+    about_info about = about_info());
 
   /// Returns the about info.
-  const auto& about() const { return m_about; }
+  const about_info& about() const { return m_about; }
 
   /// Shows the dialog.
   void show();

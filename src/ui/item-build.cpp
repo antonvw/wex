@@ -2,14 +2,31 @@
 // Name:      item-build.cpp
 // Purpose:   Implementation of item build methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2025 Anton van Wezenbeek
+// Copyright: (c) 2022-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
 
+#include <wex/core/config.h>
 #include <wex/factory/control.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/item-build.h>
+
+const std::vector<wex::item>
+wex::add_checkboxes(const std::vector<std::pair<std::string, bool>>& pairs)
+{
+  std::vector<item> v;
+
+  std::ranges::for_each(
+    pairs,
+    [&v](const auto& p)
+    {
+      config(p.first).get(p.second);
+      v.push_back({p.first, item::CHECKBOX});
+    });
+
+  return v;
+}
 
 const wex::item wex::add_combobox_with_max(
   const std::string& name_combo,

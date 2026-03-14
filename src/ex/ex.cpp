@@ -83,7 +83,7 @@ bool wex::ex::auto_write()
 
 std::optional<int> wex::ex::calculator(const std::string& text)
 {
-  const auto& val(evaluator().eval(this, text));
+  const auto& val(evaluator(this).eval(text));
 
   if (!val)
   {
@@ -281,7 +281,7 @@ bool wex::ex::marker_add(char marker, int line)
 
   m_marker_columns[marker] = col;
 
-  log::trace("marker") << marker << "at line:" << lin << "col:" << col;
+  log::trace("marker") << marker << "set at line:" << lin << "col:" << col;
 
   return true;
 }
@@ -367,6 +367,7 @@ int wex::ex::marker_line(char marker) const
     else
     {
       log::status("Undefined marker") << marker;
+      log::debug("unknown marker") << marker;
     }
   }
 

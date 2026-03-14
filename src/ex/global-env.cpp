@@ -8,6 +8,7 @@
 #include <boost/tokenizer.hpp>
 #include <wex/core/log.h>
 #include <wex/ex/addressrange.h>
+#include <wex/ex/command-parser.h>
 #include <wex/ex/ex.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
@@ -71,19 +72,32 @@ wex::global_env::global_env(const addressrange& ar)
   }
 }
 
-bool wex::global_env::command(const block_lines& block, const std::string& text)
-  const
+wex::global_env::~global_env()
 {
-  if (const auto cmd(":" + block.get_range() + text); !m_ex->command(cmd))
+  if (m_marker != 0)
+  {
+    m_ex->marker_delete(m_marker);
+    m_marker = 0;
+  }
+}
+
+bool wex::global_env::command(const block_lines& block, const std::string& exe)
+{
+  if (const auto cmd(":" + block.get_range() + exe); !m_ex->command(cmd))
   {
     m_ex->frame()->show_ex_message(cmd + " failed");
     return false;
   }
 
+  if (m_ex->command_parsed_data().is_global_skip())
+  {
+    skip(block.get_range() + exe);
+  }
+
   return true;
 }
 
-bool wex::global_env::for_each(const block_lines& match) const
+bool wex::global_env::for_each(const block_lines& match)
 {
   return !has_commands() ? match.set_indicator(m_ar.find_indicator()) :
                            std::ranges::all_of(
@@ -98,7 +112,7 @@ bool wex::global_env::for_each(const block_lines& match) const
 /*
 example for global inverse and match block / inverse block
 v/yy/d
-text   mbs    ibs    ibe   ex action  
+text   mbs    ibs    ibe   ex action
 xx0
 xx1
 yy2    2      0      2     -> :1,2d
@@ -119,7 +133,7 @@ pp14
 // clang-format on
 bool wex::global_env::global(const data::substitute& data)
 {
-  addressrange_mark am(m_ar, data, true); // global
+  addressrange_mark am(m_ar, data);
 
   if (!am.set())
   {
@@ -127,9 +141,7 @@ bool wex::global_env::global(const data::substitute& data)
     return false;
   }
 
-  const bool infinite =
-    (m_recursive && data.commands() != "$" && data.commands() != "1" &&
-     data.commands() != "d");
+  m_lines_skip.clear();
 
   block_lines ib(
     m_stc,
@@ -151,17 +163,10 @@ bool wex::global_env::global(const data::substitute& data)
     }
     else
     {
-      if (!process(mb))
+      if (!process(am, mb))
       {
         return false;
       }
-    }
-
-    if (m_hits > 50 && infinite)
-    {
-      m_ex->frame()->show_ex_message(
-        "possible infinite loop at " + mb.get_range());
-      return false;
     }
 
     if (!am.update(m_stc->get_line_count() - lines))
@@ -175,7 +180,7 @@ bool wex::global_env::global(const data::substitute& data)
     ib.start(am.marker_target());
     ib.end(am.marker_end() + 1);
 
-    if (ib.is_available() && !process(ib))
+    if (ib.is_available() && !process(am, ib))
     {
       return false;
     }
@@ -186,9 +191,33 @@ bool wex::global_env::global(const data::substitute& data)
   return true;
 }
 
-bool wex::global_env::process(const block_lines& block)
+bool wex::global_env::process(addressrange_mark& am, const block_lines& block)
 {
   block.log();
+
+  int line(
+    block.start() + (m_ex->command_parsed_data().command() == "m" ||
+                         m_ex->command_parsed_data().text().ends_with('$') ?
+                       1 :
+                       0));
+  bool skip = false;
+
+  while (m_lines_skip.contains(line) &&
+         line < m_ex->get_stc()->get_line_count())
+  {
+    if (!am.skip(line))
+    {
+      return false;
+    }
+
+    skip = true;
+    line++;
+  }
+
+  if (skip)
+  {
+    return true;
+  }
 
   if (!for_each(block))
   {
@@ -201,14 +230,14 @@ bool wex::global_env::process(const block_lines& block)
 }
 
 bool wex::global_env::process_inverse(
-  const addressrange_mark& am,
-  const block_lines&       mb,
-  block_lines&             ib)
+  addressrange_mark& am,
+  const block_lines& mb,
+  block_lines&       ib)
 {
   // If there is a previous inverse block, process it.
   if (ib < mb)
   {
-    if (ib.finish(mb); !process(ib))
+    if (ib.finish(mb); !process(am, ib))
     {
       return false;
     }
@@ -221,4 +250,65 @@ bool wex::global_env::process_inverse(
   }
 
   return true;
+}
+
+void wex::global_env::skip(const std::string& info)
+{
+  const address a(m_ex, m_ex->command_parsed_data().text());
+
+  if (m_marker == 0)
+  {
+    m_marker = '[';
+    a.marker_add(m_marker);
+  }
+
+  if (const auto& line = skip_marker_line(); line)
+  {
+    m_lines_skip.insert(*line);
+    log::debug("skip inserted line")
+      << *line << "marker" << m_ex->marker_line(m_marker) << info << "from"
+      << m_ex->command_parsed_data().text();
+  }
+  else
+  {
+    log::trace("skip ignored line") << a.get_line() << "all skipped";
+  }
+}
+
+std::optional<int> wex::global_env::skip_marker_line() const
+{
+  int line = m_ex->marker_line(m_marker);
+
+  if (line < m_ex->get_stc()->get_line_count() - 1)
+  {
+    line++;
+  }
+
+  while (m_lines_skip.contains(line))
+  {
+    if (m_ex->command_parsed_data().command() == "m")
+    {
+      if (line > 0)
+      {
+        line--;
+      }
+      else
+      {
+        return std::nullopt;
+      }
+    }
+    else
+    {
+      if (line < m_ex->get_stc()->get_line_count())
+      {
+        line++;
+      }
+      else
+      {
+        return std::nullopt;
+      }
+    }
+  }
+
+  return line;
 }

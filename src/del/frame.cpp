@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2025 Anton van Wezenbeek
+// Copyright: (c) 2009-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -996,9 +996,9 @@ bool wex::del::frame::vcs_unified_diff(
   if (auto* stc = dynamic_cast<wex::stc*>(open_file(diff->path_vcs()));
       stc != nullptr)
   {
-    if (diff->is_last())
+    if (diff->type() == factory::unified_diff::diff_t::LAST)
     {
-      stc->diffs().first();
+      stc->diffs().finish(diff);
       stc->diffs().status();
       return true;
     }

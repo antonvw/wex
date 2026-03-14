@@ -51,7 +51,7 @@ build(const std::string& key, const std::string& field, bool first = false)
   return add;
 }
 
-constexpr std::string renamed(":::");
+const std::string renamed(":::");
 } // namespace wex
 
 wex::blame::blame(const pugi::xml_node& node)
@@ -61,9 +61,11 @@ wex::blame::blame(const pugi::xml_node& node)
   , m_name(node.attribute("name").value())
   , m_path_original("xxxxx")
 {
+  config("blame.author").set(false);
 }
 
-wex::blame::margin_style_t wex::blame::get_style(const std::string& text) const
+wex::blame::margin_style_t
+wex::blame::get_style(const std::string& hash, const std::string& text) const
 {
   margin_style_t style = margin_style_t::UNKNOWN;
 
@@ -84,7 +86,11 @@ wex::blame::margin_style_t wex::blame::get_style(const std::string& text) const
     const int    seconds_in_month  = 30 * seconds_in_day;
     const int    seconds_in_year   = 365 * seconds_in_day;
 
-    if (dt < seconds_in_day)
+    if (hash.starts_with("000000"))
+    {
+      style = margin_style_t::NOT_COMMITTED;
+    }
+    else if (dt < seconds_in_day)
     {
       style = margin_style_t::DAY;
     }
@@ -125,6 +131,11 @@ std::string wex::blame::margin_renamed(const factory::stc* stc)
 
   return !revision.contains(renamed) ? std::string() :
                                        find_after(revision, renamed);
+}
+
+int wex::blame::margin_text_default_size()
+{
+  return 200;
 }
 
 bool wex::blame::parse(const path& p, const std::string& text)
@@ -173,7 +184,7 @@ bool wex::blame::parse_compact(const std::string& line, const regex& r)
 
   m_skip_info = false;
   m_path.clear(); // not present in svn blame
-  m_style = get_style(r[2]);
+  m_style = get_style(r[0], r[2]);
   m_line_no++; // not present in svn blame
   m_line_text = r[3];
 
@@ -199,7 +210,7 @@ bool wex::blame::parse_full(const std::string& line, const regex& r)
 
   m_skip_info = false;
   m_path      = boost::algorithm::trim_copy(r[1]);
-  m_style     = get_style(r[3]);
+  m_style     = get_style(r[0], r[3]);
 
   if (const auto [ptr, ec] =
         std::from_chars(r[4].data(), r[4].data() + r[4].size(), m_line_no);

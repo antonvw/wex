@@ -51,6 +51,12 @@ wex::cmdline_imp::function_t::function_t(
 wex::cmdline_imp::cmdline_imp(bool add_standard_options, config& cfg)
   : m_cfg(cfg)
 {
+  // clang-format off
+  m_desc.add_options()
+    ("help,h", "displays usage information and exits")
+    ("version,R", "displays version information and exits");
+  // clang-format on
+
   if (add_standard_options)
   {
     // clang-format off
@@ -58,10 +64,8 @@ wex::cmdline_imp::cmdline_imp(bool add_standard_options, config& cfg)
     m_desc.add_options()
       ("logfile,D", po::value<std::string>(), "sets log file")
       ("echo,e", "echo commands")
-      ("help,h", "displays usage information and exits")
       ("quit,q", po::value<int>(),
          "quits after specified number of milliseconds")
-      ("version,r", "displays version information and exits")
       ("verbose,v", "activates maximum (trace) verbosity")
       ("level,V", po::value<int>()->default_value(std::to_underlying(log::level_t_def())),
         std::string("activates verbosity down from verbose level\n" +
@@ -71,10 +75,6 @@ wex::cmdline_imp::cmdline_imp(bool add_standard_options, config& cfg)
       ("echo-output,x", "echo output commands (process, statusbar)")
       ("output,X", po::value<std::string>(), "output commands append to file");
     // clang-format on
-  }
-  else
-  {
-    m_desc.add_options()("help,h", "displays usage information and exits");
   }
 }
 

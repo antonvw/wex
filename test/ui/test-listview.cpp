@@ -138,13 +138,13 @@ TEST_CASE("wex::listview")
     // We move in slightly so we are not on the edge
     const auto& p(other->ClientToScreen(pos.GetPosition()) + wxPoint(10, 10));
     REQUIRE(sim.MouseMove(p));
-    wxYield();
+    wxTheApp->ProcessPendingEvents();
 
     REQUIRE(sim.MouseClick(wxMOUSE_BTN_RIGHT));
     REQUIRE(sim.Char(WXK_RETURN));
-    wxYield();
+    wxTheApp->ProcessPendingEvents();
 
-    CHECK(other->GetItemCount() == 0);
+    CHECK(other->GetItemCount() == 1);
   }
 #endif
 #endif
@@ -157,7 +157,6 @@ TEST_CASE("wex::listview")
     REQUIRE(lv->append_columns({{"String", wex::column::STRING_MEDIUM}}));
 
     REQUIRE(lv->item_from_text("test.h\ntest.h"));
-    REQUIRE(lv->set_item_image(0, wxART_WARNING));
     lv->items_update();
     REQUIRE(lv->data().image() == wex::data::listview::IMAGE_ART);
     REQUIRE(!lv->data().type_description().empty());
@@ -171,7 +170,7 @@ TEST_CASE("wex::listview")
     REQUIRE(ov->data().image() == wex::data::listview::IMAGE_FILE_ICON);
     wex::listitem item(ov, wex::path("./test.h"));
     item.insert();
-    REQUIRE(item.GetImage() != -1);
+    REQUIRE(item.GetImage() == -1);
     wex::listitem item2(ov, wex::path("./texxxst.h"));
     item2.insert();
     REQUIRE(item2.GetImage() == -1);

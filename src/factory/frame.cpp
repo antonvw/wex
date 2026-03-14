@@ -17,7 +17,7 @@
   /* NOLINTNEXTLINE */                                                         \
   if (m_find_focus != nullptr && m_find_focus->IsShown())                      \
   {                                                                            \
-    if (classname* win = dynamic_cast<classname*>(m_find_focus);               \
+    if (auto* win = dynamic_cast<classname*>(m_find_focus);                    \
         win != nullptr)                                                        \
     {                                                                          \
       return win;                                                              \

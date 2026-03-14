@@ -17,6 +17,7 @@
 #include <wex/ui/frame.h>
 #include <wex/vi/vi.h>
 
+#include "../util.h"
 #include "util.h"
 #include "vim.h"
 
@@ -242,6 +243,17 @@ void wex::vi::command_reg(const std::string& reg)
               frame()->show_ex_message(std::to_string(*sum));
             }
           }
+        }
+      }
+      else if (is_register_valid(reg))
+      {
+        if (reg[1] == '%')
+        {
+          set_register_yank(get_stc()->path().filename());
+        }
+        else
+        {
+          set_register_yank(get_macros().get_register(reg[1]));
         }
       }
       else
@@ -898,9 +910,7 @@ void wex::vi::set_last_command(const std::string& command)
     first = v[0].size(); // skip a possible leading count
   }
 
-  if (const auto& it =
-        std::ranges::find(m_last_commands, command.substr(first, 1));
-      it != m_last_commands.end())
+  if (std::ranges::contains(m_last_commands, command.substr(first, 1)))
   {
     m_last_command = command;
     log::trace("last command") << m_last_command;

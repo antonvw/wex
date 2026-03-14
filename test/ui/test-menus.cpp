@@ -2,7 +2,7 @@
 // Name:      test-menus.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/menu-command.h>
@@ -21,7 +21,7 @@ TEST_CASE("wex::menus")
   REQUIRE(!wex::menus::build_menu(menucommands.get_commands(), 500, menu));
 
   std::vector<wex::menu_command> commands;
-  REQUIRE(!wex::menus::add_commands(doc, commands));
+  REQUIRE(wex::menus::add_commands(doc, commands) == 0);
 
   REQUIRE(!wex::menus::path().empty());
 

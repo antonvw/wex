@@ -16,13 +16,27 @@
 #include <wex/ui/item-dialog.h>
 #include <wx/app.h>
 
+#include "util.h"
+
 namespace wex
 {
+std::string
+cfg_do(const std::string& key, const std::string& on, const std::string& off)
+{
+  return std::string(config(key).get(true) ? on : off);
+}
+
 bool execute_grep(const std::string& bin, const path& tl)
 {
   auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
   auto* stc   = frame->get_stc();
-  auto  text(stc->get_selected_text());
+
+  if (stc == nullptr)
+  {
+    return false;
+  }
+
+  auto                text(stc->get_selected_text());
   static item_dialog* dlg = nullptr;
 
   if (text.empty())
@@ -31,9 +45,11 @@ bool execute_grep(const std::string& bin, const path& tl)
     {
       dlg = new item_dialog(
         {add_find_text(),
+         item(_("fif.In files"), item::COMBOBOX),
          item::choices_bool_t{
            find_replace_data::get()->text_match_case(),
-           find_replace_data::get()->text_match_word()}},
+           find_replace_data::get()->text_match_word(),
+           find_replace_data::get()->text_regex()}},
         wex::data::window().title("git grep"));
     }
 
@@ -63,19 +79,30 @@ bool execute_grep(const std::string& bin, const path& tl)
   }
   else
   {
-    const std::string flag(
-      config(find_replace_data::get()->text_match_case()).get(true) ? "" :
-                                                                      " -i ");
+    const auto& ic(
+      cfg_do(find_replace_data::get()->text_match_case(), "", " -i"));
+    const auto& re(cfg_do(find_replace_data::get()->text_regex(), " -E", ""));
+    std::string fif(config(_("fif.In files")).get_first_of());
+
+    if (!fif.empty())
+    {
+      fif = path_spec(fif);
+    }
 
     const std::string finds(
       config(find_replace_data::get()->text_match_word()).get(true) ?
         "\\b" + find + "\\b" :
         find);
 
-    frame->process_async_system(
-      process_data(bin + " grep -n " + flag + finds).start_dir(tl.string()));
+    if (!frame->process_async_system(
+          process_data(bin + " grep -n" + ic + re + " " + finds + fif)
+            .start_dir(tl.string())))
+    {
+      return false;
+    }
   }
 
   return true;
 }
+
 } // namespace wex

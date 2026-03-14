@@ -2,7 +2,7 @@
 // Name:      stream-statistics.h
 // Purpose:   Declaration of wex::stream_statistics class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2022 Anton van Wezenbeek
+// Copyright: (c) 2019-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -38,10 +38,10 @@ public:
   int get(const std::string& key) const;
 
   /// Returns the elements.
-  const auto& get_elements() const { return m_elements; }
+  const statistics<int>& get_elements() const { return m_elements; }
 
   /// Returns the elements.
-  auto& get_elements() { return m_elements; }
+  statistics<int>& get_elements() { return m_elements; }
 
   /// Increments keyword.
   int inc(const std::string& keyword, int inc_value = 1);

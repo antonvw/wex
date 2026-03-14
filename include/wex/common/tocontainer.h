@@ -2,7 +2,7 @@
 // Name:      to_container.h
 // Purpose:   Declaration of wex::to_container class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -54,7 +54,7 @@ public:
   explicit to_container(const wxComboBox* cb, size_t max_items = UINT_MAX);
 
   /// Returns the container.
-  const auto& get() const { return m_container; }
+  const T& get() const { return m_container; }
 
 private:
   void from_array_string(const wxArrayString& in);

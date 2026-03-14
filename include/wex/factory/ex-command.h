@@ -2,7 +2,7 @@
 // Name:      ex-command.h
 // Purpose:   Declaration of class wex::ex_command
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2023 Anton van Wezenbeek
+// Copyright: (c) 2018-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -46,7 +46,7 @@ public:
   explicit ex_command(factory::stc* stc = nullptr);
 
   /// Constructor, sets command text.
-  explicit ex_command(const std::string& text);
+  explicit ex_command(std::string text);
 
   /// Appends a char.
   ex_command& append(char c)
@@ -69,16 +69,16 @@ public:
   bool append_exec(const std::string& s);
 
   /// Returns last char of command.
-  auto back() const { return m_text.back(); }
+  char back() const { return m_text.back(); }
 
   /// Clears command text.
   void clear() { m_text.clear(); }
 
   /// Returns the command text.
-  const auto& command() const { return m_text; }
+  const std::string& command() const { return m_text; }
 
   /// Returns true if command text is empty.
-  auto empty() const { return m_text.empty(); }
+  bool empty() const { return m_text.empty(); }
 
   /// Executes the command on the stc component if available.
   bool exec() const;
@@ -87,10 +87,10 @@ public:
   bool exec_finish(bool user_input) const;
 
   /// Returns front of command text.
-  auto front() const { return m_text.front(); }
+  char front() const { return m_text.front(); }
 
   /// Returns stc component.
-  auto* get_stc() const { return m_stc; }
+  wex::factory::stc* get_stc() const { return m_stc; }
 
   /// Sets to no type.
   void no_type();
@@ -110,7 +110,7 @@ public:
   void set_stc(wex::factory::stc* stc) { m_stc = stc; }
 
   /// Returns size of command.
-  auto size() const { return m_text.size(); }
+  size_t size() const { return m_text.size(); }
 
   /// Returns string type of command.
   std::string str() const;

@@ -2,11 +2,9 @@
 // Name:      vcs-entry.cpp
 // Purpose:   Implementation of wex::vcs_entry class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2025 Anton van Wezenbeek
+// Copyright: (c) 2010-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <boost/algorithm/string.hpp>
-#include <boost/tokenizer.hpp>
 #include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
@@ -82,6 +80,11 @@ bool wex::vcs_entry::execute(
   const path&        p,
   const std::string& wd)
 {
+  if (bin().empty())
+  {
+    return false;
+  }
+  
   m_lexer = path_lexer(p).lexer();
   const path& tl(factory::vcs_admin(admin_dir(), p).toplevel());
 
@@ -128,7 +131,7 @@ bool wex::vcs_entry::execute(
   {
     if (get_command().get_command() == "diff")
     {
-      flags = "-U0";
+      flags = get_diff_flags();
     }
     else if (get_command().ask_flags())
     {
@@ -171,28 +174,30 @@ const std::string wex::vcs_entry::get_branch(const std::string& wd) const
 {
   wex::log_none off;
 
-  if (process p; name() == "git" &&
-                 p.system(process_data(bin() + " branch").start_dir(wd)) == 0)
+  if (process p;
+      name() == "git" &&
+      p.system(
+        process_data(bin() + " rev-parse --abbrev-ref HEAD").start_dir(wd)) ==
+        0)
   {
-    const auto& tok(boost::tokenizer<boost::char_separator<char>>(
-      p.std_out(),
-      boost::char_separator<char>("\r\n")));
-
-    if (const auto& it = std::ranges::find_if(
-          tok,
-          [](const auto& i)
-          {
-            return i.starts_with('*');
-          });
-        it != tok.end())
-    {
-      return boost::algorithm::trim_copy(it->substr(1));
-    }
+    return p.std_out();
   }
 
   return std::string();
 }
 
+const std::string wex::vcs_entry::get_diff_flags() const
+{
+  std::string flags = "-U0";
+  
+  if (config("vcs.Ignore whitespace").get(true))
+  {
+    flags += " -b";
+  }
+    
+  return flags;
+}
+  
 const std::string wex::vcs_entry::get_flags() const
 {
   return config(flags_key()).get();
@@ -200,6 +205,11 @@ const std::string wex::vcs_entry::get_flags() const
 
 bool wex::vcs_entry::log(const path& p, const std::string& id)
 {
+  if (bin().empty())
+  {
+    return false;
+  }
+  
   const std::string separator = (!m_log_flags.empty() ? " " : std::string());
   std::string       command   = bin() + " log ";
 

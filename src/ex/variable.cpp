@@ -17,6 +17,8 @@
 #include <wex/ui/frame.h>
 #include <wx/app.h>
 
+#include <utility>
+
 // Several types of variables are supported.
 // See xml file.
 enum class wex::variable::input_t
@@ -31,8 +33,8 @@ enum class wex::variable::input_t
   TEMPLATE     // read value from a template file
 };
 
-wex::variable::variable(const std::string& name)
-  : m_name(name)
+wex::variable::variable(std::string name)
+  : m_name(std::move(name))
   , m_type(input_t::INPUT_SAVE)
 {
 }

@@ -10,30 +10,37 @@
 #include <wex/ex/ex.h>
 #include <wex/syntax/stc.h>
 
+#include <utility>
+
 #include "addressrange-mark.h"
 #include "block-lines.h"
 
 wex::addressrange_mark::addressrange_mark(
-  const addressrange&     ar,
-  const data::substitute& subs,
-  bool                    global)
+  const addressrange& ar,
+  data::substitute    subs)
   : m_ar(ar)
   , m_ex(ar.get_ex())
   , m_stc(ar.get_ex()->get_stc())
   , m_undo(m_stc)
-  , m_data(subs)
-  , m_markers{global ? 'X' : 'T', global ? 'Y' : 'U', global ? 'Z' : 'V'}
+  , m_data(std::move(subs))
+  , m_markers{
+      subs.is_global_command() ? 'X' : 'T',
+      subs.is_global_command() ? 'Y' : 'U',
+      subs.is_global_command() ? 'Z' : 'V'}
 {
 }
 
 wex::addressrange_mark::~addressrange_mark()
 {
-  std::ranges::all_of(
-    m_markers,
-    [this](const char a)
-    {
-      return m_ex->marker_delete(a);
-    });
+  if (!std::ranges::all_of(
+        m_markers,
+        [this](const char a)
+        {
+          return m_ex->marker_delete(a);
+        }))
+  {
+    log("cleanup addressrange markers failed");
+  }
 }
 
 void wex::addressrange_mark::end(bool indicator_clear)
@@ -67,7 +74,7 @@ wex::addressrange_mark::mark_t wex::addressrange_mark::get_type() const
       return mark_t::GLOBAL_APPEND;
     }
 
-    if (m_data.commands() == "d")
+    if (m_data.commands() == "d" || m_data.commands().starts_with("m"))
     {
       return m_data.is_inverse() ? mark_t::GLOBAL_DELETE_INVERSE :
                                    mark_t::GLOBAL_DELETE;
@@ -170,10 +177,29 @@ void wex::addressrange_mark::set_target(int start)
 {
   m_stc->SetTargetRange(start, m_stc->GetLineEndPosition(marker_end()));
 
-  log::trace("addressrange_mark set_target")
-    << m_stc->GetTargetStart() << "," << m_stc->GetTargetEnd()
-    << m_markers[marker_t::TARGET] << marker_target()
-    << m_markers[marker_t::END] << marker_end();
+  if (log::get_level() == log::level_t::TRACE)
+  {
+    std::stringstream str;
+
+    str << "(";
+    std::ranges::for_each(
+      m_markers,
+      [this, &str](const auto& it)
+      {
+        str << it << "->" << m_ex->marker_line(it) << " ";
+      });
+    str << ")";
+
+    log::trace("addressrange_mark set_target")
+      << m_stc->GetTargetStart() << "," << m_stc->GetTargetEnd() << str;
+  }
+}
+
+bool wex::addressrange_mark::skip(int line)
+{
+  log::debug("skipping line") << line;
+
+  return m_ex->marker_add(m_markers[marker_t::TARGET], line);
 }
 
 bool wex::addressrange_mark::update(int lines_changed)

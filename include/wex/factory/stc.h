@@ -57,9 +57,6 @@ public:
   /// Adds text block mode.
   virtual void add_text_block(const std::string& text) { AddText(text); }
 
-  /// Appends text (to end).
-  virtual void append_text(const std::string& text) { AppendText(text); }
-
   /// After pressing enter, starts new line at same place
   /// as previous line.
   virtual bool auto_indentation(int c) { return false; }
@@ -223,6 +220,9 @@ public:
 
   // Other methods.
 
+  /// Appends text (to end).
+  void append_text(const std::string& text);
+
   /// Binds wx methods.
   void bind_wx();
 
@@ -292,7 +292,7 @@ public:
   void set_margin_text_click(int line) { m_margin_text_click = line; }
 
   /// Returns renamed.
-  auto& vcs_renamed() const { return m_renamed; }
+  const std::string& vcs_renamed() const { return m_renamed; }
 
   // These methods are not yet available in scintilla, create stubs
   // (for the vi MOTION macro).
@@ -323,6 +323,15 @@ public:
   void WordLeftRectExtend();
   void WordRightRectExtend();
   void WordRightEndRectExtend();
+
+  void SetSelForegroundUse(const wxColour& fore)
+  {
+    SetSelForeground(true, fore);
+  }
+  void SetSelBackgroundUse(const wxColour& back)
+  {
+    SetSelBackground(true, back);
+  }
 
   /// Override methods from text_window.
 

@@ -77,6 +77,14 @@ void wex::test::unittest::on_run(wex::app* app)
     id_start);
 }
 
+namespace wex::test
+{
+std::string key_val(const std::string& key, const std::string& val)
+{
+  return " " + key + " " + val;
+}
+} // namespace wex::test
+
 bool wex::test::unittest::start(wex::app* app, int argc, char* argv[])
 {
   wxApp::SetInstance(app);
@@ -101,12 +109,12 @@ bool wex::test::unittest::start(wex::app* app, int argc, char* argv[])
     if (strcmp(argv[i], level.c_str()) == 0 && i + 1 < argc)
     {
       const std::string value(argv[i + 1]);
-      text = " " + level + " " + value;
+      text.append(key_val(level, value));
     }
     else if (strcmp(argv[i], quit.c_str()) == 0 && i + 1 < argc)
     {
       const std::string value(argv[i + 1]);
-      text = " " + quit + " " + value;
+      text.append(key_val(quit, value));
 
       if (std::stoi(value) == 0)
       {

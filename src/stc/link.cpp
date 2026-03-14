@@ -11,9 +11,12 @@
 #include <wex/stc/stc.h>
 #include <wex/syntax/path-lexer.h>
 #include <wex/ui/frame.h>
+#include <wex/ui/frd.h>
 #include <wex/ui/item-vector.h>
 #include <wx/app.h>
 
+namespace wex
+{
 // prevent very long lines to be returned, e.g. by json config files,
 // as that causes:
 // std::exception:filesystem error: in posix_stat:
@@ -51,6 +54,7 @@ std::string get_current_line_text(wex::link* link, wex::factory::stc* stc)
 
   return line;
 }
+} // namespace wex
 
 std::string wex::link::get_link_pairs(const std::string& text) const
 {
@@ -77,6 +81,11 @@ wex::link::get_path(const std::string& text, line_data& data, factory::stc* stc)
   auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
   frame->vcs_add_path(this);
   return factory::link::get_path(text, data, stc);
+}
+
+bool wex::stc::add_search_path(const wex::path& p)
+{
+  return m_link->add_path(p);
 }
 
 bool wex::stc::link_open()
@@ -118,7 +127,9 @@ bool wex::stc::link_open(link_t mode, std::string* link)
         }
         else if (!mode[LINK_CHECK])
         {
-          m_frame->open_file(path, data);
+          m_frame->open_file(
+            path,
+            data.check_for_grep(*find_replace_data::get(), this));
         }
 
         found = true;

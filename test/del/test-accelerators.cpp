@@ -2,24 +2,36 @@
 // Name:      test-frame.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "test.h"
 #include <wex/del/accelerators.h>
+
+#include "test.h"
 
 TEST_CASE("wex::accelerators")
 {
-  wex::accelerators accel({{wxACCEL_CTRL, '=', 100}, {wxACCEL_CTRL, '-', 101}});
+  SECTION("empty")
+  {
+    wex::accelerators accel({});
+    REQUIRE(accel.size() == 0);
+    accel.set(del_frame());
+  }
 
-  REQUIRE(accel.size() == 2);
+  SECTION("normal")
+  {
+    wex::accelerators accel(
+      {{wxACCEL_CTRL, '=', 100}, {wxACCEL_CTRL, '-', 101}});
 
-  accel.set(del_frame());
+    REQUIRE(accel.size() == 2);
 
-  wex::accelerators debug(
-    {{wxACCEL_CTRL, '=', 100}, {wxACCEL_CTRL, '-', 101}},
-    true);
+    accel.set(del_frame());
 
-  // debug menu is not loaded
-  REQUIRE(accel.size() == 2);
+    wex::accelerators debug(
+      {{wxACCEL_CTRL, '=', 100}, {wxACCEL_CTRL, '-', 101}},
+      true);
+
+    // debug menu is not loaded
+    REQUIRE(accel.size() == 2);
+  }
 }

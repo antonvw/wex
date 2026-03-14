@@ -50,6 +50,10 @@ TEST_CASE("wex::vim", "[!mayfail]")
     {
       REQUIRE(vi->command(other));
     }
+
+    REQUIRE(vi->command("gg"));
+    REQUIRE(vi->command("gJ"));
+    REQUIRE(vi->get_stc()->get_text() == "xxxxxxxxxx secondxxxxxxxx");
   }
 
   SECTION("z")

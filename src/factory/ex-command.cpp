@@ -2,15 +2,17 @@
 // Name:      ex-command.cpp
 // Purpose:   Implementation of class wex::ex_command
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2024 Anton van Wezenbeek
+// Copyright: (c) 2018-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/ex-command.h>
 #include <wex/factory/line-data.h>
 #include <wex/factory/stc.h>
 
-wex::ex_command::ex_command(const std::string& command)
-  : m_text(command)
+#include <utility>
+
+wex::ex_command::ex_command(std::string command)
+  : m_text(std::move(command))
 {
 }
 

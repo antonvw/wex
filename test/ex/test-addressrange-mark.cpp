@@ -29,9 +29,7 @@ TEST_CASE("wex::addressrange_mark", "[!mayfail]")
     REQUIRE(arm->marker_target() == 0);
     REQUIRE(arm->marker_end() == 1);
 
-#ifndef __WXGTK__
     REQUIRE(!arm->search());
-#endif
 
     REQUIRE(arm->update());
 

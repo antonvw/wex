@@ -42,11 +42,11 @@ int convert_int_attrib(
   return -1;
 }
 
-/// Tokenizes the complete string into a vector of integers (size_t).
+/// Tokenizes the complete string into a vector of integers.
 /// Returns the filled in vector.
 auto tokenize_int(const std::string& text, const char* sep = " \t\r\n")
 {
-  std::vector<size_t> tokens;
+  std::vector<int> tokens;
 
   for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
          text,
@@ -105,7 +105,7 @@ wex::lexer::lexer(const pugi::xml_node* node)
         m_command_end   = "-->";
       }
 
-      parse_childen(node);
+      parse_children(node);
     }
   }
 }
@@ -233,10 +233,12 @@ bool wex::lexer::apply() const
     return false;
   }
 
-  for (const auto& it : m_properties)
-  {
-    it.apply_reset(m_stc);
-  }
+  std::ranges::for_each(
+    m_properties,
+    [&](const auto& p)
+    {
+      p.apply_reset(m_stc);
+    });
 
   // Reset keywords, also if no lexer is available.
   for (int setno = 0; setno < wxSTC_KEYWORDSET_MAX; setno++)
@@ -248,21 +250,17 @@ bool wex::lexer::apply() const
 
   if (!lexers::get()->theme().empty())
   {
-    for (const auto& k : m_keywords_set)
-    {
-      m_stc->SetKeyWords(k.first, get_string_set(k.second));
-    }
+    std::ranges::for_each(
+      m_keywords_set,
+      [&](const auto& k)
+      {
+        m_stc->SetKeyWords(k.first, get_string_set(k.second));
+      });
 
     lexers::get()->apply(m_stc);
 
-    for (const auto& p : m_properties)
-    {
-      p.apply(m_stc);
-    }
-    for (const auto& s : m_styles)
-    {
-      s.apply(m_stc);
-    }
+    for_each_style(m_properties, m_stc);
+    for_each_style(m_styles, m_stc);
   }
 
   // And finally colour the entire document.
@@ -281,16 +279,20 @@ bool wex::lexer::apply() const
       break;
 
     default:
-      for (const auto& c : m_edge_columns)
-      {
-        m_stc->MultiEdgeAddLine(c, m_stc->GetEdgeColour());
-      }
+      std::ranges::for_each(
+        m_edge_columns,
+        [&](auto const& c)
+        {
+          m_stc->MultiEdgeAddLine(c, m_stc->GetEdgeColour());
+        });
   }
 
-  for (const auto& i : m_attribs)
-  {
-    std::get<2>(i)(m_stc, std::get<1>(i));
-  }
+  std::ranges::for_each(
+    m_attribs,
+    [&](const auto& i)
+    {
+      std::get<2>(i)(m_stc, std::get<1>(i));
+    });
 
   return true;
 }
@@ -697,7 +699,7 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
   }
 }
 
-void wex::lexer::parse_childen(const pugi::xml_node* node)
+void wex::lexer::parse_children(const pugi::xml_node* node)
 {
   for (const auto& child : node->children())
   {

@@ -2,7 +2,7 @@
 // Name:      link.h
 // Purpose:   Declaration of class wex::factory::link
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -39,7 +39,7 @@ public:
 
   /// Adds a search path.
   /// Returns false if path does not exist, or is already present.
-  // Otherwise returns true and the path is added.
+  /// Otherwise returns true, and the path is added in front of the paths.
   bool add_path(const path& p);
 
   /// Sets paths with info from config.

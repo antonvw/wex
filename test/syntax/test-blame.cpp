@@ -96,5 +96,6 @@ TEST_CASE("wex::blame")
     stc->set_text("more text\notherline\nother line");
 
     REQUIRE(wex::blame::margin_renamed(stc).empty());
+    REQUIRE(wex::blame::margin_text_default_size() != 0);
   }
 }

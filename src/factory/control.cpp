@@ -5,12 +5,35 @@
 // Copyright: (c) 2020-2024 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wx/stc/stc.h>
+
+#include <wex/core/regex.h>
 #include <wex/factory/control.h>
+#include <wex/factory/frd.h>
+#include <wex/factory/util.h>
 
 wex::data::control& wex::data::control::find(const std::string& text, int flags)
 {
   m_find       = text;
   m_find_flags = flags;
+
+  return *this;
+}
+
+wex::data::control& wex::data::control::check_for_grep(
+  const factory::find_replace_data& data,
+  wxStyledTextCtrl*                 stc)
+{
+  const auto line(stc->GetLineText(0));
+  const int  subgroup(3);
+
+  if (wex::regex r(
+        "git grep -n (-i )?(-E )?(\\\\b)?([a-z_0-9]+)",
+        get_regex_flags(data));
+      r.search(line) > subgroup)
+  {
+    find(r[subgroup], -1);
+  }
 
   return *this;
 }

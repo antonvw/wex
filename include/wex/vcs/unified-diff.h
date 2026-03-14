@@ -2,7 +2,7 @@
 // Name:      unified-diff.h
 // Purpose:   Declaration of class wex::unified_diff
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024 Anton van Wezenbeek
+// Copyright: (c) 2024-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -33,7 +33,7 @@ public:
     factory::frame* f);
 
   /// Returns path (from vcs).
-  const auto& path_vcs() const { return m_path_vcs; };
+  const path& path_vcs() const { return m_path_vcs; };
 
 private:
   bool report_diff() override;

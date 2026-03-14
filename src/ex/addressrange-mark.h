@@ -26,11 +26,8 @@ class stc;
 class addressrange_mark
 {
 public:
-  /// Constructor, specify addressrange, substitute data, and global option.
-  addressrange_mark(
-    const addressrange&     ar,
-    const data::substitute& subs,
-    bool                    global = false);
+  /// Constructor, specify addressrange, substitute data.
+  addressrange_mark(const addressrange& ar, data::substitute subs);
 
   /// Destructor, removes markers.
   ~addressrange_mark();
@@ -52,6 +49,9 @@ public:
 
   /// Sets markers and target, returns false if markers could not be added.
   bool set();
+
+  /// Skips specified line.
+  bool skip(int line);
 
   /// Updates target.
   /// The lines_changed indicates number of lines that was

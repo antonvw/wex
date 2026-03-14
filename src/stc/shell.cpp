@@ -2,7 +2,7 @@
 // Name:      shell.cpp
 // Purpose:   Implementation of class wex::shell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2025 Anton van Wezenbeek
+// Copyright: (c) 2011-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -19,10 +19,11 @@
 
 #include <numeric>
 #include <ranges>
+#include <utility>
 
 wex::shell::shell(
   const data::stc&   data,
-  const std::string& prompt,
+  std::string        prompt,
   const std::string& command_end)
   : stc(
       std::string(),
@@ -35,7 +36,7 @@ wex::shell::shell(
   // Take care that m_commands_iterator is valid.
   , m_commands_iterator(m_commands.end())
   , m_commands_save_in_config(100)
-  , m_prompt(prompt)
+  , m_prompt(std::move(prompt))
 {
   // Override defaults from config.
   SetEdgeMode(wxSTC_EDGE_NONE);
@@ -53,15 +54,44 @@ wex::shell::shell(
   bind(this).command(
     {{[=, this](wxCommandEvent& event)
       {
-        AppendText(event.GetString());
-        get_frame()->output(event.GetString());
+        const auto& text(event.GetString().ToStdString());
+
+        if (text.empty())
+        {
+          return;
+        }
+
+        if (std::isspace(text.back()))
+        {
+          AppendText(m_text + text);
+          m_text.clear();
+        }
+        else
+        {
+          m_text += text;
+        }
+        get_frame()->output(text);
       },
       ID_SHELL_APPEND},
+
      {[=, this](wxCommandEvent& event)
       {
         AppendText(event.GetString());
       },
       ID_SHELL_APPEND_ERROR},
+
+     {[=, this](wxCommandEvent& event)
+      {
+        AppendText(m_text);
+      },
+      ID_SHELL_APPEND_FINISH},
+
+     {[=, this](wxCommandEvent& event)
+      {
+        m_text.clear();
+      },
+      ID_SHELL_APPEND_START},
+
      {[=, this](wxCommandEvent& event)
       {
         AppendText(event.GetString());

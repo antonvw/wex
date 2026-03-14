@@ -2,7 +2,7 @@
 // Name:      lexer.h
 // Purpose:   Declaration of wex::lexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2024 Anton van Wezenbeek
+// Copyright: (c) 2008-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -69,9 +69,6 @@ public:
   /// The value depends on attrib, but is -1 if not present.
   int attrib(const std::string& name) const;
 
-  /// Returns all the attribs.
-  const auto& attribs() const { return m_attribs; }
-
   /// Clears lexer and applies it to stc if available.
   /// The is ok member is set to false.
   void clear();
@@ -82,25 +79,28 @@ public:
   const std::string comment_complete(const std::string& comment) const;
 
   /// Returns the comment begin.
-  const auto& comment_begin() const { return m_comment_begin; }
+  const std::string& comment_begin() const { return m_comment_begin; }
 
   /// Returns the comment begin 2.
-  const auto& comment_begin2() const { return m_comment_begin2; }
+  const std::string& comment_begin2() const { return m_comment_begin2; }
 
   /// Returns the comment end.
-  const auto& comment_end() const { return m_command_end; }
+  const std::string& comment_end() const { return m_command_end; }
 
   /// Returns the comment end 2.
-  const auto& comment_end2() const { return m_command_end2; }
+  const std::string& comment_end2() const { return m_command_end2; }
 
   /// Returns the display lexer (as shown in dialog).
-  const auto& display_lexer() const { return m_display_lexer; }
+  const std::string& display_lexer() const { return m_display_lexer; }
 
   /// Returns the extensions.
-  const auto& extensions() const { return m_extensions; }
+  const std::string& extensions() const { return m_extensions; }
 
   /// Returns the stc.
-  auto* get_stc() { return m_stc; };
+  syntax::stc* get_stc() { return m_stc; };
+
+  /// Does this lexer have attributes.
+  bool is_attribs_empty() const { return m_attribs.empty(); }
 
   /// Is this word a keyword (always all keywords), case sensitive.
   bool is_keyword(const std::string& word) const;
@@ -113,7 +113,7 @@ public:
   bool keyword_starts_with(const std::string& word) const;
 
   /// Returns the keywords.
-  const auto& keywords() const { return m_keywords; }
+  const std::set<std::string>& keywords() const { return m_keywords; }
 
   /// Returns the keywords as one large string,
   const std::string keywords_string(
@@ -127,7 +127,7 @@ public:
     const std::string& prefix = std::string()) const;
 
   /// Returns the language.
-  const auto& language() const { return m_language; }
+  const std::string& language() const { return m_language; }
 
   /// Returns the line size.
   size_t line_size() const;
@@ -153,10 +153,10 @@ public:
   bool is_previewable() const { return m_previewable; }
 
   /// Returns the properties.
-  const auto& properties() const { return m_properties; }
+  const std::vector<property>& properties() const { return m_properties; }
 
   /// Returns the scintilla lexer.
-  const auto& scintilla_lexer() const { return m_scintilla_lexer; }
+  const std::string& scintilla_lexer() const { return m_scintilla_lexer; }
 
   /// Sets lexer to specified lexer (finds by name from lexers),
   /// Shows error message when lexer could not be set.
@@ -170,7 +170,7 @@ public:
   void set_property(const std::string& name, const std::string& value);
 
   /// Returns the styles.
-  const auto& styles() const { return m_styles; }
+  const std::vector<style>& styles() const { return m_styles; }
 
   /// Returns number of chars that fit on a line, skipping comment chars.
   size_t usable_chars_per_line() const;
@@ -186,7 +186,7 @@ private:
     bool               fill_out_with_space,
     bool               fill_out) const;
   void parse_attrib(const pugi::xml_node* node);
-  void parse_childen(const pugi::xml_node* node);
+  void parse_children(const pugi::xml_node* node);
   void parse_keyword(const pugi::xml_node* node);
 
   // The scintilla name for this lexer cannot be const,
@@ -200,7 +200,7 @@ private:
   // each keyword set in a separate keyword set
   std::unordered_map<int, std::set<std::string>> m_keywords_set;
   std::set<std::string>                          m_keywords;
-  std::vector<size_t>   m_edge_columns; // last one is used for line size
+  std::vector<int>      m_edge_columns; // last one is used for line size
   std::vector<property> m_properties;
   std::vector<style>    m_styles;
   std::vector<std::tuple<

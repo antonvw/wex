@@ -47,7 +47,5 @@ public:
 /// }
 int main(int argc, char* argv[], app* app);
 
-/// Returns abbreviations.
-std::vector<std::pair<std::string, std::string>> get_abbreviations();
 }; // namespace test
 }; // namespace wex

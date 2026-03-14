@@ -10,6 +10,7 @@
 #include <wex/stc/beautify.h>
 #include <wex/stc/entry-dialog.h>
 #include <wex/stc/link.h>
+#include <wex/syntax/blame.h>
 #include <wex/syntax/lexers.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/item-dialog.h>
@@ -255,7 +256,7 @@ void wex::stc::on_init()
             {_("stc.margin.Divider"), 0, 40, 16},
             {_("stc.margin.Folding"), 0, 40, 16},
             {_("stc.margin.Line number"), 0, 100, 60},
-            {_("stc.margin.Text"), -1, 500, -1},
+            {_("stc.margin.Text"), -1, 500, blame::margin_text_default_size()},
             {_("<i>Max:</i>")},
             {_("stc.max.Size visual"),
              item::TEXTCTRL_INT,

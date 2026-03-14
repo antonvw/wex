@@ -2,7 +2,7 @@
 // Name:      shell.h
 // Purpose:   Declaration of class wex::shell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -39,7 +39,7 @@ public:
     const data::stc& data = data::stc(),
     /// Give the command used to end a line.
     /// The default uses the eol.
-    const std::string& prompt = ">",
+    std::string prompt = ">",
     /// The command used to end a line.
     const std::string& command_end = std::string());
 
@@ -79,7 +79,7 @@ public:
   const std::string get_history() const;
 
   /// Returns the prompt.
-  const auto& get_prompt() const { return m_prompt; }
+  const std::string& get_prompt() const { return m_prompt; }
 
   /// Returns whether shell processing is enabled.
   bool is_enabled() const { return m_enabled; }
@@ -130,7 +130,7 @@ private:
   strings_t::const_iterator m_commands_iterator;
   std::vector<std::string>  m_auto_complete_list;
 
-  std::string m_command, m_prompt;
+  std::string m_command, m_prompt, m_text;
 
   int m_command_start_pos =
     0; /// position after the prompt from where commands can be inserted

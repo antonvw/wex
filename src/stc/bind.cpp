@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
-#include <charconv>
 #include <numeric>
 #include <wex/common/util.h>
 #include <wex/core/config.h>
@@ -30,13 +29,15 @@
 #include <wx/msgdlg.h>
 #include <wx/numdlg.h>
 
+#include "util.h"
+
 namespace wex
 {
 bool do_show_hash(stc* stc, const std::function<void(const std::string&)>& f)
 {
   const auto line(stc->GetLineText(stc->GetCurrentLine()));
 
-  if (regex r("commit ([a-z[0-9]+$)"); r.match(line) > 0)
+  if (regex r("commit ([a-z0-9]+$)"); r.match(line) > 0)
   {
     if (f)
     {
@@ -164,7 +165,6 @@ void wex::stc::bind_all()
   m_frame->bind_accelerators(
     this,
     {{wxACCEL_CTRL, 'D', id::stc::hex_dec_calltip},
-     {wxACCEL_CTRL, 'K', ID_EDIT_CONTROL_CHAR},
      {wxACCEL_CTRL, 'Y', wxID_REDO},
      {wxACCEL_CTRL, 'Z', wxID_UNDO},
      {wxACCEL_CTRL, '=', id::stc::zoom_in},
@@ -689,12 +689,12 @@ bool wex::stc::check_brace(int pos)
 
 bool wex::stc::current_line_contains_diff_marker()
 {
-  const auto mg = MarkerGet(get_current_line());
-
-  return (
-    mg &
-    ((1 << m_marker_diff_add.number()) | (1 << m_marker_diff_change.number()) |
-     (1 << m_marker_diff_del.number())));
+  return std::ranges::any_of(
+    m_marker_diffs,
+    [this](const auto& it)
+    {
+      return MarkerGet(get_current_line()) & (1 << it.number());
+    });
 }
 
 void wex::stc::eol_action(const wxCommandEvent& event)
@@ -861,61 +861,14 @@ void wex::stc::show_ascii_value(bool byte_only)
     return;
   }
 
-  const auto word =
+  auto word =
     (!GetSelectedText().empty() ? GetSelectedText().ToStdString() :
                                   get_word_at_pos(pos));
 
-  if (word.empty())
+  if (const auto& desc(describe_basefields(word)); !desc.empty())
   {
-    return;
-  }
-
-  std::stringstream stream;
-
-  if (const int c = word[0]; c < 32 || c > 125)
-  {
-    stream << "bin: " << c;
-  }
-  else
-  {
-    long base10_val, base16_val;
-    bool base10_ok = false, base16_ok = false;
-
-    if (
-      std::from_chars(word.data(), word.data() + word.size(), base10_val).ec ==
-      std::errc())
-    {
-      base10_ok = true;
-    }
-
-    if (
-      std::from_chars(word.data(), word.data() + word.size(), base16_val, 16)
-        .ec == std::errc())
-    {
-      base16_ok = true;
-    }
-
-    if (base10_ok || base16_ok)
-    {
-      if (base10_ok && !base16_ok)
-      {
-        stream << "hex: " << std::hex << base10_val;
-      }
-      else if (!base10_ok && base16_ok)
-      {
-        stream << "dec: " << base16_val;
-      }
-      else if (base10_ok && base16_ok)
-      {
-        stream << "dec: " << base16_val << " hex: " << std::hex << base10_val;
-      }
-    }
-  }
-
-  if (!stream.str().empty())
-  {
-    CallTipShow(pos, stream.str());
-    clipboard_add(stream.str());
+    CallTipShow(pos, desc);
+    clipboard_add(desc);
   }
 }
 
@@ -994,11 +947,14 @@ void wex::stc::vcs_clear_diffs()
 {
   if (m_diffs.size() > 0)
   {
+    std::ranges::for_each(
+      m_marker_diffs,
+      [this](const auto& it)
+      {
+        MarkerDeleteAll(it.number());
+      });
     m_diffs.clear();
     AnnotationClearAll();
-    MarkerDeleteAll(m_marker_diff_add.number());
-    MarkerDeleteAll(m_marker_diff_change.number());
-    MarkerDeleteAll(m_marker_diff_del.number());
     IndicatorClearRange(0, GetTextLength() - 1);
     m_marker_identifiers.clear();
     m_diffs.status();

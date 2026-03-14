@@ -2,7 +2,7 @@
 // Name:      reflection.cpp
 // Purpose:   Declaration of wex::reflection class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023-2024 Anton van Wezenbeek
+// Copyright: (c) 2023-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/reflection.h>
@@ -101,7 +101,7 @@ std::stringstream wex::reflection::log() const
 
   if (!ss.str().empty())
   {
-    ss << std::endl;
+    ss << "\n";
   }
 
   return ss;

@@ -2,7 +2,7 @@
 // Name:      dir.h
 // Purpose:   Declaration of class wex::dir
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2024 Anton van Wezenbeek
+// Copyright: (c) 2008-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -26,14 +26,14 @@ class dir : public interruptible
 {
 public:
   /// Returns the statistics.
-  static auto& get_statistics() { return m_statistics; }
+  static stream_statistics& get_statistics() { return m_statistics; }
 
   /// Constructor.
   explicit dir(
     /// the path to start finding
     const path& path,
     /// the dir data
-    const data::dir& data = data::dir(),
+    data::dir data = data::dir(),
     /// event handler to use, this results
     /// in using a separate thread for find_files.
     wxEvtHandler* eh = nullptr);
@@ -57,7 +57,7 @@ public:
   // Other methods.
 
   /// Returns the data.
-  const auto& data() const { return m_data; }
+  const data::dir& data() const { return m_data; }
 
   /// Finds matching files.
   /// This results in recursive calls for on_dir and on_file.
@@ -75,10 +75,10 @@ public:
   bool find_files(const tool& tool);
 
   /// Returns the path.
-  const auto& get_path() const { return m_dir; }
+  const path& get_path() const { return m_dir; }
 
   /// Returns the event handler.
-  auto* handler() { return m_eh; }
+  wxEvtHandler* handler() { return m_eh; }
 
 private:
   int  matches() const;

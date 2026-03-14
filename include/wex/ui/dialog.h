@@ -2,7 +2,7 @@
 // Name:      dialog.h
 // Purpose:   Declaration of wex::dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -22,7 +22,7 @@ public:
   explicit dialog(const data::window& data = data::window());
 
   /// Returns the window data.
-  const auto& data() const { return m_data; }
+  const data::window& data() const { return m_data; }
 
 protected:
   /// Adds to the user sizer using the sizer flags.

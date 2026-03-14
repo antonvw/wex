@@ -52,7 +52,7 @@ public:
     /// - . : current line
     /// - or a combination of these, using + or -
     /// - or empty, call set_line afterwards
-    const std::string& address = std::string());
+    std::string address = std::string());
 
   /// Constructor for an address from a line number.
   explicit address(

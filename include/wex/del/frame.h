@@ -94,10 +94,10 @@ public:
   const std::string find_in_files_title(wex::window_id id) const;
 
   /// Debugging interface.
-  auto* get_debug() { return m_debug; }
+  debug* get_debug() { return m_debug; }
 
   /// Returns project history.
-  auto& get_project_history() { return m_project_history; }
+  class file_history& get_project_history() { return m_project_history; }
 
   /// greps for text.
   /// The base directory is the directory for the current stc
@@ -220,7 +220,7 @@ protected:
   /// Access to file history list,
   /// if you use this as a page in a notebook,
   /// you might want prevent closing it.
-  auto* file_history_list() { return m_file_history_listview; }
+  listview* file_history_list() { return m_file_history_listview; }
 
 private:
   listview* activate_and_clear(const wex::tool& tool);

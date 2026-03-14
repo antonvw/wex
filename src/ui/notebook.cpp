@@ -36,9 +36,9 @@ wex::notebook::notebook(const data::window& data)
       data.style() == data::NUMBER_NOT_SET ? default_style_t : data.style())
   , m_frame(dynamic_cast<frame*>(wxTheApp->GetTopWindow()))
 {
-  config_get();
-
   SetArtProvider(new wxAuiDefaultTabArt);
+
+  config_get();
 
   Bind(
     wxEVT_AUINOTEBOOK_PAGE_CHANGED,

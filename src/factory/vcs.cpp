@@ -8,9 +8,10 @@
 #include <wex/factory/vcs.h>
 
 #include <iostream>
+#include <utility>
 
-wex::factory::vcs_admin::vcs_admin(const std::string& dir, const path& p)
-  : m_admin(dir)
+wex::factory::vcs_admin::vcs_admin(std::string dir, const path& p)
+  : m_admin(std::move(dir))
   , m_path(p)
 {
 }

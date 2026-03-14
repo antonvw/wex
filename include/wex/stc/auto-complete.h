@@ -2,7 +2,7 @@
 // Name:      auto_complete.h
 // Purpose:   Declaration of class wex::auto_complete
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -35,10 +35,10 @@ public:
 
   /// Returns current insert.
   /// (e.g. a variable or a class name)
-  const auto& insert() const { return m_insert; }
+  const std::string& insert() const { return m_insert; }
 
   /// Returns all inserts (independent of scope)
-  const auto& inserts() const { return m_inserts; }
+  const std::set<std::string>& inserts() const { return m_inserts; }
 
   /// Builds and shows auto complete lists on the
   /// stc component. This can be a list

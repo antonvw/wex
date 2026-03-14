@@ -3,9 +3,9 @@
 <!--
 Name:    wex-lexers.xml
 Purpose: Lexers configuration for wex.
-         See scintilla 5.4.4 (https://www.scintilla.org/LexillaHistory.html)
+         See lexilla 5.4.6 (https://www.scintilla.org/LexillaHistory.html)
 Author:  Anton van Wezenbeek
-Copyright: (c) 2009-2025, Anton van Wezenbeek
+Copyright: (c) 2009-2026, Anton van Wezenbeek
 -->
 
 <lexers>
@@ -48,6 +48,7 @@ Copyright: (c) 2009-2025, Anton van Wezenbeek
         <def style ="stylelinenumber"> fore:grey </def>
         <def style ="styleindicatordebug"> blue </def>
         <def style ="styleindicatorfind"> red </def>
+        <def style ="styletextmargin-not-committed"> back:green </def>
         <def style ="styletextmargin-day"> back:blue </def>
         <def style ="styletextmargin-week"> back:lightsteelblue 3 </def>
         <def style ="styletextmargin-month"> back:gray 45 </def>
@@ -90,6 +91,7 @@ Copyright: (c) 2009-2025, Anton van Wezenbeek
         <def style ="styledefault"> default-font,back:white,fore:black </def>
         <def style ="styledefault-back"> default-font,back:gray 95,fore:green,eol </def>
         <def style ="stylelinenumber"> back:white,fore:blue </def>
+        <def style ="styletextmargin-not-committed"> back:blue </def>
         <def style ="styletextmargin-day"> back:blue </def>
         <def style ="styletextmargin-week"> back:lightsteelblue </def>
         <def style ="styletextmargin-month"> back:lightblue </def>
@@ -154,6 +156,7 @@ Copyright: (c) 2009-2025, Anton van Wezenbeek
     <style no="style_linenumber"> stylelinenumber </style>
     <style no="style_bracelight"> bracelight </style>
     <style no="style_textmargin"> styletextmargin </style>
+    <style no="style_textmargin_not_committed"> styletextmargin-not-committed </style>
     <style no="style_textmargin_day"> styletextmargin-day </style>
     <style no="style_textmargin_week"> styletextmargin-week </style>
     <style no="style_textmargin_month"> styletextmargin-month </style>
@@ -165,6 +168,7 @@ Copyright: (c) 2009-2025, Anton van Wezenbeek
     <!--  cpp files like #include <map> really do not have a .h extension
          (e.g. /usr/include/c++/3.3.5/map) so add here. -->
     <text no="cpp"> // </text>
+    <text no="diff"> diff -- </text>
     <text no="phpscript"> &lt;?php </text>
     <text no="csh"> #!/bin/csh </text>
     <text no="python"> #!/bin/env python </text>
@@ -936,13 +940,20 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <!-- https://pubs.opengroup.org/onlinepubs/9799919799 -->
       ARGC ARGIND ARGV CONVFMT ENVIRON ERRNO FIELDWIDTHS FILENAME FNR FS
       IGNORECASE NF NR OFMT OFS ORS RLENGTH RS RSTART RT SUBSEP
-      BEGIN END if else while do for in break continue delete
+      BEGIN END
+      if else while do for in break continue delete
       next nextfile function func return exit
-      printf
+      print printf
       gsub index length match split sprintf sub substr
       tolower toupper
       close fflush getline system
+      system strtime
     </keywords>
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+    </properties>
   </lexer>
   <lexer name="baan"/>
   <lexer name="bash" extensions="*.bash;*.sh">
@@ -1631,6 +1642,8 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     <keywords set-0="rfw-basic" set-1="rfw-core">
     </keywords>
   </lexer>
+  <lexer display="rsi" extensions="*.rsi" name="fortran">
+  </lexer>
   <lexer name="ruby" extensions="*.rb" exclude="Macintosh">
     <properties>
       <property name="fold"> 1 </property>
@@ -1654,6 +1667,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       select then until while time
     </keywords>
   </lexer>
+  <lexer name="sinex"/>
   <lexer name="smalltalk"/>
   <lexer name="SML"/>
   <lexer name="sorcins"/>

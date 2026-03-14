@@ -1,24 +1,32 @@
 project(wex-external-lib)
 
 # prevent pango error not finding hb.h
-if (UNIX AND NOT (APPLE))
+if(UNIX AND NOT (APPLE))
   include_directories("/usr/include/harfbuzz")
-endif ()
-
-include_directories("../include")
+endif()
 
 add_definitions(-D SCI_NAMESPACE)
 
+set(wxBUILD_CXX_STANDARD 20 CACHE INTERNAL "WX_CXX_STANDARD")
+
+include_directories("../include")
+
 add_subdirectory(wxWidgets)
 
-add_custom_target(ctags-build
+add_custom_target(
+  ctags-build
   COMMAND ./autogen.sh
   COMMAND ./configure
   COMMAND make
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/ctags
-  COMMENT "ctags build" VERBATIM)
+  COMMENT "ctags build"
+  VERBATIM
+)
 
-add_custom_target(ctags-install
+add_custom_target(
+  ctags-install
   COMMAND make install
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/ctags
-  COMMENT "ctags install" VERBATIM)
+  COMMENT "ctags install"
+  VERBATIM
+)

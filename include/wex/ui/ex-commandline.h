@@ -2,7 +2,7 @@
 // Name:      ex-commandline.h
 // Purpose:   Declaration of wex::ex_commandline class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016-2024 Anton van Wezenbeek
+// Copyright: (c) 2016-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -61,7 +61,7 @@ public:
   syntax::stc* control();
 
   /// Returns frame.
-  auto* get_frame() { return m_frame; }
+  frame* get_frame() { return m_frame; }
 
   /// Get string value.
   const std::string get_text() const;
@@ -88,7 +88,7 @@ public:
   void set_text(const std::string& text);
 
   /// Returns stc component.
-  auto* stc() { return m_stc; }
+  wex::syntax::stc* stc() { return m_stc; }
 
 private:
   wex::syntax::stc*   m_stc{nullptr};

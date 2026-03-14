@@ -11,7 +11,10 @@
 wex::log_none::log_none()
   : m_level(static_cast<int>(log::get_level()))
 {
-  log::set_level(log::level_t::OFF);
+  if (m_level != static_cast<int>(log::level_t::TRACE))
+  {
+    log::set_level(log::level_t::OFF);
+  }
 }
 
 wex::log_none::~log_none()

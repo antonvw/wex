@@ -13,26 +13,24 @@
 #include <wex/factory/stc.h>
 
 #include <boost/regex.hpp>
+#include <utility>
 
-wex::data::find::find(const std::string& text, bool forward)
-  : m_text(text)
+wex::data::find::find(std::string text, bool forward)
+  : m_text(std::move(text))
   , m_forward(forward)
 {
 }
 
-wex::data::find::find(
-  wex::factory::stc* stc,
-  const std::string& text,
-  bool               forward)
+wex::data::find::find(wex::factory::stc* stc, std::string text, bool forward)
   : m_stc(stc)
-  , m_text(text)
+  , m_text(std::move(text))
   , m_forward(forward)
 {
   set_pos();
 }
 
-wex::data::find::find(const std::string& text, int line, int pos, bool forward)
-  : m_text(text)
+wex::data::find::find(std::string text, int line, int pos, bool forward)
+  : m_text(std::move(text))
   , m_line_no(line)
   , m_pos(pos)
   , m_forward(forward)

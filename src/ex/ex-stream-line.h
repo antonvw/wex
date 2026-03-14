@@ -2,7 +2,7 @@
 // Name:      ex-stream-line.h
 // Purpose:   Declaration of class wex::ex_stream_line
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -61,13 +61,13 @@ public:
   /// Constructor for other actions.
   /// Used as delegate constructor.
   ex_stream_line(
-    file*                   work,
-    action_t                type,
-    const addressrange&     range,
-    const std::string&      text = std::string(),
-    const data::substitute& data = data::substitute(),
-    char                    name = 0,
-    const address&          dest = address());
+    file*               work,
+    action_t            type,
+    const addressrange& range,
+    std::string         text = std::string(),
+    data::substitute    data = data::substitute(),
+    char                name = 0,
+    const address&      dest = address());
 
   /// Destructor.
   ~ex_stream_line();

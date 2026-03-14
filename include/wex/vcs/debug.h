@@ -2,7 +2,7 @@
 // Name:      debug.h
 // Purpose:   Declaration of class wex::debug
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016-2024 Anton van Wezenbeek
+// Copyright: (c) 2016-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -55,10 +55,15 @@ public:
   bool apply_breakpoints(stc* stc) const;
 
   /// Returns breakpoints.
-  auto& breakpoints() const { return m_breakpoints; }
+  /// Each breakpoint is a tuple of filename, id and line.
+  const std::unordered_map<std::string, std::tuple<path, int, int>>&
+  breakpoints() const
+  {
+    return m_breakpoints;
+  }
 
   /// Returns current entry.
-  const auto& debug_entry() const { return m_entry; }
+  const wex::debug_entry& debug_entry() const { return m_entry; }
 
   /// Executes the item action using the current debug process,
   /// if there is not yet a debug process, invokes frame::process

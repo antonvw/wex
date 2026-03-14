@@ -1,0 +1,207 @@
+////////////////////////////////////////////////////////////////////////////////
+// Name:      eval-imp.cpp
+// Purpose:   Implementation of class wex::evaluator_imp
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
+
+#include <list>
+
+#include <boost/fusion/include/adapt_struct.hpp>
+#include <boost/spirit/home/x3.hpp>
+#include <boost/spirit/home/x3/support/ast/variant.hpp>
+
+#include "eval-imp.h"
+#include "eval.h"
+
+namespace x3 = boost::spirit::x3;
+
+namespace wex
+{
+namespace ast
+{
+struct ex;
+struct nil
+{
+};
+struct program;
+struct signed_;
+
+struct operand
+  : x3::variant<
+      nil,
+      unsigned int,
+      x3::forward_ast<ex>,
+      x3::forward_ast<signed_>,
+      x3::forward_ast<program>>
+{
+  using base_type::base_type;
+  using base_type::operator=;
+};
+
+struct ex
+{
+  std::string token;
+};
+
+struct signed_
+{
+  char    sign;
+  operand operand_;
+};
+
+struct operation
+{
+  char    operator_;
+  operand operand_;
+};
+
+struct program
+{
+  operand              first;
+  std::list<operation> rest;
+};
+
+struct eval
+{
+  explicit eval(const evaluator* ev)
+    : m_ev(ev)
+  {
+    ;
+  };
+
+  auto operator()(nil) const
+  {
+    BOOST_ASSERT(0);
+    return 0;
+  }
+
+  auto operator()(ex const& e) const { return m_ev->eval_token(e.token); }
+
+  auto operator()(int n) const { return n; }
+
+  int operator()(int lhs, operation const& x) const
+  {
+    switch (const auto rhs = boost::apply_visitor(*this, x.operand_);
+            x.operator_)
+    {
+      case '+':
+        return lhs + rhs;
+      case '-':
+        return lhs - rhs;
+      case '*':
+        return lhs * rhs;
+      case '%':
+        return lhs % rhs;
+      case '&':
+        return lhs & rhs;
+      case '|':
+        return lhs | rhs;
+      case '^':
+        return lhs ^ rhs;
+      case '<':
+        return lhs << rhs;
+      case '>':
+        return lhs >> rhs;
+      case '/':
+        if (rhs == 0)
+        {
+          throw std::overflow_error("divide by zero");
+        }
+        return lhs / rhs;
+    }
+    BOOST_ASSERT(0);
+    return 0;
+  }
+
+  int operator()(signed_ const& x) const
+  {
+    switch (const int rhs = boost::apply_visitor(*this, x.operand_); x.sign)
+    {
+      case '~':
+        return ~rhs;
+      default:
+        return m_ev->eval_token(std::string(1, x.sign), rhs);
+    }
+    BOOST_ASSERT(0);
+    return 0;
+  }
+
+  int operator()(program const& x) const
+  {
+    return std::ranges::fold_left(
+      x.rest,
+      boost::apply_visitor(*this, x.first),
+      *this);
+  }
+
+  const evaluator* m_ev;
+};
+} // namespace ast
+
+namespace calculator_grammar
+{
+using x3::alnum;
+using x3::char_;
+using x3::string;
+using x3::uint_;
+
+x3::rule<class expression, ast::program> const expression("expression");
+x3::rule<class term, ast::program> const       term("term");
+x3::rule<class factor, ast::operand> const     factor("factor");
+x3::rule<class identifier, ast::ex> const      identifier("identifier");
+
+auto const expression_def = term >>
+                            *((char_('+') >> term) | (char_('-') >> term));
+
+auto const term_def = factor >>
+                      *((char_('*') >> factor) | (char_('/') >> factor) |
+                        (char_('%') >> factor) | (char_('&') >> factor) |
+                        (char_('|') >> factor) | (char_('^') >> factor) |
+                        (char_('<') >> factor) | (char_('>') >> factor));
+
+auto const factor_def = uint_ | identifier | '(' >> expression >> ')' |
+                        (char_('~') >> factor) | (char_('-') >> factor) |
+                        (char_('+') >> factor);
+
+auto const identifier_def = string(".") | string("$") |
+                            (string("'") >> (alnum | char_('<') | char_('>')));
+
+BOOST_SPIRIT_DEFINE(expression, term, factor, identifier);
+
+auto calculator = expression;
+} // namespace calculator_grammar
+
+using calculator_grammar::calculator;
+
+std::expected<int, std::string>
+evaluator_imp::eval(const evaluator* ev, const std::string& text)
+{
+  try
+  {
+    auto&        calc = wex::calculator;
+    ast::program program;
+    ast::eval    eval(ev);
+
+    auto                  iter = text.begin();
+    x3::ascii::space_type space;
+    const bool r = phrase_parse(iter, text.end(), calc, space, program);
+
+    if (r && iter == text.end())
+    {
+      return eval(program);
+    }
+
+    return std::unexpected{std::string(iter, text.end())};
+  }
+  catch (std::exception& e)
+  {
+    return std::unexpected{e.what()};
+  }
+};
+}; // namespace wex
+
+BOOST_FUSION_ADAPT_STRUCT(wex::ast::ex, (std::string, token))
+BOOST_FUSION_ADAPT_STRUCT(wex::ast::operation, (char, operator_), operand_)
+BOOST_FUSION_ADAPT_STRUCT(wex::ast::program, first, rest)
+BOOST_FUSION_ADAPT_STRUCT(wex::ast::signed_, (char, sign), operand_)
