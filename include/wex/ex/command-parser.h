@@ -60,7 +60,7 @@ private:
 
   ex* m_ex;
 
-  bool      m_is_ok{false};
   address_t m_type{address_t::NO_ADDR};
+  bool      m_is_ok{false};
 };
 }; // namespace wex
