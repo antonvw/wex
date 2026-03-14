@@ -54,15 +54,17 @@ bool wex::style::apply(wxStyledTextCtrl* stc) const
   }
   else
   {
-    if (const auto& tok(boost::tokenizer<boost::char_separator<char>>(
+    if (
+      const auto& tok(
+        boost::tokenizer<boost::char_separator<char>>(
           m_value,
           boost::char_separator<char>(",")));
-        !std::ranges::all_of(
-          tok,
-          [](const auto& it)
-          {
-            return check_style_spec(it, "back") && check_style_spec(it, "fore");
-          }))
+      !std::ranges::all_of(
+        tok,
+        [](const auto& it)
+        {
+          return check_style_spec(it, "back") && check_style_spec(it, "fore");
+        }))
     {
       return false;
     }
@@ -131,8 +133,9 @@ void wex::style::set(const pugi::xml_node& node, const std::string& macro)
     // Collect each single field style.
     const auto& single = it;
 
-    if (const auto& it = lexers::get()->theme_macros().find(single);
-        it != lexers::get()->theme_macros().end())
+    if (
+      const auto& it = lexers::get()->theme_macros().find(single);
+      it != lexers::get()->theme_macros().end())
     {
       std::string value(it->second);
 
@@ -143,8 +146,9 @@ void wex::style::set(const pugi::xml_node& node, const std::string& macro)
           "default-font",
           "face:" + font.GetFaceName() + ",size:" + font_size);
 
-        if (const auto style = font.GetStyle();
-            style == wxFONTSTYLE_ITALIC || style == wxFONTSTYLE_SLANT)
+        if (
+          const auto style = font.GetStyle();
+          style == wxFONTSTYLE_ITALIC || style == wxFONTSTYLE_SLANT)
         {
           value += ",italic";
         }
@@ -190,12 +194,11 @@ void wex::style::set_no(
 
     try
     {
-      if (int style_no = 0; std::from_chars(
-                              single.data(),
-                              single.data() + single.size(),
-                              style_no)
-                                .ec == std::errc() &&
-                            style_no >= 0 && style_no <= wxSTC_STYLE_MAX)
+      if (
+        int style_no = 0;
+        std::from_chars(single.data(), single.data() + single.size(), style_no)
+            .ec == std::errc() &&
+        style_no >= 0 && style_no <= wxSTC_STYLE_MAX)
       {
         m_no.insert(style_no);
       }
