@@ -2,7 +2,7 @@
 // Name:      addressrange-mark.h
 // Purpose:   Declaration of class wex::addressrange_mark
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -75,6 +75,9 @@ private:
     END,
   };
 
+  // markers used: begin, target, end
+  typedef std::array<char, 3> markers_t;
+
   mark_t get_type() const;
 
   void set_target(int start);
@@ -84,9 +87,7 @@ private:
 
   const addressrange&    m_ar;
   const data::substitute m_data;
-
-  // markers used: begin, target, end
-  const std::array<char, 3> m_markers;
+  const markers_t        m_markers;
 
   stc_undo m_undo;
 

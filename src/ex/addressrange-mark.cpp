@@ -24,9 +24,8 @@ wex::addressrange_mark::addressrange_mark(
   , m_undo(m_stc)
   , m_data(std::move(subs))
   , m_markers{
-      subs.is_global_command() ? 'X' : 'T',
-      subs.is_global_command() ? 'Y' : 'U',
-      subs.is_global_command() ? 'Z' : 'V'}
+      subs.is_global_command() ? markers_t{'X', 'Y', 'Z'} :
+                                 markers_t{'T', 'U', 'V'}}
 {
 }
 
