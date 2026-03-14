@@ -38,7 +38,12 @@ TEST_CASE("wex::addressrange_mark", "[!mayfail]")
 
     delete arm;
 
-    REQUIRE(stc->MarkerNext(0, 0xFFFF) == -1); // check no markers left
+    std::bitset<wxSTC_MARKER_MAX + 1> b;
+    b.set();
+
+    REQUIRE(
+      stc->MarkerNext(0, static_cast<int>(b.to_ulong())) ==
+      -1); // check no markers left
   }
 
   delete ex;
