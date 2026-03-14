@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of wex::frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -415,7 +415,7 @@ protected:
 
   class debug_entry* m_debug_entry{nullptr};
   statusbar*         m_statusbar{nullptr};
-  ex_commandline*    m_ex_commandline;
+  ex_commandline*    m_ex_commandline{nullptr};
 
 private:
   bool     add_toolbar_panes(const panes_t& panes);

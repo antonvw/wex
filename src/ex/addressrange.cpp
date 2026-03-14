@@ -2,7 +2,7 @@
 // Name:      addressrange.cpp
 // Purpose:   Implementation of class wex::addressrange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2025 Anton van Wezenbeek
+// Copyright: (c) 2015-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -106,6 +106,7 @@ wex::addressrange::addressrange(ex* ex, int begin_line, int end_line)
   : m_begin(ex, begin_line)
   , m_end(ex, end_line)
   , m_ex(ex)
+  , m_stc(ex->get_stc())
 {
 }
 
@@ -305,9 +306,10 @@ bool wex::addressrange::escape(const std::string& command)
   {
     return false;
   }
-  if (factory::process process;
-      process.system(
-        wex::process_data(command).std_in(m_stc->get_selected_text())) == 0)
+  if (
+    factory::process process;
+    process.system(
+      wex::process_data(command).std_in(m_stc->get_selected_text())) == 0)
   {
     if (const auto& out(process.std_out()); !out.empty())
     {
@@ -599,9 +601,10 @@ bool wex::addressrange::parse(const command_parser& cp, info_message_t& im)
     return false;
   }
 
-  if (const auto& it =
-        find_from<addressrange::commands_t>(m_commands, cp.command());
-      it != m_commands.end())
+  if (
+    const auto& it =
+      find_from<addressrange::commands_t>(m_commands, cp.command());
+    it != m_commands.end())
   {
     im = info_message_t::NONE;
     return it->second(cp, im);
@@ -728,10 +731,11 @@ bool wex::addressrange::set_single(const std::string& line, address& addr)
 {
   addr.m_address = line;
 
-  if (const auto line_no = addr.get_line(
-        addr.type() == address::address_t::IS_BEGIN ? m_stc->GetCurrentPos() :
-                                                      m_stc->GetTargetEnd());
-      line_no > 0)
+  if (
+    const auto line_no = addr.get_line(
+      addr.type() == address::address_t::IS_BEGIN ? m_stc->GetCurrentPos() :
+                                                    m_stc->GetTargetEnd());
+    line_no > 0)
   {
     addr.set_line(line_no);
     return true;
@@ -972,8 +976,9 @@ bool wex::addressrange::write(const std::string& text) const
     return false;
   }
 
-  auto filename(boost::algorithm::trim_left_copy(
-    text.contains(">>") ? rfind_after(text, ">") : text));
+  auto filename(
+    boost::algorithm::trim_left_copy(
+      text.contains(">>") ? rfind_after(text, ">") : text));
 
 #ifdef __UNIX__
   if (filename.contains("~"))

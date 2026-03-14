@@ -43,6 +43,7 @@ TEST_CASE("wex::addressrange")
       REQUIRE(ar.begin().get_line() == 3);
       REQUIRE(ar.end().get_line() == 3);
       REQUIRE(!ar.find_indicator().is_ok());
+      REQUIRE(ar.erase());
     }
 
     SECTION("range-int")
@@ -52,6 +53,7 @@ TEST_CASE("wex::addressrange")
       REQUIRE(ar.begin().get_line() == 3);
       REQUIRE(ar.end().get_line() == 8);
       REQUIRE(!ar.find_indicator().is_ok());
+      REQUIRE(ar.erase());
     }
 
     SECTION("range-ints")
@@ -61,6 +63,7 @@ TEST_CASE("wex::addressrange")
       REQUIRE(ar.begin().get_line() == 6);
       REQUIRE(ar.end().get_line() == 8);
       REQUIRE(!ar.find_indicator().is_ok());
+      REQUIRE(ar.erase());
     }
 
     SECTION("range-string")
@@ -70,6 +73,7 @@ TEST_CASE("wex::addressrange")
       REQUIRE(ar.begin().get_line() == 0);
       REQUIRE(ar.end().get_line() == 0);
       REQUIRE(!ar.find_indicator().is_ok());
+      REQUIRE(!ar.erase());
     }
   }
 
@@ -298,8 +302,9 @@ TEST_CASE("wex::addressrange")
   {
     REQUIRE(!ex->command(":1,2Sx"));
 
-    const std::string org("hello\nhello\nhello11\nhello11\nhello22\ntest\ngcc\n"
-                          "blame\nthis\nyank\ncopy");
+    const std::string org(
+      "hello\nhello\nhello11\nhello11\nhello22\ntest\ngcc\n"
+      "blame\nthis\nyank\ncopy");
     stc->set_text(org);
     REQUIRE(ex->command(":1,2S"));
 

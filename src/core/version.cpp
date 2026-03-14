@@ -16,7 +16,7 @@ const wex::version_info wex::get_version_info()
   return version_info(
     {"wex",
      26,
-     4,
+     10,
      0,
      0,
      _("wex library (a library that offers windows ex and vi components)"),
