@@ -34,7 +34,7 @@ public:
     FIRST,   ///< the first diff from input
     OTHER,   ///< other diffs from input
     LAST,    ///< the last diff from input
-    UNKNOWN, ///< no diff found
+    UNKNOWN, ///< no diff found (initial value)
   };
 
   /// Constructor.
@@ -45,7 +45,7 @@ public:
   /// Destructor.
   virtual ~unified_diff() = default;
 
-  /// Virtual interface
+  // Virtual interface
 
   /// Do something with a diff.
   virtual bool report_diff() { return true; };
