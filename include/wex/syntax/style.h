@@ -21,7 +21,7 @@ namespace wex
 /// E.g.
 /// 1,2,3=fore:light steel blue,italic,size:8
 /// 1,2,3 are the scintilla styles numbers, and the rest is spec
-/// A valid style number is in the range fron 0 to wxSTC_STYLE_MAX.
+/// A valid style number is in the range from 0 to wxSTC_STYLE_MAX.
 class style
 {
 public:
