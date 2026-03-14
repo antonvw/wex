@@ -2,7 +2,7 @@
 // Name:      style.h
 // Purpose:   Declaration of wex::style class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2025 Anton van Wezenbeek
+// Copyright: (c) 2010-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -15,24 +15,26 @@ class wxStyledTextCtrl;
 
 namespace wex
 {
-/// This class defines our scintilla styles. The no as in xml or in the string
+/// This class defines our scintilla styles.
+/// The style number as in xml or in the string
 /// can be a single style, or several styles separated by a comma.
 /// E.g.
 /// 1,2,3=fore:light steel blue,italic,size:8
 /// 1,2,3 are the scintilla styles numbers, and the rest is spec
+/// A valid style number is in the range fron 0 to wxSTC_STYLE_MAX.
 class style
 {
 public:
   /// Default constructor.
   style() = default;
 
-  /// Constructor using xml node (sets no from the no attribute).
+  /// Constructor using xml node (sets style number from the no attribute).
   style(const pugi::xml_node& node, const std::string& macro)
   {
     set(node, macro);
   }
 
-  /// Constructor using no, value, and macro.
+  /// Constructor using style number, value, and macro.
   style(
     const std::string& no,
     const std::string& value,
@@ -65,11 +67,11 @@ public:
   /// Returns true if this style is valid.
   bool is_ok() const { return !m_no.empty() && !m_value.empty(); }
 
-  /// Returns a single lexer number (the first in the set),
+  /// Returns a single lexer style number (the first in the set),
   /// or -1 if no number if present.
   int number() const;
 
-  /// Returns the lexer numbers.
+  /// Returns the lexer style numbers.
   const std::set<int>& numbers() const { return m_no; }
 
   /// Returns the value.
