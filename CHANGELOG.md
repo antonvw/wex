@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [26.10] - 2026-10 [Unreleased]
 
+### Fixed
+
+- fixed vcs checkout on a changed line
+
 ## [26.04] - 2026-03-14
 
 ### Added
