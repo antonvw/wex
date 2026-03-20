@@ -34,9 +34,14 @@ bool wex::unified_diffs::checkout(size_t line)
 
     if (it->second.range_from_count() > 0)
     {
+      const int         start_line = it->second.range_from_start() > 1 ?
+                                       it->second.range_from_start() - 2 :
+                                       0;
+      const std::string add(start_line == 0 ? "" : "\n");
+      const std::string end(start_line == 0 ? "\n" : "");
       m_stc->insert_text(
-        m_stc->GetLineEndPosition(it->second.range_from_start() - 2),
-        "\n" + boost::join(it->second.text_removed(), "\n"));
+        m_stc->GetLineEndPosition(start_line),
+        add + boost::join(it->second.text_removed(), "\n") + end);
     }
 
     m_lines.erase(line);
