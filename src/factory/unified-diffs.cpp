@@ -24,19 +24,19 @@ bool wex::unified_diffs::checkout(size_t line)
 {
   if (auto it = m_lines.find(line); it != m_lines.end())
   {
-    if (it->second.range_from_count() > 0)
-    {
-      m_stc->insert_text(
-        m_stc->GetLineEndPosition(it->second.range_from_start() - 2),
-        "\n" + boost::join(it->second.text_removed(), "\n"));
-    }
-
     if (it->second.range_to_count() > 0)
     {
       const int first(m_stc->PositionFromLine(it->second.range_to_start() - 1));
       const int last(m_stc->PositionFromLine(
         it->second.range_to_start() - 1 + it->second.range_to_count()));
       m_stc->DeleteRange(first, last - first);
+    }
+
+    if (it->second.range_from_count() > 0)
+    {
+      m_stc->insert_text(
+        m_stc->GetLineEndPosition(it->second.range_from_start() - 2),
+        "\n" + boost::join(it->second.text_removed(), "\n"));
     }
 
     m_lines.erase(line);
@@ -104,18 +104,21 @@ bool wex::unified_diffs::first()
 
 void wex::unified_diffs::insert(const factory::unified_diff* diff)
 {
+  int from_start = 0, to_start = 0;
+
   if (diff->range_from_start() > 0 && diff->range_from_count() > 0)
   {
-    m_lines[diff->range_from_start() - 1] = *diff;
+    from_start          = diff->range_from_start() - 1;
+    m_lines[from_start] = *diff;
   }
 
   if (diff->range_to_start() > 0 && diff->range_to_count() > 0)
   {
-    m_lines[diff->range_to_start() - 1] = *diff;
+    to_start          = diff->range_to_start() - 1;
+    m_lines[to_start] = *diff;
   }
 
-  m_last_inserted_key =
-    std::max(diff->range_from_start() - 1, diff->range_to_start() - 1);
+  m_last_inserted_key = std::max(from_start, to_start);
 
   m_lines_it = m_lines.begin();
 }

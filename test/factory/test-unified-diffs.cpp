@@ -18,10 +18,12 @@ TEST_CASE("wex::unified_diffs")
     stc->append_text("this is a line\n");
   }
 
+  REQUIRE(stc->get_line_count() == 51);
+
+  wex::unified_diffs diffs(stc);
+
   SECTION("constructor")
   {
-    wex::unified_diffs diffs(stc);
-
     REQUIRE(diffs.size() == 0);
     REQUIRE(diffs.pos() == 0);
     REQUIRE(!diffs.first());
@@ -33,10 +35,74 @@ TEST_CASE("wex::unified_diffs")
     REQUIRE(!diffs.finish(&uni));
   }
 
+  SECTION("checkout")
+  {
+    SECTION("add")
+    {
+      wex::factory::unified_diff uni(
+        "diff --git a/CHANGELOG.md b/CHANGELOG.md\n"
+        "index 26e9e8f..ed2116e 100644\n"
+        "--- a/CHANGELOG.md\n"
+        "+++ b/CHANGELOG.md\n"
+        "@@ -11,0 +10,2 @@ The format is based on [Keep a Changelog].\n"
+        "+ added one git diff option\n"
+        "+ added two git diff option\n");
+
+      REQUIRE(uni.parse());
+      REQUIRE(uni.parse());
+      diffs.insert(&uni);
+      REQUIRE(diffs.checkout(9));
+      REQUIRE(!stc->get_text().contains(" added"));
+      REQUIRE(stc->get_line_count() == 49); // +10,2
+    }
+
+    SECTION("change")
+    {
+      wex::factory::unified_diff uni(
+        "diff --git a/CHANGELOG.md b/CHANGELOG.md\n"
+        "index 26e9e8f..ed2116e 100644\n"
+        "--- a/CHANGELOG.md\n"
+        "+++ b/CHANGELOG.md\n"
+        "@@ -25 +23,0 @@ The format is based on [Keep a Changelog].\n"
+        "-- listview standard column sizes are configurable\n"
+        "@@ -38 +38 @@ The format is based on [Keep a Changelog].\n"
+        "-- added git diff option\n"
+        "+- added git diff option changed\n");
+
+      REQUIRE(uni.parse());
+
+      diffs.insert(&uni);
+      REQUIRE(diffs.size() == 1);
+
+      REQUIRE(diffs.checkout(37));
+      REQUIRE(diffs.size() == 0);
+      REQUIRE(stc->get_text().contains("- added git diff option"));
+      REQUIRE(!stc->get_text().contains(" changed"));
+      REQUIRE(stc->get_line_count() == 51); // -38,1  and +45
+    }
+
+    SECTION("delete")
+    {
+      wex::factory::unified_diff uni(
+        "diff --git a/build-gen.sh b/build-gen.sh\n"
+        "index 9ff921d..b429c21 100755\n"
+        "--- a/build-gen.sh\n"
+        "+++ b/build-gen.sh\n"
+        "@@ -20,2 +19,0 @@ usage()\n"
+        "- deleted one general cmake define\"\n"
+        "- deleted two general cmake define\"\n");
+
+      REQUIRE(uni.parse());
+      diffs.insert(&uni);
+      REQUIRE(diffs.checkout(19));
+      REQUIRE(stc->get_text().contains(" deleted one general cmake define"));
+      REQUIRE(stc->get_text().contains(" deleted two general cmake define"));
+      REQUIRE(stc->get_line_count() == 53); // -20,2
+    }
+  }
+
   SECTION("insert")
   {
-    REQUIRE(stc->get_line_count() == 51);
-
     wex::factory::unified_diff uni(
       "diff --git a/build-gen.sh b/build-gen.sh\n"
       "index 9ff921d..b429c21 100755\n"
@@ -55,8 +121,6 @@ TEST_CASE("wex::unified_diffs")
       "@@ -38,1 +45 @@ The format is based on [Keep a Changelog].\n"
       "-- added git diff option\n"
       "+- test\n");
-
-    wex::unified_diffs diffs(stc);
 
     REQUIRE(!diffs.finish(&uni));
     REQUIRE(uni.parse());
@@ -77,22 +141,10 @@ TEST_CASE("wex::unified_diffs")
     REQUIRE(diffs.end());
     REQUIRE(diffs.pos() == 2);
 
-    // do a checkout
     REQUIRE(diffs.prev());
     REQUIRE(diffs.pos() == 1);
     REQUIRE(stc->get_current_line() == 37);
-    REQUIRE(diffs.checkout(37));
-    REQUIRE(diffs.size() == 1);
-    REQUIRE(stc->get_text().contains("added git diff option"));
-    REQUIRE(stc->get_line_count() == 51); // -38,1  and +45
     REQUIRE(diffs.finish(&uni));
-
-    diffs.insert(&uni); // back to first
-    REQUIRE(diffs.pos() == 1);
-    REQUIRE(diffs.size() == 2);
-
-    REQUIRE(diffs.checkout(44));
-    REQUIRE(stc->get_line_count() == 51); // -38,1  and +45
 
     diffs.clear();
     REQUIRE(diffs.size() == 0);
@@ -122,8 +174,6 @@ TEST_CASE("wex::unified_diffs")
 
     REQUIRE(uni.parse());
 
-    wex::unified_diffs diffs(stc);
-
     // we are already on the second (last of the diffs)
     REQUIRE(uni.type() == wex::factory::unified_diff::diff_t::LAST);
     diffs.insert(&uni);
@@ -147,7 +197,6 @@ TEST_CASE("wex::unified_diffs")
 
     REQUIRE(uni.parse());
 
-    wex::unified_diffs diffs(stc);
     diffs.insert(&uni);
 
     REQUIRE(diffs.size() == 1);
