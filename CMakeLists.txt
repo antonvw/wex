@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.25)
 
 if(CMAKE_VERSION VERSION_GREATER "3.30.0")
   cmake_policy(SET CMP0144 OLD)
@@ -156,7 +156,8 @@ set(
 
 separate_arguments(wex_own_LIBRARIES)
 
-set(WEX_CXX_STANDARD 23) # see also Findwex.cmake, c_cpp_properties.json
+# see also Findwex.cmake, c_cpp_properties.json, bindings/CMakeLists.txt
+set(WEX_CXX_STANDARD 26)
 set(CMAKE_CXX_STANDARD ${WEX_CXX_STANDARD})
 
 if(wexBUILD_TESTS)
