@@ -52,7 +52,7 @@ wex::shell::shell(
   auto_complete()->use(false); // we have our own auto_complete
 
   bind(this).command(
-    {{[=, this](wxCommandEvent& event)
+    {{[=, this](const wxCommandEvent& event)
       {
         const auto& text(event.GetString().ToStdString());
 
@@ -74,25 +74,25 @@ wex::shell::shell(
       },
       ID_SHELL_APPEND},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         AppendText(event.GetString());
       },
       ID_SHELL_APPEND_ERROR},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         AppendText(m_text);
       },
       ID_SHELL_APPEND_FINISH},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         m_text.clear();
       },
       ID_SHELL_APPEND_START},
 
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         AppendText(event.GetString());
       },
@@ -229,8 +229,9 @@ void wex::shell::expand()
 
   if (const auto prefix(path.filename()); AutoCompActive())
   {
-    if (const auto index = AutoCompGetCurrent();
-        index >= 0 && index < static_cast<int>(m_auto_complete_list.size()))
+    if (
+      const auto index = AutoCompGetCurrent();
+      index >= 0 && index < static_cast<int>(m_auto_complete_list.size()))
     {
       expansion = m_auto_complete_list[index].substr(prefix.length());
     }
@@ -399,10 +400,11 @@ bool wex::shell::process_char(int key)
     case WXK_BACK:
     case WXK_DELETE:
       // Delete the key at current position.
-      if (const int offset = (key == WXK_BACK ? 1 : 0),
-          index            = GetCurrentPos() - m_command_start_pos - offset;
-          !m_command.empty() && index >= 0 &&
-          index < static_cast<int>(m_command.length()))
+      if (
+        const int offset = (key == WXK_BACK ? 1 : 0),
+        index            = GetCurrentPos() - m_command_start_pos - offset;
+        !m_command.empty() && index >= 0 &&
+        index < static_cast<int>(m_command.length()))
       {
         m_command.erase(index, 1);
       }
@@ -423,9 +425,10 @@ bool wex::shell::process_char(int key)
 void wex::shell::process_char_default(int key)
 {
   // Insert the key at current position.
-  if (const int index = GetCurrentPos() - m_command_start_pos;
-      GetCurrentPos() < GetLength() && index >= 0 &&
-      index < static_cast<int>(m_command.size()))
+  if (
+    const int index = GetCurrentPos() - m_command_start_pos;
+    GetCurrentPos() < GetLength() && index >= 0 &&
+    index < static_cast<int>(m_command.size()))
   {
     m_command.insert(index, 1, static_cast<char>(key));
   }
@@ -523,17 +526,18 @@ bool wex::shell::set_command_from_history(const std::string& short_command)
         short_command.length() - m_command_end.length());
     }
 
-    if (std::ranges::any_of(
-          std::views::reverse(m_commands),
-          [&short_command_check, this](const auto& it)
+    if (
+      std::ranges::any_of(
+        std::views::reverse(m_commands),
+        [&short_command_check, this](const auto& it)
+        {
+          if (it.substr(0, short_command_check.size()) == short_command_check)
           {
-            if (it.substr(0, short_command_check.size()) == short_command_check)
-            {
-              m_command = it;
-              return true;
-            }
-            return false;
-          }))
+            m_command = it;
+            return true;
+          }
+          return false;
+        }))
     {
       return true;
     }

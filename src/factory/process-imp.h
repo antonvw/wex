@@ -2,7 +2,7 @@
 // Name:      process-imp.h
 // Purpose:   Declaration of class wex::factory::process_imp
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -27,11 +27,11 @@ class process;
 class process_imp
 {
 public:
+  /// Sleeps for some milliseconds time.
+  static void async_sleep_for(const std::chrono::milliseconds& ms);
+
   /// Default constructor.
   process_imp();
-
-  /// Sleeps for some milliseconds time.
-  void async_sleep_for(const std::chrono::milliseconds& ms);
 
   /// Runs the exe as a async process.
   void async_system(process* p);
