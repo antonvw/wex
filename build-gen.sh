@@ -26,7 +26,7 @@ usage()
   echo "-p       prepare only, do not run (ninja) after generating build files"
   echo "-s       build samples binaries as well"
   echo "-t       build tests binaries as well"
-  echo "-T       build clang-tidy (to enable run-clang-tidy)"
+  echo "-T       build clang-tidy (to enable run-clang-tidy), default uses tidy dir"
 }
 
 option_asan=
@@ -108,6 +108,7 @@ while getopts ":B:d:D:G:abcghilpstT" opt; do
 
     T)
       option_tidy="-DwexBUILD_TIDY=ON"
+      option_prepare=true
     ;;
 
     :)
@@ -125,6 +126,10 @@ done
 if [[ -n "${option_tidy}" ]] && ! [[ "${option_generator}" =~ .*Ninja ]]; then
   echo "currently clang-tidy only works when using Ninja"
   exit 1
+fi
+
+if [[ -n "${option_tidy}" ]] && [[ "${option_dir}" =~ .*build ]]; then
+  option_dir=tidy
 fi
 
 uname=$(uname)
