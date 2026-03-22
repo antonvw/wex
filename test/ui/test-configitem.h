@@ -2,7 +2,7 @@
 // Name:      test-configitem.h
 // Purpose:   Declaration and implementation of class test_config_item
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -24,7 +24,7 @@ public:
   /// Returns a vector with all config items available.
   /// The first item is a notebook, containing the other items,
   /// the arguments are arguments for the notebook item.
-  const std::vector<wex::item> vector(int rows = 0, int cols = 0);
+  static const std::vector<wex::item> vector(int rows = 0, int cols = 0);
 };
 
 // inline implementation

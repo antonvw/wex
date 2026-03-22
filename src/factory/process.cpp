@@ -24,10 +24,7 @@ wex::factory::process::~process()
 
 void wex::factory::process::async_sleep_for(const std::chrono::milliseconds& ms)
 {
-  if (m_imp != nullptr)
-  {
-    m_imp->async_sleep_for(ms);
-  }
+  process_imp::async_sleep_for(ms);
 }
 
 bool wex::factory::process::async_system(const wex::process_data& data)
