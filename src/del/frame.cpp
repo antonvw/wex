@@ -481,6 +481,7 @@ bool wex::del::frame::open_from_action(
   data::window data;
   data.style(wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR | wxFD_HEX_MODE)
     .allow_move_path_extension(move_ext);
+  std::string path_org;
 
   // :e [+command] [file]
   if (auto text(file); !text.empty())
@@ -516,12 +517,17 @@ bool wex::del::frame::open_from_action(
     }
     else
     {
+      path_org = path::current().string();
       path::current(path(text));
       data.style(data.style() | wxFD_NO_FOLLOW);
     }
   }
 
-  open_files_dialog(this, false, data::stc(data));
+  if (!open_files_dialog(this, false, data::stc(data)) && !path_org.empty())
+  {
+    path::current(path(path_org));
+  }
+
   return true;
 }
 

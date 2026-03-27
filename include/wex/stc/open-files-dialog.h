@@ -2,7 +2,7 @@
 // Name:      open-files-dialog.h
 // Purpose:   Declaration of class wex::open_files_dialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -16,7 +16,8 @@ class frame;
 
 /// Shows a dialog and opens selected files
 /// (calls open_files).
-void open_files_dialog(
+/// Returns false if dialog was cancelled.
+bool open_files_dialog(
   /// frame
   factory::frame* frame,
   /// flags to be used with file_dialog
