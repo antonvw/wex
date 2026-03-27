@@ -112,11 +112,12 @@ wex::del::frame::frame(
         auto* stc     = dynamic_cast<wex::stc*>(get_stc());
         auto* project = get_project();
 
-        if (const size_t pos = title.size() - indicator.size();
-            (project != nullptr && project->is_contents_changed()) ||
-            // using is_contents_changed gives assert in vcs dialog
-            (stc != nullptr && stc->GetModify() &&
-             !stc->data().flags().test(data::stc::WIN_NO_INDICATOR)))
+        if (
+          const size_t pos = title.size() - indicator.size();
+          (project != nullptr && project->is_contents_changed()) ||
+          // using is_contents_changed gives assert in vcs dialog
+          (stc != nullptr && stc->GetModify() &&
+           !stc->data().flags().test(data::stc::WIN_NO_INDICATOR)))
         {
           // Project or editor changed, add indicator if not yet done.
           if (title.substr(pos) != indicator)
@@ -212,8 +213,9 @@ void append_submenu(const wex::menu_item* item, wex::menu* menu)
     submenu = new wex::menu(menu->style());
   }
 
-  if (const wex::vcs vcs({item->path()});
-      vcs.entry().build_menu(wex::ID_EDIT_VCS_LOWEST + 1, submenu))
+  if (
+    const wex::vcs vcs({item->path()});
+    vcs.entry().build_menu(wex::ID_EDIT_VCS_LOWEST + 1, submenu))
   {
     if (menu->style().test(wex::menu::IS_POPUP))
     {
@@ -318,43 +320,44 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
     get_stc()->get_find_string();
   }
 
-  if (data::cmdline cmdl(arg);
-      !cmdline(
-         {{{"hidden,H", "hidden"},
-           [&](bool on)
-           {
-             arg3.set(data::dir::HIDDEN, on);
-           }},
-          {{"recursive,r", "recursive"},
-           [&](bool on)
-           {
-             arg3.set(data::dir::RECURSIVE, on);
-           }}},
-         {},
-         {{"rest",
-           "match " + std::string(sed ? "replace" : "") +
-             " [extension] [folder]"},
-          [&](const std::vector<std::string>& v)
+  if (
+    data::cmdline cmdl(arg);
+    !cmdline(
+       {{{"hidden,H", "hidden"},
+         [&](bool on)
+         {
+           arg3.set(data::dir::HIDDEN, on);
+         }},
+        {{"recursive,r", "recursive"},
+         [&](bool on)
+         {
+           arg3.set(data::dir::RECURSIVE, on);
+         }}},
+       {},
+       {{"rest",
+         "match " + std::string(sed ? "replace" : "") +
+           " [extension] [folder]"},
+        [&](const std::vector<std::string>& v)
+        {
+          size_t i = 0;
+          find_replace_data::get()->set_find_string(v[i++]);
+          if (sed)
           {
-            size_t i = 0;
-            find_replace_data::get()->set_find_string(v[i++]);
-            if (sed)
+            if (v.size() <= i)
             {
-              if (v.size() <= i)
-              {
-                return;
-              }
-              find_replace_data::get()->set_replace_string(v[i++]);
+              return;
             }
-            arg2 =
-              (v.size() > i ? config(m_text_in_files).set_first_of(v[i++]) :
-                              config(m_text_in_files).get_first_of());
-            arg1 =
-              (v.size() > i ? config(m_text_in_folder).set_first_of(v[i++]) :
-                              config(m_text_in_folder).get_first_of());
-          }},
-         false)
-         .parse(cmdl))
+            find_replace_data::get()->set_replace_string(v[i++]);
+          }
+          arg2 =
+            (v.size() > i ? config(m_text_in_files).set_first_of(v[i++]) :
+                            config(m_text_in_files).get_first_of());
+          arg1 =
+            (v.size() > i ? config(m_text_in_folder).set_first_of(v[i++]) :
+                            config(m_text_in_folder).get_first_of());
+        }},
+       false)
+       .parse(cmdl))
   {
     statustext(cmdl.help(), std::string());
     statustext(std::string(), std::string());
@@ -475,6 +478,11 @@ bool wex::del::frame::open_from_action(
   const std::string& file,
   const std::string& move_ext)
 {
+  data::window data;
+  data.style(wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR | wxFD_HEX_MODE)
+    .allow_move_path_extension(move_ext);
+  std::string path_org;
+
   // :e [+command] [file]
   if (auto text(file); !text.empty())
   {
@@ -500,16 +508,26 @@ bool wex::del::frame::open_from_action(
       text = v[1];
     }
 
-    return open_files(
-      this,
-      to_vector_path(text).get(),
-      data::control().command(cmd));
+    if (!path(text).dir_exists())
+    {
+      return open_files(
+        this,
+        to_vector_path(text).get(),
+        data::control().command(cmd));
+    }
+    else
+    {
+      path_org = path::current().string();
+      path::current(path(text));
+      data.style(data.style() | wxFD_NO_FOLLOW);
+    }
   }
 
-  data::window data;
-  data.style(wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR | wxFD_HEX_MODE)
-    .allow_move_path_extension(move_ext);
-  open_files_dialog(this, false, data::stc(data));
+  if (!open_files_dialog(this, false, data::stc(data)) && !path_org.empty())
+  {
+    path::current(path(path_org));
+  }
+
   return true;
 }
 
@@ -742,8 +760,9 @@ void wex::del::frame::use_file_history_list(listview* list)
   // Add all (existing) items from file_history.
   for (size_t i = 0; i < file_history().size(); i++)
   {
-    if (listitem item(m_file_history_listview, file_history()[i]);
-        item.path().stat().is_ok())
+    if (
+      listitem item(m_file_history_listview, file_history()[i]);
+      item.path().stat().is_ok())
     {
       item.insert();
     }
@@ -775,10 +794,11 @@ bool wex::del::frame::vcs_annotate_commit(
     return false;
   }
 
-  if (wex::vcs vcs{
-        {!stc->get_data()->head_path().empty() ? stc->get_data()->head_path() :
-                                                 stc->path()}};
-      vcs.entry().log(stc->path(), commit_id))
+  if (
+    wex::vcs vcs{
+      {!stc->get_data()->head_path().empty() ? stc->get_data()->head_path() :
+                                               stc->path()}};
+    vcs.entry().log(stc->path(), commit_id))
   {
     stc->AnnotationSetText(
       line,
@@ -810,15 +830,17 @@ std::string wex::del::frame::vcs_annotate_line(
   wex::log_none off; // prevent log errors, such as illegal line
   wex::vcs      vcs{{stc->path()}};
 
-  if (const auto& line(std::to_string(stc->get_current_line() + 1));
-      vcs.execute("blame -L " + line + "," + line + " " + stc->path().string()))
+  if (
+    const auto& line(std::to_string(stc->get_current_line() + 1));
+    vcs.execute("blame -L " + line + "," + line + " " + stc->path().string()))
   {
     off.enable();
 
-    if (const auto& commit_hash(find_before(vcs.entry().std_out(), " "));
-        !commit_hash.starts_with("000000") &&
-        vcs.execute(
-          "log " + commit_hash + " -n 1 --date=short --format=" + it->second))
+    if (
+      const auto& commit_hash(find_before(vcs.entry().std_out(), " "));
+      !commit_hash.starts_with("000000") &&
+      vcs.execute(
+        "log " + commit_hash + " -n 1 --date=short --format=" + it->second))
     {
       return boost::algorithm::trim_all_copy(vcs.entry().std_out());
     }
@@ -839,8 +861,9 @@ void wex::del::frame::vcs_append(wex::menu* menu, const menu_item* item) const
     {
       wex::vcs vcs;
 
-      if (vcs.set_entry_from_base(
-            item->is_modal() ? wxTheApp->GetTopWindow() : nullptr))
+      if (
+        vcs.set_entry_from_base(
+          item->is_modal() ? wxTheApp->GetTopWindow() : nullptr))
       {
         auto* submenu = new wex::menu(menu->style());
 
@@ -993,8 +1016,9 @@ bool wex::del::frame::vcs_unified_diff(
     return false;
   }
 
-  if (auto* stc = dynamic_cast<wex::stc*>(open_file(diff->path_vcs()));
-      stc != nullptr)
+  if (
+    auto* stc = dynamic_cast<wex::stc*>(open_file(diff->path_vcs()));
+    stc != nullptr)
   {
     if (diff->type() == factory::unified_diff::diff_t::LAST)
     {
