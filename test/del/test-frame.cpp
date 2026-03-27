@@ -2,7 +2,7 @@
 // Name:      test-frame.cpp
 // Purpose:   Implementation for wex del unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
@@ -53,10 +53,11 @@ TEST_CASE("wex::del::frame")
                ->find_in_files({}, wex::tool(wex::ID_TOOL_REPORT_FIND), false));
 
 #ifndef __WXMSW__
-    REQUIRE(del_frame()->find_in_files(
-      {wex::test::get_path("test.h")},
-      wex::tool(wex::ID_TOOL_REPORT_FIND),
-      false));
+    REQUIRE(
+      del_frame()->find_in_files(
+        {wex::test::get_path("test.h")},
+        wex::tool(wex::ID_TOOL_REPORT_FIND),
+        false));
 
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
@@ -102,9 +103,11 @@ TEST_CASE("wex::del::frame")
 
   SECTION("open_from_action")
   {
-    REQUIRE(del_frame()->open_from_action(
-      wex::test::get_path("test.h").string(),
-      "ext"));
+    REQUIRE(
+      del_frame()->open_from_action(
+        wex::test::get_path("test.h").string(),
+        "ext"));
+    REQUIRE(!del_frame()->open_from_action("`XXX`", "ext"));
     REQUIRE(del_frame()->open_from_action("xxx", "ext"));
     REQUIRE(del_frame()->open_from_action("test.h", "ext"));
     REQUIRE(del_frame()->open_from_action("test.*", "ext"));
@@ -215,9 +218,10 @@ TEST_CASE("wex::del::frame")
     }
     REQUIRE(
       !del_frame()->vcs_annotate_line(get_stc(), "PaneBlameDate").empty());
-    REQUIRE(del_frame()
-              ->vcs_annotate_line(get_stc(), "PaneBlameComments")
-              .starts_with("improved"));
+    REQUIRE(
+      del_frame()
+        ->vcs_annotate_line(get_stc(), "PaneBlameComments")
+        .starts_with("improved"));
     REQUIRE(
       del_frame()->vcs_annotate_line(get_stc(), "PaneBlameAuthor") ==
       "Anton van Wezenbeek");
@@ -268,8 +272,9 @@ TEST_CASE("wex::del::frame")
 
 #ifndef __WXMSW__
     REQUIRE(
-      entry->system(wex::process_data().args(
-        "blame " + wex::test::get_path("test.h").string())) == 0);
+      entry->system(
+        wex::process_data().args(
+          "blame " + wex::test::get_path("test.h").string())) == 0);
     REQUIRE(del_frame()->vcs_blame_show(entry, get_stc()));
 #endif
 
@@ -294,10 +299,9 @@ TEST_CASE("wex::del::frame")
       wex::data::window data;
       data.button(wxOK | wxCANCEL | wxAPPLY);
       const int ID_VCS_LOG = 11; // in wex-menus.xml
-      REQUIRE(del_frame()->vcs_execute(
-        ID_VCS_LOG,
-        {wex::test::get_path("test.h")},
-        data));
+      REQUIRE(
+        del_frame()
+          ->vcs_execute(ID_VCS_LOG, {wex::test::get_path("test.h")}, data));
 
       del_frame()->vcs_destroy_dialog();
     }
@@ -307,9 +311,10 @@ TEST_CASE("wex::del::frame")
       wex::log_none off;
       REQUIRE(!del_frame()->vcs_execute("shows", std::vector<wex::path>()));
 
-      REQUIRE(del_frame()->vcs_execute(
-        "show",
-        std::vector<wex::path>{wex::test::get_path()}));
+      REQUIRE(
+        del_frame()->vcs_execute(
+          "show",
+          std::vector<wex::path>{wex::test::get_path()}));
     }
   }
 

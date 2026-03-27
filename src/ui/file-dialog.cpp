@@ -41,8 +41,12 @@ wex::file_dialog::file_dialog(wex::file* file, const data::window& data)
   : wxFileDialog(
       data.parent(),
       data.title(),
-      file != nullptr ? file->path().parent_path() : std::string(),
-      file != nullptr ? file->path().filename() : std::string(),
+      file != nullptr && !(data.style() & wxFD_NO_FOLLOW) ?
+        file->path().parent_path() :
+        path::current().string(),
+      file != nullptr && !(data.style() & wxFD_NO_FOLLOW) ?
+        file->path().filename() :
+        std::string(),
       data.wildcard(),
       data.style(),
       data.pos(),
