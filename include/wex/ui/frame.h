@@ -151,6 +151,9 @@ public:
   /// Saves the current page, to restore later on.
   virtual bool save_current_page(const std::string& key) { return false; }
 
+  /// Handles text from shell.
+  virtual bool shell_text(const std::string& text) { return false; }
+
   /// Act on a double shift click.
   virtual void shift_double_click() { ; }
 

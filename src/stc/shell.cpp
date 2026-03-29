@@ -63,7 +63,9 @@ wex::shell::shell(
 
         if (std::isspace(text.back()))
         {
-          AppendText(m_text + text);
+          const std::string out(m_text + text);
+          AppendText(out);
+          get_frame()->shell_text(out);
           m_text.clear();
         }
         else
@@ -227,7 +229,7 @@ void wex::shell::expand()
   wex::path   path(rfind_after(m_command, " "));
   std::string expansion;
 
-  if (const auto prefix(path.filename()); AutoCompActive())
+  if (const auto& prefix(path.filename()); AutoCompActive())
   {
     if (
       const auto index = AutoCompGetCurrent();
@@ -238,7 +240,7 @@ void wex::shell::expand()
 
     AutoCompCancel();
   }
-  else if (const auto t = auto_complete_filename(m_command); t)
+  else if (const auto& t = auto_complete_filename(m_command); t)
   {
     if (t->vector.size() > 1)
     {

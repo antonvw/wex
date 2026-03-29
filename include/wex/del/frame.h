@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Include file for wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2025 Anton van Wezenbeek
+// Copyright: (c) 2009-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -179,6 +179,8 @@ public:
 
   void set_recent_file(const path& path) override;
 
+  bool shell_text(const std::string& text) override;
+
   void show_ex_bar(int action = HIDE_BAR_FOCUS_STC, syntax::stc* stc = nullptr)
     override;
   void show_ex_message(const std::string& text) override;
@@ -225,6 +227,7 @@ protected:
 private:
   listview* activate_and_clear(const wex::tool& tool);
   void      bind_all();
+  void      follow_path(syntax::stc* stc);
 
   stc_entry_dialog* entry_dialog(
     const std::string& title = std::string(),
@@ -238,6 +241,8 @@ private:
   process*          m_process{nullptr};
   listview*         m_file_history_listview{nullptr};
   class vcs*        m_vcs{nullptr};
+
+  bool m_skip_set_current_path{false};
 
   class file_history m_project_history;
 
