@@ -179,7 +179,7 @@ public:
 
   void set_recent_file(const path& path) override;
 
-  bool shell_text(const std::string& text) override;
+  bool shell_follow_path(const std::string& text) override;
 
   void show_ex_bar(int action = HIDE_BAR_FOCUS_STC, syntax::stc* stc = nullptr)
     override;

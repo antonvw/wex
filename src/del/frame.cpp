@@ -788,17 +788,21 @@ void wex::del::frame::use_file_history_list(listview* list)
   }
 }
 
-bool wex::del::frame::shell_text(const std::string& text)
+bool wex::del::frame::shell_follow_path(const std::string& text)
 {
-  if (m_skip_set_current_path)
+  if (m_skip_set_current_path && text.starts_with("cd"))
   {
-    wex::path dir(text);
+    const wex::path dir(find_after(text, " "));
 
     if (dir.dir_exists())
     {
       path::current(dir);
+
+      return true;
     }
   }
+
+  return false;
 }
 
 void wex::del::frame::vcs_add_path(factory::link* l)

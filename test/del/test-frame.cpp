@@ -143,6 +143,14 @@ TEST_CASE("wex::del::frame")
     del_frame()->set_recent_file(wex::test::get_path("test.h"));
   }
 
+  SECTION("shell_follow_path")
+  {
+    REQUIRE(!del_frame()->shell_follow_path("cd .."));
+
+    del_frame()->process_async_system(wex::process_data("bash"));
+    REQUIRE(del_frame()->shell_follow_path("cd .."));
+  }
+
   SECTION("show_ex_bar")
   {
     del_frame()->show_ex_bar(wex::frame::HIDE_BAR);

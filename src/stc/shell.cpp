@@ -65,7 +65,6 @@ wex::shell::shell(
         {
           const std::string out(m_text + text);
           AppendText(out);
-          get_frame()->shell_text(out);
           m_text.clear();
         }
         else
@@ -485,6 +484,7 @@ void wex::shell::send_command()
   {
     AppendText(eol());
     m_process->write(m_command.empty() ? "\n" : m_command);
+    get_frame()->shell_follow_path(m_command);
   }
   else
   {
