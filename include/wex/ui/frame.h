@@ -151,6 +151,10 @@ public:
   /// Saves the current page, to restore later on.
   virtual bool save_current_page(const std::string& key) { return false; }
 
+  /// If we are in a shell, and text starts with cd, follows a possible path.
+  /// Returns true if this was the case, otherwise false.
+  virtual bool shell_follow_path(const std::string& text) { return false; }
+
   /// Act on a double shift click.
   virtual void shift_double_click() { ; }
 

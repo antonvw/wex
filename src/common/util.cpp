@@ -2,7 +2,7 @@
 // Name:      common/util.cpp
 // Purpose:   Implementation of wex common utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2025 Anton van Wezenbeek
+// Copyright: (c) 2011-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <numeric>
@@ -83,8 +83,6 @@ wex::auto_complete_filename(const std::string& text)
     path.make_absolute();
   }
 
-  auto_complete_filename_t out;
-
   // alias to filename
   const auto& prefix(path.filename());
 
@@ -100,6 +98,9 @@ wex::auto_complete_filename(const std::string& text)
   {
     return {};
   }
+
+  log::trace("auto_complete_filename")
+    << path.string() << path.parent_path() << path::current().string();
 
   if (v.size() > 1)
   {
@@ -273,9 +274,10 @@ int wex::open_files(
 
         if (!it.file_exists() && it.string().contains(":"))
         {
-          if (const path &
-                val(wex::factory::link().get_path(it.string(), data.control()));
-              !val.empty())
+          if (
+            const path& val(
+              wex::factory::link().get_path(it.string(), data.control()));
+            !val.empty())
           {
             fn = val;
           }
@@ -372,9 +374,10 @@ void wex::xml_error(
   // prevent recursion
   if (stc == nullptr && filename != lexers::get()->path())
   {
-    if (auto* frame =
-          dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
-        frame != nullptr)
+    if (
+      auto* frame =
+        dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
+      frame != nullptr)
     {
       stc = dynamic_cast<syntax::stc*>(frame->open_file(filename, data::stc()));
     }

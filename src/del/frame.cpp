@@ -309,6 +309,16 @@ wex::del::frame::entry_dialog(const std::string& title, const std::string& text)
   return m_entry_dialog;
 }
 
+void wex::del::frame::follow_path(syntax::stc* stc)
+{
+  if (!m_skip_set_current_path)
+  {
+    // This is to take care that current dir follows page selection.
+    // Which is convenient for git grep, ls etc. and opening from stc window.
+    path::current(stc->path().data().parent_path());
+  }
+}
+
 bool wex::del::frame::grep(const std::string& arg, bool sed)
 {
   static auto arg1 = config(m_text_in_folder).get_first_of();
@@ -375,7 +385,7 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
 
   if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
   {
-    path::current(stc->path().data().parent_path());
+    follow_path(stc);
   }
 
   find_replace_data::get()->set_regex(true);
@@ -468,9 +478,7 @@ void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
 
     statustext_vcs(stc);
 
-    // This is to take care that current dir follows page selection.
-    // Which is convenient for git grep, ls etc. and opening from stc window.
-    path::current(stc->path().data().parent_path());
+    follow_path(stc);
   }
 }
 
@@ -488,7 +496,7 @@ bool wex::del::frame::open_from_action(
   {
     if (auto* stc = dynamic_cast<wex::stc*>(get_stc()); stc != nullptr)
     {
-      wex::path::current(stc->path().data().parent_path());
+      follow_path(stc);
 
       if (!marker_and_register_expansion(&stc->get_vi(), text))
       {
@@ -544,6 +552,11 @@ bool wex::del::frame::process_async_system(const process_data& data)
   }
 
   m_process = new wex::process();
+
+  m_skip_set_current_path = (data.exe() == "bash");
+
+  log::trace("process_async_system")
+    << data.exe() << "skip" << m_skip_set_current_path;
 
   return m_process->async_system(data);
 }
@@ -767,6 +780,25 @@ void wex::del::frame::use_file_history_list(listview* list)
       item.insert();
     }
   }
+}
+
+bool wex::del::frame::shell_follow_path(const std::string& text)
+{
+  if (m_skip_set_current_path && text.starts_with("cd"))
+  {
+    const wex::path dir(
+      text.starts_with("cd ") ? find_after(text, " ") :
+                                std::string(wxGetHomeDir()));
+
+    if (dir.dir_exists())
+    {
+      path::current(dir);
+
+      return true;
+    }
+  }
+
+  return false;
 }
 
 void wex::del::frame::vcs_add_path(factory::link* l)
