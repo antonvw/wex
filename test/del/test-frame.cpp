@@ -145,6 +145,7 @@ TEST_CASE("wex::del::frame")
 
   SECTION("shell_follow_path")
   {
+    wex::path keep;
     REQUIRE(!del_frame()->shell_follow_path("cd .."));
 
     del_frame()->process_async_system(wex::process_data("bash"));

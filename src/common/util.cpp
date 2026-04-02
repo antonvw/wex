@@ -83,9 +83,6 @@ wex::auto_complete_filename(const std::string& text)
     path.make_absolute();
   }
 
-  log::trace("auto_complete_filename")
-    << path.string() << path.parent_path() << path::current().string();
-
   // alias to filename
   const auto& prefix(path.filename());
 
@@ -101,6 +98,9 @@ wex::auto_complete_filename(const std::string& text)
   {
     return {};
   }
+
+  log::trace("auto_complete_filename")
+    << path.string() << path.parent_path() << path::current().string();
 
   if (v.size() > 1)
   {

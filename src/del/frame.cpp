@@ -553,16 +553,9 @@ bool wex::del::frame::process_async_system(const process_data& data)
 
   m_process = new wex::process();
 
-  if (data.exe() == "bash")
-  {
-    m_skip_set_current_path = true;
-    log::trace("skip current path") << data.exe();
-  }
-  else if (data.exe().starts_with("cd") && m_skip_set_current_path)
-  {
-    path::current(path(find_after(data.exe(), " ")));
-    log::trace("followed current path") << data.exe();
-  }
+  m_skip_set_current_path = (data.exe() == "bash");
+
+  log::trace("process_async_system") << data.exe() << "skip" << m_skip_set_current_path;
 
   return m_process->async_system(data);
 }
@@ -792,7 +785,8 @@ bool wex::del::frame::shell_follow_path(const std::string& text)
 {
   if (m_skip_set_current_path && text.starts_with("cd"))
   {
-    const wex::path dir(find_after(text, " "));
+    const wex::path dir(text.starts_with("cd ") ? find_after(text, " "):
+      std::string(wxGetHomeDir()));
 
     if (dir.dir_exists())
     {
