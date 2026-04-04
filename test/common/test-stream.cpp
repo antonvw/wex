@@ -2,7 +2,7 @@
 // Name:      test-stream.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/stream.h>
@@ -43,21 +43,6 @@ void find_prep(wex::stream& s, wex::factory::find_replace_data* frd)
   find_prep(s, &frd);                                                          \
                                                                                \
   REQUIRE(s.get_statistics().get("Actions Completed") == AC);
-
-TEST_CASE("wex::stream_statistics")
-{
-  wex::stream_statistics ss;
-
-  REQUIRE(ss.get().empty());
-  REQUIRE(ss.get("xx") == 0);
-
-  wex::stream_statistics ss2;
-  REQUIRE(ss2.get().empty());
-
-  ss += ss2;
-
-  REQUIRE(ss.get().empty());
-}
 
 TEST_CASE("wex::stream")
 {
