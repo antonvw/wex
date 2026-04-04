@@ -2,7 +2,7 @@
 // Name:      stream-statistics.h
 // Purpose:   Declaration of wex::stream_statistics class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2025 Anton van Wezenbeek
+// Copyright: (c) 2019-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -12,8 +12,7 @@
 
 namespace wex
 {
-/// Offers stream_statistics.
-/// Used by stream to keep statistics.
+/// Offers specific statistics used by dir and stream.
 class stream_statistics
 {
 public:
@@ -43,13 +42,13 @@ public:
   /// Returns the elements.
   statistics<int>& get_elements() { return m_elements; }
 
-  /// Increments keyword.
+  /// Increments keyword. Returns value.
   int inc(const std::string& keyword, int inc_value = 1);
 
-  /// Increments actions.
+  /// Increments actions. Returns value.
   int inc_actions();
 
-  /// Increments actions completed.
+  /// Increments actions completed. Returns value.
   int inc_actions_completed(int inc_value = 1);
 
 private:
