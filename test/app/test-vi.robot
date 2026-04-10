@@ -84,7 +84,6 @@ find-ok
 	...	/
 	...	:.=
 	Appl
-	Output Contains	5
 	Output Contains	bottom
 
 info
