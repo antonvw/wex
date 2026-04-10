@@ -1,5 +1,5 @@
 *** Comments ***
-Copyright: (c) 2020-2025 Anton van Wezenbeek
+Copyright: (c) 2020-2026 Anton van Wezenbeek
 
 
 *** Settings ***
@@ -78,10 +78,13 @@ find-ok
 	Input	:a|x
 	...	:a|y
 	...	:a|z
+	...	:a|a
 	...	/z
+	...	:4
+	...	/
 	...	:.=
 	Appl
-	Output Contains	5
+	Output Contains	bottom
 
 info
 	[Tags]	not on github

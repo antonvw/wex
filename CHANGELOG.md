@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 
 - fixed vcs checkout on a changed line
+- fixed recording for vi find repeat command (slash)
 
 ## [26.04] - 2026-03-14
 
