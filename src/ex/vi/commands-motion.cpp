@@ -11,7 +11,6 @@
 #include <wex/ex/addressrange.h>
 #include <wex/ex/macros.h>
 #include <wex/ex/util.h>
-#include <wex/factory/frd.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
