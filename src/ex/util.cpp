@@ -28,71 +28,32 @@ const std::string wex::esc()
   return std::string("\x1b");
 }
 
-const std::string wex::find_first_of(
-  const std::string& text,
-  const std::string& chars,
-  size_t             pos)
-{
-  const auto& match = text.find_first_of(chars, pos);
-  return match == std::string::npos ? std::string() : text.substr(match + 1);
-}
-
-std::string
-wex::get_lines(factory::stc* stc, int start, int end, const std::string& flags)
-{
-  if (start == end)
-  {
-    return std::string();
-  }
-
-  std::string text;
-
-  for (auto i = start; i < end && i < stc->get_line_count(); i++)
-  {
-    if (flags.contains("#"))
-    {
-      append_line_no(text, i);
-    }
-
-    if (flags.contains("l"))
-    {
-      text += stc->GetTextRange(
-                stc->PositionFromLine(i),
-                stc->GetLineEndPosition(i)) +
-              "$\n";
-    }
-    else
-    {
-      text += stc->GetLine(i);
-    }
-  }
-
-  if (!text.ends_with("\n"))
-  {
-    text += "\n";
-  }
-
-  return text;
-}
-
-bool wex::is_register_valid(const std::string& text)
-{
-  return text.size() == 2 && (text[0] == '@' || text[0] == WXK_CONTROL_R) &&
-         boost::regex_match(
-           text,
-           boost::regex("^" + std::string(1, text[0]) + "[0-9=\"a-z%.%_\\*]$"));
-}
-
-const std::string wex::k_s(wxKeyCode key)
-{
-  return std::string(1, key);
-}
-
-bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
+bool wex::ex_expansion(const ex* ex, std::string& text)
 {
   if (ex == nullptr)
   {
     return false;
+  }
+
+  // Replace any variable in text with contents.
+  regex r("(@)([a-zA-Z0-9]+)(@)");
+
+  while (r.search(text) == 3)
+  {
+    if (const auto& variable(r[1]); ex->get_macros().is_recorded(variable))
+    {
+      if (
+        auto& var(ex->get_macros().get_variable(variable));
+        var.expand(const_cast<wex::ex*>(ex)))
+      {
+        r.replace(text, var.get_value());
+      }
+    }
+    else
+    {
+      log("not recorded") << variable;
+      break;
+    }
   }
 
   // Replace any register in text with contents and any marker with line no.
@@ -168,6 +129,66 @@ bool wex::marker_and_register_expansion(const ex* ex, std::string& text)
   }
 
   return true;
+}
+
+const std::string wex::find_first_of(
+  const std::string& text,
+  const std::string& chars,
+  size_t             pos)
+{
+  const auto& match = text.find_first_of(chars, pos);
+  return match == std::string::npos ? std::string() : text.substr(match + 1);
+}
+
+std::string
+wex::get_lines(factory::stc* stc, int start, int end, const std::string& flags)
+{
+  if (start == end)
+  {
+    return std::string();
+  }
+
+  std::string text;
+
+  for (auto i = start; i < end && i < stc->get_line_count(); i++)
+  {
+    if (flags.contains("#"))
+    {
+      append_line_no(text, i);
+    }
+
+    if (flags.contains("l"))
+    {
+      text += stc->GetTextRange(
+                stc->PositionFromLine(i),
+                stc->GetLineEndPosition(i)) +
+              "$\n";
+    }
+    else
+    {
+      text += stc->GetLine(i);
+    }
+  }
+
+  if (!text.ends_with("\n"))
+  {
+    text += "\n";
+  }
+
+  return text;
+}
+
+bool wex::is_register_valid(const std::string& text)
+{
+  return text.size() == 2 && (text[0] == '@' || text[0] == WXK_CONTROL_R) &&
+         boost::regex_match(
+           text,
+           boost::regex("^" + std::string(1, text[0]) + "[0-9=\"a-z%.%_\\*]$"));
+}
+
+const std::string wex::k_s(wxKeyCode key)
+{
+  return std::string(1, key);
 }
 
 std::string wex::to_reverse(const std::string& text)

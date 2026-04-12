@@ -286,9 +286,7 @@ bool wex::addressrange::escape(const std::string& command)
   if (m_begin.m_address.empty() && m_end.m_address.empty())
   {
     auto expanded(command);
-    if (
-      !marker_and_register_expansion(m_ex, expanded) ||
-      !shell_expansion(expanded))
+    if (!ex_expansion(m_ex, expanded) || !shell_expansion(expanded))
     {
       return false;
     }

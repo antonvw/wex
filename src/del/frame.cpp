@@ -498,7 +498,7 @@ bool wex::del::frame::open_from_action(
     {
       follow_path(stc);
 
-      if (!marker_and_register_expansion(&stc->get_vi(), text))
+      if (!ex_expansion(&stc->get_vi(), text))
       {
         return false;
       }

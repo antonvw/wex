@@ -2,7 +2,7 @@
 // Name:      test-ex.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2025 Anton van Wezenbeek
+// Copyright: (c) 2015-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -106,6 +106,44 @@ TEST_CASE("wex::ex")
   SECTION("edit")
   {
     REQUIRE(ex->command(":e test.txt"));
+  }
+
+  SECTION("ex_expansion")
+  {
+    stc->set_text("this is some text");
+    REQUIRE(ex->command(":ky"));
+
+    std::string command("xxx");
+    REQUIRE(!wex::ex_expansion(nullptr, command));
+    REQUIRE(wex::ex_expansion(ex, command));
+    REQUIRE(command == "xxx");
+
+    command = "'yxxx";
+    REQUIRE(wex::ex_expansion(ex, command));
+    REQUIRE(command == "1xxx");
+
+    command = "`yxxx";
+    REQUIRE(wex::ex_expansion(ex, command));
+    REQUIRE(command == "1xxx");
+
+    command = "yxxx'";
+    REQUIRE(wex::ex_expansion(ex, command));
+    REQUIRE(command == "yxxx'");
+
+    REQUIRE(wex::clipboard_add("yanked"));
+    command = "this is * end";
+    REQUIRE(wex::ex_expansion(ex, command));
+
+#ifndef __WXMSW__
+    REQUIRE(command == "this is yanked end");
+#endif
+
+    REQUIRE(ex->get_macros().load_document());
+    command = "this is year @Year@ and @Year@";
+    REQUIRE(wex::ex_expansion(ex, command));
+    CAPTURE(command);
+    REQUIRE(command.contains("year 20"));
+    REQUIRE(command.contains(" and 20"));
   }
 
   SECTION("general")
@@ -212,21 +250,22 @@ TEST_CASE("wex::ex")
   {
     SECTION("example")
     {
-      stc->set_text("xx0\n"
-                    "xx1\n"
-                    "yy2\n"
-                    "xx3\n"
-                    "yy4\n"
-                    "yy5\n"
-                    "yy6\n"
-                    "yy7\n"
-                    "yy8\n"
-                    "yy9\n"
-                    "xx10\n"
-                    "xx11\n"
-                    "yy12\n"
-                    "yy13\n"
-                    "pp14\n");
+      stc->set_text(
+        "xx0\n"
+        "xx1\n"
+        "yy2\n"
+        "xx3\n"
+        "yy4\n"
+        "yy5\n"
+        "yy6\n"
+        "yy7\n"
+        "yy8\n"
+        "yy9\n"
+        "xx10\n"
+        "xx11\n"
+        "yy12\n"
+        "yy13\n"
+        "pp14\n");
 
       REQUIRE(ex->command(":v/yy/d"));
       REQUIRE(stc->get_line_count() == 9);
@@ -277,37 +316,6 @@ TEST_CASE("wex::ex")
     REQUIRE(ex->command(":xx"));
     REQUIRE(stc->get_text().empty());
     REQUIRE(ex->command(":unm xx"));
-  }
-
-  SECTION("marker_and_register_expansion")
-  {
-    stc->set_text("this is some text");
-    REQUIRE(ex->command(":ky"));
-
-    std::string command("xxx");
-    REQUIRE(!wex::marker_and_register_expansion(nullptr, command));
-    REQUIRE(wex::marker_and_register_expansion(ex, command));
-    REQUIRE(command == "xxx");
-
-    command = "'yxxx";
-    REQUIRE(wex::marker_and_register_expansion(ex, command));
-    REQUIRE(command == "1xxx");
-
-    command = "`yxxx";
-    REQUIRE(wex::marker_and_register_expansion(ex, command));
-    REQUIRE(command == "1xxx");
-
-    command = "yxxx'";
-    REQUIRE(wex::marker_and_register_expansion(ex, command));
-    REQUIRE(command == "yxxx'");
-
-    REQUIRE(wex::clipboard_add("yanked"));
-    command = "this is * end";
-    REQUIRE(wex::marker_and_register_expansion(ex, command));
-
-#ifndef __WXMSW__
-    REQUIRE(command == "this is yanked end");
-#endif
   }
 
   SECTION("markers")

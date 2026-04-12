@@ -133,7 +133,7 @@ size_t wex::macro_mode::transition(
   {
     ex->m_command = cmd;
   }
-
+  
   return command.size();
 }
 

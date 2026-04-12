@@ -2,7 +2,7 @@
 // Name:      macros.cpp
 // Purpose:   Implementation of class wex::macros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -136,13 +136,19 @@ const wex::macros::commands_t wex::macros::get_registers() const
     }
   }
 
-  if (const auto& clipboard(boost::algorithm::trim_copy(clipboard_get()));
-      !clipboard.empty())
+  if (
+    const auto& clipboard(boost::algorithm::trim_copy(clipboard_get()));
+    !clipboard.empty())
   {
     r.emplace_back(l.make_key("*", clipboard));
   }
 
   return r;
+}
+
+wex::variable& wex::macros::get_variable(const std::string& name)
+{
+  return m_variables[name];
 }
 
 bool wex::macros::is_recorded(const std::string& macro) const
@@ -211,10 +217,11 @@ bool wex::macros::load_document_init()
     return false;
   }
 
-  if (const auto result = m_doc.load_file(
-        path().string().c_str(),
-        pugi::parse_default | pugi::parse_comments);
-      !result)
+  if (
+    const auto result = m_doc.load_file(
+      path().string().c_str(),
+      pugi::parse_default | pugi::parse_comments);
+    !result)
   {
     xml_error(path(), &result);
     return false;
@@ -241,8 +248,9 @@ void wex::macros::parse_node(
 {
   const std::string name(node.attribute("name").value());
 
-  if (const S& value = type_to_value<S>(name).get();
-      container.find(value) != container.end())
+  if (
+    const S& value = type_to_value<S>(name).get();
+    container.find(value) != container.end())
   {
     log("duplicate " + container_name)
       << name << "current:" << container[value]
@@ -284,8 +292,9 @@ void wex::macros::parse_node_variable(const pugi::xml_node& node)
   {
     log("empty variable") << node;
   }
-  else if (const auto& it = m_variables.find(variable.get_name());
-           it != m_variables.end())
+  else if (
+    const auto& it = m_variables.find(variable.get_name());
+    it != m_variables.end())
   {
     log("duplicate variable") << variable.get_name() << node;
   }
@@ -375,9 +384,10 @@ bool wex::macros::save_macro(const std::string& macro)
   {
     if (const auto& v(find(macro)); !v.empty())
     {
-      if (const auto& node = m_doc.document_element().select_node(
-            std::string("//macro[@name='" + macro + "']").c_str());
-          node && node.node())
+      if (
+        const auto& node = m_doc.document_element().select_node(
+          std::string("//macro[@name='" + macro + "']").c_str());
+        node && node.node())
       {
         m_doc.document_element().remove_child(node.node());
       }
@@ -412,9 +422,10 @@ void wex::macros::set(
 {
   try
   {
-    if (const auto& node = m_doc.document_element().select_node(
-          std::string("//" + xpath + "[@name='" + name + "']").c_str());
-        node && node.node())
+    if (
+      const auto& node = m_doc.document_element().select_node(
+        std::string("//" + xpath + "[@name='" + name + "']").c_str());
+      node && node.node())
     {
       m_doc.document_element().remove_child(node.node());
     }

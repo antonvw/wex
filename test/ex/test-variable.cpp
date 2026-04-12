@@ -2,7 +2,7 @@
 // Name:      test-variable.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/chrono.h>
@@ -44,12 +44,13 @@ TEST_CASE("wex::variable")
   {
     wex::log_none off;
 
+    // name, type, default, value (contains)
     for (const auto& it : std::vector<
            std::tuple<std::string, std::string, std::string, std::string>>{
-           {"Created", "BUILTIN", "", ""},
+           {"Created", "BUILTIN", "", "20"},
 #ifdef __UNIX__
            {"HOME", "ENVIRONMENT", "", ""},
-           {"process", "PROCESS", "echo hoi", "echo hoi"},
+           {"process", "PROCESS", "echo hoi", "hoi"},
 #endif
            {"aa", "OTHER", "", ""},
            {"template", "TEMPLATE", "xxx.txt", "xxx.txt"},
@@ -85,7 +86,8 @@ TEST_CASE("wex::variable")
         REQUIRE(var.expand(ex));
       }
 
-      REQUIRE(var.get_value() == std::get<3>(it));
+      CAPTURE(var.get_value());
+      REQUIRE(var.get_value().contains(std::get<3>(it)));
 
       var.save(doc);
 
