@@ -36,7 +36,13 @@ Variables are expanded when playing back the macro.
     Expansion is done by asking value from user. You can add your own.
   - INPUT-ONCE:  
     Expansion is done by asking value from user, value is saved.
-    The next time this value is used for expansion, no input is asked for.
+    The next time this value is used for expansion, input is asked for
+    once at the start of a batch.
+    You can add your own.
+ - INPUT-ONCE-EMPTY:
+    Expansion is done by asking value from user, value is saved.
+    The next time this value is used for expansion, no input is asked for
+    (if the value is not empty).
     You can add your own.
   - INPUT-SAVE:  
     Expansion is done by asking value from user, value is saved.
