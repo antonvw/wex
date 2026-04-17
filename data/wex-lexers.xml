@@ -1085,7 +1085,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   <lexer name="d"/>
   <lexer name="dataflex"/>
-  <lexer name="dart"/>
+  <lexer name="dart" extensions="*.dart"/>
   <lexer name="diff" extensions="*.diff;*.patch" edgemode="none">
     <styles>
     <style no="header"> fore:grey </style>
