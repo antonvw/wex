@@ -2,7 +2,7 @@
 // Name:      variable.cpp
 // Purpose:   Implementation of class wex::variable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2025 Anton van Wezenbeek
+// Copyright: (c) 2018-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/chrono.h>
@@ -26,11 +26,13 @@ enum class wex::variable::input_t
   BUILTIN,     // a builtin variable like "Created"
   ENVIRONMENT, // an environment variable like ENV
   FIXED,       // fixed value from macros xml file
-  INPUT,       // input from user
-  INPUT_ONCE,  // input once from user, save value in xml file
-  INPUT_SAVE,  // input from user, save value in xml file
-  PROCESS,     // value is output from contents as a runnable process
-  TEMPLATE     // read value from a template file
+  INPUT,       // input always from user
+  INPUT_ONCE,  // input once from user when starting, save value in xml file
+  INPUT_ONCE_EMPTY, // input once from user if value is empty, save value in xml
+                    // file
+  INPUT_SAVE,       // input always from user, save value in xml file
+  PROCESS,          // value is output from contents as a runnable process
+  TEMPLATE          // read value from a template file
 };
 
 wex::variable::variable(std::string name)
@@ -72,6 +74,10 @@ wex::variable::variable(const pugi::xml_node& node)
     {
       m_type = input_t::INPUT_ONCE;
     }
+    else if (type == "INPUT-ONCE-EMPTY")
+    {
+      m_type = input_t::INPUT_ONCE_EMPTY;
+    }
     else if (type == "PROCESS")
     {
       m_type = input_t::PROCESS;
@@ -89,10 +95,11 @@ wex::variable::variable(const pugi::xml_node& node)
 
 bool wex::variable::check_link(std::string& value) const
 {
-  if (regex v("@([a-zA-Z].+)@"); v.match(m_value) > 0)
+  if (regex v(regex_valid_names()); v.match(m_value) == 3)
   {
-    if (const auto& it = ex::get_macros().get_variables().find(v[0]);
-        it != ex::get_macros().get_variables().end())
+    if (
+      const auto& it = ex::get_macros().get_variables().find(v[1]);
+      it != ex::get_macros().get_variables().end())
     {
       if (!it->second.expand(value))
       {
@@ -142,9 +149,7 @@ bool wex::variable::expand(ex* ex)
     return false;
   }
 
-  // If there is a prefix, make a comment out of it.
-  auto commented(value);
-
+  // Add to stc component, if present.
   if (ex != nullptr && ex->get_stc() != nullptr)
   {
     if (ex->get_stc()->GetReadOnly() || ex->get_stc()->is_hexmode())
@@ -152,6 +157,9 @@ bool wex::variable::expand(ex* ex)
       return false;
     }
 
+    auto commented(value);
+
+    // If there is a prefix, make a comment out of it.
     if (!m_prefix.empty())
     {
       commented = ex->get_stc()->get_lexer().make_comment(
@@ -162,18 +170,15 @@ bool wex::variable::expand(ex* ex)
     ex->get_stc()->add_text(commented);
   }
 
-  if (m_type == input_t::INPUT_SAVE || m_type == input_t::INPUT_ONCE)
-  {
-    m_value = value;
+  m_value = value;
 
-    log::trace("variable") << m_name << "expanded and saved:" << m_value;
-  }
-  else
-  {
-    log::trace("variable") << m_name << "expanded to:" << value;
-  }
+  log::trace("variable") << m_name << "expanded to:" << value;
 
-  if (m_type == input_t::INPUT_ONCE && !m_value.empty())
+  if (m_type == input_t::INPUT_ONCE_EMPTY && !m_value.empty())
+  {
+    m_ask_for_input = false;
+  }
+  else if (m_type == input_t::INPUT_ONCE)
   {
     m_ask_for_input = false;
   }
@@ -215,6 +220,7 @@ bool wex::variable::expand(std::string& value, ex* ex) const
 
     case input_t::INPUT:
     case input_t::INPUT_ONCE:
+    case input_t::INPUT_ONCE_EMPTY:
     case input_t::INPUT_SAVE:
       if (!expand_input(value))
       {
@@ -228,10 +234,11 @@ bool wex::variable::expand(std::string& value, ex* ex) const
         return false;
       }
 
-      if (factory::process p;
-          p.system(
-            m_value +
-            (!m_argument.empty() ? " " + m_argument : std::string())) != 0)
+      if (
+        factory::process p;
+        p.system(
+          m_value + (!m_argument.empty() ? " " + m_argument : std::string())) !=
+        0)
       {
         return false;
       }
@@ -300,8 +307,8 @@ bool wex::variable::expand_builtin(ex* ex, std::string& expanded) const
     }
     else if (m_name == "Created")
     {
-      if (path file(ex->get_stc()->path());
-          ex->get_stc()->path().stat().is_ok())
+      if (
+        path file(ex->get_stc()->path()); ex->get_stc()->path().stat().is_ok())
       {
         expanded =
           (m_format.empty() ? file.stat().get_creation_time_str() :
@@ -405,12 +412,17 @@ bool wex::variable::is_builtin() const
 bool wex::variable::is_input() const
 {
   return m_type == input_t::INPUT || m_type == input_t::INPUT_ONCE ||
-         m_type == input_t::INPUT_SAVE;
+         m_type == input_t::INPUT_ONCE_EMPTY || m_type == input_t::INPUT_SAVE;
 }
 
 bool wex::variable::is_template() const
 {
   return m_type == input_t::TEMPLATE;
+}
+
+std::string wex::variable::regex_valid_names()
+{
+  return "(@)([a-zA-Z][a-zA-Z0-9:]+)(@)";
 }
 
 void wex::variable::save(pugi::xml_node& node, const std::string* value)
@@ -442,6 +454,9 @@ void wex::variable::save(pugi::xml_node& node, const std::string* value)
         break;
       case input_t::INPUT_ONCE:
         type.set_value("INPUT-ONCE");
+        break;
+      case input_t::INPUT_ONCE_EMPTY:
+        type.set_value("INPUT-ONCE-EMPTY");
         break;
       case input_t::INPUT_SAVE:
         type.set_value("INPUT-SAVE");
@@ -486,7 +501,7 @@ void wex::variable::set_argument(const std::string& val)
 
 void wex::variable::set_ask_for_input(bool value)
 {
-  if (!value || is_input() && m_type != input_t::INPUT_ONCE)
+  if (!value || is_input() && m_type != input_t::INPUT_ONCE_EMPTY)
   {
     m_ask_for_input = value;
   }

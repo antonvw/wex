@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [26.10] - 2026-10 [Unreleased]
 
+### Added
+
+- allow variables to be used in calculation mode
+
 ### Changed
 
 - ex :e <path> opens file dialog at <path>

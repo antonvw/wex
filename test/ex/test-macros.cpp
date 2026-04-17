@@ -2,7 +2,7 @@
 // Name:      test-macros.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2025 Anton van Wezenbeek
+// Copyright: (c) 2019-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -11,12 +11,16 @@
 #include <wex/ex/macros.h>
 #include <wex/ex/util.h>
 
+#include "../syntax/test.h"
 #include "test.h"
 
 TEST_CASE("wex::macros", "[!mayfail]")
 {
-  auto* stc = get_stc();
+  auto* stc = new wex::test::stc();
   auto* ex  = new wex::ex(stc);
+
+  const wex::path p("test.h");
+  ALLOW_CALL(*stc, path()).RETURN(p);
 
   wex::macros macros;
 
@@ -96,6 +100,15 @@ TEST_CASE("wex::macros", "[!mayfail]")
       REQUIRE(macros.mode().transition("@" + env, ex));
     }
 #endif
+  }
+
+  SECTION("get-variable")
+  {
+    auto& var(macros.get_variable("Year"));
+    REQUIRE(var.get_name() == "Year");
+    REQUIRE(var.is_builtin());
+    auto& var2(macros.get_variable("xxxx"));
+    REQUIRE(var2.get_name() == "xxxx");
   }
 
   SECTION("load")
