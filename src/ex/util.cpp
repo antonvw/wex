@@ -36,7 +36,7 @@ bool wex::ex_expansion(const ex* ex, std::string& text)
   }
 
   // Replace any variable in text with contents.
-  regex r("(@)([a-zA-Z0-9]+)(@)");
+  regex r(variable::regex_valid_names());
 
   while (r.search(text) == 3)
   {
@@ -46,7 +46,10 @@ bool wex::ex_expansion(const ex* ex, std::string& text)
         auto& var(ex->get_macros().get_variable(variable));
         var.expand(const_cast<wex::ex*>(ex)))
       {
-        r.replace(text, var.get_value());
+        r.replace(
+          text,
+          var.get_value(),
+          boost::regex_constants::format_first_only);
       }
     }
     else
@@ -91,19 +94,17 @@ bool wex::ex_expansion(const ex* ex, std::string& text)
 
         // Replace register.
         case WXK_CONTROL_R:
-          if (*std::next(it) == '%')
+          if (auto next = std::next(it); next != text.end() && *next == '%')
           {
             output += ex->get_stc()->path().filename();
           }
+          else if (next == text.end())
+          {
+            log("missing register") << text;
+            return false;
+          }
           else
           {
-            const auto next(std::next(it));
-            if (next == text.end())
-            {
-              log("missing register") << text;
-              return false;
-            }
-
             const auto& reg(ex->get_macros().get_register(*(next)));
             output += reg;
           }

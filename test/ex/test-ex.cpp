@@ -139,11 +139,13 @@ TEST_CASE("wex::ex")
 #endif
 
     REQUIRE(ex->get_macros().load_document());
-    command = "this is year @Year@ and @Year@";
+    command = "this is year @Year@ and @Year@ and @PWD@";
     REQUIRE(wex::ex_expansion(ex, command));
     CAPTURE(command);
     REQUIRE(command.contains("year 20"));
     REQUIRE(command.contains(" and 20"));
+    REQUIRE(!command.contains("@"));
+    REQUIRE(command.contains("wex"));
   }
 
   SECTION("general")

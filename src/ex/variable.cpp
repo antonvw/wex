@@ -95,10 +95,10 @@ wex::variable::variable(const pugi::xml_node& node)
 
 bool wex::variable::check_link(std::string& value) const
 {
-  if (regex v("@([a-zA-Z].+)@"); v.match(m_value) > 0)
+  if (regex v(regex_valid_names()); v.match(m_value) == 3)
   {
     if (
-      const auto& it = ex::get_macros().get_variables().find(v[0]);
+      const auto& it = ex::get_macros().get_variables().find(v[1]);
       it != ex::get_macros().get_variables().end())
     {
       if (!it->second.expand(value))
@@ -134,6 +134,7 @@ bool wex::variable::expand(ex* ex)
   if (check_link(value))
   {
     m_value = value;
+    value.clear();
   }
 
   if (!expand(value, ex))
@@ -417,6 +418,11 @@ bool wex::variable::is_input() const
 bool wex::variable::is_template() const
 {
   return m_type == input_t::TEMPLATE;
+}
+
+std::string wex::variable::regex_valid_names()
+{
+  return "(@)([a-zA-Z][a-zA-Z0-9:]+)(@)";
 }
 
 void wex::variable::save(pugi::xml_node& node, const std::string* value)

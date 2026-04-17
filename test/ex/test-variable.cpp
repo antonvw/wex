@@ -157,6 +157,7 @@ TEST_CASE("wex::variable")
 
   SECTION("static")
   {
+    REQUIRE(!wex::variable::regex_valid_names().empty());
     wex::variable::set_argument("hello world");
   }
 }
