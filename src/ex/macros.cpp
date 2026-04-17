@@ -148,7 +148,8 @@ const wex::macros::commands_t wex::macros::get_registers() const
 
 wex::variable& wex::macros::get_variable(const std::string& name)
 {
-  return m_variables[name];
+  auto [it, inserted] = m_variables.try_emplace(name, variable(name));
+  return it->second;
 }
 
 bool wex::macros::is_recorded(const std::string& macro) const

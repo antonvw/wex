@@ -107,6 +107,8 @@ TEST_CASE("wex::macros", "[!mayfail]")
     auto& var(macros.get_variable("Year"));
     REQUIRE(var.get_name() == "Year");
     REQUIRE(var.is_builtin());
+    auto& var2(macros.get_variable("xxxx"));
+    REQUIRE(var2.get_name() == "xxxx");
   }
 
   SECTION("load")
