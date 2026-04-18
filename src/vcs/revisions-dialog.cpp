@@ -65,7 +65,7 @@ void rev_data::do_compare()
     0)
   {
     if (
-      !vcs_diff("diff") ||
+      !vcs_diff(*m_ve, "diff") ||
       !unified_diff(path(m_repo_path), m_ve, frame()).parse())
     {
       frame()->open_file_vcs(

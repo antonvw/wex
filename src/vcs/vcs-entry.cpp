@@ -84,7 +84,7 @@ bool wex::vcs_entry::execute(
   {
     return false;
   }
-  
+
   m_lexer = path_lexer(p).lexer();
   const path& tl(factory::vcs_admin(admin_dir(), p).toplevel());
 
@@ -174,11 +174,11 @@ const std::string wex::vcs_entry::get_branch(const std::string& wd) const
 {
   wex::log_none off;
 
-  if (process p;
-      name() == "git" &&
-      p.system(
-        process_data(bin() + " rev-parse --abbrev-ref HEAD").start_dir(wd)) ==
-        0)
+  if (
+    process p;
+    name() == "git" &&
+    p.system(
+      process_data(bin() + " rev-parse --abbrev-ref HEAD").start_dir(wd)) == 0)
   {
     return p.std_out();
   }
@@ -188,16 +188,21 @@ const std::string wex::vcs_entry::get_branch(const std::string& wd) const
 
 const std::string wex::vcs_entry::get_diff_flags() const
 {
-  std::string flags = "-U0";
-  
-  if (config("vcs.Ignore whitespace").get(true))
+  std::string flags;
+
+  if (name() == "git")
   {
-    flags += " -b";
+    flags += "-U0";
+
+    if (config("vcs.Ignore whitespace").get(true))
+    {
+      flags += " -b";
+    }
   }
-    
+
   return flags;
 }
-  
+
 const std::string wex::vcs_entry::get_flags() const
 {
   return config(flags_key()).get();
@@ -209,7 +214,7 @@ bool wex::vcs_entry::log(const path& p, const std::string& id)
   {
     return false;
   }
-  
+
   const std::string separator = (!m_log_flags.empty() ? " " : std::string());
   std::string       command   = bin() + " log ";
 
@@ -250,13 +255,14 @@ void wex::vcs_entry::show_output(const std::string& caption) const
       vcs_command_stc(get_command(), m_lexer, get_shell());
     }
 
-    if (vcs_diff(get_command().get_command()))
+    if (vcs_diff(*this, get_command().get_command()))
     {
-      if (unified_diff ud(
-            path(),
-            this,
-            dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()));
-          ud.parse() && ud.differences() == 0)
+      if (
+        unified_diff ud(
+          path(),
+          this,
+          dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()));
+        ud.parse() && ud.differences() == 0)
       {
         log::status("No output");
       }
@@ -287,7 +293,7 @@ int wex::vcs_entry::system(const process_data& data)
     std::string word;
     cmd >> word;
 
-    if (const vcs_command & vc(find(word)); !vc.get_command().empty())
+    if (const vcs_command& vc(find(word)); !vc.get_command().empty())
     {
       args += " " + vc.flags();
     }
