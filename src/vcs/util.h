@@ -33,7 +33,7 @@ bool expand_macro(wex::process_data& data, stc* stc);
 /// E.g. *.h;*.cpp -> -- "*.h" "*.cpp"
 std::string path_spec(const std::string& extentions);
 
-/// Returns true if command is a diff command and config Use
-/// unified diff view is set.
+/// Returns true if specified vcs_entry supports (unified) diff,
+/// the command is a diff command, and config Use unified diff view is set.
 bool vcs_diff(const vcs_entry& e, const std::string& command);
 }; // namespace wex
