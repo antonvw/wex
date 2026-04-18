@@ -2,7 +2,7 @@
 // Name:      test-util.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2025 Anton van Wezenbeek
+// Copyright: (c) 2025-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/path.h>
@@ -48,8 +48,13 @@ TEST_CASE("wex::utils")
 
   SECTION("vcs_diff")
   {
-    REQUIRE(!wex::vcs_diff(""));
-    REQUIRE(!wex::vcs_diff("XXX"));
-    REQUIRE(wex::vcs_diff("diff"));
+    wex::vcs_entry e;
+    REQUIRE(!wex::vcs_diff(e, ""));
+    REQUIRE(!wex::vcs_diff(e, "XXX"));
+    REQUIRE(!wex::vcs_diff(e, "diff"));
+
+    auto* entry = load_git_entry();
+    REQUIRE(!wex::vcs_diff(*entry, "XXX"));
+    REQUIRE(wex::vcs_diff(*entry, "diff"));
   }
 }

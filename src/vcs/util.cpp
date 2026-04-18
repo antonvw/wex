@@ -2,7 +2,7 @@
 // Name:      util.cpp
 // Purpose:   Implementation of util methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2025 Anton van Wezenbeek
+// Copyright: (c) 2022-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -83,9 +83,9 @@ std::string wex::path_spec(const std::string& extensions)
   return pathspec;
 }
 
-bool wex::vcs_diff(const std::string& command)
+bool wex::vcs_diff(const vcs_entry& e, const std::string& command)
 {
-  return command == "diff" &&
+  return e.name() == "git" && command == "diff" &&
          config(_("vcs.Use unified diff view")).get(true) &&
          lexers::get()->is_loaded();
 }
@@ -113,7 +113,8 @@ bool wex::vcs_execute(
           {
             if (!vcs.entry().std_out().empty())
             {
-              if (vcs_diff(vcs.entry().get_command().get_command()))
+              if (
+                vcs_diff(vcs.entry(), vcs.entry().get_command().get_command()))
               {
                 unified_diff(it, &vcs.entry(), frame).parse();
               }
