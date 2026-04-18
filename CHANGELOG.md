@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - fixed vcs checkout on a changed line
 - fixed recording for vi find repeat command (slash)
+- fixed support macros in config dir only
 
 ## [26.04] - 2026-03-14
 
