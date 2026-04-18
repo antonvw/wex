@@ -61,6 +61,9 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
     REQUIRE(entry.admin_dir() == ".git");
     REQUIRE(entry.get_flags().empty());
     REQUIRE(entry.get_diff_flags().contains("U0"));
+    wex::config(_("vcs.Ignore whitespace")).set(false);
+    REQUIRE(!entry.get_diff_flags().contains("-b"));
+    wex::config(_("vcs.Ignore whitespace")).set(true);
     REQUIRE(entry.get_diff_flags().contains("-b"));
 
 #ifdef __WXMSW__
