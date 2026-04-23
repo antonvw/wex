@@ -1,9 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      unified-diff.cpp
-// Purpose:   Implementation of class wex::unified_diff
-//            https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html
+// Purpose:   Implementation of class wex::unified_diff (for git)
+//            https://git-scm.com/docs/diff-format
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024 Anton van Wezenbeek
+// Copyright: (c) 2024-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
@@ -50,4 +50,14 @@ void wex::unified_diff::report_diff_finish()
 {
   m_frame->vcs_unified_diff(m_vcs_entry, this);
   m_frame->page_restore();
+}
+
+std::string wex::unified_diff::token_from() const
+{
+  return "a/";
+}
+
+std::string wex::unified_diff::token_to() const
+{
+  return "b/";
 }

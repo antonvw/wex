@@ -2,9 +2,10 @@
 // Name:      test-unified-diff.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024-2025 Anton van Wezenbeek
+// Copyright: (c) 2024-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/process/v1/system.hpp>
 #include <wex/core/log-none.h>
 #include <wex/vcs/unified-diff.h>
 
@@ -24,5 +25,28 @@ TEST_CASE("wex::unified_diff")
     REQUIRE(uni.range_to_count() == 0);
     REQUIRE(!uni.path_vcs().empty());
     REQUIRE(uni.differences() == 0);
+  }
+
+  SECTION("diff")
+  {
+    const wex::path p("test.h");
+    boost::process::v1::system("gsed -i -e 1,6d " + p.string());
+
+    auto* entry = load_git_entry();
+    entry->system(
+      wex::process_data().args(
+        "diff -U0 " + wex::test::get_path("test.h").string()));
+
+    wex::unified_diff uni(p, entry, frame());
+
+    REQUIRE(uni.parse());
+    REQUIRE(uni.range_from_count() == 6);
+    REQUIRE(uni.range_to_count() == 0);
+    REQUIRE(uni.path_vcs().string() == "test/data/test.h");
+    REQUIRE(uni.differences() == 1);
+
+    entry->system(
+      wex::process_data().args(
+        "checkout " + wex::test::get_path("test.h").string()));
   }
 }

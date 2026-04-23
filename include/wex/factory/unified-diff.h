@@ -53,6 +53,12 @@ public:
   /// The last diff has been generated, we are finished.
   virtual void report_diff_finish() { ; };
 
+  /// Return token for the from file.
+  virtual std::string token_from() const { return std::string(); };
+
+  /// Return token for the to.
+  virtual std::string token_to() const { return std::string(); };
+
   // Other methods.
 
   /// Returns number of differences found during parsing.
