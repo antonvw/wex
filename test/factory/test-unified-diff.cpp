@@ -12,7 +12,6 @@
 
 #define PARSE_AND_MOCK_CHECK(NUMBER)                                           \
   REQUIRE_CALL(uni, report_diff()).RETURN(true).TIMES(NUMBER);                 \
-  REQUIRE_CALL(uni, report_diff_finish());                                     \
   REQUIRE(uni.is_first());                                                     \
   REQUIRE(uni.parse());
 
@@ -25,7 +24,6 @@ public:
     ;
   };
   MAKE_MOCK0(report_diff, bool(), override);
-  MAKE_MOCK0(report_diff_finish, void(), override);
 };
 
 TEST_CASE("wex::factory::unified_diff")
@@ -161,7 +159,6 @@ TEST_CASE("wex::factory::unified_diff")
       "+Subproject commit 12b09a5e5ea76a1a0c27b769e821b37d803a4cb7-dirty\n");
 
     ALLOW_CALL(uni, report_diff()).RETURN(true);
-    REQUIRE_CALL(uni, report_diff_finish());
 
     REQUIRE(uni.parse());
     REQUIRE(uni.range_from_start() == 1);

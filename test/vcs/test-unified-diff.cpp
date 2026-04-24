@@ -23,7 +23,7 @@ TEST_CASE("wex::unified_diff")
     REQUIRE(uni.parse());
     REQUIRE(uni.range_from_count() == 0);
     REQUIRE(uni.range_to_count() == 0);
-    REQUIRE(!uni.path_vcs().empty());
+    REQUIRE(!uni.report_path().empty());
     REQUIRE(uni.differences() == 0);
   }
 
@@ -42,7 +42,7 @@ TEST_CASE("wex::unified_diff")
     REQUIRE(uni.parse());
     REQUIRE(uni.range_from_count() == 6);
     REQUIRE(uni.range_to_count() == 0);
-    REQUIRE(uni.path_vcs().string() == "test/data/test.h");
+    REQUIRE(uni.report_path().string() == "test/data/test.h");
     REQUIRE(uni.differences() == 1);
 
     entry->system(

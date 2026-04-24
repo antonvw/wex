@@ -33,11 +33,10 @@ public:
     factory::frame* f);
 
   /// Returns path (from vcs).
-  const path& path_vcs() const { return m_path_vcs; };
+  wex::path report_path() const override { return m_path_vcs; }
 
 private:
   bool        report_diff() override;
-  void        report_diff_finish() override;
   std::string token_from() const override;
   std::string token_to() const override;
 

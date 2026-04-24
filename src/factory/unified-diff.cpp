@@ -7,22 +7,46 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
+#include <wex/factory/frame.h>
 #include <wex/factory/unified-diff.h>
+#include <wx/app.h>
 
 #include <algorithm>
 #include <utility>
 
 #include "unified-diff-parser.h"
 
-wex::factory::unified_diff::unified_diff(std::string input)
+wex::factory::unified_diff::unified_diff(
+  std::string     input,
+  factory::frame* frame)
   : m_input(std::move(input))
   , m_range{0, 0, 0, 0}
+  , m_frame(frame)
 {
+  if (
+    auto* frame = dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
+    frame != nullptr)
+  {
+    m_frame = frame;
+  }
+
+  m_frame->page_save();
 }
 
 bool wex::factory::unified_diff::parse()
 {
   return unified_diff_parser(this).parse();
+}
+
+bool wex::factory::unified_diff::report_diff()
+{
+  return m_frame->report_unified_diff(this);
+}
+
+void wex::factory::unified_diff::report_diff_finish()
+{
+  m_frame->report_unified_diff(this);
+  m_frame->page_restore();
 }
 
 void wex::factory::unified_diff::trace(const std::string& text) const

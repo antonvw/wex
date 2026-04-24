@@ -116,15 +116,14 @@ bool wex::factory::unified_diff_parser::parse()
   // line-from-either-file
   // line-from-either-file...
 
-  const std::string f("\n--- " + m_diff->token_from());
+  const std::string f("--- " + m_diff->token_from());
   const std::string t("\n+++ " + m_diff->token_to());
 
   auto const p_from = bp::lit(f.c_str());
   auto const p_to   = bp::lit(t.c_str());
 
   auto const parser_diff_lines =
-    *(bp::eol >> bp::char_("-+ ") >
-      *(bp::char_ - bp::eol - p_from - "\n@@"));
+    *(bp::eol >> bp::char_("-+ ") > *(bp::char_ - bp::eol - p_from - "\n@@"));
 
   auto const parser_hunk =
     bp::lit("\n@@") >

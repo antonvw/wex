@@ -19,6 +19,7 @@
 #include <wex/factory/frame.h>
 #include <wex/factory/link.h>
 #include <wex/factory/process.h>
+#include <wex/factory/unified-diff.h>
 #include <wex/syntax/lexer.h>
 #include <wex/syntax/lexers.h>
 #include <wex/syntax/stc.h>
@@ -160,7 +161,7 @@ bool wex::compare_file(const path& file1, const path& file2)
     return false;
   }
 
-  const auto flags = (cmp == "diff" ? "-U0 ": std::string());
+  const auto flags = (cmp == "diff" ? "-U0 " : std::string());
 
   const auto arguments =
     (file1.stat().get_modification_time() <
@@ -168,14 +169,29 @@ bool wex::compare_file(const path& file1, const path& file2)
       quoted_find(file1.string()) + " " + quoted_find(file2.string()) :
       quoted_find(file2.string()) + " " + quoted_find(file1.string());
 
-  if (
-    factory::process().system(cmp + " " + flags + arguments) < 0)
+  if (factory::process p; p.system(cmp + " " + flags + arguments) >= 0)
   {
-    return false;
+    if (
+      auto* frame =
+        dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
+      cmp == "diff" && frame != nullptr)
+    {
+      if (config(_("vcs.Use unified diff view")).get(true))
+      {
+        factory::unified_diff(p.std_out(), frame).parse();
+      }
+      else
+      {
+        frame->open_file(file2, p.std_out(), data::stc());
+      }
+    }
+
+    log::status(_("Compared")) << arguments;
+
+    return true;
   }
 
-  log::status(_("Compared")) << arguments;
-  return true;
+  return false;
 }
 
 bool wex::lexers_dialog(syntax::stc* stc)

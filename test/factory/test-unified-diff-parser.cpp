@@ -39,15 +39,11 @@ TEST_CASE("wex::factory::unified_diff_parser")
   {
     // clang-format off
     wex::factory::unified_diff uni(
-      "diff --git include/wex/factory/unified-diff.h include/wex/factory/unified-diff.h\n"
-      "index 44e6b792c..da59e94ec 100644\n"
       "--- include/wex/factory/unified-diff.h\n"
       "+++ include/wex/factory/unified-diff.h\n"
       "@@ -109,2 +108,0 @@ private:\n"
       "-  bool parse_header(const std::string& r, const std::string& line, path& p);\n"
       "-\n"
-      "diff --git test/factory/test-unified-diff.cpp test/factory/test-unified-diff.cpp\n"
-      "index 98830c141..3a08abd31 100644\n"
       "--- test/factory/test-unified-diff.cpp\n"
       "+++ test/factory/test-unified-diff.cpp\n"
       "@@ -39 +38,0 @@ TEST_CASE(\"wex::factory::unified_diff\")\n"

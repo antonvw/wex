@@ -110,7 +110,7 @@ int wex::factory::process::system(const wex::process_data& data)
       log::trace("closing stdin");
     }
 
-    if (ec >= 0 && m_stderr.empty())
+    if (ec >= 0)
     {
       log::debug("system") << data.log();
     }

@@ -179,6 +179,8 @@ public:
 
   void set_recent_file(const path& path) override;
 
+  bool report_unified_diff(const factory::unified_diff* uni) override;
+
   bool shell_follow_path(const std::string& text) override;
 
   void show_ex_bar(int action = HIDE_BAR_FOCUS_STC, syntax::stc* stc = nullptr)
@@ -213,8 +215,6 @@ public:
     const std::string&            command,
     const std::vector<wex::path>& paths,
     const data::window&           arg = data::window()) override;
-
-  bool vcs_unified_diff(const vcs_entry* e, const unified_diff* uni) override;
 
   bool vi_is_address(syntax::stc* stc, const std::string& text) const override;
 

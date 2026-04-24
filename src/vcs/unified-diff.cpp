@@ -16,13 +16,12 @@ wex::unified_diff::unified_diff(
   const path&      p,
   const vcs_entry* e,
   factory::frame*  f)
-  : factory::unified_diff(e->std_out())
+  : factory::unified_diff(e->std_out(), f)
   , m_path_vcs(p)
   , m_frame(f)
   , m_path_toplevel(vcs().toplevel())
   , m_vcs_entry(e)
 {
-  m_frame->page_save();
 }
 
 bool wex::unified_diff::report_diff()
@@ -37,19 +36,13 @@ bool wex::unified_diff::report_diff()
       return false;
     }
 
-    if (!m_frame->vcs_unified_diff(m_vcs_entry, this))
+    if (!m_frame->report_unified_diff(this))
     {
       return false;
     }
   }
 
   return true;
-}
-
-void wex::unified_diff::report_diff_finish()
-{
-  m_frame->vcs_unified_diff(m_vcs_entry, this);
-  m_frame->page_restore();
 }
 
 std::string wex::unified_diff::token_from() const
