@@ -146,7 +146,9 @@ void wex::combobox_from_list(wxComboBox* cb, const strings_t& text)
 
 bool wex::compare_file(const path& file1, const path& file2)
 {
-  if (config(_("list.Comparator")).empty())
+  const auto cmp(config(_("list.Comparator")).get());
+
+  if (cmp.empty())
   {
     log("compare_file") << "empty comparator";
     return false;
@@ -158,14 +160,16 @@ bool wex::compare_file(const path& file1, const path& file2)
     return false;
   }
 
+  const auto flags = (cmp == "diff" ? "-U0 ": std::string());
+
   const auto arguments =
     (file1.stat().get_modification_time() <
      file2.stat().get_modification_time()) ?
       quoted_find(file1.string()) + " " + quoted_find(file2.string()) :
       quoted_find(file2.string()) + " " + quoted_find(file1.string());
+
   if (
-    factory::process().system(
-      config(_("list.Comparator")).get() + " " + arguments) != 0)
+    factory::process().system(cmp + " " + flags + arguments) < 0)
   {
     return false;
   }
