@@ -110,7 +110,7 @@ int wex::factory::process::system(const wex::process_data& data)
       log::trace("closing stdin");
     }
 
-    if (!ec)
+    if (ec >= 0)
     {
       log::debug("system") << data.log();
     }
@@ -138,7 +138,7 @@ int wex::factory::process::system(const wex::process_data& data)
     log("system unknown exception") << data.log();
   }
 
-  return 1;
+  return -1;
 }
 
 bool wex::factory::process::write(const std::string& text)

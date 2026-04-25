@@ -19,6 +19,7 @@
 #include <wex/factory/frame.h>
 #include <wex/factory/link.h>
 #include <wex/factory/process.h>
+#include <wex/factory/unified-diff.h>
 #include <wex/syntax/lexer.h>
 #include <wex/syntax/lexers.h>
 #include <wex/syntax/stc.h>
@@ -146,7 +147,9 @@ void wex::combobox_from_list(wxComboBox* cb, const strings_t& text)
 
 bool wex::compare_file(const path& file1, const path& file2)
 {
-  if (config(_("list.Comparator")).empty())
+  const auto cmp(config(_("list.Comparator")).get());
+
+  if (cmp.empty())
   {
     log("compare_file") << "empty comparator";
     return false;
@@ -158,20 +161,47 @@ bool wex::compare_file(const path& file1, const path& file2)
     return false;
   }
 
+  const auto flags = (cmp.ends_with("diff") ? "-U0 " : std::string());
+
   const auto arguments =
     (file1.stat().get_modification_time() <
      file2.stat().get_modification_time()) ?
       quoted_find(file1.string()) + " " + quoted_find(file2.string()) :
       quoted_find(file2.string()) + " " + quoted_find(file1.string());
-  if (
-    factory::process().system(
-      config(_("list.Comparator")).get() + " " + arguments) != 0)
+
+  factory::process p;
+  const auto       ec = p.system(cmp + " " + flags + arguments);
+
+  if (((ec == 0 || ec == 1) && cmp.ends_with("diff")) || ec >= 0)
   {
-    return false;
+    if (
+      auto* frame =
+        dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
+      cmp.ends_with("diff") && frame != nullptr)
+    {
+      if (config(_("list.Use unified diff view")).get(true))
+      {
+        factory::unified_diff(p.std_out(), frame).parse();
+      }
+      else
+      {
+        auto file = (file1.stat().get_modification_time() <
+                     file2.stat().get_modification_time()) ?
+                      file1 :
+                      file2;
+        frame->open_file(
+          path(file.string() + ".diff"),
+          p.std_out(),
+          data::stc());
+      }
+    }
+
+    log::status(_("Compared")) << arguments;
+
+    return true;
   }
 
-  log::status(_("Compared")) << arguments;
-  return true;
+  return false;
 }
 
 bool wex::lexers_dialog(syntax::stc* stc)

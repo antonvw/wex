@@ -18,9 +18,10 @@ namespace wex
 {
 namespace factory
 {
+class frame;
 
 /// Offers a class that parses a unified diff string and report diffs
-/// for a derived class.
+/// to a factory frame.
 /// Context is not expected, you have to create a diff using
 /// -U0 (no context).
 class unified_diff
@@ -40,7 +41,9 @@ public:
   /// Constructor.
   unified_diff(
     /// Provide input, that is conform unified diff format output.
-    std::string input = std::string());
+    std::string input = std::string(),
+    /// Provide the frame.
+    factory::frame* frame = nullptr);
 
   /// Destructor.
   virtual ~unified_diff() = default;
@@ -48,10 +51,16 @@ public:
   // Virtual interface
 
   /// Do something with a diff.
-  virtual bool report_diff() { return true; };
+  virtual bool report_diff();
 
-  /// The last diff has been generated, we are finished.
-  virtual void report_diff_finish() { ; };
+  /// The path to open later on.
+  virtual wex::path report_path() const { return path_from(); };
+
+  /// Return token for the from file.
+  virtual std::string token_from() const { return std::string(); };
+
+  /// Return token for the to.
+  virtual std::string token_to() const { return std::string(); };
 
   // Other methods.
 
@@ -90,6 +99,9 @@ public:
   /// Returns count number for the to file.
   int range_to_count() const { return m_range[3]; };
 
+  /// The last diff has been generated, we are finished.
+  void report_diff_finish();
+
   /// Returns text added.
   const std::vector<std::string>& text_added() const { return m_text[1]; };
 
@@ -119,6 +131,8 @@ private:
   size_t m_diffs{0};
 
   std::string m_input;
+
+  factory::frame* m_frame;
 
   BOOST_DESCRIBE_CLASS(
     unified_diff,

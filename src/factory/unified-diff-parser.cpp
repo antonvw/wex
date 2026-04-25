@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/parser/parser.hpp>
+#include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/factory/unified-diff.h>
 
@@ -29,8 +30,8 @@ bool wex::factory::unified_diff_parser::parse()
   auto const action_diff = [this](const auto& ctx)
   {
     const auto tpl    = _attr(ctx);
-    m_diff->m_path[0] = wex::path(std::get<0>(tpl));
-    m_diff->m_path[1] = wex::path(std::get<1>(tpl));
+    m_diff->m_path[0] = wex::path(find_before(std::get<0>(tpl), "\t"));
+    m_diff->m_path[1] = wex::path(find_before(std::get<1>(tpl), "\t"));
     m_diff->m_range.fill({0});
 
     for (const auto& hunk : std::get<2>(tpl))
@@ -107,7 +108,6 @@ bool wex::factory::unified_diff_parser::parse()
     m_diff->trace("finish");
   };
 
-  // (Skip the first lines)
   // The unified output format starts with a two-line header:
   // --- from-file from-file-modification-time
   // +++ to-file to-file-modification-time
@@ -116,9 +116,14 @@ bool wex::factory::unified_diff_parser::parse()
   // line-from-either-file
   // line-from-either-file...
 
+  const std::string f("--- " + m_diff->token_from());
+  const std::string t("\n+++ " + m_diff->token_to());
+
+  auto const p_from = bp::lit(f.c_str());
+  auto const p_to   = bp::lit(t.c_str());
+
   auto const parser_diff_lines =
-    *(bp::eol >> bp::char_("-+ ") >
-      *(bp::char_ - bp::eol - "\n--- a/" - "\n@@" - "\ndiff --"));
+    *(bp::eol >> bp::char_("-+ ") > *(bp::char_ - bp::eol - p_from - "\n@@"));
 
   auto const parser_hunk =
     bp::lit("\n@@") >
@@ -126,11 +131,10 @@ bool wex::factory::unified_diff_parser::parse()
       [bp::repeat(2)[(bp::int_ >> ',' >> bp::int_) | bp::int_] >>
        bp::lit("@@")] > bp::omit[*(bp::char_ - bp::eol)] > parser_diff_lines;
 
-  auto const parser_diff = bp::lit("\n--- a/") >> +(bp::char_ - "\n+++ b/") >>
-                           bp::lit("\n+++ b/") >>
-                           +(bp::char_ - "\n@@" - "\ndiff --") >> +parser_hunk;
+  auto const parser_diff = p_from >> +(bp::char_ - p_to) >> p_to >>
+                           +(bp::char_ - "\n@@") >> +parser_hunk;
 
-  auto const parser_skip = bp::omit[*(bp::char_ - (bp::eol >> "--- a/"))];
+  auto const parser_skip = bp::omit[*(bp::char_ - p_from)];
 
   auto const parser_all =
     *(parser_skip >> +parser_diff[action_diff]) > *bp::ws > bp::eoi[action_eoi];

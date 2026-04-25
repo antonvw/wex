@@ -561,6 +561,65 @@ bool wex::del::frame::process_async_system(const process_data& data)
   return m_process->async_system(data);
 }
 
+bool wex::del::frame::report_unified_diff(const factory::unified_diff* diff)
+{
+  if (!lexers::get()->is_loaded() || !diff->report_path().file_exists())
+  {
+    return false;
+  }
+
+  if (
+    auto* stc = dynamic_cast<wex::stc*>(open_file(diff->report_path()));
+    stc != nullptr)
+  {
+    if (diff->type() == factory::unified_diff::diff_t::LAST)
+    {
+      stc->diffs().finish(diff);
+      stc->diffs().status();
+      return true;
+    }
+
+    // deleted text: a marker, and annotation with text
+    // added text: a marker, and indicator
+    if (!stc->unified_diff_set_markers(diff))
+    {
+      return false;
+    }
+
+    if (diff->range_from_count() > 0)
+    {
+      if (!diff->text_removed().empty())
+      {
+        stc->AnnotationSetText(
+          diff->range_from_start() - 1,
+          get_some_text(diff->text_removed()));
+      }
+    }
+
+    if (diff->range_to_count() > 0)
+    {
+      if (!stc->set_indicator(
+            m_indicator_add,
+            stc->PositionFromLine(diff->range_to_start() - 1),
+            stc->GetLineEndPosition(
+              diff->range_to_start() - 2 + diff->range_to_count())))
+      {
+        log("report_unified_diff") << diff->report_path().string();
+        return false;
+      }
+    }
+
+    if (diff->is_first())
+    {
+      stc->diffs().clear();
+    }
+
+    stc->diffs().insert(diff);
+  }
+
+  return true;
+}
+
 void wex::del::frame::set_recent_file(const wex::path& path)
 {
   wex::frame::set_recent_file(path);
@@ -1037,67 +1096,6 @@ bool wex::del::frame::vcs_execute(
   }
 
   return false;
-}
-
-bool wex::del::frame::vcs_unified_diff(
-  const vcs_entry*    entry,
-  const unified_diff* diff)
-{
-  if (!lexers::get()->is_loaded() || !diff->path_vcs().file_exists())
-  {
-    return false;
-  }
-
-  if (
-    auto* stc = dynamic_cast<wex::stc*>(open_file(diff->path_vcs()));
-    stc != nullptr)
-  {
-    if (diff->type() == factory::unified_diff::diff_t::LAST)
-    {
-      stc->diffs().finish(diff);
-      stc->diffs().status();
-      return true;
-    }
-
-    // deleted text: a marker, and annotation with text
-    // added text: a marker, and indicator
-    if (!stc->unified_diff_set_markers(diff))
-    {
-      return false;
-    }
-
-    if (diff->range_from_count() > 0)
-    {
-      if (!diff->text_removed().empty())
-      {
-        stc->AnnotationSetText(
-          diff->range_from_start() - 1,
-          get_some_text(diff->text_removed()));
-      }
-    }
-
-    if (diff->range_to_count() > 0)
-    {
-      if (!stc->set_indicator(
-            m_indicator_add,
-            stc->PositionFromLine(diff->range_to_start() - 1),
-            stc->GetLineEndPosition(
-              diff->range_to_start() - 2 + diff->range_to_count())))
-      {
-        log("vcs_unified_diff") << diff->path_vcs().string();
-        return false;
-      }
-    }
-
-    if (diff->is_first())
-    {
-      stc->diffs().clear();
-    }
-
-    stc->diffs().insert(diff);
-  }
-
-  return true;
 }
 
 bool wex::del::frame::vi_is_address(syntax::stc* stc, const std::string& text)
