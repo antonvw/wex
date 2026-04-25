@@ -23,6 +23,12 @@ wex::command_parser::command_parser(
 {
 }
 
+wex::command_parser_data wex::command_parser::get_parsed_data() const
+{
+  // this is added to prevent slicing
+  return command_parser_data(*this);
+}
+
 bool wex::command_parser::parse(parse_t type)
 {
   if (m_text.starts_with(ex_command::selection_range()))
@@ -77,7 +83,7 @@ bool wex::command_parser::parse(parse_t type)
     return false;
   }
 
-  m_ex->m_command_parsed_data = *this;
+  m_ex->m_command_parsed_data = get_parsed_data();
 
   return true;
 }
