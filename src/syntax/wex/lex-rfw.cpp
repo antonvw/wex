@@ -394,7 +394,7 @@ void Scintilla::lex_rfw::state_check(
           if (m_quote_stack->depth() > 0)
           {
             m_quote_stack->pop();
-            sc.SetState(m_quote_stack->style());
+            sc.SetState(SCE_SH_DEFAULT);
           }
           else
           {
