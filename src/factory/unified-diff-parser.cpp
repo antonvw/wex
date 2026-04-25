@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/parser/parser.hpp>
+#include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/factory/unified-diff.h>
 
@@ -29,8 +30,8 @@ bool wex::factory::unified_diff_parser::parse()
   auto const action_diff = [this](const auto& ctx)
   {
     const auto tpl    = _attr(ctx);
-    m_diff->m_path[0] = wex::path(std::get<0>(tpl));
-    m_diff->m_path[1] = wex::path(std::get<1>(tpl));
+    m_diff->m_path[0] = wex::path(find_before(std::get<0>(tpl), "\t"));
+    m_diff->m_path[1] = wex::path(find_before(std::get<1>(tpl), "\t"));
     m_diff->m_range.fill({0});
 
     for (const auto& hunk : std::get<2>(tpl))
