@@ -2,7 +2,7 @@
 // Name:      lex-rfw.cpp
 // Purpose:   Implementation of lmRFW
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2025 Anton van Wezenbeek
+// Copyright: (c) 2020-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -282,8 +282,9 @@ void Scintilla::lex_rfw::state_check(
       break;
 
     case SCE_SH_NUMBER:
-      if (auto digit = lex_rfw_access(*m_accessor).translate_digit(sc.ch);
-          numBase == RFW_BASE_DECIMAL)
+      if (
+        auto digit = lex_rfw_access(*m_accessor).translate_digit(sc.ch);
+        numBase == RFW_BASE_DECIMAL)
       {
         if (sc.ch == '#')
         {
@@ -361,8 +362,9 @@ void Scintilla::lex_rfw::state_check(
       break;
 
     case SCE_SH_SCALAR: // variable names
-      if (const CharacterSet setParam(CharacterSet::setAlphaNum, "$@_");
-          !setParam.Contains(sc.ch))
+      if (
+        const CharacterSet setParam(CharacterSet::setAlphaNum, "$@_");
+        !setParam.Contains(sc.ch))
       {
         if (sc.LengthCurrent() == 1)
         {
@@ -387,13 +389,12 @@ void Scintilla::lex_rfw::state_check(
       }
       else if (sc.ch == m_quote_stack->down())
       {
-        m_quote_stack->decrease();
-
-        if (m_quote_stack->count() == 0)
+        if (m_quote_stack->decrease() == 0)
         {
           if (m_quote_stack->depth() > 0)
           {
             m_quote_stack->pop();
+            sc.SetState(m_quote_stack->style());
           }
           else
           {
@@ -466,9 +467,7 @@ void Scintilla::lex_rfw::state_check(
       }
       else if (sc.ch == m_quote->down())
       {
-        m_quote->decrease();
-
-        if (m_quote->count() == 0)
+        if (m_quote->decrease() == 0)
         {
           sc.ForwardSetState(SCE_SH_DEFAULT);
         }
@@ -482,8 +481,7 @@ void Scintilla::lex_rfw::state_check(
     case SCE_SH_CHARACTER: // singly-quoted strings
       if (sc.ch == m_quote->down())
       {
-        m_quote->decrease();
-        if (m_quote->count() == 0)
+        if (m_quote->decrease() == 0)
         {
           sc.ForwardSetState(SCE_SH_DEFAULT);
         }
@@ -916,14 +914,16 @@ void SCI_METHOD Scintilla::lex_rfw::Lex(
             (m_section.id() == SECTION_TESTCASE ? SECTION_TASK :
                                                   SECTION_TESTCASE);
 
-          if (const auto& removed(std::remove_if(
+          if (
+            const auto& removed(
+              std::remove_if(
                 m_section_keywords.begin(),
                 m_section_keywords.end(),
                 [&](const auto& it)
                 {
                   return it.second == other_section;
                 }));
-              removed != m_section_keywords.end())
+            removed != m_section_keywords.end())
           {
             m_section_keywords.erase(removed);
           }

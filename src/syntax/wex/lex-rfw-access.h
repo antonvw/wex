@@ -2,7 +2,7 @@
 // Name:      lex-rfw-access.h
 // Purpose:   Declaration of Scintilla::lex_rfw_access class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2025 Anton van Wezenbeek
+// Copyright: (c) 2020-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -30,8 +30,12 @@ public:
   /// Returns count.
   int count() const { return m_count; }
 
-  /// Decreases count.
-  void decrease() { m_count--; }
+  /// Decreases count, returns the new count.
+  int decrease()
+  {
+    m_count--;
+    return m_count;
+  }
 
   /// Returns down.
   int down() const { return m_down; }
@@ -39,8 +43,12 @@ public:
   /// Performs global scan.
   int glob_scan(StyleContext& sc) const;
 
-  /// Increases count.
-  void increase() { m_count++; }
+  /// Increases count, returns the new count.
+  int increase()
+  {
+    m_count++;
+    return m_count;
+  }
 
   /// Initializes.
   Sci_Position init(Sci_PositionU startPos) const;
