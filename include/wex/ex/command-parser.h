@@ -47,9 +47,6 @@ public:
     /// or continue parsing address or addressrange (PARSE)
     parse_t type = parse_t::PARSE);
 
-  /// Returns the command parser data explicit.
-  command_parser_data get_parsed_data() const;
-
   /// Returns true if parsing was ok.
   bool is_ok() const { return m_is_ok; }
 
