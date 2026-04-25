@@ -108,7 +108,6 @@ bool wex::factory::unified_diff_parser::parse()
     m_diff->trace("finish");
   };
 
-  // (Skip the first lines)
   // The unified output format starts with a two-line header:
   // --- from-file from-file-modification-time
   // +++ to-file to-file-modification-time

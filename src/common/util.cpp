@@ -169,7 +169,10 @@ bool wex::compare_file(const path& file1, const path& file2)
       quoted_find(file1.string()) + " " + quoted_find(file2.string()) :
       quoted_find(file2.string()) + " " + quoted_find(file1.string());
 
-  if (factory::process p; p.system(cmp + " " + flags + arguments) >= 0)
+  factory::process p;
+  const auto       ec = p.system(cmp + " " + flags + arguments);
+
+  if (((ec == 0 || ec == 1) && cmp.ends_with("diff")) || ec >= 0)
   {
     if (
       auto* frame =

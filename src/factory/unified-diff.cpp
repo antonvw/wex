@@ -25,12 +25,15 @@ wex::factory::unified_diff::unified_diff(
 {
   if (
     auto* frame = dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
-    frame != nullptr)
+    frame != nullptr && m_frame != nullptr)
   {
     m_frame = frame;
   }
 
-  m_frame->page_save();
+  if (m_frame != nullptr)
+  {
+    m_frame->page_save();
+  }
 }
 
 bool wex::factory::unified_diff::parse()
@@ -40,13 +43,16 @@ bool wex::factory::unified_diff::parse()
 
 bool wex::factory::unified_diff::report_diff()
 {
-  return m_frame->report_unified_diff(this);
+  return m_frame != nullptr && m_frame->report_unified_diff(this);
 }
 
 void wex::factory::unified_diff::report_diff_finish()
 {
-  m_frame->report_unified_diff(this);
-  m_frame->page_restore();
+  if (m_frame != nullptr)
+  {
+    m_frame->report_unified_diff(this);
+    m_frame->page_restore();
+  }
 }
 
 void wex::factory::unified_diff::trace(const std::string& text) const
