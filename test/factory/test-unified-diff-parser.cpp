@@ -39,8 +39,8 @@ TEST_CASE("wex::factory::unified_diff_parser")
   {
     // clang-format off
     wex::factory::unified_diff uni(
-      "--- include/wex/factory/unified-diff.h\n"
-      "+++ include/wex/factory/unified-diff.h\n"
+      "--- include/wex/factory/unified-diff.h	2026-01-03 19:27:31\n"
+      "+++ include/wex/factory/unified-diff.h	2026-01-03 19:27:31\n"
       "@@ -109,2 +108,0 @@ private:\n"
       "-  bool parse_header(const std::string& r, const std::string& line, path& p);\n"
       "-\n"
@@ -60,6 +60,8 @@ TEST_CASE("wex::factory::unified_diff_parser")
     REQUIRE(uni.range_from_count() == 1);
     REQUIRE(uni.range_to_start() == 42);
     REQUIRE(uni.range_to_count() == 1);
+    REQUIRE(uni.path_from().string() == "include/wex/factory/unified-diff.h");
+    REQUIRE(uni.path_to().string() == "include/wex/factory/unified-diff.h");
     REQUIRE(uni.differences() == 4);
     REQUIRE(uni.text_added().size() == 1);
     REQUIRE(uni.text_removed().size() == 1);
