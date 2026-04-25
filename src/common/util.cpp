@@ -176,13 +176,17 @@ bool wex::compare_file(const path& file1, const path& file2)
         dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
       cmp == "diff" && frame != nullptr)
     {
-      if (config(_("vcs.Use unified diff view")).get(true))
+      if (config(_("list.Use unified diff view")).get(true))
       {
         factory::unified_diff(p.std_out(), frame).parse();
       }
       else
       {
-        frame->open_file(file2, p.std_out(), data::stc());
+        auto file = (file1.stat().get_modification_time() <
+                     file2.stat().get_modification_time()) ?
+                      file1 :
+                      file2;
+        frame->open_file(path(file.string() + ".diff"), p.std_out(), data::stc());
       }
     }
 
