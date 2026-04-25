@@ -77,6 +77,8 @@ bool wex::command_parser::parse(parse_t type)
     return false;
   }
 
+  // prevent warning about slicing
+  // NOLINTNEXTLINE
   m_ex->m_command_parsed_data = *this;
 
   return true;
