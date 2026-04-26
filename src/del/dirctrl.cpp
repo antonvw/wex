@@ -2,7 +2,7 @@
 // Name:      dirctrl.cpp
 // Purpose:   Implementation of class wex::del::dirctrl
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2025 Anton van Wezenbeek
+// Copyright: (c) 2010-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/wex.h>
@@ -19,7 +19,8 @@
 
 #include <numeric>
 
-const int idShowHidden = wxWindow::NewControlId();
+const int id_compare     = wxWindow::NewControlId();
+const int id_show_hidden = wxWindow::NewControlId();
 
 wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
   : wxGenericDirCtrl(
@@ -60,13 +61,14 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
      {[=, this](const wxCommandEvent& event)
       {
         const auto v(to_vector_string(*this).get());
-        clipboard_add(std::ranges::fold_left(
-          v,
-          std::string(),
-          [](const std::string& a, const std::string& b)
-          {
-            return a + b + "\n";
-          }));
+        clipboard_add(
+          std::ranges::fold_left(
+            v,
+            std::string(),
+            [](const std::string& a, const std::string& b)
+            {
+              return a + b + "\n";
+            }));
       },
       ID_TREE_COPY},
      {[=, this](const wxCommandEvent& event)
@@ -101,10 +103,18 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
       ID_TOOL_REPLACE},
      {[=, this](const wxCommandEvent& event)
       {
+        if (const auto v(to_vector_path(*this).get()); v.size() == 2)
+        {
+          compare_file(v[0], v[1]);
+        }
+      },
+      id_compare},
+     {[=, this](const wxCommandEvent& event)
+      {
         ShowHidden(!config(_("Show hidden")).get(false));
         config(_("Show hidden")).set(!config(_("Show hidden")).get(false));
       },
-      idShowHidden}});
+      id_show_hidden}});
 
   Bind(
     wxEVT_TREE_ITEM_ACTIVATED,
@@ -147,6 +157,11 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
       if (filename.file_exists())
       {
         menu.append({{ID_EDIT_OPEN, _("&Open")}, {}});
+
+        if (files.size() == 2 && !config(_("list.Comparator")).get().empty())
+        {
+          menu.append({{id_compare, _("&Compare")}, {}});
+        }
       }
 
       menu.append(
@@ -173,8 +188,9 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
           ellipsed(frame->find_in_files_title(ID_TOOL_REPLACE))},
          {}});
 
-      if (auto* item = menu.AppendCheckItem(idShowHidden, _("Show hidden"));
-          config(_("Show hidden")).get(false))
+      if (
+        auto* item = menu.AppendCheckItem(id_show_hidden, _("Show hidden"));
+        config(_("Show hidden")).get(false))
       {
         item->Check();
       }
