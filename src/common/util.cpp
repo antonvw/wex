@@ -31,7 +31,7 @@ namespace wex
 {
 bool first_is_newest(const path& file1, const path& file2)
 {
-  return file1.stat().get_modification_time() <
+  return file1.stat().get_modification_time() >
          file2.stat().get_modification_time();
 }
 
