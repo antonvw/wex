@@ -54,7 +54,7 @@ public:
   virtual bool report_diff();
 
   /// The path to open later on.
-  virtual wex::path report_path() const { return path_from(); };
+  virtual wex::path report_path() const;
 
   /// Return token for the from file.
   virtual std::string token_from() const { return std::string(); };

@@ -55,6 +55,11 @@ void wex::factory::unified_diff::report_diff_finish()
   }
 }
 
+wex::path wex::factory::unified_diff::report_path() const
+{
+  return path_to();
+}
+
 void wex::factory::unified_diff::trace(const std::string& text) const
 {
   if (log::get_level() != log::level_t::TRACE)
