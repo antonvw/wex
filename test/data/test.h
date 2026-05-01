@@ -1,9 +1,3 @@
-
-// The actual contents do not matter. This file is not compiled.
-// However, it is used for testing matches and testing ctags.
-#include <wex/wex.h>
-
-namespace wex
 {
 /// Derive your application from app.
 class test_app : public app
