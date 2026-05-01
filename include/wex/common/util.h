@@ -2,7 +2,7 @@
 // Name:      util.h
 // Purpose:   Include file for wex utility functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -27,7 +27,6 @@ class wxArrayString;
 
 namespace wex
 {
-class ex;
 class lexer;
 class path;
 class vcs_command;
@@ -83,8 +82,23 @@ template <typename T> void combobox_as(wxComboBox* cb, const T& t)
 /// Sets entries for a combobox from a list with strings.
 void combobox_from_list(wxComboBox* cb, const strings_t& text);
 
+/// The kind of compare used by comparing files.
+enum class compare_t
+{
+  USE_AS_PROVIDED, ///<  use as provided
+  USE_NEWEST,      ///<  use newest as current
+  USE_OLDEST,      ///<  use oldest as current
+};
+
 /// Compares the files, using comparator set in the config.
-bool compare_file(const path& file1, const path& file2);
+/// Returns true if comparing was done.
+bool compare_file(
+  /// first file
+  const path& file1,
+  /// second file
+  const path& file2,
+  /// the compare type
+  compare_t = compare_t::USE_NEWEST);
 
 /// Shows a dialog with all lexers, allowing you to choose one.
 /// Returns true and sets the lexer on the stc component if you selected

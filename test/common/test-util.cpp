@@ -2,7 +2,7 @@
 // Name:      test-util.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2025 Anton van Wezenbeek
+// Copyright: (c) 2015-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/util.h>
@@ -62,11 +62,36 @@ TEST_CASE("wex::util", "[!mayfail]")
 #ifndef __WXMSW__
   SECTION("compare_file")
   {
-    wex::config(_("list.Comparator")).set("diff");
+    wex::log_none off;
 
-    REQUIRE(wex::compare_file(
+    wex::config(_("list.Comparator")).set("");
+
+    REQUIRE(!wex::compare_file(
       wex::test::get_path("test.h"),
       wex::test::get_path("test.h")));
+
+    wex::config(_("list.Comparator")).set("diff");
+
+    REQUIRE(!wex::compare_file(wex::path(), wex::path("xx")));
+    REQUIRE(!wex::compare_file(wex::path("xx"), wex::path()));
+
+    REQUIRE(
+      wex::compare_file(
+        wex::test::get_path("test.h"),
+        wex::test::get_path("test.h"),
+        wex::compare_t::USE_AS_PROVIDED));
+
+    REQUIRE(
+      wex::compare_file(
+        wex::test::get_path("test.h"),
+        wex::test::get_path("test.h"),
+        wex::compare_t::USE_NEWEST));
+
+    REQUIRE(
+      wex::compare_file(
+        wex::test::get_path("test.h"),
+        wex::test::get_path("test.h"),
+        wex::compare_t::USE_OLDEST));
   }
 #endif
 

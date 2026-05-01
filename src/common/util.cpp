@@ -29,6 +29,17 @@
 
 namespace wex
 {
+bool first_is_newest(const path& file1, const path& file2)
+{
+  return file1.stat().get_modification_time() >
+         file2.stat().get_modification_time();
+}
+
+std::string quoted_files(const path& file1, const path& file2)
+{
+  return quoted_find(file1.string()) + " " + quoted_find(file2.string());
+}
+
 /// Allows you to easily open all files on specified path.
 /// After constructing, invoke find_files which
 /// causes all found files to be opened using open_file from frame.
@@ -145,7 +156,7 @@ void wex::combobox_from_list(wxComboBox* cb, const strings_t& text)
   combobox_as<const strings_t>(cb, text);
 }
 
-bool wex::compare_file(const path& file1, const path& file2)
+bool wex::compare_file(const path& file1, const path& file2, compare_t t)
 {
   const auto cmp(config(_("list.Comparator")).get());
 
@@ -163,16 +174,37 @@ bool wex::compare_file(const path& file1, const path& file2)
 
   const auto flags = (cmp.ends_with("diff") ? "-U0 " : std::string());
 
-  const auto arguments =
-    (file1.stat().get_modification_time() <
-     file2.stat().get_modification_time()) ?
-      quoted_find(file1.string()) + " " + quoted_find(file2.string()) :
-      quoted_find(file2.string()) + " " + quoted_find(file1.string());
+  std::string arguments;
+  wex::path   file;
+
+  switch (t)
+  {
+    case compare_t::USE_AS_PROVIDED:
+      arguments = quoted_files(file1, file2);
+      file      = file2;
+      break;
+
+    case compare_t::USE_NEWEST:
+      arguments = first_is_newest(file1, file2) ? quoted_files(file2, file1) :
+                                                  quoted_files(file1, file2);
+      file      = first_is_newest(file1, file2) ? file1 : file2;
+      break;
+
+    case compare_t::USE_OLDEST:
+      arguments = first_is_newest(file1, file2) ? quoted_files(file1, file2) :
+                                                  quoted_files(file2, file1);
+      file      = first_is_newest(file1, file2) ? file2 : file1;
+      break;
+
+    default:
+      assert(0);
+  }
 
   factory::process p;
-  const auto       ec = p.system(cmp + " " + flags + arguments);
 
-  if (((ec == 0 || ec == 1) && cmp.ends_with("diff")) || ec >= 0)
+  if (
+    const auto ec = p.system(cmp + " " + flags + arguments);
+    ((ec == 0 || ec == 1) && cmp.ends_with("diff")) || ec >= 0)
   {
     if (
       auto* frame =
@@ -185,10 +217,6 @@ bool wex::compare_file(const path& file1, const path& file2)
       }
       else
       {
-        auto file = (file1.stat().get_modification_time() <
-                     file2.stat().get_modification_time()) ?
-                      file1 :
-                      file2;
         frame->open_file(
           path(file.string() + ".diff"),
           p.std_out(),
