@@ -44,7 +44,7 @@ TEST_CASE("wex::unified_diff")
     REQUIRE(uni.parse());
     REQUIRE(uni.range_from_count() == 6);
     REQUIRE(uni.range_to_count() == 0);
-    REQUIRE(uni.report_path().string().contains("test/data/test.h"));
+    REQUIRE(uni.report_path().string().contains("test.h"));
     REQUIRE(uni.differences() == 1);
 
     entry->system(
