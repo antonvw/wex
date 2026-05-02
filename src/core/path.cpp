@@ -2,7 +2,7 @@
 // Name:      path.cpp
 // Purpose:   Implementation of class wex::path
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2025 Anton van Wezenbeek
+// Copyright: (c) 2017-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -164,12 +164,15 @@ std::stringstream wex::path::log() const
 
 wex::path& wex::path::make_absolute()
 {
-  m_path = fs::absolute(m_path);
-  m_stat.sync();
-
-  if (!fs::is_directory(m_path.parent_path()))
+  if (!m_path.empty())
   {
-    m_path.clear();
+    m_path = fs::absolute(m_path);
+    m_stat.sync();
+
+    if (!fs::is_directory(m_path.parent_path()))
+    {
+      m_path.clear();
+    }
   }
 
   return *this;

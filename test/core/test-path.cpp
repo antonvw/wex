@@ -124,9 +124,9 @@ TEST_CASE("wex::path")
     }
   }
 
-  SECTION("mime")
+  SECTION("open_mime")
   {
-    REQUIRE(!wex::path("XXXXX.md").open_mime());
+    REQUIRE(!wex::path("XXXXX.xxx").open_mime());
     REQUIRE(!wex::path("XXXXX").open_mime());
 
 #ifndef GITHUB

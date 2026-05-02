@@ -32,7 +32,7 @@ TEST_CASE("wex::unified_diff")
   SECTION("diff")
   {
     const wex::path p("test.h");
-    boost::process::v1::system("gsed -i -e 1,6d " + p.string());
+    boost::process::v1::system("sed -i -e 1,6d " + p.string());
 
     auto* entry = load_git_entry();
     entry->system(

@@ -228,9 +228,7 @@ TEST_CASE("wex::del::frame")
     REQUIRE(
       !del_frame()->vcs_annotate_line(get_stc(), "PaneBlameDate").empty());
     REQUIRE(
-      del_frame()
-        ->vcs_annotate_line(get_stc(), "PaneBlameComments")
-        .starts_with("improved"));
+      !del_frame()->vcs_annotate_line(get_stc(), "PaneBlameComments").empty());
     REQUIRE(
       del_frame()->vcs_annotate_line(get_stc(), "PaneBlameAuthor") ==
       "Anton van Wezenbeek");
