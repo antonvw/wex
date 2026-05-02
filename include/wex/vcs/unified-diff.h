@@ -35,6 +35,9 @@ public:
   /// Returns path (from vcs).
   wex::path report_path() const override { return m_path_vcs; }
 
+  /// Returns toplevel path (as determined by the vcs).
+  const wex::path& toplevel_path() const { return m_path_toplevel; }
+
 private:
   bool        report_diff() override;
   std::string token_from() const override;

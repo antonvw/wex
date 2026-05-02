@@ -2,7 +2,7 @@
 // Name:      test-path.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/path.h>
@@ -66,6 +66,7 @@ TEST_CASE("wex::path")
 
     REQUIRE(!wex::path("XXXXX").stat().is_ok());
 
+    REQUIRE(wex::path().make_absolute().filename().empty());
     REQUIRE(wex::path("XXXXX").make_absolute().filename() == "XXXXX");
     REQUIRE(wex::path("XXXXX").make_absolute().string() != "XXXXX");
   }

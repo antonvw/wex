@@ -1,3 +1,9 @@
+////////////////////////////////////////////////////////////////////////////////
+// Name:      test.h
+// Purpose:   Test file for running unit tests
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2009-2024 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 // The actual contents do not matter. This file is not compiled.
 // However, it is used for testing matches and testing ctags.
