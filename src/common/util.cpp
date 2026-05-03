@@ -158,7 +158,7 @@ void wex::combobox_from_list(wxComboBox* cb, const strings_t& text)
 
 bool wex::compare_file(const path& file1, const path& file2, compare_t t)
 {
-  const auto cmp(config(_("list.Comparator")).get());
+  const auto cmp(config(_("list.Comparator")).get("diff"));
 
   if (cmp.empty())
   {
