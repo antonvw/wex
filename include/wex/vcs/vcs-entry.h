@@ -123,6 +123,8 @@ private:
 
   strings_t execute_and_parse(const process_data& data, size_t offset = 0);
 
+  std::string get_toplevel() const;
+
   int revisions_dialog(
     const std::string& path,
     const wex::path&   tl,
