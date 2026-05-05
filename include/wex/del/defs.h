@@ -2,7 +2,7 @@
 // Name:      defs.h
 // Purpose:   Common definitions for wex::del
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2023 Anton van Wezenbeek
+// Copyright: (c) 2011-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -20,7 +20,6 @@ enum window_id
 {
   ID_LOWEST = wex::ID_HIGHEST + 1,
 
-  ID_LIST_COMPARE,
   ID_LIST_RUN_BUILD,
 
   ID_PROJECT_SAVE,

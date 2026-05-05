@@ -8,6 +8,7 @@
 #pragma once
 
 #include <wex/core/path.h>
+#include <wex/data/listview.h>
 #include <wex/data/stc.h>
 #include <wex/factory/frame.h>
 #include <wex/factory/window.h>
@@ -28,6 +29,7 @@ namespace wex
 class debug_entry;
 class ex_command;
 class ex_commandline;
+class listview;
 class line_data;
 class menu_item;
 class process_data;
@@ -83,6 +85,14 @@ public:
   ~frame() override;
 
   // Virtual interface
+
+  /// This method is called to activate a certain listview.
+  /// Default it returns nullptr.
+  virtual listview*
+  activate(wex::data::listview::type_t, const lexer* lexer = nullptr)
+  {
+    return nullptr;
+  }
 
   /// Returns true if the page can be closed.
   /// Default resets the find focus.

@@ -2,7 +2,7 @@
 // Name:      defs.h
 // Purpose:   Common defs for all wex classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -79,6 +79,7 @@ enum window_id
   ID_FIND_FIRST,
   ID_FIND_LAST = ID_FIND_FIRST + FIND_MAX_FINDS,
 
+  ID_LIST_COMPARE,
   ID_LIST_MATCH,
   ID_LIST_MATCH_FINISH,
 
