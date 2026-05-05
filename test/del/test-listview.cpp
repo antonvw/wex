@@ -7,6 +7,7 @@
 
 #include <wex/del/defs.h>
 #include <wex/del/listview.h>
+#include <wex/ui/defs.h>
 #include <wex/ui/listitem.h>
 
 #include <wx/uiaction.h>

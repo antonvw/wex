@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex::frame class.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2025 Anton van Wezenbeek
+// Copyright: (c) 2010-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
@@ -12,11 +12,11 @@
 #include <wex/core/file.h>
 #include <wex/core/log.h>
 #include <wex/factory/bind.h>
-#include <wex/factory/defs.h>
 #include <wex/factory/listview.h>
 #include <wex/syntax/lexers.h>
 #include <wex/syntax/printing.h>
 #include <wex/syntax/stc.h>
+#include <wex/ui/defs.h>
 #include <wex/ui/ex-commandline.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
@@ -44,8 +44,8 @@
     /* NOLINTNEXTLINE */                                                       \
     else                                                                       \
     {                                                                          \
-      if (auto* cl = dynamic_cast<wex::factory::listview*>(win);               \
-          cl != nullptr)                                                       \
+      if (                                                                     \
+        auto* cl = dynamic_cast<wex::factory::listview*>(win); cl != nullptr)  \
       {                                                                        \
         m_find_focus = cl;                                                     \
       }                                                                        \
@@ -130,11 +130,12 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
 
   m_manager.SetManagedWindow(this);
 
-  win_data = config(win_frame).get(config::ints_t{
-    data.size().GetWidth(),
-    data.size().GetHeight(),
-    data.pos().x,
-    data.pos().y});
+  win_data = config(win_frame).get(
+    config::ints_t{
+      data.size().GetWidth(),
+      data.size().GetHeight(),
+      data.pos().x,
+      data.pos().y});
 
   printing::get()->get_html_printer()->SetParentWindow(this);
 
@@ -242,11 +243,12 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
       else
       {
         config(win_max).set(false);
-        config(win_frame).set(config::ints_t{
-          GetSize().GetWidth(),
-          GetSize().GetHeight(),
-          GetPosition().x,
-          GetPosition().y});
+        config(win_frame).set(
+          config::ints_t{
+            GetSize().GetWidth(),
+            GetSize().GetHeight(),
+            GetPosition().x,
+            GetPosition().y});
       }
 
       m_is_closing = true;

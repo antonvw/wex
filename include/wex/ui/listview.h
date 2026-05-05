@@ -141,7 +141,6 @@ protected:
 
 private:
   void bind_other();
-  void on_compare();
 
   const std::string build_page();
   void              copy_selection_to_clipboard();
@@ -154,6 +153,7 @@ private:
   column       get_column(const std::string& name) const;
   void         item_activated(long item_number);
   bool         on_command(const wxCommandEvent& event);
+  void         on_compare();
 
   void process_idle(wxIdleEvent& event);
   void process_list(const wxListEvent& event, wxEventType type);

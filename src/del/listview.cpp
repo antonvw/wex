@@ -12,6 +12,19 @@ namespace wex::del
 {
 struct menu_env
 {
+  menu_env(listview* lv)
+  {
+    if (const auto index = lv->GetFirstSelected(); index != -1)
+    {
+      const listitem item(lv, index);
+
+      is_ok       = item.path().stat().is_ok();
+      is_folder   = item.path().dir_exists();
+      is_readonly = item.path().stat().is_readonly();
+      is_build    = path_lexer(item.path()).is_build();
+    }
+  }
+
   bool is_ok = true, is_folder = false, is_build = false, is_readonly = false;
 };
 } // namespace wex::del
@@ -60,21 +73,9 @@ wex::del::listview::listview(const data::listview& data)
 
 void wex::del::listview::build_popup_menu(wex::menu& menu)
 {
-  menu_env env;
-
-  if (const auto index = GetFirstSelected(); index != -1)
-  {
-    const listitem item(this, index);
-
-    env.is_ok       = item.path().stat().is_ok();
-    env.is_folder   = item.path().dir_exists();
-    env.is_readonly = item.path().stat().is_readonly();
-    env.is_build    = path_lexer(item.path()).is_build();
-  }
-
   wex::listview::build_popup_menu(menu);
 
-  if (GetSelectedItemCount() == 1)
+  if (menu_env env(this); GetSelectedItemCount() == 1)
   {
     build_popup_menu_single(&env, menu);
   }

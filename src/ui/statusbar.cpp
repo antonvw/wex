@@ -2,7 +2,7 @@
 // Name:      statusbar.cpp
 // Purpose:   Implementation of wex::statusbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
@@ -11,8 +11,8 @@
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
-#include <wex/factory/defs.h>
 #include <wex/factory/frame.h>
+#include <wex/ui/defs.h>
 #include <wex/ui/item-build.h>
 #include <wex/ui/item-dialog.h>
 #include <wex/ui/statusbar.h>
@@ -60,13 +60,14 @@ public:
   /// Returns the style for the first element on the list.
   int style(const config::strings_t& styles) const
   {
-    if (const auto& it = std::ranges::find_if(
-          m_styles,
-          [styles](auto const& i)
-          {
-            return i.second == styles.front();
-          });
-        it != m_styles.end())
+    if (
+      const auto& it = std::ranges::find_if(
+        m_styles,
+        [styles](auto const& i)
+        {
+          return i.second == styles.front();
+        });
+      it != m_styles.end())
     {
       return it->first;
     }
@@ -254,8 +255,9 @@ void wex::statusbar::pane_dialog()
           it.name(),
           config("statusbar.widths." + it.name()).get(it.GetWidth()));
         p.help(it.help_text())
-          .style(pane_styles().style(config("statusbar.styles." + it.name())
-                                       .get(pane_styles().find(it.GetStyle()))))
+          .style(
+            pane_styles().style(config("statusbar.styles." + it.name())
+                                  .get(pane_styles().find(it.GetStyle()))))
           .show(it.is_shown());
         return p;
       });
@@ -400,13 +402,14 @@ wex::statusbar* wex::statusbar::setup(
     m_panes.clear();
 
     // If the PaneText is not present, add it as first pane.
-    if (const auto& it = std::ranges::find_if(
-          panes,
-          [](const auto& p)
-          {
-            return p.name() == "PaneText";
-          });
-        it == panes.end())
+    if (
+      const auto& it = std::ranges::find_if(
+        panes,
+        [](const auto& p)
+        {
+          return p.name() == "PaneText";
+        });
+      it == panes.end())
     {
       m_panes.emplace_back();
     }

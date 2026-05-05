@@ -9,6 +9,7 @@
 #include <utility>
 #include <wex/core/config.h>
 #include <wex/factory/bind.h>
+#include <wex/ui/defs.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/item-dialog.h>
 #include <wex/ui/listview.h>

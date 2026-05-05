@@ -2,12 +2,12 @@
 // Name:      menu.cpp
 // Purpose:   Implementation of wex::menu_item class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
-#include <wex/factory/defs.h>
 #include <wex/ui/art.h>
+#include <wex/ui/defs.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/menu.h>
 
@@ -105,11 +105,13 @@ void wex::menu_item::append(wex::menu* menu) const
       }
       else if (!m_data.art().empty())
       {
-        if (const auto& bitmap(wxArtProvider::GetBitmap(
+        if (
+          const auto& bitmap(
+            wxArtProvider::GetBitmap(
               m_data.art(),
               wxART_MENU,
               wxArtProvider::GetSizeHint(wxART_MENU)));
-            bitmap.IsOk())
+          bitmap.IsOk())
         {
           item->SetBitmap(bitmap);
         }
