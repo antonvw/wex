@@ -19,7 +19,7 @@ wex::unified_diff::unified_diff(
   : factory::unified_diff(e->std_out(), f)
   , m_path_vcs(p)
   , m_frame(f)
-  , m_path_toplevel(p)
+  , m_path_toplevel(path(e->get_toplevel()))
   , m_vcs_entry(e)
 {
 }

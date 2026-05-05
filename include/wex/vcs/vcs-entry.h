@@ -97,6 +97,9 @@ public:
   /// Returns the flags used to run the command.
   const std::string get_flags() const;
 
+  /// Returns the toplevel dir for this entry (currently only for git).
+  const std::string get_toplevel() const;
+
   /// Executes the log command using the log id to be retrieved.
   /// Return value is false if process could not execute.
   bool log(
@@ -122,8 +125,6 @@ private:
     const std::string&  col);
 
   strings_t execute_and_parse(const process_data& data, size_t offset = 0);
-
-  std::string get_toplevel() const;
 
   int revisions_dialog(
     const std::string& path,

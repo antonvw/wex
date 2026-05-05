@@ -210,7 +210,7 @@ const std::string wex::vcs_entry::get_flags() const
   return config(flags_key()).get();
 }
 
-std::string wex::vcs_entry::get_toplevel() const
+const std::string wex::vcs_entry::get_toplevel() const
 {
   wex::log_none off;
 
