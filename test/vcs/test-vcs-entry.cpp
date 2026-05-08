@@ -74,6 +74,8 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
     REQUIRE(!entry.get_branch().empty());
     REQUIRE(!entry.get_branch().starts_with(" "));
     REQUIRE(!entry.get_branch().starts_with("*"));
+    REQUIRE(entry.get_toplevel().contains("wex"));
+    REQUIRE(!entry.get_toplevel().ends_with("\n"));
     REQUIRE(!entry.std_out().empty());
     entry.show_output();
 

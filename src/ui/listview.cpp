@@ -7,6 +7,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
+#include <wex/common/util.h>
 #include <wex/core/chrono.h>
 #include <wex/core/config.h>
 #include <wex/core/interruptible.h>
@@ -16,11 +17,11 @@
 #include <wex/data/find.h>
 #include <wex/data/stc.h>
 #include <wex/factory/bind.h>
-#include <wex/factory/defs.h>
 #include <wex/factory/util.h>
 #include <wex/syntax/lexers.h>
 #include <wex/syntax/printing.h>
 #include <wex/syntax/stc.h>
+#include <wex/ui/defs.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/item-dialog.h>
@@ -340,6 +341,12 @@ void wex::listview::bind_other()
 
      {[=, this](const wxCommandEvent& event)
       {
+        on_compare();
+      },
+      ID_LIST_COMPARE},
+
+     {[=, this](const wxCommandEvent& event)
+      {
         process_match(event);
       },
       ID_LIST_MATCH},
@@ -423,14 +430,27 @@ void wex::listview::build_popup_menu(wex::menu& menu)
     menu.append({{ID_EDIT_OPEN, _("&Open")}});
   }
 
-  if (GetSelectedItemCount() >= 1 && m_data.revision())
+  if (GetSelectedItemCount() >= 1)
   {
-    menu.append({{ID_EDIT_REV_OPEN, _("&Open")}});
-
-    if (GetSelectedItemCount() == 1)
+    if (GetSelectedItemCount() == 2)
     {
-      // Comparing two versions not yet implemented.
-      menu.append({{ID_EDIT_REV_COMPARE, _("C&ompare") + "\tCtrl+O"}});
+      if (!config(_("list.Comparator")).empty())
+      {
+        menu.append({{}, {ID_LIST_COMPARE, _("C&ompare") + "\tCtrl+O"}});
+      }
+    }
+    else
+    {
+      if (m_data.revision())
+      {
+        menu.append({{ID_EDIT_REV_OPEN, _("&Open")}});
+
+        if (GetSelectedItemCount() == 1)
+        {
+          // Comparing two versions not yet implemented.
+          menu.append({{ID_EDIT_REV_COMPARE, _("C&ompare") + "\tCtrl+O"}});
+        }
+      }
     }
   }
 
@@ -1033,6 +1053,54 @@ bool wex::listview::on_command(const wxCommandEvent& event)
   }
 
   return false;
+}
+
+void wex::listview::on_compare()
+{
+  bool           first = true;
+  std::string    file1, file2;
+  wex::listview* list = nullptr;
+
+  for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+  {
+    listitem         li(this, i);
+    const wex::path* filename = &li.path();
+
+    if (!filename->file_exists())
+    {
+      continue;
+    }
+
+    if (GetSelectedItemCount() == 1)
+    {
+      list = m_frame->activate(data::listview::FILE);
+
+      if (list == nullptr)
+      {
+        return;
+      }
+
+      const int main_selected = list->GetFirstSelected();
+      compare_file(listitem(list, main_selected).path(), *filename);
+    }
+    else
+    {
+      if (first)
+      {
+        first = false;
+        file1 = filename->string();
+      }
+      else
+      {
+        first = true;
+        file2 = filename->string();
+      }
+      if (first)
+      {
+        compare_file(path(file1), path(file2));
+      }
+    }
+  }
 }
 
 void wex::listview::print()

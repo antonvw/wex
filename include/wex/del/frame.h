@@ -52,14 +52,6 @@ public:
 
   // Virtual interface
 
-  /// This method is called to activate a certain listview.
-  /// Default it returns nullptr.
-  virtual listview*
-  activate(wex::data::listview::type_t, const lexer* lexer = nullptr)
-  {
-    return nullptr;
-  }
-
   /// If there is a project somewhere,
   /// your implementation should return that one.
   /// Default it returns nullptr.
@@ -225,9 +217,9 @@ protected:
   listview* file_history_list() { return m_file_history_listview; }
 
 private:
-  listview* activate_and_clear(const wex::tool& tool);
-  void      bind_all();
-  void      follow_path(syntax::stc* stc);
+  wex::listview* activate_and_clear(const wex::tool& tool);
+  void           bind_all();
+  void           follow_path(syntax::stc* stc);
 
   stc_entry_dialog* entry_dialog(
     const std::string& title = std::string(),

@@ -19,7 +19,7 @@ wex::unified_diff::unified_diff(
   : factory::unified_diff(e->std_out(), f)
   , m_path_vcs(p)
   , m_frame(f)
-  , m_path_toplevel(vcs({path(p).make_absolute()}).toplevel())
+  , m_path_toplevel(path(e->get_toplevel()))
   , m_vcs_entry(e)
 {
 }
@@ -32,7 +32,9 @@ bool wex::unified_diff::report_diff()
   {
     if (!m_path_vcs.file_exists())
     {
-      log("unified_diff") << m_path_vcs.string() << "does not exist";
+      log("unified_diff") << m_path_vcs.string()
+                          << "with toplevel:" << m_path_toplevel.string()
+                          << "does not exist";
       return false;
     }
 

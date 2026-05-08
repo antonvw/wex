@@ -192,7 +192,7 @@ wex::del::frame::frame(
   bind_all();
 }
 
-wex::del::listview* wex::del::frame::activate_and_clear(const wex::tool& tool)
+wex::listview* wex::del::frame::activate_and_clear(const wex::tool& tool)
 {
   auto* lv = activate(listview::type_tool(tool));
 

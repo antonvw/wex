@@ -2,7 +2,7 @@
 // Name:      stc/bind.cpp
 // Purpose:   Implementation of class wex::stc method bind_all
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2025 Anton van Wezenbeek
+// Copyright: (c) 2018-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -12,7 +12,6 @@
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/factory/bind.h>
-#include <wex/factory/defs.h>
 #include <wex/factory/sort.h>
 #include <wex/stc/beautify.h>
 #include <wex/stc/bind.h>
@@ -22,6 +21,7 @@
 #include <wex/syntax/lexers.h>
 #include <wex/syntax/path-lexer.h>
 #include <wex/ui/debug-entry.h>
+#include <wex/ui/defs.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/menu.h>
@@ -405,8 +405,9 @@ void wex::stc::bind_all()
         const int line(GetCurrentLine());
         AnnotationClearLine(line);
 
-        if (const auto& it = m_marker_identifiers.find(line);
-            it != m_marker_identifiers.end())
+        if (
+          const auto& it = m_marker_identifiers.find(line);
+          it != m_marker_identifiers.end())
         {
           MarkerDeleteHandle(it->second);
           m_marker_identifiers.erase(it);
@@ -644,8 +645,9 @@ void wex::stc::build_popup_menu_link(menu& menu)
     {
       menu.append({{}, {id::stc::open_mime, _("&Preview")}});
     }
-    else if (std::string link;
-             link_open(link_t().set(LINK_OPEN).set(LINK_CHECK), &link))
+    else if (
+      std::string link;
+      link_open(link_t().set(LINK_OPEN).set(LINK_CHECK), &link))
     {
       menu.append({{}, {id::stc::open_link, _("Open") + " " + link}});
     }
@@ -676,8 +678,9 @@ void wex::stc::check_brace()
 
 bool wex::stc::check_brace(int pos)
 {
-  if (const auto brace_match = BraceMatch(pos);
-      brace_match != wxSTC_INVALID_POSITION)
+  if (
+    const auto brace_match = BraceMatch(pos);
+    brace_match != wxSTC_INVALID_POSITION)
   {
     BraceHighlight(pos, brace_match);
     return true;
@@ -785,9 +788,10 @@ void wex::stc::file_action(const wxCommandEvent& event)
 
   if (path_lexer(path()).lexer().language() == "xml")
   {
-    if (const pugi::xml_parse_result result =
-          pugi::xml_document().load_file(path().string().c_str());
-        !result)
+    if (
+      const pugi::xml_parse_result result =
+        pugi::xml_document().load_file(path().string().c_str());
+      !result)
     {
       xml_error(path(), &result, this);
     }
@@ -824,15 +828,16 @@ void wex::stc::jump_action()
   {
     m_hexmode.goto_dialog();
   }
-  else if (static long val;
-           (val = wxGetNumberFromUser(
-              _("Input") + " 1 - " + std::to_string(get_line_count()) + ":",
-              wxEmptyString,
-              _("Enter Line Number"),
-              m_data.control().line(), // initial value
-              1,
-              get_line_count(),
-              this)) > 0)
+  else if (
+    static long val;
+    (val = wxGetNumberFromUser(
+       _("Input") + " 1 - " + std::to_string(get_line_count()) + ":",
+       wxEmptyString,
+       _("Enter Line Number"),
+       m_data.control().line(), // initial value
+       1,
+       get_line_count(),
+       this)) > 0)
   {
     m_data.control().line(val);
     data::stc(data::control().line(val)).set_stc(this).inject();
@@ -924,15 +929,16 @@ void wex::stc::sort_action(const wxCommandEvent& event)
         factory::sort::sort_t().set(factory::sort::SORT_DESCENDING))
       .selection(this);
   }
-  else if (const auto pos(wxGetNumberFromUser(
-             _("Input") + ":",
-             wxEmptyString,
-             _("Enter Sort Position"),
-             GetCurrentPos() + 1 - PositionFromLine(get_current_line()),
-             1,
-             GetLineEndPosition(get_current_line()),
-             this));
-           pos > 0)
+  else if (
+    const auto pos(wxGetNumberFromUser(
+      _("Input") + ":",
+      wxEmptyString,
+      _("Enter Sort Position"),
+      GetCurrentPos() + 1 - PositionFromLine(get_current_line()),
+      1,
+      GetLineEndPosition(get_current_line()),
+      this));
+    pos > 0)
   {
     factory::sort(
       event.GetId() == wxID_SORT_ASCENDING ?

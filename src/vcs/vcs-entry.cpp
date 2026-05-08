@@ -5,6 +5,7 @@
 // Copyright: (c) 2010-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
 #include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
@@ -49,6 +50,7 @@ parse(const path& toplevel, const std::string& file, const std::string& regex)
 
   return v;
 }
+
 } // namespace wex
 
 wex::vcs_entry::vcs_entry(const pugi::xml_node& node)
@@ -208,6 +210,20 @@ const std::string wex::vcs_entry::get_flags() const
   return config(flags_key()).get();
 }
 
+const std::string wex::vcs_entry::get_toplevel() const
+{
+  wex::log_none off;
+
+  if (
+    process p; name() == "git" && p.system(process_data(
+                                    bin() + " rev-parse --show-toplevel")) == 0)
+  {
+    return boost::algorithm::trim_copy(p.std_out());
+  }
+
+  return std::string();
+}
+
 bool wex::vcs_entry::log(const path& p, const std::string& id)
 {
   if (bin().empty())
@@ -259,7 +275,7 @@ void wex::vcs_entry::show_output(const std::string& caption) const
     {
       if (
         unified_diff ud(
-          path(),
+          path(get_toplevel()),
           this,
           dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()));
         ud.parse() && ud.differences() == 0)

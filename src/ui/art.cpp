@@ -2,11 +2,11 @@
 // Name:      art.cpp
 // Purpose:   Implementation of wex::art class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2024 Anton van Wezenbeek
+// Copyright: (c) 2009-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/factory/defs.h>
 #include <wex/ui/art.h>
+#include <wex/ui/defs.h>
 #include <wx/stockitem.h>
 #include <wxMaterialDesignArtProvider.hpp>
 
@@ -102,11 +102,13 @@ const wxBitmapBundle wex::art::get_bitmap(
     {
       if (wxIsStockID(m_id))
       {
-        if (const auto& bb(wxArtProvider::GetBitmapBundle(
+        if (
+          const auto& bb(
+            wxArtProvider::GetBitmapBundle(
               art_it->second,
               client,
               bitmap_size));
-            bb.IsOk())
+          bb.IsOk())
         {
           return bb;
         }
@@ -115,12 +117,14 @@ const wxBitmapBundle wex::art::get_bitmap(
 
     if (m_type == art_t::BOTH || m_type == art_t::MATERIAL)
     {
-      if (const auto& bitmap(wxMaterialDesignArtProvider::GetBitmap(
+      if (
+        const auto& bitmap(
+          wxMaterialDesignArtProvider::GetBitmap(
             art_it->second,
             m_client,
             bitmap_size,
             colour.IsOk() ? colour : m_colour));
-          bitmap.IsOk())
+        bitmap.IsOk())
       {
         return bitmap;
       }
