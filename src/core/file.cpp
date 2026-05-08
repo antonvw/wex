@@ -2,7 +2,7 @@
 // Name:      file.cpp
 // Purpose:   Implementation of class wex::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -130,7 +130,9 @@ bool wex::file::check_sync()
 bool wex::file::close()
 {
   if (!m_fs.is_open())
+  {
     return true;
+  }
 
   m_fs.close();
 
@@ -139,9 +141,12 @@ bool wex::file::close()
 
 void wex::file::do_file_save(bool save_as)
 {
-  if (save_as)
+  if (save_as && m_path_prev != m_path)
   {
-    copy(m_path_prev, m_path);
+    if (!copy(m_path_prev, m_path))
+    {
+      log("do_file_save") << "from" << m_path_prev << "to" << m_path;
+    }
   }
 }
 
