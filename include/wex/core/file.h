@@ -2,7 +2,7 @@
 // Name:      file.h
 // Purpose:   Declaration of class wex::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2024 Anton van Wezenbeek
+// Copyright: (c) 2010-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -128,7 +128,7 @@ protected:
   /// Invoked by file_save, allows you to save the file.
   /// The file is already opened.
   /// The default save_as copies the file to new file.
-  virtual void do_file_save(bool save_as = false);
+  virtual bool do_file_save(bool save_as = false);
 
 private:
   void assign(const wex::path& p);

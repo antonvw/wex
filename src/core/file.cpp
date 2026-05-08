@@ -139,15 +139,18 @@ bool wex::file::close()
   return !m_fs.is_open();
 }
 
-void wex::file::do_file_save(bool save_as)
+bool wex::file::do_file_save(bool save_as)
 {
   if (save_as && m_path_prev != m_path)
   {
     if (!copy(m_path_prev, m_path))
     {
       log("do_file_save") << "from" << m_path_prev << "to" << m_path;
+      return false;
     }
   }
+
+  return true;
 }
 
 bool wex::file::file_load(bool synced)
@@ -218,16 +221,19 @@ bool wex::file::file_save(const wex::path& p)
     return false;
   }
 
-  do_file_save(save_as);
+  const bool saved = do_file_save(save_as);
 
   if (!m_use_stream)
   {
     close();
   }
 
-  reset_contents_changed();
+  if (saved)
+  {
+    reset_contents_changed();
+  }
 
-  return m_path.m_stat.sync() && m_stat.sync();
+  return saved && m_path.m_stat.sync() && m_stat.sync();
 }
 
 void wex::file::log_stream_info(const std::string& info, size_t s)

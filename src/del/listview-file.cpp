@@ -46,8 +46,9 @@ wex::del::file::file(const wex::path& p, const data::listview& data)
       // filename mod time in the statusbar.
       int flags = wxLIST_HITTEST_ONITEM;
 
-      if (const int index = HitTest(wxPoint(event.GetX(), event.GetY()), flags);
-          index < 0)
+      if (
+        const int index = HitTest(wxPoint(event.GetX(), event.GetY()), flags);
+        index < 0)
       {
         log::status() << path();
       }
@@ -161,10 +162,11 @@ bool wex::del::file::do_file_load(bool synced)
 {
   pugi::xml_document doc;
 
-  if (const auto result = doc.load_file(
-        path().string().c_str(),
-        pugi::parse_default | pugi::parse_comments);
-      !result)
+  if (
+    const auto result = doc.load_file(
+      path().string().c_str(),
+      pugi::parse_default | pugi::parse_comments);
+    !result)
   {
     if (path().stat().get_size() == 0)
     {
@@ -187,8 +189,9 @@ bool wex::del::file::do_file_load(bool synced)
 #endif
       for (const auto& child : doc.document_element().children())
       {
-        if (const std::string value = child.text().get();
-            strcmp(child.name(), "file") == 0)
+        if (
+          const std::string value = child.text().get();
+          strcmp(child.name(), "file") == 0)
         {
           listitem(this, wex::path(value)).insert();
         }
@@ -229,7 +232,7 @@ void wex::del::file::do_file_new()
   clear();
 }
 
-void wex::del::file::do_file_save(bool save_as)
+bool wex::del::file::do_file_save(bool save_as)
 {
   pugi::xml_document doc;
 
@@ -268,6 +271,8 @@ void wex::del::file::do_file_save(bool save_as)
   {
     log("xml save") << path();
   }
+
+  return true;
 }
 
 bool wex::del::file::item_from_text(const std::string& text)
