@@ -2,7 +2,7 @@
 // Name:      stc/file.h
 // Purpose:   Declaration of class wex::stc_file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2023 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -48,7 +48,7 @@ public:
 private:
   bool do_file_load(bool synced = false) override;
   void do_file_new() override;
-  void do_file_save(bool save_as = false) override;
+  bool do_file_save(bool save_as = false) override;
 
   stc*           m_stc;
   std::streampos m_previous_size{0};

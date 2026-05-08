@@ -167,7 +167,7 @@ void wex::stc_file::do_file_new()
                          true); // allow fold
 }
 
-void wex::stc_file::do_file_save(bool save_as)
+bool wex::stc_file::do_file_save(bool save_as)
 {
   m_stc->SetReadOnly(true); // prevent changes during saving
 
@@ -210,6 +210,8 @@ void wex::stc_file::do_file_save(bool save_as)
     t.detach();
 #endif
   }
+
+  return true;
 }
 
 wex::ex_stream* wex::stc_file::ex_stream()
