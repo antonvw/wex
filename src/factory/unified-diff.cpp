@@ -25,7 +25,7 @@ wex::factory::unified_diff::unified_diff(
 {
   if (
     auto* frame = dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
-    frame != nullptr && m_frame != nullptr)
+    frame != nullptr && m_frame == nullptr)
   {
     m_frame = frame;
   }

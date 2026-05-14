@@ -154,7 +154,8 @@ void wex::del::listview::build_popup_menu_single(
 
       if (
         const auto& with_file = otherlist.path().string();
-        current_file != with_file && !config(_("list.Comparator")).empty())
+        current_file != with_file &&
+        !config(_("list.Comparator")).get_first_of().empty())
       {
         menu.append(
           {{},
