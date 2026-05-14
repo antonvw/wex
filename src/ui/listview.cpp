@@ -94,7 +94,7 @@ const std::vector<item> config_items()
         {{_("list.Header"), item::CHECKBOX, std::any(true)},
          {_("list.Single selection"), item::CHECKBOX},
          {_("list.Use unified diff view"), item::CHECKBOX, std::any(true)},
-         {_("list.Comparator"), item::FILEPICKERCTRL, std::string("diff")},
+         {_("list.Comparator"), item::COMBOBOX_FILE, std::list<std::string>()},
          {_("list.Sort method"),
           {{SORT_TOGGLE, _("Sort toggle")},
            {SORT_KEEP, _("Sort keep order")},
@@ -434,7 +434,7 @@ void wex::listview::build_popup_menu(wex::menu& menu)
   {
     if (GetSelectedItemCount() == 2)
     {
-      if (!config(_("list.Comparator")).empty())
+      if (!config(_("list.Comparator")).get_first_of().empty())
       {
         menu.append({{}, {ID_LIST_COMPARE, _("C&ompare") + "\tCtrl+O"}});
       }
@@ -445,7 +445,9 @@ void wex::listview::build_popup_menu(wex::menu& menu)
       {
         menu.append({{ID_EDIT_REV_OPEN, _("&Open")}});
 
-        if (GetSelectedItemCount() == 1)
+        if (
+          GetSelectedItemCount() == 1 &&
+          !config(_("list.Comparator")).get_first_of().empty())
         {
           // Comparing two versions not yet implemented.
           menu.append({{ID_EDIT_REV_COMPARE, _("C&ompare") + "\tCtrl+O"}});

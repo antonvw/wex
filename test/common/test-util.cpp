@@ -64,13 +64,13 @@ TEST_CASE("wex::util", "[!mayfail]")
   {
     wex::log_none off;
 
-    wex::config(_("list.Comparator")).set("");
+    wex::config(_("list.Comparator")).set_first_of("");
 
     REQUIRE(!wex::compare_file(
       wex::test::get_path("test.h"),
       wex::test::get_path("test.h")));
 
-    wex::config(_("list.Comparator")).set("diff");
+    wex::config(_("list.Comparator")).set_first_of("diff");
 
     REQUIRE(!wex::compare_file(wex::path(), wex::path("xx")));
     REQUIRE(!wex::compare_file(wex::path("xx"), wex::path()));

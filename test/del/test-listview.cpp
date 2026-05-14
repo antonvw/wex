@@ -30,7 +30,7 @@ TEST_CASE("wex::del::listview")
     lv->Select(0);
     lv->Select(1);
 
-    wex::config(_("list.Comparator")).set("diff");
+    wex::config(_("list.Comparator")).set_first_of("diff");
 
 #ifndef __WXMSW__
     // do not test VCS, it results in modal dialog
