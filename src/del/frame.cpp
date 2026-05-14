@@ -923,16 +923,16 @@ std::string wex::del::frame::vcs_annotate_line(
 
   if (
     const auto& line(std::to_string(stc->get_current_line() + 1));
-    vcs.execute("blame -L " + line + "," + line + " " + stc->path().string()) >=
+    vcs.execute("blame -L " + line + "," + line + " " + stc->path().string()) ==
     0)
   {
     off.enable();
 
     if (
       const auto& commit_hash(find_before(vcs.entry().std_out(), " "));
-      !commit_hash.starts_with("000000") &&
+      !commit_hash.starts_with("000000") && !commit_hash.empty() &&
       vcs.execute(
-        "log " + commit_hash + " -n 1 --date=short --format=" + it->second) >=
+        "log " + commit_hash + " -n 1 --date=short --format=" + it->second) ==
         0)
     {
       return boost::algorithm::trim_all_copy(vcs.entry().std_out());
