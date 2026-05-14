@@ -158,7 +158,9 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
       {
         menu.append({{ID_EDIT_OPEN, _("&Open")}, {}});
 
-        if (files.size() == 2 && !config(_("list.Comparator")).get().empty())
+        if (
+          files.size() == 2 &&
+          !config(_("list.Comparator")).get_first_of().empty())
         {
           menu.append({{id_compare, _("&Compare")}, {}});
         }
