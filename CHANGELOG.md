@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - ex :e *path* opens file dialog at *path*
+- vcs execute and vcs_entry execute return process return code
 
 ### Fixed
 

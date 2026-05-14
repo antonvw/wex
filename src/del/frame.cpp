@@ -923,15 +923,17 @@ std::string wex::del::frame::vcs_annotate_line(
 
   if (
     const auto& line(std::to_string(stc->get_current_line() + 1));
-    vcs.execute("blame -L " + line + "," + line + " " + stc->path().string()))
+    vcs.execute("blame -L " + line + "," + line + " " + stc->path().string()) ==
+    0)
   {
     off.enable();
 
     if (
       const auto& commit_hash(find_before(vcs.entry().std_out(), " "));
-      !commit_hash.starts_with("000000") &&
+      !commit_hash.starts_with("000000") && !commit_hash.empty() &&
       vcs.execute(
-        "log " + commit_hash + " -n 1 --date=short --format=" + it->second))
+        "log " + commit_hash + " -n 1 --date=short --format=" + it->second) ==
+        0)
     {
       return boost::algorithm::trim_all_copy(vcs.entry().std_out());
     }
@@ -973,7 +975,9 @@ void wex::del::frame::vcs_append(wex::menu* menu, const menu_item* item) const
 
 bool wex::del::frame::vcs_blame(syntax::stc* stc)
 {
-  if (wex::vcs vcs{{stc->path()}}; vcs.execute("blame " + stc->path().string()))
+  if (
+    wex::vcs vcs{{stc->path()}};
+    vcs.execute("blame " + stc->path().string()) >= 0)
   {
     return vcs_blame_show(&vcs.entry(), stc);
   }
@@ -1089,7 +1093,7 @@ bool wex::del::frame::vcs_execute(
   const std::vector<wex::path>& paths,
   const data::window&           data)
 {
-  if (wex::vcs vcs(paths); vcs.execute(command))
+  if (wex::vcs vcs(paths); vcs.execute(command) >= 0)
   {
     open_file_vcs(path(command), vcs.entry(), data);
     return true;

@@ -316,7 +316,7 @@ TEST_CASE("wex::del::frame")
     SECTION("string")
     {
       wex::log_none off;
-      REQUIRE(!del_frame()->vcs_execute("shows", std::vector<wex::path>()));
+      REQUIRE(del_frame()->vcs_execute("shows", std::vector<wex::path>()));
 
       REQUIRE(
         del_frame()->vcs_execute(

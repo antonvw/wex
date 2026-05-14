@@ -77,14 +77,14 @@ size_t wex::vcs_entry::build_menu(int base_id, menu* menu) const
   return menus::build_menu(get_commands(), base_id, menu);
 }
 
-bool wex::vcs_entry::execute(
+int wex::vcs_entry::execute(
   const std::string& args,
   const path&        p,
   const std::string& wd)
 {
   if (bin().empty())
   {
-    return false;
+    return -1;
   }
 
   m_lexer = path_lexer(p).lexer();
@@ -94,13 +94,13 @@ bool wex::vcs_entry::execute(
   {
     const std::string& repo_path(p.string().substr(tl.string().size() + 1));
     revisions_dialog(repo_path, tl, p);
-    return false; // skip rest in vcs_execute
+    return -1; // skip rest in vcs_execute
   }
 
   if (get_command().get_command() == "grep")
   {
     execute_grep(bin(), tl);
-    return false; // skip rest in vcs_execute
+    return -1; // skip rest in vcs_execute
   }
 
   std::string prefix;
@@ -169,7 +169,7 @@ bool wex::vcs_entry::execute(
   return process::system(process_data(
                            bin() + " " + prefix + get_command().get_command() +
                            " " + subcommand + flags + comment + my_args)
-                           .start_dir(wd)) == 0;
+                           .start_dir(wd));
 }
 
 const std::string wex::vcs_entry::get_branch(const std::string& wd) const
