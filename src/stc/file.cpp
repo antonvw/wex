@@ -171,9 +171,11 @@ bool wex::stc_file::do_file_save(bool save_as)
 {
   m_stc->SetReadOnly(true); // prevent changes during saving
 
+  bool ok = true;
+
   if (!m_stc->is_visual())
   {
-    if (ex_stream()->write())
+    if (ok = ex_stream()->write(); ok)
     {
       FILE_POST(save_as ? FILE_SAVE_AS : FILE_SAVE);
     }
@@ -185,7 +187,7 @@ bool wex::stc_file::do_file_save(bool save_as)
       [&]
       {
 #endif
-        if (write(m_stc->get_hexmode().buffer()))
+        if (ok = write(m_stc->get_hexmode().buffer()); ok)
         {
           FILE_POST(save_as ? FILE_SAVE_AS : FILE_SAVE);
         }
@@ -201,7 +203,7 @@ bool wex::stc_file::do_file_save(bool save_as)
       [&]
       {
 #endif
-        if (write(m_stc->get_text()))
+        if (ok = write(m_stc->get_text()); ok)
         {
           FILE_POST(save_as ? FILE_SAVE_AS : FILE_SAVE);
         }
@@ -211,7 +213,7 @@ bool wex::stc_file::do_file_save(bool save_as)
 #endif
   }
 
-  return true;
+  return ok;
 }
 
 wex::ex_stream* wex::stc_file::ex_stream()
