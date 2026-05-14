@@ -109,7 +109,7 @@ bool wex::vcs_execute(
         files,
         [frame, id](const auto& it)
         {
-          if (wex::vcs vcs({it}, id); vcs.execute())
+          if (wex::vcs vcs({it}, id); vcs.execute() >= 0)
           {
             if (!vcs.entry().std_out().empty())
             {

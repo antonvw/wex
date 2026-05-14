@@ -2,7 +2,7 @@
 // Name:      vcs.h
 // Purpose:   Declaration of wex::vcs class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2025 Anton van Wezenbeek
+// Copyright: (c) 2011-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -82,11 +82,11 @@ public:
   /// Executes the current vcs command for the current
   /// vcs entry, and collects the output.
   /// Returns return code from vcs entry execute.
-  bool execute();
+  int execute();
 
   /// Executes the specified command (git, svn subcommand).
-  /// Return value is false if process could not execute.
-  bool execute(const std::string& command);
+  /// Returns return code from process.
+  int execute(const std::string& command);
 
   /// Returns branch for current vcs entry, or empty string
   /// if vcs is not used.

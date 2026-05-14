@@ -48,14 +48,15 @@ vcs::store_t::iterator find_entry(vcs::store_t* store, const path& p)
   {
     if (!p.empty())
     {
-      if (auto it = std::ranges::find_if(
-            *store,
-            [p](const auto& i)
-            {
-              const factory::vcs_admin va(i.admin_dir(), p);
-              return va.is_toplevel() || va.exists();
-            });
-          it != store->end())
+      if (
+        auto it = std::ranges::find_if(
+          *store,
+          [p](const auto& i)
+          {
+            const factory::vcs_admin va(i.admin_dir(), p);
+            return va.is_toplevel() || va.exists();
+          });
+        it != store->end())
       {
         return it;
       }
@@ -213,7 +214,7 @@ bool wex::vcs::empty()
   return m_store->empty();
 }
 
-bool wex::vcs::execute()
+int wex::vcs::execute()
 {
   if (current_path().empty())
   {
@@ -258,10 +259,10 @@ bool wex::vcs::execute()
   return m_entry->execute(args, current_path(), wd.string());
 }
 
-bool wex::vcs::execute(const std::string& command)
+int wex::vcs::execute(const std::string& command)
 {
   return m_entry->system(
-           process_data(command).start_dir(current_path().parent_path())) == 0;
+    process_data(command).start_dir(current_path().parent_path()));
 }
 
 const std::string wex::vcs::get_branch() const
@@ -349,7 +350,7 @@ wxStandardID wex::vcs::request(const data::window& data)
     return wxID_CANCEL;
   }
 
-  if (!execute())
+  if (execute() < 0)
   {
     return wxID_CANCEL;
   }
@@ -501,12 +502,13 @@ int wex::vcs::show_dialog(const data::window& arg)
        item(_("vcs.Subcommand"), std::string()) :
        item()});
 
-  if (std::ranges::all_of(
-        v,
-        [](const auto& i)
-        {
-          return i.type() == item::EMPTY;
-        }))
+  if (
+    std::ranges::all_of(
+      v,
+      [](const auto& i)
+      {
+        return i.type() == item::EMPTY;
+      }))
   {
     return wxID_OK;
   }

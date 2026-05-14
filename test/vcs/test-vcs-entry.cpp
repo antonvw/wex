@@ -89,14 +89,14 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
     REQUIRE(entry.get_commands().size() == 2);
     REQUIRE(entry.get_flags().empty());
     REQUIRE(!entry.std_out().empty());
-    REQUIRE(entry.execute()); // executes just git, shows help
+    REQUIRE(entry.execute() >= 0); // executes just git, shows help
     REQUIRE(entry.std_out().contains("usage: git"));
     entry.show_output();
 
     REQUIRE(entry.system(wex::process_data("help")) == 0);
 
     auto* other = new wex::vcs_entry(git.document_element());
-    REQUIRE(other->execute(std::string(), wex::path()));
+    REQUIRE(other->execute(std::string(), wex::path()) >= 0);
     other->show_output();
   }
 
@@ -135,10 +135,10 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
     stc->set_text("hello world");
     stc->SelectAll();
 
-    REQUIRE(!entry.execute());
+    REQUIRE(entry.execute() == -1);
     REQUIRE(!entry.std_out().contains("usage: "));
 
-    REQUIRE(!entry.execute(std::string(), wex::test::get_path("test.h")));
+    REQUIRE(entry.execute(std::string(), wex::test::get_path("test.h")) == -1);
   }
 
   SECTION("execute-show")
@@ -157,11 +157,11 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
     REQUIRE(entry.name() == "git");
     REQUIRE(entry.get_command().get_command() == "show");
 
-    REQUIRE(entry.execute());
+    REQUIRE(entry.execute() >= 0);
     REQUIRE(!entry.std_out().empty());
 
     wex::log_none off;
-    REQUIRE(!entry.execute(std::string(), wex::test::get_path("test.h")));
+    REQUIRE(entry.execute(std::string(), wex::test::get_path("test.h")) == -1);
   }
 
   SECTION("setup_exclude")

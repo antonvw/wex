@@ -70,8 +70,8 @@ public:
   /// the first command if set_command was not yet invoked.
   /// Might ask for vcs binary if it is not yet known.
   /// Return code is code from process execute,
-  /// and also can be false if dialog for vcs bin was cancelled.
-  bool execute(
+  /// and also can be -1 if dialog for vcs bin was cancelled.
+  int execute(
     /// args, like filenames, or vcs flags
     const std::string& args = std::string(),
     /// lexer that is used for presenting the output
