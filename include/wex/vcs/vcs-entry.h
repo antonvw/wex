@@ -126,10 +126,7 @@ private:
 
   strings_t execute_and_parse(const process_data& data, size_t offset = 0);
 
-  int revisions_dialog(
-    const std::string& path,
-    const wex::path&   tl,
-    const wex::path&   file);
+  int revisions_dialog(const std::string& path, const wex::path& file);
 
   // no const, as entry is set using operator= in vcs.
   flags_location_t m_flags_location{flags_location_t::POSTFIX};

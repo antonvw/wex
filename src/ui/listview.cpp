@@ -432,26 +432,21 @@ void wex::listview::build_popup_menu(wex::menu& menu)
 
   if (GetSelectedItemCount() >= 1)
   {
-    if (GetSelectedItemCount() == 2)
-    {
-      if (!config(_("list.Comparator")).get_first_of().empty())
-      {
-        menu.append({{}, {ID_LIST_COMPARE, _("C&ompare") + "\tCtrl+O"}});
-      }
-    }
-    else
-    {
-      if (m_data.revision())
-      {
-        menu.append({{ID_EDIT_REV_OPEN, _("&Open")}});
+    const bool cmp(!config(_("list.Comparator")).get_first_of().empty());
 
-        if (
-          GetSelectedItemCount() == 1 &&
-          !config(_("list.Comparator")).get_first_of().empty())
-        {
-          // Comparing two versions not yet implemented.
-          menu.append({{ID_EDIT_REV_COMPARE, _("C&ompare") + "\tCtrl+O"}});
-        }
+    if (GetSelectedItemCount() == 2 && !m_data.revision() && cmp)
+    {
+      menu.append({{}, {ID_LIST_COMPARE, _("C&ompare") + "\tCtrl+O"}});
+    }
+
+    if (m_data.revision())
+    {
+      menu.append({{ID_EDIT_REV_OPEN, _("&Open")}});
+
+      if (GetSelectedItemCount() == 1 && cmp)
+      {
+        // Comparing two versions not yet implemented.
+        menu.append({{ID_EDIT_REV_COMPARE, _("C&ompare") + "\tCtrl+O"}});
       }
     }
   }
