@@ -2,7 +2,7 @@
 // Name:      global-env.cpp
 // Purpose:   Implementation of class wex::global_env
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2025 Anton van Wezenbeek
+// Copyright: (c) 2015-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -259,7 +259,17 @@ void wex::global_env::skip(const std::string& info)
   if (m_marker == 0)
   {
     m_marker = '[';
-    a.marker_add(m_marker);
+
+    if (m_ex->marker_line(m_marker) != LINE_NUMBER_UNKNOWN)
+    {
+      log("skip") << m_marker << "marker already present";
+      return;
+    }
+
+    if (!a.marker_add(m_marker))
+    {
+      return;
+    }
   }
 
   if (const auto& line = skip_marker_line(); line)

@@ -2,7 +2,7 @@
 // Name:      test-core.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2025 Anton van Wezenbeek
+// Copyright: (c) 2020-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -156,6 +156,7 @@ TEST_CASE("wex::core")
     }
 
     REQUIRE(!wex::is_codeword_separator('x'));
+    REQUIRE(!wex::is_codeword_separator(-1));
   }
 
   SECTION("matches_one_of")
