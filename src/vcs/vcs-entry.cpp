@@ -88,12 +88,13 @@ int wex::vcs_entry::execute(
   }
 
   m_lexer = path_lexer(p).lexer();
+
   const path& tl(factory::vcs_admin(admin_dir(), p).toplevel());
 
   if (p.file_exists() && get_command().get_command() == "show")
   {
     const std::string& repo_path(p.string().substr(tl.string().size() + 1));
-    revisions_dialog(repo_path, tl, p);
+    revisions_dialog(repo_path, p);
     return -1; // skip rest in vcs_execute
   }
 

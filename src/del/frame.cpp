@@ -579,6 +579,11 @@ bool wex::del::frame::report_unified_diff(const factory::unified_diff* diff)
       return true;
     }
 
+    if (diff->is_first())
+    {
+      stc->unified_diff_clear();
+    }
+
     // deleted text: a marker, and annotation with text
     // added text: a marker, and indicator
     if (!stc->unified_diff_set_markers(diff))

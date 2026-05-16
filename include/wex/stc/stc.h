@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2025 Anton van Wezenbeek
+// Copyright: (c) 2008-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -192,6 +192,9 @@ public:
     int find_flags = 0,
     /// argument passed on to find_next
     bool stc_find_string = true);
+
+  /// Clear unified diff related stuff.
+  void unified_diff_clear();
 
   /// Update markers according to diff.
   bool unified_diff_set_markers(const factory::unified_diff* uni);
