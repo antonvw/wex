@@ -2,12 +2,13 @@
 // Name:      test-stc.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2025 Anton van Wezenbeek
+// Copyright: (c) 2015-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
 
 #include <wex/core/config.h>
+#include <wex/core/log-none.h>
 #include <wex/factory/defs.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/bind.h>
@@ -309,7 +310,25 @@ TEST_CASE("wex::stc")
 
   SECTION("marker")
   {
+    // clang-format off
+    wex::factory::unified_diff uni(
+      "--- a/test/stc/test-stc.cpp\n"
+      "+++ b/test/stc/test-stc.cpp\n"
+      "@@ -5 +5 @@\n"
+      "-// Copyright: (c) 2015-2025 Anton van Wezenbeek\n"
+      "+// Copyright: (c) 2015-2026 Anton van Wezenbeek\n");
+    // clang-format on
+
     REQUIRE(stc->marker_delete_all_change());
+    wex::log_none off;
+    REQUIRE(!stc->unified_diff_set_markers(&uni));
+    REQUIRE(uni.parse());
+    REQUIRE(!stc->unified_diff_set_markers(&uni));
+
+    stc->add_text("added line 1\nline2\nline3\nline4\nline5");
+    REQUIRE(stc->unified_diff_set_markers(&uni));
+
+    stc->unified_diff_clear();
   }
 
   SECTION("modeline")
@@ -329,8 +348,10 @@ TEST_CASE("wex::stc")
 
     SECTION("modeline-vi")
     {
-      auto* stc = new wex::stc(std::string("// 	vi: set ts=120 "
-                                           "// this is a modeline"));
+      auto* stc = new wex::stc(
+        std::string(
+          "// 	vi: set ts=120 "
+          "// this is a modeline"));
       frame()->pane_add(stc);
       REQUIRE(stc->GetTabWidth() == 120);
       REQUIRE(stc->get_vi().mode().is_command());

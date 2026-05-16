@@ -572,17 +572,16 @@ bool wex::del::frame::report_unified_diff(const factory::unified_diff* diff)
     auto* stc = dynamic_cast<wex::stc*>(open_file(diff->report_path()));
     stc != nullptr)
   {
-    switch (diff->type())
+    if (diff->type() == factory::unified_diff::diff_t::LAST)
     {
-      case factory::unified_diff::diff_t::LAST:
-        stc->diffs().finish(diff);
-        stc->diffs().status();
-        return true;
-        break;
+      stc->diffs().finish(diff);
+      stc->diffs().status();
+      return true;
+    }
 
-      case factory::unified_diff::diff_t::FIRST:
-        stc->vcs_clear_diffs();
-        break;
+    if (diff->is_first())
+    {
+      stc->unified_diff_clear();
     }
 
     // deleted text: a marker, and annotation with text

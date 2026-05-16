@@ -949,20 +949,27 @@ void wex::stc::sort_action(const wxCommandEvent& event)
   }
 }
 
+void wex::stc::unified_diff_clear()
+{
+  std::ranges::for_each(
+    m_marker_diffs,
+    [this](const auto& it)
+    {
+      MarkerDeleteAll(it.number());
+    });
+
+  AnnotationClearAll();
+  IndicatorClearRange(0, GetTextLength() - 1);
+  m_marker_identifiers.clear();
+}
+
 void wex::stc::vcs_clear_diffs()
 {
   if (m_diffs.size() > 0)
   {
-    std::ranges::for_each(
-      m_marker_diffs,
-      [this](const auto& it)
-      {
-        MarkerDeleteAll(it.number());
-      });
+    unified_diff_clear();
+
     m_diffs.clear();
-    AnnotationClearAll();
-    IndicatorClearRange(0, GetTextLength() - 1);
-    m_marker_identifiers.clear();
     m_diffs.status();
   }
 }
