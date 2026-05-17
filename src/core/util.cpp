@@ -232,8 +232,8 @@ bool wex::is_brace(int c)
 
 bool wex::is_codeword_separator(int c)
 {
-  return isspace(static_cast<unsigned char>(c)) || is_brace(c) ||
-         ispunct(static_cast<unsigned char>(c));
+  return c != EOF && (isspace(static_cast<unsigned char>(c)) || is_brace(c) ||
+                      ispunct(static_cast<unsigned char>(c)));
 }
 
 bool wex::matches_one_of(

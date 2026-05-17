@@ -258,18 +258,20 @@ void wex::global_env::skip(const std::string& info)
 
   if (m_marker == 0)
   {
-    m_marker = '[';
+    const char marker('[');
 
-    if (m_ex->marker_line(m_marker) != LINE_NUMBER_UNKNOWN)
+    if (m_ex->marker_line(marker) != LINE_NUMBER_UNKNOWN)
     {
       log("skip") << m_marker << "marker already present";
       return;
     }
 
-    if (!a.marker_add(m_marker))
+    if (!a.marker_add(marker))
     {
       return;
     }
+
+    m_marker = marker;
   }
 
   if (const auto& line = skip_marker_line(); line)
