@@ -61,7 +61,7 @@ wex::shell::shell(
           return;
         }
 
-        if (std::isspace(text.back()))
+        if (std::isspace(static_cast<unsigned char>(text.back())))
         {
           const std::string out(m_text + text);
           AppendText(out);

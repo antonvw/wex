@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wex::factory::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/core.h>
@@ -122,15 +122,17 @@ const std::string wex::factory::stc::eol() const
 }
 
 #define FIND_TEXT(FROM, TO)                                                    \
-  if (const auto pos = FindText(GetCurrentPos(), TO, text, find_flags);        \
-      pos != wxSTC_INVALID_POSITION)                                           \
+  if (                                                                         \
+    const auto pos = FindText(GetCurrentPos(), TO, text, find_flags);          \
+    pos != wxSTC_INVALID_POSITION)                                             \
   {                                                                            \
     SetSelection(pos, pos + text.size());                                      \
     return true;                                                               \
   }                                                                            \
                                                                                \
-  if (const auto pos = FindText(FROM, GetCurrentPos(), text, find_flags);      \
-      pos != wxSTC_INVALID_POSITION)                                           \
+  if (                                                                         \
+    const auto pos = FindText(FROM, GetCurrentPos(), text, find_flags);        \
+    pos != wxSTC_INVALID_POSITION)                                             \
   {                                                                            \
     SetSelection(pos, pos + text.size());                                      \
     return true;                                                               \
@@ -155,10 +157,11 @@ bool wex::factory::stc::find(
 
 size_t wex::factory::stc::get_fold_level() const
 {
-  if (const int level(
-        (GetFoldLevel(get_current_line()) & wxSTC_FOLDLEVELNUMBERMASK) -
-        wxSTC_FOLDLEVELBASE);
-      level > 0)
+  if (
+    const int level(
+      (GetFoldLevel(get_current_line()) & wxSTC_FOLDLEVELNUMBERMASK) -
+      wxSTC_FOLDLEVELBASE);
+    level > 0)
   {
     return level;
   }
@@ -185,7 +188,7 @@ const std::string wex::factory::stc::get_word_at_pos(int pos) const
                                ->GetTextRange(word_start, word_start + 1)
                                .ToStdString();
 
-    return !isspace(word[0]) ? word : std::string();
+    return !isspace(static_cast<unsigned char>(word[0])) ? word : std::string();
   }
 
   return const_cast<stc*>(this)
@@ -260,13 +263,13 @@ void wex::factory::stc::reset_margins(margin_t type)
 #define BIGWORD(DIRECTION)                                                     \
   int c      = GetCharAt(GetCurrentPos());                                     \
   int offset = strncmp((#DIRECTION), "Left", 4) == 0 ? -1 : 0;                 \
-  while (isspace(c) && GetCurrentPos() > 0 &&                                  \
+  while (isspace(static_cast<unsigned char>(c)) && GetCurrentPos() > 0 &&      \
          GetCurrentPos() < GetTextLength())                                    \
   {                                                                            \
     Char##DIRECTION();                                                         \
     c = GetCharAt(GetCurrentPos() + offset);                                   \
   }                                                                            \
-  while (!isspace(c) && GetCurrentPos() > 0 &&                                 \
+  while (!isspace(static_cast<unsigned char>(c)) && GetCurrentPos() > 0 &&     \
          GetCurrentPos() < GetTextLength())                                    \
   {                                                                            \
     Char##DIRECTION();                                                         \

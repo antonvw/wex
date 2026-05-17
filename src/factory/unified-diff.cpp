@@ -29,16 +29,23 @@ wex::factory::unified_diff::unified_diff(
   {
     m_frame = frame;
   }
-
-  if (m_frame != nullptr)
-  {
-    m_frame->page_save();
-  }
 }
 
 bool wex::factory::unified_diff::parse()
 {
-  return unified_diff_parser(this).parse();
+  if (m_frame != nullptr)
+  {
+    m_frame->page_save();
+  }
+
+  const bool result(unified_diff_parser(this).parse());
+
+  if (m_frame != nullptr)
+  {
+    m_frame->page_restore();
+  }
+
+  return result;
 }
 
 bool wex::factory::unified_diff::report_diff()
@@ -51,7 +58,6 @@ void wex::factory::unified_diff::report_diff_finish()
   if (m_frame != nullptr)
   {
     m_frame->report_unified_diff(this);
-    m_frame->page_restore();
   }
 }
 
