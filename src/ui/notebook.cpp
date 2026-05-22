@@ -2,7 +2,7 @@
 // Name:      notebook.cpp
 // Purpose:   Implementation of class wex::notebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
@@ -19,11 +19,11 @@ namespace wex
 {
 const std::vector<item> notebook_config_items()
 {
-  return std::vector<item>(
-    {{_("tab.Font"),
-      item::FONTPICKERCTRL,
-      wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
-     });
+  return std::vector<item>({
+    {_("tab.Font"),
+     item::FONTPICKERCTRL,
+     wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)},
+  });
 };
 } // namespace wex
 
@@ -63,10 +63,7 @@ wex::notebook::notebook(const data::window& data)
         }
         else
         {
-          auto*      page = GetPage(sel);
-          const auto key  = m_windows[page];
-          m_windows.erase(page);
-          m_keys.erase(key);
+          erase_keys(GetPage(sel));
 
           if (m_frame != nullptr && m_keys.empty())
           {
@@ -96,9 +93,10 @@ const std::string wex::notebook::change_selection(const std::string& key)
 {
   int previous;
 
-  if (const auto index = page_index_by_key(key);
-      index != wxNOT_FOUND &&
-      ((previous = wxAuiNotebook::ChangeSelection(index))) >= 0)
+  if (
+    const auto index = page_index_by_key(key);
+    index != wxNOT_FOUND &&
+    ((previous = wxAuiNotebook::ChangeSelection(index))) >= 0)
   {
     auto* page      = m_keys[key];
     m_keys[key]     = page;
@@ -132,12 +130,11 @@ void wex::notebook::config_get()
 
 bool wex::notebook::delete_page(const std::string& key)
 {
-  if (const auto index = page_index_by_key(key);
-      index != wxNOT_FOUND && DeletePage(index))
+  if (
+    const auto index = page_index_by_key(key);
+    index != wxNOT_FOUND && DeletePage(index))
   {
-    auto* page = m_keys[key];
-    m_keys.erase(key);
-    m_windows.erase(page);
+    erase_keys(key);
 
     if (m_frame != nullptr && m_keys.empty())
     {
@@ -153,6 +150,30 @@ bool wex::notebook::delete_page(const std::string& key)
 const std::string wex::notebook::current_page_key()
 {
   return key_by_page(GetCurrentPage());
+}
+
+void wex::notebook::erase_keys(const std::variant<std::string, wxWindow*>& v)
+{
+  std::string str;
+  wxWindow*   win;
+
+  if (std::holds_alternative<std::string>(v))
+  {
+    str = get<std::string>(v);
+    win = m_keys[str];
+  }
+  else if (std::holds_alternative<wxWindow*>(v))
+  {
+    win = get<wxWindow*>(v);
+    str = m_windows[win];
+  }
+  else
+  {
+    assert("unexpected variant");
+  }
+
+  m_keys.erase(str);
+  m_windows.erase(win);
 }
 
 wxWindow* wex::notebook::insert_page(const data::notebook& data)
@@ -218,11 +239,13 @@ wxWindow* wex::notebook::set_selection(const std::string& key)
 bool wex::notebook::split(const std::string& key, int direction)
 {
   const auto index = page_index_by_key(key);
+
   if (index == wxNOT_FOUND)
   {
     return false;
   }
 
   wxAuiNotebook::Split(index, direction);
+
   return true;
 }
