@@ -16,7 +16,7 @@ This document outlines the implementation strategy for Language Server Protocol 
 
 ### Module Organization
 
-```
+```txt
 src/lsp/
 ├── CMakeLists.txt          # Build configuration
 ├── client.cpp              # LSP client implementation
