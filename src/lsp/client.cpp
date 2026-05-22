@@ -7,45 +7,38 @@
 
 #include <wex/lsp/client.h>
 
-namespace wex::lsp
+namespace wex
+{
+namespace lsp
 {
 client::client(const std::string& server_path, const std::string& language_id)
   : m_server_path(server_path)
   , m_language_id(language_id)
 {
+  // TODO: Initialize process with server_path
 }
 
-client::~client()
-{
-  if (m_initialized)
-  {
-    shutdown();
-  }
-}
+client::~client() = default;
 
 bool client::initialize()
 {
-  // TODO: Implement JSON-RPC initialization message
-  // Send: {"jsonrpc": "2.0", "id": 1, "method": "initialize",
-  //        "params": {"processId": pid, "rootPath": "", ...}}
-  // Receive capabilities from server
+  // TODO: Phase 1 - JSON-RPC Protocol Implementation
+  // 1. Send "initialize" request to server
+  // 2. Parse server capabilities
+  // 3. Send "initialized" notification
+  // 4. Set m_initialized = true
   
-  m_initialized = true;
-  return true;
+  return false;
 }
 
 bool client::shutdown()
 {
-  // TODO: Send shutdown request to server
-  // Send: {"jsonrpc": "2.0", "id": X, "method": "shutdown", "params": {}}
+  // TODO: Phase 1 - JSON-RPC Protocol Implementation
+  // 1. Send "shutdown" request
+  // 2. Send "exit" notification
+  // 3. Stop process
   
-  if (m_process)
-  {
-    m_process->stop();
-  }
-  
-  m_initialized = false;
-  return true;
+  return false;
 }
 
 bool client::did_open(
@@ -53,38 +46,33 @@ bool client::did_open(
   const std::string& language_id,
   const std::string& text)
 {
-  // TODO: Send textDocument/didOpen notification
-  // Send: {"jsonrpc": "2.0", "method": "textDocument/didOpen",
-  //        "params": {"textDocument": {"uri": uri, "languageId": language_id,
-  //                                     "version": 1, "text": text}}}
+  // TODO: Phase 2 - LSP Methods Implementation
+  // Send textDocument/didOpen notification
   
-  return true;
+  return false;
 }
 
 bool client::did_change(const std::string& uri, const std::string& text)
 {
-  // TODO: Send textDocument/didChange notification
-  // Send: {"jsonrpc": "2.0", "method": "textDocument/didChange",
-  //        "params": {"textDocument": {"uri": uri, "version": N},
-  //                   "contentChanges": [{"text": text}]}}
+  // TODO: Phase 2 - LSP Methods Implementation
+  // Send textDocument/didChange notification
   
-  return true;
+  return false;
 }
 
 bool client::did_close(const std::string& uri)
 {
-  // TODO: Send textDocument/didClose notification
+  // TODO: Phase 2 - LSP Methods Implementation
+  // Send textDocument/didClose notification
   
-  return true;
+  return false;
 }
 
-std::string client::hover(
-  const std::string& uri,
-  int                line,
-  int                character)
+std::string client::hover(const std::string& uri, int line, int character)
 {
-  // TODO: Send textDocument/hover request
-  // Receive: {"jsonrpc": "2.0", "id": X, "result": {"contents": "..."}}
+  // TODO: Phase 2 - LSP Methods Implementation
+  // Send textDocument/hover request
+  // Return hover text
   
   return std::string();
 }
@@ -94,10 +82,12 @@ std::vector<std::string> client::completion(
   int                line,
   int                character)
 {
-  // TODO: Send textDocument/completion request
-  // Receive list of completion items
+  // TODO: Phase 2 - LSP Methods Implementation
+  // Send textDocument/completion request
+  // Return list of completion items
   
   return std::vector<std::string>();
 }
 
-} // namespace wex::lsp
+} // namespace lsp
+} // namespace wex
