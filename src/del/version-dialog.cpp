@@ -2,14 +2,13 @@
 // Name:      version-dialog.cpp
 // Purpose:   Implementation of wex::version_info_dialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
 
 #include <wx/app.h>
 #include <wx/stc/stc.h>
-#include <wx/utils.h>
 
 #include <boost/version.hpp>
 #include <ctags/main/ctags.h>
@@ -50,12 +49,6 @@ const std::stringstream wex::external_libraries()
   return ss;
 }
 
-wex::about_info& wex::about_info::icon(const wxIcon& rhs)
-{
-  SetIcon(rhs);
-  return *this;
-}
-
 wex::about_info& wex::about_info::description(const std::string& rhs)
 {
   SetDescription(rhs);
@@ -65,6 +58,12 @@ wex::about_info& wex::about_info::description(const std::string& rhs)
 wex::about_info& wex::about_info::developer(const std::string& rhs)
 {
   AddDeveloper(rhs);
+  return *this;
+}
+
+wex::about_info& wex::about_info::icon(const wxBitmapBundle& rhs)
+{
+  SetIcon(rhs);
   return *this;
 }
 

@@ -2,7 +2,7 @@
 // Name:      art.h
 // Purpose:   Declaration of wex::art class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2024 Anton van Wezenbeek
+// Copyright: (c) 2009-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -32,6 +32,7 @@ public:
 
   /// Sets the default bitmap client (for material art).
   /// Returns false if client if not valid for material art.
+  /// The initial value is to use wxART_CLIENT_MATERIAL_ROUND.
   static bool default_client(const wxArtClient& c);
 
   /// Returns the default bitmap colour (for material art).
