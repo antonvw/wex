@@ -78,6 +78,13 @@ bool wex::del::frame::find_in_files(
     return false;
   }
 
+  wex::listview* use_report(report);
+
+  if (use_report == nullptr)
+  {
+    use_report = activate_and_clear(tool);
+  }
+
 #ifdef __WXMSW__
   std::thread t(
     [=, this]
@@ -90,7 +97,7 @@ bool wex::del::frame::find_in_files(
         if (it.file_exists())
         {
           if (
-            wex::stream file(find_replace_data::get(), it, tool, report);
+            wex::stream file(find_replace_data::get(), it, tool, use_report);
             file.run_tool())
           {
             stats += file.get_statistics().get_elements();
@@ -98,7 +105,7 @@ bool wex::del::frame::find_in_files(
         }
         else if (it.dir_exists())
         {
-          wex::dir dir(it, build_dir(), activate_and_clear(tool));
+          wex::dir dir(it, build_dir(), use_report);
           dir.find_files(tool);
           stats += dir.get_statistics().get_elements();
         }
