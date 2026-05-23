@@ -2,21 +2,18 @@
 // Name:      find-in-files.cpp
 // Purpose:   Implementation of wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2024 Anton van Wezenbeek
+// Copyright: (c) 2022-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <thread>
 
 #include <wex/wex.h>
 
-void wex::del::frame::find_in_files(wex::window_id dialogid)
+wex::data::dir wex::del::frame::build_dir() const
 {
-  const bool      replace = (dialogid == id_replace_in_files);
-  const wex::tool tool(replace ? ID_TOOL_REPLACE : ID_TOOL_REPORT_FIND);
-
-  log::status(find_replace_string(replace));
-
+  data::dir         dir;
   data::dir::type_t type;
+
   type.set(data::dir::FILES);
 
   if (config(m_text_recursive).get(true))
@@ -38,13 +35,23 @@ void wex::del::frame::find_in_files(wex::window_id dialogid)
   find_replace_data::get()->set_regex(
     config(find_replace_data::get()->text_regex()).get(true));
 
+  dir.file_spec(config(m_text_in_files).get_first_of())
+    .find_replace_data(find_replace_data::get())
+    .type(type);
+
+  return dir;
+}
+
+void wex::del::frame::find_in_files(wex::window_id dialogid)
+{
+  const bool      replace = (dialogid == id_replace_in_files);
+  const wex::tool tool(replace ? ID_TOOL_REPLACE : ID_TOOL_REPORT_FIND);
+
+  log::status(find_replace_string(replace));
+
   wex::dir dir(
     path(config(m_text_in_folder).get_first_of()),
-    data::dir()
-      .find_replace_data(find_replace_data::get())
-      .file_spec(config(m_text_in_files).get_first_of())
-      .type(type)
-      .vcs(m_vcs),
+    build_dir().vcs(m_vcs),
     activate_and_clear(tool));
 
   dir.find_files(tool);
@@ -61,11 +68,12 @@ bool wex::del::frame::find_in_files(
     return false;
   }
 
-  if (const auto& filename(files[0]);
-      show_dialog &&
-      find_in_files_dialog(
-        tool,
-        filename.dir_exists() && !filename.file_exists()) == wxID_CANCEL)
+  if (
+    const auto& filename(files[0]);
+    show_dialog &&
+    find_in_files_dialog(
+      tool,
+      filename.dir_exists() && !filename.file_exists()) == wxID_CANCEL)
   {
     return false;
   }
@@ -81,18 +89,16 @@ bool wex::del::frame::find_in_files(
       {
         if (it.file_exists())
         {
-          if (wex::stream file(find_replace_data::get(), it, tool, report);
-              file.run_tool())
+          if (
+            wex::stream file(find_replace_data::get(), it, tool, report);
+            file.run_tool())
           {
             stats += file.get_statistics().get_elements();
           }
         }
         else if (it.dir_exists())
         {
-          wex::dir dir(
-            it,
-            data::dir().file_spec(config(m_text_in_files).get_first_of()));
-
+          wex::dir dir(it, build_dir(), activate_and_clear(tool));
           dir.find_files(tool);
           stats += dir.get_statistics().get_elements();
         }
