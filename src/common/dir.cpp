@@ -210,6 +210,10 @@ bool wex::dir::on_file(const path& p) const
       process_match(p, m_eh);
     }
   }
+  else
+  {
+    m_statistics.inc_actions();
+  }
 
   return true;
 }
@@ -296,10 +300,7 @@ bool wex::dir::traverse(const fs::directory_entry& e) const
         m_data.file_spec(),
         m_data.is_regex()))
     {
-      if (on_file(e.path()))
-      {
-        dir::get_statistics().inc_actions();
-      }
+      on_file(e.path());
     }
   }
   else if (
@@ -312,7 +313,7 @@ bool wex::dir::traverse(const fs::directory_entry& e) const
 
     if (!m_data.dir_spec().empty())
     {
-      dir::get_statistics().inc_actions();
+      m_statistics.inc_actions();
     }
   }
 

@@ -9,6 +9,7 @@
 
 #include <wex/core/config.h>
 #include <wex/core/function-repeat.h>
+#include <wex/data/dir.h>
 #include <wex/del/defs.h>
 #include <wex/del/listview.h>
 #include <wex/syntax/indicator.h>
@@ -218,6 +219,7 @@ protected:
 
 private:
   wex::listview* activate_and_clear(const wex::tool& tool);
+  data::dir      build_dir() const;
   void           bind_all();
   void           follow_path(syntax::stc* stc);
 

@@ -63,13 +63,14 @@ bool wex::stream::process(std::string& text, size_t line_no)
         boost::algorithm::to_upper(text_find);
       }
 
-      if (const auto it = std::search(
-            text_find.begin(),
-            text_find.end(),
-            std::boyer_moore_searcher(
-              m_find_string.begin(),
-              m_find_string.end()));
-          it != text_find.end())
+      if (
+        const auto it = std::search(
+          text_find.begin(),
+          text_find.end(),
+          std::boyer_moore_searcher(
+            m_find_string.begin(),
+            m_find_string.end()));
+        it != text_find.end())
       {
         match = true;
         pos   = it - text_find.begin();
@@ -222,13 +223,16 @@ bool wex::stream::run_tool()
 
     fs.write(s.c_str(), s.size());
 
-    if (factory::beautify b(m_path);
-        b.is_active() && b.is_auto() && b.is_supported(m_path))
+    if (
+      factory::beautify b(m_path);
+      b.is_active() && b.is_auto() && b.is_supported(m_path))
     {
       fs.close();
       b.file(m_path);
     }
   }
+
+  m_stats.inc_actions();
 
   return true;
 }
