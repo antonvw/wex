@@ -159,7 +159,7 @@ bool wex::macros::is_recorded(const std::string& macro) const
 
 bool wex::macros::is_recorded_macro(const std::string& macro) const
 {
-  return m_macros.find(macro) != m_macros.end();
+  return m_macros.contains(macro);
 }
 
 bool wex::macros::load_document()

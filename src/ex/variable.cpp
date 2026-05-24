@@ -174,11 +174,9 @@ bool wex::variable::expand(ex* ex)
 
   log::trace("variable") << m_name << "expanded to:" << value;
 
-  if (m_type == input_t::INPUT_ONCE_EMPTY && !m_value.empty())
-  {
-    m_ask_for_input = false;
-  }
-  else if (m_type == input_t::INPUT_ONCE)
+  if (
+    (m_type == input_t::INPUT_ONCE_EMPTY && !m_value.empty()) ||
+    m_type == input_t::INPUT_ONCE)
   {
     m_ask_for_input = false;
   }
