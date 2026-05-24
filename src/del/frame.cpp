@@ -523,12 +523,10 @@ bool wex::del::frame::open_from_action(
         to_vector_path(text).get(),
         data::control().command(cmd));
     }
-    else
-    {
-      path_org = path::current().string();
-      path::current(path(text));
-      data.style(data.style() | wxFD_NO_FOLLOW);
-    }
+
+    path_org = path::current().string();
+    path::current(path(text));
+    data.style(data.style() | wxFD_NO_FOLLOW);
   }
 
   if (!open_files_dialog(this, false, data::stc(data)) && !path_org.empty())

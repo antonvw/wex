@@ -2,7 +2,7 @@
 // Name:      lexers.h
 // Purpose:   Declaration of wex::lexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2025 Anton van Wezenbeek
+// Copyright: (c) 2008-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -188,10 +188,6 @@ private:
   void parse_node_themes(const pugi::xml_node& node);
 
   name_values_t m_default_colours, m_keywords;
-
-  // Buffer used to keep textual representation of
-  // styles, with max wxSTC_STYLE_MAX.
-  std::array<char, 4> m_buffer;
 
   // This a map, so the theme dialog is ordered.
   std::map<std::string, name_values_t> m_theme_macros;
