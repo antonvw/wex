@@ -2,10 +2,13 @@
 // Name:      notebook.h
 // Purpose:   Declaration of class wex::notebook
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2025 Anton van Wezenbeek
+// Copyright: (c) 2011-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
+
+#include <unordered_map>
+#include <variant>
 
 #include <wex/core/config.h>
 #include <wex/data/notebook.h>
@@ -16,8 +19,6 @@
 #include <wex/ui/frame.h>
 #include <wx/aui/auibook.h>
 #include <wx/wupdlock.h>
-
-#include <unordered_map>
 
 namespace wex
 {
@@ -119,6 +120,8 @@ public:
     int direction);
 
 private:
+  void erase_keys(const std::variant<std::string, wxWindow*>& v);
+
   frame* m_frame;
   // In bookctrl.h: m_pages
   std::unordered_map<std::string, wxWindow*> m_keys;
@@ -154,9 +157,8 @@ template <class T> bool wex::notebook::for_each(int id)
           {
             return false;
           }
-          const std::string key = m_windows[win];
-          m_windows.erase(win);
-          m_keys.erase(key);
+
+          erase_keys(win);
 
           if (!wxAuiNotebook::DeletePage(page))
           {
