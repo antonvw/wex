@@ -72,6 +72,7 @@ wex::open_file_dir::open_file_dir(const wex::path& path, const data::dir& data)
 bool wex::open_file_dir::on_file(const wex::path& file) const
 {
   m_frame->open_file(file, data::stc().flags(m_flags));
+  dir::on_file(file);
   return true;
 }
 

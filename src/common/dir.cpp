@@ -52,6 +52,7 @@ private:
     m_container.emplace_back(
       data().type().test(data::dir::RECURSIVE) ? escape_spaces(p.string()) :
                                                  escape_spaces(p.filename()));
+    dir::on_file(p);
     return true;
   };
 
@@ -78,6 +79,7 @@ private:
   bool on_file(const path& p) const final
   {
     m_container.emplace_back(p);
+    dir::on_file(p);
     return true;
   }
 
