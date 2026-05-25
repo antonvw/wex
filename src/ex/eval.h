@@ -8,6 +8,7 @@
 #pragma once
 
 #include <expected>
+#include <string>
 
 namespace wex
 {
@@ -23,6 +24,12 @@ public:
 
   /// Destructor.
   ~evaluator();
+
+  /// Delete the other 4.
+  evaluator(const evaluator&)            = delete;
+  evaluator(evaluator&&)                 = delete;
+  evaluator& operator=(const evaluator&) = delete;
+  evaluator& operator=(evaluator&&)      = delete;
 
   /// Returns calculated value.
   std::expected<int, std::string> eval(
