@@ -1,6 +1,6 @@
 project(wex-lsp)
 
-set(SRCS client.cpp diagnostics.cpp)
+set(SRCS client.cpp diagnostics.cpp json-rpc.cpp)
 
 add_library(wex-lsp ${SRCS})
 
