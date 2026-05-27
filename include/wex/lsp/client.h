@@ -12,6 +12,7 @@
 #include <vector>
 
 #include <wex/factory/process.h>
+#include <wex/lsp/json-rpc.h>
 
 namespace wex
 {
@@ -90,7 +91,7 @@ private:
   std::shared_ptr<factory::process> m_process;
   capabilities                     m_capabilities;
   bool                             m_initialized{false};
-  int                              m_request_id{0};
+  json_rpc                         m_rpc;
 };
 
 } // namespace lsp
