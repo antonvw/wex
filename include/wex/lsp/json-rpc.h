@@ -20,14 +20,14 @@ namespace lsp
 /// Represents a JSON-RPC 2.0 message.
 struct json_rpc_message
 {
-  std::string jsonrpc{"2.0"};
-  int         id{-1};           // -1 for notifications
-  std::string method;
+  std::string         jsonrpc{"2.0"};
+  int                 id{-1}; // -1 for notifications
+  std::string         method;
   boost::json::object params;
   boost::json::object result;
   boost::json::object error;
-  bool        is_response{false};
-  bool        is_error{false};
+  bool                is_response{false};
+  bool                is_error{false};
 };
 
 /// Callback for handling JSON-RPC responses.
@@ -49,8 +49,9 @@ public:
   /// \param id Request ID (will be auto-incremented)
   /// \return Encoded message string
   std::string encode_request(
-    const std::string&             method,
-    const boost::json::object&     params = boost::json::object());
+    const std::string&         method,
+    const boost::json::object& params = boost::json::object(),
+    int                        id     = -1);
 
   /// Encodes a JSON-RPC notification to string.
   /// \param method The RPC method name
@@ -91,10 +92,9 @@ public:
   int next_id() { return ++m_next_id; }
 
 private:
-  int                                                    m_next_id{0};
-  std::unordered_map<int, response_handler>            m_handlers;
-  static constexpr const char*                          CONTENT_LENGTH_HEADER =
-    "Content-Length: ";
+  int                                       m_next_id{0};
+  std::unordered_map<int, response_handler> m_handlers;
+  static constexpr const char* CONTENT_LENGTH_HEADER = "Content-Length: ";
 };
 
 } // namespace lsp
