@@ -210,6 +210,7 @@ bool wex::dir::on_file(const path& p) const
     else
     {
       process_match(p, m_eh);
+      m_statistics.inc_actions();
     }
   }
   else
