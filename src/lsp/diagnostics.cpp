@@ -28,11 +28,11 @@ void diagnostics::clear_all()
 
 const std::vector<diagnostic>& diagnostics::get(const std::string& uri) const
 {
-  auto it = m_diagnostics.find(uri);
-  if (it != m_diagnostics.end())
+  if (const auto it = m_diagnostics.find(uri); it != m_diagnostics.end())
   {
     return it->second;
   }
+
   static const std::vector<diagnostic> empty;
   return empty;
 }

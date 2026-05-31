@@ -11,6 +11,8 @@
 #include <string>
 #include <vector>
 
+#include <wx/event.h>
+
 #include <wex/factory/process.h>
 #include <wex/lsp/json-rpc.h>
 
@@ -31,7 +33,7 @@ struct capabilities
 };
 
 /// Represents a Language Server Protocol client.
-class client
+class client : public wxEvtHandler
 {
 public:
   /// Constructor.
@@ -80,18 +82,16 @@ public:
 
   /// Requests completion at position.
   /// Returns list of completion items.
-  std::vector<std::string> completion(
-    const std::string& uri,
-    int                line,
-    int                character);
+  std::vector<std::string>
+  completion(const std::string& uri, int line, int character);
 
 private:
-  std::string                      m_server_path;
-  std::string                      m_language_id;
+  std::string                       m_server_path;
+  std::string                       m_language_id;
   std::shared_ptr<factory::process> m_process;
-  capabilities                     m_capabilities;
-  bool                             m_initialized{false};
-  json_rpc                         m_rpc;
+  capabilities                      m_capabilities;
+  bool                              m_initialized{false};
+  json_rpc                          m_rpc;
 };
 
 } // namespace lsp
