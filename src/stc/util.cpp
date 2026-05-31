@@ -117,7 +117,10 @@ std::string describe_basefields(const std::string& number)
     base10.to_stream(stream, true);
   }
 
-  clipboard_add(stream.str());
+  if (!stream.str().empty())
+  {
+    clipboard_add(stream.str());
+  }
 
   return boost::algorithm::trim_copy(stream.str());
 }

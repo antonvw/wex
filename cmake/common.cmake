@@ -340,7 +340,7 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 --coverage")
     set(
       CMAKE_EXE_LINKER_FLAGS
-      "${CMAKE_EXE_LINKER_FLAGS} -fPIC \
+      "${CMAKE_EXE_LINKER_FLAGS} --coverage -fPIC \
       --param ggc-min-expand=3 --param ggc-min-heapsize=5120"
     )
   endif()

@@ -53,7 +53,7 @@ void wex::addressrange_mark::end(bool indicator_clear)
   {
     m_stc->IndicatorClearRange(
       m_stc->PositionFromLine(marker_begin()),
-      m_stc->PositionFromLine(marker_end() + m_corrected));
+      m_stc->GetLineEndPosition(marker_end() + m_corrected));
   }
 
   if (m_ar.is_selection())
@@ -165,7 +165,7 @@ bool wex::addressrange_mark::set()
 
   m_stc->IndicatorClearRange(
     m_stc->PositionFromLine(marker_begin()),
-    m_stc->PositionFromLine(marker_end() + m_corrected));
+    m_stc->GetLineEndPosition(marker_end() + m_corrected));
 
   m_last_range_line = false;
 
