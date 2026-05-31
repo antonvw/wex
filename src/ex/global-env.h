@@ -2,10 +2,16 @@
 // Name:      global-env.h
 // Purpose:   Declaration of class wex::global_env
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2025 Anton van Wezenbeek
+// Copyright: (c) 2015-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
+
+#include <wex/ex/addressrange.h>
+#include <wex/ex/ex.h>
+#include <wex/syntax/stc.h>
+
+#include "addressrange-mark.h"
 
 namespace wex
 {
@@ -45,8 +51,8 @@ private:
   bool process(addressrange_mark& am, const block_lines& block);
   bool process_inverse(
     addressrange_mark& am,
-    const block_lines&       block,
-    block_lines&             inverse);
+    const block_lines& block,
+    block_lines&       inverse);
   void               skip(const std::string& info);
   std::optional<int> skip_marker_line() const;
 
