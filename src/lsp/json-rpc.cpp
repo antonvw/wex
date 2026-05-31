@@ -14,10 +14,6 @@ namespace wex
 {
 namespace lsp
 {
-json_rpc::json_rpc() = default;
-
-json_rpc::~json_rpc() = default;
-
 std::string json_rpc::encode_request(
   const std::string&         method,
   const boost::json::object& params,
@@ -39,8 +35,8 @@ std::string json_rpc::encode_request(
   }
 
   std::string json_str = boost::json::serialize(request);
-  std::string header = "Content-Length: " + std::to_string(json_str.length());
-  std::string result = header + "\r\n\r\n" + json_str;
+  std::string header   = "Content-Length: " + std::to_string(json_str.length());
+  std::string result   = header + "\r\n\r\n" + json_str;
 
   return result;
 }
@@ -59,15 +55,13 @@ std::string json_rpc::encode_notification(
   }
 
   std::string json_str = boost::json::serialize(notification);
-  std::string header = "Content-Length: " + std::to_string(json_str.length());
-  std::string result = header + "\r\n\r\n" + json_str;
+  std::string header   = "Content-Length: " + std::to_string(json_str.length());
+  std::string result   = header + "\r\n\r\n" + json_str;
 
   return result;
 }
 
-std::string json_rpc::encode_response(
-  int                        id,
-  const boost::json::object& result)
+std::string json_rpc::encode_response(int id, const boost::json::object& result)
 {
   boost::json::object response;
   response["jsonrpc"] = "2.0";
@@ -75,16 +69,13 @@ std::string json_rpc::encode_response(
   response["result"]  = result;
 
   std::string json_str = boost::json::serialize(response);
-  std::string header = "Content-Length: " + std::to_string(json_str.length());
-  std::string output = header + "\r\n\r\n" + json_str;
+  std::string header   = "Content-Length: " + std::to_string(json_str.length());
+  std::string output   = header + "\r\n\r\n" + json_str;
 
   return output;
 }
 
-std::string json_rpc::encode_error(
-  int                id,
-  int                code,
-  const std::string& message)
+std::string json_rpc::encode_error(int id, int code, const std::string& message)
 {
   boost::json::object error;
   error["code"]    = code;
@@ -96,8 +87,8 @@ std::string json_rpc::encode_error(
   response["error"]   = error;
 
   std::string json_str = boost::json::serialize(response);
-  std::string header = "Content-Length: " + std::to_string(json_str.length());
-  std::string output = header + "\r\n\r\n" + json_str;
+  std::string header   = "Content-Length: " + std::to_string(json_str.length());
+  std::string output   = header + "\r\n\r\n" + json_str;
 
   return output;
 }
@@ -120,10 +111,14 @@ json_rpc_message json_rpc::decode(const std::string& data)
     auto obj    = parsed.as_object();
 
     if (obj.count("jsonrpc"))
+    {
       msg.jsonrpc = boost::json::value_to<std::string>(obj["jsonrpc"]);
+    }
 
     if (obj.count("id"))
+    {
       msg.id = boost::json::value_to<int>(obj["id"]);
+    }
 
     if (obj.count("method"))
     {

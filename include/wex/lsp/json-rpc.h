@@ -37,12 +37,6 @@ using response_handler = std::function<void(const json_rpc_message&)>;
 class json_rpc
 {
 public:
-  /// Constructor.
-  json_rpc();
-
-  /// Destructor.
-  ~json_rpc();
-
   /// Encodes a JSON-RPC request to string.
   /// \param method The RPC method name
   /// \param params The method parameters

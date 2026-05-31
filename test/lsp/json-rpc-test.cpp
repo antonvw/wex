@@ -16,7 +16,7 @@ TEST_CASE("wex::lsp::json_rpc")
   {
     boost::json::object params;
     params["processId"] = nullptr;
-    params["rootPath"] = "/home/user/project";
+    params["rootPath"]  = "/home/user/project";
 
     std::string encoded = rpc.encode_request("initialize", params);
 
@@ -30,7 +30,8 @@ TEST_CASE("wex::lsp::json_rpc")
     boost::json::object params;
     params["uri"] = "file:///test.cpp";
 
-    std::string encoded = rpc.encode_notification("textDocument/didOpen", params);
+    std::string encoded =
+      rpc.encode_notification("textDocument/didOpen", params);
 
     REQUIRE(encoded.find("Content-Length:") != std::string::npos);
     REQUIRE(encoded.find("textDocument/didOpen") != std::string::npos);
@@ -70,7 +71,8 @@ TEST_CASE("wex::lsp::json_rpc")
 
   SECTION("decode_request")
   {
-    std::string message = "Content-Length: 63\r\n\r\n"
+    std::string message =
+      "Content-Length: 63\r\n\r\n"
       "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{}}";
 
     wex::lsp::json_rpc_message msg = rpc.decode(message);
@@ -83,7 +85,8 @@ TEST_CASE("wex::lsp::json_rpc")
 
   SECTION("decode_response")
   {
-    std::string message = "Content-Length: 58\r\n\r\n"
+    std::string message =
+      "Content-Length: 58\r\n\r\n"
       "{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{\"capabilities\":{}}}";
 
     wex::lsp::json_rpc_message msg = rpc.decode(message);
@@ -97,7 +100,8 @@ TEST_CASE("wex::lsp::json_rpc")
   SECTION("decode_error")
   {
     std::string message = "Content-Length: 76\r\n\r\n"
-      "{\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32600,\"message\":\"Invalid\"}}";
+                          "{\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-"
+                          "32600,\"message\":\"Invalid\"}}";
 
     wex::lsp::json_rpc_message msg = rpc.decode(message);
 
@@ -108,16 +112,19 @@ TEST_CASE("wex::lsp::json_rpc")
 
   SECTION("register_and_handle_response")
   {
-    bool handled = false;
+    bool                       handled = false;
     wex::lsp::json_rpc_message received_msg;
 
-    rpc.register_handler(1, [&](const wex::lsp::json_rpc_message& msg) {
-      handled = true;
-      received_msg = msg;
-    });
+    rpc.register_handler(
+      1,
+      [&](const wex::lsp::json_rpc_message& msg)
+      {
+        handled      = true;
+        received_msg = msg;
+      });
 
     wex::lsp::json_rpc_message msg;
-    msg.id = 1;
+    msg.id          = 1;
     msg.is_response = true;
 
     rpc.handle_response(msg);

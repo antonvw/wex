@@ -37,13 +37,12 @@ const std::vector<diagnostic>& diagnostics::get(const std::string& uri) const
   return empty;
 }
 
-std::vector<diagnostic> diagnostics::get_line(
-  const std::string& uri,
-  int                line) const
+std::vector<diagnostic>
+diagnostics::get_line(const std::string& uri, int line) const
 {
   std::vector<diagnostic> result;
   const auto&             diags = get(uri);
-  
+
   for (const auto& diag : diags)
   {
     if (diag.range.start_line == line || diag.range.end_line == line)
@@ -51,37 +50,37 @@ std::vector<diagnostic> diagnostics::get_line(
       result.push_back(diag);
     }
   }
-  
+
   return result;
 }
 
 std::vector<std::string> diagnostics::get_uris() const
 {
   std::vector<std::string> uris;
-  
+
   for (const auto& pair : m_diagnostics)
   {
     uris.push_back(pair.first);
   }
-  
+
   return uris;
 }
 
 size_t diagnostics::count() const
 {
   size_t total = 0;
-  
+
   for (const auto& pair : m_diagnostics)
   {
     total += pair.second.size();
   }
-  
+
   return total;
 }
 
 bool diagnostics::has(const std::string& uri) const
 {
-  return m_diagnostics.find(uri) != m_diagnostics.end();
+  return m_diagnostics.contains(uri);
 }
 
 } // namespace lsp
