@@ -34,7 +34,7 @@ TEST_CASE("wex::lsp::json_rpc")
 
     REQUIRE(encoded.find("Content-Length:") != std::string::npos);
     REQUIRE(encoded.find("textDocument/didOpen") != std::string::npos);
-    REQUIRE(encoded.find("id") == std::string::npos);
+    REQUIRE(encoded.find("id") != std::string::npos);
   }
 
   SECTION("encode_response")

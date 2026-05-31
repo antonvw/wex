@@ -58,7 +58,7 @@ All Phase 1 work has been committed to the `lsp-support` branch:
 - ✅ Boost.JSON serialization/deserialization
 
 **Message Format:**
-```
+```txt
 Content-Length: <bytes><CRLF>
 <CRLF>
 {JSON payload}
@@ -105,7 +105,7 @@ Content-Length: <bytes><CRLF>
 
 ## File Structure
 
-```
+```txt
 antonvw/wex (lsp-support branch)
 ├── LSP-PHASE1.md                          (NEW) Architecture & API docs
 ├── PHASE1-SUMMARY.md                      (THIS FILE) Implementation summary

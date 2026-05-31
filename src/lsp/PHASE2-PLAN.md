@@ -6,7 +6,7 @@ Phase 2 builds on the Phase 1 foundation (JSON-RPC protocol and diagnostics stor
 
 ## Architecture
 
-```
+```txt
 Phase 1 Foundation (✅ Complete)
 ├── JSON-RPC Protocol Handler
 ├── Diagnostic Storage

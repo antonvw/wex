@@ -8,7 +8,7 @@ This document describes the Language Server Protocol (LSP) implementation for th
 
 ### Architecture
 
-```
+```txt
 ┌─────────────────────────────────────────────────────┐
 │           LSP Client (wex::lsp::client)             │
 │  Manages server connection and LSP protocol         │
@@ -65,7 +65,7 @@ int next_id();
 
 **Message Format Example:**
 
-```
+```txt
 Content-Length: 63<CRLF>
 <CRLF>
 {"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}
@@ -105,7 +105,7 @@ bool has(const std::string& uri) const;
 
 **Storage Structure:**
 
-```
+```txt
 diagnostics {
   "file:///project/main.cpp" -> [diagnostic1, diagnostic2, ...]
   "file:///project/utils.cpp" -> [diagnostic3, ...]
@@ -140,7 +140,7 @@ struct capabilities
 
 ### File Structure
 
-```
+```txt
 include/wex/lsp/
 ├── lsp.h                    # Main namespace header
 ├── client.h                 # LSP client interface
