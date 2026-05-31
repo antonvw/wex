@@ -76,7 +76,7 @@ private:
   };
 
   // markers used: begin, target, end
-  typedef std::array<char, 3> markers_t;
+  using markers_t = std::array<char, 3>;
 
   mark_t get_type() const;
 

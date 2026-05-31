@@ -7,13 +7,9 @@
 
 #include <boost/tokenizer.hpp>
 #include <wex/core/log.h>
-#include <wex/ex/addressrange.h>
 #include <wex/ex/command-parser.h>
-#include <wex/ex/ex.h>
-#include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 
-#include "addressrange-mark.h"
 #include "block-lines.h"
 #include "global-env.h"
 
@@ -143,13 +139,16 @@ bool wex::global_env::global(const data::substitute& data)
 
   m_lines_skip.clear();
 
+  // inverse block
   block_lines ib(
     m_stc,
     m_ar.begin().get_line() - 2,
     0,
     block_lines::block_t::INVERSE);
-  block_lines mb(m_stc);
+  block_lines mb(m_stc); // match block
 
+  // For all matches, process the match block, or inverse process
+  // the match block and the inverse block
   while (am.search())
   {
     const auto lines(m_stc->get_line_count());
@@ -175,9 +174,11 @@ bool wex::global_env::global(const data::substitute& data)
     }
   }
 
-  if (data.is_inverse())
+  // There are no more matches, one inverse blcock processing still needed for
+  // the remaining lines, as they do not contain matches
+  if (data.is_inverse() && am.marker_target() != am.marker_end())
   {
-    ib.start(am.marker_target());
+    ib.start(am.marker_target() + 1);
     ib.end(am.marker_end() + 1);
 
     if (ib.is_available() && !process(am, ib))
