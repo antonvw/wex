@@ -149,6 +149,7 @@ set(
   wex-common
   wex-data
   wex-syntax
+  wex-lsp
   wex-factory
   wex-test
   wex-core
