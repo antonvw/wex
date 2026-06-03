@@ -12,6 +12,7 @@ lib         | sub-lib   | src     | info
 wex-core    |           | core    | core classes
 wex-test    |           | test    | test classes
 wex-factory |           | factory | virtual base classes
+wex-lsp     |           | lsp     | language server process classes
 wex-syntax  |           | syntax  | syntax highlighting classes
 wex-data    |           | data    | data classes
 wex-common  |           | common  | common classes

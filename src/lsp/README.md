@@ -2,6 +2,9 @@
 
 ## Overview
 
+This library contains Language Server Process classes for wex.
+It uses the core and factory wex library (for the moment).
+
 This document outlines the implementation strategy for Language Server Protocol (LSP) support in the wex library. LSP enables integration with language servers, providing features like:
 
 - Diagnostics (errors, warnings, hints)
