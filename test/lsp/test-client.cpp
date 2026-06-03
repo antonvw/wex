@@ -15,5 +15,7 @@ TEST_CASE("wex::lsp::client")
   SECTION("initialize")
   {
     REQUIRE(client.initialize());
+    REQUIRE(client.is_running());
+    REQUIRE(client.is_initialized());
   }
 }

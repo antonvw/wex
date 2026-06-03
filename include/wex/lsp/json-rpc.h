@@ -37,6 +37,26 @@ using response_handler = std::function<void(const json_rpc_message&)>;
 class json_rpc
 {
 public:
+  /// Decodes a JSON-RPC message from string.
+  /// \param data Raw message data
+  /// \return Parsed message, or empty if parsing failed
+  json_rpc_message decode(const std::string& data);
+
+  /// Encodes a JSON-RPC error response to string.
+  /// \param id Request ID
+  /// \param code Error code
+  /// \param message Error message
+  /// \return Encoded message string
+  std::string encode_error(int id, int code, const std::string& message);
+
+  /// Encodes a JSON-RPC notification to string.
+  /// \param method The RPC method name
+  /// \param params The method parameters
+  /// \return Encoded message string
+  std::string encode_notification(
+    const std::string&         method,
+    const boost::json::object& params = boost::json::object());
+
   /// Encodes a JSON-RPC request to string.
   /// \param method The RPC method name
   /// \param params The method parameters
@@ -47,36 +67,11 @@ public:
     const boost::json::object& params = boost::json::object(),
     int                        id     = -1);
 
-  /// Encodes a JSON-RPC notification to string.
-  /// \param method The RPC method name
-  /// \param params The method parameters
-  /// \return Encoded message string
-  std::string encode_notification(
-    const std::string&         method,
-    const boost::json::object& params = boost::json::object());
-
   /// Encodes a JSON-RPC response to string.
   /// \param id Request ID
   /// \param result The result
   /// \return Encoded message string
   std::string encode_response(int id, const boost::json::object& result);
-
-  /// Encodes a JSON-RPC error response to string.
-  /// \param id Request ID
-  /// \param code Error code
-  /// \param message Error message
-  /// \return Encoded message string
-  std::string encode_error(int id, int code, const std::string& message);
-
-  /// Decodes a JSON-RPC message from string.
-  /// \param data Raw message data
-  /// \return Parsed message, or empty if parsing failed
-  json_rpc_message decode(const std::string& data);
-
-  /// Registers a response handler for a request ID.
-  /// \param id Request ID
-  /// \param handler Callback to invoke when response arrives
-  void register_handler(int id, response_handler handler);
 
   /// Handles an incoming response.
   /// \param msg The response message
@@ -84,6 +79,11 @@ public:
 
   /// Returns the next request ID.
   int next_id() { return ++m_next_id; }
+
+  /// Registers a response handler for a request ID.
+  /// \param id Request ID
+  /// \param handler Callback to invoke when response arrives
+  void register_handler(int id, response_handler handler);
 
 private:
   int                                       m_next_id{0};

@@ -24,7 +24,8 @@ enum class severity_t
   HINT    = 4
 };
 
-/// Represents a single diagnostic (error, warning, etc.) from the language server.
+/// Represents a single diagnostic (error, warning, etc.) from the language
+/// server.
 struct diagnostic
 {
   /// Range of the diagnostic
@@ -62,6 +63,9 @@ public:
   /// Clears all diagnostics for all documents.
   void clear_all();
 
+  /// Returns total count of diagnostics.
+  size_t count() const;
+
   /// Returns all diagnostics for a specific document URI.
   const std::vector<diagnostic>& get(const std::string& uri) const;
 
@@ -70,9 +74,6 @@ public:
 
   /// Returns all document URIs with diagnostics.
   std::vector<std::string> get_uris() const;
-
-  /// Returns total count of diagnostics.
-  size_t count() const;
 
   /// Returns whether there are any diagnostics for a document.
   bool has(const std::string& uri) const;

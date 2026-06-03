@@ -26,6 +26,18 @@ void diagnostics::clear_all()
   m_diagnostics.clear();
 }
 
+size_t diagnostics::count() const
+{
+  size_t total = 0;
+
+  for (const auto& pair : m_diagnostics)
+  {
+    total += pair.second.size();
+  }
+
+  return total;
+}
+
 const std::vector<diagnostic>& diagnostics::get(const std::string& uri) const
 {
   if (const auto it = m_diagnostics.find(uri); it != m_diagnostics.end())
@@ -64,18 +76,6 @@ std::vector<std::string> diagnostics::get_uris() const
   }
 
   return uris;
-}
-
-size_t diagnostics::count() const
-{
-  size_t total = 0;
-
-  for (const auto& pair : m_diagnostics)
-  {
-    total += pair.second.size();
-  }
-
-  return total;
 }
 
 bool diagnostics::has(const std::string& uri) const
