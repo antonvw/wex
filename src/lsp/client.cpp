@@ -5,9 +5,9 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
 #include <boost/asio.hpp>
 #include <boost/regex.hpp>
+#include <iostream>
 #include <wex/core/log.h>
 #include <wex/lsp/client.h>
 
@@ -19,14 +19,16 @@ client::client(const lexer& lexer)
   : m_server_path(lexer.lsp())
   , m_language_id(lexer.language())
 {
-  m_rpc.register_handler(1, [this](const json_rpc_message& msg) 
-  {
-    if (!msg.is_error && msg.result.count("capabilities")) 
+  m_rpc.register_handler(
+    1,
+    [this](const json_rpc_message& msg)
     {
-      m_capabilities.hover_support = 1;
-      m_capabilities.completion_support = 1;
-    }
-  });
+      if (!msg.is_error && msg.result.count("capabilities"))
+      {
+        m_capabilities.hover_support      = 1;
+        m_capabilities.completion_support = 1;
+      }
+    });
 }
 
 client::~client() = default;
@@ -104,7 +106,9 @@ bool client::initialize()
   }
 
   std::string response;
-  boost::asio::read_until(*m_process, boost::asio::dynamic_buffer(response), 
+  boost::asio::read_until(
+    *m_process,
+    boost::asio::dynamic_buffer(response),
     boost::regex("{\"id\".*}"));
 
   m_rpc.handle_response(m_rpc.decode(response));
@@ -149,7 +153,7 @@ bool client::write(const std::string& text)
   {
     return false;
   }
-  
+
   return boost::asio::write(*m_process, boost::asio::buffer(text)) > 0;
 }
 } // namespace lsp

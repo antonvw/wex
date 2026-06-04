@@ -20,7 +20,7 @@ TEST_CASE("wex::lsp::client")
     REQUIRE(client.initialize());
     REQUIRE(client.is_running());
     REQUIRE(client.is_initialized());
-  
+
     REQUIRE(client.shutdown());
   }
 }
