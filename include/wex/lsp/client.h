@@ -12,7 +12,9 @@
 #include <vector>
 
 #include <boost/process.hpp>
+
 #include <wex/lsp/json-rpc.h>
+#include <wex/syntax/lexer.h>
 
 namespace wex
 {
@@ -30,14 +32,14 @@ struct capabilities
   bool diagnostic_support{false};
 };
 
-/// Represents a Language Server Protocol client.
+/// Represents a Language Server Protocol client. 
+/// Each client communicates with one Server, based upon lexer setup.
 class client
 {
 public:
   /// Constructor.
-  /// \param server_path Path to the language server executable
-  /// \param language_id Language identifier (e.g., "cpp", "python")
-  client(const std::string& server_path, const std::string& language_id);
+  /// \param lexer The lexer for which to create an LSP client
+  client(const lexer& lexer);
 
   /// Destructor.
   ~client();

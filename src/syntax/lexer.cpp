@@ -564,6 +564,7 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
                                            m_scintilla_lexer);
   m_extensions  = node->attribute("extensions").value();
   m_language    = node->attribute("language").value();
+  m_lsp         = node->attribute("lsp").value();
   m_previewable = !node->attribute("preview").empty();
 
   if (const std::string exclude(node->attribute("exclude").value());

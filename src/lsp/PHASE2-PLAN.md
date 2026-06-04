@@ -76,8 +76,8 @@ bool client::initialize()
 
 **Response Handling:**
 ```cpp
-m_rpc.register_handler(1, [this](const json_rpc_message& msg) {
-    if (!msg.is_error && msg.result.count("capabilities")) {
+m_rpc.(1, [this](const json_rpc_message& msg) {
+    if (!msgregister_handler.is_error && msg.result.count("capabilities")) {
         auto caps = msg.result["capabilities"];
         m_capabilities.hover_support = /* ... */;
         m_capabilities.completion_support = /* ... */;

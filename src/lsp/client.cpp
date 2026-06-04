@@ -13,15 +13,26 @@ namespace wex
 {
 namespace lsp
 {
-client::client(const std::string& server_path, const std::string& language_id)
-  : m_server_path(server_path)
-  , m_language_id(language_id)
+client::client(const lexer& lexer)
+  : m_server_path(lexer.lsp())
+  , m_language_id(lexer.language())
 {
   boost::asio::io_context ctx;
-//  m_process = std::make_shared<boost::process::popen>(
-//    ctx,
-//    "clangd", {});
-    //{"--path-mappings=" + server_path});
+
+  m_process = std::make_shared<boost::process::popen>(
+    ctx,
+    m_server_path, 
+    std::vector<std::string{"--path-mappings=" + server_path});
+
+  m_rpc.register_handler(1, [this](const json_rpc_message& msg) 
+  {
+    if (!msg.is_error && msg.result.count("capabilities")) 
+    {
+        const auto caps = msg.result["capabilities"];
+        m_capabilities.hover_support = 1;
+        m_capabilities.completion_support = 1;
+    }
+  });
 }
 
 client::~client() = default;
@@ -88,6 +99,11 @@ bool client::initialize()
   {
     return false;
   }
+
+  std::string response;
+  boost::asio::read_until(*m_process, boost::asio::dynamic_buffer(response), '\n');
+
+  m_rpc.handle_response(m_rpc.decode(response));
 
   if (!write(m_rpc.encode_notification("initialized")))
   {
