@@ -32,7 +32,7 @@ struct capabilities
   bool diagnostic_support{false};
 };
 
-/// Represents a Language Server Protocol client. 
+/// Represents a Language Server Protocol client.
 /// Each client communicates with one Server, based upon lexer setup.
 class client
 {
@@ -91,7 +91,7 @@ private:
   std::string m_server_path;
   std::string m_language_id;
 
-  std::shared_ptr<boost::process::popen> m_process;
+  std::unique_ptr<boost::process::popen> m_process;
 
   capabilities m_capabilities;
   bool         m_initialized{false};

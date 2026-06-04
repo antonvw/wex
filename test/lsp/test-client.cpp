@@ -10,12 +10,17 @@
 
 TEST_CASE("wex::lsp::client")
 {
-  wex::lsp::client client("xx", "cpp");
+  wex::lsp::client client(wex::lexer("cpp"));
 
   SECTION("initialize")
   {
+    REQUIRE(!client.is_running());
+    REQUIRE(!client.is_initialized());
+
     REQUIRE(client.initialize());
     REQUIRE(client.is_running());
     REQUIRE(client.is_initialized());
+  
+    REQUIRE(client.shutdown());
   }
 }

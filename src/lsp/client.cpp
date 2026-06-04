@@ -7,6 +7,8 @@
 
 #include <iostream>
 #include <boost/asio.hpp>
+#include <boost/regex.hpp>
+#include <wex/core/log.h>
 #include <wex/lsp/client.h>
 
 namespace wex
@@ -17,20 +19,12 @@ client::client(const lexer& lexer)
   : m_server_path(lexer.lsp())
   , m_language_id(lexer.language())
 {
-  boost::asio::io_context ctx;
-
-  m_process = std::make_shared<boost::process::popen>(
-    ctx,
-    m_server_path, 
-    std::vector<std::string{"--path-mappings=" + server_path});
-
   m_rpc.register_handler(1, [this](const json_rpc_message& msg) 
   {
     if (!msg.is_error && msg.result.count("capabilities")) 
     {
-        const auto caps = msg.result["capabilities"];
-        m_capabilities.hover_support = 1;
-        m_capabilities.completion_support = 1;
+      m_capabilities.hover_support = 1;
+      m_capabilities.completion_support = 1;
     }
   });
 }
@@ -85,6 +79,15 @@ std::string client::hover(const std::string& uri, int line, int character)
 
 bool client::initialize()
 {
+  log("lsp init") << m_server_path;
+
+  boost::asio::io_context ctx;
+
+  m_process = std::make_unique<boost::process::popen>(
+    ctx,
+    boost::process::environment::find_executable(m_server_path),
+    std::vector<std::string>{});
+
   // JSON-RPC Protocol Implementation
   // 1. Send "initialize" request to server
   // 2. Parse server capabilities
@@ -101,7 +104,8 @@ bool client::initialize()
   }
 
   std::string response;
-  boost::asio::read_until(*m_process, boost::asio::dynamic_buffer(response), '\n');
+  boost::asio::read_until(*m_process, boost::asio::dynamic_buffer(response), 
+    boost::regex("{\"id\".*}"));
 
   m_rpc.handle_response(m_rpc.decode(response));
 
@@ -146,7 +150,7 @@ bool client::write(const std::string& text)
     return false;
   }
   
-  boost::asio::write(*m_process, boost::asio::buffer(text));
+  return boost::asio::write(*m_process, boost::asio::buffer(text)) > 0;
 }
 } // namespace lsp
 } // namespace wex

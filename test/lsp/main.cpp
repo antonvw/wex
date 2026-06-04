@@ -2,7 +2,7 @@
 // Name:      main.cpp
 // Purpose:   main for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2023
+// Copyright: (c) 2026
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/test/test.h>
