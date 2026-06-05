@@ -18,6 +18,8 @@
 
 namespace wex
 {
+class item_dialog;
+
 namespace lsp
 {
 /// Server capabilities tracking.
@@ -37,6 +39,10 @@ struct capabilities
 class client
 {
 public:
+  /// Shows a dialog allowing you to choose which lsp server to use
+  /// Returns dialog return code.
+  static int config_dialog(const data::window& data = data::window());
+
   /// Constructor.
   /// \param lexer The lexer for which to create an LSP client
   client(const lexer& lexer);
@@ -96,6 +102,8 @@ private:
   capabilities m_capabilities;
   bool         m_initialized{false};
   json_rpc     m_rpc;
+
+  static inline item_dialog* m_item_dialog{nullptr};
 };
 
 } // namespace lsp

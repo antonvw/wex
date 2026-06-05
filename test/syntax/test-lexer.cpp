@@ -25,6 +25,7 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.styles().empty());
     REQUIRE(lexer.display_lexer().empty());
     REQUIRE(lexer.scintilla_lexer().empty());
+    REQUIRE(lexer.lsp_server().empty());
     REQUIRE(lexer.line_size() > 0);
   }
 
@@ -54,6 +55,7 @@ TEST_CASE("wex::lexer")
         edgecolumns=\"2 4 6\"\
         edgemode=\"line\"\
         spacevisible=\"always\"\
+        lsp=\"clangd\"\
         tabdrawmode=\"arrow\" wrapline=\"char\"\
         tabmode=\"use\"\
         tabwidth=\"12\">\
@@ -66,6 +68,7 @@ TEST_CASE("wex::lexer")
       REQUIRE(lexer.is_ok());
       REQUIRE(lexer.scintilla_lexer() == "cpp");
       REQUIRE(lexer.display_lexer() == "cpp");
+      REQUIRE(lexer.lsp_server() == "clangd");
       REQUIRE(lexer.attrib(_("Edge line")) == wxSTC_EDGE_LINE);
       REQUIRE(lexer.attrib(_("Expand tabs")) == 1);
       REQUIRE(lexer.attrib(_("Tab draw mode")) == wxSTC_TD_LONGARROW);

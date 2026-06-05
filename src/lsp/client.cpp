@@ -10,6 +10,8 @@
 #include <iostream>
 #include <wex/core/log.h>
 #include <wex/lsp/client.h>
+#include <wex/syntax/lexers.h>
+#include <wex/ui/item.h>
 
 namespace wex
 {
@@ -36,16 +38,39 @@ client::~client() = default;
 std::vector<std::string>
 client::completion(const std::string& uri, int line, int character)
 {
-  // TODO: Phase 2 - LSP Methods Implementation
+  // LSP Methods Implementation
   // Send textDocument/completion request
   // Return list of completion items
 
   return std::vector<std::string>();
 }
 
+int wex::lsp::client::config_dialog(const data::window& par)
+{
+  const data::window data(data::window(par).title(_("Set LSP Server").ToStdString()));
+
+  if (m_item_dialog == nullptr)
+  {
+    item::choices_bool_t choices;
+    for (auto& server : lexers::get()->get_lsp_servers())
+    {
+      choices.insert(server);
+    }
+
+    m_item_dialog = new item_dialog(std::vector<item>{{choices}}, data);
+  }
+  else
+  {
+    m_item_dialog->reload();
+  }
+
+  return (data.button() & wxAPPLY) ? m_item_dialog->Show() :
+                                     m_item_dialog->ShowModal();
+}
+
 bool client::did_change(const std::string& uri, const std::string& text)
 {
-  // TODO: Phase 2 - LSP Methods Implementation
+  // LSP Methods Implementation
   // Send textDocument/didChange notification
 
   return false;
@@ -56,7 +81,7 @@ bool client::did_open(
   const std::string& language_id,
   const std::string& text)
 {
-  // TODO: Phase 2 - LSP Methods Implementation
+  // LSP Methods Implementation
   // Send textDocument/didOpen notification
 
   return false;
@@ -64,7 +89,7 @@ bool client::did_open(
 
 bool client::did_close(const std::string& uri)
 {
-  // TODO: Phase 2 - LSP Methods Implementation
+  // LSP Methods Implementation
   // Send textDocument/didClose notification
 
   return false;
@@ -72,7 +97,7 @@ bool client::did_close(const std::string& uri)
 
 std::string client::hover(const std::string& uri, int line, int character)
 {
-  // TODO: Phase 2 - LSP Methods Implementation
+  // LSP Methods Implementation
   // Send textDocument/hover request
   // Return hover text
 
@@ -81,8 +106,6 @@ std::string client::hover(const std::string& uri, int line, int character)
 
 bool client::initialize()
 {
-  log("lsp init") << m_server_path;
-
   boost::asio::io_context ctx;
 
   m_process = std::make_unique<boost::process::popen>(
@@ -120,6 +143,8 @@ bool client::initialize()
 
   m_initialized = true;
 
+  log::debug("lsp init") << m_server_path;
+
   return m_initialized;
 }
 
@@ -143,6 +168,7 @@ bool client::shutdown()
   }
 
   m_process->terminate();
+  m_initialized = false;
 
   return true;
 }

@@ -15,23 +15,6 @@ This document outlines the implementation strategy for Language Server Protocol 
 - Rename refactoring
 - Code formatting
 
-## Architecture
-
-### Module Organization
-
-```txt
-src/lsp/
-├── CMakeLists.txt          # Build configuration
-├── client.cpp              # LSP client implementation
-├── diagnostics.cpp         # Diagnostic management
-└── test/                   # Unit tests
-  
-include/wex/lsp/
-├── lsp.h                   # Main namespace header
-├── client.h                # LSP client interface
-└── diagnostics.h           # Diagnostic types
-```
-
 ### Design Principles
 
 1. **Integration with existing infrastructure:**
@@ -117,26 +100,6 @@ include/wex/lsp/
 - `wex::data::` - Configuration data structures
 - `wex::config::` - Configuration storage
 
-## Dependencies
-
-### Already Available
-
-- **Boost 1.88+**
-  - `Boost.Process` - Execute language server
-  - `Boost.JSON` - Protocol messages
-  - `Boost.Asio` - Network communication (transitive via Process)
-  - `Boost.Log` - Logging
-
-- **wxWidgets 3.3**
-  - Event system
-  - Process monitoring
-  - UI components
-
-### Optional Future
-
-- `nlohmann/json` - Alternative JSON library (if Boost.JSON insufficient)
-- `boost_process::v1` - Already available in Boost
-
 ## Integration Points
 
 ### With Existing Components
@@ -205,6 +168,7 @@ Each phase should include unit tests:
 
 - [LSP Specification](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/)
 - [LSP Examples](https://github.com/microsoft/language-server-protocol/tree/gh-pages/_specifications)
+- [JSON-RPC 2.0 Spec](https://www.jsonrpc.org/specification)
 - Wex existing patterns: `vcs/process.h`, `factory/frame.h`
 
 ## Implementation Checklist

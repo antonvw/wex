@@ -368,6 +368,11 @@ bool wex::lexers::load_document()
       if (const wex::lexer lexer(&node); lexer.is_ok())
       {
         m_lexers.emplace_back(lexer);
+
+        if (!lexer.lsp_server().empty())
+        {
+          m_lsp_servers.insert(lexer.lsp_server());
+        } 
       }
     }
   }

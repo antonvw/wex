@@ -86,7 +86,8 @@ public:
   void register_handler(int id, response_handler handler);
 
 private:
-  int                                       m_next_id{0};
+  int m_next_id{0};
+
   std::unordered_map<int, response_handler> m_handlers;
   static constexpr const char* CONTENT_LENGTH_HEADER = "Content-Length: ";
 };

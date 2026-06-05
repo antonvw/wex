@@ -132,8 +132,8 @@ public:
   /// Returns the line size.
   size_t line_size() const;
 
-  /// Returns the lsp.
-  const std::string& lsp() const { return m_lsp; }
+  /// Returns the lsp server.
+  const std::string& lsp_server() const { return m_lsp; }
 
   /// Returns a lexer comment string with text formatted.
   const std::string make_comment(
