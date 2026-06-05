@@ -8,6 +8,7 @@
 #include <boost/json.hpp>
 #include <sstream>
 
+#include <wex/core/log.h>
 #include <wex/lsp/json-rpc.h>
 
 namespace wex
@@ -160,6 +161,10 @@ void json_rpc::handle_response(const json_rpc_message& msg)
   {
     it->second(msg);
     m_handlers.erase(it);
+  }
+  else
+  {
+    log("json_rpc::handle_response") << msg.id;
   }
 }
 

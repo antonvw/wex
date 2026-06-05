@@ -5,20 +5,21 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <boost/asio.hpp>
 #include <boost/regex.hpp>
 #include <iostream>
+
 #include <wex/core/log.h>
+#include <wex/core/regex.h>
 #include <wex/lsp/client.h>
 #include <wex/syntax/lexers.h>
-#include <wex/ui/item.h>
+#include <wex/ui/item-dialog.h>
 
 namespace wex
 {
 namespace lsp
 {
 client::client(const lexer& lexer)
-  : m_server_path(lexer.lsp())
+  : m_server_path(lexer.lsp_server())
   , m_language_id(lexer.language())
 {
   m_rpc.register_handler(
@@ -47,11 +48,13 @@ client::completion(const std::string& uri, int line, int character)
 
 int wex::lsp::client::config_dialog(const data::window& par)
 {
-  const data::window data(data::window(par).title(_("Set LSP Server").ToStdString()));
+  const data::window data(
+    data::window(par).title(_("Set LSP Server").ToStdString()));
 
   if (m_item_dialog == nullptr)
   {
     item::choices_bool_t choices;
+
     for (auto& server : lexers::get()->get_lsp_servers())
     {
       choices.insert(server);
@@ -106,10 +109,9 @@ std::string client::hover(const std::string& uri, int line, int character)
 
 bool client::initialize()
 {
-  boost::asio::io_context ctx;
-
+  m_context = std::make_unique<boost::asio::io_context>();
   m_process = std::make_unique<boost::process::popen>(
-    ctx,
+    *m_context,
     boost::process::environment::find_executable(m_server_path),
     std::vector<std::string>{});
 
@@ -128,11 +130,28 @@ bool client::initialize()
     return false;
   }
 
-  std::string response;
-  boost::asio::read_until(
-    *m_process,
-    boost::asio::dynamic_buffer(response),
-    boost::regex("{\"id\".*}"));
+  std::string data, response;
+  size_t      n;
+  size_t      max   = 100;
+  size_t      total = 0;
+  while ((n = boost::asio::read_until(
+            *m_process,
+            boost::asio::dynamic_buffer(data),
+            "}")) > 0 &&
+         total < max)
+  {
+    response += data.substr(0, n);
+    total += n;
+    data.erase(0, n);
+
+    if (max == 0)
+    {
+      if (regex r("Content-Length: ([0-9]+)"); r.match(response))
+      {
+        max = stoi(r[0]);
+      }
+    }
+  }
 
   m_rpc.handle_response(m_rpc.decode(response));
 
@@ -169,6 +188,8 @@ bool client::shutdown()
 
   m_process->terminate();
   m_initialized = false;
+
+  log::debug("lsp shutdown") << m_server_path;
 
   return true;
 }

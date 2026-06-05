@@ -11,8 +11,10 @@
 #include <string>
 #include <vector>
 
+#include <boost/asio.hpp>
 #include <boost/process.hpp>
 
+#include <wex/factory/window.h>
 #include <wex/lsp/json-rpc.h>
 #include <wex/syntax/lexer.h>
 
@@ -97,7 +99,8 @@ private:
   std::string m_server_path;
   std::string m_language_id;
 
-  std::unique_ptr<boost::process::popen> m_process;
+  std::unique_ptr<boost::asio::io_context> m_context;
+  std::unique_ptr<boost::process::popen>   m_process;
 
   capabilities m_capabilities;
   bool         m_initialized{false};
