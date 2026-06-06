@@ -38,52 +38,60 @@ class json_rpc
 {
 public:
   /// Decodes a JSON-RPC message from string.
-  /// \param data Raw message data
-  /// \return Parsed message, or empty if parsing failed
-  json_rpc_message decode(const std::string& data);
+  /// Returns parsed message, or empty if parsing failed.
+  json_rpc_message decode(
+    /// Raw message data
+    const std::string& data);
 
   /// Encodes a JSON-RPC error response to string.
-  /// \param id Request ID
-  /// \param code Error code
-  /// \param message Error message
-  /// \return Encoded message string
-  std::string encode_error(int id, int code, const std::string& message);
+  /// Return encoded message string.
+  std::string encode_error(
+    /// request ID
+    int id,
+    /// error code
+    int code,
+    /// error message
+    const std::string& message);
 
   /// Encodes a JSON-RPC notification to string.
-  /// \param method The RPC method name
-  /// \param params The method parameters
-  /// \return Encoded message string
+  /// Returns encoded message string.
   std::string encode_notification(
-    const std::string&         method,
+    /// the RPC method name
+    const std::string& method,
+    /// the method parameters
     const boost::json::object& params = boost::json::object());
 
   /// Encodes a JSON-RPC request to string.
-  /// \param method The RPC method name
-  /// \param params The method parameters
-  /// \param id Request ID (will be auto-incremented)
-  /// \return Encoded message string
+  /// Returns encoded message string.
   std::string encode_request(
-    const std::string&         method,
+    /// the RPC method name
+    const std::string& method,
+    /// the method parameters
     const boost::json::object& params = boost::json::object(),
-    int                        id     = -1);
+    /// request ID (will be auto-incremented)
+    int id = -1);
 
   /// Encodes a JSON-RPC response to string.
-  /// \param id Request ID
-  /// \param result The result
-  /// \return Encoded message string
-  std::string encode_response(int id, const boost::json::object& result);
+  /// Returns encoded message string.
+  std::string encode_response(
+    /// Request ID
+    int id,
+    /// the result
+    const boost::json::object& result);
 
   /// Handles an incoming response.
-  /// \param msg The response message
-  void handle_response(const json_rpc_message& msg);
+  /// Returns false if msg is not handled.
+  bool handle_response(const json_rpc_message& msg);
 
   /// Returns the next request ID.
   int next_id() { return ++m_next_id; }
 
   /// Registers a response handler for a request ID.
-  /// \param id Request ID
-  /// \param handler Callback to invoke when response arrives
-  void register_handler(int id, response_handler handler);
+  void register_handler(
+    /// request ID
+    int id,
+    /// callback to invoke when response arrives
+    response_handler handler);
 
 private:
   int m_next_id{0};

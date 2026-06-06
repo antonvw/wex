@@ -20,12 +20,14 @@ json_rpc_message json_rpc::decode(const std::string& data)
   json_rpc_message msg;
 
   size_t pos = data.find("\r\n\r\n");
+
   if (pos == std::string::npos)
   {
+    log("json_rpc::decode invalid") << data;
     return msg;
   }
 
-  std::string json_str = data.substr(pos + 4);
+  const std::string json_str = data.substr(pos + 4);
 
   try
   {
@@ -40,6 +42,10 @@ json_rpc_message json_rpc::decode(const std::string& data)
     if (obj.count("id"))
     {
       msg.id = boost::json::value_to<int>(obj["id"]);
+    }
+    else
+    {
+      log("json_rpc::decode missing id") << json_str;
     }
 
     if (obj.count("method"))
@@ -67,8 +73,9 @@ json_rpc_message json_rpc::decode(const std::string& data)
       msg.params = obj["params"].as_object();
     }
   }
-  catch (...)
+  catch (std::exception& e)
   {
+    log(e) << "json_rpc::decode" << json_str;
     return json_rpc_message();
   }
 
@@ -154,18 +161,21 @@ std::string json_rpc::encode_response(int id, const boost::json::object& result)
   return output;
 }
 
-void json_rpc::handle_response(const json_rpc_message& msg)
+bool json_rpc::handle_response(const json_rpc_message& msg)
 {
-  auto it = m_handlers.find(msg.id);
-  if (it != m_handlers.end())
+  const auto it = m_handlers.find(msg.id);
+
+  if (it == m_handlers.end())
   {
-    it->second(msg);
-    m_handlers.erase(it);
+    log("json_rpc::handle_response")
+      << msg.id << "not found" << m_handlers.size();
+    return false;
   }
-  else
-  {
-    log("json_rpc::handle_response") << msg.id;
-  }
+
+  it->second(msg);
+  m_handlers.erase(it);
+
+  return true;
 }
 
 void json_rpc::register_handler(int id, response_handler handler)

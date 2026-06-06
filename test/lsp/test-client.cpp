@@ -17,14 +17,14 @@ TEST_CASE("wex::lsp::client")
     REQUIRE(!client.is_running());
     REQUIRE(!client.is_initialized());
 
-    REQUIRE(client.initialize());
+    REQUIRE(client.initialize(wex::test::get_path().string()));
     REQUIRE(client.is_running());
     REQUIRE(client.is_initialized());
   }
 
   SECTION("shutdown")
   {
-    REQUIRE(client.initialize());
+    REQUIRE(client.initialize(wex::test::get_path().string()));
     REQUIRE(client.shutdown());
     REQUIRE(!client.shutdown());
   }

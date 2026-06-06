@@ -5,7 +5,6 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <boost/regex.hpp>
 #include <iostream>
 
 #include <wex/core/log.h>
@@ -107,7 +106,7 @@ std::string client::hover(const std::string& uri, int line, int character)
   return std::string();
 }
 
-bool client::initialize()
+bool client::initialize(const std::string& root_path)
 {
   m_context = std::make_unique<boost::asio::io_context>();
   m_process = std::make_unique<boost::process::popen>(
@@ -123,37 +122,24 @@ bool client::initialize()
 
   boost::json::object params;
   params["processId"] = nullptr;
-  params["rootPath"]  = "/home/user/project";
+  params["rootPath"]  = root_path;
 
   if (!write(m_rpc.encode_request("initialize", params)))
   {
     return false;
   }
 
-  std::string data, response;
-  size_t      n;
-  size_t      max   = 100;
-  size_t      total = 0;
-  while ((n = boost::asio::read_until(
-            *m_process,
-            boost::asio::dynamic_buffer(data),
-            "}")) > 0 &&
-         total < max)
-  {
-    response += data.substr(0, n);
-    total += n;
-    data.erase(0, n);
+  const auto& response_rpc(m_rpc.decode(read()));
 
-    if (max == 0)
-    {
-      if (regex r("Content-Length: ([0-9]+)"); r.match(response))
-      {
-        max = stoi(r[0]);
-      }
-    }
+  if (response_rpc.id == -1)
+  {
+    return false;
   }
 
-  m_rpc.handle_response(m_rpc.decode(response));
+  if (!m_rpc.handle_response(response_rpc))
+  {
+    return false;
+  }
 
   if (!write(m_rpc.encode_notification("initialized")))
   {
@@ -170,6 +156,39 @@ bool client::initialize()
 bool client::is_running() const
 {
   return m_process && m_process->running();
+}
+
+std::string client::read()
+{
+  std::string data, response;
+  size_t      n, max = UINT_MAX, total = 0;
+
+  while ((n = boost::asio::read_until(
+            *m_process,
+            boost::asio::dynamic_buffer(data),
+            "}")) > 0)
+  {
+    response += data.substr(0, n);
+    total += n;
+    data.erase(0, n);
+
+    if (max == UINT_MAX)
+    {
+      const size_t header_length = 24;
+
+      if (regex r("Content-Length: ([0-9]+).*"); r.match(response) > 0)
+      {
+        max = stoi(r[0]) + header_length;
+      }
+    }
+
+    if (total == max)
+    {
+      break;
+    }
+  }
+
+  return response;
 }
 
 bool client::shutdown()

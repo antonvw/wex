@@ -75,9 +75,9 @@ public:
   /// Returns server capabilities.
   const capabilities& get_capabilities() const { return m_capabilities; }
 
-  /// Initializes the LSP client connection.
+  /// Initializes the LSP client connection with root path.
   /// Returns true if successfully initialized.
-  bool initialize();
+  bool initialize(const std::string& root_path);
 
   /// Returns whether the client is initialized.
   bool is_initialized() const { return m_initialized; }
@@ -94,7 +94,8 @@ public:
   bool shutdown();
 
 private:
-  bool write(const std::string& text);
+  std::string read();
+  bool        write(const std::string& text);
 
   std::string m_server_path;
   std::string m_language_id;
