@@ -12,6 +12,7 @@
 #include <wex/data/dir.h>
 #include <wex/del/defs.h>
 #include <wex/del/listview.h>
+#include <wex/lsp/client.h>
 #include <wex/syntax/indicator.h>
 #include <wex/syntax/marker.h>
 #include <wex/ui/file-history.h>
@@ -168,6 +169,9 @@ public:
     override;
   void on_notebook(wxWindowID id, wxWindow* page) override;
 
+  factory::stc*
+  open_file(const path& filename, const data::stc& data = data::stc()) override;
+
   bool process_async_system(const process_data& data) override;
 
   void set_recent_file(const path& path) override;
@@ -235,6 +239,7 @@ private:
   process*          m_process{nullptr};
   listview*         m_file_history_listview{nullptr};
   class vcs*        m_vcs{nullptr};
+  lsp::client*      m_lsp_client{nullptr};
 
   bool m_skip_set_current_path{false};
 

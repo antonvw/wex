@@ -96,6 +96,7 @@ wex::del::frame::frame(
        m_text_recursive + ",1",
        m_text_hidden})
   , m_vcs(new wex::vcs())
+  , m_lsp_client(new lsp::client(lexer("cpp")))
   , m_function_repeat(
       "frame",
       this,
@@ -190,6 +191,8 @@ wex::del::frame::frame(
   sync(true);
 
   bind_all();
+
+  m_lsp_client->initialize("xxx");
 }
 
 wex::listview* wex::del::frame::activate_and_clear(const wex::tool& tool)
@@ -480,6 +483,18 @@ void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
 
     follow_path(stc);
   }
+}
+
+wex::factory::stc*
+wex::del::frame::open_file(const path& filename, const data::stc& data)
+{
+  if (auto* stc = wex::frame::open_file(filename, data); stc != nullptr)
+  {
+    m_lsp_client->did_open(filename.string(), "cpp", "");
+    return stc;
+  }
+
+  return nullptr;
 }
 
 bool wex::del::frame::open_from_action(

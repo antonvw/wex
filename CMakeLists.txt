@@ -145,11 +145,11 @@ set(
   wex-vi
   wex-ex
   wex-ctags
+  wex-lsp
   wex-ui
   wex-common
   wex-data
   wex-syntax
-  wex-lsp
   wex-factory
   wex-test
   wex-core

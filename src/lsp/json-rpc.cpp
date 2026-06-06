@@ -5,6 +5,7 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
 #include <boost/json.hpp>
 #include <sstream>
 
@@ -27,7 +28,10 @@ json_rpc_message json_rpc::decode(const std::string& data)
     return msg;
   }
 
-  const std::string json_str = data.substr(pos + 4);
+  std::string json_str = data.substr(pos + 4);
+
+  // prevent invalid json
+  boost::algorithm::replace_all(json_str, ",\"result\":null", "");
 
   try
   {
@@ -62,6 +66,7 @@ json_rpc_message json_rpc::decode(const std::string& data)
       {
         msg.result = obj["result"].as_object();
       }
+
       if (obj.count("error"))
       {
         msg.error = obj["error"].as_object();
@@ -93,11 +98,7 @@ std::string json_rpc::encode_error(int id, int code, const std::string& message)
   response["id"]      = id;
   response["error"]   = error;
 
-  std::string json_str = boost::json::serialize(response);
-  std::string header   = "Content-Length: " + std::to_string(json_str.length());
-  std::string output   = header + "\r\n\r\n" + json_str;
-
-  return output;
+  return make_output(response);
 }
 
 std::string json_rpc::encode_notification(
@@ -113,26 +114,16 @@ std::string json_rpc::encode_notification(
     notification["params"] = params;
   }
 
-  std::string json_str = boost::json::serialize(notification);
-  std::string header   = "Content-Length: " + std::to_string(json_str.length());
-  std::string result   = header + "\r\n\r\n" + json_str;
-
-  return result;
+  return make_output(notification);
 }
 
 std::string json_rpc::encode_request(
   const std::string&         method,
-  const boost::json::object& params,
-  int                        id)
+  const boost::json::object& params)
 {
-  if (id == -1)
-  {
-    id = next_id();
-  }
-
   boost::json::object request;
   request["jsonrpc"] = "2.0";
-  request["id"]      = id;
+  request["id"]      = m_id;
   request["method"]  = method;
 
   if (!params.empty())
@@ -140,11 +131,7 @@ std::string json_rpc::encode_request(
     request["params"] = params;
   }
 
-  std::string json_str = boost::json::serialize(request);
-  std::string header   = "Content-Length: " + std::to_string(json_str.length());
-  std::string result   = header + "\r\n\r\n" + json_str;
-
-  return result;
+  return make_output(request);
 }
 
 std::string json_rpc::encode_response(int id, const boost::json::object& result)
@@ -154,11 +141,7 @@ std::string json_rpc::encode_response(int id, const boost::json::object& result)
   response["id"]      = id;
   response["result"]  = result;
 
-  std::string json_str = boost::json::serialize(response);
-  std::string header   = "Content-Length: " + std::to_string(json_str.length());
-  std::string output   = header + "\r\n\r\n" + json_str;
-
-  return output;
+  return make_output(response);
 }
 
 bool json_rpc::handle_response(const json_rpc_message& msg)
@@ -175,12 +158,29 @@ bool json_rpc::handle_response(const json_rpc_message& msg)
   it->second(msg);
   m_handlers.erase(it);
 
+  m_id++;
+
   return true;
 }
 
-void json_rpc::register_handler(int id, response_handler handler)
+std::string json_rpc::header_part_content_field() const
 {
-  m_handlers[id] = handler;
+  return "Content-Length: ";
+}
+
+std::string json_rpc::make_output(const boost::json::object& obj)
+{
+  std::string json_str = boost::json::serialize(obj);
+  std::string header =
+    header_part_content_field() + std::to_string(json_str.length());
+  std::string output = header + "\r\n\r\n" + json_str;
+
+  return output;
+}
+
+void json_rpc::register_handler(response_handler handler)
+{
+  m_handlers[m_id] = handler;
 }
 
 } // namespace lsp

@@ -56,48 +56,45 @@ public:
   /// Encodes a JSON-RPC notification to string.
   /// Returns encoded message string.
   std::string encode_notification(
-    /// the RPC method name
+    /// RPC method name
     const std::string& method,
-    /// the method parameters
+    /// method parameters
     const boost::json::object& params = boost::json::object());
 
   /// Encodes a JSON-RPC request to string.
   /// Returns encoded message string.
   std::string encode_request(
-    /// the RPC method name
+    /// RPC method name
     const std::string& method,
-    /// the method parameters
-    const boost::json::object& params = boost::json::object(),
-    /// request ID (will be auto-incremented)
-    int id = -1);
+    /// method parameters
+    const boost::json::object& params = boost::json::object());
 
   /// Encodes a JSON-RPC response to string.
   /// Returns encoded message string.
   std::string encode_response(
-    /// Request ID
+    /// request ID
     int id,
-    /// the result
+    /// result
     const boost::json::object& result);
 
   /// Handles an incoming response.
   /// Returns false if msg is not handled.
   bool handle_response(const json_rpc_message& msg);
 
-  /// Returns the next request ID.
-  int next_id() { return ++m_next_id; }
+  /// Returns the JSON-RPC fixed content field header.
+  std::string header_part_content_field() const;
 
-  /// Registers a response handler for a request ID.
+  /// Registers a response handler for last request ID.
   void register_handler(
-    /// request ID
-    int id,
     /// callback to invoke when response arrives
     response_handler handler);
 
 private:
-  int m_next_id{0};
+  std::string make_output(const boost::json::object& obj);
+
+  int m_id{1};
 
   std::unordered_map<int, response_handler> m_handlers;
-  static constexpr const char* CONTENT_LENGTH_HEADER = "Content-Length: ";
 };
 
 } // namespace lsp

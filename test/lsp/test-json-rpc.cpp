@@ -59,16 +59,6 @@ TEST_CASE("wex::lsp::json_rpc")
     REQUIRE(encoded.find("error") != std::string::npos);
   }
 
-  SECTION("next_id_increments")
-  {
-    int id1 = rpc.next_id();
-    int id2 = rpc.next_id();
-    int id3 = rpc.next_id();
-
-    REQUIRE(id2 == id1 + 1);
-    REQUIRE(id3 == id2 + 1);
-  }
-
   SECTION("decode_request")
   {
     std::string message =
@@ -116,7 +106,6 @@ TEST_CASE("wex::lsp::json_rpc")
     wex::lsp::json_rpc_message received_msg;
 
     rpc.register_handler(
-      1,
       [&](const wex::lsp::json_rpc_message& msg)
       {
         handled      = true;

@@ -57,13 +57,13 @@ public:
   std::vector<std::string>
   completion(const std::string& uri, int line, int character);
 
-  /// Notifies server of document changes.
-  /// Returns true if successful.
-  bool did_change(const std::string& uri, const std::string& text);
-
   /// Closes a document.
   /// Returns true if successful.
   bool did_close(const std::string& uri);
+
+  /// Notifies server of document changes.
+  /// Returns true if successful.
+  bool did_change(const std::string& uri, const std::string& text);
 
   /// Opens a document for editing.
   /// Returns true if successful.
@@ -75,6 +75,10 @@ public:
   /// Returns server capabilities.
   const capabilities& get_capabilities() const { return m_capabilities; }
 
+  /// Requests hover information.
+  /// Returns hover text if available, empty string otherwise.
+  std::string hover(const std::string& uri, int line, int character);
+
   /// Initializes the LSP client connection with root path.
   /// Returns true if successfully initialized.
   bool initialize(const std::string& root_path);
@@ -85,17 +89,13 @@ public:
   /// Returns whether the client is running.
   bool is_running() const;
 
-  /// Requests hover information.
-  /// Returns hover text if available, empty string otherwise.
-  std::string hover(const std::string& uri, int line, int character);
-
   /// Shuts down the LSP connection gracefully.
   /// Returns true if shutdown was successful.
   bool shutdown();
 
 private:
   std::string read();
-  bool        write(const std::string& text);
+  bool        write(const std::string& text, response_handler resp = nullptr);
 
   std::string m_server_path;
   std::string m_language_id;

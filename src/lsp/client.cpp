@@ -21,16 +21,6 @@ client::client(const lexer& lexer)
   : m_server_path(lexer.lsp_server())
   , m_language_id(lexer.language())
 {
-  m_rpc.register_handler(
-    1,
-    [this](const json_rpc_message& msg)
-    {
-      if (!msg.is_error && msg.result.count("capabilities"))
-      {
-        m_capabilities.hover_support      = 1;
-        m_capabilities.completion_support = 1;
-      }
-    });
 }
 
 client::~client() = default;
@@ -39,9 +29,7 @@ std::vector<std::string>
 client::completion(const std::string& uri, int line, int character)
 {
   // LSP Methods Implementation
-  // Send textDocument/completion request
-  // Return list of completion items
-
+  // send textDocument/completion request
   return std::vector<std::string>();
 }
 
@@ -73,9 +61,24 @@ int wex::lsp::client::config_dialog(const data::window& par)
 bool client::did_change(const std::string& uri, const std::string& text)
 {
   // LSP Methods Implementation
-  // Send textDocument/didChange notification
+  // send textDocument/didChange notification
+  boost::json::object params, text_doc;
+  text_doc["uri"]        = uri;
+  text_doc["text"]       = text;
+  params["textDocument"] = text_doc;
 
-  return false;
+  return write(m_rpc.encode_notification("textDocument/didChange", params));
+}
+
+bool client::did_close(const std::string& uri)
+{
+  // LSP Methods Implementation
+  // send textDocument/didClose notification
+  boost::json::object params, text_doc;
+  text_doc["uri"]        = uri;
+  params["textDocument"] = text_doc;
+
+  return write(m_rpc.encode_notification("textDocument/didClose", params));
 }
 
 bool client::did_open(
@@ -84,26 +87,43 @@ bool client::did_open(
   const std::string& text)
 {
   // LSP Methods Implementation
-  // Send textDocument/didOpen notification
+  // send textDocument/didOpen notification
+  boost::json::object params, text_doc;
+  text_doc["uri"]        = uri;
+  text_doc["languageId"] = language_id;
+  text_doc["text"]       = text;
+  params["textDocument"] = text_doc;
 
-  return false;
-}
-
-bool client::did_close(const std::string& uri)
-{
-  // LSP Methods Implementation
-  // Send textDocument/didClose notification
-
-  return false;
+  return write(m_rpc.encode_notification("textDocument/didOpen", params));
 }
 
 std::string client::hover(const std::string& uri, int line, int character)
 {
   // LSP Methods Implementation
-  // Send textDocument/hover request
-  // Return hover text
+  // send textDocument/hover request
+  boost::json::object params, text_doc, pos;
+  text_doc["uri"]        = uri;
+  pos["line"]            = line;
+  pos["character"]       = character;
+  params["position"]     = pos;
+  params["textDocument"] = text_doc;
 
-  return std::string();
+  std::string hover;
+
+  if (!write(
+        m_rpc.encode_request("textDocument/hover", params),
+        [&, this](const json_rpc_message& msg)
+        {
+          if (!msg.is_error && msg.result.count("result"))
+          {
+            hover = boost::json::serialize(msg.result);
+          }
+        }))
+  {
+    return std::string();
+  }
+
+  return hover;
 }
 
 bool client::initialize(const std::string& root_path)
@@ -124,19 +144,16 @@ bool client::initialize(const std::string& root_path)
   params["processId"] = nullptr;
   params["rootPath"]  = root_path;
 
-  if (!write(m_rpc.encode_request("initialize", params)))
-  {
-    return false;
-  }
-
-  const auto& response_rpc(m_rpc.decode(read()));
-
-  if (response_rpc.id == -1)
-  {
-    return false;
-  }
-
-  if (!m_rpc.handle_response(response_rpc))
+  if (!write(
+        m_rpc.encode_request("initialize", params),
+        [this](const json_rpc_message& msg)
+        {
+          if (!msg.is_error && msg.result.count("capabilities"))
+          {
+            m_capabilities.hover_support      = 1;
+            m_capabilities.completion_support = 1;
+          }
+        }))
   {
     return false;
   }
@@ -174,10 +191,13 @@ std::string client::read()
 
     if (max == UINT_MAX)
     {
-      const size_t header_length = 24;
-
-      if (regex r("Content-Length: ([0-9]+).*"); r.match(response) > 0)
+      if (
+        regex r(m_rpc.header_part_content_field() + "([0-9]+).*");
+        r.match(response) > 0)
       {
+        const size_t header_length =
+          m_rpc.header_part_content_field().size() + r[0].size() + 4;
+
         max = stoi(r[0]) + header_length;
       }
     }
@@ -199,7 +219,16 @@ bool client::shutdown()
   // 3. Stop process
 
   if (
-    !m_initialized || !write(m_rpc.encode_request("shutdown")) ||
+    !m_initialized ||
+    !write(
+      m_rpc.encode_request("shutdown"),
+      [this](const json_rpc_message& msg)
+      {
+        if (msg.is_error)
+        {
+          log("shutdown failed") << msg.id;
+        }
+      }) ||
     !write(m_rpc.encode_notification("exit")))
   {
     return false;
@@ -213,14 +242,36 @@ bool client::shutdown()
   return true;
 }
 
-bool client::write(const std::string& text)
+bool client::write(const std::string& text, response_handler resp)
 {
   if (m_process == nullptr)
   {
     return false;
   }
 
-  return boost::asio::write(*m_process, boost::asio::buffer(text)) > 0;
+  if (boost::asio::write(*m_process, boost::asio::buffer(text)) == 0)
+  {
+    return false;
+  }
+
+  if (resp != nullptr)
+  {
+    m_rpc.register_handler(resp);
+
+    const auto& response_rpc(m_rpc.decode(read()));
+
+    if (response_rpc.id == -1)
+    {
+      return false;
+    }
+
+    if (!m_rpc.handle_response(response_rpc))
+    {
+      return false;
+    }
+  }
+
+  return true;
 }
 } // namespace lsp
 } // namespace wex
