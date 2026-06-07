@@ -96,7 +96,6 @@ wex::del::frame::frame(
        m_text_recursive + ",1",
        m_text_hidden})
   , m_vcs(new wex::vcs())
-  , m_lsp_client(new lsp::client(lexer("cpp")))
   , m_function_repeat(
       "frame",
       this,
@@ -192,7 +191,7 @@ wex::del::frame::frame(
 
   bind_all();
 
-  m_lsp_client->initialize("xxx");
+  lsp_clients_setup();
 }
 
 wex::listview* wex::del::frame::activate_and_clear(const wex::tool& tool)
@@ -205,6 +204,21 @@ wex::listview* wex::del::frame::activate_and_clear(const wex::tool& tool)
   }
 
   return lv;
+}
+
+bool wex::del::frame::allow_close(wxWindowID id, wxWindow* page)
+{
+  if (auto* stc = dynamic_cast<wex::stc*>(page); stc != nullptr)
+  {
+    if (
+      auto* client = lsp_clients_find(stc->get_file().path());
+      client != nullptr)
+    {
+      client->did_close(stc->get_file().path().string());
+    }
+  }
+
+  return frame::allow_close(id, page);
 }
 
 void append_submenu(const wex::menu_item* item, wex::menu* menu)
@@ -408,6 +422,29 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
   return true;
 }
 
+wex::lsp::client* wex::del::frame::lsp_clients_find(const path& p)
+{
+  for (auto* client : m_lsp_clients)
+  {
+    if (client->language_id() == p.extension())
+    {
+      return client;
+    }
+  }
+
+  return nullptr;
+}
+
+void wex::del::frame::lsp_clients_setup()
+{
+  for (const auto& server : lexers::get()->get_lsp_servers())
+  {
+    auto* client = new lsp::client(lexer(server.second));
+    client->initialize(path::current().string());
+    m_lsp_clients.emplace_back(client);
+  }
+}
+
 void wex::del::frame::on_command_item_dialog(
   wxWindowID            dialogid,
   const wxCommandEvent& event)
@@ -490,7 +527,14 @@ wex::del::frame::open_file(const path& filename, const data::stc& data)
 {
   if (auto* stc = wex::frame::open_file(filename, data); stc != nullptr)
   {
-    m_lsp_client->did_open(filename.string(), "cpp", "");
+    if (auto* client = lsp_clients_find(filename); client != nullptr)
+    {
+      client->did_open(
+        filename.string(),
+        filename.extension(),
+        stc->get_text());
+    }
+
     return stc;
   }
 

@@ -15,11 +15,27 @@
 
 namespace wex
 {
+boost::json::object make_object(const std::string& uri, int line, int character)
+{
+  boost::json::object params, text_doc, pos;
+
+  text_doc["uri"] = uri;
+
+  pos["line"]      = line;
+  pos["character"] = character;
+
+  params["position"]     = pos;
+  params["textDocument"] = text_doc;
+
+  return params;
+}
+
 namespace lsp
 {
 client::client(const lexer& lexer)
   : m_server_path(lexer.lsp_server())
-  , m_language_id(lexer.language())
+  , m_server_flags(lexer.lsp_server_flags())
+  , m_language_id(lexer.scintilla_lexer())
 {
 }
 
@@ -30,7 +46,24 @@ client::completion(const std::string& uri, int line, int character)
 {
   // LSP Methods Implementation
   // send textDocument/completion request
-  return std::vector<std::string>();
+  std::vector<std::string> completion;
+
+  if (!write(
+        m_rpc.encode_request(
+          "textDocument/completion",
+          make_object(uri, line, character)),
+        [&, this](const json_rpc_message& msg)
+        {
+          if (!msg.is_error && msg.result.count("result"))
+          {
+            // hover = boost::json::serialize(msg.result);
+          }
+        }))
+  {
+    return completion;
+  }
+
+  return completion;
 }
 
 int wex::lsp::client::config_dialog(const data::window& par)
@@ -44,7 +77,7 @@ int wex::lsp::client::config_dialog(const data::window& par)
 
     for (auto& server : lexers::get()->get_lsp_servers())
     {
-      choices.insert(server);
+      choices.insert(server.first);
     }
 
     m_item_dialog = new item_dialog(std::vector<item>{{choices}}, data);
@@ -56,6 +89,39 @@ int wex::lsp::client::config_dialog(const data::window& par)
 
   return (data.button() & wxAPPLY) ? m_item_dialog->Show() :
                                      m_item_dialog->ShowModal();
+}
+
+std::string client::definition(const std::string& uri, int line, int character)
+{
+  // LSP Methods Implementation
+  // send textDocument/definition request
+  return definition_or_hover(uri, line, character, "definition");
+}
+
+std::string client::definition_or_hover(
+  const std::string& uri,
+  int                line,
+  int                character,
+  const std::string& which)
+{
+  std::string text;
+
+  if (!write(
+        m_rpc.encode_request(
+          "textDocument/" + which,
+          make_object(uri, line, character)),
+        [&, this](const json_rpc_message& msg)
+        {
+          if (!msg.is_error && msg.result.count("result"))
+          {
+            text = boost::json::serialize(msg.result);
+          }
+        }))
+  {
+    return std::string();
+  }
+
+  return text;
 }
 
 bool client::did_change(const std::string& uri, const std::string& text)
@@ -101,38 +167,25 @@ std::string client::hover(const std::string& uri, int line, int character)
 {
   // LSP Methods Implementation
   // send textDocument/hover request
-  boost::json::object params, text_doc, pos;
-  text_doc["uri"]        = uri;
-  pos["line"]            = line;
-  pos["character"]       = character;
-  params["position"]     = pos;
-  params["textDocument"] = text_doc;
-
-  std::string hover;
-
-  if (!write(
-        m_rpc.encode_request("textDocument/hover", params),
-        [&, this](const json_rpc_message& msg)
-        {
-          if (!msg.is_error && msg.result.count("result"))
-          {
-            hover = boost::json::serialize(msg.result);
-          }
-        }))
-  {
-    return std::string();
-  }
-
-  return hover;
+  return definition_or_hover(uri, line, character, "hover");
 }
 
 bool client::initialize(const std::string& root_path)
 {
-  m_context = std::make_unique<boost::asio::io_context>();
-  m_process = std::make_unique<boost::process::popen>(
-    *m_context,
-    boost::process::environment::find_executable(m_server_path),
-    std::vector<std::string>{});
+  try
+  {
+    const std::vector<std::string> flags{{"--" + m_server_flags}};
+    m_context = std::make_unique<boost::asio::io_context>();
+    m_process = std::make_unique<boost::process::popen>(
+      *m_context,
+      boost::process::environment::find_executable(m_server_path),
+      flags);
+  }
+  catch (std::exception& e)
+  {
+    log(e) << "client::initialize" << m_server_path;
+    return false;
+  }
 
   // JSON-RPC Protocol Implementation
   // 1. Send "initialize" request to server

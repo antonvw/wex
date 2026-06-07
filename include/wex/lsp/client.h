@@ -45,8 +45,7 @@ public:
   /// Returns dialog return code.
   static int config_dialog(const data::window& data = data::window());
 
-  /// Constructor.
-  /// \param lexer The lexer for which to create an LSP client
+  /// Constructor, specify lexer for which to create an LSP client
   client(const lexer& lexer);
 
   /// Destructor.
@@ -56,6 +55,10 @@ public:
   /// Returns list of completion items.
   std::vector<std::string>
   completion(const std::string& uri, int line, int character);
+
+  /// Requests definition information.
+  /// Returns location text if available, empty string otherwise.
+  std::string definition(const std::string& uri, int line, int character);
 
   /// Closes a document.
   /// Returns true if successful.
@@ -89,16 +92,24 @@ public:
   /// Returns whether the client is running.
   bool is_running() const;
 
+  /// Returns language id.
+  const std::string& language_id() const { return m_language_id; }
+
   /// Shuts down the LSP connection gracefully.
   /// Returns true if shutdown was successful.
   bool shutdown();
 
 private:
+  std::string definition_or_hover(
+    const std::string& uri,
+    int                line,
+    int                character,
+    const std::string& which);
+
   std::string read();
   bool        write(const std::string& text, response_handler resp = nullptr);
 
-  std::string m_server_path;
-  std::string m_language_id;
+  std::string m_language_id, m_server_flags, m_server_path;
 
   std::unique_ptr<boost::asio::io_context> m_context;
   std::unique_ptr<boost::process::popen>   m_process;

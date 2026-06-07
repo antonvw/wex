@@ -27,13 +27,14 @@ int convert_int_attrib(
   const std::vector<std::pair<std::string, int>>& v,
   const std::string&                              text)
 {
-  if (const auto& it = std::ranges::find_if(
-        v,
-        [text](const auto& p)
-        {
-          return text == p.first;
-        });
-      it != v.end())
+  if (
+    const auto& it = std::ranges::find_if(
+      v,
+      [text](const auto& p)
+      {
+        return text == p.first;
+      });
+    it != v.end())
   {
     return it->second;
   }
@@ -52,9 +53,10 @@ auto tokenize_int(const std::string& text, const char* sep = " \t\r\n")
          text,
          boost::char_separator<char>(sep)))
   {
-    if (int value = 0;
-        std::from_chars(it.data(), it.data() + it.size(), value).ec ==
-        std::errc())
+    if (
+      int value = 0;
+      std::from_chars(it.data(), it.data() + it.size(), value).ec ==
+      std::errc())
     {
       tokens.emplace_back(value);
     }
@@ -323,21 +325,23 @@ void wex::lexer::auto_match(const std::string& lexer)
       for (const auto& it : macros)
       {
         // First try exact match.
-        if (const auto& macro = lexers::get()->theme_macros().find(it.first);
-            macro != lexers::get()->theme_macros().end())
+        if (
+          const auto& macro = lexers::get()->theme_macros().find(it.first);
+          macro != lexers::get()->theme_macros().end())
         {
           m_styles.emplace_back(it.second, macro->second);
         }
         else
         {
           // Then, a partial using find_if.
-          if (const auto& style = std::ranges::find_if(
-                lexers::get()->theme_macros(),
-                [&](auto const& e)
-                {
-                  return it.first.contains(e.first);
-                });
-              style != lexers::get()->theme_macros().end())
+          if (
+            const auto& style = std::ranges::find_if(
+              lexers::get()->theme_macros(),
+              [&](auto const& e)
+              {
+                return it.first.contains(e.first);
+              });
+            style != lexers::get()->theme_macros().end())
           {
             m_styles.emplace_back(it.second, style->second);
           }
@@ -453,8 +457,9 @@ const std::string wex::lexer::keywords_string(
     return get_string_set(m_keywords, min_size, prefix);
   }
 
-  if (const auto& it = m_keywords_set.find(keyword_set);
-      it != m_keywords_set.end())
+  if (
+    const auto& it = m_keywords_set.find(keyword_set);
+    it != m_keywords_set.end())
   {
     return get_string_set(it->second, min_size, prefix);
   }
@@ -542,8 +547,9 @@ const std::string wex::lexer::make_single_line_comment(
   // Fill out characters (prevent filling out spaces)
   if (fill_out && (fill_out_character != ' ' || !m_command_end.empty()))
   {
-    if (const auto fill_chars = usable_chars_per_line() - text.size();
-        fill_chars > 0)
+    if (
+      const auto fill_chars = usable_chars_per_line() - text.size();
+      fill_chars > 0)
     {
       out += std::string(fill_chars, fill_out_character);
     }
@@ -565,11 +571,13 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
   m_extensions  = node->attribute("extensions").value();
   m_language    = node->attribute("language").value();
   m_lsp         = node->attribute("lsp").value();
+  m_lsp_flags   = node->attribute("lsp-flags").value();
   m_previewable = !node->attribute("preview").empty();
 
-  if (const std::string exclude(node->attribute("exclude").value());
-      exclude.contains(
-        wxPlatformInfo().GetOperatingSystemFamilyName().ToStdString()))
+  if (
+    const std::string exclude(node->attribute("exclude").value());
+    exclude.contains(
+      wxPlatformInfo().GetOperatingSystemFamilyName().ToStdString()))
   {
     m_is_ok = false;
     return;
@@ -734,8 +742,9 @@ void wex::lexer::parse_children(const pugi::xml_node* node)
 void wex::lexer::parse_keyword(const pugi::xml_node* node)
 {
   // Add all direct keywords
-  if (const std::string direct(node->text().get());
-      !direct.empty() && !add_keywords(direct))
+  if (
+    const std::string direct(node->text().get());
+    !direct.empty() && !add_keywords(direct))
   {
     wex::log("keywords") << direct << " could not be set" << *node
                          << m_scintilla_lexer;
@@ -825,13 +834,14 @@ bool wex::lexer::set(const lexer& lexer, bool fold)
 
 void wex::lexer::set_property(const std::string& name, const std::string& value)
 {
-  if (const auto& it = std::ranges::find_if(
-        m_properties,
-        [name](auto const& e)
-        {
-          return e.name() == name;
-        });
-      it != m_properties.end())
+  if (
+    const auto& it = std::ranges::find_if(
+      m_properties,
+      [name](auto const& e)
+      {
+        return e.name() == name;
+      });
+    it != m_properties.end())
   {
     it->set(value);
   }

@@ -153,6 +153,7 @@ public:
   static inline const int id_find_in_files    = ID_FREE_LOWEST;
   static inline const int id_replace_in_files = ID_FREE_LOWEST + 1;
 
+  bool allow_close(wxWindowID id, wxWindow* page) override;
   void bind_accelerators(
     wxWindow*                              parent,
     const std::vector<wxAcceleratorEntry>& v,
@@ -224,8 +225,11 @@ protected:
 private:
   wex::listview* activate_and_clear(const wex::tool& tool);
   data::dir      build_dir() const;
-  void           bind_all();
-  void           follow_path(syntax::stc* stc);
+
+  void         bind_all();
+  void         follow_path(syntax::stc* stc);
+  lsp::client* lsp_clients_find(const path& p);
+  void         lsp_clients_setup();
 
   stc_entry_dialog* entry_dialog(
     const std::string& title = std::string(),
@@ -239,7 +243,8 @@ private:
   process*          m_process{nullptr};
   listview*         m_file_history_listview{nullptr};
   class vcs*        m_vcs{nullptr};
-  lsp::client*      m_lsp_client{nullptr};
+
+  std::vector<lsp::client*> m_lsp_clients{nullptr};
 
   bool m_skip_set_current_path{false};
 
