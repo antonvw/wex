@@ -15,11 +15,11 @@
 
 namespace wex
 {
-boost::json::object make_object(const std::string& uri, int line, int character)
+boost::json::object make_object(const wex::path& path, int line, int character)
 {
   boost::json::object params, text_doc, pos;
 
-  text_doc["uri"] = uri;
+  text_doc["uri"] = path.uri();
 
   pos["line"]      = line;
   pos["character"] = character;
@@ -42,7 +42,7 @@ client::client(const lexer& lexer)
 client::~client() = default;
 
 std::vector<std::string>
-client::completion(const std::string& uri, int line, int character)
+client::completion(const wex::path& path, int line, int character)
 {
   // LSP Methods Implementation
   // send textDocument/completion request
@@ -51,7 +51,7 @@ client::completion(const std::string& uri, int line, int character)
   if (!write(
         m_rpc.encode_request(
           "textDocument/completion",
-          make_object(uri, line, character)),
+          make_object(path, line, character)),
         [&, this](const json_rpc_message& msg)
         {
           if (!msg.is_error && msg.result.count("result"))
@@ -91,15 +91,15 @@ int wex::lsp::client::config_dialog(const data::window& par)
                                      m_item_dialog->ShowModal();
 }
 
-std::string client::definition(const std::string& uri, int line, int character)
+std::string client::definition(const wex::path& path, int line, int character)
 {
   // LSP Methods Implementation
   // send textDocument/definition request
-  return definition_or_hover(uri, line, character, "definition");
+  return definition_or_hover(path, line, character, "definition");
 }
 
 std::string client::definition_or_hover(
-  const std::string& uri,
+  const wex::path&   path,
   int                line,
   int                character,
   const std::string& which)
@@ -109,7 +109,7 @@ std::string client::definition_or_hover(
   if (!write(
         m_rpc.encode_request(
           "textDocument/" + which,
-          make_object(uri, line, character)),
+          make_object(path, line, character)),
         [&, this](const json_rpc_message& msg)
         {
           if (!msg.is_error && msg.result.count("result"))
@@ -124,53 +124,50 @@ std::string client::definition_or_hover(
   return text;
 }
 
-bool client::did_change(const std::string& uri, const std::string& text)
+bool client::did_change(const wex::path& path, const std::string& text)
 {
   // LSP Methods Implementation
   // send textDocument/didChange notification
   boost::json::object params, text_doc;
-  text_doc["uri"]        = uri;
+  text_doc["uri"]        = path.uri();
   text_doc["text"]       = text;
   params["textDocument"] = text_doc;
 
   return write(m_rpc.encode_notification("textDocument/didChange", params));
 }
 
-bool client::did_close(const std::string& uri)
+bool client::did_close(const wex::path& path)
 {
   // LSP Methods Implementation
   // send textDocument/didClose notification
   boost::json::object params, text_doc;
-  text_doc["uri"]        = uri;
+  text_doc["uri"]        = path.uri();
   params["textDocument"] = text_doc;
 
   return write(m_rpc.encode_notification("textDocument/didClose", params));
 }
 
-bool client::did_open(
-  const std::string& uri,
-  const std::string& language_id,
-  const std::string& text)
+bool client::did_open(const wex::path& path, const std::string& text)
 {
   // LSP Methods Implementation
   // send textDocument/didOpen notification
   boost::json::object params, text_doc;
-  text_doc["uri"]        = uri;
-  text_doc["languageId"] = language_id;
+  text_doc["uri"]        = path.uri();
+  text_doc["languageId"] = m_language_id;
   text_doc["text"]       = text;
   params["textDocument"] = text_doc;
 
   return write(m_rpc.encode_notification("textDocument/didOpen", params));
 }
 
-std::string client::hover(const std::string& uri, int line, int character)
+std::string client::hover(const wex::path& path, int line, int character)
 {
   // LSP Methods Implementation
   // send textDocument/hover request
-  return definition_or_hover(uri, line, character, "hover");
+  return definition_or_hover(path, line, character, "hover");
 }
 
-bool client::initialize(const std::string& root_path)
+bool client::initialize(const wex::path& root_path)
 {
   try
   {
@@ -195,7 +192,7 @@ bool client::initialize(const std::string& root_path)
 
   boost::json::object params;
   params["processId"] = nullptr;
-  params["rootPath"]  = root_path;
+  params["rootPath"]  = root_path.string();
 
   if (!write(
         m_rpc.encode_request("initialize", params),

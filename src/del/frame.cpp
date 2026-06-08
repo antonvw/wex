@@ -214,7 +214,7 @@ bool wex::del::frame::allow_close(wxWindowID id, wxWindow* page)
       auto* client = lsp_clients_find(stc->get_file().path());
       client != nullptr)
     {
-      client->did_close(stc->get_file().path().string());
+      client->did_close(stc->get_file().path());
     }
   }
 
@@ -440,7 +440,7 @@ void wex::del::frame::lsp_clients_setup()
   for (const auto& server : lexers::get()->get_lsp_servers())
   {
     auto* client = new lsp::client(lexer(server.second));
-    client->initialize(path::current().string());
+    client->initialize(path::current());
     m_lsp_clients.emplace_back(client);
   }
 }
@@ -529,10 +529,7 @@ wex::del::frame::open_file(const path& filename, const data::stc& data)
   {
     if (auto* client = lsp_clients_find(filename); client != nullptr)
     {
-      client->did_open(
-        filename.string(),
-        filename.extension(),
-        stc->get_text());
+      client->did_open(filename, stc->get_text());
     }
 
     return stc;

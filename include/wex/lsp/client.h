@@ -14,8 +14,10 @@
 #include <boost/asio.hpp>
 #include <boost/process.hpp>
 
+#include <wex/core/path.h>
 #include <wex/factory/window.h>
 #include <wex/lsp/json-rpc.h>
+#include <wex/lsp/notification-handler.h>
 #include <wex/syntax/lexer.h>
 
 namespace wex
@@ -54,37 +56,34 @@ public:
   /// Requests completion at position.
   /// Returns list of completion items.
   std::vector<std::string>
-  completion(const std::string& uri, int line, int character);
+  completion(const wex::path& path, int line, int character);
 
   /// Requests definition information.
   /// Returns location text if available, empty string otherwise.
-  std::string definition(const std::string& uri, int line, int character);
+  std::string definition(const wex::path& path, int line, int character);
 
   /// Closes a document.
   /// Returns true if successful.
-  bool did_close(const std::string& uri);
+  bool did_close(const wex::path& path);
 
   /// Notifies server of document changes.
   /// Returns true if successful.
-  bool did_change(const std::string& uri, const std::string& text);
+  bool did_change(const wex::path& path, const std::string& text);
 
   /// Opens a document for editing.
   /// Returns true if successful.
-  bool did_open(
-    const std::string& uri,
-    const std::string& language_id,
-    const std::string& text);
+  bool did_open(const wex::path& path, const std::string& text);
 
   /// Returns server capabilities.
   const capabilities& get_capabilities() const { return m_capabilities; }
 
   /// Requests hover information.
   /// Returns hover text if available, empty string otherwise.
-  std::string hover(const std::string& uri, int line, int character);
+  std::string hover(const wex::path& path, int line, int character);
 
   /// Initializes the LSP client connection with root path.
   /// Returns true if successfully initialized.
-  bool initialize(const std::string& root_path);
+  bool initialize(const wex::path& root_path);
 
   /// Returns whether the client is initialized.
   bool is_initialized() const { return m_initialized; }
@@ -101,7 +100,7 @@ public:
 
 private:
   std::string definition_or_hover(
-    const std::string& uri,
+    const wex::path&   path,
     int                line,
     int                character,
     const std::string& which);
@@ -113,6 +112,7 @@ private:
 
   std::unique_ptr<boost::asio::io_context> m_context;
   std::unique_ptr<boost::process::popen>   m_process;
+  std::unique_ptr<notification_handler>    m_notification_handler;
 
   capabilities m_capabilities;
   bool         m_initialized{false};
