@@ -177,6 +177,7 @@ bool client::initialize(const wex::path& root_path)
       *m_context,
       boost::process::environment::find_executable(m_server_path),
       flags);
+    m_notification_handler = std::make_unique<notification_handler>(this);
   }
   catch (std::exception& e)
   {

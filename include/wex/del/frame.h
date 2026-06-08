@@ -50,7 +50,7 @@ public:
     const data::window& data = data::window().style(wxDEFAULT_FRAME_STYLE));
 
   /// Destructor.
-  ~frame() = default;
+  ~frame();
 
   // Virtual interface
 

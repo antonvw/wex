@@ -20,7 +20,7 @@ TEST_CASE("wex::lsp::client")
     REQUIRE(!client.is_running());
     REQUIRE(!client.is_initialized());
 
-    REQUIRE(client.initialize(wex::test::get_path().string()));
+    REQUIRE(client.initialize(wex::test::get_path()));
     REQUIRE(client.language_id() == "cpp");
     REQUIRE(client.is_running());
     REQUIRE(client.is_initialized());
@@ -28,21 +28,21 @@ TEST_CASE("wex::lsp::client")
 
   SECTION("others")
   {
-    const std::string uri("file:///Users/anton/wex/test/data/test.h");
+    const wex::path path("/Users/anton/wex/test/data/test.h");
 
-    REQUIRE(client.initialize(wex::test::get_path().string()));
-    REQUIRE(client.hover("", 5, 5).empty());
-    REQUIRE(client.hover(uri, 5, 5).empty());
+    REQUIRE(client.initialize(wex::test::get_path()));
+    REQUIRE(client.hover(wex::path(), 5, 5).empty());
+    REQUIRE(client.hover(path, 5, 5).empty());
 
-    REQUIRE(client.did_open(uri, "cpp", "main() {}"));
-    REQUIRE(!client.hover(uri, 1, 1).empty());
-    REQUIRE(client.did_change(uri, "main() {xxx};"));
-    REQUIRE(client.did_close(uri));
+    REQUIRE(client.did_open(path, "main() {}"));
+    REQUIRE(client.hover(path, 1, 1).empty());
+    REQUIRE(client.did_change(path, "main() {xxx};"));
+    REQUIRE(client.did_close(path));
   }
 
   SECTION("shutdown")
   {
-    REQUIRE(client.initialize(wex::test::get_path().string()));
+    REQUIRE(client.initialize(wex::test::get_path()));
     REQUIRE(client.shutdown());
     REQUIRE(!client.shutdown());
   }

@@ -194,6 +194,15 @@ wex::del::frame::frame(
   lsp_clients_setup();
 }
 
+wex::del::frame::~frame()
+{
+  for (auto* client : m_lsp_clients)
+  {
+    client->shutdown();
+    delete client;
+  }
+}
+
 wex::listview* wex::del::frame::activate_and_clear(const wex::tool& tool)
 {
   auto* lv = activate(listview::type_tool(tool));

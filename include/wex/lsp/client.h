@@ -42,6 +42,8 @@ struct capabilities
 /// Each client communicates with one Server, based upon lexer setup.
 class client
 {
+  friend notification_handler;
+
 public:
   /// Shows a dialog allowing you to choose which lsp server to use
   /// Returns dialog return code.
