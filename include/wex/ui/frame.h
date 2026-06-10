@@ -433,6 +433,7 @@ protected:
 
 private:
   bool     add_toolbar_panes(const panes_t& panes);
+  void     bind_lsp();
   wxPanel* create_ex_panel();
   void     provide_output(const std::string& text) const;
 

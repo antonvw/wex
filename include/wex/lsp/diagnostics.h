@@ -11,45 +11,12 @@
 #include <unordered_map>
 #include <vector>
 
+#include <wex/ui/lsp.h>
+
 namespace wex
 {
 namespace lsp
 {
-/// Diagnostic severity levels.
-enum class severity_t
-{
-  ERROR   = 1,
-  WARNING = 2,
-  INFO    = 3,
-  HINT    = 4
-};
-
-/// Represents a single diagnostic (error, warning, etc.) from the language
-/// server.
-struct diagnostic
-{
-  /// Range of the diagnostic
-  struct range
-  {
-    int start_line{0};
-    int start_character{0};
-    int end_line{0};
-    int end_character{0};
-  } range;
-
-  /// Severity of the diagnostic
-  severity_t severity{severity_t::INFO};
-
-  /// Diagnostic code
-  std::string code;
-
-  /// Diagnostic message
-  std::string message;
-
-  /// Source of the diagnostic (e.g., "clang", "gcc")
-  std::string source;
-};
-
 /// Manages diagnostics received from language server.
 class diagnostics
 {
@@ -79,7 +46,7 @@ public:
   bool has(const std::string& uri) const;
 
 private:
-  std::unordered_map<std::string, std::vector<diagnostic>> m_diagnostics;
+  diastd::unordered_map<std::string, diagnostics_t> m_diagnostics;
 };
 
 } // namespace lsp

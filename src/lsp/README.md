@@ -155,29 +155,9 @@ This document outlines the implementation strategy for Language Server Protocol 
 }
 ```
 
-## Testing Strategy
-
-Each phase should include unit tests:
-
-1. **Protocol tests** - JSON-RPC encoding/decoding
-2. **Client tests** - Request/response handling
-3. **Integration tests** - With mock language server
-4. **UI tests** - Component display and interaction
-
 ## References
 
 - [LSP Specification](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/)
 - [LSP Examples](https://github.com/microsoft/language-server-protocol/tree/gh-pages/_specifications)
 - [JSON-RPC 2.0 Spec](https://www.jsonrpc.org/specification)
 - Wex existing patterns: `vcs/process.h`, `factory/frame.h`
-
-## Implementation Checklist
-
-- [ ] Phase 1: JSON-RPC Foundation
-- [ ] Phase 2: LSP Protocol Methods  
-- [ ] Phase 3: Diagnostics Integration
-- [ ] Phase 4: UI Components
-- [ ] Phase 5: Configuration & Server Management
-- [ ] Documentation updates
-- [ ] Example usage
-- [ ] Performance optimization

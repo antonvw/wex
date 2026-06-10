@@ -1,0 +1,21 @@
+////////////////////////////////////////////////////////////////////////////////
+// Name:      util.h
+// Purpose:   Declaration of utility functions for LSP support
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2026 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
+
+#pragma once
+
+#include <string>
+
+class wxEvtHandler;
+
+namespace wex
+{
+namespace lsp
+{
+  /// Language Server Protocol support for wex
+  queue_event(wxEvtHandler* handler, const std::string& uri, int id, const void* data);
+} // namespace lsp
+} // namespace wex

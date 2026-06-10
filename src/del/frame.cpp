@@ -448,7 +448,7 @@ void wex::del::frame::lsp_clients_setup()
 {
   for (const auto& server : lexers::get()->get_lsp_servers())
   {
-    auto* client = new lsp::client(lexer(server.second));
+    auto* client = new lsp::client(lexer(server.second), this);
     client->initialize(path::current());
     m_lsp_clients.emplace_back(client);
   }

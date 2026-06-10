@@ -16,6 +16,11 @@ namespace wex
 {
 namespace lsp
 {
+json_rpc::json_rpc(wex::del::frame* frame)
+  : m_frame(frame)
+{
+}
+
 json_rpc_message json_rpc::decode(const std::string& data)
 {
   json_rpc_message msg;
@@ -146,6 +151,12 @@ std::string json_rpc::encode_response(int id, const boost::json::object& result)
 
 bool json_rpc::handle_response(const json_rpc_message& msg)
 {
+  if (msg.method == "textDocument/publishDiagnostics")
+  {
+    return handle_publish_diagnostics(msg);
+  }
+
+  // If we have an ID, try to find a handler for it.
   const auto it = m_handlers.find(msg.id);
 
   if (it == m_handlers.end())

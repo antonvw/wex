@@ -32,10 +32,12 @@ boost::json::object make_object(const wex::path& path, int line, int character)
 
 namespace lsp
 {
-client::client(const lexer& lexer)
+client::client(const lexer& lexer, wxEvtHandler* event_handler)
   : m_server_path(lexer.lsp_server())
   , m_server_flags(lexer.lsp_server_flags())
   , m_language_id(lexer.scintilla_lexer())
+  , m_frame(frame)
+  , m_rpc(frame)
 {
 }
 
@@ -56,7 +58,11 @@ client::completion(const wex::path& path, int line, int character)
         {
           if (!msg.is_error && msg.result.count("result"))
           {
-            // hover = boost::json::serialize(msg.result);
+            completion.push_back(boost::json::serialize(msg.result));
+
+            queue_event(m_event_handler, 
+              msg.params["uri"].as_string(), 
+              ID_LSP_CODE_COMPLETION, get(path.uri())); // Notify UI to update completion display
           }
         }))
   {
@@ -114,7 +120,16 @@ std::string client::definition_or_hover(
         {
           if (!msg.is_error && msg.result.count("result"))
           {
-            text = boost::json::serialize(msg.result);
+            hover_t hover;
+            hover.contents = boost::json::serialize(msg.result);
+            hover.line = line;
+            hover.character = character;
+
+            queue_event(
+              m_event_handler,
+              msg.params["uri"].as_string(),
+              which == "definition" ? ID_LSP_DEFINITION : ID_LSP_HOVER,
+              &hover);
           }
         }))
   {
@@ -177,7 +192,6 @@ bool client::initialize(const wex::path& root_path)
       *m_context,
       boost::process::environment::find_executable(m_server_path),
       flags);
-    m_notification_handler = std::make_unique<notification_handler>(this);
   }
   catch (std::exception& e)
   {
@@ -226,42 +240,6 @@ bool client::is_running() const
   return m_process && m_process->running();
 }
 
-std::string client::read()
-{
-  std::string data, response;
-  size_t      n, max = UINT_MAX, total = 0;
-
-  while ((n = boost::asio::read_until(
-            *m_process,
-            boost::asio::dynamic_buffer(data),
-            "}")) > 0)
-  {
-    response += data.substr(0, n);
-    total += n;
-    data.erase(0, n);
-
-    if (max == UINT_MAX)
-    {
-      if (
-        regex r(m_rpc.header_part_content_field() + "([0-9]+).*");
-        r.match(response) > 0)
-      {
-        const size_t header_length =
-          m_rpc.header_part_content_field().size() + r[0].size() + 4;
-
-        max = stoi(r[0]) + header_length;
-      }
-    }
-
-    if (total == max)
-    {
-      break;
-    }
-  }
-
-  return response;
-}
-
 bool client::shutdown()
 {
   // JSON-RPC Protocol Implementation
@@ -295,12 +273,8 @@ bool client::shutdown()
 
 bool client::write(const std::string& text, response_handler resp)
 {
-  if (m_process == nullptr)
-  {
-    return false;
-  }
-
-  if (boost::asio::write(*m_process, boost::asio::buffer(text)) == 0)
+  if (m_process == nullptr || !m_process->running() ||
+    boost::asio::write(*m_process, boost::asio::buffer(text)) == 0)
   {
     return false;
   }
@@ -308,18 +282,6 @@ bool client::write(const std::string& text, response_handler resp)
   if (resp != nullptr)
   {
     m_rpc.register_handler(resp);
-
-    const auto& response_rpc(m_rpc.decode(read()));
-
-    if (response_rpc.id == -1)
-    {
-      return false;
-    }
-
-    if (!m_rpc.handle_response(response_rpc))
-    {
-      return false;
-    }
   }
 
   return true;

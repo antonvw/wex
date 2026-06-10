@@ -11,6 +11,17 @@ namespace wex
 {
 namespace lsp
 {
-/// Language Server Protocol support for wex
+  queue_event(wxEvtHandler* handler, const std::string& uri, int id, const void* data)
+  {
+    if (handler == nullptr)
+    {
+      return;
+    }
+
+    wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED, id);
+    event.SetString(uri); // Pass the URI to the event handler
+    event.SetClientData(data);
+    wxPostEvent(handler, event); // Notify UI to update diagnostics display
+  }
 } // namespace lsp
 } // namespace wex

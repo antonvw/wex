@@ -20,6 +20,8 @@
 #include <wex/lsp/notification-handler.h>
 #include <wex/syntax/lexer.h>
 
+class wxEvtHandler;
+
 namespace wex
 {
 class item_dialog;
@@ -42,25 +44,25 @@ struct capabilities
 /// Each client communicates with one Server, based upon lexer setup.
 class client
 {
-  friend notification_handler;
-
 public:
   /// Shows a dialog allowing you to choose which lsp server to use
   /// Returns dialog return code.
   static int config_dialog(const data::window& data = data::window());
 
-  /// Constructor, specify lexer for which to create an LSP client
-  client(const lexer& lexer);
+  /// Constructor, specify lexer for which to create an LSP client, and handler for UI updates.
+  /// The lexer determines which LSP server to use based on its configuration.
+  /// If event_handler is nullptr, the client will not post events for UI updates.
+  client(const lexer& lexer, wxEvtHandler* event_handler = nullptr);
 
   /// Destructor.
   ~client();
 
-  /// Requests completion at position.
+  /// Requests code completion at position.
   /// Returns list of completion items.
   std::vector<std::string>
   completion(const wex::path& path, int line, int character);
 
-  /// Requests definition information.
+  /// Requests goto definition information.
   /// Returns location text if available, empty string otherwise.
   std::string definition(const wex::path& path, int line, int character);
 
@@ -79,7 +81,7 @@ public:
   /// Returns server capabilities.
   const capabilities& get_capabilities() const { return m_capabilities; }
 
-  /// Requests hover information.
+  /// Requests hover (tooltip) information.
   /// Returns hover text if available, empty string otherwise.
   std::string hover(const wex::path& path, int line, int character);
 
@@ -107,14 +109,16 @@ private:
     int                character,
     const std::string& which);
 
+  void listen_to_server();
   std::string read();
   bool        write(const std::string& text, response_handler resp = nullptr);
+
+  wxEvtHandler* m_event_handler{nullptr};
 
   std::string m_language_id, m_server_flags, m_server_path;
 
   std::unique_ptr<boost::asio::io_context> m_context;
   std::unique_ptr<boost::process::popen>   m_process;
-  std::unique_ptr<notification_handler>    m_notification_handler;
 
   capabilities m_capabilities;
   bool         m_initialized{false};
