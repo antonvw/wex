@@ -17,7 +17,6 @@
 #include <wex/core/path.h>
 #include <wex/factory/window.h>
 #include <wex/lsp/json-rpc.h>
-#include <wex/lsp/notification-handler.h>
 #include <wex/syntax/lexer.h>
 
 class wxEvtHandler;
@@ -49,9 +48,10 @@ public:
   /// Returns dialog return code.
   static int config_dialog(const data::window& data = data::window());
 
-  /// Constructor, specify lexer for which to create an LSP client, and handler for UI updates.
-  /// The lexer determines which LSP server to use based on its configuration.
-  /// If event_handler is nullptr, the client will not post events for UI updates.
+  /// Constructor, specify lexer for which to create an LSP client, and handler
+  /// for UI updates. The lexer determines which LSP server to use based on its
+  /// configuration. If event_handler is nullptr, the client will not post
+  /// events for UI updates.
   client(const lexer& lexer, wxEvtHandler* event_handler = nullptr);
 
   /// Destructor.
@@ -109,7 +109,7 @@ private:
     int                character,
     const std::string& which);
 
-  void listen_to_server();
+  void        listen_to_server();
   std::string read();
   bool        write(const std::string& text, response_handler resp = nullptr);
 

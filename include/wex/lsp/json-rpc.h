@@ -39,9 +39,6 @@ using response_handler = std::function<void(const json_rpc_message&)>;
 class json_rpc
 {
 public:
-  /// Constructor, takes a pointer to the event handler for UI interactions.
-  json_rpc(wxEvtHandler* event_handler = nullptr);
-
   /// Decodes a JSON-RPC message from string.
   /// Returns parsed message, or empty if parsing failed.
   json_rpc_message decode(
@@ -104,8 +101,6 @@ private:
   int m_id{1};
 
   std::unordered_map<int, response_handler> m_handlers;
-
-  wxEvtHandler* m_event_handler{nullptr};
 };
 
 } // namespace lsp

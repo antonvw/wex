@@ -57,7 +57,7 @@ TEST_CASE("wex::path")
     REQUIRE(!path.paths().empty());
     REQUIRE(path.stat().is_ok());
     REQUIRE(!path.is_readonly());
-    REQUIRE(path.uri() == "file://test.h");
+    REQUIRE(path.uri() == "file://" + path.string());
 
     REQUIRE(
       path.append(wex::path("error")).string().find("error") !=

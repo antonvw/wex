@@ -10,8 +10,11 @@
 #include <wex/core/log.h>
 #include <wex/core/regex.h>
 #include <wex/lsp/client.h>
+#include <wex/lsp/util.h>
 #include <wex/syntax/lexers.h>
+#include <wex/ui/defs.h>
 #include <wex/ui/item-dialog.h>
+#include <wex/ui/lsp.h>
 
 namespace wex
 {
@@ -36,8 +39,6 @@ client::client(const lexer& lexer, wxEvtHandler* event_handler)
   : m_server_path(lexer.lsp_server())
   , m_server_flags(lexer.lsp_server_flags())
   , m_language_id(lexer.scintilla_lexer())
-  , m_frame(frame)
-  , m_rpc(frame)
 {
 }
 
@@ -60,9 +61,11 @@ client::completion(const wex::path& path, int line, int character)
           {
             completion.push_back(boost::json::serialize(msg.result));
 
-            queue_event(m_event_handler, 
-              msg.params["uri"].as_string(), 
-              ID_LSP_CODE_COMPLETION, get(path.uri())); // Notify UI to update completion display
+            queue_event(
+              m_event_handler,
+              msg.params.at("uri").as_string().data(),
+              ID_LSP_CODE_COMPLETION,
+              nullptr);
           }
         }))
   {
@@ -121,13 +124,13 @@ std::string client::definition_or_hover(
           if (!msg.is_error && msg.result.count("result"))
           {
             hover_t hover;
-            hover.contents = boost::json::serialize(msg.result);
-            hover.line = line;
+            hover.contents  = boost::json::serialize(msg.result);
+            hover.line      = line;
             hover.character = character;
 
             queue_event(
               m_event_handler,
-              msg.params["uri"].as_string(),
+              msg.params.at("uri").as_string().data(),
               which == "definition" ? ID_LSP_DEFINITION : ID_LSP_HOVER,
               &hover);
           }
@@ -273,7 +276,8 @@ bool client::shutdown()
 
 bool client::write(const std::string& text, response_handler resp)
 {
-  if (m_process == nullptr || !m_process->running() ||
+  if (
+    m_process == nullptr || !m_process->running() ||
     boost::asio::write(*m_process, boost::asio::buffer(text)) == 0)
   {
     return false;

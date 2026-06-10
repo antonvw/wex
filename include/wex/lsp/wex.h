@@ -10,5 +10,4 @@
 #include <wex/lsp/client.h>
 #include <wex/lsp/diagnostics.h>
 #include <wex/lsp/json-rpc.h>
-#include <wex/lsp/lsp.h>
-#include <wex/lsp/notification-handler.h>
+#include <wex/lsp/util.h>

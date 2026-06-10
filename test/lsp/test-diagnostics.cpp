@@ -14,39 +14,39 @@ TEST_CASE("wex::lsp::diagnostics")
 
   SECTION("add_and_get")
   {
-    wex::lsp::diagnostic d;
-    d.message = "Error: undeclared variable";
-    d.severity = wex::lsp::severity_t::ERROR;
-    d.source = "clang";
-    d.code = "undeclared_var";
-    d.range.start_line = 5;
+    wex::diagnostic d;
+    d.message               = "Error: undeclared variable";
+    d.severity              = wex::severity_t::ERROR;
+    d.source                = "clang";
+    d.code                  = "undeclared_var";
+    d.range.start_line      = 5;
     d.range.start_character = 10;
-    d.range.end_line = 5;
-    d.range.end_character = 15;
+    d.range.end_line        = 5;
+    d.range.end_character   = 15;
 
     diags.add("file:///test.cpp", d);
 
     auto result = diags.get("file:///test.cpp");
     REQUIRE(result.size() == 1);
     REQUIRE(result[0].message == "Error: undeclared variable");
-    REQUIRE(result[0].severity == wex::lsp::severity_t::ERROR);
+    REQUIRE(result[0].severity == wex::severity_t::ERROR);
     REQUIRE(result[0].source == "clang");
   }
 
   SECTION("get_line_diagnostics")
   {
-    wex::lsp::diagnostic d1, d2, d3;
-    d1.message = "Warning 1";
+    wex::diagnostic d1, d2, d3;
+    d1.message          = "Warning 1";
     d1.range.start_line = 10;
-    d1.range.end_line = 10;
+    d1.range.end_line   = 10;
 
-    d2.message = "Warning 2";
+    d2.message          = "Warning 2";
     d2.range.start_line = 10;
-    d2.range.end_line = 10;
+    d2.range.end_line   = 10;
 
-    d3.message = "Warning 3";
+    d3.message          = "Warning 3";
     d3.range.start_line = 15;
-    d3.range.end_line = 15;
+    d3.range.end_line   = 15;
 
     diags.add("file:///test.cpp", d1);
     diags.add("file:///test.cpp", d2);
@@ -63,7 +63,7 @@ TEST_CASE("wex::lsp::diagnostics")
 
   SECTION("clear_document")
   {
-    wex::lsp::diagnostic d;
+    wex::diagnostic d;
     d.message = "Test diagnostic";
     diags.add("file:///test.cpp", d);
 
@@ -79,7 +79,7 @@ TEST_CASE("wex::lsp::diagnostics")
 
   SECTION("clear_all")
   {
-    wex::lsp::diagnostic d;
+    wex::diagnostic d;
     d.message = "Test";
 
     diags.add("file:///test1.cpp", d);
@@ -98,7 +98,7 @@ TEST_CASE("wex::lsp::diagnostics")
 
   SECTION("get_uris")
   {
-    wex::lsp::diagnostic d;
+    wex::diagnostic d;
     d.message = "Test";
 
     diags.add("file:///project/main.cpp", d);
@@ -108,14 +108,20 @@ TEST_CASE("wex::lsp::diagnostics")
     auto uris = diags.get_uris();
 
     REQUIRE(uris.size() == 3);
-    REQUIRE(std::find(uris.begin(), uris.end(), "file:///project/main.cpp") != uris.end());
-    REQUIRE(std::find(uris.begin(), uris.end(), "file:///project/utils.cpp") != uris.end());
-    REQUIRE(std::find(uris.begin(), uris.end(), "file:///project/lib.cpp") != uris.end());
+    REQUIRE(
+      std::find(uris.begin(), uris.end(), "file:///project/main.cpp") !=
+      uris.end());
+    REQUIRE(
+      std::find(uris.begin(), uris.end(), "file:///project/utils.cpp") !=
+      uris.end());
+    REQUIRE(
+      std::find(uris.begin(), uris.end(), "file:///project/lib.cpp") !=
+      uris.end());
   }
 
   SECTION("multiple_documents")
   {
-    wex::lsp::diagnostic d1, d2;
+    wex::diagnostic d1, d2;
     d1.message = "Error in file1";
     d2.message = "Error in file2";
 
@@ -130,19 +136,19 @@ TEST_CASE("wex::lsp::diagnostics")
 
   SECTION("severity_levels")
   {
-    wex::lsp::diagnostic d_error, d_warning, d_info, d_hint;
+    wex::diagnostic d_error, d_warning, d_info, d_hint;
 
-    d_error.message = "This is an error";
-    d_error.severity = wex::lsp::severity_t::ERROR;
+    d_error.message  = "This is an error";
+    d_error.severity = wex::severity_t::ERROR;
 
-    d_warning.message = "This is a warning";
-    d_warning.severity = wex::lsp::severity_t::WARNING;
+    d_warning.message  = "This is a warning";
+    d_warning.severity = wex::severity_t::WARNING;
 
-    d_info.message = "This is info";
-    d_info.severity = wex::lsp::severity_t::INFO;
+    d_info.message  = "This is info";
+    d_info.severity = wex::severity_t::INFO;
 
-    d_hint.message = "This is a hint";
-    d_hint.severity = wex::lsp::severity_t::HINT;
+    d_hint.message  = "This is a hint";
+    d_hint.severity = wex::severity_t::HINT;
 
     diags.add("file:///test.cpp", d_error);
     diags.add("file:///test.cpp", d_warning);
@@ -151,15 +157,15 @@ TEST_CASE("wex::lsp::diagnostics")
 
     auto results = diags.get("file:///test.cpp");
     REQUIRE(results.size() == 4);
-    REQUIRE(results[0].severity == wex::lsp::severity_t::ERROR);
-    REQUIRE(results[1].severity == wex::lsp::severity_t::WARNING);
-    REQUIRE(results[2].severity == wex::lsp::severity_t::INFO);
-    REQUIRE(results[3].severity == wex::lsp::severity_t::HINT);
+    REQUIRE(results[0].severity == wex::severity_t::ERROR);
+    REQUIRE(results[1].severity == wex::severity_t::WARNING);
+    REQUIRE(results[2].severity == wex::severity_t::INFO);
+    REQUIRE(results[3].severity == wex::severity_t::HINT);
   }
 
   SECTION("count_total_diagnostics")
   {
-    wex::lsp::diagnostic d;
+    wex::diagnostic d;
     d.message = "Diagnostic";
 
     REQUIRE(diags.count() == 0);

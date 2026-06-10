@@ -16,10 +16,6 @@ namespace wex
 {
 namespace lsp
 {
-json_rpc::json_rpc(wex::del::frame* frame)
-  : m_frame(frame)
-{
-}
 
 json_rpc_message json_rpc::decode(const std::string& data)
 {

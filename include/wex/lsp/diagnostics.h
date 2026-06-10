@@ -46,7 +46,7 @@ public:
   bool has(const std::string& uri) const;
 
 private:
-  diastd::unordered_map<std::string, diagnostics_t> m_diagnostics;
+  std::unordered_map<std::string, diagnostics_t> m_diagnostics;
 };
 
 } // namespace lsp

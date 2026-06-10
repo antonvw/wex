@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      lsp.h
-// Purpose:   Declaration of classes related to Language Server Protocol (LSP) 
+// Purpose:   Declaration of classes related to Language Server Protocol (LSP)
 //            support in wex.
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2026 Anton van Wezenbeek
@@ -50,12 +50,13 @@ struct diagnostic
 
 struct hover
 {
-  int line{0}; ///< Line number where the hover information is relevant (0-based)
+  int line{
+    0}; ///< Line number where the hover information is relevant (0-based)
   int character{0}; ///< Character position within the line (0-based)
   /// Contents of the hover information
   std::string contents;
 };
 
+typedef struct hover            hover_t;
 typedef std::vector<diagnostic> diagnostics_t;
-typedef std::vector<hover> hover_t;
 } // namespace wex

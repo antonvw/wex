@@ -15,7 +15,11 @@ namespace wex
 {
 namespace lsp
 {
-  /// Language Server Protocol support for wex
-  queue_event(wxEvtHandler* handler, const std::string& uri, int id, const void* data);
+/// Language Server Protocol support for wex.
+void queue_event(
+  wxEvtHandler*      handler,
+  const std::string& uri,
+  int                id,
+  const void*        data);
 } // namespace lsp
 } // namespace wex
