@@ -40,6 +40,11 @@ namespace factory
 class link;
 };
 
+namespace wex::lsp
+{
+class client;
+}; // namespace wex::lsp
+
 namespace syntax
 {
 class stc;
@@ -137,6 +142,12 @@ public:
   {
     return false;
   };
+
+  /// Finds an lsp client for a path.
+  virtual wex::lsp::client* lsp_clients_find(const path& p)
+  {
+    return nullptr;
+  }
 
   /// Called if the notebook changed page.
   virtual void on_notebook(wxWindowID id, wxWindow* page) { ; }

@@ -22,9 +22,26 @@ enum class severity_t
   HINT    = 4
 };
 
+struct completion_item_element
+{
+  std::string label; // Label of the completion item (e.g., function name, variable name)
+  int kind{0}; // Completion item kind (e.g., function, variable, etc.)
+  std::string detail; // Additional details about the completion item
+  std::string documentation; // Documentation string for the completion item
+};
+
+/// Represents a completion item from the language server.
+struct completion_item
+{
+  int line{0}; // Line number where the completion is relevant (0-based)
+  int character{0}; // Character position within the line (0-based)
+
+  std::vector<completion_item_element> elements;
+};
+
 /// Represents a single diagnostic (error, warning, etc.) from the language
 /// server.
-struct diagnostic
+struct diagnostic_item
 {
   /// Range of the diagnostic
   struct range
@@ -48,15 +65,22 @@ struct diagnostic
   std::string source;
 };
 
-struct hover
+struct hover_item
 {
-  int line{
-    0}; ///< Line number where the hover information is relevant (0-based)
-  int character{0}; ///< Character position within the line (0-based)
+  /// Line number where the hover information is relevant (0-based)
+  int line{0};
+  /// Character position within the line (0-based)
+  int character{0};
   /// Contents of the hover information
   std::string contents;
 };
 
-typedef struct hover            hover_t;
-typedef std::vector<diagnostic> diagnostics_t;
+/// Type alias for collections of completions.
+typedef completion_item completions_t;
+
+/// Type alias for a collection of diagnostics returned by the language server.
+typedef std::vector<diagnostic_item> diagnostics_t;
+
+/// Type alias for a hover item returned by the language server.
+typedef struct hover_item hover_t;
 } // namespace wex

@@ -2,7 +2,7 @@
 // Name:      auto-complete.cpp
 // Purpose:   Implementation of class wex::auto_complete
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -117,7 +117,7 @@ void wex::auto_complete::clear()
 
 bool wex::auto_complete::complete(const std::string& text)
 {
-  if (text.empty() || !use())
+  if (text.empty() || !use() || m_stc->frame()->lsp_clients_find(m_stc->path()) != nullptr)
   {
     return false;
   }
@@ -187,6 +187,16 @@ bool wex::auto_complete::determine_actions(char c, actions& ac)
 
 bool wex::auto_complete::on_char(char c)
 {
+  // If LSP is active, ask completion from LSP server, and do not use built in auto complete.
+  // LSP servers often provide their own auto complete,
+  // and it is better to use that one if available.
+  if (auto* lsp_client = m_stc->frame()->lsp_clients_find(m_stc->path()); lsp_client != nullptr)
+  {
+    lsp_client->completion(m_stc->path(),
+      m_stc->LineFromPosition(m_stc->GetCurrentPos()), c);
+    return false;
+  }
+
   if (!use() || m_stc->SelectionIsRectangle())
   {
     return false;

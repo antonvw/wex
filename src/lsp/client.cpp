@@ -8,7 +8,6 @@
 #include <iostream>
 
 #include <wex/core/log.h>
-#include <wex/core/regex.h>
 #include <wex/lsp/client.h>
 #include <wex/lsp/util.h>
 #include <wex/syntax/lexers.h>
@@ -49,7 +48,7 @@ client::completion(const wex::path& path, int line, int character)
 {
   // LSP Methods Implementation
   // send textDocument/completion request
-  std::vector<std::string> completion;
+  completions_t completion;
 
   if (!write(
         m_rpc.encode_request(
@@ -59,13 +58,39 @@ client::completion(const wex::path& path, int line, int character)
         {
           if (!msg.is_error && msg.result.count("result"))
           {
-            completion.push_back(boost::json::serialize(msg.result));
+            completion.elements.reserve(msg.result.at("result").as_array().size());
+
+            for (const auto& item : msg.result.at("result").as_array())
+            {
+              completion_item_element completion_element;
+
+              if (item.as_object().count("label"))
+              {
+                completion_element.label = item.as_object().at("label").as_string().data();
+              }
+
+              if (item.as_object().count("kind"))
+              {
+                completion_element.kind = item.as_object().at("kind").as_int64();
+              }
+
+              if (item.as_object().count("detail"))
+              {
+                completion_element.detail = item.as_object().at("detail").as_string().data();
+              }
+              if (item.as_object().count("documentation"))
+              {
+                completion_element.documentation = item.as_object().at("documentation").as_string().data();
+              }
+
+              completion.push_back(completion_element);
+            }
 
             queue_event(
               m_event_handler,
               msg.params.at("uri").as_string().data(),
               ID_LSP_CODE_COMPLETION,
-              nullptr);
+              &completion);
           }
         }))
   {

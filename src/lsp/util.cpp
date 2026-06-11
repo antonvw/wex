@@ -8,6 +8,7 @@
 #pragma once
 
 #include <wex/lsp/util.h>
+#include <wx/event.h>
 
 namespace wex
 {
@@ -24,7 +25,7 @@ void queue_event(
     return;
   }
 
-  wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED, id);
+  wxCommandEvent event(wxEVT_MENU, id);
   event.SetString(uri); // Pass the URI to the event handler
   event.SetClientData(data);
   wxPostEvent(handler, event); // Notify UI to update diagnostics display

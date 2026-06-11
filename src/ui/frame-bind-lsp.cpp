@@ -15,6 +15,34 @@
 
 namespace wex
 {
+path make_path_skip_uri(const std::string& uri)
+{
+  return path(find_after(uri, "file://"));
+}
+
+void set_lsp_completions(syntax::stc*, completions_t* completions)
+{
+  if (completions != nullptr)
+  {
+    stc->IndicatorClearRange(0, stc->GetTextLength());
+    stc->set_indicator(
+      indicator(wex::data::stc().indicator_no()),
+      stc->PositionFromLine(completions->line),
+      stc->GetLineEndPosition(completions->line));
+
+    for (const auto& comp : completions->elements)
+    {
+      // Here you would typically display the completion items in a popup or
+      // some UI element. For demonstration, we just print them to the console.
+      std::cout << "Completion: " << comp.label
+                << " (Kind: " << comp.kind
+                << ", Detail: " << comp.detail
+                << ", Documentation: " << comp.documentation
+                << ")\n";
+    }
+  }
+}
+
 void set_lsp_diagnostics(syntax::stc* stc, diagnostics_t* diagnostics)
 {
   if (diagnostics != nullptr)
@@ -49,9 +77,20 @@ void wex::frame::bind_lsp()
   bind(this).command(
     {{[=, this](const wxCommandEvent& event)
       {
-        const auto& p(wex::path(find_after(event.GetString(), "file://")));
+        if (auto* stc = open_file(make_path_skip_uri(event.GetString()));
+          stc != nullptr)
+        {
+          auto* completions = (completions_t*)event.GetClientData();
+          set_lsp_completions(dynamic_cast<syntax::stc*>(stc), completions);
+        }
+      },
+      ID_LSP_CODE_COMPLETION}});
 
-        if (auto* stc = open_file(p); stc != nullptr)
+  bind(this).command(
+    {{[=, this](const wxCommandEvent& event)
+      {
+        if (auto* stc = open_file(make_path_skip_uri(event.GetString()));
+          stc != nullptr)
         {
           auto* diagnostics = (diagnostics_t*)event.GetClientData();
           set_lsp_diagnostics(dynamic_cast<syntax::stc*>(stc), diagnostics);
@@ -62,9 +101,8 @@ void wex::frame::bind_lsp()
   bind(this).command(
     {{[=, this](const wxCommandEvent& event)
       {
-        const auto& p(wex::path(find_after(event.GetString(), "file://")));
-
-        if (auto* stc = open_file(p); stc != nullptr)
+        if (auto* stc = open_file(make_path_skip_uri(event.GetString()));
+          stc != nullptr)
         {
           auto* hover = (hover_t*)event.GetClientData();
           set_lsp_hover(dynamic_cast<syntax::stc*>(stc), hover);

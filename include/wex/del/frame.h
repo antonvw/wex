@@ -166,6 +166,8 @@ public:
   bool          debug_print(const std::string& text) override;
   bool          debug_toggle_breakpoint(int line, syntax::stc* stc) override;
 
+  lsp::client* lsp_clients_find(const path& p) override;
+
   void on_command_item_dialog(wxWindowID dialogid, const wxCommandEvent& event)
     override;
   void on_notebook(wxWindowID id, wxWindow* page) override;
@@ -228,7 +230,6 @@ private:
 
   void         bind_all();
   void         follow_path(syntax::stc* stc);
-  lsp::client* lsp_clients_find(const path& p);
   void         lsp_clients_setup();
 
   stc_entry_dialog* entry_dialog(
