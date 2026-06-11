@@ -5,8 +5,6 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-
 #include <wex/core/log.h>
 #include <wex/lsp/client.h>
 #include <wex/lsp/util.h>
@@ -43,8 +41,7 @@ client::client(const lexer& lexer, wxEvtHandler* event_handler)
 
 client::~client() = default;
 
-std::vector<std::string>
-client::completion(const wex::path& path, int line, int character)
+bool client::completion(const wex::path& path, int line, int character)
 {
   // LSP Methods Implementation
   // send textDocument/completion request
@@ -58,7 +55,8 @@ client::completion(const wex::path& path, int line, int character)
         {
           if (!msg.is_error && msg.result.count("result"))
           {
-            completion.elements.reserve(msg.result.at("result").as_array().size());
+            completion.elements.reserve(
+              msg.result.at("result").as_array().size());
 
             for (const auto& item : msg.result.at("result").as_array())
             {
@@ -66,24 +64,28 @@ client::completion(const wex::path& path, int line, int character)
 
               if (item.as_object().count("label"))
               {
-                completion_element.label = item.as_object().at("label").as_string().data();
+                completion_element.label =
+                  item.as_object().at("label").as_string().data();
               }
 
               if (item.as_object().count("kind"))
               {
-                completion_element.kind = item.as_object().at("kind").as_int64();
+                completion_element.kind =
+                  item.as_object().at("kind").as_int64();
               }
 
               if (item.as_object().count("detail"))
               {
-                completion_element.detail = item.as_object().at("detail").as_string().data();
+                completion_element.detail =
+                  item.as_object().at("detail").as_string().data();
               }
               if (item.as_object().count("documentation"))
               {
-                completion_element.documentation = item.as_object().at("documentation").as_string().data();
+                completion_element.documentation =
+                  item.as_object().at("documentation").as_string().data();
               }
 
-              completion.push_back(completion_element);
+              completion.elements.push_back(completion_element);
             }
 
             queue_event(
@@ -94,10 +96,10 @@ client::completion(const wex::path& path, int line, int character)
           }
         }))
   {
-    return completion;
+    return false;
   }
 
-  return completion;
+  return true;
 }
 
 int wex::lsp::client::config_dialog(const data::window& par)
@@ -125,14 +127,14 @@ int wex::lsp::client::config_dialog(const data::window& par)
                                      m_item_dialog->ShowModal();
 }
 
-std::string client::definition(const wex::path& path, int line, int character)
+bool client::definition(const wex::path& path, int line, int character)
 {
   // LSP Methods Implementation
   // send textDocument/definition request
   return definition_or_hover(path, line, character, "definition");
 }
 
-std::string client::definition_or_hover(
+bool client::definition_or_hover(
   const wex::path&   path,
   int                line,
   int                character,
@@ -161,10 +163,10 @@ std::string client::definition_or_hover(
           }
         }))
   {
-    return std::string();
+    return false;
   }
 
-  return text;
+  return true;
 }
 
 bool client::did_change(const wex::path& path, const std::string& text)
@@ -203,7 +205,7 @@ bool client::did_open(const wex::path& path, const std::string& text)
   return write(m_rpc.encode_notification("textDocument/didOpen", params));
 }
 
-std::string client::hover(const wex::path& path, int line, int character)
+bool client::hover(const wex::path& path, int line, int character)
 {
   // LSP Methods Implementation
   // send textDocument/hover request

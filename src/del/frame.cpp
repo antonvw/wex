@@ -227,7 +227,7 @@ bool wex::del::frame::allow_close(wxWindowID id, wxWindow* page)
     }
   }
 
-  return frame::allow_close(id, page);
+  return wex::frame::allow_close(id, page);
 }
 
 void append_submenu(const wex::menu_item* item, wex::menu* menu)
@@ -435,7 +435,7 @@ wex::lsp::client* wex::del::frame::lsp_clients_find(const path& p)
 {
   for (auto* client : m_lsp_clients)
   {
-    if (client->language_id() == p.extension())
+    if (client->language_id() == p.extension().substr(1))
     {
       return client;
     }
@@ -529,22 +529,6 @@ void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
 
     follow_path(stc);
   }
-}
-
-wex::factory::stc*
-wex::del::frame::open_file(const path& filename, const data::stc& data)
-{
-  if (auto* stc = wex::frame::open_file(filename, data); stc != nullptr)
-  {
-    if (auto* client = lsp_clients_find(filename); client != nullptr)
-    {
-      client->did_open(filename, stc->get_text());
-    }
-
-    return stc;
-  }
-
-  return nullptr;
 }
 
 bool wex::del::frame::open_from_action(

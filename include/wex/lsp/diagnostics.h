@@ -22,7 +22,7 @@ class diagnostics
 {
 public:
   /// Adds a diagnostic for a document.
-  void add(const std::string& uri, const diagnostic& diag);
+  void add(const std::string& uri, const diagnostic_item& diag);
 
   /// Clears all diagnostics for a document.
   void clear(const std::string& uri);
@@ -34,10 +34,10 @@ public:
   size_t count() const;
 
   /// Returns all diagnostics for a specific document URI.
-  const std::vector<diagnostic>& get(const std::string& uri) const;
+  const std::vector<diagnostic_item>& get(const std::string& uri) const;
 
   /// Returns all diagnostics on a specific line for a document.
-  std::vector<diagnostic> get_line(const std::string& uri, int line) const;
+  std::vector<diagnostic_item> get_line(const std::string& uri, int line) const;
 
   /// Returns all document URIs with diagnostics.
   std::vector<std::string> get_uris() const;

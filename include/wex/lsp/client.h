@@ -58,13 +58,12 @@ public:
   ~client();
 
   /// Requests code completion at position.
-  /// Returns list of completion items.
-  std::vector<std::string>
-  completion(const wex::path& path, int line, int character);
+  /// Returns true if successful.
+  bool completion(const wex::path& path, int line, int character);
 
   /// Requests goto definition information.
-  /// Returns location text if available, empty string otherwise.
-  std::string definition(const wex::path& path, int line, int character);
+  /// Returns true if successful.
+  bool definition(const wex::path& path, int line, int character);
 
   /// Closes a document.
   /// Returns true if successful.
@@ -82,8 +81,8 @@ public:
   const capabilities& get_capabilities() const { return m_capabilities; }
 
   /// Requests hover (tooltip) information.
-  /// Returns hover text if available, empty string otherwise.
-  std::string hover(const wex::path& path, int line, int character);
+  /// Returns true if successful.
+  bool hover(const wex::path& path, int line, int character);
 
   /// Initializes the LSP client connection with root path.
   /// Returns true if successfully initialized.
@@ -103,7 +102,7 @@ public:
   bool shutdown();
 
 private:
-  std::string definition_or_hover(
+  bool definition_or_hover(
     const wex::path&   path,
     int                line,
     int                character,

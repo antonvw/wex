@@ -11,7 +11,7 @@ namespace wex
 {
 namespace lsp
 {
-void diagnostics::add(const std::string& uri, const diagnostic& diag)
+void diagnostics::add(const std::string& uri, const diagnostic_item& diag)
 {
   m_diagnostics[uri].push_back(diag);
 }
@@ -38,22 +38,23 @@ size_t diagnostics::count() const
   return total;
 }
 
-const std::vector<diagnostic>& diagnostics::get(const std::string& uri) const
+const std::vector<diagnostic_item>&
+diagnostics::get(const std::string& uri) const
 {
   if (const auto it = m_diagnostics.find(uri); it != m_diagnostics.end())
   {
     return it->second;
   }
 
-  static const std::vector<diagnostic> empty;
+  static const std::vector<diagnostic_item> empty;
   return empty;
 }
 
-std::vector<diagnostic>
+std::vector<diagnostic_item>
 diagnostics::get_line(const std::string& uri, int line) const
 {
-  std::vector<diagnostic> result;
-  const auto&             diags = get(uri);
+  std::vector<diagnostic_item> result;
+  const auto&                  diags = get(uri);
 
   for (const auto& diag : diags)
   {

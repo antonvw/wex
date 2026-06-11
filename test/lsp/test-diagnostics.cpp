@@ -14,7 +14,7 @@ TEST_CASE("wex::lsp::diagnostics")
 
   SECTION("add_and_get")
   {
-    wex::diagnostic d;
+    wex::diagnostic_item d;
     d.message               = "Error: undeclared variable";
     d.severity              = wex::severity_t::ERROR;
     d.source                = "clang";
@@ -35,7 +35,7 @@ TEST_CASE("wex::lsp::diagnostics")
 
   SECTION("get_line_diagnostics")
   {
-    wex::diagnostic d1, d2, d3;
+    wex::diagnostic_item d1, d2, d3;
     d1.message          = "Warning 1";
     d1.range.start_line = 10;
     d1.range.end_line   = 10;
@@ -63,7 +63,7 @@ TEST_CASE("wex::lsp::diagnostics")
 
   SECTION("clear_document")
   {
-    wex::diagnostic d;
+    wex::diagnostic_item d;
     d.message = "Test diagnostic";
     diags.add("file:///test.cpp", d);
 
@@ -79,7 +79,7 @@ TEST_CASE("wex::lsp::diagnostics")
 
   SECTION("clear_all")
   {
-    wex::diagnostic d;
+    wex::diagnostic_item d;
     d.message = "Test";
 
     diags.add("file:///test1.cpp", d);
@@ -98,7 +98,7 @@ TEST_CASE("wex::lsp::diagnostics")
 
   SECTION("get_uris")
   {
-    wex::diagnostic d;
+    wex::diagnostic_item d;
     d.message = "Test";
 
     diags.add("file:///project/main.cpp", d);
@@ -121,7 +121,7 @@ TEST_CASE("wex::lsp::diagnostics")
 
   SECTION("multiple_documents")
   {
-    wex::diagnostic d1, d2;
+    wex::diagnostic_item d1, d2;
     d1.message = "Error in file1";
     d2.message = "Error in file2";
 
@@ -136,7 +136,7 @@ TEST_CASE("wex::lsp::diagnostics")
 
   SECTION("severity_levels")
   {
-    wex::diagnostic d_error, d_warning, d_info, d_hint;
+    wex::diagnostic_item d_error, d_warning, d_info, d_hint;
 
     d_error.message  = "This is an error";
     d_error.severity = wex::severity_t::ERROR;
@@ -165,7 +165,7 @@ TEST_CASE("wex::lsp::diagnostics")
 
   SECTION("count_total_diagnostics")
   {
-    wex::diagnostic d;
+    wex::diagnostic_item d;
     d.message = "Diagnostic";
 
     REQUIRE(diags.count() == 0);

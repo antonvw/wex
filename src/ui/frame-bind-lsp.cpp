@@ -20,7 +20,7 @@ path make_path_skip_uri(const std::string& uri)
   return path(find_after(uri, "file://"));
 }
 
-void set_lsp_completions(syntax::stc*, completions_t* completions)
+void set_lsp_completions(syntax::stc* stc, completions_t* completions)
 {
   if (completions != nullptr)
   {
@@ -34,11 +34,9 @@ void set_lsp_completions(syntax::stc*, completions_t* completions)
     {
       // Here you would typically display the completion items in a popup or
       // some UI element. For demonstration, we just print them to the console.
-      std::cout << "Completion: " << comp.label
-                << " (Kind: " << comp.kind
+      std::cout << "Completion: " << comp.label << " (Kind: " << comp.kind
                 << ", Detail: " << comp.detail
-                << ", Documentation: " << comp.documentation
-                << ")\n";
+                << ", Documentation: " << comp.documentation << ")\n";
     }
   }
 }
@@ -77,7 +75,8 @@ void wex::frame::bind_lsp()
   bind(this).command(
     {{[=, this](const wxCommandEvent& event)
       {
-        if (auto* stc = open_file(make_path_skip_uri(event.GetString()));
+        if (
+          auto* stc = open_file(make_path_skip_uri(event.GetString()));
           stc != nullptr)
         {
           auto* completions = (completions_t*)event.GetClientData();
@@ -89,7 +88,8 @@ void wex::frame::bind_lsp()
   bind(this).command(
     {{[=, this](const wxCommandEvent& event)
       {
-        if (auto* stc = open_file(make_path_skip_uri(event.GetString()));
+        if (
+          auto* stc = open_file(make_path_skip_uri(event.GetString()));
           stc != nullptr)
         {
           auto* diagnostics = (diagnostics_t*)event.GetClientData();
@@ -101,7 +101,8 @@ void wex::frame::bind_lsp()
   bind(this).command(
     {{[=, this](const wxCommandEvent& event)
       {
-        if (auto* stc = open_file(make_path_skip_uri(event.GetString()));
+        if (
+          auto* stc = open_file(make_path_skip_uri(event.GetString()));
           stc != nullptr)
         {
           auto* hover = (hover_t*)event.GetClientData();

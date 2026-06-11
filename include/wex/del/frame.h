@@ -172,9 +172,6 @@ public:
     override;
   void on_notebook(wxWindowID id, wxWindow* page) override;
 
-  factory::stc*
-  open_file(const path& filename, const data::stc& data = data::stc()) override;
-
   bool process_async_system(const process_data& data) override;
 
   void set_recent_file(const path& path) override;
@@ -228,9 +225,9 @@ private:
   wex::listview* activate_and_clear(const wex::tool& tool);
   data::dir      build_dir() const;
 
-  void         bind_all();
-  void         follow_path(syntax::stc* stc);
-  void         lsp_clients_setup();
+  void bind_all();
+  void follow_path(syntax::stc* stc);
+  void lsp_clients_setup();
 
   stc_entry_dialog* entry_dialog(
     const std::string& title = std::string(),
@@ -245,7 +242,7 @@ private:
   listview*         m_file_history_listview{nullptr};
   class vcs*        m_vcs{nullptr};
 
-  std::vector<lsp::client*> m_lsp_clients{nullptr};
+  std::vector<lsp::client*> m_lsp_clients;
 
   bool m_skip_set_current_path{false};
 

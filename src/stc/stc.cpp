@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2025 Anton van Wezenbeek
+// Copyright: (c) 2008-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -12,6 +12,7 @@
 #include <wex/ex/macros.h>
 #include <wex/factory/stc-undo.h>
 #include <wex/factory/unified-diff.h>
+#include <wex/lsp/client.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/auto-indent.h>
 #include <wex/stc/entry-dialog.h>
@@ -348,8 +349,9 @@ void wex::stc::guess_type_and_modeline()
        m_hexmode.buffer().substr(length - sample_size, sample_size)));
 
   // If we have a modeline comment.
-  if (regex v("\\s+vim?:\\s*(set [a-z0-9:= ]+)");
-      get_vi().is_active() && (v.search(head) > 0 || v.search(tail) > 0))
+  if (
+    regex v("\\s+vim?:\\s*(set [a-z0-9:= ]+)");
+    get_vi().is_active() && (v.search(head) > 0 || v.search(tail) > 0))
   {
     if (!get_vi().command(
           // the vim modeline command sometimes ends with a : (see test)
@@ -422,8 +424,9 @@ bool wex::stc::mark_diff(int line, const marker& marker)
 {
   line--;
 
-  if (const auto& it = m_marker_identifiers.find(line);
-      it != m_marker_identifiers.end())
+  if (
+    const auto& it = m_marker_identifiers.find(line);
+    it != m_marker_identifiers.end())
   {
     log::trace("diff marker already present, added other marker");
   }
@@ -449,8 +452,9 @@ void wex::stc::mark_modified(const wxStyledTextEvent& event)
 
   use_modification_markers(false);
 
-  if (const auto line = LineFromPosition(event.GetPosition());
-      event.GetModificationType() & wxSTC_PERFORMED_UNDO)
+  if (
+    const auto line = LineFromPosition(event.GetPosition());
+    event.GetModificationType() & wxSTC_PERFORMED_UNDO)
   {
     if (event.GetLinesAdded() == 0)
     {
@@ -521,6 +525,11 @@ bool wex::stc::open(const wex::path& p, const data::stc& data)
     m_frame->set_recent_file(p);
   }
 
+  if (auto* client = m_frame->lsp_clients_find(p); client != nullptr)
+  {
+    client->did_open(p, get_text());
+  }
+
   return true;
 }
 
@@ -553,8 +562,9 @@ void wex::stc::print_preview(wxPreviewFrameModalityKind kind)
   if (!preview->Ok())
   {
     delete preview;
-    stc_entry_dialog("There was a problem previewing.\n"
-                     "Perhaps your current printer is not set correctly?")
+    stc_entry_dialog(
+      "There was a problem previewing.\n"
+      "Perhaps your current printer is not set correctly?")
       .ShowModal();
     return;
   }

@@ -10,12 +10,14 @@
 #include <wex/factory/stc-undo.h>
 #include <wex/stc/auto-indent.h>
 #include <wex/stc/stc.h>
+#include <wex/ui/frame.h>
 
 wex::auto_indent::auto_indent(wex::stc* stc)
   : m_stc(stc)
 {
-  // Disable use if LSP is active, as LSP servers often provide their own auto indent.
-  if (m_stc->frame()->lsp_clients_find(m_stc->path()) != nullptr)
+  // Disable use if LSP is active, as LSP servers often provide their own auto
+  // indent.
+  if (m_stc->get_frame()->lsp_clients_find(m_stc->path()) != nullptr)
   {
     use(false);
   }
