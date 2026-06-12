@@ -45,8 +45,6 @@ bool client::completion(const wex::path& path, int line, int character)
 {
   // LSP Methods Implementation
   // send textDocument/completion request
-  completions_t completion;
-
   if (!write(
         m_rpc.encode_request(
           "textDocument/completion",
@@ -55,6 +53,7 @@ bool client::completion(const wex::path& path, int line, int character)
         {
           if (!msg.is_error && msg.result.count("result"))
           {
+            completions_t completion;
             completion.elements.reserve(
               msg.result.at("result").as_array().size());
 
@@ -140,8 +139,6 @@ bool client::definition_or_hover(
   int                character,
   const std::string& which)
 {
-  std::string text;
-
   if (!write(
         m_rpc.encode_request(
           "textDocument/" + which,

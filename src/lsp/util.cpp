@@ -25,10 +25,10 @@ void queue_event(
     return;
   }
 
-  wxCommandEvent event(wxEVT_MENU, id);
-  event.SetString(uri); // Pass the URI to the event handler
-  event.SetClientData(data);
-  wxPostEvent(handler, event); // Notify UI to update diagnostics display
+  auto* event = new wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, id);
+  event->SetString(uri); // Pass the URI to the event handler
+  event->SetClientData(data);
+  wxQueueEvent(handler, event); // Notify UI to update diagnostics display
 }
 } // namespace lsp
 } // namespace wex

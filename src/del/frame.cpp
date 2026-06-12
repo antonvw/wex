@@ -437,6 +437,18 @@ wex::lsp::client* wex::del::frame::lsp_clients_find(const path& p)
   {
     if (client->language_id() == p.extension().substr(1))
     {
+      // If there is a server for this language, but it is not enabled return nullptr.
+      for (const auto& [key, value] : lexers::get()->get_lsp_servers())
+      {
+        if (value == client->language_id())
+        {
+          if (!config(key).get(false))
+          {
+            return nullptr;
+          }
+        }
+      }
+
       return client;
     }
   }
