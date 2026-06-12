@@ -90,6 +90,13 @@ TEST_CASE("wex::del::frame")
     del_frame()->get_project_history().use_menu(1000, menu);
   }
 
+  SECTION("lsp")
+  {
+    REQUIRE(del_frame()->lsp_clients_find(wex::path()) == nullptr);
+    REQUIRE(del_frame()->lsp_clients_find(wex::path("")) == nullptr);
+    REQUIRE(del_frame()->lsp_clients_find(wex::path("xxx")) == nullptr);
+  }
+
   SECTION("open_file")
   {
     del_frame()->set_find_focus(get_stc());

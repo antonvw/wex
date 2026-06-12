@@ -36,6 +36,10 @@ class file;
 
 /// Adds file and project history support to frame.
 /// It also sets a change indicator in the title of the frame if applicable.
+/// It also adds a vcs interface, and shows vcs info on the statusbar.
+/// It also adds a debug interface, and shows debug info on the statusbar.
+/// It also adds a find in files interface, and shows find in files dialogs.
+/// It also adds lsp client support, but not used by default, you can set it up.
 /// Finally it adds find in files and selection dialogs.
 class frame : public wex::frame
 {
