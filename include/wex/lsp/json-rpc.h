@@ -13,10 +13,13 @@
 #include <string>
 #include <unordered_map>
 
-class wxEvtHandler;
+#include <wx/event.h>
+
+#include <wex/lsp/diagnostics.h>
 
 namespace wex
 {
+
 namespace lsp
 {
 /// Represents a JSON-RPC 2.0 message.
@@ -39,6 +42,9 @@ using response_handler = std::function<void(const json_rpc_message&)>;
 class json_rpc
 {
 public:
+  /// Default constructor, provide event handler.
+  json_rpc(wxEvtHandler* eh = nullptr);
+
   /// Decodes a JSON-RPC message from string.
   /// Returns parsed message, or empty if parsing failed.
   json_rpc_message decode(
@@ -98,9 +104,13 @@ private:
 
   std::string make_output(const boost::json::object& obj);
 
+  diagnostics m_diagnostics;
+
   int m_id{1};
 
   std::unordered_map<int, response_handler> m_handlers;
+
+  wxEvtHandler* m_event_handler;
 };
 
 } // namespace lsp

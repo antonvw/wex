@@ -36,6 +36,8 @@ client::client(const lexer& lexer, wxEvtHandler* event_handler)
   : m_server_path(lexer.lsp_server())
   , m_server_flags(lexer.lsp_server_flags())
   , m_language_id(lexer.scintilla_lexer())
+  , m_rpc(event_handler)
+  , m_event_handler(event_handler)
 {
 }
 
@@ -49,49 +51,52 @@ bool client::completion(const wex::path& path, int line, int character)
         m_rpc.encode_request(
           "textDocument/completion",
           make_object(path, line, character)),
-        [&, this](const json_rpc_message& msg)
+        [=, this](const json_rpc_message& msg)
         {
-          if (!msg.is_error && msg.result.count("result"))
+          if (!msg.is_error && msg.result.contains("items"))
           {
-            completions_t completion;
-            completion.elements.reserve(
-              msg.result.at("result").as_array().size());
+            completions_t* completion = new completions_t;
+            completion->line          = line;
+            completion->character     = character;
+            completion->elements.reserve(
+              msg.result.at("items").as_array().size());
 
-            for (const auto& item : msg.result.at("result").as_array())
+            for (const auto& item : msg.result.at("items").as_array())
             {
               completion_item_element completion_element;
 
-              if (item.as_object().count("label"))
+              if (item.as_object().contains("label"))
               {
                 completion_element.label =
                   item.as_object().at("label").as_string().data();
               }
 
-              if (item.as_object().count("kind"))
+              if (item.as_object().contains("kind"))
               {
                 completion_element.kind =
                   item.as_object().at("kind").as_int64();
               }
 
-              if (item.as_object().count("detail"))
+              if (item.as_object().contains("detail"))
               {
                 completion_element.detail =
                   item.as_object().at("detail").as_string().data();
               }
-              if (item.as_object().count("documentation"))
+
+              if (item.as_object().contains("documentation"))
               {
-                completion_element.documentation =
-                  item.as_object().at("documentation").as_string().data();
+                // The documentation is an array, not yet handled
+                // completion_element.documentation =
               }
 
-              completion.elements.push_back(completion_element);
+              completion->elements.push_back(completion_element);
             }
 
             queue_event(
               m_event_handler,
-              msg.params.at("uri").as_string().data(),
+              path.uri(),
               ID_LSP_CODE_COMPLETION,
-              &completion);
+              completion);
           }
         }))
   {
@@ -143,20 +148,20 @@ bool client::definition_or_hover(
         m_rpc.encode_request(
           "textDocument/" + which,
           make_object(path, line, character)),
-        [&, this](const json_rpc_message& msg)
+        [=, this](const json_rpc_message& msg)
         {
-          if (!msg.is_error && msg.result.count("result"))
+          if (!msg.is_error && msg.result.contains("result"))
           {
-            hover_t hover;
-            hover.contents  = boost::json::serialize(msg.result);
-            hover.line      = line;
-            hover.character = character;
+            auto* hover      = new hover_t;
+            hover->contents  = boost::json::serialize(msg.result);
+            hover->line      = line;
+            hover->character = character;
 
             queue_event(
               m_event_handler,
-              msg.params.at("uri").as_string().data(),
+              path.uri(),
               which == "definition" ? ID_LSP_DEFINITION : ID_LSP_HOVER,
-              &hover);
+              hover);
           }
         }))
   {
@@ -240,7 +245,7 @@ bool client::initialize(const wex::path& root_path)
         m_rpc.encode_request("initialize", params),
         [this](const json_rpc_message& msg)
         {
-          if (!msg.is_error && msg.result.count("capabilities"))
+          if (!msg.is_error && msg.result.contains("capabilities"))
           {
             m_capabilities.hover_support      = 1;
             m_capabilities.completion_support = 1;
@@ -258,6 +263,8 @@ bool client::initialize(const wex::path& root_path)
   m_initialized = true;
 
   log::debug("lsp init") << m_server_path;
+
+  listen_to_server();
 
   return m_initialized;
 }

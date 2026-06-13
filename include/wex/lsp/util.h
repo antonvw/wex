@@ -20,6 +20,6 @@ void queue_event(
   wxEvtHandler*      handler,
   const std::string& uri,
   int                id,
-  const void*        data);
+  void*              data);
 } // namespace lsp
 } // namespace wex

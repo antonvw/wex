@@ -33,11 +33,13 @@ void set_lsp_completions(syntax::stc* stc, completions_t* completions)
     for (const auto& comp : completions->elements)
     {
       // Here you would typically display the completion items in a popup or
-      // some UI element. For demonstration, we just print them to the console.
-      std::cout << "Completion: " << comp.label << " (Kind: " << comp.kind
-                << ", Detail: " << comp.detail
-                << ", Documentation: " << comp.documentation << ")\n";
+      // some UI element.
+      // std::cout << "Completion: " << comp.label << " (Kind: " << comp.kind
+      //          << ", Detail: " << comp.detail
+      //          << ", Documentation: " << comp.documentation << ")\n";
     }
+
+    delete completions;
   }
 }
 
@@ -54,6 +56,8 @@ void set_lsp_diagnostics(syntax::stc* stc, diagnostics_t* diagnostics)
         stc->PositionFromLine(diag.range.start_line),
         stc->GetLineEndPosition(diag.range.end_line));
     }
+
+    delete diagnostics;
   }
 }
 
@@ -66,6 +70,8 @@ void set_lsp_hover(syntax::stc* stc, hover_t* hover)
       indicator(wex::data::stc().indicator_no()),
       stc->PositionFromLine(hover->line),
       stc->GetLineEndPosition(hover->line));
+
+    delete hover;
   }
 }
 } // namespace wex
@@ -83,10 +89,8 @@ void wex::frame::bind_lsp()
           set_lsp_completions(dynamic_cast<syntax::stc*>(stc), completions);
         }
       },
-      ID_LSP_CODE_COMPLETION}});
-
-  bind(this).command(
-    {{[=, this](const wxCommandEvent& event)
+      ID_LSP_CODE_COMPLETION},
+     {[=, this](const wxCommandEvent& event)
       {
         if (
           auto* stc = open_file(make_path_skip_uri(event.GetString()));
@@ -96,10 +100,8 @@ void wex::frame::bind_lsp()
           set_lsp_diagnostics(dynamic_cast<syntax::stc*>(stc), diagnostics);
         }
       },
-      ID_LSP_DIAGNOSTICS}});
-
-  bind(this).command(
-    {{[=, this](const wxCommandEvent& event)
+      ID_LSP_DIAGNOSTICS},
+     {[=, this](const wxCommandEvent& event)
       {
         if (
           auto* stc = open_file(make_path_skip_uri(event.GetString()));

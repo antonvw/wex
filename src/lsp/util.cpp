@@ -5,7 +5,7 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#pragma once
+#include <iostream>
 
 #include <wex/lsp/util.h>
 #include <wx/event.h>
@@ -18,7 +18,7 @@ void queue_event(
   wxEvtHandler*      handler,
   const std::string& uri,
   int                id,
-  const void*        data)
+  void*              data)
 {
   if (handler == nullptr)
   {

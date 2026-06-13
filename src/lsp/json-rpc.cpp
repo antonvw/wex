@@ -5,17 +5,25 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream>
+
 #include <boost/algorithm/string.hpp>
 #include <boost/json.hpp>
 #include <sstream>
 
 #include <wex/core/log.h>
 #include <wex/lsp/json-rpc.h>
+#include <wx/event.h>
 
 namespace wex
 {
 namespace lsp
 {
+
+json_rpc::json_rpc(wxEvtHandler* eh)
+  : m_event_handler(eh)
+{
+}
 
 json_rpc_message json_rpc::decode(const std::string& data)
 {
@@ -32,49 +40,45 @@ json_rpc_message json_rpc::decode(const std::string& data)
   std::string json_str = data.substr(pos + 4);
 
   // prevent invalid json
-  boost::algorithm::replace_all(json_str, ",\"result\":null", "");
+  boost::algorithm::replace_all(json_str, ",\"result\":null", ",\"result\":[]");
 
   try
   {
     auto parsed = boost::json::parse(json_str);
     auto obj    = parsed.as_object();
 
-    if (obj.count("jsonrpc"))
+    if (obj.contains("jsonrpc"))
     {
       msg.jsonrpc = boost::json::value_to<std::string>(obj["jsonrpc"]);
     }
 
-    if (obj.count("id"))
+    if (obj.contains("id"))
     {
       msg.id = boost::json::value_to<int>(obj["id"]);
     }
-    else
-    {
-      log("json_rpc::decode missing id") << json_str;
-    }
 
-    if (obj.count("method"))
+    if (obj.contains("method"))
     {
       msg.method      = boost::json::value_to<std::string>(obj["method"]);
       msg.is_response = false;
     }
-    else if (obj.count("result") || obj.count("error"))
+    else if (obj.contains("result") || obj.contains("error"))
     {
       msg.is_response = true;
       msg.is_error    = obj.count("error") > 0;
 
-      if (obj.count("result"))
+      if (obj.contains("result"))
       {
         msg.result = obj["result"].as_object();
       }
 
-      if (obj.count("error"))
+      if (obj.contains("error"))
       {
         msg.error = obj["error"].as_object();
       }
     }
 
-    if (obj.count("params"))
+    if (obj.contains("params"))
     {
       msg.params = obj["params"].as_object();
     }

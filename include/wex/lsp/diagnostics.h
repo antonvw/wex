@@ -34,10 +34,10 @@ public:
   size_t count() const;
 
   /// Returns all diagnostics for a specific document URI.
-  const std::vector<diagnostic_item>& get(const std::string& uri) const;
+  diagnostics_t get(const std::string& uri) const;
 
   /// Returns all diagnostics on a specific line for a document.
-  std::vector<diagnostic_item> get_line(const std::string& uri, int line) const;
+  diagnostics_t get_line(const std::string& uri, int line) const;
 
   /// Returns all document URIs with diagnostics.
   std::vector<std::string> get_uris() const;

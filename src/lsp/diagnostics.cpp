@@ -38,8 +38,7 @@ size_t diagnostics::count() const
   return total;
 }
 
-const std::vector<diagnostic_item>&
-diagnostics::get(const std::string& uri) const
+diagnostics_t diagnostics::get(const std::string& uri) const
 {
   if (const auto it = m_diagnostics.find(uri); it != m_diagnostics.end())
   {
@@ -49,9 +48,7 @@ diagnostics::get(const std::string& uri) const
   static const std::vector<diagnostic_item> empty;
   return empty;
 }
-
-std::vector<diagnostic_item>
-diagnostics::get_line(const std::string& uri, int line) const
+diagnostics_t diagnostics::get_line(const std::string& uri, int line) const
 {
   std::vector<diagnostic_item> result;
   const auto&                  diags = get(uri);

@@ -10,6 +10,8 @@
 #include <boost/asio.hpp>
 #include <boost/process.hpp>
 
+#include <wex/core/log.h>
+#include <wex/core/regex.h>
 #include <wex/lsp/client.h>
 #include <wex/lsp/json-rpc.h>
 
@@ -18,22 +20,33 @@ namespace wex
 namespace lsp
 {
 
-void client::listen_to_server() 
+void client::listen_to_server()
 {
-  std::thread([this]
-  {
-    while (is_running())
+  std::thread t(
+    [this]
     {
-      if (const auto& response = read(); !response.empty())
+      while (is_running())
       {
-        if (const auto& response_rpc(m_rpc.decode(response)); response_rpc.id != -1)
+        try
         {
-          m_rpc.handle_response(response_rpc);
+          if (const auto& response = read(); !response.empty())
+          {
+            if (
+              const auto& response_rpc(m_rpc.decode(response));
+              response_rpc.id != -1)
+            {
+              m_rpc.handle_response(response_rpc);
+            }
+          }
+        }
+        catch (const std::exception& e)
+        {
+          log(e) << "listen_to_server";
         }
       }
-    }
-  })
-  .detach();
+    });
+
+  t.detach();
 }
 
 std::string client::read()
