@@ -144,8 +144,7 @@ bool client::definition(const wex::path& path, const position_item& pos)
             for (const auto& item : msg.result_array)
             {
               definition_item di;
-              di.range.start_line =
-                item.as_object().at("range").at("start").at("line").as_int64();
+              range_from_json(item.as_object(), di.range);
               di.uri = item.as_object().at("uri").as_string().data();
 
               definition->push_back(di);

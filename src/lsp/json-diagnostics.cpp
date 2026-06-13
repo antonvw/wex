@@ -24,12 +24,7 @@ bool json_rpc::handle_publish_diagnostics(const json_rpc_message& msg)
   for (const auto& diag_json : diags_array)
   {
     wex::diagnostic_item diag;
-    auto                 range_json = diag_json.at("range").as_object();
-    diag.range.start_line = range_json.at("start").at("line").as_int64();
-    diag.range.start_character =
-      range_json.at("start").at("character").as_int64();
-    diag.range.end_line      = range_json.at("end").at("line").as_int64();
-    diag.range.end_character = range_json.at("end").at("character").as_int64();
+    range_from_json(diag_json.as_object(), diag.range);
     diag.severity =
       static_cast<wex::severity_t>(diag_json.at("severity").as_int64());
     diag.code    = diag_json.at("code").as_string().c_str();

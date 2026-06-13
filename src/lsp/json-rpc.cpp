@@ -33,7 +33,7 @@ json_rpc_message json_rpc::decode(const std::string& data)
 
   if (pos == std::string::npos)
   {
-    log("json_rpc::decode invalid") << data;
+    log("wex::lsp::json_rpc::decode invalid") << data;
     return msg;
   }
 
@@ -168,8 +168,8 @@ bool json_rpc::handle_response(const json_rpc_message& msg)
 
   if (it == m_handlers.end())
   {
-    log("json_rpc::handle_response")
-      << msg.id << "not found" << m_handlers.size();
+    log("wex::lsp::json_rpc::handle_response")
+      << msg.id << "not found size:" << m_handlers.size();
     return false;
   }
 
