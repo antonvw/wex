@@ -69,7 +69,14 @@ json_rpc_message json_rpc::decode(const std::string& data)
 
       if (obj.contains("result"))
       {
-        msg.result = obj["result"].as_object();
+        if (obj["result"].is_array())
+        {
+          msg.result_array = obj["result"].as_array();
+        }
+        else
+        {
+          msg.result = obj["result"].as_object();
+        }
       }
 
       if (obj.contains("error"))
@@ -85,7 +92,7 @@ json_rpc_message json_rpc::decode(const std::string& data)
   }
   catch (std::exception& e)
   {
-    log(e) << "json_rpc::decode" << json_str;
+    log(e) << "wex::lsp::json_rpc::decode:" << json_str;
     return json_rpc_message();
   }
 

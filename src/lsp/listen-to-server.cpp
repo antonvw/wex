@@ -38,10 +38,14 @@ void client::listen_to_server()
               m_rpc.handle_response(response_rpc);
             }
           }
+          else
+          {
+            break;
+          }
         }
         catch (const std::exception& e)
         {
-          log(e) << "listen_to_server";
+          log(e) << "wex::lsp::listen_to_server";
         }
       }
     });
@@ -51,14 +55,22 @@ void client::listen_to_server()
 
 std::string client::read()
 {
-  std::string data, response;
-  size_t      n, max = UINT_MAX, total = 0;
+  std::string               data, response;
+  size_t                    n, max = UINT_MAX, total = 0;
+  boost::system::error_code ec;
 
   while ((n = boost::asio::read_until(
             *m_process,
             boost::asio::dynamic_buffer(data),
-            "}")) > 0)
+            "}",
+            ec)) > 0 ||
+         !data.size())
   {
+    if (ec == boost::asio::error::eof)
+    {
+      return std::string();
+    }
+
     response += data.substr(0, n);
     total += n;
     data.erase(0, n);

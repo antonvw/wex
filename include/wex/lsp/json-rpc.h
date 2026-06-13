@@ -30,6 +30,7 @@ struct json_rpc_message
   std::string         method;
   boost::json::object params;
   boost::json::object result;
+  boost::json::array  result_array;
   boost::json::object error;
   bool                is_response{false};
   bool                is_error{false};

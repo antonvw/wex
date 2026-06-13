@@ -18,6 +18,7 @@
 #include <wex/factory/window.h>
 #include <wex/lsp/json-rpc.h>
 #include <wex/syntax/lexer.h>
+#include <wex/ui/lsp.h>
 
 class wxEvtHandler;
 
@@ -59,11 +60,11 @@ public:
 
   /// Requests code completion at position.
   /// Returns true if successful.
-  bool completion(const wex::path& path, int line, int character);
+  bool completion(const wex::path& path, const position_item& pos);
 
   /// Requests goto definition information.
   /// Returns true if successful.
-  bool definition(const wex::path& path, int line, int character);
+  bool definition(const wex::path& path, const position_item& pos);
 
   /// Closes a document.
   /// Returns true if successful.
@@ -82,7 +83,7 @@ public:
 
   /// Requests hover (tooltip) information.
   /// Returns true if successful.
-  bool hover(const wex::path& path, int line, int character);
+  bool hover(const wex::path& path, const position_item& pos);
 
   /// Initializes the LSP client connection with root path.
   /// Returns true if successfully initialized.
@@ -102,12 +103,6 @@ public:
   bool shutdown();
 
 private:
-  bool definition_or_hover(
-    const wex::path&   path,
-    int                line,
-    int                character,
-    const std::string& which);
-
   void        listen_to_server();
   std::string read();
   bool        write(const std::string& text, response_handler resp = nullptr);

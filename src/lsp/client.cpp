@@ -15,14 +15,14 @@
 
 namespace wex
 {
-boost::json::object make_object(const wex::path& path, int line, int character)
+boost::json::object make_object(const wex::path& path, const position_item& p)
 {
   boost::json::object params, text_doc, pos;
 
   text_doc["uri"] = path.uri();
 
-  pos["line"]      = line;
-  pos["character"] = character;
+  pos["line"]      = p.line;
+  pos["character"] = p.character;
 
   params["position"]     = pos;
   params["textDocument"] = text_doc;
@@ -43,21 +43,19 @@ client::client(const lexer& lexer, wxEvtHandler* event_handler)
 
 client::~client() = default;
 
-bool client::completion(const wex::path& path, int line, int character)
+bool client::completion(const wex::path& path, const position_item& pos)
 {
   // LSP Methods Implementation
   // send textDocument/completion request
   if (!write(
-        m_rpc.encode_request(
-          "textDocument/completion",
-          make_object(path, line, character)),
+        m_rpc.encode_request("textDocument/completion", make_object(path, pos)),
         [=, this](const json_rpc_message& msg)
         {
           if (!msg.is_error && msg.result.contains("items"))
           {
             completions_t* completion = new completions_t;
-            completion->line          = line;
-            completion->character     = character;
+            completion->line          = pos.line;
+            completion->character     = pos.character;
             completion->elements.reserve(
               msg.result.at("items").as_array().size());
 
@@ -131,37 +129,33 @@ int wex::lsp::client::config_dialog(const data::window& par)
                                      m_item_dialog->ShowModal();
 }
 
-bool client::definition(const wex::path& path, int line, int character)
+bool client::definition(const wex::path& path, const position_item& pos)
 {
   // LSP Methods Implementation
   // send textDocument/definition request
-  return definition_or_hover(path, line, character, "definition");
-}
-
-bool client::definition_or_hover(
-  const wex::path&   path,
-  int                line,
-  int                character,
-  const std::string& which)
-{
   if (!write(
-        m_rpc.encode_request(
-          "textDocument/" + which,
-          make_object(path, line, character)),
+        m_rpc.encode_request("textDocument/definition", make_object(path, pos)),
         [=, this](const json_rpc_message& msg)
         {
-          if (!msg.is_error && msg.result.contains("result"))
+          if (!msg.is_error)
           {
-            auto* hover      = new hover_t;
-            hover->contents  = boost::json::serialize(msg.result);
-            hover->line      = line;
-            hover->character = character;
+            auto* definition = new definition_t;
+
+            for (const auto& item : msg.result_array)
+            {
+              definition_item di;
+              di.range.start_line =
+                item.as_object().at("range").at("start").at("line").as_int64();
+              di.uri = item.as_object().at("uri").as_string().data();
+
+              definition->push_back(di);
+            }
 
             queue_event(
               m_event_handler,
               path.uri(),
-              which == "definition" ? ID_LSP_DEFINITION : ID_LSP_HOVER,
-              hover);
+              ID_LSP_DEFINITION,
+              definition);
           }
         }))
   {
@@ -207,11 +201,29 @@ bool client::did_open(const wex::path& path, const std::string& text)
   return write(m_rpc.encode_notification("textDocument/didOpen", params));
 }
 
-bool client::hover(const wex::path& path, int line, int character)
+bool client::hover(const wex::path& path, const position_item& pos)
 {
   // LSP Methods Implementation
   // send textDocument/hover request
-  return definition_or_hover(path, line, character, "hover");
+  if (!write(
+        m_rpc.encode_request("textDocument/hover", make_object(path, pos)),
+        [=, this](const json_rpc_message& msg)
+        {
+          if (!msg.is_error && msg.result.contains("result"))
+          {
+            auto* hover      = new hover_t;
+            hover->contents  = boost::json::serialize(msg.result);
+            hover->line      = pos.line;
+            hover->character = pos.character;
+
+            queue_event(m_event_handler, path.uri(), ID_LSP_HOVER, hover);
+          }
+        }))
+  {
+    return false;
+  }
+
+  return true;
 }
 
 bool client::initialize(const wex::path& root_path)
@@ -227,7 +239,7 @@ bool client::initialize(const wex::path& root_path)
   }
   catch (std::exception& e)
   {
-    log(e) << "client::initialize" << m_server_path;
+    log(e) << "wex::lsp::client::initialize with path" << m_server_path;
     return false;
   }
 

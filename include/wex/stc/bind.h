@@ -2,7 +2,7 @@
 // Name:      bind.h
 // Purpose:   Declaration of bind id's
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2025 Anton van Wezenbeek
+// Copyright: (c) 2020-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -26,6 +26,7 @@ enum stc
   hex,
   hex_dec_calltip,
   lowercase,
+  lsp_definition,
   margin_text_author,
   margin_text_blame_revision,
   margin_text_blame_revision_previous,

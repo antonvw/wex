@@ -200,8 +200,7 @@ bool wex::auto_complete::on_char(char c)
   {
     lsp_client->completion(
       m_stc->path(),
-      m_stc->LineFromPosition(m_stc->GetCurrentPos()),
-      c);
+      position_item(m_stc->LineFromPosition(m_stc->GetCurrentPos()), c));
     return false;
   }
 

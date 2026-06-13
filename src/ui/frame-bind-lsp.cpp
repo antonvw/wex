@@ -43,6 +43,24 @@ void set_lsp_completions(syntax::stc* stc, completions_t* completions)
   }
 }
 
+void set_lsp_definition(wex::frame* frame, definition_t* definitions)
+{
+  if (definitions != nullptr)
+  {
+    for (const auto& def : *definitions)
+    {
+      if (
+        auto* stc = frame->open_file(make_path_skip_uri(def.uri));
+        stc != nullptr)
+      {
+        stc->goto_line(def.range.start_line);
+      }
+    }
+
+    delete definitions;
+  }
+}
+
 void set_lsp_diagnostics(syntax::stc* stc, diagnostics_t* diagnostics)
 {
   if (diagnostics != nullptr)
@@ -90,6 +108,14 @@ void wex::frame::bind_lsp()
         }
       },
       ID_LSP_CODE_COMPLETION},
+
+     {[=, this](const wxCommandEvent& event)
+      {
+        auto* definition = (definition_t*)event.GetClientData();
+        set_lsp_definition(this, definition);
+      },
+      ID_LSP_DEFINITION},
+
      {[=, this](const wxCommandEvent& event)
       {
         if (
@@ -101,6 +127,7 @@ void wex::frame::bind_lsp()
         }
       },
       ID_LSP_DIAGNOSTICS},
+
      {[=, this](const wxCommandEvent& event)
       {
         if (
