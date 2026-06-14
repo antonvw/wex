@@ -243,25 +243,6 @@ const int UNKNOWN_ERROR_CODE = -32001;    // Unknown error code
 ### Server Notifications
 - `textDocument/publishDiagnostics` - Server sends diagnostics
 
-## Testing
-
-### Run All Phase 1 Tests
-```bash
-cd build
-./wex_test "[wex::lsp::]"
-```
-
-### Run Specific Test Suite
-```bash
-./wex_test "[wex::lsp::json_rpc]"
-./wex_test "[wex::lsp::diagnostics]"
-```
-
-### Test Individual Test
-```bash
-./wex_test "[wex::lsp::json_rpc][encode_request]"
-```
-
 ## Boost.JSON Quick Reference
 
 ### Creating Objects
@@ -294,25 +275,3 @@ int number = boost::json::value_to<int>(obj["number"]);
 ```cpp
 std::string json_str = boost::json::serialize(obj);
 ```
-
-## Troubleshooting
-
-### Message Not Received
-- Verify Content-Length header is correct
-- Check JSON is valid
-- Ensure CRLF line endings (\r\n)
-
-### Decode Returns Empty Message
-- Check message has Content-Length header
-- Verify header format: "Content-Length: <number>\r\n\r\n"
-- Ensure JSON payload follows header
-
-### Handler Not Called
-- Verify response ID matches registered handler ID
-- Check response is marked as `is_response == true`
-- Confirm handler is registered before response arrives
-
-### Diagnostic Not Found
-- Use exact URI string (case-sensitive)
-- Check URI format: "file:///absolute/path"
-- Verify line numbers are 0-based
