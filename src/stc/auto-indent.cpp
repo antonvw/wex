@@ -2,7 +2,7 @@
 // Name:      stc/auto-indent.cpp
 // Purpose:   Implementation of class wex::auto_indent
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -10,10 +10,17 @@
 #include <wex/factory/stc-undo.h>
 #include <wex/stc/auto-indent.h>
 #include <wex/stc/stc.h>
+#include <wex/ui/frame.h>
 
 wex::auto_indent::auto_indent(wex::stc* stc)
   : m_stc(stc)
 {
+  // Disable use if LSP is active, as LSP servers often provide their own auto
+  // indent.
+  if (m_stc->get_frame()->lsp_clients_find(m_stc->path()) != nullptr)
+  {
+    use(false);
+  }
 }
 
 bool wex::auto_indent::determine_indent(int level)

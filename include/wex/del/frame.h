@@ -12,6 +12,7 @@
 #include <wex/data/dir.h>
 #include <wex/del/defs.h>
 #include <wex/del/listview.h>
+#include <wex/lsp/client.h>
 #include <wex/syntax/indicator.h>
 #include <wex/syntax/marker.h>
 #include <wex/ui/file-history.h>
@@ -35,6 +36,10 @@ class file;
 
 /// Adds file and project history support to frame.
 /// It also sets a change indicator in the title of the frame if applicable.
+/// It also adds a vcs interface, and shows vcs info on the statusbar.
+/// It also adds a debug interface, and shows debug info on the statusbar.
+/// It also adds a find in files interface, and shows find in files dialogs.
+/// It also adds lsp client support, but not used by default, you can set it up.
 /// Finally it adds find in files and selection dialogs.
 class frame : public wex::frame
 {
@@ -49,7 +54,7 @@ public:
     const data::window& data = data::window().style(wxDEFAULT_FRAME_STYLE));
 
   /// Destructor.
-  ~frame() = default;
+  ~frame();
 
   // Virtual interface
 
@@ -152,6 +157,7 @@ public:
   static inline const int id_find_in_files    = ID_FREE_LOWEST;
   static inline const int id_replace_in_files = ID_FREE_LOWEST + 1;
 
+  bool allow_close(wxWindowID id, wxWindow* page) override;
   void bind_accelerators(
     wxWindow*                              parent,
     const std::vector<wxAcceleratorEntry>& v,
@@ -163,6 +169,8 @@ public:
   bool          debug_is_active() const override;
   bool          debug_print(const std::string& text) override;
   bool          debug_toggle_breakpoint(int line, syntax::stc* stc) override;
+
+  lsp::client* lsp_clients_find(const path& p) override;
 
   void on_command_item_dialog(wxWindowID dialogid, const wxCommandEvent& event)
     override;
@@ -220,8 +228,10 @@ protected:
 private:
   wex::listview* activate_and_clear(const wex::tool& tool);
   data::dir      build_dir() const;
-  void           bind_all();
-  void           follow_path(syntax::stc* stc);
+
+  void bind_all();
+  void follow_path(syntax::stc* stc);
+  void lsp_clients_setup();
 
   stc_entry_dialog* entry_dialog(
     const std::string& title = std::string(),
@@ -235,6 +245,8 @@ private:
   process*          m_process{nullptr};
   listview*         m_file_history_listview{nullptr};
   class vcs*        m_vcs{nullptr};
+
+  std::vector<lsp::client*> m_lsp_clients;
 
   bool m_skip_set_current_path{false};
 

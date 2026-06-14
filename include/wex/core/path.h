@@ -154,6 +154,12 @@ public:
   /// Returns the path as a string.
   const std::string string() const { return m_path.string(); }
 
+  /// Returns the path as a URI string.
+  const std::string uri() const
+  {
+    return "file://" + string();
+  }
+
 private:
   std::filesystem::path m_path, m_path_original;
 

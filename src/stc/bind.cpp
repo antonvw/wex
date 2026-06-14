@@ -13,6 +13,7 @@
 #include <wex/core/log.h>
 #include <wex/factory/bind.h>
 #include <wex/factory/sort.h>
+#include <wex/lsp/client.h>
 #include <wex/stc/beautify.h>
 #include <wex/stc/bind.h>
 #include <wex/stc/entry-dialog.h>
@@ -437,6 +438,20 @@ void wex::stc::bind_all()
 
      {[=, this](const wxCommandEvent& event)
       {
+        if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
+        {
+          client->definition(
+            path(),
+            position_item(
+              LineFromPosition(GetCurrentPos()),
+              GetCurrentPos() -
+                PositionFromLine(LineFromPosition(GetCurrentPos()))));
+        }
+      },
+      id::stc::lsp_definition},
+
+     {[=, this](const wxCommandEvent& event)
+      {
         link_open(link_t().set(LINK_OPEN_MIME));
       },
       id::stc::open_mime},
@@ -543,6 +558,14 @@ void wex::stc::build_popup_menu(menu& menu)
     if (path().file_exists() && m_frame->vcs_dir_exists(path()))
     {
       menu.append({{}, {path(), m_frame}});
+    }
+  }
+
+  if (!sel.empty())
+  {
+    if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
+    {
+      menu.append({{id::stc::lsp_definition, _("Goto Definition")}});
     }
   }
 

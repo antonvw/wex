@@ -190,6 +190,17 @@ wex::del::frame::frame(
   sync(true);
 
   bind_all();
+
+  lsp_clients_setup();
+}
+
+wex::del::frame::~frame()
+{
+  for (auto* client : m_lsp_clients)
+  {
+    client->shutdown();
+    delete client;
+  }
 }
 
 wex::listview* wex::del::frame::activate_and_clear(const wex::tool& tool)
@@ -202,6 +213,21 @@ wex::listview* wex::del::frame::activate_and_clear(const wex::tool& tool)
   }
 
   return lv;
+}
+
+bool wex::del::frame::allow_close(wxWindowID id, wxWindow* page)
+{
+  if (auto* stc = dynamic_cast<wex::stc*>(page); stc != nullptr)
+  {
+    if (
+      auto* client = lsp_clients_find(stc->get_file().path());
+      client != nullptr)
+    {
+      client->did_close(stc->get_file().path());
+    }
+  }
+
+  return wex::frame::allow_close(id, page);
 }
 
 void append_submenu(const wex::menu_item* item, wex::menu* menu)
@@ -403,6 +429,45 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
   dir.find_files(tool);
 
   return true;
+}
+
+wex::lsp::client* wex::del::frame::lsp_clients_find(const path& p)
+{
+  for (auto* client : m_lsp_clients)
+  {
+    if (matches_one_of(p.extension(), client->extensions()))
+    {
+      // If there is a server for this language, but it is not enabled return
+      // nullptr.
+      for (const auto& [key, value] : lexers::get()->get_lsp_servers())
+      {
+        if (value == client->language_id())
+        {
+          if (!config(key).get(false))
+          {
+            return nullptr;
+          }
+        }
+      }
+
+      return client;
+    }
+  }
+
+  return nullptr;
+}
+
+void wex::del::frame::lsp_clients_setup()
+{
+  for (const auto& server : lexers::get()->get_lsp_servers())
+  {
+    if (config(server.first).get(false))
+    {
+      auto* client = new lsp::client(lexer(server.second), this);
+      client->initialize(path::current());
+      m_lsp_clients.emplace_back(client);
+    }
+  }
 }
 
 void wex::del::frame::on_command_item_dialog(

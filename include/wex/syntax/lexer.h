@@ -2,7 +2,7 @@
 // Name:      lexer.h
 // Purpose:   Declaration of wex::lexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2025 Anton van Wezenbeek
+// Copyright: (c) 2008-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -132,6 +132,12 @@ public:
   /// Returns the line size.
   size_t line_size() const;
 
+  /// Returns the lsp server.
+  const std::string& lsp_server() const { return m_lsp; }
+
+  /// Returns the lsp server flags.
+  const std::string& lsp_server_flags() const { return m_lsp_flags; }
+
   /// Returns a lexer comment string with text formatted.
   const std::string make_comment(
     const std::string& text,
@@ -195,7 +201,8 @@ private:
   // however this might be different, as with c#.
   // In that case the scintilla lexer is cpp, whereas the display lexer is c#.
   std::string m_comment_begin, m_comment_begin2, m_command_end, m_command_end2,
-    m_display_lexer, m_extensions, m_language, m_scintilla_lexer;
+    m_display_lexer, m_extensions, m_language, m_lsp, m_lsp_flags,
+    m_scintilla_lexer;
 
   // each keyword set in a separate keyword set
   std::unordered_map<int, std::set<std::string>> m_keywords_set;

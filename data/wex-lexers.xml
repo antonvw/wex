@@ -840,6 +840,10 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
    - wrapline: none, char, word, whitespace.
    - exclude: use Macintosh, Windows, Unix, to exclude this lexer
      on specified platform.
+   - lsp: If this attribute is present, the lexer is supported by the LSP client.
+     The value of the attribute is used to match with the language id
+     in the LSP client configuration.
+   - lsp-flags: f this attribute is present, the flags for running lsp server
    Furthermore it might contain the next tags:
    1) <styles>. Colouring styles for this lexer.
       The attribute 'no' contains the scintilla styles.
@@ -1045,7 +1049,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   <lexer name="coffeescript"/>
   <lexer name="conf" extensions="*.elp"/>
-  <lexer name="cpp" extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y;*.sc">
+  <lexer name="cpp" extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y;*.sc" lsp="clangd" lsp-flags="log=error">
     <styles>
       <style no="commentdockeyworderror"> comment </style>
     </styles>

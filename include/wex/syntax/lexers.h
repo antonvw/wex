@@ -107,6 +107,12 @@ public:
   /// Returns the lexers.
   const std::vector<lexer>& get_lexers() const { return m_lexers; }
 
+  /// Returns the lsp servers.
+  const std::map<std::string, std::string>& get_lsp_servers() const
+  {
+    return m_lsp_servers;
+  }
+
   /// Returns the macros for specified lexer.
   const name_values_t& get_macros(const std::string& lexer) const;
 
@@ -189,8 +195,9 @@ private:
 
   name_values_t m_default_colours, m_keywords;
 
-  // This a map, so the theme dialog is ordered.
+  // These are map, so presentation are ordered.
   std::map<std::string, name_values_t> m_theme_macros;
+  std::map<std::string, std::string>   m_lsp_servers; // server name, lexer name
 
   std::set<indicator> m_indicators;
   std::set<marker>    m_markers;

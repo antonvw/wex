@@ -35,6 +35,7 @@ wex::lexers::lexers()
        REFLECT_ADD("indicators", m_indicators.size()),
        REFLECT_ADD("keywords", m_keywords.size()),
        REFLECT_ADD("lexers", m_lexers.size()),
+       REFLECT_ADD("lsp-servers", m_lsp_servers.size()),
        REFLECT_ADD("macros", m_macros.size()),
        REFLECT_ADD("markers", m_markers.size()),
        REFLECT_ADD("styles", m_styles.size()),
@@ -368,6 +369,11 @@ bool wex::lexers::load_document()
       if (const wex::lexer lexer(&node); lexer.is_ok())
       {
         m_lexers.emplace_back(lexer);
+
+        if (!lexer.lsp_server().empty())
+        {
+          m_lsp_servers.insert({lexer.lsp_server(), lexer.scintilla_lexer()});
+        }
       }
     }
   }

@@ -309,6 +309,8 @@ wex::frame::frame(size_t maxFiles, const data::window& data)
     m_file_history.get_base_id(),
     m_file_history.get_base_id() + m_file_history.get_max_files());
 
+  bind_lsp();
+
   if (cmdline::is_output())
   {
     auto* logger = new wxLogStream(&std::cout);

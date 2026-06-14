@@ -40,6 +40,11 @@ namespace factory
 class link;
 };
 
+namespace lsp
+{
+class client;
+}; // namespace lsp
+
 namespace syntax
 {
 class stc;
@@ -137,6 +142,9 @@ public:
   {
     return false;
   };
+
+  /// Finds an lsp client for a path.
+  virtual wex::lsp::client* lsp_clients_find(const path& p) { return nullptr; }
 
   /// Called if the notebook changed page.
   virtual void on_notebook(wxWindowID id, wxWindow* page) { ; }
@@ -433,6 +441,7 @@ protected:
 
 private:
   bool     add_toolbar_panes(const panes_t& panes);
+  void     bind_lsp();
   wxPanel* create_ex_panel();
   void     provide_output(const std::string& text) const;
 

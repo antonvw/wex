@@ -116,6 +116,9 @@ TEST_CASE("wex::frame")
 
     REQUIRE(!frame()->debug_toggle_breakpoint(1000, get_stc()));
 
+    REQUIRE(
+      frame()->lsp_clients_find(wex::test::get_path("test.h")) == nullptr);
+
     REQUIRE(!frame()->vi_exec_command(command));
 
     REQUIRE(!frame()->vi_is_address(get_stc(), "pppp"));
