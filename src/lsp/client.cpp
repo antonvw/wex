@@ -38,6 +38,7 @@ client::client(const lexer& lexer, wxEvtHandler* event_handler)
   , m_language_id(lexer.scintilla_lexer())
   , m_rpc(event_handler)
   , m_event_handler(event_handler)
+  , m_extensions(lexer.extensions())
 {
 }
 

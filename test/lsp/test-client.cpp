@@ -16,6 +16,7 @@ TEST_CASE("wex::lsp::client")
 
   SECTION("initialize")
   {
+    REQUIRE(!client.get_capabilities().definition_support);
     REQUIRE(client.language_id() == "cpp");
     REQUIRE(!client.is_running());
     REQUIRE(!client.is_initialized());
@@ -24,6 +25,7 @@ TEST_CASE("wex::lsp::client")
     REQUIRE(client.language_id() == "cpp");
     REQUIRE(client.is_running());
     REQUIRE(client.is_initialized());
+    REQUIRE(client.shutdown());
   }
 
   SECTION("others")
@@ -31,6 +33,8 @@ TEST_CASE("wex::lsp::client")
     const wex::path path("/Users/anton/wex/test/data/test.h");
 
     REQUIRE(client.initialize(wex::test::get_path()));
+    REQUIRE(client.completion(wex::path(), wex::position_item(5, 5)));
+    REQUIRE(client.definition(wex::path(), wex::position_item(5, 5)));
     REQUIRE(client.hover(wex::path(), wex::position_item(5, 5)));
     REQUIRE(client.hover(path, wex::position_item(5, 5)));
 
@@ -38,6 +42,7 @@ TEST_CASE("wex::lsp::client")
     REQUIRE(client.hover(path, wex::position_item(1, 1)));
     REQUIRE(client.did_change(path, "main() {xxx};"));
     REQUIRE(client.did_close(path));
+    REQUIRE(client.shutdown());
   }
 
   SECTION("shutdown")

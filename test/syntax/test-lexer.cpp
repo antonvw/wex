@@ -57,7 +57,7 @@ TEST_CASE("wex::lexer")
         edgemode=\"line\"\
         spacevisible=\"always\"\
         lsp=\"clangd\"\
-        lsp_flags=\"log=error\"\
+        lsp-flags=\"log=error\"\
         tabdrawmode=\"arrow\" wrapline=\"char\"\
         tabmode=\"use\"\
         tabwidth=\"12\">\

@@ -78,6 +78,9 @@ public:
   /// Returns true if successful.
   bool did_open(const wex::path& path, const std::string& text);
 
+  /// Returns extensions.
+  const std::string& extensions() const { return m_extensions; }
+
   /// Returns server capabilities.
   const capabilities& get_capabilities() const { return m_capabilities; }
 
@@ -109,7 +112,7 @@ private:
 
   wxEvtHandler* m_event_handler{nullptr};
 
-  std::string m_language_id, m_server_flags, m_server_path;
+  std::string m_extensions, m_language_id, m_server_flags, m_server_path;
 
   std::unique_ptr<boost::asio::io_context> m_context;
   std::unique_ptr<boost::process::popen>   m_process;
