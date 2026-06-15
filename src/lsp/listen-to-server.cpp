@@ -31,12 +31,8 @@ void client::listen_to_server()
         {
           if (const auto& response = read(); !response.empty())
           {
-            if (
-              const auto& response_rpc(m_rpc.decode(response));
-              response_rpc.id != -1)
-            {
-              m_rpc.handle_response(response_rpc);
-            }
+            const auto& response_rpc(m_rpc.decode(response));
+            m_rpc.handle_response(response_rpc);
           }
           else
           {

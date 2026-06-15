@@ -44,17 +44,19 @@ void set_lsp_completions(syntax::stc* stc, completions_t* completions)
 }
 
 void set_lsp_definition_or_implementation(
-  wex::frame* frame, definition_or_implementation_t* definitions)
+  wex::frame*                     frame,
+  definition_or_implementation_t* definitions)
 {
   if (definitions != nullptr)
   {
     for (const auto& def : *definitions)
     {
-      data::stc data;
-      data.line(def.range.start_line + 1);
-      data.col(def.range.start_character + 1);
-      data.end_line(def.range.end_line + 1);
-      data.end_col(def.range.end_character + 1);
+      data::control control;
+      control.line(def.range.start_line + 1);
+      control.col(def.range.start_character + 1);
+      control.end_line(def.range.end_line + 1);
+      control.end_col(def.range.end_character + 1);
+      data::stc data(control);
 
       frame->open_file(make_path_skip_uri(def.uri), data);
     }
@@ -113,10 +115,11 @@ void wex::frame::bind_lsp()
 
      {[=, this](const wxCommandEvent& event)
       {
-        auto* definition = (definition_or_implementation_t*)event.GetClientData();
+        auto* definition =
+          (definition_or_implementation_t*)event.GetClientData();
         set_lsp_definition_or_implementation(this, definition);
       },
-      ID_LSP_DEFINITION, ID_LSP_IMPLEMENTATION},
+      ID_LSP_DEFINITION},
 
      {[=, this](const wxCommandEvent& event)
       {
@@ -140,5 +143,13 @@ void wex::frame::bind_lsp()
           set_lsp_hover(dynamic_cast<syntax::stc*>(stc), hover);
         }
       },
-      ID_LSP_HOVER}});
+      ID_LSP_HOVER},
+
+     {[=, this](const wxCommandEvent& event)
+      {
+        auto* definition =
+          (definition_or_implementation_t*)event.GetClientData();
+        set_lsp_definition_or_implementation(this, definition);
+      },
+      ID_LSP_IMPLEMENTATION}});
 }
