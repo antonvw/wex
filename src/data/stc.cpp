@@ -177,6 +177,16 @@ bool wex::data::stc::inject_line() const
 
     m_stc->goto_line(line);
 
+    // line col  end  end
+    //           line col
+    // >0   0    0    0      : 1 indicator entire line
+    // >0   >0   0    0      : 2 indicator from line start column until end of line
+    // >0   0    >0   0      : 3 indicator entire lines from line until end line
+    // >0   >0   >0   0      : 4 indicator from line column until end line
+    // >0   0    0    >0     : 5 indicator from line until end column
+    // >0   >0   0    >0     : 6 indicator from line column until end column
+    // >0   0    >0   >0     : 7 indicator entire lines until end line column
+    // >0   >0   >0   >0     : 8 indicator from line column until end line column
     if (const auto len(m_stc->GetTextLength()); m_stc->is_visual() && len > 0)
     {
       m_stc->IndicatorClearRange(0, len - 1);

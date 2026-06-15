@@ -51,7 +51,7 @@ struct completion_item : public position_item
   std::vector<completion_item_element> elements;
 };
 
-struct definition_item
+struct definition_or_implementation_item
 {
   std::string uri;
 
@@ -87,7 +87,7 @@ struct hover_item : public position_item
 typedef completion_item completions_t;
 
 /// Type alias for a def returned by the language server.
-typedef std::vector<definition_item> definition_t;
+typedef std::vector<definition_or_implementation_item> definition_or_implementation_t;
 
 /// Type alias for a collection of diagnostics returned by the language server.
 typedef std::vector<diagnostic_item> diagnostics_t;

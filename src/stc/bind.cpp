@@ -440,7 +440,7 @@ void wex::stc::bind_all()
       {
         if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
         {
-          client->definition(
+          client->definition_or_implementation(
             path(),
             position_item(
               LineFromPosition(GetCurrentPos()),
@@ -448,7 +448,7 @@ void wex::stc::bind_all()
                 PositionFromLine(LineFromPosition(GetCurrentPos()))));
         }
       },
-      id::stc::lsp_definition},
+      id::stc::lsp_definition, id::stc::lsp_implementation},
 
      {[=, this](const wxCommandEvent& event)
       {
@@ -565,7 +565,9 @@ void wex::stc::build_popup_menu(menu& menu)
   {
     if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
     {
-      menu.append({{id::stc::lsp_definition, _("Goto Definition")}});
+      menu.append({
+        {id::stc::lsp_definition, _("Goto Definition")},
+        {id::stc::lsp_implementation, _("Goto Implementation")}});
     }
   }
 

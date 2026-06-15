@@ -43,18 +43,20 @@ void set_lsp_completions(syntax::stc* stc, completions_t* completions)
   }
 }
 
-void set_lsp_definition(wex::frame* frame, definition_t* definitions)
+void set_lsp_definition_or_implementation(
+  wex::frame* frame, definition_or_implementation_t* definitions)
 {
   if (definitions != nullptr)
   {
     for (const auto& def : *definitions)
     {
-      if (
-        auto* stc = frame->open_file(make_path_skip_uri(def.uri));
-        stc != nullptr)
-      {
-        stc->goto_line(def.range.start_line);
-      }
+      data::stc data;
+      data.line(def.range.start_line + 1);
+      data.col(def.range.start_character + 1);
+      data.end_line(def.range.end_line + 1);
+      data.end_col(def.range.end_character + 1);
+
+      frame->open_file(make_path_skip_uri(def.uri), data);
     }
 
     delete definitions;
@@ -111,10 +113,10 @@ void wex::frame::bind_lsp()
 
      {[=, this](const wxCommandEvent& event)
       {
-        auto* definition = (definition_t*)event.GetClientData();
-        set_lsp_definition(this, definition);
+        auto* definition = (definition_or_implementation_t*)event.GetClientData();
+        set_lsp_definition_or_implementation(this, definition);
       },
-      ID_LSP_DEFINITION},
+      ID_LSP_DEFINITION, ID_LSP_IMPLEMENTATION},
 
      {[=, this](const wxCommandEvent& event)
       {

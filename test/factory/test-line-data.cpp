@@ -15,8 +15,10 @@ TEST_CASE("wex::line_data")
     wex::line_data data;
 
     REQUIRE(wex::line_data().col() == wex::NUMBER_NOT_SET);
+    REQUIRE(wex::line_data().col() == wex::NUMBER_NOT_SET);
     REQUIRE(wex::line_data().command().empty());
     REQUIRE(!wex::line_data().is_ctag());
+    REQUIRE(wex::line_data().line() == wex::NUMBER_NOT_SET);
     REQUIRE(wex::line_data().line() == wex::NUMBER_NOT_SET);
   }
 
@@ -25,6 +27,9 @@ TEST_CASE("wex::line_data")
     wex::line_data data(wex::line_data().line(3));
     data.reset();
     REQUIRE(data.line() == wex::NUMBER_NOT_SET);
+    REQUIRE(data.col() == wex::NUMBER_NOT_SET);
+    REQUIRE(data.end_line() == wex::NUMBER_NOT_SET);
+    REQUIRE(data.end_col() == wex::NUMBER_NOT_SET);
   }
 
   SECTION("set")
@@ -34,5 +39,7 @@ TEST_CASE("wex::line_data")
     REQUIRE(wex::line_data().is_ctag(true).is_ctag());
     REQUIRE(wex::line_data().line(-1).line() == -1);
     REQUIRE(wex::line_data().line(3).line() == 3);
+    REQUIRE(wex::line_data().end_col(5).end_col() == 5);
+    REQUIRE(wex::line_data().end_line(7).end_line() == 7);
   }
 }

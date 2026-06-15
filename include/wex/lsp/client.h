@@ -66,6 +66,10 @@ public:
   /// Returns true if successful.
   bool definition(const wex::path& path, const position_item& pos);
 
+  /// Requests goto implementation information.
+  /// Returns true if successful.
+  bool implementation(const wex::path& path, const position_item& pos);
+
   /// Closes a document.
   /// Returns true if successful.
   bool did_close(const wex::path& path);
@@ -106,6 +110,8 @@ public:
   bool shutdown();
 
 private:
+  bool        definition_or_implementation(
+    const wex::path& path, const position_item& pos, const std::string& method);
   void        listen_to_server();
   std::string read();
   bool        write(const std::string& text, response_handler resp = nullptr);

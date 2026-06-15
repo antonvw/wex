@@ -132,29 +132,40 @@ int wex::lsp::client::config_dialog(const data::window& par)
 
 bool client::definition(const wex::path& path, const position_item& pos)
 {
-  // LSP Methods Implementation
-  // send textDocument/definition request
+  return definition_or_implementation(path, pos, "textDocument/definition");
+}
+
+bool client::definition_or_implementation(
+  const wex::path& path, const position_item& pos, const std::string& method)
+{
   if (!write(
-        m_rpc.encode_request("textDocument/definition", make_object(path, pos)),
+        m_rpc.encode_request(method, make_object(path, pos)),
         [=, this](const json_rpc_message& msg)
         {
           if (!msg.is_error)
           {
-            auto* definition = new definition_t;
+            auto* definition = new definition_or_implementation_t;
 
             for (const auto& item : msg.result_array)
             {
-              definition_item di;
+              definition_or_implementation_item di;
               range_from_json(item.as_object(), di.range);
               di.uri = item.as_object().at("uri").as_string().data();
 
               definition->push_back(di);
             }
 
+            if (definition->empty())
+            {
+              delete definition;
+              definition = nullptr;
+            }
+
             queue_event(
               m_event_handler,
               path.uri(),
-              ID_LSP_DEFINITION,
+              method == "textDocument/definition" ? 
+                ID_LSP_DEFINITION : ID_LSP_IMPLEMENTATION,
               definition);
           }
         }))
@@ -163,6 +174,11 @@ bool client::definition(const wex::path& path, const position_item& pos)
   }
 
   return true;
+}
+
+bool client::implementation(const wex::path& path, const position_item& pos)
+{
+  return definition_or_implementation(path, pos, "textDocument/implementation");
 }
 
 bool client::did_change(const wex::path& path, const std::string& text)
