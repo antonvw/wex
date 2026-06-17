@@ -185,9 +185,9 @@ bool wex::data::stc::inject_line() const
                          m_data.line() - 1 >= m_stc->get_line_count()) ?
                           m_stc->get_line_count() - 1 :
                           m_data.line() - 1;
-    const int col     = m_data.col() - 1;
-    const int endline = m_data.end_line() - 1;
-    const int endcol  = m_data.end_col() - 1;
+    const int col     = std::max(m_data.col() - 1, 0);
+    const int endline = std::max(m_data.end_line() - 1, 0);
+    const int endcol  = std::max(m_data.end_col() - 1, 0);
 
     m_stc->goto_line(line);
 
@@ -201,8 +201,8 @@ bool wex::data::stc::inject_line() const
         m_stc->set_indicator(
           indicator(m_indicator_no),
           std::max(m_stc->PositionFromLine(line) + col, 0),
-          col >= 0 ? m_stc->PositionFromLine(line) + col :
-                     m_stc->GetLineEndPosition(line));
+          col > 0 ? m_stc->PositionFromLine(line) + col :
+                    m_stc->GetLineEndPosition(line));
       }
       // 3,4
       else if (endcol == 0)
@@ -210,8 +210,8 @@ bool wex::data::stc::inject_line() const
         m_stc->set_indicator(
           indicator(m_indicator_no),
           std::max(m_stc->PositionFromLine(line) + col, 0),
-          col >= 0 ? m_stc->PositionFromLine(endline) + col :
-                     m_stc->GetLineEndPosition(endline));
+          col > 0 ? m_stc->PositionFromLine(endline) + col :
+                    m_stc->GetLineEndPosition(endline));
       }
       else
       {
