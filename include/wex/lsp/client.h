@@ -17,6 +17,7 @@
 #include <wex/core/path.h>
 #include <wex/factory/window.h>
 #include <wex/lsp/json-rpc.h>
+#include <wex/lsp/listen-to-server.h>
 #include <wex/syntax/lexer.h>
 #include <wex/ui/lsp.h>
 
@@ -40,10 +41,11 @@ struct capabilities
   bool diagnostic_support{false};
 };
 
-/// Represents a Language Server Protocol client.
+/// Represents the Language Server Protocol client.
 /// Each client communicates with one Server, based upon lexer setup.
 class client
 {
+  friend class listen_to_server;
 public:
   /// Shows a dialog allowing you to choose which lsp server to use
   /// Returns dialog return code.
@@ -66,19 +68,15 @@ public:
   /// Returns true if successful.
   bool definition(const wex::path& path, const position_item& pos);
 
-  /// Requests goto implementation information.
-  /// Returns true if successful.
-  bool implementation(const wex::path& path, const position_item& pos);
-
-  /// Closes a document.
-  /// Returns true if successful.
-  bool did_close(const wex::path& path);
-
   /// Notifies server of document changes.
   /// Returns true if successful.
   bool did_change(const wex::path& path, const std::string& text);
 
-  /// Opens a document for editing.
+  /// Notifies server of closed document.
+  /// Returns true if successful.
+  bool did_close(const wex::path& path);
+
+  /// Notifies server of opened document.
   /// Returns true if successful.
   bool did_open(const wex::path& path, const std::string& text);
 
@@ -91,6 +89,10 @@ public:
   /// Requests hover (tooltip) information.
   /// Returns true if successful.
   bool hover(const wex::path& path, const position_item& pos);
+
+  /// Requests goto implementation information.
+  /// Returns true if successful.
+  bool implementation(const wex::path& path, const position_item& pos);
 
   /// Initializes the LSP client connection with root path.
   /// Returns true if successfully initialized.
@@ -112,8 +114,6 @@ public:
 private:
   bool        definition_or_implementation(
     const wex::path& path, const position_item& pos, const std::string& method);
-  void        listen_to_server();
-  std::string read();
   bool        write(const std::string& text, response_handler resp = nullptr);
 
   wxEvtHandler* m_event_handler{nullptr};
@@ -122,6 +122,7 @@ private:
 
   std::unique_ptr<boost::asio::io_context> m_context;
   std::unique_ptr<boost::process::popen>   m_process;
+  std::unique_ptr<listen_to_server>        m_listen_to_server;
 
   capabilities m_capabilities;
   bool         m_initialized{false};

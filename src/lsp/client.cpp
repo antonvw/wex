@@ -176,11 +176,6 @@ bool client::definition_or_implementation(
   return true;
 }
 
-bool client::implementation(const wex::path& path, const position_item& pos)
-{
-  return definition_or_implementation(path, pos, "textDocument/implementation");
-}
-
 bool client::did_change(const wex::path& path, const std::string& text)
 {
   // LSP Methods Implementation
@@ -242,6 +237,11 @@ bool client::hover(const wex::path& path, const position_item& pos)
   return true;
 }
 
+bool client::implementation(const wex::path& path, const position_item& pos)
+{
+  return definition_or_implementation(path, pos, "textDocument/implementation");
+}
+
 bool client::initialize(const wex::path& root_path)
 {
   try
@@ -292,7 +292,7 @@ bool client::initialize(const wex::path& root_path)
 
   log::debug("lsp init") << m_server_path;
 
-  listen_to_server();
+  m_listen_to_server = std::make_unique<listen_to_server>(this);
 
   return m_initialized;
 }
@@ -325,6 +325,7 @@ bool client::shutdown()
     return false;
   }
 
+  m_listen_to_server->request_stop();
   m_process->terminate();
   m_initialized = false;
 

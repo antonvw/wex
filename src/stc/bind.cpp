@@ -523,6 +523,10 @@ void wex::stc::bind_all()
       id::stc::eol_dos,
       id::stc::eol_mac}});
 
+  // Bind hover events
+  Bind(wxEVT_STC_DWELLSTART, &stc::on_dwell_start, this);
+  Bind(wxEVT_STC_DWELLEND, &stc::on_dwell_end, this);
+
   bind_other();
 }
 
@@ -880,6 +884,25 @@ void wex::stc::jump_action()
   {
     m_data.control().line(val);
     data::stc(data::control().line(val)).set_stc(this).inject();
+  }
+}
+
+void wex::stc::on_dwell_end(wxStyledTextEvent& event)
+{
+  if (CallTipActive())
+  {
+    CallTipCancel();
+  }
+}
+
+void wex::stc::on_dwell_start(wxStyledTextEvent& event)
+{
+  if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
+  {
+    const auto event_line(LineFromPosition(event.GetPosition());
+    client->hover(
+      path(),
+      position_item(event_line, event.GetPosition() - event_line));
   }
 }
 

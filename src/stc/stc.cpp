@@ -501,6 +501,11 @@ void wex::stc::on_styled_text(wxStyledTextEvent& event)
   }
 
   event.Skip();
+
+  if (auto* client = m_frame->lsp_clients_find(p); client != nullptr)
+  {
+    client->did_change(p, get_text());
+  }
 }
 
 bool wex::stc::open(const wex::path& p, const data::stc& data)

@@ -479,6 +479,10 @@ void wex::stc::mouse_action(wxMouseEvent& event)
           m_frame->debug_print(word);
         }
       }
+      else if (const auto annotation = GetAnnotationText(GetCurrentLine()); !annotation.empty())
+      {
+        SetCallTip(GetCurrentPos(), annotation);
+      }
 
       m_skip = false;
     }

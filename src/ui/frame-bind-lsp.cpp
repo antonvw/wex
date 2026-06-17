@@ -22,79 +22,60 @@ path make_path_skip_uri(const std::string& uri)
 
 void set_lsp_completions(syntax::stc* stc, completions_t* completions)
 {
-  if (completions != nullptr)
+  const char separator = '~';
+  std::string auto_complete_text;
+
+  for (const auto& comp : completions->elements)
   {
-    stc->IndicatorClearRange(0, stc->GetTextLength());
-    stc->set_indicator(
-      indicator(wex::data::stc().indicator_no()),
-      stc->PositionFromLine(completions->line),
-      stc->GetLineEndPosition(completions->line));
-
-    for (const auto& comp : completions->elements)
-    {
-      // Here you would typically display the completion items in a popup or
-      // some UI element.
-      // std::cout << "Completion: " << comp.label << " (Kind: " << comp.kind
-      //          << ", Detail: " << comp.detail
-      //          << ", Documentation: " << comp.documentation << ")\n";
-    }
-
-    delete completions;
+    auto_complete_text += comp.label + separator;
   }
+
+  stc->AutoCompSetSeparator(separator);
+  stc->AutoCompShow(auto_complete_text.length() - 1, auto_complete_text);
+  stc->AutoCompSetSeparator(' ');
 }
 
 void set_lsp_definition_or_implementation(
   wex::frame*                     frame,
   definition_or_implementation_t* definitions)
 {
-  if (definitions != nullptr)
+  for (const auto& def : *definitions)
   {
-    for (const auto& def : *definitions)
-    {
-      data::control control;
-      control.line(def.range.start_line + 1);
-      control.col(def.range.start_character + 1);
-      control.end_line(def.range.end_line + 1);
-      control.end_col(def.range.end_character + 1);
-      data::stc data(control);
+    data::control control;
+    control.line(def.range.start_line + 1);
+    control.col(def.range.start_character + 1);
+    control.end_line(def.range.end_line + 1);
+    control.end_col(def.range.end_character + 1);
+    data::stc data(control);
 
-      frame->open_file(make_path_skip_uri(def.uri), data);
-    }
-
-    delete definitions;
+    frame->open_file(make_path_skip_uri(def.uri), data);
   }
+
+  delete definitions;
 }
 
 void set_lsp_diagnostics(syntax::stc* stc, diagnostics_t* diagnostics)
 {
-  if (diagnostics != nullptr)
+  stc->IndicatorClearRange(0, stc->GetTextLength());
+  stc->AnnotationClearAll();
+
+  for (const auto& diag : *diagnostics)
   {
-    stc->IndicatorClearRange(0, stc->GetTextLength());
+    stc->set_indicator(
+      indicator(wex::data::IND_ERROR),
+      stc->PositionFromLine(diag.range.start_line),
+      stc->GetLineEndPosition(diag.range.end_line));
 
-    for (const auto& diag : *diagnostics)
-    {
-      stc->set_indicator(
-        indicator(wex::data::stc().indicator_no()),
-        stc->PositionFromLine(diag.range.start_line),
-        stc->GetLineEndPosition(diag.range.end_line));
-    }
-
-    delete diagnostics;
+    stc->SetAnnotationText(
+      diag.range.start_line,
+      diag.message + " (" + std::to_string(static_cast<int>(diag.severity)) +
+        ")");
   }
 }
 
 void set_lsp_hover(syntax::stc* stc, hover_t* hover)
 {
-  if (hover != nullptr)
-  {
-    stc->IndicatorClearRange(0, stc->GetTextLength());
-    stc->set_indicator(
-      indicator(wex::data::stc().indicator_no()),
-      stc->PositionFromLine(hover->line),
-      stc->GetLineEndPosition(hover->line));
-
-    delete hover;
-  }
+  stc->CallTipShow(stc->PositionFromLine(hover->line), hover->contents);
 }
 } // namespace wex
 
@@ -103,13 +84,16 @@ void wex::frame::bind_lsp()
   bind(this).command(
     {{[=, this](const wxCommandEvent& event)
       {
+        auto* completions = (completions_t*)event.GetClientData();
+
         if (
           auto* stc = open_file(make_path_skip_uri(event.GetString()));
           stc != nullptr)
         {
-          auto* completions = (completions_t*)event.GetClientData();
           set_lsp_completions(dynamic_cast<syntax::stc*>(stc), completions);
         }
+
+        delete completions;
       },
       ID_LSP_CODE_COMPLETION},
 
@@ -123,13 +107,16 @@ void wex::frame::bind_lsp()
 
      {[=, this](const wxCommandEvent& event)
       {
+        auto* diagnostics = (diagnostics_t*)event.GetClientData();
+
         if (
           auto* stc = open_file(make_path_skip_uri(event.GetString()));
           stc != nullptr)
         {
-          auto* diagnostics = (diagnostics_t*)event.GetClientData();
           set_lsp_diagnostics(dynamic_cast<syntax::stc*>(stc), diagnostics);
         }
+
+        delete diagnostics;
       },
       ID_LSP_DIAGNOSTICS},
 
@@ -141,6 +128,7 @@ void wex::frame::bind_lsp()
         {
           auto* hover = (hover_t*)event.GetClientData();
           set_lsp_hover(dynamic_cast<syntax::stc*>(stc), hover);
+          delete hover;
         }
       },
       ID_LSP_HOVER},
