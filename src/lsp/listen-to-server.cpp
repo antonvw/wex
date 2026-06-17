@@ -14,16 +14,17 @@
 #include <wex/core/regex.h>
 #include <wex/lsp/client.h>
 #include <wex/lsp/json-rpc.h>
+#include <wex/lsp/listen-to-server.h>
 
 namespace wex
 {
 namespace lsp
 {
 
-listen_to_server::listen_to_sever(client* cl)
+listen_to_server::listen_to_server(client* cl)
   : m_client(cl)
-  , m_worker_thread(&listen_to_server::run)
 {
+  m_worker_thread = std::jthread(&listen_to_server::run, this, std::stop_token());
 }
 
 std::string listen_to_server::read()
@@ -33,7 +34,7 @@ std::string listen_to_server::read()
   boost::system::error_code ec;
 
   while ((n = boost::asio::read_until(
-            m_client->m_process,
+            *m_client->m_process,
             boost::asio::dynamic_buffer(data),
             "}",
             ec)) > 0 ||
@@ -77,7 +78,7 @@ void listen_to_server::request_stop()
 
 void listen_to_server::run(std::stop_token st)
 {
-  while ((!st.stop_requested() && m_client->is_running())
+  while (!st.stop_requested() && m_client->is_running())
   {
     try
     {

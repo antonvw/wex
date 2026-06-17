@@ -502,9 +502,10 @@ void wex::stc::on_styled_text(wxStyledTextEvent& event)
 
   event.Skip();
 
-  if (auto* client = m_frame->lsp_clients_find(p); client != nullptr)
+  if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
   {
-    client->did_change(p, get_text());
+    // FIXME
+    //    client->did_change(path(), get_text());
   }
 }
 

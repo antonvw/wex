@@ -899,7 +899,7 @@ void wex::stc::on_dwell_start(wxStyledTextEvent& event)
 {
   if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
   {
-    const auto event_line(LineFromPosition(event.GetPosition());
+    const auto event_line(LineFromPosition(event.GetPosition()));
     client->hover(
       path(),
       position_item(event_line, event.GetPosition() - event_line));

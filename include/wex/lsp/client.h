@@ -9,7 +9,6 @@
 
 #include <memory>
 #include <string>
-#include <vector>
 
 #include <boost/asio.hpp>
 #include <boost/process.hpp>
@@ -46,6 +45,7 @@ struct capabilities
 class client
 {
   friend class listen_to_server;
+
 public:
   /// Shows a dialog allowing you to choose which lsp server to use
   /// Returns dialog return code.
@@ -112,9 +112,11 @@ public:
   bool shutdown();
 
 private:
-  bool        definition_or_implementation(
-    const wex::path& path, const position_item& pos, const std::string& method);
-  bool        write(const std::string& text, response_handler resp = nullptr);
+  bool definition_or_implementation(
+    const wex::path&     path,
+    const position_item& pos,
+    const std::string&   method);
+  bool write(const std::string& text, response_handler resp = nullptr);
 
   wxEvtHandler* m_event_handler{nullptr};
 

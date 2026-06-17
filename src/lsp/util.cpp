@@ -5,8 +5,6 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-
 #include <wex/lsp/util.h>
 #include <wx/event.h>
 

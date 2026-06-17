@@ -31,6 +31,7 @@ public:
 
 private:
   std::string read();
+  void run(std::stop_token st);
 
   client* m_client;
 

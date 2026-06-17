@@ -22,7 +22,7 @@ path make_path_skip_uri(const std::string& uri)
 
 void set_lsp_completions(syntax::stc* stc, completions_t* completions)
 {
-  const char separator = '~';
+  const char  separator = '~';
   std::string auto_complete_text;
 
   for (const auto& comp : completions->elements)
@@ -62,11 +62,11 @@ void set_lsp_diagnostics(syntax::stc* stc, diagnostics_t* diagnostics)
   for (const auto& diag : *diagnostics)
   {
     stc->set_indicator(
-      indicator(wex::data::IND_ERROR),
+      indicator(wex::data::stc::IND_ERR),
       stc->PositionFromLine(diag.range.start_line),
       stc->GetLineEndPosition(diag.range.end_line));
 
-    stc->SetAnnotationText(
+    stc->AnnotationSetText(
       diag.range.start_line,
       diag.message + " (" + std::to_string(static_cast<int>(diag.severity)) +
         ")");
@@ -109,11 +109,13 @@ void wex::frame::bind_lsp()
       {
         auto* diagnostics = (diagnostics_t*)event.GetClientData();
 
-        if (
-          auto* stc = open_file(make_path_skip_uri(event.GetString()));
-          stc != nullptr)
+        if (const path cur(make_path_skip_uri(event.GetString()));
+          is_open(cur))
         {
-          set_lsp_diagnostics(dynamic_cast<syntax::stc*>(stc), diagnostics);
+          if (auto* stc = open_file(cur); stc != nullptr)
+          {
+            set_lsp_diagnostics(dynamic_cast<syntax::stc*>(stc), diagnostics);
+          }
         }
 
         delete diagnostics;

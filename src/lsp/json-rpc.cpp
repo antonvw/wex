@@ -5,11 +5,8 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-
 #include <boost/algorithm/string.hpp>
 #include <boost/json.hpp>
-#include <sstream>
 
 #include <wex/core/log.h>
 #include <wex/lsp/json-rpc.h>
