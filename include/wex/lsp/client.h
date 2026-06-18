@@ -58,11 +58,23 @@ public:
   client(const lexer& lexer, wxEvtHandler* event_handler = nullptr);
 
   /// Destructor.
-  ~client();
+  ~client() = default;
 
   /// Requests code completion at position.
   /// Returns true if successful.
-  bool completion(const wex::path& path, const position_item& pos);
+  bool completion(
+    /// the path
+    const wex::path& path,
+    /// the position
+    const position_item& pos,
+    /// the trigger, such as:
+    /// - "."  object memmbers
+    /// - "::" class members
+    /// - "->" pinter members
+    const std::string& trigger= std::string(),
+    /// previous completion list was marked isIncomplete: true
+    /// this lets the server refine suggestions as the user keeps typing
+    bool is_incomplete = false);
 
   /// Requests goto definition information.
   /// Returns true if successful.

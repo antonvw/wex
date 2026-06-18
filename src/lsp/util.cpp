@@ -30,7 +30,7 @@ void queue_event(
   int                id,
   void*              data)
 {
-  if (handler == nullptr)
+  if (handler == nullptr || !handler->GetEvtHandlerEnabled())
   {
     return;
   }

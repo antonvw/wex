@@ -198,9 +198,16 @@ bool wex::auto_complete::on_char(char c)
     auto* lsp_client = m_stc->get_frame()->lsp_clients_find(m_stc->path());
     lsp_client != nullptr)
   {
+    const int line(m_stc->LineFromPosition(m_stc->GetCurrentPos()));
+    const std::string trigger =
+      (c == '.' || c == ":" || c == '>' ? std::string(1, c): std::string());
+
     lsp_client->completion(
       m_stc->path(),
-      position_item(m_stc->LineFromPosition(m_stc->GetCurrentPos()), c));
+      position_item(
+        line,
+        m_stc->GetCurrentPos() - m_stc->PositionFromLine(line)),
+      trigger);
     return false;
   }
 

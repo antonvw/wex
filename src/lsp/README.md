@@ -3,11 +3,9 @@
 ## Overview
 
 This library contains Language Server Process classes for wex.
-It uses the ui and predecessor wex libraries (for the moment).
+It uses the ui and predecessor wex libraries.
 
-This document outlines the implementation strategy for Language Server Protocol (LSP)
-support in the wex library. LSP enables integration with language servers,
-providing features like:
+LSP enables integration with language servers, providing features like:
 
 - Diagnostics (errors, warnings, hints)
 - Code completion
@@ -32,19 +30,11 @@ providing features like:
    - Support multiple language servers
    - Pluggable configuration
 
-## Implementation Phases
+## Implementation
 
 **Key classes:**
 - `wex::lsp::client` - Main client managing communication
 - Message types for request/response/notification
-
-### Phase 4: UI Components
-
-**Features:**
-- [ ] Completion popup (using factory components)
-- [ ] Hover tooltip display
-- [ ] Diagnostics inline display
-- [ ] Server status indicator in statusbar
 
 ## JSON-RPC Example
 

@@ -68,14 +68,17 @@ void set_lsp_diagnostics(syntax::stc* stc, diagnostics_t* diagnostics)
 
     stc->AnnotationSetText(
       diag.range.start_line,
-      diag.message + " (" + std::to_string(static_cast<int>(diag.severity)) +
-        ")");
+      lexer().align_text(
+        diag.message +
+        " (" + std::to_string(static_cast<int>(diag.severity)) + ")"));
   }
 }
 
 void set_lsp_hover(syntax::stc* stc, hover_t* hover)
 {
-  stc->CallTipShow(stc->PositionFromLine(hover->line), hover->contents);
+  stc->CallTipShow(
+    stc->PositionFromLine(hover->pos.line) + hover->pos.character,
+    hover->contents);
 }
 } // namespace wex
 

@@ -46,8 +46,10 @@ struct completion_item_element
 };
 
 /// Represents a completion item from the language server.
-struct completion_item : public position_item
+struct completion_item
 {
+  position_item pos;
+
   std::vector<completion_item_element> elements;
 };
 
@@ -77,8 +79,10 @@ struct diagnostic_item
   std::string source;
 };
 
-struct hover_item : public position_item
+struct hover_item
 {
+  position_item pos;
+
   /// Contents of the hover information
   std::string contents;
 };

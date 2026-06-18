@@ -42,21 +42,37 @@ client::client(const lexer& lexer, wxEvtHandler* event_handler)
 {
 }
 
-client::~client() = default;
-
-bool client::completion(const wex::path& path, const position_item& pos)
+bool client::completion(
+  const wex::path& path,
+  const position_item& pos,
+  const std::string& trigger,
+  bool is_incomplete)
 {
   // LSP Methods Implementation
   // send textDocument/completion request
+  auto obj(make_object(path, pos));
+  boost::json::object context;
+
+  if (!trigger.empty())
+  {
+    context["triggerCharacter"] = trigger;
+    context["triggerKind"] = 2;
+  }
+  else
+  {
+    context["triggerKind"] = (is_incomplete ? 3 : 1);
+  }
+
+  obj["context"] = context;
+
   if (!write(
-        m_rpc.encode_request("textDocument/completion", make_object(path, pos)),
+        m_rpc.encode_request("textDocument/completion", obj),
         [=, this](const json_rpc_message& msg)
         {
           if (!msg.is_error && msg.result.contains("items"))
           {
             completions_t* completion = new completions_t;
-            completion->line          = pos.line;
-            completion->character     = pos.character;
+            completion->pos           = pos;
             completion->elements.reserve(
               msg.result.at("items").as_array().size());
 
@@ -224,8 +240,7 @@ bool client::hover(const wex::path& path, const position_item& pos)
           {
             auto* hover      = new hover_t;
             hover->contents  = boost::json::serialize(msg.result);
-            hover->line      = pos.line;
-            hover->character = pos.character;
+            hover->pos       = pos;
 
             queue_event(m_event_handler, path.uri(), ID_LSP_HOVER, hover);
           }
