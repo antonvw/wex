@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
-#include <numeric>
 #include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
@@ -902,7 +901,9 @@ void wex::stc::on_dwell_start(wxStyledTextEvent& event)
     const auto event_line(LineFromPosition(event.GetPosition()));
     client->hover(
       path(),
-      position_item(event_line, event.GetPosition() - event_line));
+      position_item(
+        event_line,
+        event.GetPosition() - PositionFromLine(event_line)));
   }
 }
 

@@ -56,6 +56,7 @@ void set_lsp_definition_or_implementation(
 
 void set_lsp_diagnostics(syntax::stc* stc, diagnostics_t* diagnostics)
 {
+  stc->SetIndicatorCurrent(wex::data::stc::IND_ERR);
   stc->IndicatorClearRange(0, stc->GetTextLength());
   stc->AnnotationClearAll();
 
@@ -69,8 +70,8 @@ void set_lsp_diagnostics(syntax::stc* stc, diagnostics_t* diagnostics)
     stc->AnnotationSetText(
       diag.range.start_line,
       lexer().align_text(
-        diag.message +
-        " (" + std::to_string(static_cast<int>(diag.severity)) + ")"));
+        diag.message + " (" + std::to_string(static_cast<int>(diag.severity)) +
+        ")"));
   }
 }
 
@@ -102,9 +103,13 @@ void wex::frame::bind_lsp()
 
      {[=, this](const wxCommandEvent& event)
       {
-        auto* definition =
-          (definition_or_implementation_t*)event.GetClientData();
-        set_lsp_definition_or_implementation(this, definition);
+        if (
+          auto* definition =
+            (definition_or_implementation_t*)event.GetClientData();
+          definition != nullptr)
+        {
+          set_lsp_definition_or_implementation(this, definition);
+        }
       },
       ID_LSP_DEFINITION},
 
@@ -112,8 +117,7 @@ void wex::frame::bind_lsp()
       {
         auto* diagnostics = (diagnostics_t*)event.GetClientData();
 
-        if (const path cur(make_path_skip_uri(event.GetString()));
-          is_open(cur))
+        if (const path cur(make_path_skip_uri(event.GetString())); is_open(cur))
         {
           if (auto* stc = open_file(cur); stc != nullptr)
           {
@@ -140,9 +144,13 @@ void wex::frame::bind_lsp()
 
      {[=, this](const wxCommandEvent& event)
       {
-        auto* definition =
-          (definition_or_implementation_t*)event.GetClientData();
-        set_lsp_definition_or_implementation(this, definition);
+        if (
+          auto* definition =
+            (definition_or_implementation_t*)event.GetClientData();
+          definition != nullptr)
+        {
+          set_lsp_definition_or_implementation(this, definition);
+        }
       },
       ID_LSP_IMPLEMENTATION}});
 }

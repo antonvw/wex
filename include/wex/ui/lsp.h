@@ -11,6 +11,8 @@
 #include <string>
 #include <vector>
 
+#include <wx/stc/stc.h>
+
 namespace wex
 {
 /// Diagnostic severity levels.
@@ -24,6 +26,18 @@ enum class severity_t
 
 struct position_item
 {
+  position_item(int l = 0, int c = 0)
+    : line(l)
+    , character(c)
+  {
+  }
+
+  position_item(wxStyledTextCtrl* stc)
+    : line(stc->LineFromPosition(stc->GetCurrentPos()))
+    , character(stc->GetCurrentPos() - stc->PositionFromLine(line))
+  {
+  }
+
   int line{0};      // Line number where the completion is relevant (0-based)
   int character{0}; // Character position within the line (0-based)
 };
