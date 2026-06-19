@@ -16,7 +16,7 @@ TEST_CASE("wex::lsp::diagnostics")
   {
     wex::diagnostic_item d;
     d.message               = "Error: undeclared variable";
-    d.severity              = wex::severity_t::ERROR;
+    d.severity              = wex::severity_t::ERRORS;
     d.source                = "clang";
     d.code                  = "undeclared_var";
     d.range.start_line      = 5;
@@ -29,7 +29,7 @@ TEST_CASE("wex::lsp::diagnostics")
     auto result = diags.get("file:///test.cpp");
     REQUIRE(result.size() == 1);
     REQUIRE(result[0].message == "Error: undeclared variable");
-    REQUIRE(result[0].severity == wex::severity_t::ERROR);
+    REQUIRE(result[0].severity == wex::severity_t::ERRORS);
     REQUIRE(result[0].source == "clang");
   }
 
@@ -139,7 +139,7 @@ TEST_CASE("wex::lsp::diagnostics")
     wex::diagnostic_item d_error, d_warning, d_info, d_hint;
 
     d_error.message  = "This is an error";
-    d_error.severity = wex::severity_t::ERROR;
+    d_error.severity = wex::severity_t::ERRORS;
 
     d_warning.message  = "This is a warning";
     d_warning.severity = wex::severity_t::WARNING;
@@ -157,7 +157,7 @@ TEST_CASE("wex::lsp::diagnostics")
 
     auto results = diags.get("file:///test.cpp");
     REQUIRE(results.size() == 4);
-    REQUIRE(results[0].severity == wex::severity_t::ERROR);
+    REQUIRE(results[0].severity == wex::severity_t::ERRORS);
     REQUIRE(results[1].severity == wex::severity_t::WARNING);
     REQUIRE(results[2].severity == wex::severity_t::INFO);
     REQUIRE(results[3].severity == wex::severity_t::HINT);

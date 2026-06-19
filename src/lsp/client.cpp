@@ -283,15 +283,15 @@ bool client::initialize(const wex::path& root_path)
   boost::json::object params;
   params["processId"] = nullptr;
   params["rootPath"]  = root_path.string();
-
+  params["capabilities"] = m_capabilities.client();
+ 
   if (!write(
         m_rpc.encode_request("initialize", params),
         [this](const json_rpc_message& msg)
         {
           if (!msg.is_error && msg.result.contains("capabilities"))
           {
-            m_capabilities.hover_support      = 1;
-            m_capabilities.completion_support = 1;
+            m_capabilities.set(msg.result);
           }
         }))
   {

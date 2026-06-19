@@ -15,6 +15,7 @@
 
 #include <wex/core/path.h>
 #include <wex/factory/window.h>
+#include <wex/lsp/capabilities.h>
 #include <wex/lsp/json-rpc.h>
 #include <wex/lsp/listen-to-server.h>
 #include <wex/syntax/lexer.h>
@@ -28,18 +29,6 @@ class item_dialog;
 
 namespace lsp
 {
-/// Server capabilities tracking.
-struct capabilities
-{
-  bool hover_support{false};
-  bool completion_support{false};
-  bool definition_support{false};
-  bool references_support{false};
-  bool rename_support{false};
-  bool formatting_support{false};
-  bool diagnostic_support{false};
-};
-
 /// Represents the Language Server Protocol client.
 /// Each client communicates with one Server, based upon lexer setup.
 class client

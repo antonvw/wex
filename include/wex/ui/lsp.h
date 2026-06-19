@@ -18,7 +18,7 @@ namespace wex
 /// Diagnostic severity levels.
 enum class severity_t
 {
-  ERROR   = 1,
+  ERRORS  = 1,
   WARNING = 2,
   INFO    = 3,
   HINT    = 4
