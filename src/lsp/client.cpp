@@ -240,8 +240,11 @@ bool client::hover(const wex::path& path, const position_item& pos)
         {
           if (!msg.is_error && msg.result.contains("contents"))
           {
-            auto* hover     = new hover_t;
-            hover->contents = boost::json::serialize(msg.result.at("contents"));
+            auto* hover = new hover_t;
+            auto  obj(msg.result.at("contents"));
+            auto  val(obj.at("value").as_string());
+
+            hover->contents = boost::json::serialize(val);
             hover->pos      = pos;
 
             queue_event(m_event_handler, path.uri(), ID_LSP_HOVER, hover);

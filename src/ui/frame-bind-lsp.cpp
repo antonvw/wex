@@ -5,6 +5,7 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
 #include <wex/core/core.h>
 #include <wex/factory/bind.h>
 #include <wex/syntax/indicator.h>
@@ -77,9 +78,12 @@ void set_lsp_diagnostics(syntax::stc* stc, diagnostics_t* diagnostics)
 
 void set_lsp_hover(syntax::stc* stc, hover_t* hover)
 {
+  std::string text(hover->contents.substr(1, hover->contents.size() - 2));
+  boost::algorithm::replace_all(text, "\\n", "\n");
+
   stc->CallTipShow(
     stc->PositionFromLine(hover->pos.line) + hover->pos.character,
-    lexer().align_text(hover->contents));
+    text);
 }
 } // namespace wex
 
