@@ -43,20 +43,20 @@ client::client(const lexer& lexer, wxEvtHandler* event_handler)
 }
 
 bool client::completion(
-  const wex::path& path,
+  const wex::path&     path,
   const position_item& pos,
-  const std::string& trigger,
-  bool is_incomplete)
+  const std::string&   trigger,
+  bool                 is_incomplete)
 {
   // LSP Methods Implementation
   // send textDocument/completion request
-  auto obj(make_object(path, pos));
+  auto                obj(make_object(path, pos));
   boost::json::object context;
 
   if (!trigger.empty())
   {
     context["triggerCharacter"] = trigger;
-    context["triggerKind"] = 2;
+    context["triggerKind"]      = 2;
   }
   else
   {
@@ -152,7 +152,9 @@ bool client::definition(const wex::path& path, const position_item& pos)
 }
 
 bool client::definition_or_implementation(
-  const wex::path& path, const position_item& pos, const std::string& method)
+  const wex::path&     path,
+  const position_item& pos,
+  const std::string&   method)
 {
   if (!write(
         m_rpc.encode_request(method, make_object(path, pos)),
@@ -180,8 +182,8 @@ bool client::definition_or_implementation(
             queue_event(
               m_event_handler,
               path.uri(),
-              method == "textDocument/definition" ? 
-                ID_LSP_DEFINITION : ID_LSP_IMPLEMENTATION,
+              method == "textDocument/definition" ? ID_LSP_DEFINITION :
+                                                    ID_LSP_IMPLEMENTATION,
               definition);
           }
         }))
@@ -236,11 +238,11 @@ bool client::hover(const wex::path& path, const position_item& pos)
         m_rpc.encode_request("textDocument/hover", make_object(path, pos)),
         [=, this](const json_rpc_message& msg)
         {
-          if (!msg.is_error && msg.result.contains("result"))
+          if (!msg.is_error && msg.result.contains("contents"))
           {
-            auto* hover      = new hover_t;
-            hover->contents  = boost::json::serialize(msg.result);
-            hover->pos       = pos;
+            auto* hover     = new hover_t;
+            hover->contents = boost::json::serialize(msg.result.at("contents"));
+            hover->pos      = pos;
 
             queue_event(m_event_handler, path.uri(), ID_LSP_HOVER, hover);
           }
@@ -281,10 +283,10 @@ bool client::initialize(const wex::path& root_path)
   // 4. Set m_initialized = true
 
   boost::json::object params;
-  params["processId"] = nullptr;
-  params["rootPath"]  = root_path.string();
+  params["processId"]    = nullptr;
+  params["rootPath"]     = root_path.string();
   params["capabilities"] = m_capabilities.client();
- 
+
   if (!write(
         m_rpc.encode_request("initialize", params),
         [this](const json_rpc_message& msg)

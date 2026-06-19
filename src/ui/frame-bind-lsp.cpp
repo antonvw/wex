@@ -79,7 +79,7 @@ void set_lsp_hover(syntax::stc* stc, hover_t* hover)
 {
   stc->CallTipShow(
     stc->PositionFromLine(hover->pos.line) + hover->pos.character,
-    hover->contents);
+    lexer().align_text(hover->contents));
 }
 } // namespace wex
 

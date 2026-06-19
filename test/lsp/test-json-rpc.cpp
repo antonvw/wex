@@ -105,12 +105,14 @@ TEST_CASE("wex::lsp::json_rpc")
     bool                       handled = false;
     wex::lsp::json_rpc_message received_msg;
 
-    rpc.register_handler(
+    wex::lsp::response_handler hdl(
       [&](const wex::lsp::json_rpc_message& msg)
       {
         handled      = true;
         received_msg = msg;
       });
+
+    rpc.register_handler(hdl);
 
     wex::lsp::json_rpc_message msg;
     msg.id          = 1;

@@ -200,7 +200,7 @@ std::string json_rpc::make_output(const boost::json::object& obj)
   return output;
 }
 
-void json_rpc::register_handler(response_handler handler)
+void json_rpc::register_handler(response_handler& handler)
 {
   m_handlers[m_id] = handler;
 }

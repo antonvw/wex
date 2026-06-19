@@ -16,9 +16,11 @@ TEST_CASE("wex::lsp::client")
 
   SECTION("initialize")
   {
-    REQUIRE(!client.get_capabilities().definition_support);
+    REQUIRE(!client.get_capabilities().support_definition());
     REQUIRE(client.language_id() == "cpp");
-    REQUIRE(client.extensions() == "*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y;*.sc");
+    REQUIRE(
+      client.extensions() ==
+      "*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y;*.sc");
     REQUIRE(!client.is_running());
     REQUIRE(!client.is_initialized());
 
