@@ -83,7 +83,7 @@ wex::stc::stc(const wex::path& p, const data::stc& data)
   SetAdditionalCaretsVisible(true);
   SetAdditionalSelectionTyping(true);
   SetBackSpaceUnIndents(true);
-  SetMouseDwellTime(1000);
+  SetMouseDwellTime(2000);
 
   SetMarginType(m_margin_line_number, wxSTC_MARGIN_NUMBER);
   SetMarginType(m_margin_divider_number, wxSTC_MARGIN_SYMBOL);

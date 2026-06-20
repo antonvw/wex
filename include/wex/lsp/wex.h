@@ -7,7 +7,9 @@
 
 #pragma once
 
+#include <wex/lsp/capabilities.h>
 #include <wex/lsp/client.h>
 #include <wex/lsp/diagnostics.h>
 #include <wex/lsp/json-rpc.h>
+#include <wex/lsp/listen-to-server.h>
 #include <wex/lsp/util.h>
