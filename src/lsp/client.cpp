@@ -5,6 +5,7 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
 #include <wex/core/log.h>
 #include <wex/lsp/client.h>
 #include <wex/lsp/util.h>
@@ -93,6 +94,7 @@ bool client::completion(
               {
                 completion_element.label =
                   item.as_object().at("label").as_string().data();
+                boost::algorithm::trim(completion_element.label);
               }
 
               if (item.as_object().contains("kind"))

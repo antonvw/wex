@@ -30,6 +30,27 @@ public:
   bool m_show_inserts{true};
   bool m_show_keywords{true};
 };
+
+const std::string get_trigger(wex::stc* stc)
+{
+  const auto wsp = stc->WordStartPosition(stc->GetCurrentPos(), true);
+
+  std::string trigger;
+
+  if (stc->GetCharAt(wsp - 1) == '.')
+  {
+    trigger = ".";
+  }
+  else if (stc->GetCharAt(wsp - 1) == '>' && stc->GetCharAt(wsp - 2) == '-')
+  {
+    trigger = "->";
+  }
+  else if (stc->GetCharAt(wsp - 1) == ':' && stc->GetCharAt(wsp - 2) == ':')
+  {
+    trigger = "::";
+  }
+
+  return trigger;
 }; // namespace wex
 
 wex::auto_complete::auto_complete(wex::stc* stc)
@@ -198,10 +219,10 @@ bool wex::auto_complete::on_char(char c)
     auto* lsp_client = m_stc->get_frame()->lsp_clients_find(m_stc->path());
     lsp_client != nullptr)
   {
-    const std::string trigger =
-      (c == '.' || c == ':' || c == '>' ? std::string(1, c) : std::string());
-
-    lsp_client->completion(m_stc->path(), position_item(m_stc), trigger);
+    lsp_client->completion(
+      m_stc->path(),
+      position_item(m_stc),
+      get_trigger(m_stc));
     return false;
   }
 
@@ -348,3 +369,4 @@ const std::string wex::auto_complete::variable(const std::string& name) const
 {
   return m_scope->class_name(name);
 }
+} // namespace wex

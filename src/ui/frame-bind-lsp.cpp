@@ -23,17 +23,31 @@ path make_path_skip_uri(const std::string& uri)
 
 void set_lsp_completions(syntax::stc* stc, completions_t* completions)
 {
-  const char  separator = '~';
+  const char  separator = 3;
   std::string auto_complete_text;
 
-  for (const auto& comp : completions->elements)
-  {
-    auto_complete_text += comp.label + separator;
-  }
+  const auto wsp = stc->WordStartPosition(stc->GetCurrentPos(), true);
+  const std::string& filter(stc->GetTextRange(wsp, stc->GetCurrentPos()));
 
-  stc->AutoCompSetSeparator(separator);
-  stc->AutoCompShow(auto_complete_text.length() - 1, auto_complete_text);
-  stc->AutoCompSetSeparator(' ');
+  if (!filter.empty())
+  {
+    for (const auto& comp : completions->elements)
+    {
+      if (
+        comp.label.starts_with(filter))
+      {
+        auto_complete_text += comp.label + separator;
+      }
+    }
+
+    if (!auto_complete_text.empty())
+    {
+      const auto old(stc->AutoCompGetSeparator());
+      stc->AutoCompSetSeparator(separator);
+      stc->AutoCompShow(stc->GetCurrentPos() - wsp, auto_complete_text);
+      stc->AutoCompSetSeparator(old);
+    }
+  }
 }
 
 void set_lsp_definition_or_implementation(

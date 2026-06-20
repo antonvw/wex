@@ -23,7 +23,6 @@ boost::json::object capabilities::client() const
         "synchronization":
         {
           "dynamicRegistration": true,
-          "willSave": true,
           "didSave": true
         },
         "completion":
