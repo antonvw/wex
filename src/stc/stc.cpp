@@ -490,6 +490,16 @@ void wex::stc::mark_modified(const wxStyledTextEvent& event)
     }
   }
 
+  if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
+  {
+    range_item r;
+    r.start.line      = LineFromPosition(event.GetPosition());
+    r.start.character = event.GetPosition() - PositionFromLine(r.start.line);
+    r.end.line        = r.start.line + event.GetLinesAdded();
+
+    //client->did_change(path(), r, event.GetText());
+  }
+
   use_modification_markers(true);
 }
 
@@ -501,12 +511,6 @@ void wex::stc::on_styled_text(wxStyledTextEvent& event)
   }
 
   event.Skip();
-
-  if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
-  {
-    // FIXME
-    //    client->did_change(path(), get_text());
-  }
 }
 
 bool wex::stc::open(const wex::path& p, const data::stc& data)

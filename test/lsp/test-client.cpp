@@ -44,7 +44,7 @@ TEST_CASE("wex::lsp::client")
 
     REQUIRE(client.did_open(path, "main() {}"));
     REQUIRE(client.hover(path, wex::position_item(1, 1)));
-    REQUIRE(client.did_change(path, "main() {xxx};"));
+    REQUIRE(client.did_change(path, wex::range_item(), "main() {xxx};"));
     REQUIRE(client.did_close(path));
     REQUIRE(client.shutdown());
   }

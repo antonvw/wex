@@ -17,17 +17,26 @@ namespace wex
 {
 boost::json::object make_object(const wex::path& path, const position_item& p)
 {
-  boost::json::object params, text_doc, pos;
+  boost::json::object params, text_doc, pos(p.json_object());
 
   text_doc["uri"] = path.uri();
-
-  pos["line"]      = p.line;
-  pos["character"] = p.character;
 
   params["position"]     = pos;
   params["textDocument"] = text_doc;
 
   return params;
+}
+
+boost::json::object
+make_content_changes(const range_item& r, const std::string& text)
+{
+  boost::json::object content_changes;
+
+  content_changes["range"]       = r.json_object();
+  content_changes["text"]        = text;
+  content_changes["rangeLength"] = text.size();
+
+  return content_changes;
 }
 
 namespace lsp
@@ -194,14 +203,17 @@ bool client::definition_or_implementation(
   return true;
 }
 
-bool client::did_change(const wex::path& path, const std::string& text)
+bool client::did_change(
+  const wex::path&   path,
+  const range_item&  range,
+  const std::string& text)
 {
   // LSP Methods Implementation
   // send textDocument/didChange notification
-  boost::json::object params, text_doc;
-  text_doc["uri"]        = path.uri();
-  text_doc["text"]       = text;
-  params["textDocument"] = text_doc;
+  boost::json::object params, text_doc, text_contents;
+  text_doc["uri"]          = path.uri();
+  params["textDocument"]   = text_doc;
+  params["contentChanges"] = make_content_changes(range, text);
 
   return write(m_rpc.encode_notification("textDocument/didChange", params));
 }
@@ -228,6 +240,17 @@ bool client::did_open(const wex::path& path, const std::string& text)
   params["textDocument"] = text_doc;
 
   return write(m_rpc.encode_notification("textDocument/didOpen", params));
+}
+
+bool client::did_save(const wex::path& path)
+{
+  // LSP Methods Implementation
+  // send textDocument/didSave notification
+  boost::json::object params, text_doc;
+  text_doc["uri"]        = path.uri();
+  params["textDocument"] = text_doc;
+
+  return write(m_rpc.encode_notification("textDocument/didSave", params));
 }
 
 bool client::hover(const wex::path& path, const position_item& pos)

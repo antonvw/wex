@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 
+#include <boost/json.hpp>
 #include <wx/stc/stc.h>
 
 namespace wex
@@ -38,16 +39,33 @@ struct position_item
   {
   }
 
+  boost::json::object json_object() const
+  {
+    boost::json::object obj;
+
+    obj["line"]      = line;
+    obj["character"] = character;
+
+    return obj;
+  }
+
   int line{0};      // Line number where the completion is relevant (0-based)
   int character{0}; // Character position within the line (0-based)
 };
 
 struct range_item
 {
-  int start_line{0};
-  int start_character{0};
-  int end_line{0};
-  int end_character{0};
+  boost::json::object json_object() const
+  {
+    boost::json::object obj;
+
+    obj["start"] = start.json_object();
+    obj["end"]   = end.json_object();
+
+    return obj;
+  }
+
+  position_item start, end;
 };
 
 struct completion_item_element
@@ -105,7 +123,8 @@ struct hover_item
 typedef completion_item completions_t;
 
 /// Type alias for a def returned by the language server.
-typedef std::vector<definition_or_implementation_item> definition_or_implementation_t;
+typedef std::vector<definition_or_implementation_item>
+  definition_or_implementation_t;
 
 /// Type alias for a collection of diagnostics returned by the language server.
 typedef std::vector<diagnostic_item> diagnostics_t;

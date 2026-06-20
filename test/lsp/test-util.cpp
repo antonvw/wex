@@ -26,16 +26,16 @@ TEST_CASE("wex::lsp::util")
 
     wex::range_item range;
 
-    REQUIRE(range.start_line == 0);
-    REQUIRE(range.start_character == 0);
-    REQUIRE(range.end_line == 0);
-    REQUIRE(range.end_character == 0);
+    REQUIRE(range.start.line == 0);
+    REQUIRE(range.start.character == 0);
+    REQUIRE(range.end.line == 0);
+    REQUIRE(range.end.character == 0);
 
     REQUIRE(wex::lsp::range_from_json(obj, range));
 
-    REQUIRE(range.start_line == 1151);
-    REQUIRE(range.start_character == 19);
-    REQUIRE(range.end_line == 1153);
-    REQUIRE(range.end_character == 30);
+    REQUIRE(range.start.line == 1151);
+    REQUIRE(range.start.character == 19);
+    REQUIRE(range.end.line == 1153);
+    REQUIRE(range.end.character == 30);
   }
 }

@@ -24,7 +24,6 @@ boost::json::object capabilities::client() const
         {
           "dynamicRegistration": true,
           "willSave": true,
-          "willSaveWaitUntil": true,
           "didSave": true
         },
         "completion":

@@ -515,6 +515,11 @@ void wex::stc::mouse_action(wxMouseEvent& event)
     }
     else if (event.LeftDClick())
     {
+      if (CallTipActive())
+      {
+        CallTipCancel();
+      }
+
       m_margin_text_click = -1;
 
       if (

@@ -43,10 +43,10 @@ void set_lsp_definition_or_implementation(
   for (const auto& def : *definitions)
   {
     data::control control;
-    control.line(def.range.start_line + 1);
-    control.col(def.range.start_character + 1);
-    control.end_line(def.range.end_line + 1);
-    control.end_col(def.range.end_character + 1);
+    control.line(def.range.start.line + 1);
+    control.col(def.range.start.character + 1);
+    control.end_line(def.range.end.line + 1);
+    control.end_col(def.range.end.character + 1);
     data::stc data(control);
 
     frame->open_file(make_path_skip_uri(def.uri), data);
@@ -65,11 +65,11 @@ void set_lsp_diagnostics(syntax::stc* stc, diagnostics_t* diagnostics)
   {
     stc->set_indicator(
       indicator(wex::data::stc::IND_ERR),
-      stc->PositionFromLine(diag.range.start_line),
-      stc->GetLineEndPosition(diag.range.end_line));
+      stc->PositionFromLine(diag.range.start.line),
+      stc->GetLineEndPosition(diag.range.end.line));
 
     stc->AnnotationSetText(
-      diag.range.start_line,
+      diag.range.start.line,
       lexer().align_text(
         diag.message + " (" + std::to_string(static_cast<int>(diag.severity)) +
         ")"));
@@ -80,6 +80,11 @@ void set_lsp_hover(syntax::stc* stc, hover_t* hover)
 {
   std::string text(hover->contents.substr(1, hover->contents.size() - 2));
   boost::algorithm::replace_all(text, "\\n", "\n");
+
+  if (stc->CallTipActive())
+  {
+    stc->CallTipCancel();
+  }
 
   stc->CallTipShow(
     stc->PositionFromLine(hover->pos.line) + hover->pos.character,

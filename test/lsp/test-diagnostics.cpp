@@ -19,10 +19,10 @@ TEST_CASE("wex::lsp::diagnostics")
     d.severity              = wex::severity_t::ERRORS;
     d.source                = "clang";
     d.code                  = "undeclared_var";
-    d.range.start_line      = 5;
-    d.range.start_character = 10;
-    d.range.end_line        = 5;
-    d.range.end_character   = 15;
+    d.range.start.line      = 5;
+    d.range.start.character = 10;
+    d.range.end.line        = 5;
+    d.range.end.character   = 15;
 
     diags.add("file:///test.cpp", d);
 
@@ -37,16 +37,16 @@ TEST_CASE("wex::lsp::diagnostics")
   {
     wex::diagnostic_item d1, d2, d3;
     d1.message          = "Warning 1";
-    d1.range.start_line = 10;
-    d1.range.end_line   = 10;
+    d1.range.start.line = 10;
+    d1.range.end.line   = 10;
 
     d2.message          = "Warning 2";
-    d2.range.start_line = 10;
-    d2.range.end_line   = 10;
+    d2.range.start.line = 10;
+    d2.range.end.line   = 10;
 
     d3.message          = "Warning 3";
-    d3.range.start_line = 15;
-    d3.range.end_line   = 15;
+    d3.range.start.line = 15;
+    d3.range.end.line   = 15;
 
     diags.add("file:///test.cpp", d1);
     diags.add("file:///test.cpp", d2);

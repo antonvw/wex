@@ -60,7 +60,7 @@ public:
     /// - "."  object memmbers
     /// - "::" class members
     /// - "->" pinter members
-    const std::string& trigger= std::string(),
+    const std::string& trigger = std::string(),
     /// previous completion list was marked isIncomplete: true
     /// this lets the server refine suggestions as the user keeps typing
     bool is_incomplete = false);
@@ -71,7 +71,10 @@ public:
 
   /// Notifies server of document changes.
   /// Returns true if successful.
-  bool did_change(const wex::path& path, const std::string& text);
+  bool did_change(
+    const wex::path&   path,
+    const range_item&  range,
+    const std::string& text);
 
   /// Notifies server of closed document.
   /// Returns true if successful.
@@ -80,6 +83,10 @@ public:
   /// Notifies server of opened document.
   /// Returns true if successful.
   bool did_open(const wex::path& path, const std::string& text);
+
+  /// Notifies server of saved document.
+  /// Returns true if successful.
+  bool did_save(const wex::path& path);
 
   /// Returns extensions.
   const std::string& extensions() const { return m_extensions; }
