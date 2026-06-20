@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
+#include <boost/url.hpp>
 #include <wex/core/core.h>
 #include <wex/factory/bind.h>
 #include <wex/syntax/indicator.h>
@@ -18,7 +19,9 @@ namespace wex
 {
 path make_path_skip_uri(const std::string& uri)
 {
-  return path(find_after(uri, "file://"));
+  boost::urls::url u(uri);
+  u.remove_scheme().remove_origin();
+  return path(u.normalize_path().buffer());
 }
 
 void set_lsp_completions(syntax::stc* stc, completions_t* completions)
@@ -26,15 +29,14 @@ void set_lsp_completions(syntax::stc* stc, completions_t* completions)
   const char  separator = 3;
   std::string auto_complete_text;
 
-  const auto wsp = stc->WordStartPosition(stc->GetCurrentPos(), true);
+  const auto         wsp = stc->WordStartPosition(stc->GetCurrentPos(), true);
   const std::string& filter(stc->GetTextRange(wsp, stc->GetCurrentPos()));
 
   if (!filter.empty())
   {
     for (const auto& comp : completions->elements)
     {
-      if (
-        comp.label.starts_with(filter))
+      if (comp.label.starts_with(filter))
       {
         auto_complete_text += comp.label + separator;
       }
