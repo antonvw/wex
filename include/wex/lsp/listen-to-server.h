@@ -7,10 +7,8 @@
 
 #pragma once
 
-#include <thread>
 #include <stop_token>
-
-#include <wex/lsp/client.h>
+#include <thread>
 
 namespace wex
 {
@@ -20,7 +18,7 @@ class client;
 
 /// Offers a class that listens to the Language Server Protocol server.
 /// The responses are passed to the client.
-class listen_to_server 
+class listen_to_server
 {
 public:
   /// Contructor, specify client, starts listening.
@@ -31,11 +29,11 @@ public:
 
 private:
   std::string read();
-  void run(std::stop_token st);
+  void        run(std::stop_token st);
 
   client* m_client;
 
   std::jthread m_worker_thread;
 };
-}
-}
+} // namespace lsp
+} // namespace wex

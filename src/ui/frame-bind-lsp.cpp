@@ -9,6 +9,7 @@
 #include <boost/url.hpp>
 #include <wex/core/core.h>
 #include <wex/factory/bind.h>
+#include <wex/factory/util.h>
 #include <wex/syntax/indicator.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/defs.h>
@@ -26,13 +27,12 @@ path make_path_skip_uri(const std::string& uri)
 
 void set_lsp_completions(syntax::stc* stc, completions_t* completions)
 {
-  const char  separator = 3;
-  std::string auto_complete_text;
-
+  const char         separator = 3;
   const auto         wsp = stc->WordStartPosition(stc->GetCurrentPos(), true);
   const std::string& filter(stc->GetTextRange(wsp, stc->GetCurrentPos()));
+  std::string        auto_complete_text;
 
-  if (!filter.empty())
+  if (!filter.empty() || !get_trigger(stc).empty())
   {
     for (const auto& comp : completions->elements)
     {

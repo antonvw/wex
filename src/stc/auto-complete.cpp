@@ -9,6 +9,7 @@
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/ctags/ctags.h>
+#include <wex/factory/util.h>
 #include <wex/lsp/client.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/stc.h>
@@ -30,28 +31,6 @@ public:
   bool m_show_inserts{true};
   bool m_show_keywords{true};
 };
-
-const std::string get_trigger(wex::stc* stc)
-{
-  const auto wsp = stc->WordStartPosition(stc->GetCurrentPos(), true);
-
-  std::string trigger;
-
-  if (stc->GetCharAt(wsp - 1) == '.')
-  {
-    trigger = ".";
-  }
-  else if (stc->GetCharAt(wsp - 1) == '>' && stc->GetCharAt(wsp - 2) == '-')
-  {
-    trigger = "->";
-  }
-  else if (stc->GetCharAt(wsp - 1) == ':' && stc->GetCharAt(wsp - 2) == ':')
-  {
-    trigger = "::";
-  }
-
-  return trigger;
-}; // namespace wex
 
 wex::auto_complete::auto_complete(wex::stc* stc)
   : m_stc(stc)
