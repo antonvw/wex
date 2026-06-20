@@ -27,13 +27,14 @@ path make_path_skip_uri(const std::string& uri)
 
 void set_lsp_completions(syntax::stc* stc, completions_t* completions)
 {
-  const char         separator = 3;
   const auto         wsp = stc->WordStartPosition(stc->GetCurrentPos(), true);
   const std::string& filter(stc->GetTextRange(wsp, stc->GetCurrentPos()));
-  std::string        auto_complete_text;
 
   if (!filter.empty() || !get_trigger(stc).empty())
   {
+    const char  separator = 3;
+    std::string auto_complete_text;
+
     for (const auto& comp : completions->elements)
     {
       if (comp.label.starts_with(filter))
