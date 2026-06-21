@@ -31,7 +31,7 @@ jobs:
           # REQUIRED: Specify the required boost version
           # A list of supported versions can be found here:
           # https://github.com/MarkusJx/prebuilt-boost/
-          boost_version: 1.89.0
+          boost_version: 1.91.0
           platform_version: 2022
 
       - name: Add msbuild
