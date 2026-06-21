@@ -27,6 +27,7 @@ jobs:
           # https://github.com/MarkusJx/prebuilt-boost/
           boost_version: 1.90.0
           platform_version: 2025
+          toolset: msvc
 
       - name: Add msbuild
         uses: microsoft/setup-msbuild@v3
