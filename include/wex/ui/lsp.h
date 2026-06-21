@@ -11,12 +11,15 @@
 #include <string>
 #include <vector>
 
+#include <boost/json.hpp>
+#include <wx/stc/stc.h>
+
 namespace wex
 {
 /// Diagnostic severity levels.
 enum class severity_t
 {
-  ERROR   = 1,
+  ERRORS  = 1,
   WARNING = 2,
   INFO    = 3,
   HINT    = 4
@@ -24,16 +27,45 @@ enum class severity_t
 
 struct position_item
 {
+  position_item(int l = 0, int c = 0)
+    : line(l)
+    , character(c)
+  {
+  }
+
+  position_item(wxStyledTextCtrl* stc)
+    : line(stc->LineFromPosition(stc->GetCurrentPos()))
+    , character(stc->GetCurrentPos() - stc->PositionFromLine(line))
+  {
+  }
+
+  boost::json::object json_object() const
+  {
+    boost::json::object obj;
+
+    obj["line"]      = line;
+    obj["character"] = character;
+
+    return obj;
+  }
+
   int line{0};      // Line number where the completion is relevant (0-based)
   int character{0}; // Character position within the line (0-based)
 };
 
 struct range_item
 {
-  int start_line{0};
-  int start_character{0};
-  int end_line{0};
-  int end_character{0};
+  boost::json::object json_object() const
+  {
+    boost::json::object obj;
+
+    obj["start"] = start.json_object();
+    obj["end"]   = end.json_object();
+
+    return obj;
+  }
+
+  position_item start, end;
 };
 
 struct completion_item_element
@@ -46,12 +78,14 @@ struct completion_item_element
 };
 
 /// Represents a completion item from the language server.
-struct completion_item : public position_item
+struct completion_item
 {
+  position_item pos;
+
   std::vector<completion_item_element> elements;
 };
 
-struct definition_item
+struct definition_or_implementation_item
 {
   std::string uri;
 
@@ -77,8 +111,10 @@ struct diagnostic_item
   std::string source;
 };
 
-struct hover_item : public position_item
+struct hover_item
 {
+  position_item pos;
+
   /// Contents of the hover information
   std::string contents;
 };
@@ -87,7 +123,8 @@ struct hover_item : public position_item
 typedef completion_item completions_t;
 
 /// Type alias for a def returned by the language server.
-typedef std::vector<definition_item> definition_t;
+typedef std::vector<definition_or_implementation_item>
+  definition_or_implementation_t;
 
 /// Type alias for a collection of diagnostics returned by the language server.
 typedef std::vector<diagnostic_item> diagnostics_t;

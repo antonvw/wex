@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
-#include <numeric>
 #include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
@@ -452,6 +451,20 @@ void wex::stc::bind_all()
 
      {[=, this](const wxCommandEvent& event)
       {
+        if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
+        {
+          client->implementation(
+            path(),
+            position_item(
+              LineFromPosition(GetCurrentPos()),
+              GetCurrentPos() -
+                PositionFromLine(LineFromPosition(GetCurrentPos()))));
+        }
+      },
+      id::stc::lsp_implementation},
+
+     {[=, this](const wxCommandEvent& event)
+      {
         link_open(link_t().set(LINK_OPEN_MIME));
       },
       id::stc::open_mime},
@@ -509,6 +522,10 @@ void wex::stc::bind_all()
       id::stc::eol_dos,
       id::stc::eol_mac}});
 
+  // Bind hover events
+  Bind(wxEVT_STC_DWELLSTART, &stc::on_dwell_start, this);
+  Bind(wxEVT_STC_DWELLEND, &stc::on_dwell_end, this);
+
   bind_other();
 }
 
@@ -565,7 +582,9 @@ void wex::stc::build_popup_menu(menu& menu)
   {
     if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
     {
-      menu.append({{id::stc::lsp_definition, _("Goto Definition")}});
+      menu.append(
+        {{id::stc::lsp_definition, _("Goto Definition")},
+         {id::stc::lsp_implementation, _("Goto Implementation")}});
     }
   }
 
@@ -864,6 +883,28 @@ void wex::stc::jump_action()
   {
     m_data.control().line(val);
     data::stc(data::control().line(val)).set_stc(this).inject();
+  }
+}
+
+void wex::stc::on_dwell_end(wxStyledTextEvent& event)
+{
+  if (CallTipActive())
+  {
+    CallTipCancel();
+  }
+}
+
+void wex::stc::on_dwell_start(wxStyledTextEvent& event)
+{
+  if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr &&
+     get_selected_text().empty())
+  {
+    const auto event_line(LineFromPosition(event.GetPosition()));
+    client->hover(
+      path(),
+      position_item(
+        event_line,
+        event.GetPosition() - PositionFromLine(event_line)));
   }
 }
 

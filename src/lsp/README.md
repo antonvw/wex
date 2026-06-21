@@ -3,11 +3,9 @@
 ## Overview
 
 This library contains Language Server Process classes for wex.
-It uses the ui and predecessor wex libraries (for the moment).
+It uses the ui and predecessor wex libraries.
 
-This document outlines the implementation strategy for Language Server Protocol (LSP) 
-support in the wex library. LSP enables integration with language servers, 
-providing features like:
+LSP enables integration with language servers, providing features like:
 
 - Diagnostics (errors, warnings, hints)
 - Code completion
@@ -32,47 +30,11 @@ providing features like:
    - Support multiple language servers
    - Pluggable configuration
 
-## Implementation Phases
+## Implementation
 
 **Key classes:**
 - `wex::lsp::client` - Main client managing communication
 - Message types for request/response/notification
-
-### Phase 3: Diagnostics Integration
-
-**Tasks:**
-- [ ] Receive diagnostics from server via `publishDiagnostics`
-- [ ] Display diagnostics as markers/indicators in `stc`
-- [ ] Link diagnostics to editor line numbers
-- [ ] Create diagnostics panel/list
-
-**Integration points:**
-- `wex::syntax::stc` - Add diagnostic markers
-- `wex::syntax::indicator` - Visual feedback
-
-### Phase 4: UI Components
-
-**Features:**
-- [ ] Completion popup (using factory components)
-- [ ] Hover tooltip display
-- [ ] Diagnostics inline display
-- [ ] Server status indicator in statusbar
-
-**Integration points:**
-- `wex::factory::frame` - Add LSP UI elements
-- `wex::ui::` - Dialog components
-
-### Phase 5: Configuration & Server Management
-
-**Features:**
-- [ ] Server configuration dialog
-- [ ] Per-language server settings
-- [ ] Auto-start/restart logic
-- [ ] Multiple concurrent servers
-
-**Integration points:**
-- `wex::data::` - Configuration data structures
-- `wex::config::` - Configuration storage
 
 ## JSON-RPC Example
 
@@ -122,4 +84,3 @@ providing features like:
 - [LSP Specification](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/)
 - [LSP Examples](https://github.com/microsoft/language-server-protocol/tree/gh-pages/_specifications)
 - [JSON-RPC 2.0 Spec](https://www.jsonrpc.org/specification)
-- Wex existing patterns: `vcs/process.h`, `factory/frame.h`

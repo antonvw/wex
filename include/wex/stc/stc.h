@@ -304,6 +304,8 @@ private:
   bool mark_diff(int line, const marker& marker);
   void mark_modified(const wxStyledTextEvent& event);
   void mouse_action(wxMouseEvent& event);
+  void on_dwell_end(wxStyledTextEvent& event);
+  void on_dwell_start(wxStyledTextEvent& event);
   void on_styled_text(wxStyledTextEvent& event);
   void show_properties();
   void sort_action(const wxCommandEvent& event);

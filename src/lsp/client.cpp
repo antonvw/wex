@@ -5,6 +5,7 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
 #include <wex/core/log.h>
 #include <wex/lsp/client.h>
 #include <wex/lsp/util.h>
@@ -17,17 +18,26 @@ namespace wex
 {
 boost::json::object make_object(const wex::path& path, const position_item& p)
 {
-  boost::json::object params, text_doc, pos;
+  boost::json::object params, text_doc, pos(p.json_object());
 
   text_doc["uri"] = path.uri();
-
-  pos["line"]      = p.line;
-  pos["character"] = p.character;
 
   params["position"]     = pos;
   params["textDocument"] = text_doc;
 
   return params;
+}
+
+boost::json::object
+make_content_changes(const range_item& r, const std::string& text)
+{
+  boost::json::object content_changes;
+
+  content_changes["range"]       = r.json_object();
+  content_changes["text"]        = text;
+  content_changes["rangeLength"] = text.size();
+
+  return content_changes;
 }
 
 namespace lsp
@@ -42,21 +52,37 @@ client::client(const lexer& lexer, wxEvtHandler* event_handler)
 {
 }
 
-client::~client() = default;
-
-bool client::completion(const wex::path& path, const position_item& pos)
+bool client::completion(
+  const wex::path&     path,
+  const position_item& pos,
+  const std::string&   trigger,
+  bool                 is_incomplete)
 {
   // LSP Methods Implementation
   // send textDocument/completion request
+  auto                obj(make_object(path, pos));
+  boost::json::object context;
+
+  if (!trigger.empty())
+  {
+    context["triggerCharacter"] = trigger;
+    context["triggerKind"]      = 2;
+  }
+  else
+  {
+    context["triggerKind"] = (is_incomplete ? 3 : 1);
+  }
+
+  obj["context"] = context;
+
   if (!write(
-        m_rpc.encode_request("textDocument/completion", make_object(path, pos)),
+        m_rpc.encode_request("textDocument/completion", obj),
         [=, this](const json_rpc_message& msg)
         {
           if (!msg.is_error && msg.result.contains("items"))
           {
             completions_t* completion = new completions_t;
-            completion->line          = pos.line;
-            completion->character     = pos.character;
+            completion->pos           = pos;
             completion->elements.reserve(
               msg.result.at("items").as_array().size());
 
@@ -68,6 +94,7 @@ bool client::completion(const wex::path& path, const position_item& pos)
               {
                 completion_element.label =
                   item.as_object().at("label").as_string().data();
+                boost::algorithm::trim(completion_element.label);
               }
 
               if (item.as_object().contains("kind"))
@@ -132,29 +159,42 @@ int wex::lsp::client::config_dialog(const data::window& par)
 
 bool client::definition(const wex::path& path, const position_item& pos)
 {
-  // LSP Methods Implementation
-  // send textDocument/definition request
+  return definition_or_implementation(path, pos, "textDocument/definition");
+}
+
+bool client::definition_or_implementation(
+  const wex::path&     path,
+  const position_item& pos,
+  const std::string&   method)
+{
   if (!write(
-        m_rpc.encode_request("textDocument/definition", make_object(path, pos)),
+        m_rpc.encode_request(method, make_object(path, pos)),
         [=, this](const json_rpc_message& msg)
         {
           if (!msg.is_error)
           {
-            auto* definition = new definition_t;
+            auto* definition = new definition_or_implementation_t;
 
             for (const auto& item : msg.result_array)
             {
-              definition_item di;
+              definition_or_implementation_item di;
               range_from_json(item.as_object(), di.range);
               di.uri = item.as_object().at("uri").as_string().data();
 
               definition->push_back(di);
             }
 
+            if (definition->empty())
+            {
+              delete definition;
+              definition = nullptr;
+            }
+
             queue_event(
               m_event_handler,
               path.uri(),
-              ID_LSP_DEFINITION,
+              method == "textDocument/definition" ? ID_LSP_DEFINITION :
+                                                    ID_LSP_IMPLEMENTATION,
               definition);
           }
         }))
@@ -165,14 +205,17 @@ bool client::definition(const wex::path& path, const position_item& pos)
   return true;
 }
 
-bool client::did_change(const wex::path& path, const std::string& text)
+bool client::did_change(
+  const wex::path&   path,
+  const range_item&  range,
+  const std::string& text)
 {
   // LSP Methods Implementation
   // send textDocument/didChange notification
-  boost::json::object params, text_doc;
-  text_doc["uri"]        = path.uri();
-  text_doc["text"]       = text;
-  params["textDocument"] = text_doc;
+  boost::json::object params, text_doc, text_contents;
+  text_doc["uri"]          = path.uri();
+  params["textDocument"]   = text_doc;
+  params["contentChanges"] = make_content_changes(range, text);
 
   return write(m_rpc.encode_notification("textDocument/didChange", params));
 }
@@ -201,6 +244,17 @@ bool client::did_open(const wex::path& path, const std::string& text)
   return write(m_rpc.encode_notification("textDocument/didOpen", params));
 }
 
+bool client::did_save(const wex::path& path)
+{
+  // LSP Methods Implementation
+  // send textDocument/didSave notification
+  boost::json::object params, text_doc;
+  text_doc["uri"]        = path.uri();
+  params["textDocument"] = text_doc;
+
+  return write(m_rpc.encode_notification("textDocument/didSave", params));
+}
+
 bool client::hover(const wex::path& path, const position_item& pos)
 {
   // LSP Methods Implementation
@@ -209,12 +263,14 @@ bool client::hover(const wex::path& path, const position_item& pos)
         m_rpc.encode_request("textDocument/hover", make_object(path, pos)),
         [=, this](const json_rpc_message& msg)
         {
-          if (!msg.is_error && msg.result.contains("result"))
+          if (!msg.is_error && msg.result.contains("contents"))
           {
-            auto* hover      = new hover_t;
-            hover->contents  = boost::json::serialize(msg.result);
-            hover->line      = pos.line;
-            hover->character = pos.character;
+            auto* hover = new hover_t;
+            auto  obj(msg.result.at("contents"));
+            auto  val(obj.at("value").as_string());
+
+            hover->contents = boost::json::serialize(val);
+            hover->pos      = pos;
 
             queue_event(m_event_handler, path.uri(), ID_LSP_HOVER, hover);
           }
@@ -224,6 +280,11 @@ bool client::hover(const wex::path& path, const position_item& pos)
   }
 
   return true;
+}
+
+bool client::implementation(const wex::path& path, const position_item& pos)
+{
+  return definition_or_implementation(path, pos, "textDocument/implementation");
 }
 
 bool client::initialize(const wex::path& root_path)
@@ -250,8 +311,9 @@ bool client::initialize(const wex::path& root_path)
   // 4. Set m_initialized = true
 
   boost::json::object params;
-  params["processId"] = nullptr;
-  params["rootPath"]  = root_path.string();
+  params["processId"]    = nullptr;
+  params["rootPath"]     = root_path.string();
+  params["capabilities"] = m_capabilities.client();
 
   if (!write(
         m_rpc.encode_request("initialize", params),
@@ -259,8 +321,7 @@ bool client::initialize(const wex::path& root_path)
         {
           if (!msg.is_error && msg.result.contains("capabilities"))
           {
-            m_capabilities.hover_support      = 1;
-            m_capabilities.completion_support = 1;
+            m_capabilities.set(msg.result);
           }
         }))
   {
@@ -276,7 +337,7 @@ bool client::initialize(const wex::path& root_path)
 
   log::debug("lsp init") << m_server_path;
 
-  listen_to_server();
+  m_listen_to_server = std::make_unique<listen_to_server>(this);
 
   return m_initialized;
 }
@@ -309,6 +370,7 @@ bool client::shutdown()
     return false;
   }
 
+  m_listen_to_server->request_stop();
   m_process->terminate();
   m_initialized = false;
 

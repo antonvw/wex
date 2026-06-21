@@ -53,9 +53,6 @@ public:
     size_t              maxProjects = 0,
     const data::window& data = data::window().style(wxDEFAULT_FRAME_STYLE));
 
-  /// Destructor.
-  ~frame();
-
   // Virtual interface
 
   /// If there is a project somewhere,

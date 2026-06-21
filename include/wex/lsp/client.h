@@ -9,14 +9,15 @@
 
 #include <memory>
 #include <string>
-#include <vector>
 
 #include <boost/asio.hpp>
 #include <boost/process.hpp>
 
 #include <wex/core/path.h>
 #include <wex/factory/window.h>
+#include <wex/lsp/capabilities.h>
 #include <wex/lsp/json-rpc.h>
+#include <wex/lsp/listen-to-server.h>
 #include <wex/syntax/lexer.h>
 #include <wex/ui/lsp.h>
 
@@ -28,22 +29,12 @@ class item_dialog;
 
 namespace lsp
 {
-/// Server capabilities tracking.
-struct capabilities
-{
-  bool hover_support{false};
-  bool completion_support{false};
-  bool definition_support{false};
-  bool references_support{false};
-  bool rename_support{false};
-  bool formatting_support{false};
-  bool diagnostic_support{false};
-};
-
-/// Represents a Language Server Protocol client.
+/// Represents the Language Server Protocol client.
 /// Each client communicates with one Server, based upon lexer setup.
 class client
 {
+  friend class listen_to_server;
+
 public:
   /// Shows a dialog allowing you to choose which lsp server to use
   /// Returns dialog return code.
@@ -56,27 +47,46 @@ public:
   client(const lexer& lexer, wxEvtHandler* event_handler = nullptr);
 
   /// Destructor.
-  ~client();
+  ~client() = default;
 
   /// Requests code completion at position.
   /// Returns true if successful.
-  bool completion(const wex::path& path, const position_item& pos);
+  bool completion(
+    /// the path
+    const wex::path& path,
+    /// the position
+    const position_item& pos,
+    /// the trigger, such as:
+    /// - "."  object memmbers
+    /// - "::" class members
+    /// - "->" pinter members
+    const std::string& trigger = std::string(),
+    /// previous completion list was marked isIncomplete: true
+    /// this lets the server refine suggestions as the user keeps typing
+    bool is_incomplete = false);
 
   /// Requests goto definition information.
   /// Returns true if successful.
   bool definition(const wex::path& path, const position_item& pos);
 
-  /// Closes a document.
+  /// Notifies server of document changes.
+  /// Returns true if successful.
+  bool did_change(
+    const wex::path&   path,
+    const range_item&  range,
+    const std::string& text);
+
+  /// Notifies server of closed document.
   /// Returns true if successful.
   bool did_close(const wex::path& path);
 
-  /// Notifies server of document changes.
-  /// Returns true if successful.
-  bool did_change(const wex::path& path, const std::string& text);
-
-  /// Opens a document for editing.
+  /// Notifies server of opened document.
   /// Returns true if successful.
   bool did_open(const wex::path& path, const std::string& text);
+
+  /// Notifies server of saved document.
+  /// Returns true if successful.
+  bool did_save(const wex::path& path);
 
   /// Returns extensions.
   const std::string& extensions() const { return m_extensions; }
@@ -87,6 +97,10 @@ public:
   /// Requests hover (tooltip) information.
   /// Returns true if successful.
   bool hover(const wex::path& path, const position_item& pos);
+
+  /// Requests goto implementation information.
+  /// Returns true if successful.
+  bool implementation(const wex::path& path, const position_item& pos);
 
   /// Initializes the LSP client connection with root path.
   /// Returns true if successfully initialized.
@@ -106,9 +120,11 @@ public:
   bool shutdown();
 
 private:
-  void        listen_to_server();
-  std::string read();
-  bool        write(const std::string& text, response_handler resp = nullptr);
+  bool definition_or_implementation(
+    const wex::path&     path,
+    const position_item& pos,
+    const std::string&   method);
+  bool write(const std::string& text, response_handler resp = nullptr);
 
   wxEvtHandler* m_event_handler{nullptr};
 
@@ -116,6 +132,7 @@ private:
 
   std::unique_ptr<boost::asio::io_context> m_context;
   std::unique_ptr<boost::process::popen>   m_process;
+  std::unique_ptr<listen_to_server>        m_listen_to_server;
 
   capabilities m_capabilities;
   bool         m_initialized{false};

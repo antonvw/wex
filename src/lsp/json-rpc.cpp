@@ -5,11 +5,8 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-
 #include <boost/algorithm/string.hpp>
 #include <boost/json.hpp>
-#include <sstream>
 
 #include <wex/core/log.h>
 #include <wex/lsp/json-rpc.h>
@@ -65,7 +62,7 @@ json_rpc_message json_rpc::decode(const std::string& data)
     else if (obj.contains("result") || obj.contains("error"))
     {
       msg.is_response = true;
-      msg.is_error    = obj.count("error") > 0;
+      msg.is_error    = obj.contains("error");
 
       if (obj.contains("result"))
       {
@@ -158,25 +155,32 @@ std::string json_rpc::encode_response(int id, const boost::json::object& result)
 
 bool json_rpc::handle_response(const json_rpc_message& msg)
 {
-  if (msg.method == "textDocument/publishDiagnostics")
+  if (msg.id > 0)
+  {
+    // If we have an ID, try to find a handler for it.
+    const auto it = m_handlers.find(msg.id);
+
+    if (it == m_handlers.end())
+    {
+      log("wex::lsp::json_rpc::handle_response")
+        << msg.id << "not found size:" << m_handlers.size();
+      return false;
+    }
+
+    it->second(msg);
+    m_handlers.erase(it);
+
+    m_id++;
+  }
+  else if (msg.method == "textDocument/publishDiagnostics")
   {
     return handle_publish_diagnostics(msg);
   }
-
-  // If we have an ID, try to find a handler for it.
-  const auto it = m_handlers.find(msg.id);
-
-  if (it == m_handlers.end())
+  else
   {
-    log("wex::lsp::json_rpc::handle_response")
-      << msg.id << "not found size:" << m_handlers.size();
+    log("wex::lsp::json_rpc unhandled") << msg.method;
     return false;
   }
-
-  it->second(msg);
-  m_handlers.erase(it);
-
-  m_id++;
 
   return true;
 }
@@ -196,7 +200,7 @@ std::string json_rpc::make_output(const boost::json::object& obj)
   return output;
 }
 
-void json_rpc::register_handler(response_handler handler)
+void json_rpc::register_handler(response_handler& handler)
 {
   m_handlers[m_id] = handler;
 }

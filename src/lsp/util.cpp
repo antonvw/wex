@@ -5,8 +5,6 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-
 #include <wex/lsp/util.h>
 #include <wx/event.h>
 
@@ -18,10 +16,10 @@ bool range_from_json(const boost::json::object& obj, range_item& range)
 {
   auto ro = obj.at("range");
 
-  range.start_line      = ro.at("start").at("line").as_int64();
-  range.start_character = ro.at("start").at("character").as_int64();
-  range.end_line        = ro.at("end").at("line").as_int64();
-  range.end_character   = ro.at("end").at("character").as_int64();
+  range.start.line      = ro.at("start").at("line").as_int64();
+  range.start.character = ro.at("start").at("character").as_int64();
+  range.end.line        = ro.at("end").at("line").as_int64();
+  range.end.character   = ro.at("end").at("character").as_int64();
 
   return true;
 }
@@ -32,7 +30,7 @@ void queue_event(
   int                id,
   void*              data)
 {
-  if (handler == nullptr)
+  if (handler == nullptr || !handler->GetEvtHandlerEnabled())
   {
     return;
   }

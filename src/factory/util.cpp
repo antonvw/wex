@@ -2,19 +2,21 @@
 // Name:      util.cpp
 // Purpose:   Implementation of wex factory utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log.h>
 #include <wex/factory/frame.h>
 #include <wex/factory/frd.h>
+#include <wex/factory/stc.h>
 #include <wex/factory/util.h>
 #include <wx/app.h>
 
 void wex::bind_set_focus(wxWindow* win)
 {
-  if (auto* frame = dynamic_cast<factory::frame*>(wxTheApp->GetTopWindow());
-      frame != nullptr)
+  if (
+    auto* frame = dynamic_cast<factory::frame*>(wxTheApp->GetTopWindow());
+    frame != nullptr)
   {
     win->Bind(
       wxEVT_SET_FOCUS,
@@ -28,6 +30,28 @@ void wex::bind_set_focus(wxWindow* win)
   {
     log("no frame available");
   }
+}
+
+const std::string wex::get_trigger(factory::stc* stc)
+{
+  const auto wsp = stc->WordStartPosition(stc->GetCurrentPos(), true);
+
+  std::string trigger;
+
+  if (stc->GetCharAt(wsp - 1) == '.')
+  {
+    trigger = ".";
+  }
+  else if (stc->GetCharAt(wsp - 1) == '>' && stc->GetCharAt(wsp - 2) == '-')
+  {
+    trigger = "->";
+  }
+  else if (stc->GetCharAt(wsp - 1) == ':' && stc->GetCharAt(wsp - 2) == ':')
+  {
+    trigger = "::";
+  }
+
+  return trigger;
 }
 
 boost::regex::flag_type

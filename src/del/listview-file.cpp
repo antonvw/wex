@@ -8,7 +8,9 @@
 #include <pugixml.hpp>
 #include <wex/wex.h>
 
+#ifdef USE_THREAD
 #include <thread>
+#endif
 
 wex::del::file::file(const wex::path& p, const data::listview& data)
   : del::listview(data::listview(data).type(data::listview::FILE))

@@ -9,7 +9,6 @@
 
 #include <boost/json.hpp>
 #include <functional>
-#include <memory>
 #include <string>
 #include <unordered_map>
 
@@ -96,7 +95,7 @@ public:
   /// Registers a response handler for last request ID.
   void register_handler(
     /// callback to invoke when response arrives
-    response_handler handler);
+    response_handler& handler);
 
 private:
   /// Handles an incoming diagnostics notification.

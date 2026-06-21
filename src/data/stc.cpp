@@ -2,7 +2,7 @@
 // Name:      data/stc.cpp
 // Purpose:   Implementation of wex::data::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2025 Anton van Wezenbeek
+// Copyright: (c) 2017-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -168,23 +168,58 @@ bool wex::data::stc::inject_find() const
 
 bool wex::data::stc::inject_line() const
 {
+  // line col  end  end
+  //           line col
+  // >0   0    0    0      : 1 indicator entire line
+  // >0   >0   0    0      : 2 indicator from line start column until end of
+  // line >0   0    >0   0      : 3 indicator entire lines from line until end
+  // line >0   >0   >0   0      : 4 indicator from line column until end line >0
+  // 0    0    >0     : 5 indicator from line until end column >0   >0   0    >0
+  // : 6 indicator from line column until end column >0   0    >0   >0     : 7
+  // indicator entire lines until end line column >0   >0   >0   >0     : 8
+  // indicator from line column until end line column
+
   if (m_data.line() > 0)
   {
-    const int line = (m_stc->get_line_count() != LINE_COUNT_UNKNOWN &&
-                      m_data.line() - 1 >= m_stc->get_line_count()) ?
-                       m_stc->get_line_count() - 1 :
-                       m_data.line() - 1;
+    const int line    = (m_stc->get_line_count() != LINE_COUNT_UNKNOWN &&
+                         m_data.line() - 1 >= m_stc->get_line_count()) ?
+                          m_stc->get_line_count() - 1 :
+                          m_data.line() - 1;
+    const int col     = std::max(m_data.col() - 1, 0);
+    const int endline = std::max(m_data.end_line() - 1, 0);
+    const int endcol  = std::max(m_data.end_col() - 1, 0);
 
     m_stc->goto_line(line);
 
     if (const auto len(m_stc->GetTextLength()); m_stc->is_visual() && len > 0)
     {
       m_stc->IndicatorClearRange(0, len - 1);
-      m_stc->set_indicator(
-        indicator(m_indicator_no),
-        std::max(m_stc->PositionFromLine(line), 0),
-        m_data.col() > 0 ? m_stc->PositionFromLine(line) + m_data.col() - 1 :
-                           m_stc->GetLineEndPosition(line));
+
+      // 1,2
+      if (endline == 0 && endcol == 0)
+      {
+        m_stc->set_indicator(
+          indicator(m_indicator_no),
+          std::max(m_stc->PositionFromLine(line) + col, 0),
+          col > 0 ? m_stc->PositionFromLine(line) + col :
+                    m_stc->GetLineEndPosition(line));
+      }
+      // 3,4
+      else if (endcol == 0)
+      {
+        m_stc->set_indicator(
+          indicator(m_indicator_no),
+          std::max(m_stc->PositionFromLine(line) + col, 0),
+          col > 0 ? m_stc->PositionFromLine(endline) + col :
+                    m_stc->GetLineEndPosition(endline));
+      }
+      else
+      {
+        m_stc->set_indicator(
+          indicator(m_indicator_no),
+          std::max(m_stc->PositionFromLine(line) + col, 0),
+          m_stc->PositionFromLine(endline) + endcol);
+      }
     }
   }
   else if (m_data.line() == NUMBER_NOT_SET)

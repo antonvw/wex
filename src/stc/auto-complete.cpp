@@ -9,6 +9,7 @@
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/ctags/ctags.h>
+#include <wex/factory/util.h>
 #include <wex/lsp/client.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/stc.h>
@@ -30,7 +31,6 @@ public:
   bool m_show_inserts{true};
   bool m_show_keywords{true};
 };
-}; // namespace wex
 
 wex::auto_complete::auto_complete(wex::stc* stc)
   : m_stc(stc)
@@ -200,7 +200,8 @@ bool wex::auto_complete::on_char(char c)
   {
     lsp_client->completion(
       m_stc->path(),
-      position_item(m_stc->LineFromPosition(m_stc->GetCurrentPos()), c));
+      position_item(m_stc),
+      get_trigger(m_stc));
     return false;
   }
 
@@ -347,3 +348,4 @@ const std::string wex::auto_complete::variable(const std::string& name) const
 {
   return m_scope->class_name(name);
 }
+} // namespace wex

@@ -14,53 +14,27 @@
 #include <wex/core/regex.h>
 #include <wex/lsp/client.h>
 #include <wex/lsp/json-rpc.h>
+#include <wex/lsp/listen-to-server.h>
 
 namespace wex
 {
 namespace lsp
 {
 
-void client::listen_to_server()
+listen_to_server::listen_to_server(client* cl)
+  : m_client(cl)
 {
-  std::thread t(
-    [this]
-    {
-      while (is_running())
-      {
-        try
-        {
-          if (const auto& response = read(); !response.empty())
-          {
-            if (
-              const auto& response_rpc(m_rpc.decode(response));
-              response_rpc.id != -1)
-            {
-              m_rpc.handle_response(response_rpc);
-            }
-          }
-          else
-          {
-            break;
-          }
-        }
-        catch (const std::exception& e)
-        {
-          log(e) << "wex::lsp::listen_to_server";
-        }
-      }
-    });
-
-  t.detach();
+  m_worker_thread = std::jthread(&listen_to_server::run, this, std::stop_token());
 }
 
-std::string client::read()
+std::string listen_to_server::read()
 {
   std::string               data, response;
   size_t                    n, max = UINT_MAX, total = 0;
   boost::system::error_code ec;
 
   while ((n = boost::asio::read_until(
-            *m_process,
+            *m_client->m_process,
             boost::asio::dynamic_buffer(data),
             "}",
             ec)) > 0 ||
@@ -78,11 +52,11 @@ std::string client::read()
     if (max == UINT_MAX)
     {
       if (
-        regex r(m_rpc.header_part_content_field() + "([0-9]+).*");
+        regex r(json_rpc().header_part_content_field() + "([0-9]+).*");
         r.match(response) > 0)
       {
         const size_t header_length =
-          m_rpc.header_part_content_field().size() + r[0].size() + 4;
+          json_rpc().header_part_content_field().size() + r[0].size() + 4;
 
         max = stoi(r[0]) + header_length;
       }
@@ -95,6 +69,34 @@ std::string client::read()
   }
 
   return response;
+}
+
+void listen_to_server::request_stop()
+{
+  m_worker_thread.request_stop();
+}
+
+void listen_to_server::run(std::stop_token st)
+{
+  while (!st.stop_requested() && m_client->is_running())
+  {
+    try
+    {
+      if (const auto& response = read(); !response.empty())
+      {
+        const auto& response_rpc(m_client->m_rpc.decode(response));
+        m_client->m_rpc.handle_response(response_rpc);
+      }
+      else
+      {
+        break;
+      }
+    }
+    catch (const std::exception& e)
+    {
+      log(e) << "wex::lsp::listen_to_server::run";
+    }
+  }
 }
 
 } // namespace lsp

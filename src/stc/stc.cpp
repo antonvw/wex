@@ -83,7 +83,7 @@ wex::stc::stc(const wex::path& p, const data::stc& data)
   SetAdditionalCaretsVisible(true);
   SetAdditionalSelectionTyping(true);
   SetBackSpaceUnIndents(true);
-  SetMouseDwellTime(1000);
+  SetMouseDwellTime(2000);
 
   SetMarginType(m_margin_line_number, wxSTC_MARGIN_NUMBER);
   SetMarginType(m_margin_divider_number, wxSTC_MARGIN_SYMBOL);
@@ -488,6 +488,16 @@ void wex::stc::mark_modified(const wxStyledTextEvent& event)
         MarkerAdd(line + i, m_marker_change.number());
       }
     }
+  }
+
+  if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
+  {
+    range_item r;
+    r.start.line      = LineFromPosition(event.GetPosition());
+    r.start.character = event.GetPosition() - PositionFromLine(r.start.line);
+    r.end.line        = r.start.line + event.GetLinesAdded();
+
+    //client->did_change(path(), r, event.GetText());
   }
 
   use_modification_markers(true);

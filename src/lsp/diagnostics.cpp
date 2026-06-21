@@ -55,7 +55,7 @@ diagnostics_t diagnostics::get_line(const std::string& uri, int line) const
 
   for (const auto& diag : diags)
   {
-    if (diag.range.start_line == line || diag.range.end_line == line)
+    if (diag.range.start.line == line || diag.range.end.line == line)
     {
       result.push_back(diag);
     }

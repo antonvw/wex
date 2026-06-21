@@ -42,6 +42,14 @@ void wex::del::frame::bind_all()
         .set(GetMenuBar() != nullptr && GetMenuBar()->IsShown());
 
       event.Skip();
+
+      SetEvtHandlerEnabled(false);
+
+      for (auto* client : m_lsp_clients)
+      {
+        client->shutdown();
+        delete client;
+      }
     });
 
   Bind(
