@@ -8,7 +8,6 @@
 #include <boost/algorithm/string.hpp>
 #include <cassert>
 #include <charconv>
-#include <numeric>
 #include <sstream>
 
 #include <wex/core/core.h>
@@ -69,6 +68,7 @@ private:
         return "hex ";
       default:
         assert(0);
+        return std::string();
     }
   }
 

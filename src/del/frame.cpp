@@ -703,7 +703,7 @@ bool wex::del::frame::report_unified_diff(const factory::unified_diff* diff)
 
     if (diff->is_first())
     {
-      stc->AnnotationSetVisible(wxSTC_ANNOTATION_STANDARD);
+      stc->AnnotationSetVisible(wxSTC_ANNOTATION_BOXED);
       stc->diffs().clear();
     }
 

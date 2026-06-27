@@ -25,9 +25,9 @@ path make_path_skip_uri(const std::string& uri)
 }
 
 void set_lsp_completions(
-  syntax::stc*   stc,
-  completions_t* completions,
-  wex::frame*    frame)
+  syntax::stc*         stc,
+  const completions_t* completions,
+  wex::frame*          frame)
 {
   const auto         wsp = stc->WordStartPosition(stc->GetCurrentPos(), true);
   const std::string& filter(stc->GetTextRange(wsp, stc->GetCurrentPos()));
@@ -56,8 +56,8 @@ void set_lsp_completions(
 }
 
 void set_lsp_definition_or_implementation(
-  wex::frame*                     frame,
-  definition_or_implementation_t* definitions)
+  wex::frame*                           frame,
+  const definition_or_implementation_t* definitions)
 {
   for (const auto& def : *definitions)
   {
@@ -74,7 +74,7 @@ void set_lsp_definition_or_implementation(
   delete definitions;
 }
 
-void set_lsp_diagnostics(syntax::stc* stc, diagnostics_t* diagnostics)
+void set_lsp_diagnostics(syntax::stc* stc, const diagnostics_t* diagnostics)
 {
   stc->AnnotationSetVisible(wxSTC_ANNOTATION_HIDDEN);
   stc->SetIndicatorCurrent(wex::data::stc::IND_ERR);
@@ -96,7 +96,7 @@ void set_lsp_diagnostics(syntax::stc* stc, diagnostics_t* diagnostics)
   }
 }
 
-void set_lsp_hover(syntax::stc* stc, hover_t* hover)
+void set_lsp_hover(syntax::stc* stc, const hover_t* hover)
 {
   std::string text(hover->contents.substr(1, hover->contents.size() - 2));
   boost::algorithm::replace_all(text, "\\n", "\n");
