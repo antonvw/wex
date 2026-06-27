@@ -461,6 +461,39 @@ void wex::del::frame::lsp_clients_setup()
   }
 }
 
+const std::string wex::del::frame::lsp_clients_trigger(syntax::stc* stc)
+{
+  const auto wsp = stc->WordStartPosition(stc->GetCurrentPos(), true);
+
+  if (auto* otherstc = dynamic_cast<wex::stc*>(stc); otherstc != nullptr)
+  {
+    if (
+      auto* client = lsp_clients_find(otherstc->get_file().path());
+      client != nullptr && wsp > 1)
+    {
+      for (const auto& trigger :
+           client->get_capabilities().trigger_completion_characters())
+      {
+        if (std::string(1, stc->GetCharAt(wsp - 1)) == trigger)
+        {
+          return trigger;
+        }
+      }
+
+      for (const auto& trigger :
+           client->get_capabilities().trigger_signature_characters())
+      {
+        if (std::string(1, stc->GetCharAt(wsp - 1)) == trigger)
+        {
+          return trigger;
+        }
+      }
+    }
+  }
+
+  return std::string();
+}
+
 void wex::del::frame::on_command_item_dialog(
   wxWindowID            dialogid,
   const wxCommandEvent& event)
@@ -670,6 +703,7 @@ bool wex::del::frame::report_unified_diff(const factory::unified_diff* diff)
 
     if (diff->is_first())
     {
+      stc->AnnotationSetVisible(wxSTC_ANNOTATION_BOXED);
       stc->diffs().clear();
     }
 

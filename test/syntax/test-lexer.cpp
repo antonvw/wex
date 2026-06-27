@@ -2,7 +2,7 @@
 // Name:      test-lexer.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2025 Anton van Wezenbeek
+// Copyright: (c) 2015-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -26,7 +26,7 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.display_lexer().empty());
     REQUIRE(lexer.scintilla_lexer().empty());
     REQUIRE(lexer.lsp_server().empty());
-    REQUIRE(lexer.lsp_server_flags().empty());
+    REQUIRE(lexer.lsp_server_arguments().empty());
     REQUIRE(lexer.line_size() > 0);
   }
 
@@ -57,7 +57,7 @@ TEST_CASE("wex::lexer")
         edgemode=\"line\"\
         spacevisible=\"always\"\
         lsp=\"clangd\"\
-        lsp-flags=\"log=error\"\
+        lsp-args=\"--log=error; --space\"\
         tabdrawmode=\"arrow\" wrapline=\"char\"\
         tabmode=\"use\"\
         tabwidth=\"12\">\
@@ -71,7 +71,8 @@ TEST_CASE("wex::lexer")
       REQUIRE(lexer.scintilla_lexer() == "cpp");
       REQUIRE(lexer.display_lexer() == "cpp");
       REQUIRE(lexer.lsp_server() == "clangd");
-      REQUIRE(lexer.lsp_server_flags() == "log=error");
+      REQUIRE(lexer.lsp_server_arguments().front() == "--log=error");
+      REQUIRE(lexer.lsp_server_arguments().back() == "--space");
       REQUIRE(lexer.attrib(_("Edge line")) == wxSTC_EDGE_LINE);
       REQUIRE(lexer.attrib(_("Expand tabs")) == 1);
       REQUIRE(lexer.attrib(_("Tab draw mode")) == wxSTC_TD_LONGARROW);

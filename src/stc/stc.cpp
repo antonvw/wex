@@ -497,7 +497,7 @@ void wex::stc::mark_modified(const wxStyledTextEvent& event)
     r.start.character = event.GetPosition() - PositionFromLine(r.start.line);
     r.end.line        = r.start.line + event.GetLinesAdded();
 
-    //client->did_change(path(), r, event.GetText());
+    // client->did_change(path(), r, event.GetText());
   }
 
   use_modification_markers(true);

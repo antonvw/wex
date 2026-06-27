@@ -2,9 +2,10 @@
 // Name:      lexer.cpp
 // Purpose:   Implementation of wex::lexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2025 Anton van Wezenbeek
+// Copyright: (c) 2008-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
@@ -41,6 +42,21 @@ int convert_int_attrib(
 
   log("unsupported attrib") << text;
   return -1;
+}
+
+std::vector<std::string> tokenize_string(const std::string& text)
+{
+  std::vector<std::string> out;
+
+  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+         text,
+         boost::char_separator<char>(";")))
+  {
+    const auto trim(boost::algorithm::trim_copy(std::string(it.data())));
+    out.emplace_back(trim);
+  }
+
+  return out;
 }
 
 /// Tokenizes the complete string into a vector of integers.
@@ -568,11 +584,11 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
   m_display_lexer =
     (!node->attribute("display").empty() ? node->attribute("display").value() :
                                            m_scintilla_lexer);
-  m_extensions  = node->attribute("extensions").value();
-  m_language    = node->attribute("language").value();
-  m_lsp         = node->attribute("lsp").value();
-  m_lsp_flags   = node->attribute("lsp-flags").value();
-  m_previewable = !node->attribute("preview").empty();
+  m_extensions    = node->attribute("extensions").value();
+  m_language      = node->attribute("language").value();
+  m_lsp           = node->attribute("lsp").value();
+  m_lsp_arguments = tokenize_string(node->attribute("lsp-args").value());
+  m_previewable   = !node->attribute("preview").empty();
 
   if (
     const std::string exclude(node->attribute("exclude").value());

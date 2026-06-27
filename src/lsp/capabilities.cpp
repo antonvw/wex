@@ -12,6 +12,17 @@ namespace wex
 {
 namespace lsp
 {
+capabilities::capabilities()
+{
+  if (m_support_info.empty())
+  {
+    // must match the capabilities_t
+    m_support_info.emplace_back("completion");
+    m_support_info.emplace_back("definition");
+    m_support_info.emplace_back("hover");
+  }
+}
+
 boost::json::object capabilities::client() const
 {
   try
@@ -66,25 +77,80 @@ boost::json::object capabilities::client() const
   }
   catch (const std::exception& e)
   {
-    log(e) << "wex::lsp::capabilities::client()";
+    wex::log(e) << "wex::lsp::capabilities::client()";
   }
 
   return boost::json::object();
 }
 
-bool capabilities::set(const boost::json::object& obj)
+std::stringstream capabilities::log() const
 {
-  if (obj.contains("hover"))
+  std::stringstream ss;
+  size_t            cap = 0;
+
+  for (const auto& inf : m_support_info)
   {
-    m_support_hover = true;
+    ss << inf << ": " << m_support.test(cap++) << " ";
   }
 
-  if (obj.contains("completion"))
+  ss << "trigger completion characters: ";
+
+  for (const auto& tc : m_trigger_completion_characters)
   {
-    m_support_completion = true;
+    ss << "'" << tc << "' ";
+  }
+
+  ss << "trigger signature characters: ";
+
+  for (const auto& tc : m_trigger_signature_characters)
+  {
+    ss << "'" << tc << "' ";
+  }
+
+  return ss;
+}
+
+bool capabilities::set(const boost::json::object& obj)
+{
+  m_support.reset();
+  m_trigger_completion_characters.clear();
+  m_trigger_signature_characters.clear();
+
+  if (auto it = obj.if_contains("completionProvider"); it && it->is_object())
+  {
+    m_support.set(CAP_COMPLETION);
+
+    const auto& cp = it->as_object();
+    auto        tc = cp.if_contains("triggerCharacters");
+
+    if (tc && tc->is_array())
+    {
+      for (const auto& v : tc->as_array())
+      {
+        if (v.is_string())
+        {
+          m_trigger_completion_characters.emplace_back(v.as_string().c_str());
+        }
+      }
+    }
+  }
+
+  if (obj.contains("definitionProvider"))
+  {
+    m_support.set(CAP_DEFINITION);
+  }
+
+  if (obj.contains("hoverProvider"))
+  {
+    m_support.set(CAP_HOVER);
   }
 
   return true;
+}
+
+bool capabilities::support(size_t cap) const
+{
+  return cap < m_support.size() && m_support.test(cap);
 }
 } // namespace lsp
 } // namespace wex

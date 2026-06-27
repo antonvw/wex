@@ -2,7 +2,7 @@
 // Name:      util.h
 // Purpose:   Declaration of syntax util functions
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2025 Anton van Wezenbeek
+// Copyright: (c) 2022-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once

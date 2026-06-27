@@ -9,7 +9,6 @@
 #include <boost/url.hpp>
 #include <wex/core/core.h>
 #include <wex/factory/bind.h>
-#include <wex/factory/util.h>
 #include <wex/syntax/indicator.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/defs.h>
@@ -25,12 +24,15 @@ path make_path_skip_uri(const std::string& uri)
   return path(u.normalize_path().buffer());
 }
 
-void set_lsp_completions(syntax::stc* stc, completions_t* completions)
+void set_lsp_completions(
+  syntax::stc*         stc,
+  const completions_t* completions,
+  wex::frame*          frame)
 {
   const auto         wsp = stc->WordStartPosition(stc->GetCurrentPos(), true);
   const std::string& filter(stc->GetTextRange(wsp, stc->GetCurrentPos()));
 
-  if (!filter.empty() || !get_trigger(stc).empty())
+  if (!filter.empty() || !frame->lsp_clients_trigger(stc).empty())
   {
     const char  separator = 3;
     std::string auto_complete_text;
@@ -54,8 +56,8 @@ void set_lsp_completions(syntax::stc* stc, completions_t* completions)
 }
 
 void set_lsp_definition_or_implementation(
-  wex::frame*                     frame,
-  definition_or_implementation_t* definitions)
+  wex::frame*                           frame,
+  const definition_or_implementation_t* definitions)
 {
   for (const auto& def : *definitions)
   {
@@ -72,8 +74,9 @@ void set_lsp_definition_or_implementation(
   delete definitions;
 }
 
-void set_lsp_diagnostics(syntax::stc* stc, diagnostics_t* diagnostics)
+void set_lsp_diagnostics(syntax::stc* stc, const diagnostics_t* diagnostics)
 {
+  stc->AnnotationSetVisible(wxSTC_ANNOTATION_HIDDEN);
   stc->SetIndicatorCurrent(wex::data::stc::IND_ERR);
   stc->IndicatorClearRange(0, stc->GetTextLength());
   stc->AnnotationClearAll();
@@ -93,7 +96,7 @@ void set_lsp_diagnostics(syntax::stc* stc, diagnostics_t* diagnostics)
   }
 }
 
-void set_lsp_hover(syntax::stc* stc, hover_t* hover)
+void set_lsp_hover(syntax::stc* stc, const hover_t* hover)
 {
   std::string text(hover->contents.substr(1, hover->contents.size() - 2));
   boost::algorithm::replace_all(text, "\\n", "\n");
@@ -120,7 +123,10 @@ void wex::frame::bind_lsp()
           auto* stc = open_file(make_path_skip_uri(event.GetString()));
           stc != nullptr)
         {
-          set_lsp_completions(dynamic_cast<syntax::stc*>(stc), completions);
+          set_lsp_completions(
+            dynamic_cast<syntax::stc*>(stc),
+            completions,
+            this);
         }
 
         delete completions;
@@ -157,8 +163,11 @@ void wex::frame::bind_lsp()
 
      {[=, this](const wxCommandEvent& event)
       {
+        data::stc data;
+        data.allow_change_page(false);
+
         if (
-          auto* stc = open_file(make_path_skip_uri(event.GetString()));
+          auto* stc = open_file(make_path_skip_uri(event.GetString()), data);
           stc != nullptr)
         {
           auto* hover = (hover_t*)event.GetClientData();

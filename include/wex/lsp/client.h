@@ -40,7 +40,7 @@ public:
   /// Returns dialog return code.
   static int config_dialog(const data::window& data = data::window());
 
-  /// Constructor, specify lexer for which to create an LSP client, and handler
+  /// Constructor, specify lexer for which to create a LSP client, and handler
   /// for UI updates. The lexer determines which LSP server to use based on its
   /// configuration. If event_handler is nullptr, the client will not post
   /// events for UI updates.
@@ -89,7 +89,7 @@ public:
   bool did_save(const wex::path& path);
 
   /// Returns extensions.
-  const std::string& extensions() const { return m_extensions; }
+  const std::string& extensions() const;
 
   /// Returns server capabilities.
   const capabilities& get_capabilities() const { return m_capabilities; }
@@ -113,7 +113,7 @@ public:
   bool is_running() const;
 
   /// Returns language id.
-  const std::string& language_id() const { return m_language_id; }
+  const std::string& language_id() const;
 
   /// Shuts down the LSP connection gracefully.
   /// Returns true if shutdown was successful.
@@ -128,8 +128,6 @@ private:
 
   wxEvtHandler* m_event_handler{nullptr};
 
-  std::string m_extensions, m_language_id, m_server_flags, m_server_path;
-
   std::unique_ptr<boost::asio::io_context> m_context;
   std::unique_ptr<boost::process::popen>   m_process;
   std::unique_ptr<listen_to_server>        m_listen_to_server;
@@ -137,6 +135,8 @@ private:
   capabilities m_capabilities;
   bool         m_initialized{false};
   json_rpc     m_rpc;
+
+  const lexer m_lexer;
 
   static inline item_dialog* m_item_dialog{nullptr};
 };

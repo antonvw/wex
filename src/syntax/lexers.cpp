@@ -15,9 +15,9 @@
 #include <wex/syntax/util.h>
 
 #include <algorithm>
+#include <array>
 #include <charconv>
 #include <functional>
-#include <numeric>
 
 #define COLOUR_ADD(NAME, ITEM)                                                 \
   {NAME,                                                                       \

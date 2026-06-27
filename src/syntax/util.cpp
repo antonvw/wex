@@ -2,7 +2,7 @@
 // Name:      util.cpp
 // Purpose:   Implementation of wex syntax utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2025 Anton van Wezenbeek
+// Copyright: (c) 2022-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/syntax/stc.h>

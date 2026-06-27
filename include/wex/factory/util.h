@@ -22,9 +22,6 @@ class stc;
 /// Binds to focus.
 void bind_set_focus(wxWindow* window);
 
-/// Returns trigger text.
-const std::string get_trigger(wex::factory::stc* stc);
-
 /// Gets regex flags according to find replace data.
 boost::regex::flag_type get_regex_flags(const factory::find_replace_data& data);
 }; // namespace wex

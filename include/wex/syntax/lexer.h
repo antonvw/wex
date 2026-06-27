@@ -135,8 +135,11 @@ public:
   /// Returns the lsp server.
   const std::string& lsp_server() const { return m_lsp; }
 
-  /// Returns the lsp server flags.
-  const std::string& lsp_server_flags() const { return m_lsp_flags; }
+  /// Returns the lsp server arguments.
+  const std::vector<std::string>& lsp_server_arguments() const
+  {
+    return m_lsp_arguments;
+  }
 
   /// Returns a lexer comment string with text formatted.
   const std::string make_comment(
@@ -201,15 +204,15 @@ private:
   // however this might be different, as with c#.
   // In that case the scintilla lexer is cpp, whereas the display lexer is c#.
   std::string m_comment_begin, m_comment_begin2, m_command_end, m_command_end2,
-    m_display_lexer, m_extensions, m_language, m_lsp, m_lsp_flags,
-    m_scintilla_lexer;
+    m_display_lexer, m_extensions, m_language, m_lsp, m_scintilla_lexer;
 
   // each keyword set in a separate keyword set
   std::unordered_map<int, std::set<std::string>> m_keywords_set;
   std::set<std::string>                          m_keywords;
-  std::vector<int>      m_edge_columns; // last one is used for line size
-  std::vector<property> m_properties;
-  std::vector<style>    m_styles;
+  std::vector<int>         m_edge_columns; // last one is used for line size
+  std::vector<property>    m_properties;
+  std::vector<style>       m_styles;
+  std::vector<std::string> m_lsp_arguments;
   std::vector<std::tuple<
     std::string,
     int,
