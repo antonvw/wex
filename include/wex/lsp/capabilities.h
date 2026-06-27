@@ -9,6 +9,9 @@
 
 #include <bitset>
 #include <boost/json.hpp>
+#include <sstream>
+#include <string>
+#include <vector>
 
 namespace wex
 {

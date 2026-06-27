@@ -469,9 +469,9 @@ const std::string wex::del::frame::lsp_clients_trigger(syntax::stc* stc)
   {
     if (
       auto* client = lsp_clients_find(otherstc->get_file().path());
-      client != nullptr)
+      client != nullptr && wsp > 1)
     {
-      for (const auto trigger :
+      for (const auto& trigger :
            client->get_capabilities().trigger_completion_characters())
       {
         if (std::string(1, stc->GetCharAt(wsp - 1)) == trigger)
@@ -480,7 +480,7 @@ const std::string wex::del::frame::lsp_clients_trigger(syntax::stc* stc)
         }
       }
 
-      for (const auto trigger :
+      for (const auto& trigger :
            client->get_capabilities().trigger_signature_characters())
       {
         if (std::string(1, stc->GetCharAt(wsp - 1)) == trigger)

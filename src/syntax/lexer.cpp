@@ -2,9 +2,10 @@
 // Name:      lexer.cpp
 // Purpose:   Implementation of wex::lexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2025 Anton van Wezenbeek
+// Copyright: (c) 2008-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
@@ -51,7 +52,8 @@ std::vector<std::string> tokenize_string(const std::string& text)
          text,
          boost::char_separator<char>(";")))
   {
-    out.emplace_back(it.data());
+    const auto trim(boost::algorithm::trim_copy(std::string(it.data())));
+    out.emplace_back(trim);
   }
 
   return out;

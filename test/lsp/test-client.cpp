@@ -42,14 +42,14 @@ TEST_CASE("wex::lsp::client")
     const wex::path path("/Users/anton/wex/test/data/test.h");
 
     REQUIRE(client.initialize(wex::test::get_path()));
-    REQUIRE(client.completion(wex::path(), wex::position_item(5, 5)));
+    REQUIRE(!client.completion(wex::path(), wex::position_item(5, 5)));
     REQUIRE(client.definition(wex::path(), wex::position_item(5, 5)));
-    REQUIRE(client.hover(wex::path(), wex::position_item(5, 5)));
-    REQUIRE(client.hover(path, wex::position_item(5, 5)));
+    REQUIRE(!client.hover(wex::path(), wex::position_item(5, 5)));
+    REQUIRE(!client.hover(path, wex::position_item(5, 5)));
     REQUIRE(client.implementation(wex::path(), wex::position_item(5, 5)));
 
     REQUIRE(client.did_open(path, "main() {}"));
-    REQUIRE(client.hover(path, wex::position_item(1, 1)));
+    REQUIRE(!client.hover(path, wex::position_item(1, 1)));
     REQUIRE(client.did_change(path, wex::range_item(), "main() {xxx};"));
     REQUIRE(client.did_close(path));
     REQUIRE(client.shutdown());

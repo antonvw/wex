@@ -112,6 +112,10 @@ std::stringstream capabilities::log() const
 
 bool capabilities::set(const boost::json::object& obj)
 {
+  m_support.reset();
+  m_trigger_completion_characters.clear();
+  m_trigger_signature_characters.clear();
+
   if (auto it = obj.if_contains("completionProvider"); it && it->is_object())
   {
     m_support.set(CAP_COMPLETION);

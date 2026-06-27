@@ -57,7 +57,7 @@ TEST_CASE("wex::lexer")
         edgemode=\"line\"\
         spacevisible=\"always\"\
         lsp=\"clangd\"\
-        lsp-args=\"--log=error\"\
+        lsp-args=\"--log=error; --space\"\
         tabdrawmode=\"arrow\" wrapline=\"char\"\
         tabmode=\"use\"\
         tabwidth=\"12\">\
@@ -72,6 +72,7 @@ TEST_CASE("wex::lexer")
       REQUIRE(lexer.display_lexer() == "cpp");
       REQUIRE(lexer.lsp_server() == "clangd");
       REQUIRE(lexer.lsp_server_arguments().front() == "--log=error");
+      REQUIRE(lexer.lsp_server_arguments().back() == "--space");
       REQUIRE(lexer.attrib(_("Edge line")) == wxSTC_EDGE_LINE);
       REQUIRE(lexer.attrib(_("Expand tabs")) == 1);
       REQUIRE(lexer.attrib(_("Tab draw mode")) == wxSTC_TD_LONGARROW);
