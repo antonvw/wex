@@ -2,7 +2,7 @@
 // Name:      data/test-stc.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2025 Anton van Wezenbeek
+// Copyright: (c) 2020-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/data/stc.h>
@@ -19,6 +19,7 @@ TEST_CASE("wex::data::stc")
     REQUIRE(data.flags().none());
     REQUIRE(data.head_path().empty());
     REQUIRE(data.recent());
+    REQUIRE(data.allow_change_page());
     REQUIRE(!data.event(true).event().is_pos_at_end());
     REQUIRE(!data.event(true).event().is_synced());
     REQUIRE(!data.event(true).event().is_synced_log());
@@ -89,5 +90,11 @@ TEST_CASE("wex::data::stc")
 
     data.recent(false);
     REQUIRE(!data.recent());
+
+    data.allow_change_page(false);
+    REQUIRE(!data.allow_change_page());
+
+    data.allow_change_page(true);
+    REQUIRE(data.allow_change_page());
   }
 }

@@ -43,12 +43,9 @@ make_content_changes(const range_item& r, const std::string& text)
 namespace lsp
 {
 client::client(const lexer& lexer, wxEvtHandler* event_handler)
-  : m_server_path(lexer.lsp_server())
-  , m_server_flags(lexer.lsp_server_flags())
-  , m_language_id(lexer.scintilla_lexer())
+  : m_lexer(lexer)
   , m_rpc(event_handler)
   , m_event_handler(event_handler)
-  , m_extensions(lexer.extensions())
 {
 }
 
@@ -75,56 +72,57 @@ bool client::completion(
 
   obj["context"] = context;
 
-  if (!write(
-        m_rpc.encode_request("textDocument/completion", obj),
-        [=, this](const json_rpc_message& msg)
+  if (
+    !m_capabilities.support(capabilities::CAP_COMPLETION) ||
+    !write(
+      m_rpc.encode_request("textDocument/completion", obj),
+      [=, this](const json_rpc_message& msg)
+      {
+        if (!msg.is_error && msg.result.contains("items"))
         {
-          if (!msg.is_error && msg.result.contains("items"))
+          completions_t* completion = new completions_t;
+          completion->pos           = pos;
+          completion->elements.reserve(
+            msg.result.at("items").as_array().size());
+
+          for (const auto& item : msg.result.at("items").as_array())
           {
-            completions_t* completion = new completions_t;
-            completion->pos           = pos;
-            completion->elements.reserve(
-              msg.result.at("items").as_array().size());
+            completion_item_element completion_element;
 
-            for (const auto& item : msg.result.at("items").as_array())
+            if (item.as_object().contains("label"))
             {
-              completion_item_element completion_element;
-
-              if (item.as_object().contains("label"))
-              {
-                completion_element.label =
-                  item.as_object().at("label").as_string().data();
-                boost::algorithm::trim(completion_element.label);
-              }
-
-              if (item.as_object().contains("kind"))
-              {
-                completion_element.kind =
-                  item.as_object().at("kind").as_int64();
-              }
-
-              if (item.as_object().contains("detail"))
-              {
-                completion_element.detail =
-                  item.as_object().at("detail").as_string().data();
-              }
-
-              if (item.as_object().contains("documentation"))
-              {
-                // The documentation is an array, not yet handled
-                // completion_element.documentation =
-              }
-
-              completion->elements.push_back(completion_element);
+              completion_element.label =
+                item.as_object().at("label").as_string().data();
+              boost::algorithm::trim(completion_element.label);
             }
 
-            queue_event(
-              m_event_handler,
-              path.uri(),
-              ID_LSP_CODE_COMPLETION,
-              completion);
+            if (item.as_object().contains("kind"))
+            {
+              completion_element.kind = item.as_object().at("kind").as_int64();
+            }
+
+            if (item.as_object().contains("detail"))
+            {
+              completion_element.detail =
+                item.as_object().at("detail").as_string().data();
+            }
+
+            if (item.as_object().contains("documentation"))
+            {
+              // The documentation is an array, not yet handled
+              // completion_element.documentation =
+            }
+
+            completion->elements.push_back(completion_element);
           }
-        }))
+
+          queue_event(
+            m_event_handler,
+            path.uri(),
+            ID_LSP_CODE_COMPLETION,
+            completion);
+        }
+      }))
   {
     return false;
   }
@@ -159,7 +157,8 @@ int wex::lsp::client::config_dialog(const data::window& par)
 
 bool client::definition(const wex::path& path, const position_item& pos)
 {
-  return definition_or_implementation(path, pos, "textDocument/definition");
+  return !m_capabilities.support(capabilities::CAP_DEFINITION) ||
+         definition_or_implementation(path, pos, "textDocument/definition");
 }
 
 bool client::definition_or_implementation(
@@ -237,7 +236,7 @@ bool client::did_open(const wex::path& path, const std::string& text)
   // send textDocument/didOpen notification
   boost::json::object params, text_doc;
   text_doc["uri"]        = path.uri();
-  text_doc["languageId"] = m_language_id;
+  text_doc["languageId"] = language_id();
   text_doc["text"]       = text;
   params["textDocument"] = text_doc;
 
@@ -255,26 +254,33 @@ bool client::did_save(const wex::path& path)
   return write(m_rpc.encode_notification("textDocument/didSave", params));
 }
 
+const std::string& client::extensions() const
+{
+  return m_lexer.extensions();
+}
+
 bool client::hover(const wex::path& path, const position_item& pos)
 {
   // LSP Methods Implementation
   // send textDocument/hover request
-  if (!write(
-        m_rpc.encode_request("textDocument/hover", make_object(path, pos)),
-        [=, this](const json_rpc_message& msg)
+  if (
+    !m_capabilities.support(capabilities::CAP_HOVER) ||
+    !write(
+      m_rpc.encode_request("textDocument/hover", make_object(path, pos)),
+      [=, this](const json_rpc_message& msg)
+      {
+        if (!msg.is_error && msg.result.contains("contents"))
         {
-          if (!msg.is_error && msg.result.contains("contents"))
-          {
-            auto* hover = new hover_t;
-            auto  obj(msg.result.at("contents"));
-            auto  val(obj.at("value").as_string());
+          auto* hover = new hover_t;
+          auto  obj(msg.result.at("contents"));
+          auto  val(obj.at("value").as_string());
 
-            hover->contents = boost::json::serialize(val);
-            hover->pos      = pos;
+          hover->contents = boost::json::serialize(val);
+          hover->pos      = pos;
 
-            queue_event(m_event_handler, path.uri(), ID_LSP_HOVER, hover);
-          }
-        }))
+          queue_event(m_event_handler, path.uri(), ID_LSP_HOVER, hover);
+        }
+      }))
   {
     return false;
   }
@@ -284,23 +290,22 @@ bool client::hover(const wex::path& path, const position_item& pos)
 
 bool client::implementation(const wex::path& path, const position_item& pos)
 {
-  return definition_or_implementation(path, pos, "textDocument/implementation");
+  definition_or_implementation(path, pos, "textDocument/implementation");
 }
 
 bool client::initialize(const wex::path& root_path)
 {
   try
   {
-    const std::vector<std::string> flags{{"--" + m_server_flags}};
     m_context = std::make_unique<boost::asio::io_context>();
     m_process = std::make_unique<boost::process::popen>(
       *m_context,
-      boost::process::environment::find_executable(m_server_path),
-      flags);
+      boost::process::environment::find_executable(m_lexer.lsp_server()),
+      m_lexer.lsp_server_arguments());
   }
   catch (std::exception& e)
   {
-    log(e) << "wex::lsp::client::initialize with path" << m_server_path;
+    log(e) << "wex::lsp::client::initialize with path" << m_lexer.lsp_server();
     return false;
   }
 
@@ -321,7 +326,9 @@ bool client::initialize(const wex::path& root_path)
         {
           if (!msg.is_error && msg.result.contains("capabilities"))
           {
-            m_capabilities.set(msg.result);
+            m_capabilities.set(msg.result.at("capabilities").as_object());
+            log::info("lsp::capabilities")
+              << m_lexer.lsp_server() << m_capabilities;
           }
         }))
   {
@@ -335,7 +342,7 @@ bool client::initialize(const wex::path& root_path)
 
   m_initialized = true;
 
-  log::debug("lsp init") << m_server_path;
+  log::debug("lsp init") << m_lexer.lsp_server();
 
   m_listen_to_server = std::make_unique<listen_to_server>(this);
 
@@ -345,6 +352,11 @@ bool client::initialize(const wex::path& root_path)
 bool client::is_running() const
 {
   return m_process && m_process->running();
+}
+
+const std::string& client::language_id() const
+{
+  return m_lexer.scintilla_lexer();
 }
 
 bool client::shutdown()
@@ -374,7 +386,7 @@ bool client::shutdown()
   m_process->terminate();
   m_initialized = false;
 
-  log::debug("lsp shutdown") << m_server_path;
+  log::debug("lsp shutdown") << m_lexer.lsp_server();
 
   return true;
 }

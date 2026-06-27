@@ -845,9 +845,9 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
    - exclude: use Macintosh, Windows, Unix, to exclude this lexer
      on specified platform.
    - lsp: If this attribute is present, the lexer is supported by the LSP client.
-     The value of the attribute is used to match with the language id
-     in the LSP client configuration.
-   - lsp-flags: f this attribute is present, the flags for running lsp server
+     The value of the attribute is the binary for the LSP server.
+   - lsp-args: If this attribute is present, the arguments for running lsp server.
+     The arguments are separated by a semicolon (;).
    Furthermore it might contain the next tags:
    1) <styles>. Colouring styles for this lexer.
       The attribute 'no' contains the scintilla styles.
@@ -964,7 +964,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     </properties>
   </lexer>
   <lexer name="baan"/>
-  <lexer name="bash" extensions="*.bash;*.sh">
+  <lexer name="bash" extensions="*.bash;*.sh" lsp="bash-language-server" lsp-args="start">
     <keywords>
       alias bg bind break builtin caller case cd command compgen complete
       cp diff do done echo elif else esac exit fg fi find
@@ -1053,7 +1053,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   <lexer name="coffeescript"/>
   <lexer name="conf" extensions="*.elp"/>
-  <lexer name="cpp" extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y;*.sc" lsp="clangd" lsp-flags="log=error">
+  <lexer name="cpp" extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y;*.sc" lsp="clangd" lsp-args="--log=error">
     <styles>
       <style no="commentdockeyworderror"> comment </style>
     </styles>

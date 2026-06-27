@@ -32,28 +32,6 @@ void wex::bind_set_focus(wxWindow* win)
   }
 }
 
-const std::string wex::get_trigger(factory::stc* stc)
-{
-  const auto wsp = stc->WordStartPosition(stc->GetCurrentPos(), true);
-
-  std::string trigger;
-
-  if (stc->GetCharAt(wsp - 1) == '.')
-  {
-    trigger = ".";
-  }
-  else if (stc->GetCharAt(wsp - 1) == '>' && stc->GetCharAt(wsp - 2) == '-')
-  {
-    trigger = "->";
-  }
-  else if (stc->GetCharAt(wsp - 1) == ':' && stc->GetCharAt(wsp - 2) == ':')
-  {
-    trigger = "::";
-  }
-
-  return trigger;
-}
-
 boost::regex::flag_type
 wex::get_regex_flags(const factory::find_replace_data& data)
 {

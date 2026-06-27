@@ -9,10 +9,10 @@
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/ctags/ctags.h>
-#include <wex/factory/util.h>
 #include <wex/lsp/client.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/stc.h>
+#include <wex/syntax/util.h>
 #include <wex/ui/frame.h>
 
 #include "scope.h"
@@ -201,7 +201,7 @@ bool wex::auto_complete::on_char(char c)
     lsp_client->completion(
       m_stc->path(),
       position_item(m_stc),
-      get_trigger(m_stc));
+      m_stc->get_frame()->lsp_clients_trigger(m_stc));
     return false;
   }
 

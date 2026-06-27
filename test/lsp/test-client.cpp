@@ -16,7 +16,10 @@ TEST_CASE("wex::lsp::client")
 
   SECTION("initialize")
   {
-    REQUIRE(!client.get_capabilities().support_definition());
+    REQUIRE(!client.get_capabilities().support(
+      wex::lsp::capabilities::CAP_COMPLETION));
+    REQUIRE(!client.get_capabilities().support(255));
+    REQUIRE(client.get_capabilities().trigger_completion_characters().empty());
     REQUIRE(client.language_id() == "cpp");
     REQUIRE(
       client.extensions() ==
@@ -28,6 +31,9 @@ TEST_CASE("wex::lsp::client")
     REQUIRE(client.language_id() == "cpp");
     REQUIRE(client.is_running());
     REQUIRE(client.is_initialized());
+    REQUIRE(!client.get_capabilities().support(
+      wex::lsp::capabilities::CAP_DEFINITION));
+    REQUIRE(client.get_capabilities().trigger_completion_characters().empty());
     REQUIRE(client.shutdown());
   }
 

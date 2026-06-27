@@ -125,6 +125,11 @@ bool wex::data::stc::inject() const
 
 bool wex::data::stc::inject_col() const
 {
+  if (m_data.end_line() != NUMBER_NOT_SET)
+  {
+    return true;
+  }
+
   const int max =
     (m_data.line() > 0) ? m_stc->GetLineEndPosition(m_data.line() - 1) : 0;
   const int asked = m_stc->GetCurrentPos() + m_data.col() - 1;

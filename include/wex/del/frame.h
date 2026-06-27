@@ -169,6 +169,8 @@ public:
 
   lsp::client* lsp_clients_find(const path& p) override;
 
+  const std::string lsp_clients_trigger(syntax::stc* stc) override;
+
   void on_command_item_dialog(wxWindowID dialogid, const wxCommandEvent& event)
     override;
   void on_notebook(wxWindowID id, wxWindow* page) override;

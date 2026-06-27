@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of wex::data::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2025 Anton van Wezenbeek
+// Copyright: (c) 2017-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -89,6 +89,16 @@ public:
 
   /// Constructor from window data.
   stc(const data::window& data);
+
+  /// Returns whether recent is on, for allowing set_recent_file.
+  bool allow_change_page() const { return m_allow_change_page; }
+
+  /// Sets allow change page.
+  stc& allow_change_page(bool rhs)
+  {
+    m_allow_change_page = rhs;
+    return *this;
+  };
 
   /// Returns control data.
   const data::control& control() const { return m_data; }
@@ -188,14 +198,14 @@ private:
   data::control m_data;
   indicator_t   m_indicator_no{IND_LINE};
   menu_t        m_menu_flags{menu_t()
-                        .set(MENU_CONTEXT)
-                        .set(MENU_OPEN_LINK)
-                        .set(MENU_OPEN_WWW)
-                        .set(MENU_VCS)};
+                               .set(MENU_CONTEXT)
+                               .set(MENU_OPEN_LINK)
+                               .set(MENU_OPEN_WWW)
+                               .set(MENU_VCS)};
   window_t      m_win_flags{0};
   event_data    m_event_data;
 
-  bool m_recent{true};
+  bool m_recent{true}, m_allow_change_page{true};
 };
 }; // namespace data
 }; // namespace wex

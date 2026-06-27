@@ -146,6 +146,12 @@ public:
   /// Finds an lsp client for a path.
   virtual wex::lsp::client* lsp_clients_find(const path& p) { return nullptr; }
 
+  /// Returns lsp trigger character.
+  virtual const std::string lsp_clients_trigger(syntax::stc* stc)
+  {
+    return std::string();
+  }
+
   /// Called if the notebook changed page.
   virtual void on_notebook(wxWindowID id, wxWindow* page) { ; }
 
