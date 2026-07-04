@@ -8,6 +8,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/url.hpp>
 #include <wex/core/core.h>
+#include <wex/core/log.h>
 #include <wex/factory/bind.h>
 #include <wex/syntax/indicator.h>
 #include <wex/syntax/stc.h>
@@ -187,5 +188,17 @@ void wex::frame::bind_lsp()
           set_lsp_definition_or_implementation(this, definition);
         }
       },
-      ID_LSP_IMPLEMENTATION}});
+      ID_LSP_IMPLEMENTATION},
+
+     {[=, this](const wxCommandEvent& event)
+      {
+        if (
+          auto* item = (show_message_item*)event.GetClientData();
+          item != nullptr)
+        {
+          log::info(item->message);
+          delete item;
+        }
+      },
+      ID_LSP_SHOW_MESSAGE}});
 }

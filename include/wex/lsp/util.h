@@ -24,8 +24,5 @@ void queue_event(
   const std::string& uri,
   int                id,
   void*              data);
-
-/// Convert a json range object to a range item.
-bool range_from_json(const boost::json::object& obj, range_item& range);
 } // namespace lsp
 } // namespace wex

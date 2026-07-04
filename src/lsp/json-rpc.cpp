@@ -10,6 +10,8 @@
 
 #include <wex/core/log.h>
 #include <wex/lsp/json-rpc.h>
+#include <wex/lsp/util.h>
+#include <wex/ui/defs.h>
 #include <wx/event.h>
 
 namespace wex
@@ -117,11 +119,7 @@ std::string json_rpc::encode_notification(
   boost::json::object notification;
   notification["jsonrpc"] = "2.0";
   notification["method"]  = method;
-
-  if (!params.empty())
-  {
-    notification["params"] = params;
-  }
+  notification["params"]  = params;
 
   return make_output(notification);
 }
@@ -176,6 +174,10 @@ bool json_rpc::handle_response(const json_rpc_message& msg)
   {
     return handle_publish_diagnostics(msg);
   }
+  else if (msg.method == "window/showMessage")
+  {
+    return handle_show_message(msg);
+  }
   else
   {
     log("wex::lsp::json_rpc unhandled") << msg.method;
@@ -183,6 +185,20 @@ bool json_rpc::handle_response(const json_rpc_message& msg)
   }
 
   return true;
+}
+
+bool json_rpc::handle_show_message(const json_rpc_message& notification)
+{
+  auto* msg = new show_message_item(notification.params);
+
+  if (!msg->message.empty())
+  {
+    queue_event(m_event_handler, std::string(), ID_LSP_SHOW_MESSAGE, msg);
+
+    return true;
+  }
+
+  return false;
 }
 
 std::string json_rpc::header_part_content_field() const

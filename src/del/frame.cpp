@@ -426,7 +426,7 @@ wex::lsp::client* wex::del::frame::lsp_clients_find(const path& p)
 {
   for (auto* client : m_lsp_clients)
   {
-    if (matches_one_of(p.extension(), client->extensions()))
+    if (matches_one_of(p.filename(), client->extensions()))
     {
       // If there is a server for this language, but it is not enabled return
       // nullptr.

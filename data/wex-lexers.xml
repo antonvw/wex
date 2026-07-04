@@ -1032,7 +1032,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   <lexer name="clarion"/>
   <lexer name="clarionnocase" macro="clarion"/>
-  <lexer name="cmake" extensions="CMakeLists.txt;*.cmake;meson.build">
+  <lexer name="cmake" extensions="CMakeLists.txt;*.cmake;meson.build" lsp="neocmakelsp" lsp-args="stdio">
     <styles>
       <style no="whiledef,foreachdef,ifdefinedef,macrodef"> fore:sky blue </style>
     </styles>
@@ -1665,7 +1665,19 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       not return undef yield
     </keywords>
   </lexer>
-  <lexer name="rust" extensions="*.rs"/>
+  <lexer name="rust" extensions="*.rs" lsp="rust-analyzer">
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+    </properties>
+    <keywords>
+      alignof as be box break const continue crate do else enum extern false fn
+      for if impl in let loop match mod mut offsetof once priv proc pub pure ref
+      return self sizeof static struct super trait true type typeof unsafe unsized
+      use virtual while yield
+    </keywords>
+  </lexer>
   <lexer name="sas"/>
   <lexer name="scriptol"/>
   <lexer display="sh" name="bash">
@@ -1777,7 +1789,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     <keywords>
     </keywords>
   </lexer>
-  <lexer name="yaml" extensions="*.yml;.clang-*;.gersemi*">
+  <lexer name="yaml" extensions="*.yml;.clang-*;.gersemi*" lsp="actions-languageserver" lsp-args="--stdio">
     <styles>
         <style no="identifier">bold</style>
     </styles>

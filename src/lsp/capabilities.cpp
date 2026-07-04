@@ -31,15 +31,11 @@ boost::json::object capabilities::client() const
     {
       "textDocument":
       {
-        "synchronization":
-        {
-          "dynamicRegistration": true,
-          "didSave": true
-        },
         "completion":
         {
-          "dynamicRegistration": true,
-          "completionItem": {
+          "dynamicRegistration": false,
+          "completionItem":
+          {
             "snippetSupport": true,
             "commitCharactersSupport": true,
             "documentationFormat": ["plaintext"],
@@ -51,21 +47,28 @@ boost::json::object capabilities::client() const
             "valueSet": [1, 2, 3, 4, 5, 6, 7]
           }
         },
-        "hover":
-        {
-          "dynamicRegistration": true,
-          "contentFormat": ["plaintext"]
-        },
         "definition":
         {
-          "dynamicRegistration": true
+          "dynamicRegistration": false
         },
-        "documentSymbol": {
-          "dynamicRegistration": true,
-          "symbolKind": {
+        "documentSymbol":
+        {
+          "dynamicRegistration": false,
+          "symbolKind":
+          {
             "valueSet": [1, 2, 3, 4]
           },
           "hierarchicalDocumentSymbolSupport": true
+        },
+        "hover":
+        {
+          "dynamicRegistration": false,
+          "contentFormat": ["plaintext"]
+        },
+        "synchronization":
+        {
+          "dynamicRegistration": false,
+          "didSave": true
         }
       }
     }

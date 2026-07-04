@@ -488,16 +488,16 @@ void wex::stc::mark_modified(const wxStyledTextEvent& event)
         MarkerAdd(line + i, m_marker_change.number());
       }
     }
-  }
 
-  if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
-  {
-    range_item r;
-    r.start.line      = LineFromPosition(event.GetPosition());
-    r.start.character = event.GetPosition() - PositionFromLine(r.start.line);
-    r.end.line        = r.start.line + event.GetLinesAdded();
+    if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
+    {
+      range_item r;
+      r.start.line      = LineFromPosition(event.GetPosition());
+      r.start.character = event.GetPosition() - PositionFromLine(r.start.line);
+      r.end.line        = r.start.line + event.GetLinesAdded();
 
-    // client->did_change(path(), r, event.GetText());
+      client->did_change(path(), r, event.GetText());
+    }
   }
 
   use_modification_markers(true);
