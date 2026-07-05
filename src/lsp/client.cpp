@@ -394,6 +394,7 @@ bool client::shutdown()
   m_listen_to_server->request_stop();
   m_process->terminate();
   m_initialized = false;
+  m_uri_versions.clear();
 
   log::debug("lsp shutdown") << m_lexer.lsp_server();
 

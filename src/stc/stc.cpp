@@ -37,17 +37,19 @@ void lsp_change(const wxStyledTextEvent& event, wex::stc* stc)
   {
     range_item r;
 
-    if (event.GetLinesAdded() < 0)
+    if (event.GetText().empty())
     {
-      r.start.line =
-        stc->LineFromPosition(event.GetPosition()) + event.GetLinesAdded();
+      // this is a delete
+      r.start.line = stc->LineFromPosition(event.GetPosition());
       r.start.character =
-        event.GetPosition() - stc->PositionFromLine(r.start.line) - 1;
-      r.end.line      = stc->LineFromPosition(event.GetPosition());
-      r.end.character = r.start.character;
+        event.GetPosition() - stc->PositionFromLine(r.start.line);
+      const auto endpos = event.GetPosition() + event.GetLength();
+      r.end.line        = stc->LineFromPosition(endpos);
+      r.end.character   = endpos - stc->PositionFromLine(r.end.line);
     }
     else
     {
+      // this is an insert
       r.start.line = stc->LineFromPosition(event.GetPosition());
       r.start.character =
         event.GetPosition() - stc->PositionFromLine(r.start.line);
