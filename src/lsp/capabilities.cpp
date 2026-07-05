@@ -68,7 +68,13 @@ boost::json::object capabilities::client() const
         "synchronization":
         {
           "dynamicRegistration": false,
-          "didSave": true
+          "didSave": true,
+          "change":
+          {
+            "dynamicRegistration": false,
+            "willSynchronize": true,
+            "incremental": true
+          }
         }
       }
     }

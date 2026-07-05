@@ -8,6 +8,7 @@
 
 #include <boost/algorithm/string.hpp>
 
+#include <wex/core/log.h>
 #include <wex/ui/lsp.h>
 
 namespace wex
@@ -78,6 +79,15 @@ boost::json::object position_item::json_object() const
   return obj;
 }
 
+std::stringstream position_item::log() const
+{
+  std::stringstream ss;
+
+  ss << "line: " << line << " char: " << character;
+
+  return ss;
+}
+
 boost::json::object range_item::json_object() const
 {
   boost::json::object obj;
@@ -86,6 +96,15 @@ boost::json::object range_item::json_object() const
   obj["end"]   = end.json_object();
 
   return obj;
+}
+
+std::stringstream range_item::log() const
+{
+  std::stringstream ss;
+
+  ss << "start: " << start.log().str() << " end: " << end.log().str();
+
+  return ss;
 }
 
 show_message_item::show_message_item(const boost::json::object& obj)

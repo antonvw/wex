@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -44,6 +45,9 @@ struct position_item
   /// Returns a JSON object representation of the position_item.
   boost::json::object json_object() const;
 
+  /// Logs info about this class.
+  std::stringstream log() const;
+
   int line{0};      // Line position in a document (0-based)
   int character{0}; // Character offset on a line in a document (0-based)
 };
@@ -53,6 +57,9 @@ struct range_item
 {
   /// Returns a JSON object representation of the range_item.
   boost::json::object json_object() const;
+
+  /// Logs info about this class.
+  std::stringstream log() const;
 
   position_item start, end;
 };

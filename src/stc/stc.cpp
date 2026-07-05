@@ -27,6 +27,39 @@
 
 #include <algorithm>
 
+namespace wex
+{
+void lsp_change(const wxStyledTextEvent& event, wex::stc* stc)
+{
+  if (
+    auto* client = stc->get_frame()->lsp_clients_find(stc->path());
+    client != nullptr)
+  {
+    range_item r;
+
+    if (event.GetLinesAdded() < 0)
+    {
+      r.start.line =
+        stc->LineFromPosition(event.GetPosition()) + event.GetLinesAdded();
+      r.start.character =
+        event.GetPosition() - stc->PositionFromLine(r.start.line) - 1;
+      r.end.line      = stc->LineFromPosition(event.GetPosition());
+      r.end.character = r.start.character;
+    }
+    else
+    {
+      r.start.line = stc->LineFromPosition(event.GetPosition());
+      r.start.character =
+        event.GetPosition() - stc->PositionFromLine(r.start.line);
+      r.end.line      = r.start.line + event.GetLinesAdded();
+      r.end.character = r.start.character;
+    }
+
+    client->did_change(stc->path(), r, event.GetText());
+  }
+}
+} // namespace wex
+
 wex::stc::stc(const wex::path& p, const data::stc& data)
   : syntax::stc(data.window())
   , m_data(data)
@@ -488,16 +521,6 @@ void wex::stc::mark_modified(const wxStyledTextEvent& event)
         MarkerAdd(line + i, m_marker_change.number());
       }
     }
-
-    if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
-    {
-      range_item r;
-      r.start.line      = LineFromPosition(event.GetPosition());
-      r.start.character = event.GetPosition() - PositionFromLine(r.start.line);
-      r.end.line        = r.start.line + event.GetLinesAdded();
-
-      client->did_change(path(), r, event.GetText());
-    }
   }
 
   use_modification_markers(true);
@@ -508,6 +531,14 @@ void wex::stc::on_styled_text(wxStyledTextEvent& event)
   if (is_visual())
   {
     mark_modified(event);
+
+    if (
+      (event.GetModificationType() & wxSTC_PERFORMED_UNDO) ||
+      (event.GetModificationType() & wxSTC_MOD_BEFOREINSERT) ||
+      (event.GetModificationType() & wxSTC_MOD_BEFOREDELETE))
+    {
+      lsp_change(event, this);
+    }
   }
 
   event.Skip();

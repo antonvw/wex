@@ -32,9 +32,8 @@ make_content_changes(const range_item& r, const std::string& text)
 {
   boost::json::object obj;
 
-  obj["range"]       = r.json_object();
-  obj["text"]        = text;
-  obj["rangeLength"] = text.size();
+  obj["range"] = r.json_object();
+  obj["text"]  = text;
 
   boost::json::array content_changes{obj};
 
@@ -206,7 +205,13 @@ bool client::did_change(
   const range_item&  range,
   const std::string& text)
 {
-  m_uri_versions[path.uri()] = m_uri_versions[path.uri()] + 1;
+  if (path.empty())
+  {
+    log("did_change on empty path");
+    return false;
+  }
+
+  m_uri_versions[path.uri()] = version(path.uri()) + 1;
 
   // LSP Methods Implementation
   // send textDocument/didChange notification
@@ -214,6 +219,9 @@ bool client::did_change(
   text_doc["uri"]          = path.uri();
   params["textDocument"]   = text_doc;
   params["contentChanges"] = make_content_changes(range, text);
+
+  log::trace("did_change") << path << "range:" << range << "text:" << text
+                           << "version:" << version(path.uri());
 
   return write(m_rpc.encode_notification("textDocument/didChange", params));
 }
