@@ -255,6 +255,8 @@ public:
   bool link_open() override;
   bool open(const wex::path& p, const data::stc& data = data::stc()) override;
 
+  bool popup_menu_is_shown() const override { return m_is_popup_shown; };
+
   const wex::path& path() const override { return m_file.path(); }
 
   void print(bool prompt = true) override;
@@ -290,7 +292,7 @@ private:
   void blame_revision(const std::string& offset = std::string());
   void build_popup_menu(menu& menu);
   void build_popup_menu_edit(menu& menu);
-  void build_popup_menu_link(menu& menu);
+  bool build_popup_menu_link(menu& menu);
   void check_brace();
   bool check_brace(int pos);
   bool current_line_contains_diff_marker();
@@ -313,7 +315,7 @@ private:
   const marker              m_marker_change{marker(1)};
   const std::vector<marker> m_marker_diffs{marker(3), marker(4), marker(5)};
 
-  bool m_skip{false};
+  bool m_skip{false}, m_is_popup_shown{false};
 
   frame* m_frame;
 

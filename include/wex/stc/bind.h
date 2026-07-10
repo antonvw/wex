@@ -29,6 +29,7 @@ enum stc
   // range
   lsp_definition,
   lsp_implementation,
+  lsp_location,
   //
   margin_text_author,
   margin_text_blame_revision,

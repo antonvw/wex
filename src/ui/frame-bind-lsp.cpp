@@ -99,6 +99,11 @@ void set_lsp_diagnostics(syntax::stc* stc, const diagnostics_t* diagnostics)
 
 void set_lsp_hover(syntax::stc* stc, const hover_t* hover)
 {
+  if (stc->popup_menu_is_shown())
+  {
+    return;
+  }
+
   std::string text(hover->contents.substr(1, hover->contents.size() - 2));
   boost::algorithm::replace_all(text, "\\n", "\n");
 

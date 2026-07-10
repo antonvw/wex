@@ -2,7 +2,7 @@
 // Name:      link.h
 // Purpose:   Declaration of class wex::link
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2024 Anton van Wezenbeek
+// Copyright: (c) 2011-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -25,7 +25,6 @@ public:
     /// stc component
     factory::stc* stc = nullptr) override;
 
-private:
   std::string get_link_pairs(const std::string& text) const override;
 };
 }; // namespace wex

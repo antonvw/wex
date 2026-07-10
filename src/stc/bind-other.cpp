@@ -2,7 +2,7 @@
 // Name:      stc/bind-other.cpp
 // Purpose:   Implementation of class wex::stc method bind_other
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -314,16 +314,6 @@ void wex::stc::bind_other()
       event.Skip();
     });
 
-  Bind(
-    wxEVT_STC_DWELLEND,
-    [=, this](const wxStyledTextEvent& event)
-    {
-      if (CallTipActive())
-      {
-        CallTipCancel();
-      }
-    });
-
   // if we support automatic fold, this can be removed,
   // not yet possible for wx3.0. And add wxSTC_AUTOMATICFOLD_CLICK
   // to config_dialog, and SetAutomaticFold.
@@ -510,7 +500,11 @@ void wex::stc::mouse_action(wxMouseEvent& event)
           menu.Delete(item->GetId());
         }
 
+        m_is_popup_shown = true;
+
         PopupMenu(&menu);
+
+        m_is_popup_shown = false;
       }
     }
     else if (event.LeftDClick())

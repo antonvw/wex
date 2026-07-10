@@ -535,7 +535,6 @@ void wex::stc::on_styled_text(wxStyledTextEvent& event)
     mark_modified(event);
 
     if (
-      (event.GetModificationType() & wxSTC_PERFORMED_UNDO) ||
       (event.GetModificationType() & wxSTC_MOD_BEFOREINSERT) ||
       (event.GetModificationType() & wxSTC_MOD_BEFOREDELETE))
     {
