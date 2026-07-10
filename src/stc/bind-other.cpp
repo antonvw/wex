@@ -9,12 +9,14 @@
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/factory/util.h>
+#include <wex/lsp/client.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/bind.h>
 #include <wex/stc/stc.h>
 #include <wex/ui/debug-entry.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
+#include <wex/ui/lsp.h>
 #include <wex/ui/menu.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 
@@ -281,7 +283,10 @@ void wex::stc::bind_other()
     wxEVT_STC_AUTOCOMP_COMPLETED,
     [=, this](wxStyledTextEvent& event)
     {
-      m_auto_complete->complete(event.GetText().ToStdString());
+      if (m_frame->lsp_clients_find(path()) == nullptr)
+      {
+        m_auto_complete->complete(event.GetText().ToStdString());
+      }
     });
 
   Bind(

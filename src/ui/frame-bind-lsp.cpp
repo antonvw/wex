@@ -15,6 +15,7 @@
 #include <wex/ui/defs.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/lsp.h>
+#include <wx/infobar.h>
 
 namespace wex
 {
@@ -116,6 +117,37 @@ void set_lsp_hover(syntax::stc* stc, const hover_t* hover)
     stc->PositionFromLine(hover->pos.line) + hover->pos.character,
     text);
 }
+
+void set_lsp_show_message(wex::frame* frame, const show_message_item* item)
+{
+  if (!item->is_show)
+  {
+    switch (item->type)
+    {
+      case show_message_item::DEBUG:
+        log::debug(item->message);
+        break;
+      case show_message_item::ERROR:
+        log(item->message);
+        break;
+      case show_message_item::INFO:
+        log::info(item->message);
+        break;
+      case show_message_item::LOG:
+        log::trace(item->message);
+        break;
+      case show_message_item::WARNING:
+        log::warning(item->message);
+        break;
+      default:
+        log("unhandled show_message type") << static_cast<int>(item->type);
+    }
+  }
+  else
+  {
+    wxInfoBar(frame).ShowMessage(item->message);
+  }
+}
 } // namespace wex
 
 void wex::frame::bind_lsp()
@@ -201,7 +233,7 @@ void wex::frame::bind_lsp()
           auto* item = (show_message_item*)event.GetClientData();
           item != nullptr)
         {
-          log::info(item->message);
+          set_lsp_show_message(this, item);
           delete item;
         }
       },

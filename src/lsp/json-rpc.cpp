@@ -174,7 +174,8 @@ bool json_rpc::handle_response(const json_rpc_message& msg)
   {
     return handle_publish_diagnostics(msg);
   }
-  else if (msg.method == "window/showMessage")
+  else if (
+    msg.method == "window/logMessage" || msg.method == "window/showMessage")
   {
     return handle_show_message(msg);
   }
@@ -189,7 +190,9 @@ bool json_rpc::handle_response(const json_rpc_message& msg)
 
 bool json_rpc::handle_show_message(const json_rpc_message& notification)
 {
-  auto* msg = new show_message_item(notification.params);
+  auto* msg = new show_message_item(
+    notification.params,
+    notification.method == "window/showMessage");
 
   if (!msg->message.empty())
   {

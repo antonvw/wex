@@ -36,7 +36,7 @@ enum class severity_t
 /// Represents a position in a document, including line and character offsets.
 struct position_item
 {
-  /// Default constructor for position_item.
+  /// Default constructor.
   position_item(int l = 0, int c = 0);
 
   /// Constructs a position_item from a wxStyledTextCtrl.
@@ -67,7 +67,7 @@ struct range_item
 /// Represents an element of a completion item.
 struct completion_item_element
 {
-  /// Constructs a completion_item_element from a JSON object,
+  /// Constructor from a JSON object,
   /// as received from the language server.
   completion_item_element(const boost::json::object& obj);
 
@@ -89,7 +89,7 @@ struct completion_item
 /// Represents a definition or implementation item.
 struct definition_or_implementation_item
 {
-  /// Constructs a definition_or_implementation_item from a JSON object,
+  /// Constructor from a JSON object,
   /// as received from the language server.
   definition_or_implementation_item(const boost::json::object& obj);
 
@@ -125,30 +125,41 @@ struct hover_item
   std::string contents;
 };
 
+/// Represents a show or a log message item.
 struct show_message_item
 {
-  /// Constructs a show_message_item from a JSON object,
-  /// as received from the language server.
-  show_message_item(const boost::json::object& obj);
+  enum message_t
+  {
+    ERROR = 1,
+    WARNING,
+    INFO,
+    LOG,
+    DEBUG // @since 3.18.0
+  };
 
-  int         type;
+  /// Constructor from a JSON object,
+  /// as received from the language server.
+  show_message_item(const boost::json::object& obj, bool is_show_item = true);
+
+  message_t   type;
   std::string message;
+  const bool  is_show{true};
 };
 
 /// Convert a json range object to a range item.
 bool range_from_json(const boost::json::object& obj, range_item& range);
 
 /// Type alias for collections of completions returned by the language server.
-typedef completion_item completions_t;
+using completions_t = completion_item;
 
 /// Type alias for a definition or implementation item returned by the language
 /// server.
-typedef std::vector<definition_or_implementation_item>
-  definition_or_implementation_t;
+using definition_or_implementation_t =
+  std::vector<definition_or_implementation_item>;
 
 /// Type alias for a collection of diagnostics returned by the language server.
-typedef std::vector<diagnostic_item> diagnostics_t;
+using diagnostics_t = std::vector<diagnostic_item>;
 
 /// Type alias for a hover item returned by the language server.
-typedef struct hover_item hover_t;
+using hover_t = struct hover_item;
 } // namespace wex

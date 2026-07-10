@@ -37,7 +37,7 @@ void lsp_change(const wxStyledTextEvent& event, wex::stc* stc)
   {
     range_item r;
 
-    if (event.GetText().empty())
+    if (event.GetModificationType() & wxSTC_MOD_BEFOREDELETE)
     {
       // this is a delete
       r.start.line = stc->LineFromPosition(event.GetPosition());
@@ -46,8 +46,9 @@ void lsp_change(const wxStyledTextEvent& event, wex::stc* stc)
       const auto endpos = event.GetPosition() + event.GetLength();
       r.end.line        = stc->LineFromPosition(endpos);
       r.end.character   = endpos - stc->PositionFromLine(r.end.line);
+      client->did_change(stc->path(), r, std::string());
     }
-    else
+    else if (event.GetModificationType() & wxSTC_MOD_BEFOREINSERT)
     {
       // this is an insert
       r.start.line = stc->LineFromPosition(event.GetPosition());
@@ -55,9 +56,12 @@ void lsp_change(const wxStyledTextEvent& event, wex::stc* stc)
         event.GetPosition() - stc->PositionFromLine(r.start.line);
       r.end.line      = r.start.line + event.GetLinesAdded();
       r.end.character = r.start.character;
+      client->did_change(stc->path(), r, event.GetText());
     }
-
-    client->did_change(stc->path(), r, event.GetText());
+    else
+    {
+      log("unknown type");
+    }
   }
 }
 } // namespace wex

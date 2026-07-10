@@ -107,8 +107,11 @@ std::stringstream range_item::log() const
   return ss;
 }
 
-show_message_item::show_message_item(const boost::json::object& obj)
-  : type(0)
+show_message_item::show_message_item(
+  const boost::json::object& obj,
+  bool                       is_show_item)
+  : type(show_message_item::INFO)
+  , is_show(is_show_item)
 {
   if (obj.contains("message"))
   {
@@ -117,7 +120,7 @@ show_message_item::show_message_item(const boost::json::object& obj)
 
   if (obj.contains("type"))
   {
-    type = obj.at("type").as_int64();
+    type = static_cast<show_message_item::message_t>(obj.at("type").as_int64());
   }
 }
 } // namespace wex

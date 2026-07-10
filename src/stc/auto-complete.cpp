@@ -119,9 +119,7 @@ void wex::auto_complete::clear()
 
 bool wex::auto_complete::complete(const std::string& text)
 {
-  if (
-    text.empty() || !use() ||
-    m_stc->get_frame()->lsp_clients_find(m_stc->path()) != nullptr)
+  if (text.empty() || !use())
   {
     return false;
   }
