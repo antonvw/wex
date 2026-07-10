@@ -127,7 +127,7 @@ void set_lsp_show_message(wex::frame* frame, const show_message_item* item)
       case show_message_item::DEBUG:
         log::debug(item->message);
         break;
-      case show_message_item::ERROR:
+      case show_message_item::ERRORS:
         log(item->message);
         break;
       case show_message_item::INFO:

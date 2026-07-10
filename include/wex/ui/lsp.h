@@ -128,9 +128,10 @@ struct hover_item
 /// Represents a show or a log message item.
 struct show_message_item
 {
+  /// Message type values.
   enum message_t
   {
-    ERROR = 1,
+    ERRORS = 1,
     WARNING,
     INFO,
     LOG,
