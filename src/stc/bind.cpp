@@ -16,6 +16,7 @@
 #include <wex/stc/beautify.h>
 #include <wex/stc/bind.h>
 #include <wex/stc/entry-dialog.h>
+#include <wex/stc/link.h>
 #include <wex/stc/stc.h>
 #include <wex/syntax/lexer-props.h>
 #include <wex/syntax/lexers.h>
@@ -439,12 +440,7 @@ void wex::stc::bind_all()
       {
         if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
         {
-          client->definition(
-            path(),
-            position_item(
-              LineFromPosition(GetCurrentPos()),
-              GetCurrentPos() -
-                PositionFromLine(LineFromPosition(GetCurrentPos()))));
+          client->definition(path(), position_item(this));
         }
       },
       id::stc::lsp_definition},
@@ -453,15 +449,19 @@ void wex::stc::bind_all()
       {
         if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
         {
-          client->implementation(
-            path(),
-            position_item(
-              LineFromPosition(GetCurrentPos()),
-              GetCurrentPos() -
-                PositionFromLine(LineFromPosition(GetCurrentPos()))));
+          client->implementation(path(), position_item(this));
         }
       },
       id::stc::lsp_implementation},
+
+     {[=, this](const wxCommandEvent& event)
+      {
+        if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
+        {
+          client->definition(path(), position_item(this));
+        }
+      },
+      id::stc::lsp_location},
 
      {[=, this](const wxCommandEvent& event)
       {
@@ -553,7 +553,7 @@ void wex::stc::build_popup_menu(menu& menu)
     menu.append({{id::stc::diff_checkout, _("Checkout Diff")}});
   }
 
-  build_popup_menu_link(menu);
+  const bool added_link = build_popup_menu_link(menu);
 
   if (
     m_data.menu().test(data::stc::MENU_DEBUG) &&
@@ -578,13 +578,24 @@ void wex::stc::build_popup_menu(menu& menu)
     }
   }
 
-  if (!sel.empty())
+  if (
+    const auto& lnk(link().get_link_pairs(GetCurLine()));
+    !sel.empty() || (!lnk.empty() && !added_link))
   {
-    if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
+    if (
+      const auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
     {
-      menu.append(
-        {{id::stc::lsp_definition, _("Goto Definition")},
-         {id::stc::lsp_implementation, _("Goto Implementation")}});
+      if (sel.empty() && !lnk.empty())
+      {
+        menu.append({{}, {id::stc::lsp_location, _("Goto File")}});
+      }
+      else
+      {
+        menu.append(
+          {{},
+           {id::stc::lsp_definition, _("Goto Definition")},
+           {id::stc::lsp_implementation, _("Goto Implementation")}});
+      }
     }
   }
 
@@ -594,6 +605,11 @@ void wex::stc::build_popup_menu(menu& menu)
   }
 
   build_popup_menu_edit(menu);
+
+  if (m_data.menu().test(data::stc::MENU_OPEN_WWW) && !sel.empty())
+  {
+    menu.append({{}, {id::stc::open_www, _("&Browse")}});
+  }
 
   // Folding if nothing selected, property is set,
   // and we have a lexer.
@@ -677,9 +693,10 @@ void wex::stc::build_popup_menu_edit(menu& menu)
   }
 }
 
-void wex::stc::build_popup_menu_link(menu& menu)
+bool wex::stc::build_popup_menu_link(menu& menu)
 {
   const auto sel(GetSelectedText().ToStdString());
+  bool       added = false;
 
   if (m_data.menu().test(data::stc::MENU_OPEN_LINK))
   {
@@ -692,13 +709,11 @@ void wex::stc::build_popup_menu_link(menu& menu)
       link_open(link_t().set(LINK_OPEN).set(LINK_CHECK), &link))
     {
       menu.append({{}, {id::stc::open_link, _("Open") + " " + link}});
+      added = true;
     }
   }
 
-  if (m_data.menu().test(data::stc::MENU_OPEN_WWW) && !sel.empty())
-  {
-    menu.append({{}, {id::stc::open_www, _("&Browse")}});
-  }
+  return added;
 }
 
 void wex::stc::check_brace()
@@ -896,8 +911,10 @@ void wex::stc::on_dwell_end(wxStyledTextEvent& event)
 
 void wex::stc::on_dwell_start(wxStyledTextEvent& event)
 {
-  if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr &&
-     get_selected_text().empty())
+  if (
+    auto* client = m_frame->lsp_clients_find(path());
+    client != nullptr && get_selected_text().empty() &&
+    event.GetPosition() != -1)
   {
     const auto event_line(LineFromPosition(event.GetPosition()));
     client->hover(

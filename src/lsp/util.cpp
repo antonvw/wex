@@ -12,18 +12,6 @@ namespace wex
 {
 namespace lsp
 {
-bool range_from_json(const boost::json::object& obj, range_item& range)
-{
-  auto ro = obj.at("range");
-
-  range.start.line      = ro.at("start").at("line").as_int64();
-  range.start.character = ro.at("start").at("character").as_int64();
-  range.end.line        = ro.at("end").at("line").as_int64();
-  range.end.character   = ro.at("end").at("character").as_int64();
-
-  return true;
-}
-
 void queue_event(
   wxEvtHandler*      handler,
   const std::string& uri,

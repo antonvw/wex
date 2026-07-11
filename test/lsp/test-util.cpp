@@ -31,7 +31,7 @@ TEST_CASE("wex::lsp::util")
     REQUIRE(range.end.line == 0);
     REQUIRE(range.end.character == 0);
 
-    REQUIRE(wex::lsp::range_from_json(obj, range));
+    REQUIRE(wex::range_from_json(obj, range));
 
     REQUIRE(range.start.line == 1151);
     REQUIRE(range.start.character == 19);

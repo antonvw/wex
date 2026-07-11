@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
+#include <boost/url.hpp>
 
 #include <wex/core/log.h>
 #include <wex/core/path.h>
@@ -223,4 +224,13 @@ wex::path& wex::path::replace_filename(const std::string& filename)
   m_path.replace_filename(filename);
 
   return *this;
+}
+
+const std::string wex::path::uri() const
+{
+  boost::urls::url u;
+  u.set_scheme_id(boost::urls::scheme::file)
+    .set_encoded_path(string())
+    .set_encoded_authority("");
+  return u.buffer();
 }

@@ -8,12 +8,14 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/url.hpp>
 #include <wex/core/core.h>
+#include <wex/core/log.h>
 #include <wex/factory/bind.h>
 #include <wex/syntax/indicator.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/defs.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/lsp.h>
+#include <wx/infobar.h>
 
 namespace wex
 {
@@ -98,6 +100,11 @@ void set_lsp_diagnostics(syntax::stc* stc, const diagnostics_t* diagnostics)
 
 void set_lsp_hover(syntax::stc* stc, const hover_t* hover)
 {
+  if (stc->popup_menu_is_shown())
+  {
+    return;
+  }
+
   std::string text(hover->contents.substr(1, hover->contents.size() - 2));
   boost::algorithm::replace_all(text, "\\n", "\n");
 
@@ -109,6 +116,38 @@ void set_lsp_hover(syntax::stc* stc, const hover_t* hover)
   stc->CallTipShow(
     stc->PositionFromLine(hover->pos.line) + hover->pos.character,
     text);
+}
+
+void set_lsp_show_message(wex::frame* frame, const show_message_item* item)
+{
+  if (!item->is_show)
+  {
+    switch (item->type)
+    {
+      case show_message_item::DEBUG:
+        log::debug(item->message);
+        break;
+      case show_message_item::ERRORS:
+        log(item->message);
+        break;
+      case show_message_item::INFO:
+        log::info(item->message);
+        break;
+      case show_message_item::LOG:
+        log::trace(item->message);
+        break;
+      case show_message_item::WARNING:
+        log::warning(item->message);
+        break;
+      default:
+        log("unhandled show_message type") << static_cast<int>(item->type);
+    }
+  }
+  else
+  {
+    auto* info = new wxInfoBar(frame);
+    info->ShowMessage(item->message);
+  }
 }
 } // namespace wex
 
@@ -187,5 +226,17 @@ void wex::frame::bind_lsp()
           set_lsp_definition_or_implementation(this, definition);
         }
       },
-      ID_LSP_IMPLEMENTATION}});
+      ID_LSP_IMPLEMENTATION},
+
+     {[=, this](const wxCommandEvent& event)
+      {
+        if (
+          auto* item = (show_message_item*)event.GetClientData();
+          item != nullptr)
+        {
+          set_lsp_show_message(this, item);
+          delete item;
+        }
+      },
+      ID_LSP_SHOW_MESSAGE}});
 }

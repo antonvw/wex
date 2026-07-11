@@ -5,7 +5,6 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <boost/algorithm/string.hpp>
 #include <wex/core/log.h>
 #include <wex/lsp/client.h>
 #include <wex/lsp/util.h>
@@ -28,16 +27,45 @@ boost::json::object make_object(const wex::path& path, const position_item& p)
   return params;
 }
 
-boost::json::object
-make_content_changes(const range_item& r, const std::string& text)
+boost::json::array make_content_changes(
+  const wex::path&   path,
+  const lsp::client& cl,
+  const range_item&  r,
+  const std::string& text)
 {
-  boost::json::object content_changes;
+  boost::json::object obj;
 
-  content_changes["range"]       = r.json_object();
-  content_changes["text"]        = text;
-  content_changes["rangeLength"] = text.size();
+  obj["range"]   = r.json_object();
+  obj["version"] = cl.version(path.uri());
+  obj["text"]    = text;
+
+  boost::json::array content_changes{obj};
 
   return content_changes;
+}
+
+boost::json::object make_text_doc_identifier(const wex::path& path)
+{
+  boost::json::object obj;
+
+  obj["uri"] = path.uri();
+
+  return obj;
+}
+
+boost::json::object make_text_doc_item(
+  const wex::path&   path,
+  const lsp::client& cl,
+  const std::string& text)
+{
+  boost::json::object obj;
+
+  obj["uri"]        = path.uri();
+  obj["languageId"] = cl.language_id();
+  obj["version"]    = cl.version(path.uri());
+  obj["text"]       = text;
+
+  return obj;
 }
 
 namespace lsp
@@ -87,32 +115,7 @@ bool client::completion(
 
           for (const auto& item : msg.result.at("items").as_array())
           {
-            completion_item_element completion_element;
-
-            if (item.as_object().contains("label"))
-            {
-              completion_element.label =
-                item.as_object().at("label").as_string().data();
-              boost::algorithm::trim(completion_element.label);
-            }
-
-            if (item.as_object().contains("kind"))
-            {
-              completion_element.kind = item.as_object().at("kind").as_int64();
-            }
-
-            if (item.as_object().contains("detail"))
-            {
-              completion_element.detail =
-                item.as_object().at("detail").as_string().data();
-            }
-
-            if (item.as_object().contains("documentation"))
-            {
-              // The documentation is an array, not yet handled
-              // completion_element.documentation =
-            }
-
+            completion_item_element completion_element(item.as_object());
             completion->elements.push_back(completion_element);
           }
 
@@ -176,10 +179,7 @@ bool client::definition_or_implementation(
 
             for (const auto& item : msg.result_array)
             {
-              definition_or_implementation_item di;
-              range_from_json(item.as_object(), di.range);
-              di.uri = item.as_object().at("uri").as_string().data();
-
+              definition_or_implementation_item di(item.as_object());
               definition->push_back(di);
             }
 
@@ -209,12 +209,23 @@ bool client::did_change(
   const range_item&  range,
   const std::string& text)
 {
+  if (path.empty())
+  {
+    log("did_change on empty path");
+    return false;
+  }
+
+  m_uri_versions[path.uri()] = version(path.uri()) + 1;
+
   // LSP Methods Implementation
   // send textDocument/didChange notification
-  boost::json::object params, text_doc, text_contents;
+  boost::json::object params, text_doc;
   text_doc["uri"]          = path.uri();
   params["textDocument"]   = text_doc;
-  params["contentChanges"] = make_content_changes(range, text);
+  params["contentChanges"] = make_content_changes(path, *this, range, text);
+
+  log::trace("did_change") << path << "range:" << range << "text:" << text
+                           << "version:" << version(path.uri());
 
   return write(m_rpc.encode_notification("textDocument/didChange", params));
 }
@@ -232,13 +243,15 @@ bool client::did_close(const wex::path& path)
 
 bool client::did_open(const wex::path& path, const std::string& text)
 {
+  if (!m_uri_versions.contains(path.uri()))
+  {
+    m_uri_versions[path.uri()] = 1;
+  }
+
   // LSP Methods Implementation
   // send textDocument/didOpen notification
-  boost::json::object params, text_doc;
-  text_doc["uri"]        = path.uri();
-  text_doc["languageId"] = language_id();
-  text_doc["text"]       = text;
-  params["textDocument"] = text_doc;
+  boost::json::object params;
+  params["textDocument"] = make_text_doc_item(path, *this, text);
 
   return write(m_rpc.encode_notification("textDocument/didOpen", params));
 }
@@ -385,18 +398,33 @@ bool client::shutdown()
   m_listen_to_server->request_stop();
   m_process->terminate();
   m_initialized = false;
+  m_uri_versions.clear();
 
   log::debug("lsp shutdown") << m_lexer.lsp_server();
 
   return true;
 }
 
+int client::version(const std::string& uri) const
+{
+  if (const auto ver = m_uri_versions.find(uri); ver != m_uri_versions.end())
+  {
+    return ver->second;
+  }
+
+  return 0;
+}
+
 bool client::write(const std::string& text, response_handler resp)
 {
-  if (
-    m_process == nullptr || !m_process->running() ||
-    boost::asio::write(*m_process, boost::asio::buffer(text)) == 0)
+  if (m_process == nullptr || !m_process->running())
   {
+    return false;
+  }
+
+  if (boost::asio::write(*m_process, boost::asio::buffer(text)) != text.size())
+  {
+    log("wex::lsp::client::write") << m_lexer.lsp_server() << text;
     return false;
   }
 

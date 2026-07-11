@@ -2,19 +2,21 @@
 // Name:      stc/bind-other.cpp
 // Purpose:   Implementation of class wex::stc method bind_other
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/factory/util.h>
+#include <wex/lsp/client.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/bind.h>
 #include <wex/stc/stc.h>
 #include <wex/ui/debug-entry.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
+#include <wex/ui/lsp.h>
 #include <wex/ui/menu.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 
@@ -281,7 +283,10 @@ void wex::stc::bind_other()
     wxEVT_STC_AUTOCOMP_COMPLETED,
     [=, this](wxStyledTextEvent& event)
     {
-      m_auto_complete->complete(event.GetText().ToStdString());
+      if (m_frame->lsp_clients_find(path()) == nullptr)
+      {
+        m_auto_complete->complete(event.GetText().ToStdString());
+      }
     });
 
   Bind(
@@ -312,16 +317,6 @@ void wex::stc::bind_other()
         event.SetDragAllowMove(false);
       }
       event.Skip();
-    });
-
-  Bind(
-    wxEVT_STC_DWELLEND,
-    [=, this](const wxStyledTextEvent& event)
-    {
-      if (CallTipActive())
-      {
-        CallTipCancel();
-      }
     });
 
   // if we support automatic fold, this can be removed,
@@ -510,7 +505,11 @@ void wex::stc::mouse_action(wxMouseEvent& event)
           menu.Delete(item->GetId());
         }
 
+        m_is_popup_shown = true;
+
         PopupMenu(&menu);
+
+        m_is_popup_shown = false;
       }
     }
     else if (event.LeftDClick())

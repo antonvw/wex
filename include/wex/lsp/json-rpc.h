@@ -101,6 +101,7 @@ private:
   /// Handles an incoming diagnostics notification.
   /// Returns false if msg is not handled.
   bool handle_publish_diagnostics(const json_rpc_message& notification);
+  bool handle_show_message(const json_rpc_message& notification);
 
   std::string make_output(const boost::json::object& obj);
 

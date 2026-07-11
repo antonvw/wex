@@ -27,6 +27,45 @@
 
 #include <algorithm>
 
+namespace wex
+{
+void lsp_change(const wxStyledTextEvent& event, wex::stc* stc)
+{
+  if (
+    auto* client = stc->get_frame()->lsp_clients_find(stc->path());
+    client != nullptr)
+  {
+    range_item r;
+
+    if (event.GetModificationType() & wxSTC_MOD_BEFOREDELETE)
+    {
+      // this is a delete
+      r.start.line = stc->LineFromPosition(event.GetPosition());
+      r.start.character =
+        event.GetPosition() - stc->PositionFromLine(r.start.line);
+      const auto endpos = event.GetPosition() + event.GetLength();
+      r.end.line        = stc->LineFromPosition(endpos);
+      r.end.character   = endpos - stc->PositionFromLine(r.end.line);
+      client->did_change(stc->path(), r, std::string());
+    }
+    else if (event.GetModificationType() & wxSTC_MOD_BEFOREINSERT)
+    {
+      // this is an insert
+      r.start.line = stc->LineFromPosition(event.GetPosition());
+      r.start.character =
+        event.GetPosition() - stc->PositionFromLine(r.start.line);
+      r.end.line      = r.start.line;
+      r.end.character = r.start.character;
+      client->did_change(stc->path(), r, event.GetText());
+    }
+    else
+    {
+      log("unknown type");
+    }
+  }
+}
+} // namespace wex
+
 wex::stc::stc(const wex::path& p, const data::stc& data)
   : syntax::stc(data.window())
   , m_data(data)
@@ -490,16 +529,6 @@ void wex::stc::mark_modified(const wxStyledTextEvent& event)
     }
   }
 
-  if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
-  {
-    range_item r;
-    r.start.line      = LineFromPosition(event.GetPosition());
-    r.start.character = event.GetPosition() - PositionFromLine(r.start.line);
-    r.end.line        = r.start.line + event.GetLinesAdded();
-
-    // client->did_change(path(), r, event.GetText());
-  }
-
   use_modification_markers(true);
 }
 
@@ -508,6 +537,13 @@ void wex::stc::on_styled_text(wxStyledTextEvent& event)
   if (is_visual())
   {
     mark_modified(event);
+
+    if (
+      (event.GetModificationType() & wxSTC_MOD_BEFOREINSERT) ||
+      (event.GetModificationType() & wxSTC_MOD_BEFOREDELETE))
+    {
+      lsp_change(event, this);
+    }
   }
 
   event.Skip();

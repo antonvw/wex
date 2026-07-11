@@ -9,6 +9,7 @@
 
 #include <memory>
 #include <string>
+#include <unordered_map>
 
 #include <boost/asio.hpp>
 #include <boost/process.hpp>
@@ -119,6 +120,9 @@ public:
   /// Returns true if shutdown was successful.
   bool shutdown();
 
+  /// Returns version for specified uri.
+  int version(const std::string& uri) const;
+
 private:
   bool definition_or_implementation(
     const wex::path&     path,
@@ -137,6 +141,8 @@ private:
   json_rpc     m_rpc;
 
   const lexer m_lexer;
+
+  std::unordered_map<std::string, int> m_uri_versions;
 
   static inline item_dialog* m_item_dialog{nullptr};
 };

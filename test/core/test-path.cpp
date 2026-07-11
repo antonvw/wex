@@ -58,6 +58,10 @@ TEST_CASE("wex::path")
     REQUIRE(path.stat().is_ok());
     REQUIRE(!path.is_readonly());
     REQUIRE(path.uri() == "file://" + path.string());
+    REQUIRE(wex::path("/x/y/test").uri() == "file:///x/y/test");
+    REQUIRE(wex::path("/x/y/test test").uri() == "file:///x/y/test%20test");
+    REQUIRE(
+      wex::path("c:/x/y/test test").uri() == "file:///c:/x/y/test%20test");
 
     REQUIRE(
       path.append(wex::path("error")).string().find("error") !=
