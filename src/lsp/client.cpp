@@ -27,13 +27,17 @@ boost::json::object make_object(const wex::path& path, const position_item& p)
   return params;
 }
 
-boost::json::array
-make_content_changes(const range_item& r, const std::string& text)
+boost::json::array make_content_changes(
+  const wex::path&   path,
+  const lsp::client& cl,
+  const range_item&  r,
+  const std::string& text)
 {
   boost::json::object obj;
 
-  obj["range"] = r.json_object();
-  obj["text"]  = text;
+  obj["range"]   = r.json_object();
+  obj["version"] = cl.version(path.uri());
+  obj["text"]    = text;
 
   boost::json::array content_changes{obj};
 
@@ -218,7 +222,7 @@ bool client::did_change(
   boost::json::object params, text_doc;
   text_doc["uri"]          = path.uri();
   params["textDocument"]   = text_doc;
-  params["contentChanges"] = make_content_changes(range, text);
+  params["contentChanges"] = make_content_changes(path, *this, range, text);
 
   log::trace("did_change") << path << "range:" << range << "text:" << text
                            << "version:" << version(path.uri());

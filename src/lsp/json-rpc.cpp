@@ -201,6 +201,8 @@ bool json_rpc::handle_show_message(const json_rpc_message& notification)
     return true;
   }
 
+  delete msg;
+
   return false;
 }
 

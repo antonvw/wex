@@ -54,7 +54,7 @@ void lsp_change(const wxStyledTextEvent& event, wex::stc* stc)
       r.start.line = stc->LineFromPosition(event.GetPosition());
       r.start.character =
         event.GetPosition() - stc->PositionFromLine(r.start.line);
-      r.end.line      = r.start.line + event.GetLinesAdded();
+      r.end.line      = r.start.line;
       r.end.character = r.start.character;
       client->did_change(stc->path(), r, event.GetText());
     }

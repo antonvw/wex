@@ -145,7 +145,8 @@ void set_lsp_show_message(wex::frame* frame, const show_message_item* item)
   }
   else
   {
-    wxInfoBar(frame).ShowMessage(item->message);
+    auto* info = new wxInfoBar(frame);
+    info->ShowMessage(item->message);
   }
 }
 } // namespace wex
