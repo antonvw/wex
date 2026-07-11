@@ -15,7 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
-- use wxWidgets 3.3.3
+- use released wxWidgets 3.3.3
 - ex :e *path* opens file dialog at *path*
 - vcs execute and vcs_entry execute return process return code
 - list comparator is now a combobox
