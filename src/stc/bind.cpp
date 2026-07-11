@@ -585,7 +585,7 @@ void wex::stc::build_popup_menu(menu& menu)
     if (
       const auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
     {
-      if (!lnk.empty())
+      if (sel.empty() && !lnk.empty())
       {
         menu.append({{}, {id::stc::lsp_location, _("Goto File")}});
       }
