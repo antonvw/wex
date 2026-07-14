@@ -13,6 +13,16 @@ namespace wex
 {
 namespace lsp
 {
+void fill_dest(
+  const boost::json::value& val,
+  const std::string&        key,
+  std::string&              dest)
+{
+  if (val.as_object().contains(key))
+  {
+    dest = val.at(key).as_string().c_str();
+  }
+}
 
 bool json_rpc::handle_publish_diagnostics(const json_rpc_message& msg)
 {
@@ -27,9 +37,10 @@ bool json_rpc::handle_publish_diagnostics(const json_rpc_message& msg)
     range_from_json(diag_json.as_object(), diag.range);
     diag.severity =
       static_cast<wex::severity_t>(diag_json.at("severity").as_int64());
-    diag.code    = diag_json.at("code").as_string().c_str();
-    diag.message = diag_json.at("message").as_string().c_str();
-    diag.source  = diag_json.at("source").as_string().c_str();
+
+    fill_dest(diag_json, "code", diag.code);
+    fill_dest(diag_json, "message", diag.message);
+    fill_dest(diag_json, "source", diag.source);
 
     // Store diagnostic
     m_diagnostics.add(uri.data(), diag);
