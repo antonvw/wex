@@ -68,7 +68,7 @@ jobs:
           ', github.ref)
         with:
           build-config: Release
-          tests-regex: co|fa|sy|da|ui|ct|vi|stc
+          tests-regex: co|fa|sy|da|ui|lsp|ct|vi|stc
           verbose: true
 
       - name: Run debug tests
@@ -81,5 +81,5 @@ jobs:
           ', github.ref) == false
         with:
           build-config: Debug
-          tests-regex: co|fa|sy|da|ui|ct|vi|stc|vcs|del
+          tests-regex: co|fa|sy|da|ui|lsp|ct|vi|stc|vcs|del
           verbose: true

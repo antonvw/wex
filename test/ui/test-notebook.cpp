@@ -2,7 +2,7 @@
 // Name:      test-notebook.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/defs.h>
@@ -15,11 +15,11 @@ TEST_CASE("wex::notebook")
   auto* notebook = new wex::notebook();
   frame()->pane_add(notebook);
 
-  auto* page1 = new wxWindow(frame(), wxID_ANY);
-  auto* page2 = new wxWindow(frame(), wxID_ANY);
-  auto* page3 = new wxWindow(frame(), wxID_ANY);
-  auto* page4 = new wxWindow(frame(), wxID_ANY);
-  auto* page5 = new wxWindow(frame(), wxID_ANY);
+  auto* page1 = new wxWindow(notebook, wxID_ANY);
+  auto* page2 = new wxWindow(notebook, wxID_ANY);
+  auto* page3 = new wxWindow(notebook, wxID_ANY);
+  auto* page4 = new wxWindow(notebook, wxID_ANY);
+  auto* page5 = new wxWindow(notebook, wxID_ANY);
 
   REQUIRE(
     notebook->add_page(wex::data::notebook().page(page1).key("key1")) !=
@@ -90,9 +90,11 @@ TEST_CASE("wex::notebook")
   {
     REQUIRE(notebook->DeleteAllPages());
 
-    auto* stc_x = new wex::test::ui_stc();
-    auto* stc_y = new wex::test::ui_stc();
-    auto* stc_z = new wex::test::ui_stc();
+    wex::data::stc data(wex::data::window().parent(notebook));
+
+    auto* stc_x = new wex::test::ui_stc(data);
+    auto* stc_y = new wex::test::ui_stc(data);
+    auto* stc_z = new wex::test::ui_stc(data);
 
     REQUIRE(
       notebook->add_page(wex::data::notebook().page(stc_x).key("key1")) !=
@@ -126,13 +128,13 @@ TEST_CASE("wex::notebook")
   {
     REQUIRE(notebook->DeleteAllPages());
 
-    auto* pagev = new wxWindow(frame(), wxID_ANY);
+    auto* pagev = new wxWindow(notebook, wxID_ANY);
     REQUIRE(
       notebook->add_page(wex::data::notebook().page(pagev).key("keyv")) !=
       nullptr);
     // split having only one page
     REQUIRE(notebook->split("keyv", wxRIGHT));
-    auto* pagew = new wxWindow(frame(), wxID_ANY);
+    auto* pagew = new wxWindow(notebook, wxID_ANY);
     REQUIRE(
       notebook->add_page(wex::data::notebook().page(pagew).key("keyw")) !=
       nullptr);
