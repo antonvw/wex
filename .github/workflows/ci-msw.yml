@@ -30,7 +30,8 @@ jobs:
           toolset: msvc
 
       - name: Install llvm
-        script: |
+        shell: pwsh
+        run: >-
           choco install llvm -y
 
       - name: Add msbuild
