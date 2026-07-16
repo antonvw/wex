@@ -29,6 +29,10 @@ jobs:
           platform_version: 2025
           toolset: msvc
 
+      - name: Install llvm
+        script: |
+          choco install llvm -y
+
       - name: Add msbuild
         uses: microsoft/setup-msbuild@v3
 

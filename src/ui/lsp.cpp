@@ -13,6 +13,20 @@
 
 namespace wex
 {
+bool json_to_string(
+  const boost::json::value& val,
+  const std::string&        key,
+  std::string&              dest)
+{
+  if (val.is_object() && val.as_object().contains(key))
+  {
+    dest = val.at(key).as_string().c_str();
+    return true;
+  }
+
+  return false;
+}
+
 bool range_from_json(const boost::json::object& obj, range_item& range)
 {
   auto ro = obj.at("range");
@@ -27,9 +41,8 @@ bool range_from_json(const boost::json::object& obj, range_item& range)
 
 completion_item_element::completion_item_element(const boost::json::object& obj)
 {
-  if (obj.contains("label"))
+  if (json_to_string(obj, "label", label))
   {
-    label = obj.at("label").as_string().data();
     boost::algorithm::trim(label);
   }
 
@@ -38,10 +51,7 @@ completion_item_element::completion_item_element(const boost::json::object& obj)
     kind = obj.at("kind").as_int64();
   }
 
-  if (obj.contains("detail"))
-  {
-    detail = obj.at("detail").as_string().data();
-  }
+  json_to_string(obj, "detail", detail);
 
   if (obj.contains("documentation"))
   {
@@ -113,10 +123,7 @@ show_message_item::show_message_item(
   : type(show_message_item::INFO)
   , is_show(is_show_item)
 {
-  if (obj.contains("message"))
-  {
-    message = obj.at("message").as_string().data();
-  }
+  json_to_string(obj, "message", message);
 
   if (obj.contains("type"))
   {
