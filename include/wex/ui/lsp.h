@@ -147,6 +147,12 @@ struct show_message_item
   const bool  is_show{true};
 };
 
+/// Convert a json value to a string.
+bool json_to_string(
+  const boost::json::value& val,
+  const std::string&        key,
+  std::string&              dest);
+
 /// Convert a json range object to a range item.
 bool range_from_json(const boost::json::object& obj, range_item& range);
 
