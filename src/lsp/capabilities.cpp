@@ -8,6 +8,8 @@
 #include <wex/core/log.h>
 #include <wex/lsp/capabilities.h>
 
+#include <iostream>
+
 namespace wex
 {
 namespace lsp
@@ -19,6 +21,7 @@ capabilities::capabilities()
     // must match the capabilities_t
     m_support_info.emplace_back("completion");
     m_support_info.emplace_back("definition");
+    m_support_info.emplace_back("formatting");
     m_support_info.emplace_back("hover");
   }
 }
@@ -102,18 +105,29 @@ std::stringstream capabilities::log() const
     ss << inf << ": " << m_support.test(cap++) << " ";
   }
 
-  ss << "trigger completion characters: ";
-
-  for (const auto& tc : m_trigger_completion_characters)
+  if (!m_trigger_completion_characters.empty())
   {
-    ss << "'" << tc << "' ";
+    ss << "trigger completion characters: ";
+
+    for (const auto& tc : m_trigger_completion_characters)
+    {
+      ss << "'" << tc << "' ";
+    }
   }
 
-  ss << "trigger signature characters: ";
-
-  for (const auto& tc : m_trigger_signature_characters)
+  if (!m_trigger_signature_characters.empty())
   {
-    ss << "'" << tc << "' ";
+    ss << "trigger signature characters: ";
+
+    for (const auto& tc : m_trigger_signature_characters)
+    {
+      ss << "'" << tc << "' ";
+    }
+  }
+
+  if (!m_first_trigger_character.empty())
+  {
+    ss << "first_trigger_character: " << m_first_trigger_character;
   }
 
   return ss;
@@ -130,9 +144,8 @@ bool capabilities::set(const boost::json::object& obj)
     m_support.set(CAP_COMPLETION);
 
     const auto& cp = it->as_object();
-    auto        tc = cp.if_contains("triggerCharacters");
 
-    if (tc && tc->is_array())
+    if (auto tc = cp.if_contains("triggerCharacters"); tc && tc->is_array())
     {
       for (const auto& v : tc->as_array())
       {
@@ -152,6 +165,19 @@ bool capabilities::set(const boost::json::object& obj)
   if (obj.contains("hoverProvider"))
   {
     m_support.set(CAP_HOVER);
+  }
+
+  if (obj.contains("documentOnTypeFormattingProvider"))
+  {
+    m_support.set(CAP_FORMATTING);
+
+    if (
+      auto it = obj.at("documentOnTypeFormattingProvider");
+      it.as_object().contains("firstTriggerCharacter"))
+    {
+      m_first_trigger_character =
+        it.as_object().at("firstTriggerCharacter").as_string();
+    }
   }
 
   return true;

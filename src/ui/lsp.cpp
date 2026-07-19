@@ -8,7 +8,6 @@
 
 #include <boost/algorithm/string.hpp>
 
-#include <wex/core/log.h>
 #include <wex/ui/lsp.h>
 
 namespace wex
@@ -16,19 +15,25 @@ namespace wex
 bool json_to_string(
   const boost::json::value& val,
   const std::string&        key,
-  std::string&              dest)
+  std::string&              text)
 {
-  if (val.is_object() && val.as_object().contains(key))
+  if (!val.is_object() || !val.as_object().contains(key))
   {
-    dest = val.at(key).as_string().c_str();
-    return true;
+    return false;
   }
 
-  return false;
+  text = val.at(key).as_string().c_str();
+
+  return true;
 }
 
 bool range_from_json(const boost::json::object& obj, range_item& range)
 {
+  if (!obj.contains("range"))
+  {
+    return false;
+  }
+
   auto ro = obj.at("range");
 
   range.start.line      = ro.at("start").at("line").as_int64();
@@ -65,6 +70,31 @@ definition_or_implementation_item::definition_or_implementation_item(
 {
   range_from_json(obj, range);
   uri = obj.at("uri").as_string().data();
+}
+
+diagnostic_item::diagnostic_item(const boost::json::object& obj)
+{
+  range_from_json(obj, range);
+  severity = static_cast<wex::severity_t>(obj.at("severity").as_int64());
+
+  json_to_string(obj, "code", code);
+  json_to_string(obj, "message", message);
+  json_to_string(obj, "source", source);
+}
+
+hover_item::hover_item(const boost::json::object& obj)
+{
+  const auto con(obj.at("contents"));
+  const auto val(con.at("value").as_string());
+
+  contents = boost::json::serialize(val);
+  json_to_string(con, "kind", kind);
+}
+
+on_type_formatting_item::on_type_formatting_item(const boost::json::object& obj)
+{
+  range_from_json(obj, range);
+  json_to_string(obj, "newText", new_text);
 }
 
 position_item::position_item(int l, int c)

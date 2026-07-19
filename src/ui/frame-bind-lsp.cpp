@@ -118,6 +118,21 @@ void set_lsp_hover(syntax::stc* stc, const hover_t* hover)
     text);
 }
 
+void set_lsp_on_type(syntax::stc* stc, const on_type_formatting_item_t* items)
+{
+  for (const auto& item : *items)
+  {
+    stc->SetTargetStart(
+      stc->PositionFromLine(item.range.start.line) +
+      item.range.start.character);
+    stc->SetTargetEnd(
+      stc->PositionFromLine(item.range.end.line) + item.range.end.character);
+    stc->ReplaceTarget(item.new_text);
+    stc->SetCurrentPos(stc->GetCurrentPos() + item.new_text.size());
+    stc->SelectNone();
+  }
+}
+
 void set_lsp_show_message(wex::frame* frame, const show_message_item* item)
 {
   if (!item->is_show)
@@ -199,6 +214,22 @@ void wex::frame::bind_lsp()
         delete diagnostics;
       },
       ID_LSP_DIAGNOSTICS},
+
+     {[=, this](const wxCommandEvent& event)
+      {
+        data::stc data;
+        data.allow_change_page(false);
+
+        if (
+          auto* stc = open_file(make_path_skip_uri(event.GetString()), data);
+          stc != nullptr)
+        {
+          auto* on_type = (on_type_formatting_item_t*)event.GetClientData();
+          set_lsp_on_type(dynamic_cast<syntax::stc*>(stc), on_type);
+          delete on_type;
+        }
+      },
+      ID_LSP_FORMAT},
 
      {[=, this](const wxCommandEvent& event)
       {

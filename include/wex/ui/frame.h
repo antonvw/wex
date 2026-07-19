@@ -152,6 +152,12 @@ public:
     return std::string();
   }
 
+  /// Returns lsp trigger format character.
+  virtual bool lsp_clients_trigger_format(wex::lsp::client*, char c)
+  {
+    return false;
+  }
+
   /// Called if the notebook changed page.
   virtual void on_notebook(wxWindowID id, wxWindow* page) { ; }
 

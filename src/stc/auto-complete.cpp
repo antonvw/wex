@@ -196,6 +196,20 @@ bool wex::auto_complete::on_char(char c)
     auto* lsp_client = m_stc->get_frame()->lsp_clients_find(m_stc->path());
     lsp_client != nullptr)
   {
+    if (
+      m_stc->get_frame()->lsp_clients_trigger_format(
+        lsp_client,
+        c == '\r' ? '\n' : c))
+    {
+      lsp_client->on_type_formatting(
+        m_stc->path(),
+        position_item(m_stc),
+        c == '\r' ? '\n' : c,
+        m_stc->GetUseTabs(),
+        m_stc->GetTabWidth());
+      return false;
+    }
+
     lsp_client->completion(
       m_stc->path(),
       position_item(m_stc),

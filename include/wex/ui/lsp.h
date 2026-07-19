@@ -101,6 +101,13 @@ struct definition_or_implementation_item
 /// Represents a single diagnostic item(error, warning, etc.).
 struct diagnostic_item
 {
+  /// Default contrusctor.
+  diagnostic_item() { ; };
+
+  /// Constructor from a JSON object,
+  /// as received from the language server.
+  diagnostic_item(const boost::json::object& obj);
+
   range_item range;
 
   /// Severity of the diagnostic
@@ -119,10 +126,28 @@ struct diagnostic_item
 /// Represents hover information.
 struct hover_item
 {
+  /// Constructor from a JSON object,
+  /// as received from the language server.
+  hover_item(const boost::json::object& obj);
+
   position_item pos;
 
   /// Contents of the hover information
   std::string contents;
+
+  /// Kind of the hover information, like markdown.
+  std::string kind;
+};
+
+struct on_type_formatting_item
+{
+  /// Constructor from a JSON object,
+  /// as received from the language server.
+  on_type_formatting_item(const boost::json::object& obj);
+
+  std::string new_text;
+
+  range_item range;
 };
 
 /// Represents a show or a log message item.
@@ -147,14 +172,23 @@ struct show_message_item
   const bool  is_show{true};
 };
 
-/// Convert a json value to a string.
+/// Convert a json value that has a key with a string value to a string.
+/// Returns true if value can be converted.
 bool json_to_string(
+  /// the value
   const boost::json::value& val,
-  const std::string&        key,
-  std::string&              dest);
+  /// the key
+  const std::string& key,
+  /// the text containing conversion
+  std::string& text);
 
 /// Convert a json range object to a range item.
-bool range_from_json(const boost::json::object& obj, range_item& range);
+/// Returns true if value can be converted.
+bool range_from_json(
+  /// the value
+  const boost::json::object& obj,
+  /// the range containing conversion
+  range_item& range);
 
 /// Type alias for collections of completions returned by the language server.
 using completions_t = completion_item;
@@ -169,4 +203,7 @@ using diagnostics_t = std::vector<diagnostic_item>;
 
 /// Type alias for a hover item returned by the language server.
 using hover_t = struct hover_item;
+
+/// Type alias for on type format.
+using on_type_formatting_item_t = std::vector<on_type_formatting_item>;
 } // namespace wex

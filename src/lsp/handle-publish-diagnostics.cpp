@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      json-diagnostics.h
+// Name:      handle-publish-diagnostics.h
 // Purpose:   protocol handler for diagnostics notifications
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2026 Anton van Wezenbeek
@@ -22,14 +22,7 @@ bool json_rpc::handle_publish_diagnostics(const json_rpc_message& msg)
 
   for (const auto& diag_json : diags_array)
   {
-    wex::diagnostic_item diag;
-    range_from_json(diag_json.as_object(), diag.range);
-    diag.severity =
-      static_cast<wex::severity_t>(diag_json.at("severity").as_int64());
-
-    json_to_string(diag_json, "code", diag.code);
-    json_to_string(diag_json, "message", diag.message);
-    json_to_string(diag_json, "source", diag.source);
+    const wex::diagnostic_item diag(diag_json.as_object());
 
     // Store diagnostic
     m_diagnostics.add(uri.data(), diag);
