@@ -11,6 +11,30 @@
 
 #include "lsp-ui.h"
 
+#define LSP_HANDLE(TYPE, FUNCTION)                                             \
+  {[=, this](const wxCommandEvent& event)                                      \
+   {                                                                           \
+     if (auto* item = (TYPE*)event.GetClientData(); item != nullptr)           \
+     {                                                                         \
+       FUNCTION(this, item);                                                   \
+     }                                                                         \
+   }}
+
+#define LSP_HANDLE_OPEN(TYPE, FUNCTION)                                        \
+  [=, this](const wxCommandEvent& event)                                       \
+  {                                                                            \
+    data::stc data;                                                            \
+    data.allow_change_page(false);                                             \
+    if (                                                                       \
+      auto* stc = open_file(make_path_skip_uri(event.GetString()), data);      \
+      stc != nullptr)                                                          \
+    {                                                                          \
+      auto* item = (TYPE*)event.GetClientData();                               \
+      FUNCTION(dynamic_cast<syntax::stc*>(stc), item);                         \
+      delete item;                                                             \
+    }                                                                          \
+  }
+
 void wex::frame::bind_lsp()
 {
   bind(this).command(
@@ -22,25 +46,16 @@ void wex::frame::bind_lsp()
           auto* stc = open_file(make_path_skip_uri(event.GetString()));
           stc != nullptr)
         {
-          set_lsp_completions(
-            dynamic_cast<syntax::stc*>(stc),
-            item,
-            this);
+          set_lsp_completions(dynamic_cast<syntax::stc*>(stc), item, this);
         }
 
         delete item;
       },
       ID_LSP_CODE_COMPLETION},
 
-     {[=, this](const wxCommandEvent& event)
-      {
-        if (
-          auto* item = (definition_or_implementation_t*)event.GetClientData();
-          item != nullptr)
-        {
-          set_lsp_definition_or_implementation(this, item);
-        }
-      },
+     {LSP_HANDLE(
+        definition_or_implementation_t,
+        set_lsp_definition_or_implementation),
       ID_LSP_DEFINITION},
 
      {[=, this](const wxCommandEvent& event)
@@ -59,47 +74,14 @@ void wex::frame::bind_lsp()
       },
       ID_LSP_DIAGNOSTICS},
 
-     {[=, this](const wxCommandEvent& event)
-      {
-        data::stc data;
-        data.allow_change_page(false);
-
-        if (
-          auto* stc = open_file(make_path_skip_uri(event.GetString()), data);
-          stc != nullptr)
-        {
-          auto* item = (on_type_formatting_item_t*)event.GetClientData();
-          set_lsp_on_type(dynamic_cast<syntax::stc*>(stc), item);
-          delete item;
-        }
-      },
+     {LSP_HANDLE_OPEN(on_type_formatting_item_t, set_lsp_on_type),
       ID_LSP_FORMAT},
 
-     {[=, this](const wxCommandEvent& event)
-      {
-        data::stc data;
-        data.allow_change_page(false);
+     {LSP_HANDLE_OPEN(hover_t, set_lsp_hover), ID_LSP_HOVER},
 
-        if (
-          auto* stc = open_file(make_path_skip_uri(event.GetString()), data);
-          stc != nullptr)
-        {
-          auto* item = (hover_t*)event.GetClientData();
-          set_lsp_hover(dynamic_cast<syntax::stc*>(stc), item);
-          delete item;
-        }
-      },
-      ID_LSP_HOVER},
-
-     {[=, this](const wxCommandEvent& event)
-      {
-        if (
-          auto* item = (definition_or_implementation_t*)event.GetClientData();
-          item != nullptr)
-        {
-          set_lsp_definition_or_implementation(this, item);
-        }
-      },
+     {LSP_HANDLE(
+        definition_or_implementation_t,
+        set_lsp_definition_or_implementation),
       ID_LSP_IMPLEMENTATION},
 
      {[=, this](const wxCommandEvent& event)

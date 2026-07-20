@@ -5,6 +5,7 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include <boost/url.hpp>
 #include <wex/core/core.h>
@@ -117,15 +118,21 @@ void set_lsp_hover(syntax::stc* stc, const hover_t* hover)
 
 void set_lsp_on_type(syntax::stc* stc, const on_type_formatting_item_t* items)
 {
-  // the items should first be sorted, because the language server 
-  //may return them in any order
-  std::vector<on_type_formatting_item_t> sorted_items(items->begin(), items->end());
-  std::sort(sorted_items.begin(), sorted_items.end(), [](const auto& a, const auto& b) {
-    return a.range.start.line < b.range.start.line;
-  });
+  // the items should first be sorted, because the language server
+  // may return them in any order
+  on_type_formatting_item_t sorted_items(items->begin(), items->end());
 
-  // apply the sorted items to the stc, and in reverse order to avoid messing 
-  // up the positions of the remaining items 
+  std::ranges::sort(
+    sorted_items,
+    [](const auto& a, const auto& b)
+    {
+      return a.range.start.line < b.range.start.line;
+    });
+
+  int last_pos = 0;
+
+  // apply the sorted items to the stc, and in reverse order to avoid messing
+  // up the positions of the remaining items
   for (auto it = sorted_items.rbegin(); it != sorted_items.rend(); ++it)
   {
     const auto& item = *it;
@@ -135,9 +142,13 @@ void set_lsp_on_type(syntax::stc* stc, const on_type_formatting_item_t* items)
     stc->SetTargetEnd(
       stc->PositionFromLine(item.range.end.line) + item.range.end.character);
     stc->ReplaceTarget(item.new_text);
-    stc->SetCurrentPos(stc->GetCurrentPos() + item.new_text.size());
-    stc->SelectNone();
+
+    last_pos =
+      std::max(stc->GetCurrentPos() + (int)item.new_text.size(), last_pos);
   }
+
+  stc->SetCurrentPos(last_pos);
+  stc->SelectNone();
 }
 
 void set_lsp_show_message(wxWindow* parent, const show_message_item* item)
