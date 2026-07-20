@@ -30,8 +30,7 @@ enum class severity_t
 /// - Each class used in a request will have a json_object() function to convert
 ///   it to a JSON object for communication with the language server.
 /// - Each class used in a response will have a constructor that takes a JSON
-/// object
-///   to initialize the class from the server's response.
+///   object to initialize the class from the server's response.
 
 /// Represents a position in a document, including line and character offsets.
 struct position_item
@@ -139,6 +138,8 @@ struct hover_item
   std::string kind;
 };
 
+/// Represents an on-type formatting item, which specifies text changes to 
+/// be applied when a specific character is typed.
 struct on_type_formatting_item
 {
   /// Constructor from a JSON object,

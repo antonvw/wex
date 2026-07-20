@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      frame-bind-lsp.cpp
-// Purpose:   Implementation of frame::bind_lsp.
+// Name:      lsp-ui.cpp
+// Purpose:   Implementation of ui lsp methods.
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -9,13 +9,10 @@
 #include <boost/url.hpp>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
-#include <wex/factory/bind.h>
 #include <wex/syntax/indicator.h>
-#include <wex/syntax/stc.h>
-#include <wex/ui/defs.h>
-#include <wex/ui/frame.h>
-#include <wex/ui/lsp.h>
 #include <wx/infobar.h>
+
+#include "lsp-ui.h"
 
 namespace wex
 {
@@ -120,8 +117,18 @@ void set_lsp_hover(syntax::stc* stc, const hover_t* hover)
 
 void set_lsp_on_type(syntax::stc* stc, const on_type_formatting_item_t* items)
 {
-  for (const auto& item : *items)
+  // the items should first be sorted, because the language server 
+  //may return them in any order
+  std::vector<on_type_formatting_item_t> sorted_items(items->begin(), items->end());
+  std::sort(sorted_items.begin(), sorted_items.end(), [](const auto& a, const auto& b) {
+    return a.range.start.line < b.range.start.line;
+  });
+
+  // apply the sorted items to the stc, and in reverse order to avoid messing 
+  // up the positions of the remaining items 
+  for (auto it = sorted_items.rbegin(); it != sorted_items.rend(); ++it)
   {
+    const auto& item = *it;
     stc->SetTargetStart(
       stc->PositionFromLine(item.range.start.line) +
       item.range.start.character);
@@ -133,7 +140,7 @@ void set_lsp_on_type(syntax::stc* stc, const on_type_formatting_item_t* items)
   }
 }
 
-void set_lsp_show_message(wex::frame* frame, const show_message_item* item)
+void set_lsp_show_message(wxWindow* parent, const show_message_item* item)
 {
   if (!item->is_show)
   {
@@ -160,114 +167,8 @@ void set_lsp_show_message(wex::frame* frame, const show_message_item* item)
   }
   else
   {
-    auto* info = new wxInfoBar(frame);
+    auto* info = new wxInfoBar(parent);
     info->ShowMessage(item->message);
   }
 }
 } // namespace wex
-
-void wex::frame::bind_lsp()
-{
-  bind(this).command(
-    {{[=, this](const wxCommandEvent& event)
-      {
-        auto* completions = (completions_t*)event.GetClientData();
-
-        if (
-          auto* stc = open_file(make_path_skip_uri(event.GetString()));
-          stc != nullptr)
-        {
-          set_lsp_completions(
-            dynamic_cast<syntax::stc*>(stc),
-            completions,
-            this);
-        }
-
-        delete completions;
-      },
-      ID_LSP_CODE_COMPLETION},
-
-     {[=, this](const wxCommandEvent& event)
-      {
-        if (
-          auto* definition =
-            (definition_or_implementation_t*)event.GetClientData();
-          definition != nullptr)
-        {
-          set_lsp_definition_or_implementation(this, definition);
-        }
-      },
-      ID_LSP_DEFINITION},
-
-     {[=, this](const wxCommandEvent& event)
-      {
-        auto* diagnostics = (diagnostics_t*)event.GetClientData();
-
-        if (const path cur(make_path_skip_uri(event.GetString())); is_open(cur))
-        {
-          if (auto* stc = open_file(cur); stc != nullptr)
-          {
-            set_lsp_diagnostics(dynamic_cast<syntax::stc*>(stc), diagnostics);
-          }
-        }
-
-        delete diagnostics;
-      },
-      ID_LSP_DIAGNOSTICS},
-
-     {[=, this](const wxCommandEvent& event)
-      {
-        data::stc data;
-        data.allow_change_page(false);
-
-        if (
-          auto* stc = open_file(make_path_skip_uri(event.GetString()), data);
-          stc != nullptr)
-        {
-          auto* on_type = (on_type_formatting_item_t*)event.GetClientData();
-          set_lsp_on_type(dynamic_cast<syntax::stc*>(stc), on_type);
-          delete on_type;
-        }
-      },
-      ID_LSP_FORMAT},
-
-     {[=, this](const wxCommandEvent& event)
-      {
-        data::stc data;
-        data.allow_change_page(false);
-
-        if (
-          auto* stc = open_file(make_path_skip_uri(event.GetString()), data);
-          stc != nullptr)
-        {
-          auto* hover = (hover_t*)event.GetClientData();
-          set_lsp_hover(dynamic_cast<syntax::stc*>(stc), hover);
-          delete hover;
-        }
-      },
-      ID_LSP_HOVER},
-
-     {[=, this](const wxCommandEvent& event)
-      {
-        if (
-          auto* definition =
-            (definition_or_implementation_t*)event.GetClientData();
-          definition != nullptr)
-        {
-          set_lsp_definition_or_implementation(this, definition);
-        }
-      },
-      ID_LSP_IMPLEMENTATION},
-
-     {[=, this](const wxCommandEvent& event)
-      {
-        if (
-          auto* item = (show_message_item*)event.GetClientData();
-          item != nullptr)
-        {
-          set_lsp_show_message(this, item);
-          delete item;
-        }
-      },
-      ID_LSP_SHOW_MESSAGE}});
-}
