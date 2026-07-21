@@ -63,7 +63,8 @@ struct range_item
   /// Logs info about this class.
   std::stringstream log() const;
 
-  /// Sets the target range in the given wxStyledTextCtrl based on this range_item.
+  /// Sets the target range in the given wxStyledTextCtrl based on this
+  /// range_item.
   void set_target(wxStyledTextCtrl* stc) const
   {
     stc->SetTargetStart(start.to_pos(stc));
@@ -148,13 +149,16 @@ struct hover_item
   std::string kind;
 };
 
-/// Represents an on-type formatting item, which specifies text changes to 
+/// Represents an on-type formatting item, which specifies text changes to
 /// be applied when a specific character is typed.
 struct on_type_formatting_item
 {
   /// Constructor from a JSON object,
   /// as received from the language server.
   on_type_formatting_item(const boost::json::object& obj);
+
+  /// Logs info about this class.
+  std::stringstream log() const;
 
   /// Replaces the range in the given wxStyledTextCtrl with the new text
   /// specified in this item.

@@ -122,18 +122,21 @@ TEST_CASE("wex::lsp")
     const auto obj(string_to_json("{\
       \"range\": {\
         \"start\": { \"line\": 0, \"character\": 10 },\
-        \"end\": { \"line\": 0, \"character\": 13 }\
+        \"end\": { \"line\": 0, \"character\": 14 }\
       },\
       \"newText\": \"formatted\"\
       }"));
 
-    stc->set_text("This is a test string for on-type formatting.");
+    stc->set_text("This is a test string for on-type formatting");
 
     wex::on_type_formatting_item item(obj);
     CAPTURE(item.new_text);
+    REQUIRE(item.range.start.to_pos(stc) == 10);
+    REQUIRE(item.range.end.to_pos(stc) == 14);
     REQUIRE(item.new_text == "formatted");
     item.replace_target(stc);
-    REQUIRE(stc->GetText() == "This is a formatted string for on-type formatting
+    REQUIRE(
+      stc->GetText() == "This is a formatted string for on-type formatting");
   }
 
   SECTION("show_message_item")

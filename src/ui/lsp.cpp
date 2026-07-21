@@ -97,6 +97,15 @@ on_type_formatting_item::on_type_formatting_item(const boost::json::object& obj)
   json_to_string(obj, "newText", new_text);
 }
 
+std::stringstream on_type_formatting_item::log() const
+{
+  std::stringstream ss;
+
+  ss << "new_text: " << new_text << range.log().str();
+
+  return ss;
+}
+
 position_item::position_item(int l, int c)
   : line(l)
   , character(c)

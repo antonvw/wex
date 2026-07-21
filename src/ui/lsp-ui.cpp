@@ -6,6 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <ranges>
+
 #include <boost/algorithm/string.hpp>
 #include <boost/url.hpp>
 #include <wex/core/core.h>
@@ -133,6 +135,7 @@ void set_lsp_on_type(syntax::stc* stc, const on_type_formatting_item_t* items)
   // up the positions of the remaining items
   for (const auto& item : sorted_items | std::views::reverse)
   {
+    log::trace("set_lsp_on_type") << item.log();
     item.replace_target(stc);
     last_pos =
       std::max(stc->GetCurrentPos() + (int)item.new_text.size(), last_pos);
