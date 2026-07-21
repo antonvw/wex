@@ -128,6 +128,11 @@ std::stringstream position_item::log() const
   return ss;
 }
 
+int position_item::to_pos(wxStyledTextCtrl* stc) const
+{
+  return stc->PositionFromLine(line) + character;
+}
+
 boost::json::object range_item::json_object() const
 {
   boost::json::object obj;

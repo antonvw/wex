@@ -38,7 +38,7 @@ struct position_item
   /// Default constructor.
   position_item(int l = 0, int c = 0);
 
-  /// Constructs a position_item from a wxStyledTextCtrl.
+  /// Constructs a position_item from current position on a wxStyledTextCtrl.
   position_item(wxStyledTextCtrl* stc);
 
   /// Returns a JSON object representation of the position_item.
@@ -46,6 +46,9 @@ struct position_item
 
   /// Logs info about this class.
   std::stringstream log() const;
+
+  /// Converts the position to a text position in the given control.
+  int to_pos(wxStyledTextCtrl* stc) const;
 
   int line{0};      // Line position in a document (0-based)
   int character{0}; // Character offset on a line in a document (0-based)
@@ -59,6 +62,13 @@ struct range_item
 
   /// Logs info about this class.
   std::stringstream log() const;
+
+  /// Sets the target range in the given wxStyledTextCtrl based on this range_item.
+  void set_target(wxStyledTextCtrl* stc) const
+  {
+    stc->SetTargetStart(start.to_pos(stc));
+    stc->SetTargetEnd(end.to_pos(stc));
+  }
 
   position_item start, end;
 };
@@ -145,6 +155,14 @@ struct on_type_formatting_item
   /// Constructor from a JSON object,
   /// as received from the language server.
   on_type_formatting_item(const boost::json::object& obj);
+
+  /// Replaces the range in the given wxStyledTextCtrl with the new text
+  /// specified in this item.
+  void replace_target(wxStyledTextCtrl* stc) const
+  {
+    range.set_target(stc);
+    stc->ReplaceTarget(new_text);
+  }
 
   std::string new_text;
 

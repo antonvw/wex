@@ -111,9 +111,7 @@ void set_lsp_hover(syntax::stc* stc, const hover_t* hover)
     stc->CallTipCancel();
   }
 
-  stc->CallTipShow(
-    stc->PositionFromLine(hover->pos.line) + hover->pos.character,
-    text);
+  stc->CallTipShow(hover->pos.to_pos(stc), text);
 }
 
 void set_lsp_on_type(syntax::stc* stc, const on_type_formatting_item_t* items)
@@ -129,26 +127,22 @@ void set_lsp_on_type(syntax::stc* stc, const on_type_formatting_item_t* items)
       return a.range.start.line < b.range.start.line;
     });
 
-  int last_pos = 0;
+  int last_pos = wxSTC_INVALID_POSITION;
 
   // apply the sorted items to the stc, and in reverse order to avoid messing
   // up the positions of the remaining items
-  for (auto it = sorted_items.rbegin(); it != sorted_items.rend(); ++it)
+  for (const auto& item : sorted_items | std::views::reverse)
   {
-    const auto& item = *it;
-    stc->SetTargetStart(
-      stc->PositionFromLine(item.range.start.line) +
-      item.range.start.character);
-    stc->SetTargetEnd(
-      stc->PositionFromLine(item.range.end.line) + item.range.end.character);
-    stc->ReplaceTarget(item.new_text);
-
+    item.replace_target(stc);
     last_pos =
       std::max(stc->GetCurrentPos() + (int)item.new_text.size(), last_pos);
   }
 
-  stc->SetCurrentPos(last_pos);
-  stc->SelectNone();
+  if (last_pos != wxSTC_INVALID_POSITION)
+  {
+    stc->SetCurrentPos(last_pos);
+    stc->SelectNone();
+  }
 }
 
 void set_lsp_show_message(wxWindow* parent, const show_message_item* item)

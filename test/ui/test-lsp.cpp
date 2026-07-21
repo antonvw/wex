@@ -8,6 +8,8 @@
 #include <wex/test/test.h>
 #include <wex/ui/lsp.h>
 
+#include "test.h"
+
 boost::json::object string_to_json(const std::string& text)
 {
   auto parsed = boost::json::parse(text);
@@ -16,11 +18,14 @@ boost::json::object string_to_json(const std::string& text)
 
 TEST_CASE("wex::lsp")
 {
+  auto* stc = new wex::test::ui_stc();
+
   SECTION("position_item")
   {
     wex::position_item item;
     REQUIRE(item.line == 0);
     REQUIRE(item.character == 0);
+    REQUIRE(item.to_pos(stc) == 0);
   }
 
   SECTION("range_item")
@@ -30,6 +35,10 @@ TEST_CASE("wex::lsp")
     REQUIRE(item.start.character == 0);
     REQUIRE(item.end.line == 0);
     REQUIRE(item.end.character == 0);
+
+    item.set_target(stc);
+    REQUIRE(stc->GetTargetStart() == 0);
+    REQUIRE(stc->GetTargetEnd() == 0);
   }
 
   SECTION("completion_item_element")
@@ -112,15 +121,19 @@ TEST_CASE("wex::lsp")
   {
     const auto obj(string_to_json("{\
       \"range\": {\
-        \"start\": { \"line\": 20, \"character\": 10 },\
-        \"end\": { \"line\": 20, \"character\": 14 }\
+        \"start\": { \"line\": 0, \"character\": 10 },\
+        \"end\": { \"line\": 0, \"character\": 13 }\
       },\
       \"newText\": \"formatted\"\
       }"));
 
+    stc->set_text("This is a test string for on-type formatting.");
+
     wex::on_type_formatting_item item(obj);
     CAPTURE(item.new_text);
     REQUIRE(item.new_text == "formatted");
+    item.replace_target(stc);
+    REQUIRE(stc->GetText() == "This is a formatted string for on-type formatting
   }
 
   SECTION("show_message_item")
