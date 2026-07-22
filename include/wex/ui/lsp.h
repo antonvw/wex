@@ -57,6 +57,11 @@ struct position_item
 /// Represents a range in a document, defined by two positions.
 struct range_item
 {
+  /// Default constructor.
+  range_item(
+    const position_item& strt = position_item(),
+    const position_item& end = position_item());
+
   /// Returns a JSON object representation of the range_item.
   boost::json::object json_object() const;
 
@@ -99,6 +104,10 @@ struct completion_item
 /// Represents a definition or implementation item.
 struct definition_or_implementation_item
 {
+  /// Default constructor, taking a URI and a range.
+  definition_or_implementation_item(
+    const std::string& u = std::string(), const range_item& r = range_item());
+
   /// Constructor from a JSON object,
   /// as received from the language server.
   definition_or_implementation_item(const boost::json::object& obj);
@@ -111,8 +120,9 @@ struct definition_or_implementation_item
 /// Represents a single diagnostic item(error, warning, etc.).
 struct diagnostic_item
 {
-  /// Default contrusctor.
-  diagnostic_item() { ; };
+  /// Default constructor, taking a range, and a message.
+  diagnostic_item(const range_item& r, const std::string& msg)
+    : range(r), message(msg) { ; };
 
   /// Constructor from a JSON object,
   /// as received from the language server.
@@ -136,6 +146,12 @@ struct diagnostic_item
 /// Represents hover information.
 struct hover_item
 {
+  /// Default constructor, taking a position and contents.
+  hover_item(
+    const position_item& p = position_item(),
+    const std::string& c = std::string())
+    : pos(p), contents(c) { ; };
+
   /// Constructor from a JSON object,
   /// as received from the language server.
   hover_item(const boost::json::object& obj);
@@ -153,6 +169,12 @@ struct hover_item
 /// be applied when a specific character is typed.
 struct on_type_formatting_item
 {
+  /// Default constructor, taking a range and new_text.
+  on_type_formatting_item(
+    range_item rnge = range_item(),
+    std::string nw_text = std::string())
+    : range(rnge), new_text(nw_text) { ; };
+
   /// Constructor from a JSON object,
   /// as received from the language server.
   on_type_formatting_item(const boost::json::object& obj);
@@ -185,6 +207,13 @@ struct show_message_item
     LOG,
     DEBUG // @since 3.18.0
   };
+
+  /// Default constructor, taking a message type and a message string.
+  show_message_item(
+    const std::string& msg = std::string(),
+    message_t t = message_t::INFO,
+    bool is_show_item = true)
+    : type(t), message(msg), is_show(is_show_item) { ; };
 
   /// Constructor from a JSON object,
   /// as received from the language server.

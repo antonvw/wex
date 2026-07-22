@@ -24,61 +24,65 @@ TEST_CASE("wex::lsp-ui")
 
   SECTION("set_lsp_completions")
   {
+    wex::completions_t items;
+
     wex::completion_item_element item;
     item.label = "label";
     item.kind = 1;
     item.detail = "detail";
     item.documentation = "documentation";
 
-    wex::set_lsp_completions(stc, &item, frame());
+    items.push_back(item);
+
+    wex::set_lsp_completions(stc, &items, frame());
   } 
 
   SECTION("set_lsp_definition_or_implementation")
   {
-    wex::definition_or_implementation_item item;
-    item.uri = "file:///project/src/utils.ts";
-    item.range.start.line = 10;
-    item.range.start.character = 2;
-    item.range.end.line = 11;
-    item.range.end.character = 5;
+    wex::definition_or_implementation_t items;
 
-    wex::set_lsp_definition_or_implementation(frame(), &item);
+    wex::definition_or_implementation_item item(
+      "file:///project/src/utils.ts",
+      wex::range_item(wex::position_item(10, 2), wex::position_item(11, 5)));
+    items.push_back(item);
+
+    wex::set_lsp_definition_or_implementation(frame(), &items);
   }
   
   SECTION("set_lsp_diagnostics")
   {
-    wex::diagnostic_item item;
-    item.range.start.line = 10;
-    item.range.start.character = 2;
-    item.range.end.line = 11;
-    item.range.end.character = 5;
+    wex::diagnostics_t diagnostics;
 
-    wex::set_lsp_diagnostics(stc, &item);
+    diagnostics.push_back(wex::diagnostic_item(
+      wex::range_item(wex::position_item(10, 2), wex::position_item(11, 5)),
+      "Test diagnostic message"));
+
+    wex::set_lsp_diagnostics(stc, &diagnostics);
   }
 
   SECTION("set_lsp_hover")
   {
-    wex::hover_item item;
-    item.range.start.line = 10;
-    item.range.start.character = 2;
+    wex::hover_item item(wex::position_item(10, 2), "Test hover contents");
 
     wex::set_lsp_hover(stc, &item);
   }
 
   SECTION("set_lsp_on_type")
   {
-    wex::on_type_formatting_item item;
-    item.range.start.line = 10;
-    item.range.start.character = 2;
+    wex::on_type_formatting_item_t items;
+    items.push_back(wex::on_type_formatting_item(
+      wex::range_item(wex::position_item(12, 2), wex::position_item(12, 5)), "xyz");
+    items.push_back(wex::on_type_formatting_item(
+      wex::range_item(wex::position_item(10, 2), wex::position_item(11, 5)), "abc"));
 
-    wex::set_lsp_on_type(stc, &item);
+    wex::set_lsp_on_type(stc, &items);
   }
 
   SECTION("set_lsp_show_message")
   {
-    wex::show_message_item item;
-    item.type = wex::severity_t::INFO;
-    item.message = "Test message";
+    wex::show_message_item item(
+      "Test message",
+      wex::severity_t::INFO);
 
     wex::set_lsp_show_message(frame(), &item);
   }

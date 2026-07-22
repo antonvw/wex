@@ -66,6 +66,12 @@ completion_item_element::completion_item_element(const boost::json::object& obj)
 }
 
 definition_or_implementation_item::definition_or_implementation_item(
+    const std::string& u, const range_item& r)
+    : uri(u), range(r)
+{
+}
+
+definition_or_implementation_item::definition_or_implementation_item(
   const boost::json::object& obj)
 {
   range_from_json(obj, range);
@@ -140,6 +146,11 @@ std::stringstream position_item::log() const
 int position_item::to_pos(wxStyledTextCtrl* stc) const
 {
   return stc->PositionFromLine(line) + character;
+}
+
+range_item::range_item(const position_item& strt, const position_item& nd)
+  : start(strt), end(nd)
+{
 }
 
 boost::json::object range_item::json_object() const
