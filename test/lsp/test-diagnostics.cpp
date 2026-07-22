@@ -14,15 +14,10 @@ TEST_CASE("wex::lsp::diagnostics")
 
   SECTION("add_and_get")
   {
-    wex::diagnostic_item d;
-    d.message               = "Error: undeclared variable";
-    d.severity              = wex::severity_t::ERRORS;
-    d.source                = "clang";
-    d.code                  = "undeclared_var";
-    d.range.start.line      = 5;
-    d.range.start.character = 10;
-    d.range.end.line        = 5;
-    d.range.end.character   = 15;
+    wex::diagnostic_item d(wex::range_item(), "Error: undeclared variable");
+    d.severity = wex::severity_t::ERRORS;
+    d.source   = "clang";
+    d.code     = "undeclared_var";
 
     diags.add("file:///test.cpp", d);
 
@@ -165,8 +160,7 @@ TEST_CASE("wex::lsp::diagnostics")
 
   SECTION("count_total_diagnostics")
   {
-    wex::diagnostic_item d;
-    d.message = "Diagnostic";
+    wex::diagnostic_item d(wex::range_item(), "Diagnostic");
 
     REQUIRE(diags.count() == 0);
 

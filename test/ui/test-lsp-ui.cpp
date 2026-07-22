@@ -18,24 +18,24 @@ TEST_CASE("wex::lsp-ui")
   SECTION("make_path_skip_uri")
   {
     REQUIRE(wex::make_path_skip_uri(std::string()).empty());
-    REQUIRE(wex::make_path_skip_uri("file:///path/to/file") == "/path/to/file");
-    REQUIRE(wex::make_path_skip_uri("file:///path/to/file%20xyz") == "/path/to/file xyz");
+    REQUIRE(
+      wex::make_path_skip_uri("file:///path/to/file").string() ==
+      "/path/to/file");
+    REQUIRE(
+      wex::make_path_skip_uri("file:///path/to/file%20xyz").string() ==
+      "/path/to/file xyz");
   }
 
   SECTION("set_lsp_completions")
   {
     wex::completions_t items;
 
-    wex::completion_item_element item;
-    item.label = "label";
-    item.kind = 1;
-    item.detail = "detail";
-    item.documentation = "documentation";
+    wex::completion_item_element item("label");
 
-    items.push_back(item);
+    items.elements.push_back(item);
 
     wex::set_lsp_completions(stc, &items, frame());
-  } 
+  }
 
   SECTION("set_lsp_definition_or_implementation")
   {
@@ -48,14 +48,15 @@ TEST_CASE("wex::lsp-ui")
 
     wex::set_lsp_definition_or_implementation(frame(), &items);
   }
-  
+
   SECTION("set_lsp_diagnostics")
   {
     wex::diagnostics_t diagnostics;
 
-    diagnostics.push_back(wex::diagnostic_item(
-      wex::range_item(wex::position_item(10, 2), wex::position_item(11, 5)),
-      "Test diagnostic message"));
+    diagnostics.push_back(
+      wex::diagnostic_item(
+        wex::range_item(wex::position_item(10, 2), wex::position_item(11, 5)),
+        "Test diagnostic message"));
 
     wex::set_lsp_diagnostics(stc, &diagnostics);
   }
@@ -70,10 +71,14 @@ TEST_CASE("wex::lsp-ui")
   SECTION("set_lsp_on_type")
   {
     wex::on_type_formatting_item_t items;
-    items.push_back(wex::on_type_formatting_item(
-      wex::range_item(wex::position_item(12, 2), wex::position_item(12, 5)), "xyz");
-    items.push_back(wex::on_type_formatting_item(
-      wex::range_item(wex::position_item(10, 2), wex::position_item(11, 5)), "abc"));
+    items.push_back(
+      wex::on_type_formatting_item(
+        wex::range_item(wex::position_item(12, 2), wex::position_item(12, 5)),
+        "xyz"));
+    items.push_back(
+      wex::on_type_formatting_item(
+        wex::range_item(wex::position_item(10, 2), wex::position_item(11, 5)),
+        "abc"));
 
     wex::set_lsp_on_type(stc, &items);
   }
@@ -82,7 +87,7 @@ TEST_CASE("wex::lsp-ui")
   {
     wex::show_message_item item(
       "Test message",
-      wex::severity_t::INFO);
+      wex::show_message_item::message_t::INFO);
 
     wex::set_lsp_show_message(frame(), &item);
   }

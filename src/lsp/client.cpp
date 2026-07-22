@@ -182,13 +182,15 @@ bool client::definition_or_implementation(
           delete definition;
           definition = nullptr;
         }
-
-        queue_event(
-          m_event_handler,
-          path.uri(),
-          method == "textDocument/definition" ? ID_LSP_DEFINITION :
-                                                ID_LSP_IMPLEMENTATION,
-          definition);
+        else
+        {
+          queue_event(
+            m_event_handler,
+            path.uri(),
+            method == "textDocument/definition" ? ID_LSP_DEFINITION :
+                                                  ID_LSP_IMPLEMENTATION,
+            definition);
+        }
       }
     });
 }

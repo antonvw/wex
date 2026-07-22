@@ -124,9 +124,9 @@ void set_lsp_on_type(syntax::stc* stc, const on_type_formatting_item_t* items)
 
   std::ranges::sort(
     sorted_items,
-    [](const auto& a, const auto& b)
+    [stc](const auto& a, const auto& b)
     {
-      return a.range.start.line < b.range.start.line;
+      return a.range.start.to_pos(stc) < b.range.start.to_pos(stc);
     });
 
   int last_pos = wxSTC_INVALID_POSITION;

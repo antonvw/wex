@@ -44,6 +44,11 @@ bool range_from_json(const boost::json::object& obj, range_item& range)
   return true;
 }
 
+completion_item_element::completion_item_element(const std::string& lbl)
+  : label(lbl)
+{
+}
+
 completion_item_element::completion_item_element(const boost::json::object& obj)
 {
   if (json_to_string(obj, "label", label))
@@ -66,8 +71,10 @@ completion_item_element::completion_item_element(const boost::json::object& obj)
 }
 
 definition_or_implementation_item::definition_or_implementation_item(
-    const std::string& u, const range_item& r)
-    : uri(u), range(r)
+  const std::string& u,
+  const range_item&  r)
+  : uri(u)
+  , range(r)
 {
 }
 
@@ -76,6 +83,12 @@ definition_or_implementation_item::definition_or_implementation_item(
 {
   range_from_json(obj, range);
   uri = obj.at("uri").as_string().data();
+}
+
+diagnostic_item::diagnostic_item(const range_item& r, const std::string& msg)
+  : range(r)
+  , message(msg)
+{
 }
 
 diagnostic_item::diagnostic_item(const boost::json::object& obj)
@@ -88,6 +101,12 @@ diagnostic_item::diagnostic_item(const boost::json::object& obj)
   json_to_string(obj, "source", source);
 }
 
+hover_item::hover_item(const position_item& p, const std::string& c)
+  : pos(p)
+  , contents(c)
+{
+}
+
 hover_item::hover_item(const boost::json::object& obj)
 {
   const auto con(obj.at("contents"));
@@ -95,6 +114,14 @@ hover_item::hover_item(const boost::json::object& obj)
 
   contents = boost::json::serialize(val);
   json_to_string(con, "kind", kind);
+}
+
+on_type_formatting_item::on_type_formatting_item(
+  const range_item&  rnge,
+  const std::string& nw_text)
+  : range(rnge)
+  , new_text(nw_text)
+{
 }
 
 on_type_formatting_item::on_type_formatting_item(const boost::json::object& obj)
@@ -149,7 +176,8 @@ int position_item::to_pos(wxStyledTextCtrl* stc) const
 }
 
 range_item::range_item(const position_item& strt, const position_item& nd)
-  : start(strt), end(nd)
+  : start(strt)
+  , end(nd)
 {
 }
 
@@ -170,6 +198,16 @@ std::stringstream range_item::log() const
   ss << "start: " << start.log().str() << " end: " << end.log().str();
 
   return ss;
+}
+
+show_message_item::show_message_item(
+  const std::string& msg,
+  message_t          t,
+  bool               is_show_item)
+  : type(t)
+  , message(msg)
+  , is_show(is_show_item)
+{
 }
 
 show_message_item::show_message_item(
