@@ -11,7 +11,8 @@
 
 namespace wex
 {
-/// Returns a path from a uri, skipping the scheme and origin.
+/// Returns a path from a uri, skipping the scheme, origin, normalizing the path,
+/// and decoding the URI.
 path make_path_skip_uri(const std::string& uri);
 
 /// Sets lsp completions.

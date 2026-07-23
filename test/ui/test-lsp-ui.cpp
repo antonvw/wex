@@ -28,67 +28,63 @@ TEST_CASE("wex::lsp-ui")
 
   SECTION("set_lsp_completions")
   {
-    wex::completions_t items;
+    auto* items = new wex::completions_t;
 
     wex::completion_item_element item("label");
+    items->elements.push_back(item);
 
-    items.elements.push_back(item);
-
-    wex::set_lsp_completions(stc, &items, frame());
+    wex::set_lsp_completions(stc, items, frame());
   }
 
   SECTION("set_lsp_definition_or_implementation")
   {
-    wex::definition_or_implementation_t items;
+    auto* items = new wex::definition_or_implementation_t;
 
     wex::definition_or_implementation_item item(
       "file:///project/src/utils.ts",
       wex::range_item(wex::position_item(10, 2), wex::position_item(11, 5)));
-    items.push_back(item);
+    items->push_back(item);
 
-    wex::set_lsp_definition_or_implementation(frame(), &items);
+    wex::set_lsp_definition_or_implementation(frame(), items);
   }
 
   SECTION("set_lsp_diagnostics")
   {
-    wex::diagnostics_t diagnostics;
+    auto* diagnostics = new wex::diagnostics_t;
 
-    diagnostics.push_back(
+    diagnostics->push_back(
       wex::diagnostic_item(
         wex::range_item(wex::position_item(10, 2), wex::position_item(11, 5)),
         "Test diagnostic message"));
 
-    wex::set_lsp_diagnostics(stc, &diagnostics);
+    wex::set_lsp_diagnostics(stc, diagnostics);
   }
 
   SECTION("set_lsp_hover")
   {
-    wex::hover_item item(wex::position_item(10, 2), "Test hover contents");
-
-    wex::set_lsp_hover(stc, &item);
+    wex::set_lsp_hover(stc,
+      new wex::hover_item(wex::position_item(10, 2), "Test hover contents"));
   }
 
   SECTION("set_lsp_on_type")
   {
-    wex::on_type_formatting_item_t items;
-    items.push_back(
+    auto* items = new wex::on_type_formatting_item_t;
+
+    items->push_back(
       wex::on_type_formatting_item(
         wex::range_item(wex::position_item(12, 2), wex::position_item(12, 5)),
         "xyz"));
-    items.push_back(
+    items->push_back(
       wex::on_type_formatting_item(
         wex::range_item(wex::position_item(10, 2), wex::position_item(11, 5)),
         "abc"));
 
-    wex::set_lsp_on_type(stc, &items);
+    wex::set_lsp_on_type(stc, items);
   }
 
   SECTION("set_lsp_show_message")
   {
-    wex::show_message_item item(
-      "Test message",
-      wex::show_message_item::message_t::INFO);
-
-    wex::set_lsp_show_message(frame(), &item);
+    wex::set_lsp_show_message(frame(), new wex::show_message_item(
+      wex::show_message_item::INFO, "Test show message"));
   }
 }

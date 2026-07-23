@@ -22,8 +22,8 @@ namespace wex
 path make_path_skip_uri(const std::string& uri)
 {
   boost::urls::url u(uri);
-  u.remove_scheme().remove_origin();
-  return path(u.normalize_path().buffer());
+  u.remove_scheme().remove_origin().normalize_path();
+  return path(boost::urls::decode(u.buffer()));
 }
 
 void set_lsp_completions(
