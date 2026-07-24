@@ -39,7 +39,7 @@ boost::json::object capabilities::client() const
           "dynamicRegistration": false,
           "completionItem":
           {
-            "snippetSupport": true,
+            "snippetSupport": false,
             "commitCharactersSupport": true,
             "documentationFormat": ["plaintext"],
             "deprecatedSupport": true,

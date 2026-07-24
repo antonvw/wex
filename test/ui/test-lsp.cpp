@@ -134,7 +134,7 @@ TEST_CASE("wex::lsp")
     REQUIRE(item.range.start.to_pos(stc) == 10);
     REQUIRE(item.range.end.to_pos(stc) == 14);
     REQUIRE(item.new_text == "formatted");
-    item.replace_target(stc);
+    REQUIRE(item.replace_target(stc) == 9);
     REQUIRE(
       stc->GetText() == "This is a formatted string for on-type formatting");
   }

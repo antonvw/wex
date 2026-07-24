@@ -36,22 +36,26 @@ void set_lsp_completions(
   if (!filter.empty() || !frame->lsp_clients_trigger(stc).empty())
   {
     const char  separator = 3;
-    std::string auto_complete_text;
+    std::string auto_complete_list;
 
     for (const auto& comp : completions->elements)
     {
       if (comp.label.starts_with(filter))
       {
-        auto_complete_text += comp.label + separator;
+        auto_complete_list += comp.label + separator;
       }
     }
 
-    if (!auto_complete_text.empty())
+    if (!auto_complete_list.empty())
     {
       const auto old(stc->AutoCompGetSeparator());
       stc->AutoCompSetSeparator(separator);
-      stc->AutoCompShow(stc->GetCurrentPos() - wsp, auto_complete_text);
+      stc->AutoCompShow(stc->GetCurrentPos() - wsp, auto_complete_list);
       stc->AutoCompSetSeparator(old);
+    }
+    else
+    {
+      stc->AutoCompCancel();
     }
   }
 }
@@ -130,14 +134,20 @@ void set_lsp_on_type(syntax::stc* stc, const on_type_formatting_item_t* items)
 
   int last_pos = wxSTC_INVALID_POSITION;
 
+  log::trace("set_lsp_on_type enter");
+
   // apply the sorted items to the stc, and in reverse order to avoid messing
   // up the positions of the remaining items
   for (const auto& item : sorted_items | std::views::reverse)
   {
     log::trace("set_lsp_on_type") << item.log();
-    item.replace_target(stc);
-    last_pos =
-      std::max(stc->GetCurrentPos() + (int)item.new_text.size(), last_pos);
+
+    const int add = item.replace_target(stc);
+
+    if (last_pos == wxSTC_INVALID_POSITION)
+    {
+      last_pos = stc->GetCurrentPos() + add;
+    }
   }
 
   if (last_pos != wxSTC_INVALID_POSITION)
@@ -145,6 +155,8 @@ void set_lsp_on_type(syntax::stc* stc, const on_type_formatting_item_t* items)
     stc->SetCurrentPos(last_pos);
     stc->SelectNone();
   }
+
+  log::trace("set_lsp_on_type exit");
 }
 
 void set_lsp_show_message(wxWindow* parent, const show_message_item* item)

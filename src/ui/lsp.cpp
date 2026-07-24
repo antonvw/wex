@@ -139,6 +139,12 @@ std::stringstream on_type_formatting_item::log() const
   return ss;
 }
 
+int on_type_formatting_item::replace_target(wxStyledTextCtrl* stc) const
+{
+  range.set_target(stc);
+  return stc->ReplaceTarget(new_text);
+}
+
 position_item::position_item(int l, int c)
   : line(l)
   , character(c)
