@@ -132,31 +132,18 @@ void set_lsp_on_type(syntax::stc* stc, const on_type_formatting_item_t* items)
       return a.range.start.to_pos(stc) < b.range.start.to_pos(stc);
     });
 
-  int last_pos = wxSTC_INVALID_POSITION;
-
-  log::trace("set_lsp_on_type enter");
+  int changed = 0;
+  const int curr = stc->GetCurrentPos();
 
   // apply the sorted items to the stc, and in reverse order to avoid messing
   // up the positions of the remaining items
   for (const auto& item : sorted_items | std::views::reverse)
   {
-    log::trace("set_lsp_on_type") << item.log();
-
-    const int add = item.replace_target(stc);
-
-    if (last_pos == wxSTC_INVALID_POSITION)
-    {
-      last_pos = stc->GetCurrentPos() + add;
-    }
+    changed += item.replace_target(stc);
   }
 
-  if (last_pos != wxSTC_INVALID_POSITION)
-  {
-    stc->SetCurrentPos(last_pos);
-    stc->SelectNone();
-  }
-
-  log::trace("set_lsp_on_type exit");
+  stc->SetCurrentPos(curr + changed);
+  stc->SelectNone();
 }
 
 void set_lsp_show_message(wxWindow* parent, const show_message_item* item)

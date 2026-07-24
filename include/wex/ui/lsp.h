@@ -187,7 +187,7 @@ struct on_type_formatting_item
 
   /// Replaces the range in the given wxStyledTextCtrl with the new text
   /// specified in this item.
-  /// Returns the length of the replacement text.
+  /// Returns the difference in stc size caused by replacing.
   int replace_target(wxStyledTextCtrl* stc) const;
 
   std::string new_text;
