@@ -36,13 +36,13 @@ void lsp_change(const wxStyledTextEvent& event, wex::stc* stc)
     client != nullptr)
   {
     range_item r;
+    r.start.line = stc->LineFromPosition(event.GetPosition());
+    r.start.character =
+      event.GetPosition() - stc->PositionFromLine(r.start.line);
 
     if (event.GetModificationType() & wxSTC_MOD_BEFOREDELETE)
     {
       // this is a delete
-      r.start.line = stc->LineFromPosition(event.GetPosition());
-      r.start.character =
-        event.GetPosition() - stc->PositionFromLine(r.start.line);
       const auto endpos = event.GetPosition() + event.GetLength();
       r.end.line        = stc->LineFromPosition(endpos);
       r.end.character   = endpos - stc->PositionFromLine(r.end.line);
@@ -51,9 +51,6 @@ void lsp_change(const wxStyledTextEvent& event, wex::stc* stc)
     else if (event.GetModificationType() & wxSTC_MOD_BEFOREINSERT)
     {
       // this is an insert
-      r.start.line = stc->LineFromPosition(event.GetPosition());
-      r.start.character =
-        event.GetPosition() - stc->PositionFromLine(r.start.line);
       r.end.line      = r.start.line;
       r.end.character = r.start.character;
       client->did_change(stc->path(), r, event.GetText());
@@ -137,6 +134,10 @@ wex::stc::stc(const wex::path& p, const data::stc& data)
 
   SetMultiPaste(wxSTC_MULTIPASTE_EACH);
   SetMultipleSelection(true);
+
+  AutoCompSetAutoHide(true);
+  AutoCompSetIgnoreCase(false);
+  AutoCompSetMaxHeight(10);
 
   if (m_zoom == -1)
   {

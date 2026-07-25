@@ -100,37 +100,31 @@ bool client::completion(
 
   obj["context"] = context;
 
-  if (
-    !m_capabilities.support(capabilities::CAP_COMPLETION) ||
-    !write(
-      m_rpc.encode_request("textDocument/completion", obj),
-      [=, this](const json_rpc_message& msg)
-      {
-        if (!msg.is_error && msg.result.contains("items"))
-        {
-          completions_t* completion = new completions_t;
-          completion->pos           = pos;
-          completion->elements.reserve(
-            msg.result.at("items").as_array().size());
+  return m_capabilities.support(capabilities::CAP_COMPLETION) &&
+         write(
+           m_rpc.encode_request("textDocument/completion", obj),
+           [=, this](const json_rpc_message& msg)
+           {
+             if (!msg.is_error && msg.result.contains("items"))
+             {
+               auto* completion = new completions_t;
+               completion->pos  = pos;
+               completion->elements.reserve(
+                 msg.result.at("items").as_array().size());
 
-          for (const auto& item : msg.result.at("items").as_array())
-          {
-            completion_item_element completion_element(item.as_object());
-            completion->elements.push_back(completion_element);
-          }
+               for (const auto& item : msg.result.at("items").as_array())
+               {
+                 completion_item_element completion_element(item.as_object());
+                 completion->elements.push_back(completion_element);
+               }
 
-          queue_event(
-            m_event_handler,
-            path.uri(),
-            ID_LSP_CODE_COMPLETION,
-            completion);
-        }
-      }))
-  {
-    return false;
-  }
-
-  return true;
+               queue_event(
+                 m_event_handler,
+                 path.uri(),
+                 ID_LSP_CODE_COMPLETION,
+                 completion);
+             }
+           });
 }
 
 int wex::lsp::client::config_dialog(const data::window& par)
@@ -160,7 +154,7 @@ int wex::lsp::client::config_dialog(const data::window& par)
 
 bool client::definition(const wex::path& path, const position_item& pos)
 {
-  return !m_capabilities.support(capabilities::CAP_DEFINITION) ||
+  return m_capabilities.support(capabilities::CAP_DEFINITION) &&
          definition_or_implementation(path, pos, "textDocument/definition");
 }
 
@@ -169,39 +163,36 @@ bool client::definition_or_implementation(
   const position_item& pos,
   const std::string&   method)
 {
-  if (!write(
-        m_rpc.encode_request(method, make_object(path, pos)),
-        [=, this](const json_rpc_message& msg)
+  return write(
+    m_rpc.encode_request(method, make_object(path, pos)),
+    [=, this](const json_rpc_message& msg)
+    {
+      if (!msg.is_error)
+      {
+        auto* definition = new definition_or_implementation_t;
+
+        for (const auto& item : msg.result_array)
         {
-          if (!msg.is_error)
-          {
-            auto* definition = new definition_or_implementation_t;
+          definition_or_implementation_item di(item.as_object());
+          definition->push_back(di);
+        }
 
-            for (const auto& item : msg.result_array)
-            {
-              definition_or_implementation_item di(item.as_object());
-              definition->push_back(di);
-            }
-
-            if (definition->empty())
-            {
-              delete definition;
-              definition = nullptr;
-            }
-
-            queue_event(
-              m_event_handler,
-              path.uri(),
-              method == "textDocument/definition" ? ID_LSP_DEFINITION :
-                                                    ID_LSP_IMPLEMENTATION,
-              definition);
-          }
-        }))
-  {
-    return false;
-  }
-
-  return true;
+        if (definition->empty())
+        {
+          delete definition;
+          definition = nullptr;
+        }
+        else
+        {
+          queue_event(
+            m_event_handler,
+            path.uri(),
+            method == "textDocument/definition" ? ID_LSP_DEFINITION :
+                                                  ID_LSP_IMPLEMENTATION,
+            definition);
+        }
+      }
+    });
 }
 
 bool client::did_change(
@@ -276,29 +267,19 @@ bool client::hover(const wex::path& path, const position_item& pos)
 {
   // LSP Methods Implementation
   // send textDocument/hover request
-  if (
-    !m_capabilities.support(capabilities::CAP_HOVER) ||
-    !write(
-      m_rpc.encode_request("textDocument/hover", make_object(path, pos)),
-      [=, this](const json_rpc_message& msg)
-      {
-        if (!msg.is_error && msg.result.contains("contents"))
-        {
-          auto* hover = new hover_t;
-          auto  obj(msg.result.at("contents"));
-          auto  val(obj.at("value").as_string());
+  return m_capabilities.support(capabilities::CAP_HOVER) &&
+         write(
+           m_rpc.encode_request("textDocument/hover", make_object(path, pos)),
+           [=, this](const json_rpc_message& msg)
+           {
+             if (!msg.is_error && msg.result.contains("contents"))
+             {
+               auto* hover = new hover_t(msg.result);
+               hover->pos  = pos;
 
-          hover->contents = boost::json::serialize(val);
-          hover->pos      = pos;
-
-          queue_event(m_event_handler, path.uri(), ID_LSP_HOVER, hover);
-        }
-      }))
-  {
-    return false;
-  }
-
-  return true;
+               queue_event(m_event_handler, path.uri(), ID_LSP_HOVER, hover);
+             }
+           });
 }
 
 bool client::implementation(const wex::path& path, const position_item& pos)
@@ -370,6 +351,43 @@ bool client::is_running() const
 const std::string& client::language_id() const
 {
   return m_lexer.scintilla_lexer();
+}
+
+bool client::on_type_formatting(
+  const wex::path&     path,
+  const position_item& pos,
+  char                 c,
+  bool                 use_tabs,
+  int                  tab_size)
+{
+  // LSP Methods Implementation
+  // send textDocument/onTypeFormatting request
+  auto                obj(make_object(path, pos));
+  boost::json::object options;
+  obj["ch"]               = std::string(1, c);
+  options["tabSize"]      = tab_size;
+  options["insertSpaces"] = !use_tabs;
+  obj["options"]          = options;
+
+  return m_capabilities.support(capabilities::CAP_FORMATTING) &&
+         write(
+           m_rpc.encode_request("textDocument/onTypeFormatting", obj),
+           [=, this](const json_rpc_message& msg)
+           {
+             if (!msg.is_error)
+             {
+               const auto& array = msg.result_array;
+               auto*       item  = new on_type_formatting_item_t;
+
+               for (const auto& elem : array)
+               {
+                 const wex::on_type_formatting_item si(elem.as_object());
+                 item->emplace_back(si);
+               }
+
+               queue_event(m_event_handler, path.uri(), ID_LSP_FORMAT, item);
+             }
+           });
 }
 
 bool client::shutdown()

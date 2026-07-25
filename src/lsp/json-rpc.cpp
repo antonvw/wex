@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
-#include <boost/json.hpp>
 
 #include <wex/core/log.h>
 #include <wex/lsp/json-rpc.h>
@@ -46,10 +45,7 @@ json_rpc_message json_rpc::decode(const std::string& data)
     auto parsed = boost::json::parse(json_str);
     auto obj    = parsed.as_object();
 
-    if (obj.contains("jsonrpc"))
-    {
-      msg.jsonrpc = boost::json::value_to<std::string>(obj["jsonrpc"]);
-    }
+    json_to_string(obj, "jsonrpc", msg.jsonrpc);
 
     if (obj.contains("id"))
     {
@@ -58,8 +54,7 @@ json_rpc_message json_rpc::decode(const std::string& data)
 
     if (obj.contains("method"))
     {
-      msg.method      = boost::json::value_to<std::string>(obj["method"]);
-      msg.is_response = false;
+      msg.method = boost::json::value_to<std::string>(obj["method"]);
     }
     else if (obj.contains("result") || obj.contains("error"))
     {
@@ -186,24 +181,6 @@ bool json_rpc::handle_response(const json_rpc_message& msg)
   }
 
   return true;
-}
-
-bool json_rpc::handle_show_message(const json_rpc_message& notification)
-{
-  auto* msg = new show_message_item(
-    notification.params,
-    notification.method == "window/showMessage");
-
-  if (!msg->message.empty())
-  {
-    queue_event(m_event_handler, std::string(), ID_LSP_SHOW_MESSAGE, msg);
-
-    return true;
-  }
-
-  delete msg;
-
-  return false;
 }
 
 std::string json_rpc::header_part_content_field() const

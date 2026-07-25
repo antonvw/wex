@@ -1,29 +1,28 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      frame-bind-lsp.cpp
-// Purpose:   Implementation of frame::bind_lsp.
+// Name:      lsp-ui.cpp
+// Purpose:   Implementation of ui lsp methods.
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
+
+#include <algorithm>
+#include <ranges>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/url.hpp>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
-#include <wex/factory/bind.h>
 #include <wex/syntax/indicator.h>
-#include <wex/syntax/stc.h>
-#include <wex/ui/defs.h>
-#include <wex/ui/frame.h>
-#include <wex/ui/lsp.h>
 #include <wx/infobar.h>
+
+#include "lsp-ui.h"
 
 namespace wex
 {
 path make_path_skip_uri(const std::string& uri)
 {
-  boost::urls::url u(uri);
-  u.remove_scheme().remove_origin();
-  return path(u.normalize_path().buffer());
+  const boost::urls::url u(uri);
+  return path(u.path());
 }
 
 void set_lsp_completions(
@@ -37,22 +36,26 @@ void set_lsp_completions(
   if (!filter.empty() || !frame->lsp_clients_trigger(stc).empty())
   {
     const char  separator = 3;
-    std::string auto_complete_text;
+    std::string auto_complete_list;
 
     for (const auto& comp : completions->elements)
     {
       if (comp.label.starts_with(filter))
       {
-        auto_complete_text += comp.label + separator;
+        auto_complete_list += comp.label + separator;
       }
     }
 
-    if (!auto_complete_text.empty())
+    if (!auto_complete_list.empty())
     {
       const auto old(stc->AutoCompGetSeparator());
       stc->AutoCompSetSeparator(separator);
-      stc->AutoCompShow(stc->GetCurrentPos() - wsp, auto_complete_text);
+      stc->AutoCompShow(stc->GetCurrentPos() - wsp, auto_complete_list);
       stc->AutoCompSetSeparator(old);
+    }
+    else
+    {
+      stc->AutoCompCancel();
     }
   }
 }
@@ -113,12 +116,43 @@ void set_lsp_hover(syntax::stc* stc, const hover_t* hover)
     stc->CallTipCancel();
   }
 
-  stc->CallTipShow(
-    stc->PositionFromLine(hover->pos.line) + hover->pos.character,
-    text);
+  stc->CallTipShow(hover->pos.to_pos(stc), text);
 }
 
-void set_lsp_show_message(wex::frame* frame, const show_message_item* item)
+void set_lsp_on_type(syntax::stc* stc, const on_type_formatting_item_t* items)
+{
+  // the items should first be sorted, because the language server
+  // may return them in any order
+  on_type_formatting_item_t sorted_items(items->begin(), items->end());
+
+  std::ranges::sort(
+    sorted_items,
+    [stc](const auto& a, const auto& b)
+    {
+      return a.range.start.to_pos(stc) < b.range.start.to_pos(stc);
+    });
+
+  int        caret_delta = 0;
+  const auto curr        = stc->GetCurrentPos();
+
+  // apply the sorted items to the stc, and in reverse order to avoid messing
+  // up the positions of the remaining items.
+  // Only edit updates after the caret should contribute to
+  // cursor movement. See review comment in pull request 128:
+  // https://github.com/antonvw/wex/pull/1288
+  for (const auto& item : sorted_items | std::views::reverse)
+  {
+    if (const auto start = item.range.start.to_pos(stc); start < curr)
+    {
+      caret_delta += item.replace_target(stc);
+    }
+  }
+
+  stc->SetCurrentPos(curr + caret_delta);
+  stc->SelectNone();
+}
+
+void set_lsp_show_message(wxWindow* parent, const show_message_item* item)
 {
   if (!item->is_show)
   {
@@ -145,98 +179,8 @@ void set_lsp_show_message(wex::frame* frame, const show_message_item* item)
   }
   else
   {
-    auto* info = new wxInfoBar(frame);
+    auto* info = new wxInfoBar(parent);
     info->ShowMessage(item->message);
   }
 }
 } // namespace wex
-
-void wex::frame::bind_lsp()
-{
-  bind(this).command(
-    {{[=, this](const wxCommandEvent& event)
-      {
-        auto* completions = (completions_t*)event.GetClientData();
-
-        if (
-          auto* stc = open_file(make_path_skip_uri(event.GetString()));
-          stc != nullptr)
-        {
-          set_lsp_completions(
-            dynamic_cast<syntax::stc*>(stc),
-            completions,
-            this);
-        }
-
-        delete completions;
-      },
-      ID_LSP_CODE_COMPLETION},
-
-     {[=, this](const wxCommandEvent& event)
-      {
-        if (
-          auto* definition =
-            (definition_or_implementation_t*)event.GetClientData();
-          definition != nullptr)
-        {
-          set_lsp_definition_or_implementation(this, definition);
-        }
-      },
-      ID_LSP_DEFINITION},
-
-     {[=, this](const wxCommandEvent& event)
-      {
-        auto* diagnostics = (diagnostics_t*)event.GetClientData();
-
-        if (const path cur(make_path_skip_uri(event.GetString())); is_open(cur))
-        {
-          if (auto* stc = open_file(cur); stc != nullptr)
-          {
-            set_lsp_diagnostics(dynamic_cast<syntax::stc*>(stc), diagnostics);
-          }
-        }
-
-        delete diagnostics;
-      },
-      ID_LSP_DIAGNOSTICS},
-
-     {[=, this](const wxCommandEvent& event)
-      {
-        data::stc data;
-        data.allow_change_page(false);
-
-        if (
-          auto* stc = open_file(make_path_skip_uri(event.GetString()), data);
-          stc != nullptr)
-        {
-          auto* hover = (hover_t*)event.GetClientData();
-          set_lsp_hover(dynamic_cast<syntax::stc*>(stc), hover);
-          delete hover;
-        }
-      },
-      ID_LSP_HOVER},
-
-     {[=, this](const wxCommandEvent& event)
-      {
-        if (
-          auto* definition =
-            (definition_or_implementation_t*)event.GetClientData();
-          definition != nullptr)
-        {
-          set_lsp_definition_or_implementation(this, definition);
-        }
-      },
-      ID_LSP_IMPLEMENTATION},
-
-     {[=, this](const wxCommandEvent& event)
-      {
-        if (
-          auto* item = (show_message_item*)event.GetClientData();
-          item != nullptr)
-        {
-          set_lsp_show_message(this, item);
-          delete item;
-        }
-      },
-      ID_LSP_SHOW_MESSAGE}});
-}

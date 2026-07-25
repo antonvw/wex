@@ -8,7 +8,6 @@
 
 #include <boost/algorithm/string.hpp>
 
-#include <wex/core/log.h>
 #include <wex/ui/lsp.h>
 
 namespace wex
@@ -16,27 +15,21 @@ namespace wex
 bool json_to_string(
   const boost::json::value& val,
   const std::string&        key,
-  std::string&              dest)
+  std::string&              text)
 {
-  if (val.is_object() && val.as_object().contains(key))
+  if (!val.is_object() || !val.as_object().contains(key))
   {
-    dest = val.at(key).as_string().c_str();
-    return true;
+    return false;
   }
 
-  return false;
-}
-
-bool range_from_json(const boost::json::object& obj, range_item& range)
-{
-  auto ro = obj.at("range");
-
-  range.start.line      = ro.at("start").at("line").as_int64();
-  range.start.character = ro.at("start").at("character").as_int64();
-  range.end.line        = ro.at("end").at("line").as_int64();
-  range.end.character   = ro.at("end").at("character").as_int64();
+  text = val.at(key).as_string().c_str();
 
   return true;
+}
+
+completion_item_element::completion_item_element(const std::string& lbl)
+  : label(lbl)
+{
 }
 
 completion_item_element::completion_item_element(const boost::json::object& obj)
@@ -61,10 +54,79 @@ completion_item_element::completion_item_element(const boost::json::object& obj)
 }
 
 definition_or_implementation_item::definition_or_implementation_item(
-  const boost::json::object& obj)
+  const std::string& u,
+  const range_item&  r)
+  : uri(u)
+  , range(r)
 {
-  range_from_json(obj, range);
-  uri = obj.at("uri").as_string().data();
+}
+
+definition_or_implementation_item::definition_or_implementation_item(
+  const boost::json::object& obj)
+  : range(obj)
+  , uri(obj.at("uri").as_string().data())
+{
+}
+
+diagnostic_item::diagnostic_item(const range_item& r, const std::string& msg)
+  : range(r)
+  , message(msg)
+{
+}
+
+diagnostic_item::diagnostic_item(const boost::json::object& obj)
+  : range(obj)
+{
+  severity = static_cast<wex::severity_t>(obj.at("severity").as_int64());
+
+  json_to_string(obj, "code", code);
+  json_to_string(obj, "message", message);
+  json_to_string(obj, "source", source);
+}
+
+hover_item::hover_item(const position_item& p, const std::string& c)
+  : pos(p)
+  , contents(c)
+{
+}
+
+hover_item::hover_item(const boost::json::object& obj)
+{
+  const auto con(obj.at("contents"));
+  const auto val(con.at("value").as_string());
+
+  contents = boost::json::serialize(val);
+  json_to_string(con, "kind", kind);
+}
+
+on_type_formatting_item::on_type_formatting_item(
+  const range_item&  rnge,
+  const std::string& nw_text)
+  : range(rnge)
+  , new_text(nw_text)
+{
+}
+
+on_type_formatting_item::on_type_formatting_item(const boost::json::object& obj)
+  : range(obj)
+{
+  json_to_string(obj, "newText", new_text);
+}
+
+std::stringstream on_type_formatting_item::log() const
+{
+  std::stringstream ss;
+
+  ss << "new_text: " << new_text << range.log().str();
+
+  return ss;
+}
+
+int on_type_formatting_item::replace_target(wxStyledTextCtrl* stc) const
+{
+  range.set_target(stc);
+  const int old_target_size = stc->GetTargetText().size();
+  return stc->ReplaceTarget(new_text) - old_target_size;
 }
 
 position_item::position_item(int l, int c)
@@ -98,6 +160,22 @@ std::stringstream position_item::log() const
   return ss;
 }
 
+int position_item::to_pos(wxStyledTextCtrl* stc) const
+{
+  return stc->PositionFromLine(line) + character;
+}
+
+range_item::range_item(const position_item& strt, const position_item& nd)
+  : start(strt)
+  , end(nd)
+{
+}
+
+range_item::range_item(const boost::json::object& obj)
+{
+  set(obj);
+}
+
 boost::json::object range_item::json_object() const
 {
   boost::json::object obj;
@@ -108,6 +186,23 @@ boost::json::object range_item::json_object() const
   return obj;
 }
 
+bool range_item::set(const boost::json::object& obj)
+{
+  if (!obj.contains("range"))
+  {
+    return false;
+  }
+
+  auto ro = obj.at("range");
+
+  start.line      = ro.at("start").at("line").as_int64();
+  start.character = ro.at("start").at("character").as_int64();
+  end.line        = ro.at("end").at("line").as_int64();
+  end.character   = ro.at("end").at("character").as_int64();
+
+  return true;
+}
+
 std::stringstream range_item::log() const
 {
   std::stringstream ss;
@@ -115,6 +210,16 @@ std::stringstream range_item::log() const
   ss << "start: " << start.log().str() << " end: " << end.log().str();
 
   return ss;
+}
+
+show_message_item::show_message_item(
+  const std::string& msg,
+  message_t          t,
+  bool               is_show_item)
+  : type(t)
+  , message(msg)
+  , is_show(is_show_item)
+{
 }
 
 show_message_item::show_message_item(

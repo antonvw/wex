@@ -12,7 +12,7 @@ LSP enables integration with language servers, providing features like:
 - Hover information
 - Jump to definition
 - Find references
-- Rename refactoring
+- Rename refactoring (not yet added)
 - Code formatting
 
 ### Design Principles
@@ -28,7 +28,6 @@ LSP enables integration with language servers, providing features like:
 
 3. **Extensible design:**
    - Support multiple language servers
-   - Pluggable configuration
 
 ## Implementation
 

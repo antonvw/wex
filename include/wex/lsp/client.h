@@ -116,6 +116,15 @@ public:
   /// Returns language id.
   const std::string& language_id() const;
 
+  /// Requests on type formatting information.
+  /// Returns true if successful.
+  bool on_type_formatting(
+    const wex::path&     path,
+    const position_item& pos,
+    char                 c,
+    bool                 use_tabs,
+    int                  tab_size);
+
   /// Shuts down the LSP connection gracefully.
   /// Returns true if shutdown was successful.
   bool shutdown();

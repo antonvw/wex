@@ -494,6 +494,15 @@ const std::string wex::del::frame::lsp_clients_trigger(syntax::stc* stc)
   return std::string();
 }
 
+bool wex::del::frame::lsp_clients_trigger_format(
+  wex::lsp::client* client,
+  char              c)
+{
+  const auto& tc(client->get_capabilities().trigger_character());
+
+  return !tc.empty() && tc.front() == c;
+}
+
 void wex::del::frame::on_command_item_dialog(
   wxWindowID            dialogid,
   const wxCommandEvent& event)

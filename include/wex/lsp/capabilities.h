@@ -26,14 +26,16 @@ public:
   {
     CAP_COMPLETION = 0,
     CAP_DEFINITION,
+    CAP_FORMATTING,
     CAP_HOVER,
   };
 
   /// Default constructor.
+  /// Initialized the support info.
   capabilities();
 
   /// A typedef containing capability flags.
-  using capabilities_t = std::bitset<3>;
+  using capabilities_t = std::bitset<4>;
 
   /// Returns the client capabilities.
   boost::json::object client() const;
@@ -53,6 +55,12 @@ public:
     return m_trigger_completion_characters;
   }
 
+  /// Returns the trigger character for on type formatting.
+  const std::string trigger_character() const
+  {
+    return m_first_trigger_character;
+  }
+
   /// Returns the trigger signature characters.
   const std::vector<std::string>& trigger_signature_characters() const
   {
@@ -65,6 +73,8 @@ private:
 
   std::vector<std::string> m_trigger_completion_characters;
   std::vector<std::string> m_trigger_signature_characters;
+
+  std::string m_first_trigger_character;
 };
 
 } // namespace lsp
