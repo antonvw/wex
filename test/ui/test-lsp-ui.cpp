@@ -31,7 +31,7 @@ TEST_CASE("wex::lsp-ui")
     auto* items = new wex::completions_t;
 
     wex::completion_item_element item("label");
-    items->elements.push_back(item);
+    items->elements.emplace_back(item);
 
     wex::set_lsp_completions(stc, items, frame());
   }
@@ -43,7 +43,7 @@ TEST_CASE("wex::lsp-ui")
     wex::definition_or_implementation_item item(
       "file:///project/src/utils.ts",
       wex::range_item(wex::position_item(10, 2), wex::position_item(11, 5)));
-    items->push_back(item);
+    items->emplace_back(item);
 
     wex::set_lsp_definition_or_implementation(frame(), items);
   }
@@ -52,7 +52,7 @@ TEST_CASE("wex::lsp-ui")
   {
     auto* diagnostics = new wex::diagnostics_t;
 
-    diagnostics->push_back(
+    diagnostics->emplace_back(
       wex::diagnostic_item(
         wex::range_item(wex::position_item(10, 2), wex::position_item(11, 5)),
         "Test diagnostic message"));
@@ -62,7 +62,8 @@ TEST_CASE("wex::lsp-ui")
 
   SECTION("set_lsp_hover")
   {
-    wex::set_lsp_hover(stc,
+    wex::set_lsp_hover(
+      stc,
       new wex::hover_item(wex::position_item(10, 2), "Test hover contents"));
   }
 
@@ -70,11 +71,11 @@ TEST_CASE("wex::lsp-ui")
   {
     auto* items = new wex::on_type_formatting_item_t;
 
-    items->push_back(
+    items->emplace_back(
       wex::on_type_formatting_item(
         wex::range_item(wex::position_item(12, 2), wex::position_item(12, 5)),
         "xyz"));
-    items->push_back(
+    items->emplace_back(
       wex::on_type_formatting_item(
         wex::range_item(wex::position_item(10, 2), wex::position_item(11, 5)),
         "abc"));
@@ -84,7 +85,10 @@ TEST_CASE("wex::lsp-ui")
 
   SECTION("set_lsp_show_message")
   {
-    wex::set_lsp_show_message(frame(), new wex::show_message_item(
-      wex::show_message_item::INFO, "Test show message"));
+    wex::set_lsp_show_message(
+      frame(),
+      new wex::show_message_item(
+        wex::show_message_item::INFO,
+        "Test show message"));
   }
 }

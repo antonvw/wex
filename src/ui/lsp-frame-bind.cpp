@@ -14,7 +14,9 @@
 #define LSP_HANDLE(TYPE, FUNCTION)                                             \
   {[=, this](const wxCommandEvent& event)                                      \
    {                                                                           \
-     if (auto* item = (TYPE*)event.GetClientData(); item != nullptr)           \
+     if (                                                                      \
+       auto* item = static_cast<TYPE*>(event.GetClientData());                 \
+       item != nullptr)                                                        \
      {                                                                         \
        FUNCTION(this, item);                                                   \
      }                                                                         \
@@ -29,7 +31,7 @@
       auto* stc = open_file(make_path_skip_uri(event.GetString()), data);      \
       stc != nullptr)                                                          \
     {                                                                          \
-      auto* item = (TYPE*)event.GetClientData();                               \
+      auto* item = static_cast<TYPE*>(event.GetClientData());                  \
       FUNCTION(dynamic_cast<syntax::stc*>(stc), item);                         \
       delete item;                                                             \
     }                                                                          \
@@ -40,7 +42,7 @@ void wex::frame::bind_lsp()
   bind(this).command(
     {{[=, this](const wxCommandEvent& event)
       {
-        auto* item = (completions_t*)event.GetClientData();
+        auto* item = static_cast<completions_t*>(event.GetClientData());
 
         if (
           auto* stc = open_file(make_path_skip_uri(event.GetString()));
@@ -60,9 +62,10 @@ void wex::frame::bind_lsp()
 
      {[=, this](const wxCommandEvent& event)
       {
-        auto* item = (diagnostics_t*)event.GetClientData();
+        auto* item = static_cast<diagnostics_t*>(event.GetClientData());
 
-        if (const path cur(make_path_skip_uri(event.GetString())); is_open(cur))
+        if (
+          const path& cur(make_path_skip_uri(event.GetString())); is_open(cur))
         {
           if (auto* stc = open_file(cur); stc != nullptr)
           {
@@ -87,7 +90,7 @@ void wex::frame::bind_lsp()
      {[=, this](const wxCommandEvent& event)
       {
         if (
-          auto* item = (show_message_item*)event.GetClientData();
+          auto* item = static_cast<show_message_item*>(event.GetClientData());
           item != nullptr)
         {
           set_lsp_show_message(this, item);
