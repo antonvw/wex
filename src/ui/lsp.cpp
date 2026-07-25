@@ -27,23 +27,6 @@ bool json_to_string(
   return true;
 }
 
-bool range_from_json(const boost::json::object& obj, range_item& range)
-{
-  if (!obj.contains("range"))
-  {
-    return false;
-  }
-
-  auto ro = obj.at("range");
-
-  range.start.line      = ro.at("start").at("line").as_int64();
-  range.start.character = ro.at("start").at("character").as_int64();
-  range.end.line        = ro.at("end").at("line").as_int64();
-  range.end.character   = ro.at("end").at("character").as_int64();
-
-  return true;
-}
-
 completion_item_element::completion_item_element(const std::string& lbl)
   : label(lbl)
 {
@@ -80,9 +63,9 @@ definition_or_implementation_item::definition_or_implementation_item(
 
 definition_or_implementation_item::definition_or_implementation_item(
   const boost::json::object& obj)
+  : range(obj)
+  , uri(obj.at("uri").as_string().data())
 {
-  range_from_json(obj, range);
-  uri = obj.at("uri").as_string().data();
 }
 
 diagnostic_item::diagnostic_item(const range_item& r, const std::string& msg)
@@ -92,8 +75,8 @@ diagnostic_item::diagnostic_item(const range_item& r, const std::string& msg)
 }
 
 diagnostic_item::diagnostic_item(const boost::json::object& obj)
+  : range(obj)
 {
-  range_from_json(obj, range);
   severity = static_cast<wex::severity_t>(obj.at("severity").as_int64());
 
   json_to_string(obj, "code", code);
@@ -125,8 +108,8 @@ on_type_formatting_item::on_type_formatting_item(
 }
 
 on_type_formatting_item::on_type_formatting_item(const boost::json::object& obj)
+  : range(obj)
 {
-  range_from_json(obj, range);
   json_to_string(obj, "newText", new_text);
 }
 
@@ -188,6 +171,11 @@ range_item::range_item(const position_item& strt, const position_item& nd)
 {
 }
 
+range_item::range_item(const boost::json::object& obj)
+{
+  set(obj);
+}
+
 boost::json::object range_item::json_object() const
 {
   boost::json::object obj;
@@ -196,6 +184,23 @@ boost::json::object range_item::json_object() const
   obj["end"]   = end.json_object();
 
   return obj;
+}
+
+bool range_item::set(const boost::json::object& obj)
+{
+  if (!obj.contains("range"))
+  {
+    return false;
+  }
+
+  auto ro = obj.at("range");
+
+  start.line      = ro.at("start").at("line").as_int64();
+  start.character = ro.at("start").at("character").as_int64();
+  end.line        = ro.at("end").at("line").as_int64();
+  end.character   = ro.at("end").at("character").as_int64();
+
+  return true;
 }
 
 std::stringstream range_item::log() const

@@ -39,6 +39,16 @@ TEST_CASE("wex::lsp")
     item.set_target(stc);
     REQUIRE(stc->GetTargetStart() == 0);
     REQUIRE(stc->GetTargetEnd() == 0);
+
+    const auto obj(string_to_json("{\"range\":{\
+         \"end\":{\"character\":30,\"line\":1153},\
+         \"start\":{\"character\":19,\"line\":1151}}}"));
+
+    REQUIRE(item.set(obj));
+    REQUIRE(item.start.line == 1151);
+    REQUIRE(item.start.character == 19);
+    REQUIRE(item.end.line == 1153);
+    REQUIRE(item.end.character == 30);
   }
 
   SECTION("completion_item_element")
@@ -154,19 +164,4 @@ TEST_CASE("wex::lsp")
   }
 
   SECTION("json_to_string") {}
-
-  SECTION("range_from_json")
-  {
-    const auto obj(string_to_json("{\"range\":{\
-         \"end\":{\"character\":30,\"line\":1153},\
-         \"start\":{\"character\":19,\"line\":1151}}}"));
-
-    wex::range_item range;
-
-    REQUIRE(wex::range_from_json(obj, range));
-    REQUIRE(range.start.line == 1151);
-    REQUIRE(range.start.character == 19);
-    REQUIRE(range.end.line == 1153);
-    REQUIRE(range.end.character == 30);
-  }
 }

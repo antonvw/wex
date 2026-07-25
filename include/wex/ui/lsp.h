@@ -62,11 +62,18 @@ struct range_item
     const position_item& strt = position_item(),
     const position_item& end  = position_item());
 
+  /// Constructor from a json object.
+  range_item(const boost::json::object& obj);
+
   /// Returns a JSON object representation of the range_item.
   boost::json::object json_object() const;
 
   /// Logs info about this class.
   std::stringstream log() const;
+
+  /// Sets from a json range object item.
+  /// Returns true if value can be converted.
+  bool set(const boost::json::object& obj);
 
   /// Sets the target range in the given wxStyledTextCtrl based on this
   /// range_item.
@@ -116,9 +123,9 @@ struct definition_or_implementation_item
   /// as received from the language server.
   definition_or_implementation_item(const boost::json::object& obj);
 
-  std::string uri;
+  const std::string uri;
 
-  range_item range;
+  const range_item range;
 };
 
 /// Represents a single diagnostic item(error, warning, etc.).
@@ -232,14 +239,6 @@ bool json_to_string(
   const std::string& key,
   /// the text containing conversion
   std::string& text);
-
-/// Convert a json range object to a range item.
-/// Returns true if value can be converted.
-bool range_from_json(
-  /// the value
-  const boost::json::object& obj,
-  /// the range containing conversion
-  range_item& range);
 
 /// Type alias for collections of completions returned by the language server.
 using completions_t = completion_item;

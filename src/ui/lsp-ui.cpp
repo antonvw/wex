@@ -132,17 +132,23 @@ void set_lsp_on_type(syntax::stc* stc, const on_type_formatting_item_t* items)
       return a.range.start.to_pos(stc) < b.range.start.to_pos(stc);
     });
 
-  int changed = 0;
-  const int curr = stc->GetCurrentPos();
+  int        caret_delta = 0;
+  const auto curr        = stc->GetCurrentPos();
 
   // apply the sorted items to the stc, and in reverse order to avoid messing
-  // up the positions of the remaining items
+  // up the positions of the remaining items.
+  // Only edit updates after the caret should contribute to
+  // cursor movement. See review comment in pull request 128:
+  // https://github.com/antonvw/wex/pull/1288
   for (const auto& item : sorted_items | std::views::reverse)
   {
-    changed += item.replace_target(stc);
+    if (const auto start = item.range.start.to_pos(stc); start < curr)
+    {
+      caret_delta += item.replace_target(stc);
+    }
   }
 
-  stc->SetCurrentPos(curr + changed);
+  stc->SetCurrentPos(curr + caret_delta);
   stc->SelectNone();
 }
 

@@ -8,8 +8,6 @@
 #include <wex/core/log.h>
 #include <wex/lsp/capabilities.h>
 
-#include <iostream>
-
 namespace wex
 {
 namespace lsp
@@ -136,6 +134,7 @@ std::stringstream capabilities::log() const
 bool capabilities::set(const boost::json::object& obj)
 {
   m_support.reset();
+  m_first_trigger_character.clear();
   m_trigger_completion_characters.clear();
   m_trigger_signature_characters.clear();
 
