@@ -201,6 +201,11 @@ bool wex::auto_complete::on_char(char c)
         lsp_client,
         c == '\r' ? '\n' : c))
     {
+      if (m_stc->AutoCompActive())
+      {
+        return false;
+      }
+
       lsp_client->on_type_formatting(
         m_stc->path(),
         position_item(m_stc),
