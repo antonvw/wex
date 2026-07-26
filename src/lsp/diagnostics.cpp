@@ -53,13 +53,13 @@ diagnostics_t diagnostics::get_line(const std::string& uri, int line) const
   std::vector<diagnostic_item> result;
   const auto&                  diags = get(uri);
 
-  for (const auto& diag : diags)
-  {
-    if (diag.range.start.line == line || diag.range.end.line == line)
+  std::ranges::copy_if(
+    diags,
+    std::back_inserter(result),
+    [line](const diagnostic_item& diag)
     {
-      result.push_back(diag);
-    }
-  }
+      return diag.range.start.line == line || diag.range.end.line == line;
+    });
 
   return result;
 }
@@ -67,6 +67,7 @@ diagnostics_t diagnostics::get_line(const std::string& uri, int line) const
 std::vector<std::string> diagnostics::get_uris() const
 {
   std::vector<std::string> uris;
+  uris.reserve(m_diagnostics.size());
 
   for (const auto& pair : m_diagnostics)
   {

@@ -71,10 +71,10 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
           data::dir::type_t().set(data::dir::FILES));
       },
       ID_EDIT_OPEN},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
         on_selected_paths(
-          [=, this](const std::vector<path> p)
+          [=, this](const std::vector<path>& p)
           {
             build(path_lexer(p[0]));
           });
@@ -114,7 +114,7 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
     [=, this](wxTreeEvent& event)
     {
       on_selected_paths(
-        [=, this](const std::vector<path> p)
+        [=, this](const std::vector<path>& p)
         {
           if (const auto& fn(p[0]); !fn.file_exists() && fn.dir_exists())
           {
@@ -140,10 +140,10 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
 
   Bind(
     wxEVT_TREE_ITEM_MENU,
-    [=, this](wxTreeEvent& event)
+    [=, this](const wxTreeEvent& event)
     {
       on_selected_paths(
-        [=, this](const std::vector<path> p)
+        [=, this](const std::vector<path>& p)
         {
           const wex::path_lexer filename(p[0]);
 
@@ -199,10 +199,10 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
 
   Bind(
     wxEVT_TREE_SEL_CHANGED,
-    [=, this](wxTreeEvent& event)
+    [=, this](const wxTreeEvent& event)
     {
       on_selected_paths(
-        [=, this](const std::vector<path> p)
+        [=, this](const std::vector<path>& p)
         {
           log::status() << p[0];
         });
