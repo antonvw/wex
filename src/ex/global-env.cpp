@@ -201,7 +201,7 @@ bool wex::global_env::process(addressrange_mark& am, const block_lines& block)
                          m_ex->command_parsed_data().text().ends_with('$') ?
                        1 :
                        0));
-  bool skip = false;
+  bool skipped = false;
 
   while (m_lines_skip.contains(line) &&
          line < m_ex->get_stc()->get_line_count())
@@ -211,11 +211,11 @@ bool wex::global_env::process(addressrange_mark& am, const block_lines& block)
       return false;
     }
 
-    skip = true;
+    skipped = true;
     line++;
   }
 
-  if (skip)
+  if (skipped)
   {
     return true;
   }
