@@ -5,6 +5,9 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
+#include <iterator>
+
 #include <wex/lsp/diagnostics.h>
 
 namespace wex
