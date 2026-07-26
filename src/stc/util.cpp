@@ -51,7 +51,7 @@ public:
       else
       {
         str << name() << "as hex: " << std::hex << m_val
-            << " as oct: " << std::oct << m_val << "\n";
+            << " as oct: " << std::oct << m_val << "\n" << std::dec;
       }
     }
   }
