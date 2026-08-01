@@ -45,7 +45,7 @@ public:
   /// for UI updates. The lexer determines which LSP server to use based on its
   /// configuration. If event_handler is nullptr, the client will not post
   /// events for UI updates.
-  client(const lexer& lexer, wxEvtHandler* event_handler = nullptr);
+  client(lexer lexer, wxEvtHandler* event_handler = nullptr);
 
   /// Destructor.
   ~client() = default;
@@ -137,6 +137,7 @@ private:
     const wex::path&     path,
     const position_item& pos,
     const std::string&   method);
+  bool initialize_prepare();
   bool write(const std::string& text, response_handler resp = nullptr);
 
   wxEvtHandler* m_event_handler{nullptr};

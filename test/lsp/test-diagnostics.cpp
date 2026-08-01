@@ -16,8 +16,6 @@ TEST_CASE("wex::lsp::diagnostics")
   {
     wex::diagnostic_item d(wex::range_item(), "Error: undeclared variable");
     d.severity = wex::severity_t::ERRORS;
-    d.source   = "clang";
-    d.code     = "undeclared_var";
 
     diags.add("file:///test.cpp", d);
 
@@ -25,23 +23,14 @@ TEST_CASE("wex::lsp::diagnostics")
     REQUIRE(result.size() == 1);
     REQUIRE(result[0].message == "Error: undeclared variable");
     REQUIRE(result[0].severity == wex::severity_t::ERRORS);
-    REQUIRE(result[0].source == "clang");
+    REQUIRE(result[0].source.empty());
   }
 
-  SECTION("get_line_diagnostics")
+  SECTION("get_line")
   {
-    wex::diagnostic_item d1, d2, d3;
-    d1.message          = "Warning 1";
-    d1.range.start.line = 10;
-    d1.range.end.line   = 10;
-
-    d2.message          = "Warning 2";
-    d2.range.start.line = 10;
-    d2.range.end.line   = 10;
-
-    d3.message          = "Warning 3";
-    d3.range.start.line = 15;
-    d3.range.end.line   = 15;
+    wex::diagnostic_item d1(wex::range_item({10, 0}, {10, 0}), "Warning 1"),
+      d2(wex::range_item({10, 0}, {10, 0}), "Warning 2"),
+      d3(wex::range_item({15, 0}, {15, 0}), "Warning 3");
 
     diags.add("file:///test.cpp", d1);
     diags.add("file:///test.cpp", d2);
@@ -58,8 +47,7 @@ TEST_CASE("wex::lsp::diagnostics")
 
   SECTION("clear_document")
   {
-    wex::diagnostic_item d;
-    d.message = "Test diagnostic";
+    wex::diagnostic_item d(wex::range_item(), "Test diagnostic");
     diags.add("file:///test.cpp", d);
 
     REQUIRE(diags.has("file:///test.cpp"));
@@ -74,8 +62,7 @@ TEST_CASE("wex::lsp::diagnostics")
 
   SECTION("clear_all")
   {
-    wex::diagnostic_item d;
-    d.message = "Test";
+    wex::diagnostic_item d(wex::range_item(), "Test");
 
     diags.add("file:///test1.cpp", d);
     diags.add("file:///test2.cpp", d);
@@ -93,32 +80,24 @@ TEST_CASE("wex::lsp::diagnostics")
 
   SECTION("get_uris")
   {
-    wex::diagnostic_item d;
-    d.message = "Test";
+    wex::diagnostic_item d(wex::range_item(), "Test");
 
     diags.add("file:///project/main.cpp", d);
     diags.add("file:///project/utils.cpp", d);
     diags.add("file:///project/lib.cpp", d);
 
-    auto uris = diags.get_uris();
+    const auto& uris = diags.get_uris();
 
     REQUIRE(uris.size() == 3);
-    REQUIRE(
-      std::find(uris.begin(), uris.end(), "file:///project/main.cpp") !=
-      uris.end());
-    REQUIRE(
-      std::find(uris.begin(), uris.end(), "file:///project/utils.cpp") !=
-      uris.end());
-    REQUIRE(
-      std::find(uris.begin(), uris.end(), "file:///project/lib.cpp") !=
-      uris.end());
+    REQUIRE(std::ranges::contains(uris, "file:///project/main.cpp"));
+    REQUIRE(std::ranges::contains(uris, "file:///project/utils.cpp"));
+    REQUIRE(std::ranges::contains(uris, "file:///project/lib.cpp"));
   }
 
   SECTION("multiple_documents")
   {
-    wex::diagnostic_item d1, d2;
-    d1.message = "Error in file1";
-    d2.message = "Error in file2";
+    wex::diagnostic_item d1(wex::range_item(), "Error in file1"),
+      d2(wex::range_item(), "Error in file2");
 
     diags.add("file:///file1.cpp", d1);
     diags.add("file:///file2.cpp", d2);
@@ -131,19 +110,15 @@ TEST_CASE("wex::lsp::diagnostics")
 
   SECTION("severity_levels")
   {
-    wex::diagnostic_item d_error, d_warning, d_info, d_hint;
+    wex::diagnostic_item d_error(wex::range_item(), "This is an error"),
+      d_warning(wex::range_item(), "This is a warning"),
+      d_info(wex::range_item(), "This is info"),
+      d_hint(wex::range_item(), "This is a hint");
 
-    d_error.message  = "This is an error";
-    d_error.severity = wex::severity_t::ERRORS;
-
-    d_warning.message  = "This is a warning";
+    d_error.severity   = wex::severity_t::ERRORS;
     d_warning.severity = wex::severity_t::WARNING;
-
-    d_info.message  = "This is info";
-    d_info.severity = wex::severity_t::INFO;
-
-    d_hint.message  = "This is a hint";
-    d_hint.severity = wex::severity_t::HINT;
+    d_info.severity    = wex::severity_t::INFO;
+    d_hint.severity    = wex::severity_t::HINT;
 
     diags.add("file:///test.cpp", d_error);
     diags.add("file:///test.cpp", d_warning);

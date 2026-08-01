@@ -32,6 +32,6 @@ public:
 
   /// Returns vector with selections, empty if nothing is selected.
   std::vector<path>
-    on_selected_paths(std::function<void(std::vector<path>)>) const;
+  on_selected_paths(const std::function<void(std::vector<path>)>&) const;
 };
 }; // namespace wex::del

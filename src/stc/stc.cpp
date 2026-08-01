@@ -107,37 +107,12 @@ wex::stc::stc(const wex::path& p, const data::stc& data)
     sync();
   }
 
-#ifdef __WXMSW__
-  SetEOLMode(wxSTC_EOL_CRLF);
-#elif __WXGTK__
-  SetEOLMode(wxSTC_EOL_LF);
-#else
-  SetEOLMode(wxSTC_EOL_CR);
-#endif
-
-  SetAdditionalCaretsBlink(true);
-  SetAdditionalCaretsVisible(true);
-  SetAdditionalSelectionTyping(true);
-  SetBackSpaceUnIndents(true);
-  SetMouseDwellTime(2000);
-
   SetMarginType(m_margin_line_number, wxSTC_MARGIN_NUMBER);
   SetMarginType(m_margin_divider_number, wxSTC_MARGIN_SYMBOL);
   SetMarginType(m_margin_folding_number, wxSTC_MARGIN_SYMBOL);
   SetMarginType(m_margin_text_number, wxSTC_MARGIN_TEXT);
 
   SetMarginMask(m_margin_folding_number, wxSTC_MASK_FOLDERS);
-
-  SetMarginSensitive(m_margin_divider_number, true);
-  SetMarginSensitive(m_margin_folding_number, true);
-  SetMarginSensitive(m_margin_text_number, true);
-
-  SetMultiPaste(wxSTC_MULTIPASTE_EACH);
-  SetMultipleSelection(true);
-
-  AutoCompSetAutoHide(true);
-  AutoCompSetIgnoreCase(false);
-  AutoCompSetMaxHeight(10);
 
   if (m_zoom == -1)
   {

@@ -848,6 +848,8 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
      The value of the attribute is the binary for the LSP server.
    - lsp-args: If this attribute is present, the arguments for running lsp server.
      The arguments are separated by a semicolon (;).
+   - lsp-path: If this attribute is present, the full path of the
+     lsp executable, if not present on a standard location
    Furthermore it might contain the next tags:
    1) <styles>. Colouring styles for this lexer.
       The attribute 'no' contains the scintilla styles.

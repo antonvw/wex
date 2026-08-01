@@ -27,6 +27,7 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.scintilla_lexer().empty());
     REQUIRE(lexer.lsp_server().empty());
     REQUIRE(lexer.lsp_server_arguments().empty());
+    REQUIRE(lexer.lsp_server_path().empty());
     REQUIRE(lexer.line_size() > 0);
   }
 
@@ -58,6 +59,7 @@ TEST_CASE("wex::lexer")
         spacevisible=\"always\"\
         lsp=\"clangd\"\
         lsp-args=\"--log=error; --space\"\
+        lsp-path=\"bin/clangd\"\
         tabdrawmode=\"arrow\" wrapline=\"char\"\
         tabmode=\"use\"\
         tabwidth=\"12\">\
@@ -73,6 +75,7 @@ TEST_CASE("wex::lexer")
       REQUIRE(lexer.lsp_server() == "clangd");
       REQUIRE(lexer.lsp_server_arguments().front() == "--log=error");
       REQUIRE(lexer.lsp_server_arguments().back() == "--space");
+      REQUIRE(lexer.lsp_server_path() == "bin/clangd");
       REQUIRE(lexer.attrib(_("Edge line")) == wxSTC_EDGE_LINE);
       REQUIRE(lexer.attrib(_("Expand tabs")) == 1);
       REQUIRE(lexer.attrib(_("Tab draw mode")) == wxSTC_TD_LONGARROW);

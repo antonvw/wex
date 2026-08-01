@@ -90,17 +90,15 @@ struct range_item
 struct completion_item_element
 {
   /// Default constructor, taking a label.
-  completion_item_element(const std::string& label = std::string());
+  completion_item_element(std::string label = std::string());
 
   /// Constructor from a JSON object,
   /// as received from the language server.
   completion_item_element(const boost::json::object& obj);
 
-  std::string
-    label; // Label of the completion item (e.g., function name, variable name)
-  int         kind{0}; // Completion item kind (e.g., function, variable, etc.)
-  std::string detail;  // Additional details about the completion item
-  std::string documentation; // Documentation string for the completion item
+  int kind{0}; // Completion item kind (e.g., function, variable, etc.)
+
+  const std::string detail, documentation, label;
 };
 
 /// Represents a completion item.
@@ -116,8 +114,8 @@ struct definition_or_implementation_item
 {
   /// Default constructor, taking a URI and a range.
   definition_or_implementation_item(
-    const std::string& u = std::string(),
-    const range_item&  r = range_item());
+    std::string       u = std::string(),
+    const range_item& r = range_item());
 
   /// Constructor from a JSON object,
   /// as received from the language server.
@@ -133,26 +131,19 @@ struct diagnostic_item
 {
   /// Default constructor, taking a range, and a message.
   diagnostic_item(
-    const range_item&  r   = range_item(),
-    const std::string& msg = std::string());
+    const range_item& r   = range_item(),
+    std::string       msg = std::string());
 
   /// Constructor from a JSON object,
   /// as received from the language server.
   diagnostic_item(const boost::json::object& obj);
 
-  range_item range;
+  const range_item range;
 
   /// Severity of the diagnostic
   severity_t severity{severity_t::INFO};
 
-  /// Diagnostic code
-  std::string code;
-
-  /// Diagnostic message
-  std::string message;
-
-  /// Source of the diagnostic (e.g., "clang", "gcc")
-  std::string source;
+  const std::string code, message, source;
 };
 
 /// Represents hover information.
@@ -161,7 +152,7 @@ struct hover_item
   /// Default constructor, taking a position and contents.
   hover_item(
     const position_item& p = position_item(),
-    const std::string&   c = std::string());
+    std::string          c = std::string());
 
   /// Constructor from a JSON object,
   /// as received from the language server.
@@ -169,11 +160,7 @@ struct hover_item
 
   position_item pos;
 
-  /// Contents of the hover information
-  std::string contents;
-
-  /// Kind of the hover information, like markdown.
-  std::string kind;
+  std::string contents, kind;
 };
 
 /// Represents an on-type formatting item, which specifies text changes to
@@ -182,8 +169,8 @@ struct on_type_formatting_item
 {
   /// Default constructor, taking a range and new_text.
   on_type_formatting_item(
-    const range_item&  rnge    = range_item(),
-    const std::string& nw_text = std::string());
+    const range_item& rnge    = range_item(),
+    std::string       nw_text = std::string());
 
   /// Constructor from a JSON object,
   /// as received from the language server.
@@ -217,9 +204,9 @@ struct show_message_item
 
   /// Default constructor, taking a message type and a message string.
   show_message_item(
-    const std::string& msg          = std::string(),
-    message_t          t            = INFO,
-    bool               is_show_item = true);
+    std::string msg          = std::string(),
+    message_t   t            = INFO,
+    bool        is_show_item = true);
 
   /// Constructor from a JSON object,
   /// as received from the language server.
@@ -231,14 +218,12 @@ struct show_message_item
 };
 
 /// Convert a json value that has a key with a string value to a string.
-/// Returns true if value can be converted.
-bool json_to_string(
+/// Returns empty string if value cannot be converted.
+std::string json_to_string(
   /// the value
   const boost::json::value& val,
   /// the key
-  const std::string& key,
-  /// the text containing conversion
-  std::string& text);
+  const std::string& key);
 
 /// Type alias for collections of completions returned by the language server.
 using completions_t = completion_item;

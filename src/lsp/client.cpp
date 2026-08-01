@@ -5,6 +5,9 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <expected>
+#include <utility>
+
 #include <wex/core/log.h>
 #include <wex/lsp/client.h>
 #include <wex/lsp/util.h>
@@ -15,6 +18,32 @@
 
 namespace wex
 {
+std::expected<boost::filesystem::path, std::string>
+find_executable(const lexer& l)
+{
+  if (const auto& sp(l.lsp_server_path()); !sp.empty())
+  {
+    if (
+      const auto& val(boost::process::environment::find_executable(sp));
+      !val.empty())
+    {
+      return val;
+    }
+
+    return std::unexpected{sp};
+  }
+
+  if (
+    const auto& val(
+      boost::process::environment::find_executable(l.lsp_server()));
+    !val.empty())
+  {
+    return val;
+  }
+
+  return std::unexpected{l.lsp_server()};
+}
+
 boost::json::object make_object(const wex::path& path, const position_item& p)
 {
   boost::json::object params, text_doc, pos(p.json_object());
@@ -70,8 +99,8 @@ boost::json::object make_text_doc_item(
 
 namespace lsp
 {
-client::client(const lexer& lexer, wxEvtHandler* event_handler)
-  : m_lexer(lexer)
+client::client(lexer lexer, wxEvtHandler* event_handler)
+  : m_lexer(std::move(lexer))
   , m_rpc(event_handler)
   , m_event_handler(event_handler)
 {
@@ -289,47 +318,35 @@ bool client::implementation(const wex::path& path, const position_item& pos)
 
 bool client::initialize(const wex::path& root_path)
 {
-  try
+  if (!initialize_prepare())
   {
-    m_context = std::make_unique<boost::asio::io_context>();
-    m_process = std::make_unique<boost::process::popen>(
-      *m_context,
-      boost::process::environment::find_executable(m_lexer.lsp_server()),
-      m_lexer.lsp_server_arguments());
-  }
-  catch (std::exception& e)
-  {
-    log(e) << "wex::lsp::client::initialize with path" << m_lexer.lsp_server();
     return false;
   }
 
   // JSON-RPC Protocol Implementation
   // 1. Send "initialize" request to server
-  // 2. Parse server capabilities
-  // 3. Send "initialized" notification
-  // 4. Set m_initialized = true
+  //    and parse server capabilities
+  // 2. Send "initialized" notification
+  // 3. Start process
 
   boost::json::object params;
-  params["processId"]    = nullptr;
+  params["processId"]    = std::to_string(m_process->id());
   params["rootPath"]     = root_path.string();
   params["capabilities"] = m_capabilities.client();
 
-  if (!write(
-        m_rpc.encode_request("initialize", params),
-        [this](const json_rpc_message& msg)
+  if (
+    !write(
+      m_rpc.encode_request("initialize", params),
+      [this](const json_rpc_message& msg)
+      {
+        if (!msg.is_error && msg.result.contains("capabilities"))
         {
-          if (!msg.is_error && msg.result.contains("capabilities"))
-          {
-            m_capabilities.set(msg.result.at("capabilities").as_object());
-            log::info("lsp::capabilities")
-              << m_lexer.lsp_server() << m_capabilities;
-          }
-        }))
-  {
-    return false;
-  }
-
-  if (!write(m_rpc.encode_notification("initialized")))
+          m_capabilities.set(msg.result.at("capabilities").as_object());
+          log::info("lsp::capabilities")
+            << m_lexer.lsp_server() << m_capabilities;
+        }
+      }) ||
+    !write(m_rpc.encode_notification("initialized")))
   {
     return false;
   }
@@ -341,6 +358,33 @@ bool client::initialize(const wex::path& root_path)
   m_listen_to_server = std::make_unique<listen_to_server>(this);
 
   return m_initialized;
+}
+
+bool client::initialize_prepare()
+{
+  const auto& exe(find_executable(m_lexer));
+
+  if (!exe)
+  {
+    log("wex::lsp::client::initialize") << exe.error();
+    return false;
+  }
+
+  try
+  {
+    m_context = std::make_unique<boost::asio::io_context>();
+    m_process = std::make_unique<boost::process::popen>(
+      *m_context,
+      exe.value(),
+      m_lexer.lsp_server_arguments());
+  }
+  catch (std::exception& e)
+  {
+    log(e) << "wex::lsp::client::initialize" << m_lexer.lsp_server();
+    return false;
+  }
+
+  return true;
 }
 
 bool client::is_running() const
@@ -446,7 +490,7 @@ bool client::write(const std::string& text, response_handler resp)
     return false;
   }
 
-  if (resp != nullptr)
+  if (resp != nullptr && m_event_handler != nullptr)
   {
     m_rpc.register_handler(resp);
   }

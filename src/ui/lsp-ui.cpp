@@ -40,7 +40,11 @@ void set_lsp_completions(
 
     for (const auto& comp : completions->elements)
     {
-      if (comp.label.starts_with(filter))
+      // on GTK it appears some labels start with a 255 int char,
+      // which the AutoCompShow can't handle
+      if (
+        !comp.label.empty() && comp.label.starts_with(filter) &&
+        isprint(comp.label.front()))
       {
         auto_complete_list += comp.label + separator;
       }
@@ -142,9 +146,11 @@ void set_lsp_on_type(syntax::stc* stc, const on_type_formatting_item_t* items)
   // https://github.com/antonvw/wex/pull/1288
   for (const auto& item : sorted_items | std::views::reverse)
   {
+    const auto delta(item.replace_target(stc));
+
     if (const auto start = item.range.start.to_pos(stc); start < curr)
     {
-      caret_delta += item.replace_target(stc);
+      caret_delta += delta;
     }
   }
 

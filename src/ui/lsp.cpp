@@ -7,44 +7,33 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
+#include <utility>
 
 #include <wex/ui/lsp.h>
 
 namespace wex
 {
-bool json_to_string(
-  const boost::json::value& val,
-  const std::string&        key,
-  std::string&              text)
+std::string
+json_to_string(const boost::json::value& val, const std::string& key)
 {
-  if (!val.is_object() || !val.as_object().contains(key))
-  {
-    return false;
-  }
-
-  text = val.at(key).as_string().c_str();
-
-  return true;
+  return val.is_object() && val.as_object().contains(key) ?
+           val.at(key).as_string().c_str() :
+           std::string();
 }
 
-completion_item_element::completion_item_element(const std::string& lbl)
-  : label(lbl)
+completion_item_element::completion_item_element(std::string lbl)
+  : label(std::move(lbl))
 {
 }
 
 completion_item_element::completion_item_element(const boost::json::object& obj)
+  : label(boost::algorithm::trim_copy(json_to_string(obj, "label")))
+  , detail(json_to_string(obj, "detail"))
 {
-  if (json_to_string(obj, "label", label))
-  {
-    boost::algorithm::trim(label);
-  }
-
   if (obj.contains("kind"))
   {
     kind = obj.at("kind").as_int64();
   }
-
-  json_to_string(obj, "detail", detail);
 
   if (obj.contains("documentation"))
   {
@@ -54,9 +43,9 @@ completion_item_element::completion_item_element(const boost::json::object& obj)
 }
 
 definition_or_implementation_item::definition_or_implementation_item(
-  const std::string& u,
-  const range_item&  r)
-  : uri(u)
+  std::string       u,
+  const range_item& r)
+  : uri(std::move(u))
   , range(r)
 {
 }
@@ -68,25 +57,24 @@ definition_or_implementation_item::definition_or_implementation_item(
 {
 }
 
-diagnostic_item::diagnostic_item(const range_item& r, const std::string& msg)
+diagnostic_item::diagnostic_item(const range_item& r, std::string msg)
   : range(r)
-  , message(msg)
+  , message(std::move(msg))
 {
 }
 
 diagnostic_item::diagnostic_item(const boost::json::object& obj)
   : range(obj)
+  , code(json_to_string(obj, "code"))
+  , message(json_to_string(obj, "message"))
+  , source(json_to_string(obj, "source"))
+  , severity(static_cast<wex::severity_t>(obj.at("severity").as_int64()))
 {
-  severity = static_cast<wex::severity_t>(obj.at("severity").as_int64());
-
-  json_to_string(obj, "code", code);
-  json_to_string(obj, "message", message);
-  json_to_string(obj, "source", source);
 }
 
-hover_item::hover_item(const position_item& p, const std::string& c)
+hover_item::hover_item(const position_item& p, std::string c)
   : pos(p)
-  , contents(c)
+  , contents(std::move(c))
 {
 }
 
@@ -96,21 +84,21 @@ hover_item::hover_item(const boost::json::object& obj)
   const auto val(con.at("value").as_string());
 
   contents = boost::json::serialize(val);
-  json_to_string(con, "kind", kind);
+  kind     = json_to_string(con, "kind");
 }
 
 on_type_formatting_item::on_type_formatting_item(
-  const range_item&  rnge,
-  const std::string& nw_text)
+  const range_item& rnge,
+  std::string       nw_text)
   : range(rnge)
-  , new_text(nw_text)
+  , new_text(std::move(nw_text))
 {
 }
 
 on_type_formatting_item::on_type_formatting_item(const boost::json::object& obj)
   : range(obj)
+  , new_text(json_to_string(obj, "newText"))
 {
-  json_to_string(obj, "newText", new_text);
 }
 
 std::stringstream on_type_formatting_item::log() const
@@ -213,11 +201,11 @@ std::stringstream range_item::log() const
 }
 
 show_message_item::show_message_item(
-  const std::string& msg,
-  message_t          t,
-  bool               is_show_item)
+  std::string msg,
+  message_t   t,
+  bool        is_show_item)
   : type(t)
-  , message(msg)
+  , message(std::move(msg))
   , is_show(is_show_item)
 {
 }
@@ -227,9 +215,8 @@ show_message_item::show_message_item(
   bool                       is_show_item)
   : type(show_message_item::INFO)
   , is_show(is_show_item)
+  , message(json_to_string(obj, "message"))
 {
-  json_to_string(obj, "message", message);
-
   if (obj.contains("type"))
   {
     type = static_cast<show_message_item::message_t>(obj.at("type").as_int64());

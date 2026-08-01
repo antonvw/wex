@@ -127,6 +127,8 @@ TEST_CASE("wex::lsp")
     REQUIRE(item.kind == "markdown");
   }
 
+  SECTION("json_to_string") {}
+
   SECTION("on_type_formatting")
   {
     const auto obj(string_to_json("{\
@@ -162,6 +164,4 @@ TEST_CASE("wex::lsp")
     CAPTURE(item.message);
     REQUIRE(item.message.starts_with("Build succ"));
   }
-
-  SECTION("json_to_string") {}
 }

@@ -24,6 +24,7 @@ enum
   ID_DLG_CONFIG_ITEM_READONLY,
   ID_DLG_ITEM,
   ID_DLG_LISTVIEW,
+  ID_DLG_LSP,
   ID_DLG_STC_ENTRY,
   ID_DLG_VCS,
   ID_PROJECT_OPEN,
@@ -99,7 +100,8 @@ frame::frame(app* app)
          {wxID_PREFERENCES},
          {ID_DLG_STC_ENTRY, wex::ellipsed("STC Entry Dialog")},
          {},
-         {ID_DLG_VCS, wex::ellipsed("VCS Dialog")}}),
+         {ID_DLG_VCS, wex::ellipsed("VCS Dialog")},
+         {ID_DLG_LSP, wex::ellipsed("LSP Dialog")}}),
       "&Dialog"},
      {new wex::menu(
         {{ID_STC_FLAGS, wex::ellipsed("Open Flag")},
@@ -300,9 +302,16 @@ void frame::bind_all()
 
      {[=, this](const wxCommandEvent& event)
       {
+        wex::lsp::client::config_dialog();
+      },
+      ID_DLG_LSP},
+
+     {[=, this](const wxCommandEvent& event)
+      {
         wex::vcs().config_dialog();
       },
       ID_DLG_VCS},
+
      {[=, this](const wxCommandEvent& event)
       {
         m_shell->prompt(
