@@ -5,6 +5,7 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log-none.h>
 #include <wex/test/test.h>
 #include <wex/ui/lsp.h>
 
@@ -127,7 +128,26 @@ TEST_CASE("wex::lsp")
     REQUIRE(item.kind == "markdown");
   }
 
-  SECTION("json_to_string") {}
+  SECTION("json_to_string")
+  {
+    const auto obj(string_to_json("{\
+      \"range\": {\
+        \"start\": { \"line\": \"0\", \"character\": 10 },\
+        \"mid\": { \"line\": 0, \"character\": 10 },\
+        \"end\": { \"line\": 1, \"character\": 14 }\
+      },\
+      \"line2\": \"5\",\
+      \"newText\": \"formatted\"\
+      }"));
+
+    wex::log_none off;
+
+    REQUIRE(wex::json_to_string(obj, "ewText").empty());
+    REQUIRE(wex::json_to_string(obj, "range").empty());
+    REQUIRE(wex::json_to_string(obj, "line").empty());
+    REQUIRE(wex::json_to_string(obj, "line2") == "5");
+    REQUIRE(wex::json_to_string(obj, "newText") == "formatted");
+  }
 
   SECTION("on_type_formatting")
   {

@@ -588,7 +588,7 @@ void wex::lexer::parse_attrib(const pugi::xml_node* node)
   m_language      = node->attribute("language").value();
   m_lsp           = node->attribute("lsp").value();
   m_lsp_arguments = tokenize_string(node->attribute("lsp-args").value());
-  m_lsp_path      = std::filesystem::path(node->attribute("lsp-path").value());
+  m_lsp_path      = node->attribute("lsp-path").value();
   m_previewable   = !node->attribute("preview").empty();
 
   if (

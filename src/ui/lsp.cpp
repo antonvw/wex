@@ -9,6 +9,7 @@
 #include <boost/algorithm/string.hpp>
 #include <utility>
 
+#include <wex/core/log.h>
 #include <wex/ui/lsp.h>
 
 namespace wex
@@ -16,9 +17,18 @@ namespace wex
 std::string
 json_to_string(const boost::json::value& val, const std::string& key)
 {
-  return val.is_object() && val.as_object().contains(key) ?
-           val.at(key).as_string().c_str() :
-           std::string();
+  try
+  {
+    return val.is_object() && val.as_object().contains(key) ?
+             val.at(key).as_string().c_str() :
+             std::string();
+  }
+  catch (const std::exception& e)
+  {
+    log(e) << "wex::json_to_string" << key;
+  }
+
+  return std::string();
 }
 
 completion_item_element::completion_item_element(std::string lbl)
