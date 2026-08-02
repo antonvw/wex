@@ -104,6 +104,10 @@ public:
     /// normally grep does not replace, by setting sed, it can
     bool sed = false);
 
+  /// Shows a dialog allowing you to choose which lsp server to use
+  /// Returns dialog return code.
+  int lsp_config_dialog(const data::window& data = data::window());
+
   /// Opens file from action with a possible extension to move.
   /// If file not empty returns false if an error occurred or no files opened,
   /// and true if at least one file was opened (does not need to exist).
@@ -231,6 +235,7 @@ private:
 
   void bind_all();
   void follow_path(syntax::stc* stc);
+  void lsp_client_add(const std::string& name);
   void lsp_clients_setup();
 
   stc_entry_dialog* entry_dialog(
@@ -239,7 +244,8 @@ private:
 
   void find_in_files(wex::window_id id);
 
-  item_dialog *     m_fif_dialog{nullptr}, *m_rif_dialog{nullptr};
+  item_dialog *m_fif_dialog{nullptr}, *m_rif_dialog{nullptr},
+    *m_lsp_dialog{nullptr};
   stc_entry_dialog* m_entry_dialog{nullptr};
   debug*            m_debug{nullptr};
   process*          m_process{nullptr};

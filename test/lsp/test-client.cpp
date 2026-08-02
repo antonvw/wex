@@ -43,7 +43,7 @@ TEST_CASE("wex::lsp::client")
 
     REQUIRE(client.initialize(wex::test::get_path()));
     REQUIRE(!client.completion(path, wex::position_item(5, 5)));
-    // REQUIRE(client.definition(path, wex::position_item(5, 5)));
+    REQUIRE(!client.definition(path, wex::position_item(5, 5)));
     REQUIRE(!client.hover(wex::path(), wex::position_item(5, 5)));
     REQUIRE(!client.hover(path, wex::position_item(5, 5)));
     REQUIRE(client.implementation(path, wex::position_item(5, 5)));
@@ -54,8 +54,13 @@ TEST_CASE("wex::lsp::client")
     REQUIRE(!client.hover(path, wex::position_item(1, 1)));
     REQUIRE(client.did_change(path, wex::range_item(), "main() {xxx};"));
     REQUIRE(client.version(path.uri()) == 2);
+    REQUIRE(client.did_save(path));
+    REQUIRE(client.version(path.uri()) == 2);
     REQUIRE(client.did_close(path));
     REQUIRE(client.version(path.uri()) == 2);
+    REQUIRE(
+      !client
+         .on_type_formatting(path, wex::position_item(5, 5), '\n', false, 2));
     REQUIRE(client.shutdown());
     REQUIRE(client.version(path.uri()) == 0);
   }

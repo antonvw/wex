@@ -51,6 +51,7 @@ diagnostics_t diagnostics::get(const std::string& uri) const
   static const std::vector<diagnostic_item> empty;
   return empty;
 }
+
 diagnostics_t diagnostics::get_line(const std::string& uri, int line) const
 {
   std::vector<diagnostic_item> result;

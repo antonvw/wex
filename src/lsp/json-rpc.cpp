@@ -45,7 +45,7 @@ json_rpc_message json_rpc::decode(const std::string& data)
     auto parsed = boost::json::parse(json_str);
     auto obj    = parsed.as_object();
 
-    json_to_string(obj, "jsonrpc", msg.jsonrpc);
+    msg.jsonrpc = json_to_string(obj, "jsonrpc");
 
     if (obj.contains("id"))
     {

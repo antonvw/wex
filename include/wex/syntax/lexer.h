@@ -141,6 +141,9 @@ public:
     return m_lsp_arguments;
   }
 
+  /// Return the lsp server path (default empty).
+  const std::string& lsp_server_path() const { return m_lsp_path; }
+
   /// Returns a lexer comment string with text formatted.
   const std::string make_comment(
     const std::string& text,
@@ -204,7 +207,8 @@ private:
   // however this might be different, as with c#.
   // In that case the scintilla lexer is cpp, whereas the display lexer is c#.
   std::string m_comment_begin, m_comment_begin2, m_command_end, m_command_end2,
-    m_display_lexer, m_extensions, m_language, m_lsp, m_scintilla_lexer;
+    m_display_lexer, m_extensions, m_language, m_lsp, m_lsp_path,
+    m_scintilla_lexer;
 
   // each keyword set in a separate keyword set
   std::unordered_map<int, std::set<std::string>> m_keywords_set;

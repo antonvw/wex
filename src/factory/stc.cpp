@@ -20,6 +20,31 @@ wex::factory::stc::stc(const wex::data::window& data)
       data.name())
   , m_command(this)
 {
+#ifdef __WXMSW__
+  SetEOLMode(wxSTC_EOL_CRLF);
+#elif __WXGTK__
+  SetEOLMode(wxSTC_EOL_LF);
+#else
+  SetEOLMode(wxSTC_EOL_CR);
+#endif
+
+  SetAdditionalCaretsBlink(true);
+  SetAdditionalCaretsVisible(true);
+  SetAdditionalSelectionTyping(true);
+  SetBackSpaceUnIndents(true);
+  SetMouseDwellTime(2000);
+
+  SetMarginSensitive(m_margin_divider_number, true);
+  SetMarginSensitive(m_margin_folding_number, true);
+  SetMarginSensitive(m_margin_text_number, true);
+
+  SetMultiPaste(wxSTC_MULTIPASTE_EACH);
+  SetMultipleSelection(true);
+
+  AutoCompSetAutoHide(true);
+  AutoCompSetIgnoreCase(false);
+  AutoCompSetMaxHeight(10);
+  AutoCompSetMaxWidth(50);
 }
 
 void wex::factory::stc::append_text(const std::string& text)

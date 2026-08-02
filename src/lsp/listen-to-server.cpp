@@ -24,7 +24,8 @@ namespace lsp
 listen_to_server::listen_to_server(client* cl)
   : m_client(cl)
 {
-  m_worker_thread = std::jthread(&listen_to_server::run, this, std::stop_token());
+  m_worker_thread =
+    std::jthread(&listen_to_server::run, this, std::stop_token());
 }
 
 std::string listen_to_server::read()
@@ -76,7 +77,7 @@ void listen_to_server::request_stop()
   m_worker_thread.request_stop();
 }
 
-void listen_to_server::run(std::stop_token st)
+void listen_to_server::run(const std::stop_token& st)
 {
   while (!st.stop_requested() && m_client->is_running())
   {

@@ -8,8 +8,6 @@
 #include <wex/wex.h>
 #include <wx/stockitem.h> // for wxGetStockLabel
 
-#include <numeric>
-
 const int id_compare     = wxWindow::NewControlId();
 const int id_show_hidden = wxWindow::NewControlId();
 
@@ -222,7 +220,7 @@ bool wex::del::dirctrl::expand_and_select_path(const wex::path& path)
 }
 
 std::vector<wex::path> wex::del::dirctrl::on_selected_paths(
-  std::function<void(std::vector<path> p)> f) const
+  const std::function<void(std::vector<path> p)>& f) const
 {
   const auto v(wex::to_vector_path(*this).get());
 
