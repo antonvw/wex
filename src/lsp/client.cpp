@@ -8,6 +8,7 @@
 #include <expected>
 #include <utility>
 
+#include <boost/process.hpp>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
 #include <wex/lsp/client.h>
@@ -305,7 +306,7 @@ bool client::initialize(const wex::path& root_path)
   // 3. Start process
 
   boost::json::object params;
-  params["processId"]    = std::to_string(m_process->id());
+  params["processId"]    = boost::process::current_pid();
   params["rootPath"]     = root_path.string();
   params["capabilities"] = m_capabilities.client();
 
