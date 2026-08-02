@@ -36,14 +36,12 @@ wex::del::frame::entry_dialog(const std::string& title, const std::string& text)
 
 int wex::del::frame::lsp_config_dialog(const data::window& par)
 {
-  const data::window data(
-    data::window(par).title(_("Set LSP Server").ToStdString()));
-
   item::choices_bool_t choices;
 
+  // name lsp server, with pair whether enabled and lexer name
   std::map<std::string, std::pair<bool, std::string>> servers_1;
 
-  for (auto& server : lexers::get()->get_lsp_servers())
+  for (const auto& server : lexers::get()->get_lsp_servers())
   {
     choices.insert(server.first);
 
@@ -54,7 +52,9 @@ int wex::del::frame::lsp_config_dialog(const data::window& par)
 
   if (m_lsp_dialog == nullptr)
   {
-    m_lsp_dialog = new item_dialog(std::vector<item>{{choices}}, data);
+    m_lsp_dialog = new item_dialog(
+      std::vector<item>{{choices}},
+      data::window(par).title(_("Set LSP Server").ToStdString()));
   }
   else
   {
@@ -65,16 +65,18 @@ int wex::del::frame::lsp_config_dialog(const data::window& par)
 
   std::map<std::string, bool> servers_2;
 
-  for (auto& server : lexers::get()->get_lsp_servers())
+  for (const auto& server : lexers::get()->get_lsp_servers())
   {
     servers_2.emplace(server.first, config(server.first).get(false));
   }
 
+  // so, if lsp server changed in config, shutdown if it was enabled,
+  // and add a client if it was disabled
   for (auto& server : servers_1)
   {
     if (server.second.first != servers_2[server.first])
     {
-      auto it = std::ranges::find_if(
+      const auto it = std::ranges::find_if(
         m_lsp_clients,
         [server](auto const* client)
         {
