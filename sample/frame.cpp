@@ -302,7 +302,7 @@ void frame::bind_all()
 
      {[=, this](const wxCommandEvent& event)
       {
-        wex::lsp::client::config_dialog();
+        lsp_config_dialog();
       },
       ID_DLG_LSP},
 

@@ -26,8 +26,6 @@ class wxEvtHandler;
 
 namespace wex
 {
-class item_dialog;
-
 namespace lsp
 {
 /// Represents the Language Server Protocol client.
@@ -37,10 +35,6 @@ class client
   friend class listen_to_server;
 
 public:
-  /// Shows a dialog allowing you to choose which lsp server to use
-  /// Returns dialog return code.
-  static int config_dialog(const data::window& data = data::window());
-
   /// Constructor, specify lexer for which to create a LSP client, and handler
   /// for UI updates. The lexer determines which LSP server to use based on its
   /// configuration. If event_handler is nullptr, the client will not post
@@ -116,6 +110,9 @@ public:
   /// Returns language id.
   const std::string& language_id() const;
 
+  /// Returns the lsp server.
+  const std::string& lsp_server() const;
+
   /// Requests on type formatting information.
   /// Returns true if successful.
   bool on_type_formatting(
@@ -153,8 +150,6 @@ private:
   const lexer m_lexer;
 
   std::unordered_map<std::string, int> m_uri_versions;
-
-  static inline item_dialog* m_item_dialog{nullptr};
 };
 
 } // namespace lsp

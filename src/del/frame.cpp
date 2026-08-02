@@ -299,33 +299,6 @@ wex::config::strings_t wex::del::frame::default_extensions() const
   return l;
 }
 
-wex::stc_entry_dialog*
-wex::del::frame::entry_dialog(const std::string& title, const std::string& text)
-{
-  if (m_entry_dialog == nullptr)
-  {
-    m_entry_dialog = new stc_entry_dialog(
-      text,
-      std::string(),
-      data::window().title(title),
-      data::stc(data::window().size({350, 250})));
-  }
-  else
-  {
-    if (!text.empty())
-    {
-      m_entry_dialog->get_stc()->set_text(text);
-    }
-
-    if (!title.empty())
-    {
-      m_entry_dialog->SetTitle(title);
-    }
-  }
-
-  return m_entry_dialog;
-}
-
 void wex::del::frame::follow_path(syntax::stc* stc)
 {
   if (!m_skip_set_current_path)
@@ -422,6 +395,13 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
   return true;
 }
 
+void wex::del::frame::lsp_client_add(const std::string& name)
+{
+  auto* client = new lsp::client(lexer(name), this);
+  client->initialize(path::current());
+  m_lsp_clients.emplace_back(client);
+}
+
 wex::lsp::client* wex::del::frame::lsp_clients_find(const path& p)
 {
   for (auto* client : m_lsp_clients)
@@ -454,9 +434,7 @@ void wex::del::frame::lsp_clients_setup()
   {
     if (config(server.first).get(false))
     {
-      auto* client = new lsp::client(lexer(server.second), this);
-      client->initialize(path::current());
-      m_lsp_clients.emplace_back(client);
+      lsp_client_add(server.second);
     }
   }
 }
@@ -501,64 +479,6 @@ bool wex::del::frame::lsp_clients_trigger_format(
   const auto& tc(client->get_capabilities().trigger_character());
 
   return !tc.empty() && tc.front() == c;
-}
-
-void wex::del::frame::on_command_item_dialog(
-  wxWindowID            dialogid,
-  const wxCommandEvent& event)
-{
-  switch (event.GetId())
-  {
-    case wxID_CANCEL:
-      if (interruptible::is_running())
-      {
-        interruptible::end();
-        log::status(_("Cancelled"));
-      }
-      break;
-
-    case wxID_OK:
-    case wxID_APPLY:
-      switch (dialogid)
-      {
-        case wxID_ADD:
-          if (auto* p = get_project(); p != nullptr)
-          {
-            data::dir::type_t flags = 0;
-
-            if (config(p->text_addfiles()).get(true))
-            {
-              flags.set(data::dir::FILES);
-            }
-            if (config(p->text_addrecursive()).get(true))
-            {
-              flags.set(data::dir::RECURSIVE);
-            }
-            if (config(p->text_addfolders()).get(true))
-            {
-              flags.set(data::dir::DIRS);
-            }
-
-            p->add_items(
-              config(p->text_infolder()).get_first_of(),
-              config(p->text_addwhat()).get_first_of(),
-              flags);
-          }
-          break;
-
-        case id_find_in_files:
-        case id_replace_in_files:
-          find_in_files((wex::window_id)dialogid);
-          break;
-
-        default:
-          log::trace("on_command_item_dialog") << event.GetId();
-      }
-      break;
-
-    default:
-      assert(0);
-  }
 }
 
 void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)
@@ -896,32 +816,6 @@ void wex::del::frame::statustext_vcs(factory::stc* stc)
   {
     statustext(m_vcs->name(), "PaneVCS");
   }
-}
-
-wex::syntax::stc* wex::del::frame::stc_entry_dialog_component()
-{
-  return entry_dialog()->get_stc();
-}
-
-int wex::del::frame::stc_entry_dialog_show(bool modal)
-{
-  return modal ? entry_dialog()->ShowModal() : entry_dialog()->Show();
-}
-
-std::string wex::del::frame::stc_entry_dialog_title() const
-{
-  return m_entry_dialog == nullptr ? std::string() :
-                                     m_entry_dialog->GetTitle().ToStdString();
-}
-
-void wex::del::frame::stc_entry_dialog_title(const std::string& title)
-{
-  entry_dialog(title)->SetTitle(title);
-}
-
-void wex::del::frame::stc_entry_dialog_validator(const std::string& regex)
-{
-  entry_dialog()->set_validator(regex);
 }
 
 void wex::del::frame::use_file_history_list(listview* list)

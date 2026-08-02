@@ -8,12 +8,12 @@
 #include <expected>
 #include <utility>
 
+#include <wex/core/config.h>
 #include <wex/core/log.h>
 #include <wex/lsp/client.h>
 #include <wex/lsp/util.h>
 #include <wex/syntax/lexers.h>
 #include <wex/ui/defs.h>
-#include <wex/ui/item-dialog.h>
 #include <wex/ui/lsp.h>
 
 namespace wex
@@ -154,31 +154,6 @@ bool client::completion(
                  completion);
              }
            });
-}
-
-int wex::lsp::client::config_dialog(const data::window& par)
-{
-  const data::window data(
-    data::window(par).title(_("Set LSP Server").ToStdString()));
-
-  if (m_item_dialog == nullptr)
-  {
-    item::choices_bool_t choices;
-
-    for (auto& server : lexers::get()->get_lsp_servers())
-    {
-      choices.insert(server.first);
-    }
-
-    m_item_dialog = new item_dialog(std::vector<item>{{choices}}, data);
-  }
-  else
-  {
-    m_item_dialog->reload();
-  }
-
-  return (data.button() & wxAPPLY) ? m_item_dialog->Show() :
-                                     m_item_dialog->ShowModal();
 }
 
 bool client::definition(const wex::path& path, const position_item& pos)
@@ -395,6 +370,11 @@ bool client::is_running() const
 const std::string& client::language_id() const
 {
   return m_lexer.scintilla_lexer();
+}
+
+const std::string& client::lsp_server() const
+{
+  return m_lexer.lsp_server();
 }
 
 bool client::on_type_formatting(
