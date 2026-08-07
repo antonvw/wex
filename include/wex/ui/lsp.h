@@ -89,8 +89,8 @@ struct range_item
 /// Represents an element of a completion item.
 struct completion_item_element
 {
-  /// Default constructor, taking a label.
-  completion_item_element(std::string label = std::string());
+  /// Default constructor, taking insert text.
+  completion_item_element(std::string text = std::string());
 
   /// Constructor from a JSON object,
   /// as received from the language server.
@@ -98,7 +98,7 @@ struct completion_item_element
 
   int kind{0}; // Completion item kind (e.g., function, variable, etc.)
 
-  const std::string detail, documentation, label;
+  const std::string detail, documentation, insert_text;
 };
 
 /// Represents a completion item.

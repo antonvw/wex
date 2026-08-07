@@ -59,7 +59,7 @@ TEST_CASE("wex::lsp")
          \"start\":{\"character\":19,\"line\":1151}}}"));
 
     wex::completion_item_element item(obj);
-    REQUIRE(item.label.empty());
+    REQUIRE(item.insert_text.empty());
     REQUIRE(item.kind == 0);
     REQUIRE(item.detail.empty());
     REQUIRE(item.documentation.empty());

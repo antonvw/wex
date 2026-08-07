@@ -31,13 +31,13 @@ json_to_string(const boost::json::value& val, const std::string& key)
   return std::string();
 }
 
-completion_item_element::completion_item_element(std::string lbl)
-  : label(std::move(lbl))
+completion_item_element::completion_item_element(std::string text)
+  : insert_text(std::move(text))
 {
 }
 
 completion_item_element::completion_item_element(const boost::json::object& obj)
-  : label(boost::algorithm::trim_copy(json_to_string(obj, "label")))
+  : insert_text(boost::algorithm::trim_copy(json_to_string(obj, "insertText")))
   , detail(json_to_string(obj, "detail"))
 {
   if (obj.contains("kind"))
