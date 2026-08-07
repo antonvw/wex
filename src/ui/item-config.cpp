@@ -2,7 +2,7 @@
 // Name:      config_item.cpp
 // Purpose:   Implementation of wex::item class config methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
@@ -11,7 +11,7 @@
 #include <wex/ui/frd.h>
 #include <wx/settings.h>
 
-#include <boost/process/v2/environment.hpp>
+#include <boost/process/environment.hpp>
 
 #define PERSISTENT(TYPE, DEFAULT)                                              \
   {                                                                            \
@@ -26,8 +26,6 @@
     PERSISTENT(ITEM_CAST, METHOD);                                             \
     break;
 
-#include <filesystem>
-
 #include "item.h"
 
 namespace wex
@@ -36,8 +34,9 @@ bool persistent_checkbox_frd(wxCheckListBox* clb, int item, bool save)
 {
   auto* frd = find_replace_data::get();
 
-  if (const std::string field(clb->GetString(item));
-      field == frd->text_match_word())
+  if (
+    const std::string field(clb->GetString(item));
+    field == frd->text_match_word())
   {
     !save ? clb->Check(item, frd->match_word()) :
             frd->set_match_word(clb->IsChecked(item));
@@ -67,8 +66,9 @@ bool persistent_checkbox_frd(wxCheckListBox* clb, int item, bool save)
 
 void persistent_checkbox(const wex::item* item, bool save)
 {
-  if (auto* clb = reinterpret_cast<wxCheckListBox*>(item->window());
-      clb != nullptr)
+  if (
+    auto* clb = reinterpret_cast<wxCheckListBox*>(item->window());
+    clb != nullptr)
   {
     for (size_t i = 0; const auto& c : std::any_cast<item::choices_bool_t>(
                          item->data().initial()))
@@ -96,8 +96,9 @@ void persistent_combobox(const wex::item* item, bool save)
 
   if (auto* cb = reinterpret_cast<wxComboBox*>(item->window()); save)
   {
-    if (const auto l = to_list_string(cb, max_items).get();
-        item->label() == find_replace_data::get()->text_find())
+    if (
+      const auto l = to_list_string(cb, max_items).get();
+      item->label() == find_replace_data::get()->text_find())
     {
       find_replace_data::get()->set_find_strings(l);
     }
@@ -130,9 +131,10 @@ void persistent_filepicker(const wex::item* item, bool save)
   }
   else
   {
-    if (const auto initial = boost::process::v2::environment::find_executable(
-          item->label_window());
-        !initial.empty())
+    if (
+      const auto initial =
+        boost::process::environment::find_executable(item->label_window());
+      !initial.empty())
     {
       item->set_value(config(item->label()).get(initial.string()));
     }
@@ -155,9 +157,10 @@ void persistent_radiobox(const wex::item* item, bool save)
   {
     const auto& choices(std::any_cast<item::choices_t>(item->data().initial()));
 
-    if (const auto c =
-          choices.find(config(item->label()).get(rb->GetSelection()));
-        c != choices.end())
+    if (
+      const auto c =
+        choices.find(config(item->label()).get(rb->GetSelection()));
+      c != choices.end())
     {
       rb->SetStringSelection(find_before(c->second, ","));
     }

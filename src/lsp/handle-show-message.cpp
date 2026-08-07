@@ -14,7 +14,7 @@ namespace wex
 namespace lsp
 {
 
-bool json_rpc::handle_show_message(const json_rpc_message& notification)
+bool json_rpc::handle_show_message(const json_rpc_message& notification) const
 {
   auto* msg = new show_message_item(
     notification.params,

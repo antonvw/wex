@@ -20,8 +20,6 @@
 #include <wex/ui/item.h>
 #include <wex/vcs/vcs.h>
 
-#include <set>
-
 namespace wex
 {
 class debug;
@@ -59,6 +57,10 @@ public:
   /// your implementation should return that one.
   /// Default it returns nullptr.
   virtual file* get_project() { return nullptr; }
+
+  /// If you enabled a server, that was previously not enabled,
+  /// this method is invoked to notify derived classes.
+  virtual void lsp_sync(const std::set<std::string>& lexers) { ; };
 
   // Other methods
 
@@ -103,6 +105,9 @@ public:
     const std::string& line,
     /// normally grep does not replace, by setting sed, it can
     bool sed = false);
+
+  /// Finds a lsp client based on lexer.
+  lsp::client* lsp_clients_find(const std::string& lexer);
 
   /// Shows a dialog allowing you to choose which lsp server to use
   /// Returns dialog return code.
@@ -233,10 +238,10 @@ private:
   wex::listview* activate_and_clear(const wex::tool& tool);
   data::dir      build_dir() const;
 
-  void bind_all();
-  void follow_path(syntax::stc* stc);
-  void lsp_client_add(const std::string& name);
-  void lsp_clients_setup();
+  void         bind_all();
+  void         follow_path(syntax::stc* stc);
+  lsp::client* lsp_client_add(const std::string& name);
+  void         lsp_clients_setup();
 
   stc_entry_dialog* entry_dialog(
     const std::string& title = std::string(),
