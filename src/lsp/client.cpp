@@ -141,8 +141,7 @@ bool client::completion(
 
                for (const auto& item : msg.result.at("items").as_array())
                {
-                 completion_item_element completion_element(item.as_object());
-                 completion->elements.push_back(completion_element);
+                 completion->elements.emplace_back(item.as_object());
                }
 
                queue_event(
@@ -391,13 +390,11 @@ bool client::on_type_formatting(
            m_rpc.encode_request("textDocument/onTypeFormatting", obj),
            [=, this](const json_rpc_message& msg)
            {
-             const auto& array = msg.result_array;
-             auto*       item  = new on_type_formatting_item_t;
+             auto* item = new on_type_formatting_item_t;
 
-             for (const auto& elem : array)
+             for (const auto& elem : msg.result_array)
              {
-               const wex::on_type_formatting_item si(elem.as_object());
-               item->emplace_back(si);
+               item->emplace_back(elem.as_object());
              }
 
              queue_event(m_event_handler, path.uri(), ID_LSP_FORMAT, item);
