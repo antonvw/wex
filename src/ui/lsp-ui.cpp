@@ -40,13 +40,9 @@ void set_lsp_completions(
 
     for (const auto& comp : completions->elements)
     {
-      // on GTK it appears some labels start with a 255 int char,
-      // which the AutoCompShow can't handle
-      if (
-        !comp.label.empty() && comp.label.starts_with(filter) &&
-        isprint(comp.label.front()))
+      if (comp.insert_text.starts_with(filter))
       {
-        auto_complete_list += comp.label + separator;
+        auto_complete_list += comp.insert_text + separator;
       }
     }
 

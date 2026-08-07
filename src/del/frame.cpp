@@ -81,7 +81,25 @@ bool is_ex(ex_commandline* cl)
 {
   return cl->stc() != nullptr && !cl->stc()->is_visual();
 }
+
+// Returns true if there is a server for this language and it is enabled.
+bool lsp_server_enabled(lsp::client* client)
+{
+  for (const auto& [key, value] : lexers::get()->get_lsp_servers())
+  {
+    if (value == client->language_id())
+    {
+      if (config(key).get(false))
+      {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
 } // namespace wex::del
+// namespace wex::del
 
 wex::del::frame::frame(
   size_t              maxFiles,
@@ -395,11 +413,37 @@ bool wex::del::frame::grep(const std::string& arg, bool sed)
   return true;
 }
 
-void wex::del::frame::lsp_client_add(const std::string& name)
+wex::lsp::client* wex::del::frame::lsp_client_add(const std::string& name)
 {
   auto* client = new lsp::client(lexer(name), this);
-  client->initialize(path::current());
+
+  if (!client->initialize(path::current()))
+  {
+    delete client;
+    return nullptr;
+  }
+
   m_lsp_clients.emplace_back(client);
+
+  return client;
+}
+
+wex::lsp::client* wex::del::frame::lsp_clients_find(const std::string& lexer)
+{
+  for (auto* client : m_lsp_clients)
+  {
+    if (client->language_id() == lexer)
+    {
+      if (!lsp_server_enabled(client))
+      {
+        return nullptr;
+      }
+
+      return client;
+    }
+  }
+
+  return nullptr;
 }
 
 wex::lsp::client* wex::del::frame::lsp_clients_find(const path& p)
@@ -408,17 +452,9 @@ wex::lsp::client* wex::del::frame::lsp_clients_find(const path& p)
   {
     if (matches_one_of(p.filename(), client->extensions()))
     {
-      // If there is a server for this language, but it is not enabled return
-      // nullptr.
-      for (const auto& [key, value] : lexers::get()->get_lsp_servers())
+      if (!lsp_server_enabled(client))
       {
-        if (value == client->language_id())
-        {
-          if (!config(key).get(false))
-          {
-            return nullptr;
-          }
-        }
+        return nullptr;
       }
 
       return client;

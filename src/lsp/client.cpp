@@ -5,10 +5,6 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <expected>
-#include <utility>
-
-#include <boost/process.hpp>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
 #include <wex/lsp/client.h>
@@ -17,32 +13,33 @@
 #include <wex/ui/defs.h>
 #include <wex/ui/lsp.h>
 
+#include <expected>
+#include <utility>
+
+#include <boost/process.hpp>
+
 namespace wex
 {
 std::expected<boost::filesystem::path, std::string>
-find_executable(const lexer& l)
+find_lsp_executable(const lexer& l)
 {
-  if (const auto& sp(l.lsp_server_path()); !sp.empty())
+  for (const auto& exe :
+       std::vector<std::string>({l.lsp_server_path(), l.lsp_server()}))
   {
-    if (
-      const auto& val(boost::process::environment::find_executable(sp));
-      !val.empty())
+    if (!exe.empty())
     {
-      return val;
+      if (
+        const auto& val(boost::process::environment::find_executable(exe));
+        !val.empty())
+      {
+        return val;
+      }
+
+      return std::unexpected{exe};
     }
-
-    return std::unexpected{sp};
   }
 
-  if (
-    const auto& val(
-      boost::process::environment::find_executable(l.lsp_server()));
-    !val.empty())
-  {
-    return val;
-  }
-
-  return std::unexpected{l.lsp_server()};
+  return std::unexpected{"empty lsp exe"};
 }
 
 boost::json::object make_object(const wex::path& path, const position_item& p)
@@ -135,7 +132,7 @@ bool client::completion(
            m_rpc.encode_request("textDocument/completion", obj),
            [=, this](const json_rpc_message& msg)
            {
-             if (!msg.is_error && msg.result.contains("items"))
+             if (msg.result.contains("items"))
              {
                auto* completion = new completions_t;
                completion->pos  = pos;
@@ -144,8 +141,7 @@ bool client::completion(
 
                for (const auto& item : msg.result.at("items").as_array())
                {
-                 completion_item_element completion_element(item.as_object());
-                 completion->elements.push_back(completion_element);
+                 completion->elements.emplace_back(item.as_object());
                }
 
                queue_event(
@@ -172,30 +168,25 @@ bool client::definition_or_implementation(
     m_rpc.encode_request(method, make_object(path, pos)),
     [=, this](const json_rpc_message& msg)
     {
-      if (!msg.is_error)
+      auto* definition = new definition_or_implementation_t;
+
+      for (const auto& item : msg.result_array)
       {
-        auto* definition = new definition_or_implementation_t;
+        definition->emplace_back(item.as_object());
+      }
 
-        for (const auto& item : msg.result_array)
-        {
-          definition_or_implementation_item di(item.as_object());
-          definition->push_back(di);
-        }
-
-        if (definition->empty())
-        {
-          delete definition;
-          definition = nullptr;
-        }
-        else
-        {
-          queue_event(
-            m_event_handler,
-            path.uri(),
-            method == "textDocument/definition" ? ID_LSP_DEFINITION :
-                                                  ID_LSP_IMPLEMENTATION,
-            definition);
-        }
+      if (definition->empty())
+      {
+        delete definition;
+      }
+      else
+      {
+        queue_event(
+          m_event_handler,
+          path.uri(),
+          method == "textDocument/definition" ? ID_LSP_DEFINITION :
+                                                ID_LSP_IMPLEMENTATION,
+          definition);
       }
     });
 }
@@ -277,7 +268,7 @@ bool client::hover(const wex::path& path, const position_item& pos)
            m_rpc.encode_request("textDocument/hover", make_object(path, pos)),
            [=, this](const json_rpc_message& msg)
            {
-             if (!msg.is_error && msg.result.contains("contents"))
+             if (msg.result.contains("contents"))
              {
                auto* hover = new hover_t(msg.result);
                hover->pos  = pos;
@@ -315,7 +306,7 @@ bool client::initialize(const wex::path& root_path)
       m_rpc.encode_request("initialize", params),
       [this](const json_rpc_message& msg)
       {
-        if (!msg.is_error && msg.result.contains("capabilities"))
+        if (msg.result.contains("capabilities"))
         {
           m_capabilities.set(msg.result.at("capabilities").as_object());
           log::info("lsp::capabilities")
@@ -338,11 +329,11 @@ bool client::initialize(const wex::path& root_path)
 
 bool client::initialize_prepare()
 {
-  const auto& exe(find_executable(m_lexer));
+  const auto& exe(find_lsp_executable(m_lexer));
 
   if (!exe)
   {
-    log("wex::lsp::client::initialize") << exe.error();
+    log("wex::lsp::client::initialize") << exe.error() << "not found";
     return false;
   }
 
@@ -399,19 +390,14 @@ bool client::on_type_formatting(
            m_rpc.encode_request("textDocument/onTypeFormatting", obj),
            [=, this](const json_rpc_message& msg)
            {
-             if (!msg.is_error)
+             auto* item = new on_type_formatting_item_t;
+
+             for (const auto& elem : msg.result_array)
              {
-               const auto& array = msg.result_array;
-               auto*       item  = new on_type_formatting_item_t;
-
-               for (const auto& elem : array)
-               {
-                 const wex::on_type_formatting_item si(elem.as_object());
-                 item->emplace_back(si);
-               }
-
-               queue_event(m_event_handler, path.uri(), ID_LSP_FORMAT, item);
+               item->emplace_back(elem.as_object());
              }
+
+             queue_event(m_event_handler, path.uri(), ID_LSP_FORMAT, item);
            });
 }
 
@@ -423,16 +409,7 @@ bool client::shutdown()
   // 3. Stop process
 
   if (
-    !m_initialized ||
-    !write(
-      m_rpc.encode_request("shutdown"),
-      [this](const json_rpc_message& msg)
-      {
-        if (msg.is_error)
-        {
-          log("shutdown failed") << msg.id;
-        }
-      }) ||
+    !m_initialized || !write(m_rpc.encode_request("shutdown")) ||
     !write(m_rpc.encode_notification("exit")))
   {
     return false;

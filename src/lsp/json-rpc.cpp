@@ -15,6 +15,28 @@
 
 namespace wex
 {
+std::string make_output(const boost::json::object& obj)
+{
+  const auto&       json_str(boost::json::serialize(obj));
+  const auto&       header = lsp::json_rpc::header_part_content_field() +
+                             std::to_string(json_str.length());
+  const std::string output = header + "\r\n\r\n" + json_str;
+
+  return output;
+}
+
+std::string make_method(
+  boost::json::object        obj,
+  const std::string&         method,
+  const boost::json::object& params)
+{
+  obj["jsonrpc"] = "2.0";
+  obj["method"]  = method;
+  obj["params"]  = params;
+
+  return make_output(obj);
+}
+
 namespace lsp
 {
 
@@ -23,7 +45,7 @@ json_rpc::json_rpc(wxEvtHandler* eh)
 {
 }
 
-json_rpc_message json_rpc::decode(const std::string& data)
+json_rpc_message json_rpc::decode(const std::string& data) const
 {
   json_rpc_message msg;
 
@@ -45,7 +67,10 @@ json_rpc_message json_rpc::decode(const std::string& data)
     auto parsed = boost::json::parse(json_str);
     auto obj    = parsed.as_object();
 
-    msg.jsonrpc = json_to_string(obj, "jsonrpc");
+    if (const auto jsonrpc(json_to_string(obj, "jsonrpc")); jsonrpc != "2.0")
+    {
+      log::status("unexpected jsonrpc") << jsonrpc;
+    }
 
     if (obj.contains("id"))
     {
@@ -58,7 +83,6 @@ json_rpc_message json_rpc::decode(const std::string& data)
     }
     else if (obj.contains("result") || obj.contains("error"))
     {
-      msg.is_response = true;
       msg.is_error    = obj.contains("error");
 
       if (obj.contains("result"))
@@ -93,7 +117,8 @@ json_rpc_message json_rpc::decode(const std::string& data)
   return msg;
 }
 
-std::string json_rpc::encode_error(int id, int code, const std::string& message)
+std::string
+json_rpc::encode_error(int id, int code, const std::string& message) const
 {
   boost::json::object error;
   error["code"]    = code;
@@ -109,34 +134,23 @@ std::string json_rpc::encode_error(int id, int code, const std::string& message)
 
 std::string json_rpc::encode_notification(
   const std::string&         method,
-  const boost::json::object& params)
+  const boost::json::object& params) const
 {
-  boost::json::object notification;
-  notification["jsonrpc"] = "2.0";
-  notification["method"]  = method;
-  notification["params"]  = params;
-
-  return make_output(notification);
+  return make_method(boost::json::object(), method, params);
 }
 
 std::string json_rpc::encode_request(
   const std::string&         method,
-  const boost::json::object& params)
+  const boost::json::object& params) const
 {
   boost::json::object request;
-  request["jsonrpc"] = "2.0";
-  request["id"]      = m_id;
-  request["method"]  = method;
+  request["id"] = m_id;
 
-  if (!params.empty())
-  {
-    request["params"] = params;
-  }
-
-  return make_output(request);
+  return make_method(request, method, params);
 }
 
-std::string json_rpc::encode_response(int id, const boost::json::object& result)
+std::string
+json_rpc::encode_response(int id, const boost::json::object& result) const
 {
   boost::json::object response;
   response["jsonrpc"] = "2.0";
@@ -160,7 +174,15 @@ bool json_rpc::handle_response(const json_rpc_message& msg)
       return false;
     }
 
-    it->second(msg);
+    if (!msg.is_error)
+    {
+      it->second(msg);
+    }
+    else
+    {
+      log("wex::lsp::json_rpc") << boost::json::serialize(msg.error);
+    }
+
     m_handlers.erase(it);
 
     m_id++;
@@ -183,19 +205,9 @@ bool json_rpc::handle_response(const json_rpc_message& msg)
   return true;
 }
 
-std::string json_rpc::header_part_content_field() const
+std::string json_rpc::header_part_content_field()
 {
   return "Content-Length: ";
-}
-
-std::string json_rpc::make_output(const boost::json::object& obj)
-{
-  std::string json_str = boost::json::serialize(obj);
-  std::string header =
-    header_part_content_field() + std::to_string(json_str.length());
-  std::string output = header + "\r\n\r\n" + json_str;
-
-  return output;
 }
 
 void json_rpc::register_handler(response_handler& handler)

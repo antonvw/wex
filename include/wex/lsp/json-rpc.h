@@ -24,15 +24,14 @@ namespace lsp
 /// Represents a JSON-RPC 2.0 message.
 struct json_rpc_message
 {
-  std::string         jsonrpc{"2.0"};
-  int                 id{-1}; // -1 for notifications
-  std::string         method;
-  boost::json::object params;
-  boost::json::object result;
+  int id{-1}; // -1 for notifications
+
+  std::string method;
+
+  boost::json::object error, params, result;
   boost::json::array  result_array;
-  boost::json::object error;
-  bool                is_response{false};
-  bool                is_error{false};
+
+  bool is_error{false};
 };
 
 /// Callback for handling JSON-RPC responses.
@@ -42,6 +41,9 @@ using response_handler = std::function<void(const json_rpc_message&)>;
 class json_rpc
 {
 public:
+  /// Returns the JSON-RPC fixed content field header.
+  static std::string header_part_content_field();
+
   /// Default constructor, provide event handler.
   json_rpc(wxEvtHandler* eh = nullptr);
 
@@ -49,7 +51,7 @@ public:
   /// Returns parsed message, or empty if parsing failed.
   json_rpc_message decode(
     /// Raw message data
-    const std::string& data);
+    const std::string& data) const;
 
   /// Encodes a JSON-RPC error response to string.
   /// Return encoded message string.
@@ -59,7 +61,7 @@ public:
     /// error code
     int code,
     /// error message
-    const std::string& message);
+    const std::string& message) const;
 
   /// Encodes a JSON-RPC notification to string.
   /// Returns encoded message string.
@@ -67,7 +69,7 @@ public:
     /// RPC method name
     const std::string& method,
     /// method parameters
-    const boost::json::object& params = boost::json::object());
+    const boost::json::object& params = boost::json::object()) const;
 
   /// Encodes a JSON-RPC request to string.
   /// Returns encoded message string.
@@ -75,7 +77,7 @@ public:
     /// RPC method name
     const std::string& method,
     /// method parameters
-    const boost::json::object& params = boost::json::object());
+    const boost::json::object& params = boost::json::object()) const;
 
   /// Encodes a JSON-RPC response to string.
   /// Returns encoded message string.
@@ -83,14 +85,11 @@ public:
     /// request ID
     int id,
     /// result
-    const boost::json::object& result);
+    const boost::json::object& result) const;
 
   /// Handles an incoming response.
   /// Returns false if msg is not handled.
   bool handle_response(const json_rpc_message& msg);
-
-  /// Returns the JSON-RPC fixed content field header.
-  std::string header_part_content_field() const;
 
   /// Registers a response handler for last request ID.
   void register_handler(
@@ -101,9 +100,7 @@ private:
   /// Handles an incoming diagnostics notification.
   /// Returns false if msg is not handled.
   bool handle_publish_diagnostics(const json_rpc_message& notification);
-  bool handle_show_message(const json_rpc_message& notification);
-
-  std::string make_output(const boost::json::object& obj);
+  bool handle_show_message(const json_rpc_message& notification) const;
 
   diagnostics m_diagnostics;
 

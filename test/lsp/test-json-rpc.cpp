@@ -67,10 +67,8 @@ TEST_CASE("wex::lsp::json_rpc")
 
     wex::lsp::json_rpc_message msg = rpc.decode(message);
 
-    REQUIRE(msg.jsonrpc == "2.0");
     REQUIRE(msg.id == 1);
     REQUIRE(msg.method == "initialize");
-    REQUIRE(msg.is_response == false);
   }
 
   SECTION("decode_response")
@@ -81,9 +79,7 @@ TEST_CASE("wex::lsp::json_rpc")
 
     wex::lsp::json_rpc_message msg = rpc.decode(message);
 
-    REQUIRE(msg.jsonrpc == "2.0");
     REQUIRE(msg.id == 1);
-    REQUIRE(msg.is_response == true);
     REQUIRE(msg.is_error == false);
   }
 
@@ -95,7 +91,6 @@ TEST_CASE("wex::lsp::json_rpc")
 
     wex::lsp::json_rpc_message msg = rpc.decode(message);
 
-    REQUIRE(msg.is_response == true);
     REQUIRE(msg.is_error == true);
     REQUIRE(msg.id == 1);
   }
@@ -115,8 +110,7 @@ TEST_CASE("wex::lsp::json_rpc")
     rpc.register_handler(hdl);
 
     wex::lsp::json_rpc_message msg;
-    msg.id          = 1;
-    msg.is_response = true;
+    msg.id = 1;
 
     rpc.handle_response(msg);
 

@@ -41,6 +41,7 @@ int wex::del::frame::lsp_config_dialog(const data::window& par)
   // name lsp server, with pair whether enabled and lexer name
   std::map<std::string, std::pair<bool, std::string>> servers_1;
 
+  // first create and show the dialog
   for (const auto& server : lexers::get()->get_lsp_servers())
   {
     choices.insert(server.first);
@@ -63,6 +64,7 @@ int wex::del::frame::lsp_config_dialog(const data::window& par)
 
   const int result(m_lsp_dialog->ShowModal());
 
+  // then, detect a change for any client
   std::map<std::string, bool> servers_2;
 
   for (const auto& server : lexers::get()->get_lsp_servers())
@@ -70,8 +72,10 @@ int wex::del::frame::lsp_config_dialog(const data::window& par)
     servers_2.emplace(server.first, config(server.first).get(false));
   }
 
-  // so, if lsp server changed in config, shutdown if it was enabled,
-  // and add a client if it was disabled
+  std::set<std::string> lexers_notify;
+
+  // so, if lsp server changed in config, shutdown client if it was enabled,
+  // and add client if it was disabled
   for (auto& server : servers_1)
   {
     if (server.second.first != servers_2[server.first])
@@ -90,9 +94,17 @@ int wex::del::frame::lsp_config_dialog(const data::window& par)
       }
       else if (servers_2[server.first])
       {
-        lsp_client_add(server.second.second);
+        if (lsp_client_add(server.second.second))
+        {
+          lexers_notify.insert(server.second.second);
+        }
       }
     }
+  }
+
+  if (!lexers_notify.empty())
+  {
+    lsp_sync(lexers_notify);
   }
 
   return result;

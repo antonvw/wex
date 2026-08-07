@@ -92,6 +92,7 @@ TEST_CASE("wex::del::frame")
 
   SECTION("lsp")
   {
+    REQUIRE(del_frame()->lsp_clients_find("cpp") == nullptr);
     REQUIRE(del_frame()->lsp_clients_find(wex::path()) == nullptr);
     REQUIRE(del_frame()->lsp_clients_find(wex::path("")) == nullptr);
     REQUIRE(del_frame()->lsp_clients_find(wex::path("xxx")) == nullptr);
