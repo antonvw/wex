@@ -5,7 +5,6 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <boost/process.hpp>
 #include <wex/core/config.h>
 #include <wex/core/log.h>
 #include <wex/lsp/client.h>
@@ -16,6 +15,8 @@
 
 #include <expected>
 #include <utility>
+
+#include <boost/process.hpp>
 
 namespace wex
 {
