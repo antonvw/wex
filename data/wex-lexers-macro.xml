@@ -5,7 +5,7 @@ Name:      wex-lexers-macro.xml
 Purpose:   Lexers configuration for wex.
            See lexilla 5.4.6 (https://www.scintilla.org/LexillaHistory.html)
 Author:    Anton van Wezenbeek
-Copyright: (c) 2009-2025, Anton van Wezenbeek
+Copyright: (c) 2009-2026, Anton van Wezenbeek
 -->
 
 <lexers>
@@ -2030,13 +2030,13 @@ Copyright: (c) 2009-2025, Anton van Wezenbeek
       <def no ="commentblockdoc"/>
       <def no ="commentlinedoc"/>
       <def no ="number"/>
-      <def no ="word"/>
-      <def no ="word2"/>
-      <def no ="word3"/>
-      <def no ="word4"/>
-      <def no ="word5"/>
-      <def no ="word6"/>
-      <def no ="word7"/>
+      <def no ="keyword1"/>
+      <def no ="keyword2"/>
+      <def no ="keyword3"/>
+      <def no ="keyword4"/>
+      <def no ="keyword5"/>
+      <def no ="keyword6"/>
+      <def no ="keyword7"/>
       <def no ="string"/>
       <def no ="stringr"/>
       <def no ="character"/>

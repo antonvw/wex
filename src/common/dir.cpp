@@ -52,6 +52,7 @@ private:
     m_container.emplace_back(
       data().type().test(data::dir::RECURSIVE) ? escape_spaces(p.string()) :
                                                  escape_spaces(p.filename()));
+    dir::on_file(p);
     return true;
   };
 
@@ -78,6 +79,7 @@ private:
   bool on_file(const path& p) const final
   {
     m_container.emplace_back(p);
+    dir::on_file(p);
     return true;
   }
 
@@ -208,7 +210,12 @@ bool wex::dir::on_file(const path& p) const
     else
     {
       process_match(p, m_eh);
+      m_statistics.inc_actions();
     }
+  }
+  else
+  {
+    m_statistics.inc_actions();
   }
 
   return true;
@@ -296,10 +303,7 @@ bool wex::dir::traverse(const fs::directory_entry& e) const
         m_data.file_spec(),
         m_data.is_regex()))
     {
-      if (on_file(e.path()))
-      {
-        dir::get_statistics().inc_actions();
-      }
+      on_file(e.path());
     }
   }
   else if (
@@ -312,7 +316,7 @@ bool wex::dir::traverse(const fs::directory_entry& e) const
 
     if (!m_data.dir_spec().empty())
     {
-      dir::get_statistics().inc_actions();
+      m_statistics.inc_actions();
     }
   }
 

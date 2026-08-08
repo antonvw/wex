@@ -2,7 +2,7 @@
 // Name:      listview-file.h
 // Purpose:   Declaration of class wex::del::file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -55,7 +55,7 @@ private:
   void build_popup_menu(menu& menu) final;
   bool do_file_load(bool synced = false) final;
   void do_file_new() final;
-  void do_file_save(bool save_as = false) final;
+  bool do_file_save(bool save_as = false) final;
 
   void on_idle(wxIdleEvent& event);
 

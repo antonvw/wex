@@ -1,5 +1,5 @@
 *** Comments ***
-Copyright: (c) 2020-2023 Anton van Wezenbeek
+Copyright: (c) 2020-2026 Anton van Wezenbeek
 
 
 *** Settings ***
@@ -17,6 +17,7 @@ ${quit}	1
 # Normally the appl runs in quiet mode, only errors are logged,
 # override this variable using '-v level:0' to run in verbose mode
 # (only shown in the log file).
+# And you can set the level in your test cases as well using :ve
 ${level}	4
 
 ${APPL}	${EMPTY}

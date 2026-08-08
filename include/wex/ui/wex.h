@@ -2,13 +2,14 @@
 // Name:      ui/wex.h
 // Purpose:   General wex include file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/ui/art.h>
 #include <wex/ui/debug-entry.h>
+#include <wex/ui/defs.h>
 #include <wex/ui/dialog.h>
 #include <wex/ui/ex-commandline-input.h>
 #include <wex/ui/ex-commandline.h>

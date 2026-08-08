@@ -9,6 +9,7 @@
 #include <utility>
 #include <wex/core/config.h>
 #include <wex/factory/bind.h>
+#include <wex/ui/defs.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/item-dialog.h>
 #include <wex/ui/listview.h>
@@ -65,7 +66,7 @@ void rev_data::do_compare()
     0)
   {
     if (
-      !vcs_diff("diff") ||
+      !vcs_diff(*m_ve, "diff") ||
       !unified_diff(path(m_repo_path), m_ve, frame()).parse())
     {
       frame()->open_file_vcs(
@@ -144,7 +145,6 @@ wex::vcs_entry::execute_and_parse(const process_data& data, size_t offset)
 
 int wex::vcs_entry::revisions_dialog(
   const std::string& repo_path,
-  const path&        tl,
   const path&        file)
 {
   bool is_new{false};
@@ -197,7 +197,7 @@ int wex::vcs_entry::revisions_dialog(
   }
 
   process_data data;
-  data.start_dir(tl.string());
+  data.start_dir(get_toplevel());
 
   bind_rev(vb, repo_path, data, "branches");
   bind_rev(vt, repo_path, data, "tags");

@@ -1,18 +1,83 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      stc/bind.cpp
-// Purpose:   Implementation of class wex::stc method bind_all
+// Name:      stc/util.cpp
+// Purpose:   Implementation of method wex::describe_basefields
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2025 Anton van Wezenbeek
+// Copyright: (c) 2018-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
+#include <cassert>
 #include <charconv>
-#include <numeric>
 #include <sstream>
+
+#include <wex/core/core.h>
 
 #include "util.h"
 
 namespace wex
 {
+class base_t
+{
+public:
+  base_t(int base)
+    : m_base(base) {};
+
+  void from_chars(const std::string& word)
+  {
+    if (!m_is_ok)
+    {
+      return;
+    }
+
+    if (
+      const auto res(
+        std::from_chars(word.data(), word.data() + word.size(), m_val, m_base));
+      res.ec != std::errc() || res.ptr != word.data() + word.size())
+    {
+      m_is_ok = false;
+    }
+  }
+
+  void invalid() { m_is_ok = false; }
+
+  void to_stream(std::stringstream& str, bool hex = false) const
+  {
+    if (m_is_ok)
+    {
+      if (!hex)
+      {
+        str << name() << "as dec: " << m_val << "\n";
+      }
+      else
+      {
+        str << name() << "as hex: " << std::hex << m_val
+            << " as oct: " << std::oct << m_val << "\n" << std::dec;
+      }
+    }
+  }
+
+private:
+  std::string name() const
+  {
+    switch (m_base)
+    {
+      case 8:
+        return "oct ";
+      case 10:
+        return "dec ";
+      case 16:
+        return "hex ";
+      default:
+        assert(0);
+        return std::string();
+    }
+  }
+
+  const int m_base{10};
+  long      m_val{0};
+  bool      m_is_ok{true};
+};
+
 std::string describe_basefields(const std::string& number)
 {
   if (number.empty())
@@ -29,46 +94,35 @@ std::string describe_basefields(const std::string& number)
   }
   else
   {
-    long base10_val, base16_val;
-    bool base10_ok = false, base16_ok = false;
-
-    if (
-      std::from_chars(word.data(), word.data() + word.size(), base10_val).ec ==
-      std::errc())
-    {
-      base10_ok = true;
-    }
+    base_t base8(8), base10(10), base16(16);
 
     if (word.starts_with("0x") || word.starts_with("0X"))
     {
-      word      = word.substr(2);
-      base10_ok = false;
+      word = word.substr(2);
+      base8.invalid();
+      base10.invalid();
+    }
+    else if (word.starts_with("0"))
+    {
+      word = word.substr(1);
+      base10.invalid();
+      base16.invalid();
     }
 
-    if (
-      std::from_chars(word.data(), word.data() + word.size(), base16_val, 16)
-        .ec == std::errc())
-    {
-      base16_ok = true;
-    }
+    base8.from_chars(word);
+    base10.from_chars(word);
+    base16.from_chars(word);
 
-    if (base10_ok || base16_ok)
-    {
-      if (base10_ok && !base16_ok)
-      {
-        stream << "hex: " << std::hex << base10_val;
-      }
-      else if (!base10_ok && base16_ok)
-      {
-        stream << "dec: " << base16_val;
-      }
-      else if (base10_ok && base16_ok)
-      {
-        stream << "dec: " << base16_val << " hex: " << std::hex << base10_val;
-      }
-    }
+    base8.to_stream(stream);
+    base16.to_stream(stream);
+    base10.to_stream(stream, true);
   }
 
-  return stream.str();
+  if (!stream.str().empty())
+  {
+    clipboard_add(stream.str());
+  }
+
+  return boost::algorithm::trim_copy(stream.str());
 }
 } // namespace wex

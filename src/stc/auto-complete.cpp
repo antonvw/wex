@@ -2,15 +2,18 @@
 // Name:      auto-complete.cpp
 // Purpose:   Implementation of class wex::auto_complete
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/ctags/ctags.h>
+#include <wex/lsp/client.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/stc.h>
+#include <wex/syntax/util.h>
+#include <wex/ui/frame.h>
 
 #include "scope.h"
 
@@ -28,7 +31,6 @@ public:
   bool m_show_inserts{true};
   bool m_show_keywords{true};
 };
-}; // namespace wex
 
 wex::auto_complete::auto_complete(wex::stc* stc)
   : m_stc(stc)
@@ -187,6 +189,39 @@ bool wex::auto_complete::determine_actions(char c, actions& ac)
 
 bool wex::auto_complete::on_char(char c)
 {
+  // If LSP is active, ask completion from LSP server, and do not use built in
+  // auto complete. LSP servers often provide their own auto complete, and it is
+  // better to use that one if available.
+  if (
+    auto* lsp_client = m_stc->get_frame()->lsp_clients_find(m_stc->path());
+    lsp_client != nullptr && m_stc->get_vi().mode().is_insert())
+  {
+    if (
+      m_stc->get_frame()->lsp_clients_trigger_format(
+        lsp_client,
+        c == '\r' ? '\n' : c))
+    {
+      if (m_stc->AutoCompActive())
+      {
+        return false;
+      }
+
+      lsp_client->on_type_formatting(
+        m_stc->path(),
+        position_item(m_stc),
+        c == '\r' ? '\n' : c,
+        m_stc->GetUseTabs(),
+        m_stc->GetTabWidth());
+      return false;
+    }
+
+    lsp_client->completion(
+      m_stc->path(),
+      position_item(m_stc),
+      m_stc->get_frame()->lsp_clients_trigger(m_stc));
+    return false;
+  }
+
   if (!use() || m_stc->SelectionIsRectangle())
   {
     return false;
@@ -201,9 +236,10 @@ bool wex::auto_complete::on_char(char c)
     return false;
   }
 
-  if (const auto wsp = m_stc->WordStartPosition(m_stc->GetCurrentPos(), true);
-      (m_stc->GetCharAt(wsp - 1) == '.') ||
-      (m_stc->GetCharAt(wsp - 1) == '>' && m_stc->GetCharAt(wsp - 2) == '-'))
+  if (
+    const auto wsp = m_stc->WordStartPosition(m_stc->GetCurrentPos(), true);
+    (m_stc->GetCharAt(wsp - 1) == '.') ||
+    (m_stc->GetCharAt(wsp - 1) == '>' && m_stc->GetCharAt(wsp - 2) == '-'))
   {
     ac.reset();
   }
@@ -222,8 +258,9 @@ bool wex::auto_complete::on_char(char c)
 bool wex::auto_complete::show_ctags()
 {
   // If members are requested, and class is active, save it in the filters.
-  if (const auto& use_filter = (!m_insert.empty() ? m_insert : m_active);
-      !m_request_members.empty() && m_scope->find(use_filter))
+  if (
+    const auto& use_filter = (!m_insert.empty() ? m_insert : m_active);
+    !m_request_members.empty() && m_scope->find(use_filter))
   {
     const auto&       ce = m_scope->iter()->second; // backup
     const auto        wsp(m_stc->WordStartPosition(
@@ -240,12 +277,12 @@ bool wex::auto_complete::show_ctags()
   }
 
   // Use iterator as filter (const).
-  if (const auto& comp(m_stc->get_vi().ctags()->auto_complete(
-        m_insert,
-        !m_scope->end() && !m_request_members.empty() ?
-          m_scope->iter()->second :
-          ctags_entry()));
-      !comp.empty())
+  if (
+    const auto& comp(m_stc->get_vi().ctags()->auto_complete(
+      m_insert,
+      !m_scope->end() && !m_request_members.empty() ? m_scope->iter()->second :
+                                                      ctags_entry()));
+    !comp.empty())
   {
     m_stc->AutoCompSetSeparator(m_stc->get_vi().ctags()->separator());
     m_stc->AutoCompShow(m_insert.length() - 1, comp);
@@ -280,8 +317,9 @@ bool wex::auto_complete::show_keywords(bool show) const
     show && !m_insert.empty() &&
     m_stc->get_lexer().keyword_starts_with(m_insert))
   {
-    if (const auto& comp(m_stc->get_lexer().keywords_string(-1, 0, m_insert));
-        !comp.empty())
+    if (
+      const auto& comp(m_stc->get_lexer().keywords_string(-1, 0, m_insert));
+      !comp.empty())
     {
       m_stc->AutoCompShow(m_insert.length() - 1, comp);
       log::debug("auto_complete::show_keywords insert")
@@ -327,3 +365,4 @@ const std::string wex::auto_complete::variable(const std::string& name) const
 {
   return m_scope->class_name(name);
 }
+} // namespace wex

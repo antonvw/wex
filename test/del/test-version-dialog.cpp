@@ -2,7 +2,7 @@
 // Name:      test-version-dialog.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2025 Anton van Wezenbeek
+// Copyright: (c) 2020-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/del/version-dialog.h>
@@ -13,6 +13,10 @@ TEST_CASE("wex::about_info")
   wex::about_info about;
 
   about.icon(wxIcon());
+  REQUIRE(!about.HasIcon());
+
+  about.icon(wxBitmapBundle());
+  REQUIRE(!about.HasIcon());
 
   REQUIRE(about.GetDescription().empty());
   REQUIRE(about.GetDevelopers().empty());

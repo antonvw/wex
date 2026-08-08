@@ -24,10 +24,7 @@ wex::factory::process::~process()
 
 void wex::factory::process::async_sleep_for(const std::chrono::milliseconds& ms)
 {
-  if (m_imp != nullptr)
-  {
-    m_imp->async_sleep_for(ms);
-  }
+  process_imp::async_sleep_for(ms);
 }
 
 bool wex::factory::process::async_system(const wex::process_data& data)
@@ -113,7 +110,7 @@ int wex::factory::process::system(const wex::process_data& data)
       log::trace("closing stdin");
     }
 
-    if (!ec)
+    if (ec >= 0)
     {
       log::debug("system") << data.log();
     }
@@ -141,7 +138,7 @@ int wex::factory::process::system(const wex::process_data& data)
     log("system unknown exception") << data.log();
   }
 
-  return 1;
+  return -1;
 }
 
 bool wex::factory::process::write(const std::string& text)

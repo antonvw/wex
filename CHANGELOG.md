@@ -6,13 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [26.10] - 2026-10 [Unreleased]
 
+### Added
+
+- allow variables to be used in calculation mode
+- allow internal diff for comparing files when diff is set as comparator
+- added compare to explorer context menu
+- added lsp support, using new wex-lsp library
+
 ### Changed
 
+- use released wxWidgets 3.3.3
+- ex :e *path* opens file dialog at *path*
+- vcs execute and vcs_entry execute return process return code
+- list comparator is now a combobox
 - c++26 standard
 
 ### Fixed
 
 - fixed vcs checkout on a changed line
+- fixed recording for vi find repeat command (slash)
+- fixed support macros in config dir only
+- fixed svn diff
+- find in files on folders
 
 ## [26.04] - 2026-03-14
 

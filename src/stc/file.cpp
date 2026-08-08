@@ -2,17 +2,19 @@
 // Name:      stc/file.cpp
 // Purpose:   Implementation of class wex::stc_file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2024 Anton van Wezenbeek
+// Copyright: (c) 2020-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
 #include <wex/core/log.h>
 #include <wex/ex/ex-stream.h>
-#include <wex/factory/defs.h>
+#include <wex/lsp/client.h>
 #include <wex/stc/file.h>
 #include <wex/stc/stc.h>
 #include <wex/syntax/path-lexer.h>
+#include <wex/ui/defs.h>
 #include <wex/ui/file-dialog.h>
+#include <wex/ui/frame.h>
 
 // #define USE_THREAD 1
 
@@ -22,7 +24,9 @@
   event->SetInt(ACTION);                                                       \
   wxQueueEvent(m_stc, event);
 
+#ifdef USE_THREAD
 #include <thread>
+#endif
 
 namespace wex
 {
@@ -167,13 +171,15 @@ void wex::stc_file::do_file_new()
                          true); // allow fold
 }
 
-void wex::stc_file::do_file_save(bool save_as)
+bool wex::stc_file::do_file_save(bool save_as)
 {
   m_stc->SetReadOnly(true); // prevent changes during saving
 
+  bool ok = true;
+
   if (!m_stc->is_visual())
   {
-    if (ex_stream()->write())
+    if (ok = ex_stream()->write(); ok)
     {
       FILE_POST(save_as ? FILE_SAVE_AS : FILE_SAVE);
     }
@@ -185,7 +191,7 @@ void wex::stc_file::do_file_save(bool save_as)
       [&]
       {
 #endif
-        if (write(m_stc->get_hexmode().buffer()))
+        if (ok = write(m_stc->get_hexmode().buffer()); ok)
         {
           FILE_POST(save_as ? FILE_SAVE_AS : FILE_SAVE);
         }
@@ -201,7 +207,7 @@ void wex::stc_file::do_file_save(bool save_as)
       [&]
       {
 #endif
-        if (write(m_stc->get_text()))
+        if (ok = write(m_stc->get_text()); ok)
         {
           FILE_POST(save_as ? FILE_SAVE_AS : FILE_SAVE);
         }
@@ -210,6 +216,15 @@ void wex::stc_file::do_file_save(bool save_as)
     t.detach();
 #endif
   }
+
+  if (
+    auto* client = m_stc->get_frame()->lsp_clients_find(m_stc->path());
+    client != nullptr)
+  {
+    client->did_save(m_stc->path());
+  }
+
+  return ok;
 }
 
 wex::ex_stream* wex::stc_file::ex_stream()

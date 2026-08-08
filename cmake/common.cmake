@@ -29,11 +29,17 @@ function(wex_config)
         GLOB_RECURSE dlls
         "C:/Program Files (x86)/Microsoft Visual Studio/2019/vcruntime14*.dll"
       )
-    else()
+    elseif(${MSVC_TOOLSET_VERSION} LESS 144)
       # Visual studio 2022:
       file(
         GLOB_RECURSE dlls
         "C:/Program Files/Microsoft Visual Studio/2022/vcruntime14*.dll"
+      )
+    else()
+      # Visual studio 2026:
+      file(
+        GLOB_RECURSE exe
+        "C:/Program Files/Microsoft Visual Studio/2026/vcredist_v14*.exe"
       )
     endif()
 
@@ -340,7 +346,7 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 --coverage")
     set(
       CMAKE_EXE_LINKER_FLAGS
-      "${CMAKE_EXE_LINKER_FLAGS} -fPIC \
+      "${CMAKE_EXE_LINKER_FLAGS} --coverage -fPIC \
       --param ggc-min-expand=3 --param ggc-min-heapsize=5120"
     )
   endif()

@@ -2,7 +2,7 @@
 // Name:      menu.cpp
 // Purpose:   Implementation of wex::menu class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tool.h>
@@ -11,6 +11,7 @@
 #include <wex/factory/stc.h>
 #include <wex/syntax/lexers.h>
 #include <wex/syntax/printing.h>
+#include <wex/ui/defs.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/menu.h>
 #include <wx/app.h>
@@ -21,8 +22,9 @@
    data::menu().action(                                                        \
      [=, this](const wxCommandEvent& event)                                    \
      {                                                                         \
-       if (auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());  \
-           frame->get_stc() != nullptr)                                        \
+       if (                                                                    \
+         auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());    \
+         frame->get_stc() != nullptr)                                          \
        {                                                                       \
          frame->get_stc()->ACTION();                                           \
        }                                                                       \

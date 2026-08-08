@@ -2,7 +2,7 @@
 // Name:      test-path.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/path.h>
@@ -57,6 +57,11 @@ TEST_CASE("wex::path")
     REQUIRE(!path.paths().empty());
     REQUIRE(path.stat().is_ok());
     REQUIRE(!path.is_readonly());
+    REQUIRE(path.uri() == "file://" + path.string());
+    REQUIRE(wex::path("/x/y/test").uri() == "file:///x/y/test");
+    REQUIRE(wex::path("/x/y/test test").uri() == "file:///x/y/test%20test");
+    REQUIRE(
+      wex::path("c:/x/y/test test").uri() == "file:///c:/x/y/test%20test");
 
     REQUIRE(
       path.append(wex::path("error")).string().find("error") !=
@@ -66,6 +71,7 @@ TEST_CASE("wex::path")
 
     REQUIRE(!wex::path("XXXXX").stat().is_ok());
 
+    REQUIRE(wex::path().make_absolute().filename().empty());
     REQUIRE(wex::path("XXXXX").make_absolute().filename() == "XXXXX");
     REQUIRE(wex::path("XXXXX").make_absolute().string() != "XXXXX");
   }
@@ -123,9 +129,9 @@ TEST_CASE("wex::path")
     }
   }
 
-  SECTION("mime")
+  SECTION("open_mime")
   {
-    REQUIRE(!wex::path("XXXXX.md").open_mime());
+    REQUIRE(!wex::path("XXXXX.xxx").open_mime());
     REQUIRE(!wex::path("XXXXX").open_mime());
 
 #ifndef GITHUB

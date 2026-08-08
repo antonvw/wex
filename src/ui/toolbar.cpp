@@ -2,15 +2,15 @@
 // Name:      toolbar.cpp
 // Purpose:   Implementation of wex::toolbar class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2025 Anton van Wezenbeek
+// Copyright: (c) 2010-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/factory/bind.h>
-#include <wex/factory/defs.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/art.h>
+#include <wex/ui/defs.h>
 #include <wex/ui/ex-commandline-input.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>

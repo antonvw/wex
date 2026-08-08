@@ -2,7 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of wex::factory::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -15,7 +15,6 @@ class wxListView;
 namespace wex
 {
 class process_data;
-class unified_diff;
 class vcs_entry;
 
 namespace data
@@ -29,6 +28,7 @@ class grid;
 class listview;
 class process;
 class stc;
+class unified_diff;
 
 /// Offers a frame with easy statusbar methods,
 /// find/replace, and allows for file dropping.
@@ -114,6 +114,12 @@ public:
   /// Runs async process.
   virtual bool process_async_system(const process_data& data) { return false; };
 
+  /// Reports a unified diff on paths.
+  virtual bool report_unified_diff(const factory::unified_diff* uni)
+  {
+    return false;
+  };
+
   /// Allows derived class to update file history.
   virtual void set_recent_file(const path& path) { ; }
 
@@ -135,12 +141,6 @@ public:
   virtual std::string vcs_annotate_line(stc*, const std::string& pane) const
   {
     return std::string();
-  };
-
-  /// Runs a unified diff on paths.
-  virtual bool vcs_unified_diff(const vcs_entry* e, const unified_diff* uni)
-  {
-    return false;
   };
 
   // Other methods

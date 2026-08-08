@@ -27,6 +27,7 @@ TEST_CASE("wex::evaluator")
   SECTION("eval")
   {
     REQUIRE(!eval->eval("").has_value());
+    REQUIRE(eval->eval("10 + 20") == 30);
   }
 
   SECTION("eval_token")

@@ -2,7 +2,7 @@
 // Name:      test-file.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2025 Anton van Wezenbeek
+// Copyright: (c) 2020-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/file.h>
@@ -61,14 +61,7 @@ TEST_CASE("wex::file")
     REQUIRE(f.is_written());
   }
 
-  // file should be closed before remove (at least for windows)
-  SECTION("remove")
-  {
-    REQUIRE(remove("test-create") == 0);
-    REQUIRE(remove("test-xxx") == 0);
-  }
-
-  SECTION("save")
+  SECTION("file_save")
   {
     wex::file file(
       wex::test::get_path("test.h"),
@@ -79,6 +72,13 @@ TEST_CASE("wex::file")
     REQUIRE(file.file_save(wex::path("test-save")));
 
     REQUIRE(remove("test-save") == 0);
+  }
+
+  // file should be closed before remove (at least for windows)
+  SECTION("remove")
+  {
+    REQUIRE(remove("test-create") == 0);
+    REQUIRE(remove("test-xxx") == 0);
   }
 
   SECTION("timing")

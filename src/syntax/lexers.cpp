@@ -2,10 +2,9 @@
 // Name:      lexers.cpp
 // Purpose:   Implementation of wex::lexers class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2025 Anton van Wezenbeek
+// Copyright: (c) 2008-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
@@ -16,9 +15,9 @@
 #include <wex/syntax/util.h>
 
 #include <algorithm>
+#include <array>
 #include <charconv>
 #include <functional>
-#include <numeric>
 
 #define COLOUR_ADD(NAME, ITEM)                                                 \
   {NAME,                                                                       \
@@ -36,6 +35,7 @@ wex::lexers::lexers()
        REFLECT_ADD("indicators", m_indicators.size()),
        REFLECT_ADD("keywords", m_keywords.size()),
        REFLECT_ADD("lexers", m_lexers.size()),
+       REFLECT_ADD("lsp-servers", m_lsp_servers.size()),
        REFLECT_ADD("macros", m_macros.size()),
        REFLECT_ADD("markers", m_markers.size()),
        REFLECT_ADD("styles", m_styles.size()),
@@ -89,14 +89,16 @@ bool wex::lexers::apply_default_style(
     return false;
   }
 
-  if (regex r(",back:(.*),");
-      back != nullptr && r.match(m_default_style.value()) > 0)
+  if (
+    regex r(",back:(.*),");
+    back != nullptr && r.match(m_default_style.value()) > 0)
   {
     back(r[0]);
   }
 
-  if (regex r(",fore:(.*)");
-      fore != nullptr && r.match(m_default_style.value()) > 0)
+  if (
+    regex r(",fore:(.*)");
+    fore != nullptr && r.match(m_default_style.value()) > 0)
   {
     fore(r[0]);
   }
@@ -142,13 +144,15 @@ bool wex::lexers::apply_global_styles(factory::stc* stc)
       wxColour(m_folding_foreground_colour.c_str()) :
       wxColour(0xff, 0, 0));
 
-  if (const auto& colour_it = m_theme_colours.find(m_theme);
-      colour_it != m_theme_colours.end())
+  if (
+    const auto& colour_it = m_theme_colours.find(m_theme);
+    colour_it != m_theme_colours.end())
   {
     for (const auto& it : colour_it->second)
     {
-      if (const auto& col_it = m_colours.find(it.first);
-          col_it != m_colours.end())
+      if (
+        const auto& col_it = m_colours.find(it.first);
+        col_it != m_colours.end())
       {
         col_it->second(stc, it.second);
       }
@@ -167,8 +171,9 @@ const std::string wex::lexers::apply_macro(
   const std::string& text,
   const std::string& lexer) const
 {
-  if (const auto& it = get_macros(lexer).find(text);
-      it != get_macros(lexer).end())
+  if (
+    const auto& it = get_macros(lexer).find(text);
+    it != get_macros(lexer).end())
   {
     return it->second;
   }
@@ -261,11 +266,12 @@ const wex::lexer& wex::lexers::find_by_text(const std::string& text) const
 
   try
   {
-    const auto& filtered(boost::regex_replace(
-      text,
-      boost::regex("[ \t\n\v\f\r]+$"),
-      "",
-      boost::regex_constants::format_sed));
+    const auto& filtered(
+      boost::regex_replace(
+        text,
+        boost::regex("[ \t\n\v\f\r]+$"),
+        "",
+        boost::regex_constants::format_sed));
 
     for (const auto& t : m_texts)
     {
@@ -363,6 +369,11 @@ bool wex::lexers::load_document()
       if (const wex::lexer lexer(&node); lexer.is_ok())
       {
         m_lexers.emplace_back(lexer);
+
+        if (!lexer.lsp_server().empty())
+        {
+          m_lsp_servers.insert({lexer.lsp_server(), lexer.scintilla_lexer()});
+        }
       }
     }
   }
@@ -376,10 +387,11 @@ bool wex::lexers::load_document()
 
 void wex::lexers::load_document(pugi::xml_document& doc, const wex::path& file)
 {
-  if (const auto result = doc.load_file(
-        file.string().c_str(),
-        pugi::parse_default | pugi::parse_trim_pcdata);
-      !result)
+  if (
+    const auto result = doc.load_file(
+      file.string().c_str(),
+      pugi::parse_default | pugi::parse_trim_pcdata);
+    !result)
   {
     log(result) << file;
   }
@@ -527,8 +539,8 @@ void wex::lexers::parse_node_global(const pugi::xml_node& node)
     }
     else if (strcmp(child.name(), "style") == 0)
     {
-      if (const wex::style style(child, "global");
-          style.contains_default_style())
+      if (
+        const wex::style style(child, "global"); style.contains_default_style())
       {
         if (m_default_style.is_ok())
         {
@@ -568,8 +580,9 @@ void wex::lexers::parse_node_macro(const pugi::xml_node& node)
 {
   for (const auto& child : node.children())
   {
-    if (const std::string name = child.attribute("name").value();
-        strcmp(child.name(), "def") == 0)
+    if (
+      const std::string name = child.attribute("name").value();
+      strcmp(child.name(), "def") == 0)
     {
       parse_node_macro_def(child, name);
     }
@@ -586,6 +599,9 @@ void wex::lexers::parse_node_macro_def(
 {
   name_values_t macro_map;
   int           val = 0;
+  // Buffer used to keep textual representation of
+  // styles, with max wxSTC_STYLE_MAX.
+  std::array<char, 4> buffer{};
 
   for (const auto& macro : child.children())
   {
@@ -616,12 +632,9 @@ void wex::lexers::parse_node_macro_def(
         }
         else
         {
-          const auto [ptr, ec] = std::to_chars(
-            m_buffer.data(),
-            m_buffer.data() + m_buffer.size(),
-            val++);
-          macro_map[no] =
-            std::string_view(m_buffer.data(), ptr - m_buffer.data());
+          const auto [ptr, ec] =
+            std::to_chars(buffer.data(), buffer.data() + buffer.size(), val++);
+          macro_map[no] = std::string_view(buffer.data(), ptr - buffer.data());
         }
       }
     }
@@ -645,11 +658,13 @@ void wex::lexers::parse_node_theme(const pugi::xml_node& node)
 
   for (const auto& child : node.children())
   {
-    if (const std::string content = child.text().get();
-        strcmp(child.name(), "def") == 0)
+    if (
+      const std::string content = child.text().get();
+      strcmp(child.name(), "def") == 0)
     {
-      if (const std::string style = child.attribute("style").value();
-          !style.empty())
+      if (
+        const std::string style = child.attribute("style").value();
+        !style.empty())
       {
         if (const auto& it = tmpMacros.find(style); it != tmpMacros.end())
         {

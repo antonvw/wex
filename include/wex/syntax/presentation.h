@@ -2,14 +2,12 @@
 // Name:      presentation.h
 // Purpose:   Declaration of class wex::presentation
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2025 Anton van Wezenbeek
+// Copyright: (c) 2019-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <pugixml.hpp>
-
-#include <compare>
 
 class wxStyledTextCtrl;
 

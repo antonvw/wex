@@ -2,18 +2,14 @@
 // Name:      global-env.cpp
 // Purpose:   Implementation of class wex::global_env
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2025 Anton van Wezenbeek
+// Copyright: (c) 2015-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
 #include <wex/core/log.h>
-#include <wex/ex/addressrange.h>
 #include <wex/ex/command-parser.h>
-#include <wex/ex/ex.h>
-#include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
 
-#include "addressrange-mark.h"
 #include "block-lines.h"
 #include "global-env.h"
 
@@ -143,13 +139,16 @@ bool wex::global_env::global(const data::substitute& data)
 
   m_lines_skip.clear();
 
+  // inverse block
   block_lines ib(
     m_stc,
     m_ar.begin().get_line() - 2,
     0,
     block_lines::block_t::INVERSE);
-  block_lines mb(m_stc);
+  block_lines mb(m_stc); // match block
 
+  // For all matches, process the match block, or inverse process
+  // the match block and the inverse block
   while (am.search())
   {
     const auto lines(m_stc->get_line_count());
@@ -175,9 +174,11 @@ bool wex::global_env::global(const data::substitute& data)
     }
   }
 
-  if (data.is_inverse())
+  // There are no more matches, one inverse blcock processing still needed for
+  // the remaining lines, as they do not contain matches
+  if (data.is_inverse() && am.marker_target() != am.marker_end())
   {
-    ib.start(am.marker_target());
+    ib.start(am.marker_target() + 1);
     ib.end(am.marker_end() + 1);
 
     if (ib.is_available() && !process(am, ib))
@@ -200,7 +201,7 @@ bool wex::global_env::process(addressrange_mark& am, const block_lines& block)
                          m_ex->command_parsed_data().text().ends_with('$') ?
                        1 :
                        0));
-  bool skip = false;
+  bool skipped = false;
 
   while (m_lines_skip.contains(line) &&
          line < m_ex->get_stc()->get_line_count())
@@ -210,11 +211,11 @@ bool wex::global_env::process(addressrange_mark& am, const block_lines& block)
       return false;
     }
 
-    skip = true;
+    skipped = true;
     line++;
   }
 
-  if (skip)
+  if (skipped)
   {
     return true;
   }
@@ -258,8 +259,20 @@ void wex::global_env::skip(const std::string& info)
 
   if (m_marker == 0)
   {
-    m_marker = '[';
-    a.marker_add(m_marker);
+    const char marker('[');
+
+    if (m_ex->marker_line(marker) != LINE_NUMBER_UNKNOWN)
+    {
+      log("skip") << m_marker << "marker already present";
+      return;
+    }
+
+    if (!a.marker_add(marker))
+    {
+      return;
+    }
+
+    m_marker = marker;
   }
 
   if (const auto& line = skip_marker_line(); line)

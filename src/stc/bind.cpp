@@ -2,26 +2,27 @@
 // Name:      stc/bind.cpp
 // Purpose:   Implementation of class wex::stc method bind_all
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2018-2025 Anton van Wezenbeek
+// Copyright: (c) 2018-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
-#include <numeric>
 #include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/factory/bind.h>
-#include <wex/factory/defs.h>
 #include <wex/factory/sort.h>
+#include <wex/lsp/client.h>
 #include <wex/stc/beautify.h>
 #include <wex/stc/bind.h>
 #include <wex/stc/entry-dialog.h>
+#include <wex/stc/link.h>
 #include <wex/stc/stc.h>
 #include <wex/syntax/lexer-props.h>
 #include <wex/syntax/lexers.h>
 #include <wex/syntax/path-lexer.h>
 #include <wex/ui/debug-entry.h>
+#include <wex/ui/defs.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/menu.h>
@@ -405,8 +406,9 @@ void wex::stc::bind_all()
         const int line(GetCurrentLine());
         AnnotationClearLine(line);
 
-        if (const auto& it = m_marker_identifiers.find(line);
-            it != m_marker_identifiers.end())
+        if (
+          const auto& it = m_marker_identifiers.find(line);
+          it != m_marker_identifiers.end())
         {
           MarkerDeleteHandle(it->second);
           m_marker_identifiers.erase(it);
@@ -433,6 +435,33 @@ void wex::stc::bind_all()
         }
       },
       id::stc::diff_previous},
+
+     {[=, this](const wxCommandEvent& event)
+      {
+        if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
+        {
+          client->definition(path(), position_item(this));
+        }
+      },
+      id::stc::lsp_definition},
+
+     {[=, this](const wxCommandEvent& event)
+      {
+        if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
+        {
+          client->implementation(path(), position_item(this));
+        }
+      },
+      id::stc::lsp_implementation},
+
+     {[=, this](const wxCommandEvent& event)
+      {
+        if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
+        {
+          client->definition(path(), position_item(this));
+        }
+      },
+      id::stc::lsp_location},
 
      {[=, this](const wxCommandEvent& event)
       {
@@ -493,6 +522,10 @@ void wex::stc::bind_all()
       id::stc::eol_dos,
       id::stc::eol_mac}});
 
+  // Bind hover events
+  Bind(wxEVT_STC_DWELLSTART, &stc::on_dwell_start, this);
+  Bind(wxEVT_STC_DWELLEND, &stc::on_dwell_end, this);
+
   bind_other();
 }
 
@@ -520,7 +553,7 @@ void wex::stc::build_popup_menu(menu& menu)
     menu.append({{id::stc::diff_checkout, _("Checkout Diff")}});
   }
 
-  build_popup_menu_link(menu);
+  const bool added_link = build_popup_menu_link(menu);
 
   if (
     m_data.menu().test(data::stc::MENU_DEBUG) &&
@@ -545,12 +578,38 @@ void wex::stc::build_popup_menu(menu& menu)
     }
   }
 
+  if (
+    const auto& lnk(link().get_link_pairs(GetCurLine()));
+    !sel.empty() || (!lnk.empty() && !added_link))
+  {
+    if (
+      const auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
+    {
+      if (sel.empty() && !lnk.empty())
+      {
+        menu.append({{}, {id::stc::lsp_location, _("Goto File")}});
+      }
+      else
+      {
+        menu.append(
+          {{},
+           {id::stc::lsp_definition, _("Goto Definition")},
+           {id::stc::lsp_implementation, _("Goto Implementation")}});
+      }
+    }
+  }
+
   if (!get_vi().is_active() && GetTextLength() > 0)
   {
     menu.append({{}, {wxID_FIND}});
   }
 
   build_popup_menu_edit(menu);
+
+  if (m_data.menu().test(data::stc::MENU_OPEN_WWW) && !sel.empty())
+  {
+    menu.append({{}, {id::stc::open_www, _("&Browse")}});
+  }
 
   // Folding if nothing selected, property is set,
   // and we have a lexer.
@@ -634,9 +693,10 @@ void wex::stc::build_popup_menu_edit(menu& menu)
   }
 }
 
-void wex::stc::build_popup_menu_link(menu& menu)
+bool wex::stc::build_popup_menu_link(menu& menu)
 {
   const auto sel(GetSelectedText().ToStdString());
+  bool       added = false;
 
   if (m_data.menu().test(data::stc::MENU_OPEN_LINK))
   {
@@ -644,17 +704,16 @@ void wex::stc::build_popup_menu_link(menu& menu)
     {
       menu.append({{}, {id::stc::open_mime, _("&Preview")}});
     }
-    else if (std::string link;
-             link_open(link_t().set(LINK_OPEN).set(LINK_CHECK), &link))
+    else if (
+      std::string link;
+      link_open(link_t().set(LINK_OPEN).set(LINK_CHECK), &link))
     {
       menu.append({{}, {id::stc::open_link, _("Open") + " " + link}});
+      added = true;
     }
   }
 
-  if (m_data.menu().test(data::stc::MENU_OPEN_WWW) && !sel.empty())
-  {
-    menu.append({{}, {id::stc::open_www, _("&Browse")}});
-  }
+  return added;
 }
 
 void wex::stc::check_brace()
@@ -676,8 +735,9 @@ void wex::stc::check_brace()
 
 bool wex::stc::check_brace(int pos)
 {
-  if (const auto brace_match = BraceMatch(pos);
-      brace_match != wxSTC_INVALID_POSITION)
+  if (
+    const auto brace_match = BraceMatch(pos);
+    brace_match != wxSTC_INVALID_POSITION)
   {
     BraceHighlight(pos, brace_match);
     return true;
@@ -785,9 +845,10 @@ void wex::stc::file_action(const wxCommandEvent& event)
 
   if (path_lexer(path()).lexer().language() == "xml")
   {
-    if (const pugi::xml_parse_result result =
-          pugi::xml_document().load_file(path().string().c_str());
-        !result)
+    if (
+      const pugi::xml_parse_result result =
+        pugi::xml_document().load_file(path().string().c_str());
+      !result)
     {
       xml_error(path(), &result, this);
     }
@@ -824,18 +885,43 @@ void wex::stc::jump_action()
   {
     m_hexmode.goto_dialog();
   }
-  else if (static long val;
-           (val = wxGetNumberFromUser(
-              _("Input") + " 1 - " + std::to_string(get_line_count()) + ":",
-              wxEmptyString,
-              _("Enter Line Number"),
-              m_data.control().line(), // initial value
-              1,
-              get_line_count(),
-              this)) > 0)
+  else if (
+    static long val;
+    (val = wxGetNumberFromUser(
+       _("Input") + " 1 - " + std::to_string(get_line_count()) + ":",
+       wxEmptyString,
+       _("Enter Line Number"),
+       m_data.control().line(), // initial value
+       1,
+       get_line_count(),
+       this)) > 0)
   {
     m_data.control().line(val);
     data::stc(data::control().line(val)).set_stc(this).inject();
+  }
+}
+
+void wex::stc::on_dwell_end(wxStyledTextEvent& event)
+{
+  if (CallTipActive())
+  {
+    CallTipCancel();
+  }
+}
+
+void wex::stc::on_dwell_start(wxStyledTextEvent& event)
+{
+  if (
+    auto* client = m_frame->lsp_clients_find(path());
+    client != nullptr && get_selected_text().empty() &&
+    event.GetPosition() != -1)
+  {
+    const auto event_line(LineFromPosition(event.GetPosition()));
+    client->hover(
+      path(),
+      position_item(
+        event_line,
+        event.GetPosition() - PositionFromLine(event_line)));
   }
 }
 
@@ -924,15 +1010,16 @@ void wex::stc::sort_action(const wxCommandEvent& event)
         factory::sort::sort_t().set(factory::sort::SORT_DESCENDING))
       .selection(this);
   }
-  else if (const auto pos(wxGetNumberFromUser(
-             _("Input") + ":",
-             wxEmptyString,
-             _("Enter Sort Position"),
-             GetCurrentPos() + 1 - PositionFromLine(get_current_line()),
-             1,
-             GetLineEndPosition(get_current_line()),
-             this));
-           pos > 0)
+  else if (
+    const auto pos(wxGetNumberFromUser(
+      _("Input") + ":",
+      wxEmptyString,
+      _("Enter Sort Position"),
+      GetCurrentPos() + 1 - PositionFromLine(get_current_line()),
+      1,
+      GetLineEndPosition(get_current_line()),
+      this));
+    pos > 0)
   {
     factory::sort(
       event.GetId() == wxID_SORT_ASCENDING ?
@@ -943,20 +1030,27 @@ void wex::stc::sort_action(const wxCommandEvent& event)
   }
 }
 
+void wex::stc::unified_diff_clear()
+{
+  std::ranges::for_each(
+    m_marker_diffs,
+    [this](const auto& it)
+    {
+      MarkerDeleteAll(it.number());
+    });
+
+  AnnotationClearAll();
+  IndicatorClearRange(0, GetTextLength() - 1);
+  m_marker_identifiers.clear();
+}
+
 void wex::stc::vcs_clear_diffs()
 {
   if (m_diffs.size() > 0)
   {
-    std::ranges::for_each(
-      m_marker_diffs,
-      [this](const auto& it)
-      {
-        MarkerDeleteAll(it.number());
-      });
+    unified_diff_clear();
+
     m_diffs.clear();
-    AnnotationClearAll();
-    IndicatorClearRange(0, GetTextLength() - 1);
-    m_marker_identifiers.clear();
     m_diffs.status();
   }
 }

@@ -2,7 +2,7 @@
 // Name:      commands-motion.cpp
 // Purpose:   Implementation of wex::vi::commands_motion
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2025 Anton van Wezenbeek
+// Copyright: (c) 2020-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -97,7 +97,7 @@ bool wex::vi::command_finish(bool user_input)
 {
   reset_search_flags();
 
-  // The command string contains original command, optional count,
+  // The m_command_string contains original command, optional count,
   // followed by / or ?, and optional search text.
   if (regex v("^([1-9][0-9]*)([/?])"); v.search(m_command_string) == 2)
   {
@@ -111,6 +111,12 @@ bool wex::vi::command_finish(bool user_input)
   else if (!user_input)
   {
     find_next(m_command_string.starts_with("/") ? "n" : "N");
+  }
+
+  if (!user_input)
+  {
+    get_macros().record(
+      m_command_string + find_replace_data::get()->get_find_string());
   }
 
   m_count = 1;

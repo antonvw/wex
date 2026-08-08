@@ -16,7 +16,8 @@ namespace wex
 namespace factory
 {
 class find_replace_data;
-};
+class stc;
+}; // namespace factory
 
 /// Binds to focus.
 void bind_set_focus(wxWindow* window);

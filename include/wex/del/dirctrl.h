@@ -2,7 +2,7 @@
 // Name:      dirctrl.h
 // Purpose:   Declaration of class wex::del::dirctrl
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -20,13 +20,18 @@ class frame;
 class dirctrl : public wxGenericDirCtrl
 {
 public:
-  /// Default constructor.
+  /// Constructor.
   dirctrl(
     del::frame*         frame,
     const data::window& data =
       data::window().style(wxDIRCTRL_3D_INTERNAL | wxDIRCTRL_MULTIPLE));
 
-  /// Expands path and selects it.
-  void expand_and_select_path(const path& path);
+  /// Expands specified path and selects it.
+  /// Returns false if path could not be expanded or selected.
+  bool expand_and_select_path(const path& path);
+
+  /// Returns vector with selections, empty if nothing is selected.
+  std::vector<path>
+  on_selected_paths(const std::function<void(std::vector<path>)>&) const;
 };
 }; // namespace wex::del

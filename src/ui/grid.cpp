@@ -2,7 +2,7 @@
 // Name:      grid.cpp
 // Purpose:   Implementation of wex::grid class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -10,10 +10,10 @@
 #include <wex/core/core.h>
 #include <wex/data/find.h>
 #include <wex/factory/bind.h>
-#include <wex/factory/defs.h>
 #include <wex/factory/frame.h>
 #include <wex/syntax/lexers.h>
 #include <wex/syntax/printing.h>
+#include <wex/ui/defs.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/grid.h>
 #include <wx/app.h>
@@ -464,10 +464,11 @@ const std::string wex::grid::get_find_string() const
   if (IsSelection())
   {
     // Only if we have one cell, so one EOL.
-    if (boost::tokenizer<boost::char_separator<char>> tok(
-          get_selected_cells_value(),
-          boost::char_separator<char>("\n"));
-        std::distance(tok.begin(), tok.end()) == 1)
+    if (
+      boost::tokenizer<boost::char_separator<char>> tok(
+        get_selected_cells_value(),
+        boost::char_separator<char>("\n"));
+      std::distance(tok.begin(), tok.end()) == 1)
     {
       find_replace_data::get()->set_find_string(*tok.begin());
     }

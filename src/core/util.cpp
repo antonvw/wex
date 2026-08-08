@@ -55,8 +55,9 @@ bool wex::browser(const std::string& url)
 {
   try
   {
-    if (const boost::urls::url_view view(url);
-        (view.has_scheme() || view.is_path_absolute()))
+    if (
+      const boost::urls::url_view view(url);
+      (view.has_scheme() || view.is_path_absolute()))
     {
       if (!wxLaunchDefaultBrowser(url))
       {
@@ -78,9 +79,10 @@ bool wex::browser(const std::string& url)
 
 bool wex::browser_search(const std::string& text)
 {
-  if (const auto& search_engine(
-        config(_("stc.Search engine")).get_first_of("https://duckduckgo.com"));
-      !search_engine.empty())
+  if (
+    const auto& search_engine(
+      config(_("stc.Search engine")).get_first_of("https://duckduckgo.com"));
+    !search_engine.empty())
   {
     return browser(search_engine + "?q=" + text);
   }
@@ -230,7 +232,8 @@ bool wex::is_brace(int c)
 
 bool wex::is_codeword_separator(int c)
 {
-  return isspace(c) || is_brace(c) || ispunct(c);
+  return c != EOF && (isspace(static_cast<unsigned char>(c)) || is_brace(c) ||
+                      ispunct(static_cast<unsigned char>(c)));
 }
 
 bool wex::matches_one_of(

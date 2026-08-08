@@ -3,7 +3,7 @@
 // Purpose:   Implementation of class wex::vi
 //            https://pubs.opengroup.org/onlinepubs/9799919799/utilities/vi.html
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2025 Anton van Wezenbeek
+// Copyright: (c) 2009-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/tokenizer.hpp>
@@ -64,9 +64,10 @@ bool is_special_key(const wxKeyEvent& event, const vi_mode& mode)
 
 bool process_modifier(vi* vi, macros::key_t type, const wxKeyEvent& event)
 {
-  if (const auto& it =
-        ex::get_macros().get_keys_map(type).find(event.GetKeyCode());
-      it != ex::get_macros().get_keys_map(type).end())
+  if (
+    const auto& it =
+      ex::get_macros().get_keys_map(type).find(event.GetKeyCode());
+    it != ex::get_macros().get_keys_map(type).end())
   {
     vi->command(it->second);
     return false;
@@ -318,8 +319,9 @@ std::string wex::vi::convert_key_event(const wxKeyEvent& event) const
     return "j";
   }
 
-  if (auto c = event.GetUnicodeKey();
-      c != WXK_NONE && !(event.ControlDown() || event.RawControlDown()))
+  if (
+    auto c = event.GetUnicodeKey();
+    c != WXK_NONE && !(event.ControlDown() || event.RawControlDown()))
   {
     return std::string(1, c);
   }
@@ -409,9 +411,10 @@ void wex::vi::filter_count(std::string& command)
    */
   if (regex v("^([1-9][0-9]*)(.*)"); v.match(command) == 2)
   {
-    if (int count;
-        std::from_chars(v[0].data(), v[0].data() + v[0].size(), count).ec ==
-        std::errc())
+    if (
+      int count;
+      std::from_chars(v[0].data(), v[0].data() + v[0].size(), count).ec ==
+      std::errc())
     {
       m_count_present = true;
       m_count *= count;
@@ -500,8 +503,9 @@ void wex::vi::insert_mode_escape(const std::string& command)
   // If we have text to be added.
   if (command.size() > 1)
   {
-    if (const auto rest(command.substr(0, command.size() - 1));
-        !get_stc()->GetSelectedText().empty())
+    if (
+      const auto rest(command.substr(0, command.size() - 1));
+      !get_stc()->GetSelectedText().empty())
     {
       get_stc()->ReplaceSelection(rest);
     }
@@ -545,10 +549,11 @@ bool wex::vi::insert_mode_hex(const std::string& command)
 
 void wex::vi::insert_mode_normal(const std::string& text)
 {
-  if (boost::tokenizer<boost::char_separator<char>> tok(
-        text,
-        boost::char_separator<char>("", "\r\n", boost::keep_empty_tokens));
-      !text.contains('\0') && std::distance(tok.begin(), tok.end()) >= 1)
+  if (
+    boost::tokenizer<boost::char_separator<char>> tok(
+      text,
+      boost::char_separator<char>("", "\r\n", boost::keep_empty_tokens));
+    !text.contains('\0') && std::distance(tok.begin(), tok.end()) >= 1)
   {
     for (auto it = tok.begin(); it != tok.end(); ++it)
     {
@@ -560,9 +565,10 @@ void wex::vi::insert_mode_normal(const std::string& text)
           {
             const auto last(m_insert_text.find_last_of(" ;\t"));
 
-            if (const auto& it = get_macros().get_abbreviations().find(
-                  m_insert_text.substr(last + 1));
-                it != get_macros().get_abbreviations().end())
+            if (
+              const auto& it = get_macros().get_abbreviations().find(
+                m_insert_text.substr(last + 1));
+              it != get_macros().get_abbreviations().end())
             {
               m_insert_text.replace(last + 1, it->first.size(), it->second);
 
@@ -588,8 +594,9 @@ void wex::vi::insert_mode_normal(const std::string& text)
             const auto last(token.find_last_of(" ;\t", token.size() - 2));
             const auto word(token.substr(last + 1, token.size() - 2 - last));
 
-            if (const auto& it = get_macros().get_abbreviations().find(word);
-                it != get_macros().get_abbreviations().end())
+            if (
+              const auto& it = get_macros().get_abbreviations().find(word);
+              it != get_macros().get_abbreviations().end())
             {
               token.replace(last + 1, it->first.size(), it->second);
             }
@@ -695,7 +702,7 @@ bool wex::vi::insert_mode_register(const std::string& command)
   }
 
   std::string text(command);
-  marker_and_register_expansion(this, text);
+  ex_expansion(this, text);
   insert_mode(text);
 
   return true;

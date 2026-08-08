@@ -2,7 +2,7 @@
 // Name:      dialog.cpp
 // Purpose:   Implementation of class stc_entry_dialog
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2025 Anton van Wezenbeek
+// Copyright: (c) 2009-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/common/tostring.h>
@@ -135,7 +135,7 @@ bool wex::stc_entry_dialog::set_validator(const std::string& regex, bool ic)
   }
 }
 
-void wex::open_files_dialog(
+bool wex::open_files_dialog(
   factory::frame*          frame,
   bool                     ask_for_continue,
   const data::stc&         data,
@@ -155,14 +155,14 @@ void wex::open_files_dialog(
     {
       if (dlg.show_modal_if_changed(true) == wxID_CANCEL)
       {
-        return;
+        return false;
       }
     }
     else
     {
       if (dlg.ShowModal() == wxID_CANCEL)
       {
-        return;
+        return false;
       }
     }
 
@@ -175,7 +175,7 @@ void wex::open_files_dialog(
 
     if (dlg.ShowModal() == wxID_CANCEL)
     {
-      return;
+      return false;
     }
 
     dlg.GetPaths(paths);
@@ -190,4 +190,6 @@ void wex::open_files_dialog(
                 data::control::OR) :
               data,
     type);
+
+  return true;
 }

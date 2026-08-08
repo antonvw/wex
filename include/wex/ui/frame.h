@@ -8,6 +8,7 @@
 #pragma once
 
 #include <wex/core/path.h>
+#include <wex/data/listview.h>
 #include <wex/data/stc.h>
 #include <wex/factory/frame.h>
 #include <wex/factory/window.h>
@@ -28,6 +29,7 @@ namespace wex
 class debug_entry;
 class ex_command;
 class ex_commandline;
+class listview;
 class line_data;
 class menu_item;
 class process_data;
@@ -37,6 +39,11 @@ namespace factory
 {
 class link;
 };
+
+namespace lsp
+{
+class client;
+}; // namespace lsp
 
 namespace syntax
 {
@@ -84,6 +91,14 @@ public:
 
   // Virtual interface
 
+  /// This method is called to activate a certain listview.
+  /// Default it returns nullptr.
+  virtual listview*
+  activate(wex::data::listview::type_t, const lexer* lexer = nullptr)
+  {
+    return nullptr;
+  }
+
   /// Returns true if the page can be closed.
   /// Default resets the find focus.
   virtual bool allow_close(
@@ -128,6 +143,21 @@ public:
     return false;
   };
 
+  /// Finds an lsp client for a path.
+  virtual wex::lsp::client* lsp_clients_find(const path& p) { return nullptr; }
+
+  /// Returns lsp trigger character.
+  virtual const std::string lsp_clients_trigger(syntax::stc* stc)
+  {
+    return std::string();
+  }
+
+  /// Returns lsp trigger format character.
+  virtual bool lsp_clients_trigger_format(wex::lsp::client*, char c)
+  {
+    return false;
+  }
+
   /// Called if the notebook changed page.
   virtual void on_notebook(wxWindowID id, wxWindow* page) { ; }
 
@@ -150,6 +180,10 @@ public:
 
   /// Saves the current page, to restore later on.
   virtual bool save_current_page(const std::string& key) { return false; }
+
+  /// If we are in a shell, and text starts with cd, follows a possible path.
+  /// Returns true if this was the case, otherwise false.
+  virtual bool shell_follow_path(const std::string& text) { return false; }
 
   /// Act on a double shift click.
   virtual void shift_double_click() { ; }
@@ -419,6 +453,7 @@ protected:
 
 private:
   bool     add_toolbar_panes(const panes_t& panes);
+  void     bind_lsp();
   wxPanel* create_ex_panel();
   void     provide_output(const std::string& text) const;
 

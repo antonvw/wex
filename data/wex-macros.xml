@@ -3,7 +3,7 @@
 Name:      wex-macros.xml
 Purpose:   vi macros, variables, abbreviations and key maps for wex.
 Author:    Anton van Wezenbeek
-Copyright: (c) 2020-2025, Anton van Wezenbeek
+Copyright: (c) 2020-2026, Anton van Wezenbeek
 
 Both variables and macros have a "name" attribute, you call them
 from vi mode using @name@ (if name starts with an
@@ -36,7 +36,13 @@ Variables are expanded when playing back the macro.
     Expansion is done by asking value from user. You can add your own.
   - INPUT-ONCE:  
     Expansion is done by asking value from user, value is saved.
-    The next time this value is used for expansion, no input is asked for.
+    The next time this value is used for expansion, input is asked for
+    once at the start of a batch.
+    You can add your own.
+ - INPUT-ONCE-EMPTY:
+    Expansion is done by asking value from user, value is saved.
+    The next time this value is used for expansion, no input is asked for
+    (if the value is not empty).
     You can add your own.
   - INPUT-SAVE:  
     Expansion is done by asking value from user, value is saved.
@@ -100,9 +106,12 @@ Variables are expanded when playing back the macro.
   <variable name="PWD"              type="ENVIRONMENT"/>
   
   <!-- INPUT-ONCE type -->
-  <variable name="Author"           type="INPUT-ONCE"/>
-  <variable name="Author:"          type="INPUT-ONCE" prefix="Author:    "/>
-  <variable name="Copyright"        type="INPUT-ONCE">@Author:@</variable>
+  <variable name="IncValue"         type="INPUT-ONCE">1</variable>
+
+  <!-- INPUT-ONCE-EMPTY type -->
+  <variable name="Author"           type="INPUT-ONCE-EMPTY"/>
+  <variable name="Author:"          type="INPUT-ONCE-EMPTY" prefix="Author:    "/>
+  <variable name="Copyright"        type="INPUT-ONCE-EMPTY">@Author:@</variable>
 
   <!-- INPUT-SAVE type -->
   <variable name="Purpose"          type="INPUT-SAVE" prefix="WRAP"/>
@@ -162,7 +171,18 @@ Variables are expanded when playing back the macro.
     <command>o</command>
     <command>&#27;</command>
   </macro>
-  
+
+  <!-- An increment macro -->
+  <macro name="Inc">
+    <command>"x</command>
+    <command>yw</command>
+    <command>b</command>
+    <command>ce&#18;=&#18;x + @IncValue@</command>
+    <command>&#27;</command>
+    <command>b</command>
+    <command>j</command>
+  </macro>
+
   <!-- An abbreviation macro -->
   <abbreviation name="CR">Copyright</abbreviation>
 

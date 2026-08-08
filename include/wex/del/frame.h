@@ -2,23 +2,23 @@
 // Name:      frame.h
 // Purpose:   Include file for wex::del::frame class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2025 Anton van Wezenbeek
+// Copyright: (c) 2009-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/core/config.h>
 #include <wex/core/function-repeat.h>
+#include <wex/data/dir.h>
 #include <wex/del/defs.h>
 #include <wex/del/listview.h>
+#include <wex/lsp/client.h>
 #include <wex/syntax/indicator.h>
 #include <wex/syntax/marker.h>
 #include <wex/ui/file-history.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/item.h>
 #include <wex/vcs/vcs.h>
-
-#include <set>
 
 namespace wex
 {
@@ -34,6 +34,10 @@ class file;
 
 /// Adds file and project history support to frame.
 /// It also sets a change indicator in the title of the frame if applicable.
+/// It also adds a vcs interface, and shows vcs info on the statusbar.
+/// It also adds a debug interface, and shows debug info on the statusbar.
+/// It also adds a find in files interface, and shows find in files dialogs.
+/// It also adds lsp client support, but not used by default, you can set it up.
 /// Finally it adds find in files and selection dialogs.
 class frame : public wex::frame
 {
@@ -47,23 +51,16 @@ public:
     size_t              maxProjects = 0,
     const data::window& data = data::window().style(wxDEFAULT_FRAME_STYLE));
 
-  /// Destructor.
-  ~frame() = default;
-
   // Virtual interface
-
-  /// This method is called to activate a certain listview.
-  /// Default it returns nullptr.
-  virtual listview*
-  activate(wex::data::listview::type_t, const lexer* lexer = nullptr)
-  {
-    return nullptr;
-  }
 
   /// If there is a project somewhere,
   /// your implementation should return that one.
   /// Default it returns nullptr.
   virtual file* get_project() { return nullptr; }
+
+  /// If you enabled a server, that was previously not enabled,
+  /// this method is invoked to notify derived classes.
+  virtual void lsp_sync(const std::set<std::string>& lexers) { ; };
 
   // Other methods
 
@@ -108,6 +105,13 @@ public:
     const std::string& line,
     /// normally grep does not replace, by setting sed, it can
     bool sed = false);
+
+  /// Finds a lsp client based on lexer.
+  lsp::client* lsp_clients_find(const std::string& lexer);
+
+  /// Shows a dialog allowing you to choose which lsp server to use
+  /// Returns dialog return code.
+  int lsp_config_dialog(const data::window& data = data::window());
 
   /// Opens file from action with a possible extension to move.
   /// If file not empty returns false if an error occurred or no files opened,
@@ -159,6 +163,7 @@ public:
   static inline const int id_find_in_files    = ID_FREE_LOWEST;
   static inline const int id_replace_in_files = ID_FREE_LOWEST + 1;
 
+  bool allow_close(wxWindowID id, wxWindow* page) override;
   void bind_accelerators(
     wxWindow*                              parent,
     const std::vector<wxAcceleratorEntry>& v,
@@ -171,6 +176,11 @@ public:
   bool          debug_print(const std::string& text) override;
   bool          debug_toggle_breakpoint(int line, syntax::stc* stc) override;
 
+  lsp::client* lsp_clients_find(const path& p) override;
+
+  const std::string lsp_clients_trigger(syntax::stc* stc) override;
+  bool lsp_clients_trigger_format(wex::lsp::client*, char c) override;
+
   void on_command_item_dialog(wxWindowID dialogid, const wxCommandEvent& event)
     override;
   void on_notebook(wxWindowID id, wxWindow* page) override;
@@ -178,6 +188,10 @@ public:
   bool process_async_system(const process_data& data) override;
 
   void set_recent_file(const path& path) override;
+
+  bool report_unified_diff(const factory::unified_diff* uni) override;
+
+  bool shell_follow_path(const std::string& text) override;
 
   void show_ex_bar(int action = HIDE_BAR_FOCUS_STC, syntax::stc* stc = nullptr)
     override;
@@ -212,8 +226,6 @@ public:
     const std::vector<wex::path>& paths,
     const data::window&           arg = data::window()) override;
 
-  bool vcs_unified_diff(const vcs_entry* e, const unified_diff* uni) override;
-
   bool vi_is_address(syntax::stc* stc, const std::string& text) const override;
 
 protected:
@@ -223,8 +235,13 @@ protected:
   listview* file_history_list() { return m_file_history_listview; }
 
 private:
-  listview* activate_and_clear(const wex::tool& tool);
-  void      bind_all();
+  wex::listview* activate_and_clear(const wex::tool& tool);
+  data::dir      build_dir() const;
+
+  void         bind_all();
+  void         follow_path(syntax::stc* stc);
+  lsp::client* lsp_client_add(const std::string& name);
+  void         lsp_clients_setup();
 
   stc_entry_dialog* entry_dialog(
     const std::string& title = std::string(),
@@ -232,12 +249,17 @@ private:
 
   void find_in_files(wex::window_id id);
 
-  item_dialog *     m_fif_dialog{nullptr}, *m_rif_dialog{nullptr};
+  item_dialog *m_fif_dialog{nullptr}, *m_rif_dialog{nullptr},
+    *m_lsp_dialog{nullptr};
   stc_entry_dialog* m_entry_dialog{nullptr};
   debug*            m_debug{nullptr};
   process*          m_process{nullptr};
   listview*         m_file_history_listview{nullptr};
   class vcs*        m_vcs{nullptr};
+
+  std::vector<lsp::client*> m_lsp_clients;
+
+  bool m_skip_set_current_path{false};
 
   class file_history m_project_history;
 

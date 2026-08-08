@@ -2,7 +2,7 @@
 // Name:      process.h
 // Purpose:   Declaration of class wex::factory::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -26,6 +26,9 @@ class process
   friend class process_imp;
 
 public:
+  /// Sleeps for some milliseconds time.
+  static void async_sleep_for(const std::chrono::milliseconds& ms);
+
   /// Default constructor.
   process();
 
@@ -51,9 +54,6 @@ public:
   virtual bool write(const std::string& text);
 
   // Other methods
-
-  /// Sleeps for some milliseconds time.
-  void async_sleep_for(const std::chrono::milliseconds& ms);
 
   /// Returns last or current data used by async_system or system.
   const wex::process_data& data() const { return m_data; };

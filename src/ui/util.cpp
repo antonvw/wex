@@ -2,11 +2,8 @@
 // Name:      util.cpp
 // Purpose:   Implementation of wex::ui utils
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2025 Anton van Wezenbeek
+// Copyright: (c) 2022-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
-
-#include <numeric>
-#include <sstream>
 
 #include "item.h"
 
@@ -26,13 +23,14 @@ const std::any get_value_prim(const wex::item* item)
     {
       const auto& choices(
         std::any_cast<wex::item::choices_t>(item->data().initial()));
-      return std::any(std::ranges::fold_left(
-        choices,
-        0L,
-        [](long a, const auto& b)
-        {
-          return (b.second.contains(",")) ? a |= b.first : a;
-        }));
+      return std::any(
+        std::ranges::fold_left(
+          choices,
+          0L,
+          [](long a, const auto& b)
+          {
+            return (b.second.contains(",")) ? a |= b.first : a;
+          }));
     }
 
     case item::EMPTY:

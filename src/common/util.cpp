@@ -2,7 +2,7 @@
 // Name:      common/util.cpp
 // Purpose:   Implementation of wex common utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2025 Anton van Wezenbeek
+// Copyright: (c) 2011-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <numeric>
@@ -19,6 +19,7 @@
 #include <wex/factory/frame.h>
 #include <wex/factory/link.h>
 #include <wex/factory/process.h>
+#include <wex/factory/unified-diff.h>
 #include <wex/syntax/lexer.h>
 #include <wex/syntax/lexers.h>
 #include <wex/syntax/stc.h>
@@ -28,6 +29,17 @@
 
 namespace wex
 {
+bool first_is_newest(const path& file1, const path& file2)
+{
+  return file1.stat().get_modification_time() >
+         file2.stat().get_modification_time();
+}
+
+std::string quoted_files(const path& file1, const path& file2)
+{
+  return quoted_find(file1.string()) + " " + quoted_find(file2.string());
+}
+
 /// Allows you to easily open all files on specified path.
 /// After constructing, invoke find_files which
 /// causes all found files to be opened using open_file from frame.
@@ -60,6 +72,7 @@ wex::open_file_dir::open_file_dir(const wex::path& path, const data::dir& data)
 bool wex::open_file_dir::on_file(const wex::path& file) const
 {
   m_frame->open_file(file, data::stc().flags(m_flags));
+  dir::on_file(file);
   return true;
 }
 
@@ -83,8 +96,6 @@ wex::auto_complete_filename(const std::string& text)
     path.make_absolute();
   }
 
-  auto_complete_filename_t out;
-
   // alias to filename
   const auto& prefix(path.filename());
 
@@ -100,6 +111,9 @@ wex::auto_complete_filename(const std::string& text)
   {
     return {};
   }
+
+  log::trace("auto_complete_filename")
+    << path.string() << path.parent_path() << path::current().string();
 
   if (v.size() > 1)
   {
@@ -143,9 +157,11 @@ void wex::combobox_from_list(wxComboBox* cb, const strings_t& text)
   combobox_as<const strings_t>(cb, text);
 }
 
-bool wex::compare_file(const path& file1, const path& file2)
+bool wex::compare_file(const path& file1, const path& file2, compare_t t)
 {
-  if (config(_("list.Comparator")).empty())
+  const auto cmp(config(_("list.Comparator")).get_first_of("diff"));
+
+  if (cmp.empty())
   {
     log("compare_file") << "empty comparator";
     return false;
@@ -157,20 +173,64 @@ bool wex::compare_file(const path& file1, const path& file2)
     return false;
   }
 
-  const auto arguments =
-    (file1.stat().get_modification_time() <
-     file2.stat().get_modification_time()) ?
-      quoted_find(file1.string()) + " " + quoted_find(file2.string()) :
-      quoted_find(file2.string()) + " " + quoted_find(file1.string());
-  if (
-    factory::process().system(
-      config(_("list.Comparator")).get() + " " + arguments) != 0)
+  const auto flags = (cmp.ends_with("diff") ? "-U0 " : std::string());
+
+  std::string arguments;
+  wex::path   file;
+
+  switch (t)
   {
-    return false;
+    case compare_t::USE_AS_PROVIDED:
+      arguments = quoted_files(file1, file2);
+      file      = file2;
+      break;
+
+    case compare_t::USE_NEWEST:
+      arguments = first_is_newest(file1, file2) ? quoted_files(file2, file1) :
+                                                  quoted_files(file1, file2);
+      file      = first_is_newest(file1, file2) ? file1 : file2;
+      break;
+
+    case compare_t::USE_OLDEST:
+      arguments = first_is_newest(file1, file2) ? quoted_files(file1, file2) :
+                                                  quoted_files(file2, file1);
+      file      = first_is_newest(file1, file2) ? file2 : file1;
+      break;
+
+    default:
+      assert(0);
   }
 
-  log::status(_("Compared")) << arguments;
-  return true;
+  factory::process p;
+
+  if (
+    const auto ec = p.system(cmp + " " + flags + arguments);
+    ((ec == 0 || ec == 1) && cmp.ends_with("diff")) || ec >= 0)
+  {
+    if (
+      auto* frame =
+        dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
+      cmp.ends_with("diff") && frame != nullptr)
+    {
+      if (config(_("list.Use unified diff view")).get(true))
+      {
+        factory::unified_diff(p.std_out(), frame).parse();
+      }
+      else
+      {
+        frame->open_file(
+          path(file.string() + ".diff"),
+          p.std_out(),
+          data::stc());
+      }
+    }
+
+    log::status(_("Compared")) << arguments;
+
+    return true;
+  }
+
+  return false;
 }
 
 bool wex::lexers_dialog(syntax::stc* stc)
@@ -273,9 +333,10 @@ int wex::open_files(
 
         if (!it.file_exists() && it.string().contains(":"))
         {
-          if (const path &
-                val(wex::factory::link().get_path(it.string(), data.control()));
-              !val.empty())
+          if (
+            const path& val(
+              wex::factory::link().get_path(it.string(), data.control()));
+            !val.empty())
           {
             fn = val;
           }
@@ -372,9 +433,10 @@ void wex::xml_error(
   // prevent recursion
   if (stc == nullptr && filename != lexers::get()->path())
   {
-    if (auto* frame =
-          dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
-        frame != nullptr)
+    if (
+      auto* frame =
+        dynamic_cast<wex::factory::frame*>(wxTheApp->GetTopWindow());
+      frame != nullptr)
     {
       stc = dynamic_cast<syntax::stc*>(frame->open_file(filename, data::stc()));
     }

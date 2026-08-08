@@ -2,7 +2,7 @@
 // Name:      stc.cpp
 // Purpose:   Implementation of class wex::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2025 Anton van Wezenbeek
+// Copyright: (c) 2008-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -12,6 +12,7 @@
 #include <wex/ex/macros.h>
 #include <wex/factory/stc-undo.h>
 #include <wex/factory/unified-diff.h>
+#include <wex/lsp/client.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/auto-indent.h>
 #include <wex/stc/entry-dialog.h>
@@ -25,6 +26,42 @@
 #include <wx/app.h>
 
 #include <algorithm>
+
+namespace wex
+{
+void lsp_change(const wxStyledTextEvent& event, wex::stc* stc)
+{
+  if (
+    auto* client = stc->get_frame()->lsp_clients_find(stc->path());
+    client != nullptr)
+  {
+    range_item r;
+    r.start.line = stc->LineFromPosition(event.GetPosition());
+    r.start.character =
+      event.GetPosition() - stc->PositionFromLine(r.start.line);
+
+    if (event.GetModificationType() & wxSTC_MOD_BEFOREDELETE)
+    {
+      // this is a delete
+      const auto endpos = event.GetPosition() + event.GetLength();
+      r.end.line        = stc->LineFromPosition(endpos);
+      r.end.character   = endpos - stc->PositionFromLine(r.end.line);
+      client->did_change(stc->path(), r, std::string());
+    }
+    else if (event.GetModificationType() & wxSTC_MOD_BEFOREINSERT)
+    {
+      // this is an insert
+      r.end.line      = r.start.line;
+      r.end.character = r.start.character;
+      client->did_change(stc->path(), r, event.GetText());
+    }
+    else
+    {
+      log("unknown type");
+    }
+  }
+}
+} // namespace wex
 
 wex::stc::stc(const wex::path& p, const data::stc& data)
   : syntax::stc(data.window())
@@ -70,33 +107,12 @@ wex::stc::stc(const wex::path& p, const data::stc& data)
     sync();
   }
 
-#ifdef __WXMSW__
-  SetEOLMode(wxSTC_EOL_CRLF);
-#elif __WXGTK__
-  SetEOLMode(wxSTC_EOL_LF);
-#else
-  SetEOLMode(wxSTC_EOL_CR);
-#endif
-
-  SetAdditionalCaretsBlink(true);
-  SetAdditionalCaretsVisible(true);
-  SetAdditionalSelectionTyping(true);
-  SetBackSpaceUnIndents(true);
-  SetMouseDwellTime(1000);
-
   SetMarginType(m_margin_line_number, wxSTC_MARGIN_NUMBER);
   SetMarginType(m_margin_divider_number, wxSTC_MARGIN_SYMBOL);
   SetMarginType(m_margin_folding_number, wxSTC_MARGIN_SYMBOL);
   SetMarginType(m_margin_text_number, wxSTC_MARGIN_TEXT);
 
   SetMarginMask(m_margin_folding_number, wxSTC_MASK_FOLDERS);
-
-  SetMarginSensitive(m_margin_divider_number, true);
-  SetMarginSensitive(m_margin_folding_number, true);
-  SetMarginSensitive(m_margin_text_number, true);
-
-  SetMultiPaste(wxSTC_MULTIPASTE_EACH);
-  SetMultipleSelection(true);
 
   if (m_zoom == -1)
   {
@@ -348,8 +364,9 @@ void wex::stc::guess_type_and_modeline()
        m_hexmode.buffer().substr(length - sample_size, sample_size)));
 
   // If we have a modeline comment.
-  if (regex v("\\s+vim?:\\s*(set [a-z0-9:= ]+)");
-      get_vi().is_active() && (v.search(head) > 0 || v.search(tail) > 0))
+  if (
+    regex v("\\s+vim?:\\s*(set [a-z0-9:= ]+)");
+    get_vi().is_active() && (v.search(head) > 0 || v.search(tail) > 0))
   {
     if (!get_vi().command(
           // the vim modeline command sometimes ends with a : (see test)
@@ -422,8 +439,9 @@ bool wex::stc::mark_diff(int line, const marker& marker)
 {
   line--;
 
-  if (const auto& it = m_marker_identifiers.find(line);
-      it != m_marker_identifiers.end())
+  if (
+    const auto& it = m_marker_identifiers.find(line);
+    it != m_marker_identifiers.end())
   {
     log::trace("diff marker already present, added other marker");
   }
@@ -449,8 +467,9 @@ void wex::stc::mark_modified(const wxStyledTextEvent& event)
 
   use_modification_markers(false);
 
-  if (const auto line = LineFromPosition(event.GetPosition());
-      event.GetModificationType() & wxSTC_PERFORMED_UNDO)
+  if (
+    const auto line = LineFromPosition(event.GetPosition());
+    event.GetModificationType() & wxSTC_PERFORMED_UNDO)
   {
     if (event.GetLinesAdded() == 0)
     {
@@ -494,6 +513,13 @@ void wex::stc::on_styled_text(wxStyledTextEvent& event)
   if (is_visual())
   {
     mark_modified(event);
+
+    if (
+      (event.GetModificationType() & wxSTC_MOD_BEFOREINSERT) ||
+      (event.GetModificationType() & wxSTC_MOD_BEFOREDELETE))
+    {
+      lsp_change(event, this);
+    }
   }
 
   event.Skip();
@@ -519,6 +545,11 @@ bool wex::stc::open(const wex::path& p, const data::stc& data)
   if (data.recent())
   {
     m_frame->set_recent_file(p);
+  }
+
+  if (auto* client = m_frame->lsp_clients_find(p); client != nullptr)
+  {
+    client->did_open(p, get_text());
   }
 
   return true;
@@ -553,8 +584,9 @@ void wex::stc::print_preview(wxPreviewFrameModalityKind kind)
   if (!preview->Ok())
   {
     delete preview;
-    stc_entry_dialog("There was a problem previewing.\n"
-                     "Perhaps your current printer is not set correctly?")
+    stc_entry_dialog(
+      "There was a problem previewing.\n"
+      "Perhaps your current printer is not set correctly?")
       .ShowModal();
     return;
   }

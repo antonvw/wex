@@ -11,18 +11,18 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           submodules: recursive
 
       - name: Install boost
-        uses: MarkusJx/install-boost@v2.5.1
+        uses: MarkusJx/install-boost@v2.6.0
         id: install-boost
         with:
           # REQUIRED: Specify the required boost version
           # A list of supported versions can be found here:
           # https://github.com/MarkusJx/prebuilt-boost/
-          boost_version: 1.89.0
+          boost_version: 1.91.0
           platform_version: 24.04
 
       - name: Install gtk
@@ -30,9 +30,11 @@ jobs:
           sudo apt-get update -qq &&
           sudo apt-get install liblzma5 libjbig0 libgtk-3-dev
 
-      - name: Install gcc, lcov, gdb, theme-icon
+      - name: Install gcc, lcov, gdb, clangd, theme-icon
         # gcov version should match gcc version: change build-gen.sh as well
-        run: sudo apt-get install -yq gcc-14 g++-14 lcov gdb yaru-theme-icon
+        run: >-
+          sudo apt-get install -yq
+          gcc-14 g++-14 lcov gdb clangd yaru-theme-icon
 
       - name: Install xvfb to allow headless tests
         run: sudo apt-get install xvfb
@@ -81,7 +83,7 @@ jobs:
           ulimit -c unlimited
           cd build
           ninja lcov-prep
-          xvfb-run --auto-servernum env GDK_BACKEND=x11 ctest -VV
+          xvfb-run --auto-servernum env GDK_BACKEND=x11 ctest -VV 2> /dev/null
           ninja lcov
         env:
           NO_AT_BRIDGE: 1

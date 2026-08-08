@@ -2,7 +2,7 @@
 // Name:      variable.h
 // Purpose:   Declaration of class wex::variable
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2025 Anton van Wezenbeek
+// Copyright: (c) 2019-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -21,6 +21,9 @@ class variable
 public:
   /// Sets argument (for a PROCESS variable).
   static void set_argument(const std::string& val);
+
+  /// Returns a regex string with valid variable names like (@..@).
+  static std::string regex_valid_names();
 
   /// Default constructor.
   explicit variable(std::string name = std::string());

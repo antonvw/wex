@@ -77,6 +77,8 @@ bool wex::command_parser::parse(parse_t type)
     return false;
   }
 
+  // prevent warning about slicing
+  // NOLINTNEXTLINE
   m_ex->m_command_parsed_data = *this;
 
   return true;
@@ -84,7 +86,7 @@ bool wex::command_parser::parse(parse_t type)
 
 bool wex::command_parser::parse_other()
 {
-  marker_and_register_expansion(m_ex, m_text);
+  ex_expansion(m_ex, m_text);
 
   // Addressing in ex.
   // See also address::get_line

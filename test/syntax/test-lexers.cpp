@@ -35,6 +35,7 @@ TEST_CASE("wex::lexers")
     REQUIRE(m != nullptr);
     REQUIRE(wex::lexers::get()->get_lexers().size() > 1);
     REQUIRE(wex::lexers::get()->is_loaded());
+    REQUIRE(!wex::lexers::get()->get_lsp_servers().empty());
 
     delete l;
     delete m;

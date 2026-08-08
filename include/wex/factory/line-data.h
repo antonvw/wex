@@ -2,7 +2,7 @@
 // Name:      line-data.h
 // Purpose:   Declaration of wex::line_data
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -18,7 +18,7 @@ namespace wex
 class line_data
 {
 public:
-  /// Returns column.
+  /// Returns (start) column.
   int col() const { return m_col; }
 
   /// Sets column.
@@ -32,13 +32,26 @@ public:
   /// This is a vi command to execute.
   line_data& command(const std::string& command);
 
+  /// Returns end column.
+  int end_col() const { return m_end_col; }
+
+  /// Returns end line.
+  int end_line() const { return m_end_line; }
+
+  /// Sets end column.
+  /// Goes to column if col_number > 0
+  line_data& end_col(int col);
+
+  /// Sets end line.
+  line_data& end_line(int line);
+
   /// Returns true if command is a ctag command.
   bool is_ctag() const { return m_ctagged; }
 
   /// Sets ctag.
   line_data& is_ctag(bool rhs);
 
-  /// Returns line number.
+  /// Returns (start) line number.
   int line() const { return m_line; }
 
   /// Sets line number.
@@ -50,7 +63,15 @@ public:
 
 private:
   bool        m_ctagged{false};
-  int         m_col{NUMBER_NOT_SET}, m_line{NUMBER_NOT_SET};
+
+  int
+    // start
+    m_col{NUMBER_NOT_SET},
+    m_line{NUMBER_NOT_SET},
+    // end
+    m_end_col{NUMBER_NOT_SET},
+    m_end_line{NUMBER_NOT_SET};
+
   std::string m_command;
 };
 }; // namespace wex
@@ -73,6 +94,18 @@ inline wex::line_data& wex::line_data::command(const std::string& command)
   return *this;
 }
 
+inline wex::line_data& wex::line_data::end_col(int col)
+{
+  m_end_col = col;
+  return *this;
+}
+
+inline wex::line_data& wex::line_data::end_line(int line)
+{
+  m_end_line = line;
+  return *this;
+}
+
 inline wex::line_data& wex::line_data::is_ctag(bool rhs)
 {
   m_ctagged = rhs;
@@ -89,7 +122,10 @@ inline wex::line_data& wex::line_data::line(int line, std::function<int(int)> f)
 inline void wex::line_data::reset()
 {
   m_col = NUMBER_NOT_SET;
+  m_line    = NUMBER_NOT_SET;
+  m_end_col = NUMBER_NOT_SET;
+  m_end_line = NUMBER_NOT_SET;
+
   m_command.clear();
   m_ctagged = false;
-  m_line    = NUMBER_NOT_SET;
 }

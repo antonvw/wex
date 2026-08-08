@@ -2,19 +2,21 @@
 // Name:      stc/bind-other.cpp
 // Purpose:   Implementation of class wex::stc method bind_other
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/factory/util.h>
+#include <wex/lsp/client.h>
 #include <wex/stc/auto-complete.h>
 #include <wex/stc/bind.h>
 #include <wex/stc/stc.h>
 #include <wex/ui/debug-entry.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
+#include <wex/ui/lsp.h>
 #include <wex/ui/menu.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 
@@ -38,10 +40,11 @@ void check_double_click(stc* stc, wxKeyEvent& event)
     }
     else
     {
-      if (const auto milli =
-            std::chrono::duration_cast<std::chrono::milliseconds>(
-              std::chrono::system_clock::now() - start);
-          milli.count() < 500)
+      if (
+        const auto milli =
+          std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now() - start);
+        milli.count() < 500)
       {
         stc->get_frame()->shift_double_click();
       }
@@ -57,19 +60,20 @@ void check_double_click(stc* stc, wxKeyEvent& event)
 
 void hypertext(stc* stc)
 {
-  if (const auto match_pos = stc->FindText(
-        stc->GetCurrentPos() - 1,
-        stc->PositionFromLine(stc->get_current_line()),
-        "<");
-      match_pos != wxSTC_INVALID_POSITION &&
-      stc->GetCharAt(match_pos + 1) != '!')
+  if (
+    const auto match_pos = stc->FindText(
+      stc->GetCurrentPos() - 1,
+      stc->PositionFromLine(stc->get_current_line()),
+      "<");
+    match_pos != wxSTC_INVALID_POSITION && stc->GetCharAt(match_pos + 1) != '!')
   {
-    if (const auto& match(stc->get_word_at_pos(match_pos + 1));
-        !match.starts_with('/') &&
-        stc->GetCharAt(stc->GetCurrentPos() - 2) != '/' &&
-        (stc->get_lexer().language() == "xml" ||
-         stc->get_lexer().is_keyword(match)) &&
-        !stc->SelectionIsRectangle())
+    if (
+      const auto& match(stc->get_word_at_pos(match_pos + 1));
+      !match.starts_with('/') &&
+      stc->GetCharAt(stc->GetCurrentPos() - 2) != '/' &&
+      (stc->get_lexer().language() == "xml" ||
+       stc->get_lexer().is_keyword(match)) &&
+      !stc->SelectionIsRectangle())
     {
       if (const std::string add("</" + match + ">"); stc->get_vi().is_active())
       {
@@ -134,22 +138,24 @@ void margin_menu(stc* stc)
 
   menu->append({{}});
 
-  if (auto* author =
-        menu->AppendCheckItem(id::stc::margin_text_author, "&Show Author");
-      config("blame.author").get(true))
+  if (
+    auto* author =
+      menu->AppendCheckItem(id::stc::margin_text_author, "&Show Author");
+    config("blame.author").get(true))
   {
     author->Check();
   }
 
-  if (auto* date =
-        menu->AppendCheckItem(id::stc::margin_text_date, "&Show Date");
-      config("blame.date").get(true))
+  if (
+    auto* date = menu->AppendCheckItem(id::stc::margin_text_date, "&Show Date");
+    config("blame.date").get(true))
   {
     date->Check();
   }
 
-  if (auto* id = menu->AppendCheckItem(id::stc::margin_text_id, "&Show Id");
-      config("blame.id").get(true))
+  if (
+    auto* id = menu->AppendCheckItem(id::stc::margin_text_id, "&Show Id");
+    config("blame.id").get(true))
   {
     id->Check();
   }
@@ -277,7 +283,10 @@ void wex::stc::bind_other()
     wxEVT_STC_AUTOCOMP_COMPLETED,
     [=, this](wxStyledTextEvent& event)
     {
-      m_auto_complete->complete(event.GetText().ToStdString());
+      if (m_frame->lsp_clients_find(path()) == nullptr)
+      {
+        m_auto_complete->complete(event.GetText().ToStdString());
+      }
     });
 
   Bind(
@@ -308,16 +317,6 @@ void wex::stc::bind_other()
         event.SetDragAllowMove(false);
       }
       event.Skip();
-    });
-
-  Bind(
-    wxEVT_STC_DWELLEND,
-    [=, this](const wxStyledTextEvent& event)
-    {
-      if (CallTipActive())
-      {
-        CallTipCancel();
-      }
     });
 
   // if we support automatic fold, this can be removed,
@@ -416,11 +415,13 @@ void wex::stc::margin_action(wxStyledTextEvent& event)
 {
   m_skip = false;
 
-  if (const auto line = LineFromPosition(event.GetPosition());
-      event.GetMargin() == m_margin_folding_number)
+  if (
+    const auto line = LineFromPosition(event.GetPosition());
+    event.GetMargin() == m_margin_folding_number)
   {
-    if (const auto level = GetFoldLevel(line);
-        (level & wxSTC_FOLDLEVELHEADERFLAG) > 0)
+    if (
+      const auto level = GetFoldLevel(line);
+      (level & wxSTC_FOLDLEVELHEADERFLAG) > 0)
     {
       ToggleFold(line);
     }
@@ -479,6 +480,12 @@ void wex::stc::mouse_action(wxMouseEvent& event)
           m_frame->debug_print(word);
         }
       }
+      else if (
+        const auto annotation = AnnotationGetText(GetCurrentLine());
+        !annotation.empty())
+      {
+        CallTipShow(GetCurrentPos(), annotation);
+      }
 
       m_skip = false;
     }
@@ -490,18 +497,28 @@ void wex::stc::mouse_action(wxMouseEvent& event)
       if (menu.GetMenuItemCount() > 0)
       {
         // If last item is a separator, delete it.
-        if (wxMenuItem* item =
-              menu.FindItemByPosition(menu.GetMenuItemCount() - 1);
-            item->IsSeparator())
+        if (
+          wxMenuItem* item =
+            menu.FindItemByPosition(menu.GetMenuItemCount() - 1);
+          item->IsSeparator())
         {
           menu.Delete(item->GetId());
         }
 
+        m_is_popup_shown = true;
+
         PopupMenu(&menu);
+
+        m_is_popup_shown = false;
       }
     }
     else if (event.LeftDClick())
     {
+      if (CallTipActive())
+      {
+        CallTipCancel();
+      }
+
       m_margin_text_click = -1;
 
       if (

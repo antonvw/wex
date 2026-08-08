@@ -2,24 +2,14 @@
 // Name:      dirctrl.cpp
 // Purpose:   Implementation of class wex::del::dirctrl
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2010-2025 Anton van Wezenbeek
+// Copyright: (c) 2010-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/wex.h>
 #include <wx/stockitem.h> // for wxGetStockLabel
 
-#define GET_VECTOR_FILES                                                       \
-  const auto files(wex::to_vector_path(*this).get());                          \
-  /* NOLINTNEXTLINE */                                                         \
-  if (files.empty())                                                           \
-  {                                                                            \
-    event.Skip();                                                              \
-    return;                                                                    \
-  }
-
-#include <numeric>
-
-const int idShowHidden = wxWindow::NewControlId();
+const int id_compare     = wxWindow::NewControlId();
+const int id_show_hidden = wxWindow::NewControlId();
 
 wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
   : wxGenericDirCtrl(
@@ -60,13 +50,14 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
      {[=, this](const wxCommandEvent& event)
       {
         const auto v(to_vector_string(*this).get());
-        clipboard_add(std::ranges::fold_left(
-          v,
-          std::string(),
-          [](const std::string& a, const std::string& b)
-          {
-            return a + b + "\n";
-          }));
+        clipboard_add(
+          std::ranges::fold_left(
+            v,
+            std::string(),
+            [](const std::string& a, const std::string& b)
+            {
+              return a + b + "\n";
+            }));
       },
       ID_TREE_COPY},
      {[=, this](const wxCommandEvent& event)
@@ -78,11 +69,13 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
           data::dir::type_t().set(data::dir::FILES));
       },
       ID_EDIT_OPEN},
-     {[=, this](wxCommandEvent& event)
+     {[=, this](const wxCommandEvent& event)
       {
-        GET_VECTOR_FILES
-
-        build(path_lexer(files[0]));
+        on_selected_paths(
+          [=, this](const std::vector<path>& p)
+          {
+            build(path_lexer(p[0]));
+          });
       },
       ID_TREE_RUN_BUILD},
      {[=, this](const wxCommandEvent& event)
@@ -101,98 +94,140 @@ wex::del::dirctrl::dirctrl(frame* frame, const data::window& data)
       ID_TOOL_REPLACE},
      {[=, this](const wxCommandEvent& event)
       {
+        if (const auto v(to_vector_path(*this).get()); v.size() == 2)
+        {
+          compare_file(v[0], v[1]);
+        }
+      },
+      id_compare},
+     {[=, this](const wxCommandEvent& event)
+      {
         ShowHidden(!config(_("Show hidden")).get(false));
         config(_("Show hidden")).set(!config(_("Show hidden")).get(false));
       },
-      idShowHidden}});
+      id_show_hidden}});
 
   Bind(
     wxEVT_TREE_ITEM_ACTIVATED,
     [=, this](wxTreeEvent& event)
     {
-      GET_VECTOR_FILES
-
-      if (const auto& fn(files[0]); !fn.file_exists() && fn.dir_exists())
-      {
-        if (!GetTreeCtrl()->IsExpanded(event.GetItem()))
+      on_selected_paths(
+        [=, this](const std::vector<path>& p)
         {
-          expand_and_select_path(fn);
-        }
-        else
-        {
-          CollapsePath(fn.string());
-        }
-      }
-      else
-      {
-        open_files(
-          frame,
-          files,
-          data::stc(),
-          data::dir::type_t().set(data::dir::FILES));
-      }
+          if (const auto& fn(p[0]); !fn.file_exists() && fn.dir_exists())
+          {
+            if (!GetTreeCtrl()->IsExpanded(event.GetItem()))
+            {
+              expand_and_select_path(fn);
+            }
+            else
+            {
+              CollapsePath(fn.string());
+            }
+          }
+          else
+          {
+            open_files(
+              frame,
+              p,
+              data::stc(),
+              data::dir::type_t().set(data::dir::FILES));
+          }
+        });
     });
 
   Bind(
     wxEVT_TREE_ITEM_MENU,
-    [=, this](wxTreeEvent& event)
+    [=, this](const wxTreeEvent& event)
     {
-      GET_VECTOR_FILES
+      on_selected_paths(
+        [=, this](const std::vector<path>& p)
+        {
+          const wex::path_lexer filename(p[0]);
 
-      const wex::path_lexer filename(files[0]);
+          wex::menu menu(
+            menu::menu_t_def().set(menu::IS_POPUP).set(menu::IS_VISUAL));
 
-      wex::menu menu(
-        menu::menu_t_def().set(menu::IS_POPUP).set(menu::IS_VISUAL));
+          if (filename.file_exists())
+          {
+            menu.append({{ID_EDIT_OPEN, _("&Open")}, {}});
 
-      if (filename.file_exists())
-      {
-        menu.append({{ID_EDIT_OPEN, _("&Open")}, {}});
-      }
+            if (
+              p.size() == 2 &&
+              !config(_("list.Comparator")).get_first_of().empty())
+            {
+              menu.append({{id_compare, _("&Compare")}, {}});
+            }
+          }
 
-      menu.append(
-        {{ID_TREE_COPY,
-          wxGetStockLabel(wxID_COPY),
-          data::menu().art(wxART_COPY)}});
+          menu.append(
+            {{ID_TREE_COPY,
+              wxGetStockLabel(wxID_COPY),
+              data::menu().art(wxART_COPY)}});
 
-      // If the filename is under vcs append vcs submenu.
-      if (vcs::dir_exists(filename))
-      {
-        menu.append({{}, {filename, frame}});
-      }
+          // If the filename is under vcs append vcs submenu.
+          if (vcs::dir_exists(filename))
+          {
+            menu.append({{}, {filename, frame}});
+          }
 
-      if (filename.is_build())
-      {
-        menu.append({{}, {ID_TREE_RUN_BUILD, "&Build"}});
-      }
+          if (filename.is_build())
+          {
+            menu.append({{}, {ID_TREE_RUN_BUILD, "&Build"}});
+          }
 
-      menu.append(
-        {{},
-         {ID_TOOL_REPORT_FIND,
-          ellipsed(frame->find_in_files_title(ID_TOOL_REPORT_FIND))},
-         {ID_TOOL_REPLACE,
-          ellipsed(frame->find_in_files_title(ID_TOOL_REPLACE))},
-         {}});
+          menu.append(
+            {{},
+             {ID_TOOL_REPORT_FIND,
+              ellipsed(frame->find_in_files_title(ID_TOOL_REPORT_FIND))},
+             {ID_TOOL_REPLACE,
+              ellipsed(frame->find_in_files_title(ID_TOOL_REPLACE))},
+             {}});
 
-      if (auto* item = menu.AppendCheckItem(idShowHidden, _("Show hidden"));
-          config(_("Show hidden")).get(false))
-      {
-        item->Check();
-      }
+          if (
+            auto* item = menu.AppendCheckItem(id_show_hidden, _("Show hidden"));
+            config(_("Show hidden")).get(false))
+          {
+            item->Check();
+          }
 
-      PopupMenu(&menu);
+          PopupMenu(&menu);
+        });
     });
 
   Bind(
     wxEVT_TREE_SEL_CHANGED,
-    [=, this](wxTreeEvent& event)
+    [=, this](const wxTreeEvent& event)
     {
-      GET_VECTOR_FILES
-      log::status() << files[0];
+      on_selected_paths(
+        [=, this](const std::vector<path>& p)
+        {
+          log::status() << p[0];
+        });
     });
 }
 
-void wex::del::dirctrl::expand_and_select_path(const wex::path& path)
+bool wex::del::dirctrl::expand_and_select_path(const wex::path& path)
 {
-  ExpandPath(path.string());
+  if (!ExpandPath(path.string()))
+  {
+    return false;
+  }
+
   SelectPath(path.string());
+
+  return true;
+}
+
+std::vector<wex::path> wex::del::dirctrl::on_selected_paths(
+  const std::function<void(std::vector<path> p)>& f) const
+{
+  const auto v(wex::to_vector_path(*this).get());
+
+  if (!v.empty())
+  {
+    f(v);
+  }
+
+  return v;
 }

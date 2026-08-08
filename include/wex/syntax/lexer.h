@@ -2,7 +2,7 @@
 // Name:      lexer.h
 // Purpose:   Declaration of wex::lexer class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2025 Anton van Wezenbeek
+// Copyright: (c) 2008-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -132,6 +132,18 @@ public:
   /// Returns the line size.
   size_t line_size() const;
 
+  /// Returns the lsp server.
+  const std::string& lsp_server() const { return m_lsp; }
+
+  /// Returns the lsp server arguments.
+  const std::vector<std::string>& lsp_server_arguments() const
+  {
+    return m_lsp_arguments;
+  }
+
+  /// Return the lsp server path (default empty).
+  const std::string& lsp_server_path() const { return m_lsp_path; }
+
   /// Returns a lexer comment string with text formatted.
   const std::string make_comment(
     const std::string& text,
@@ -195,14 +207,16 @@ private:
   // however this might be different, as with c#.
   // In that case the scintilla lexer is cpp, whereas the display lexer is c#.
   std::string m_comment_begin, m_comment_begin2, m_command_end, m_command_end2,
-    m_display_lexer, m_extensions, m_language, m_scintilla_lexer;
+    m_display_lexer, m_extensions, m_language, m_lsp, m_lsp_path,
+    m_scintilla_lexer;
 
   // each keyword set in a separate keyword set
   std::unordered_map<int, std::set<std::string>> m_keywords_set;
   std::set<std::string>                          m_keywords;
-  std::vector<int>      m_edge_columns; // last one is used for line size
-  std::vector<property> m_properties;
-  std::vector<style>    m_styles;
+  std::vector<int>         m_edge_columns; // last one is used for line size
+  std::vector<property>    m_properties;
+  std::vector<style>       m_styles;
+  std::vector<std::string> m_lsp_arguments;
   std::vector<std::tuple<
     std::string,
     int,

@@ -27,15 +27,9 @@ public:
 
   // Virtual interface
 
-  virtual bool lexer_is_previewable() const final
-  {
-    return m_lexer.is_previewable();
-  }
+  bool lexer_is_previewable() const final { return m_lexer.is_previewable(); }
 
-  virtual std::string lexer_name() const final
-  {
-    return m_lexer.display_lexer();
-  }
+  std::string lexer_name() const final { return m_lexer.display_lexer(); }
 
   // Other methods.
 

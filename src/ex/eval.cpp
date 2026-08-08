@@ -37,7 +37,7 @@ std::expected<int, std::string> wex::evaluator::eval(const std::string& text)
   }
 
   std::string expanded(text);
-  marker_and_register_expansion(m_ex, expanded);
+  ex_expansion(m_ex, expanded);
   return m_eval->eval(this, expanded);
 }
 

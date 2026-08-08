@@ -2,7 +2,7 @@
 // Name:      test-unified-diff.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024-2025 Anton van Wezenbeek
+// Copyright: (c) 2024-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -12,7 +12,6 @@
 
 #define PARSE_AND_MOCK_CHECK(NUMBER)                                           \
   REQUIRE_CALL(uni, report_diff()).RETURN(true).TIMES(NUMBER);                 \
-  REQUIRE_CALL(uni, report_diff_finish());                                     \
   REQUIRE(uni.is_first());                                                     \
   REQUIRE(uni.parse());
 
@@ -25,7 +24,6 @@ public:
     ;
   };
   MAKE_MOCK0(report_diff, bool(), override);
-  MAKE_MOCK0(report_diff_finish, void(), override);
 };
 
 TEST_CASE("wex::factory::unified_diff")
@@ -53,35 +51,35 @@ TEST_CASE("wex::factory::unified_diff")
     wex::log_none off;
     REQUIRE(!wex::factory::unified_diff("error\n").parse());
     REQUIRE(!wex::factory::unified_diff(
-               "diff --git a/CHANGELOG.md b/CHANGELOG.md\n"
+               "diff --git CHANGELOG.md CHANGELOG.md\n"
                "index a23525b3c..26e9e8fc1 100644\n"
-               "--- a/CHANGELOG.md\n"
-               "+++ b/CHANGELOG.md\n"
+               "--- CHANGELOG.md\n"
+               "+++ CHANGELOG.md\n"
                "@@ -10,0 + @@ The format is based on [Keep a Changelog].\n"
                "+- added git diff option\n")
                .parse());
-    REQUIRE(
-      !wex::factory::unified_diff("diff --git a/CHANGELOG.md b/CHANGELOG.md\n"
-                                  "index a23525b3c..26e9e8fc1 100644\n"
-                                  "--- a/CHANGELOG.md\n"
-                                  "+++ b/CHANGELOG.md\n"
-                                  "+- added git diff option\n")
-         .parse());
+    REQUIRE(!wex::factory::unified_diff(
+               "diff --git CHANGELOG.md CHANGELOG.md\n"
+               "index a23525b3c..26e9e8fc1 100644\n"
+               "--- CHANGELOG.md\n"
+               "+++ CHANGELOG.md\n"
+               "+- added git diff option\n")
+               .parse());
   }
 
   SECTION("parse-valid")
   {
     mock_unified_diff uni(
-      "diff --git a/build-gen.sh b/build-gen.sh\n"
+      "diff --git build-gen.sh build-gen.sh\n"
       "index 9ff921d..b429c21 100755\n"
-      "--- a/build-gen.sh\n"
-      "+++ b/build-gen.sh\n"
+      "--- build-gen.sh\n"
+      "+++ build-gen.sh\n"
       "@@ -20 +19,0 @@ usage()\n"
       "-  echo \"-D <x=y> add a general cmake define\"\n"
-      "diff --git a/CHANGELOG.md b/CHANGELOG.md\n"
+      "diff --git CHANGELOG.md CHANGELOG.md\n"
       "index 26e9e8f..ed2116e 100644\n"
-      "--- a/CHANGELOG.md\n"
-      "+++ b/CHANGELOG.md\n"
+      "--- CHANGELOG.md\n"
+      "+++ CHANGELOG.md\n"
       "@@ -11 +10,0 @@ The format is based on [Keep a Changelog].\n"
       "-- added git diff option\n"
       "@@ -25 +23,0 @@ The format is based on [Keep a Changelog].\n"
@@ -108,23 +106,23 @@ TEST_CASE("wex::factory::unified_diff")
   SECTION("parse-valid-other")
   {
     mock_unified_diff uni(
-      "diff --git a/external/pugixml b/external/pugixml\n"
-      "--- a/external/pugixml\n"
-      "+++ b/external/pugixml\n"
+      "diff --git external/pugixml external/pugixml\n"
+      "--- external/pugixml\n"
+      "+++ external/pugixml\n"
       "@@ -1 +1 @@\n"
       "-Subproject commit 6909df2478f7eb092e8e5b5cda097616b2595cc6\n"
       "+Subproject commit 6909df2478f7eb092e8e5b5cda097616b2595cc6-dirty\n"
-      "diff --git a/external/wxWidgets b/external/wxWidgets\n"
-      "--- a/external/wxWidgets\n"
-      "+++ b/external/wxWidgets\n"
+      "diff --git external/wxWidgets external/wxWidgets\n"
+      "--- external/wxWidgets\n"
+      "+++ external/wxWidgets\n"
       "@@ -1 +1 @@\n"
       "-Subproject commit 12b09a5e5ea76a1a0c27b769e821b37d803a4cb7\n"
       "+Subproject commit 12b09a5e5ea76a1a0c27b769e821b37d803a4cb7-dirty\n"
-      "diff --git a/include/wex/vcs/unified-diff.h "
-      "b/include/wex/vcs/unified-diff.h\n"
+      "diff --git include/wex/vcs/unified-diff.h "
+      "include/wex/vcs/unified-diff.h\n"
       "index 396ed3f8b..3d274e39e 100644\n"
-      "--- a/include/wex/vcs/unified-diff.h\n"
-      "+++ b/include/wex/vcs/unified-diff.h\n"
+      "--- include/wex/vcs/unified-diff.h\n"
+      "+++ include/wex/vcs/unified-diff.h\n"
       "@@ -42 +42 @@ public:\n"
       "-    vcs_entry* entry,\n"
       "+    const vcs_entry* entry,\n"
@@ -147,21 +145,20 @@ TEST_CASE("wex::factory::unified_diff")
   SECTION("parse-valid-sub")
   {
     mock_unified_diff uni(
-      "diff --git a/external/pugixml b/external/pugixml\n"
-      "--- a/external/pugixml\n"
-      "+++ b/external/pugixml\n"
+      "diff --git external/pugixml external/pugixml\n"
+      "--- external/pugixml\n"
+      "+++ external/pugixml\n"
       "@@ -1 +1 @@\n"
       "-Subproject commit 6909df2478f7eb092e8e5b5cda097616b2595cc6\n"
       "+Subproject commit 6909df2478f7eb092e8e5b5cda097616b2595cc6-dirty\n"
-      "diff --git a/external/wxWidgets b/external/wxWidgets\n"
-      "--- a/external/wxWidgets\n"
-      "+++ b/external/wxWidgets\n"
+      "diff --git external/wxWidgets external/wxWidgets\n"
+      "--- external/wxWidgets\n"
+      "+++ external/wxWidgets\n"
       "@@ -1 +1 @@\n"
       "-Subproject commit 12b09a5e5ea76a1a0c27b769e821b37d803a4cb7\n"
       "+Subproject commit 12b09a5e5ea76a1a0c27b769e821b37d803a4cb7-dirty\n");
 
     ALLOW_CALL(uni, report_diff()).RETURN(true);
-    REQUIRE_CALL(uni, report_diff_finish());
 
     REQUIRE(uni.parse());
     REQUIRE(uni.range_from_start() == 1);

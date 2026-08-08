@@ -2,7 +2,7 @@
 // Name:      ex.h
 // Purpose:   Declaration of class wex::ex
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2012-2025 Anton van Wezenbeek
+// Copyright: (c) 2012-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -275,9 +275,9 @@ private:
   command_parser_data m_command_parsed_data;
 };
 
-/// Expands all markers and registers in command.
+/// Expands all ex related items (markers, registers, variables) in command.
 /// Returns false if an error occurred.
-bool marker_and_register_expansion(const ex* ex, std::string& command);
+bool ex_expansion(const ex* ex, std::string& command);
 }; // namespace wex
 
 // implementation

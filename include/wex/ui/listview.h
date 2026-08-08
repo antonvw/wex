@@ -2,7 +2,7 @@
 // Name:      listview.h
 // Purpose:   Declaration of wex::listview and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2025 Anton van Wezenbeek
+// Copyright: (c) 2011-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -153,6 +153,7 @@ private:
   column       get_column(const std::string& name) const;
   void         item_activated(long item_number);
   bool         on_command(const wxCommandEvent& event);
+  void         on_compare();
 
   void process_idle(wxIdleEvent& event);
   void process_list(const wxListEvent& event, wxEventType type);

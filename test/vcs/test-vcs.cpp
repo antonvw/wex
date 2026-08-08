@@ -73,11 +73,11 @@ TEST_CASE("wex::vcs")
     REQUIRE(vcs.config_dialog(wex::data::window().button(wxAPPLY | wxCANCEL)));
 
 #ifndef __WXMSW__
-    REQUIRE(vcs.execute());
-    REQUIRE(vcs.execute("status"));
+    REQUIRE(vcs.execute() >= 0);
+    REQUIRE(vcs.execute("status") >= 0);
 
     wex::log_none off;
-    REQUIRE(!vcs.execute("xxx"));
+    REQUIRE(vcs.execute("xxx") >= 0);
 
     REQUIRE(vcs.show_dialog(wex::data::window().button(wxAPPLY | wxCANCEL)));
 

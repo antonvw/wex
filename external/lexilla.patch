@@ -12,6 +12,20 @@ index f7f44fc9..b02e63e0 100644
  namespace {
  
  #define HERE_DELIM_MAX			256
+diff --git a/lexers/LexCmake.cxx b/lexers/LexCmake.cxx
+index 6ab5f78f..406e959c 100644
+--- a/lexers/LexCmake.cxx
++++ b/lexers/LexCmake.cxx
+@@ -374,7 +374,8 @@ static void ColouriseCmakeDoc(Sci_PositionU startPos, Sci_Position length, int,
+         }
+     }
+ 
+-    // Colourise remaining document
++  // Colourise remaining document
++  if (nLengthDoc - 1 >= styler.GetStartSegment())
+     styler.ColourTo(nLengthDoc-1,state);
+ }
+ 
 diff --git a/lexlib/StyleContext.h b/lexlib/StyleContext.h
 index d148140e..e4c40429 100644
 --- a/lexlib/StyleContext.h

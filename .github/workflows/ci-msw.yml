@@ -14,25 +14,25 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           submodules: 'recursive'
 
-      - name: setup 7-Zip
-        uses: milliewalky/setup-7-zip@v2
-        # the 25.01 version gives boost errors: Dangerous link path was ignored
-        with:
-          tag: 24.07
-
       - name: Install boost
-        uses: MarkusJx/install-boost@v2.5.1
+        uses: MarkusJx/install-boost@v2.6.0
         id: install-boost
         with:
           # REQUIRED: Specify the required boost version
           # A list of supported versions can be found here:
           # https://github.com/MarkusJx/prebuilt-boost/
-          boost_version: 1.89.0
-          platform_version: 2022
+          boost_version: 1.90.0
+          platform_version: 2025
+          toolset: msvc
+
+      - name: Install llvm
+        shell: pwsh
+        run: >-
+          choco install llvm -y
 
       - name: Add msbuild
         uses: microsoft/setup-msbuild@v3
@@ -73,7 +73,7 @@ jobs:
           ', github.ref)
         with:
           build-config: Release
-          tests-regex: co|fa|sy|da|ui|ct|vi|stc
+          tests-regex: co|fa|sy|da|ui|lsp|ct|vi|stc
           verbose: true
 
       - name: Run debug tests
@@ -86,5 +86,5 @@ jobs:
           ', github.ref) == false
         with:
           build-config: Debug
-          tests-regex: co|fa|sy|da|ui|ct|vi|stc|vcs|del
+          tests-regex: co|fa|sy|da|ui|lsp|ct|vi|stc|vcs|del
           verbose: true

@@ -115,6 +115,10 @@ Copyright: (c) 2009-2026, Anton van Wezenbeek
 
     <hex no="style_bracelight"> back:red </hex>
 
+    <!-- The indicator element has a 'no' attribute and its value contains the next fields:
+         <indicator symbol><','><style><','><colour>
+         See the wex/data/stc.h file for more information -->
+
     <!-- this indicator is used by global vi command, e.g. g/INDIC/ -->
     <indicator no="0"> indic_box,styleindicatorfind </indicator>
     <!-- this indicator is used by python lexer to show inconsistent indentation
@@ -840,6 +844,12 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
    - wrapline: none, char, word, whitespace.
    - exclude: use Macintosh, Windows, Unix, to exclude this lexer
      on specified platform.
+   - lsp: If this attribute is present, the lexer is supported by the LSP client.
+     The value of the attribute is the binary for the LSP server.
+   - lsp-args: If this attribute is present, the arguments for running lsp server.
+     The arguments are separated by a semicolon (;).
+   - lsp-path: If this attribute is present, the full path of the
+     lsp executable, if not present on a standard location
    Furthermore it might contain the next tags:
    1) <styles>. Colouring styles for this lexer.
       The attribute 'no' contains the scintilla styles.
@@ -956,7 +966,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     </properties>
   </lexer>
   <lexer name="baan"/>
-  <lexer name="bash" extensions="*.bash;*.sh">
+  <lexer name="bash" extensions="*.bash;*.sh" lsp="bash-language-server" lsp-args="start">
     <keywords>
       alias bg bind break builtin caller case cd command compgen complete
       cp diff do done echo elif else esac exit fg fi find
@@ -1024,7 +1034,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   <lexer name="clarion"/>
   <lexer name="clarionnocase" macro="clarion"/>
-  <lexer name="cmake" extensions="CMakeLists.txt;*.cmake;meson.build">
+  <lexer name="cmake" extensions="CMakeLists.txt;*.cmake;meson.build" lsp="neocmakelsp" lsp-args="stdio">
     <styles>
       <style no="whiledef,foreachdef,ifdefinedef,macrodef"> fore:sky blue </style>
     </styles>
@@ -1045,7 +1055,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   <lexer name="coffeescript"/>
   <lexer name="conf" extensions="*.elp"/>
-  <lexer name="cpp" extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y;*.sc">
+  <lexer name="cpp" extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y;*.sc" lsp="clangd" lsp-args="--log=error">
     <styles>
       <style no="commentdockeyworderror"> comment </style>
     </styles>
@@ -1085,7 +1095,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   <lexer name="d"/>
   <lexer name="dataflex"/>
-  <lexer name="dart"/>
+  <lexer name="dart" extensions="*.dart"/>
   <lexer name="diff" extensions="*.diff;*.patch" edgemode="none">
     <styles>
     <style no="header"> fore:grey </style>
@@ -1657,7 +1667,19 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       not return undef yield
     </keywords>
   </lexer>
-  <lexer name="rust" extensions="*.rs"/>
+  <lexer name="rust" extensions="*.rs" lsp="rust-analyzer">
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+    </properties>
+    <keywords>
+      alignof as be box break const continue crate do else enum extern false fn
+      for if impl in let loop match mod mut offsetof once priv proc pub pure ref
+      return self sizeof static struct super trait true type typeof unsafe unsized
+      use virtual while yield
+    </keywords>
+  </lexer>
   <lexer name="sas"/>
   <lexer name="scriptol"/>
   <lexer display="sh" name="bash">
@@ -1769,7 +1791,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     <keywords>
     </keywords>
   </lexer>
-  <lexer name="yaml" extensions="*.yml;.clang-*;.gersemi*">
+  <lexer name="yaml" extensions="*.yml;.clang-*;.gersemi*" lsp="actions-languageserver" lsp-args="--stdio">
     <styles>
         <style no="identifier">bold</style>
     </styles>

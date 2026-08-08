@@ -2,7 +2,7 @@
 // Name:      test-lexer.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2025 Anton van Wezenbeek
+// Copyright: (c) 2015-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -25,6 +25,9 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.styles().empty());
     REQUIRE(lexer.display_lexer().empty());
     REQUIRE(lexer.scintilla_lexer().empty());
+    REQUIRE(lexer.lsp_server().empty());
+    REQUIRE(lexer.lsp_server_arguments().empty());
+    REQUIRE(lexer.lsp_server_path().empty());
     REQUIRE(lexer.line_size() > 0);
   }
 
@@ -54,6 +57,9 @@ TEST_CASE("wex::lexer")
         edgecolumns=\"2 4 6\"\
         edgemode=\"line\"\
         spacevisible=\"always\"\
+        lsp=\"clangd\"\
+        lsp-args=\"--log=error; --space\"\
+        lsp-path=\"bin/clangd\"\
         tabdrawmode=\"arrow\" wrapline=\"char\"\
         tabmode=\"use\"\
         tabwidth=\"12\">\
@@ -66,6 +72,10 @@ TEST_CASE("wex::lexer")
       REQUIRE(lexer.is_ok());
       REQUIRE(lexer.scintilla_lexer() == "cpp");
       REQUIRE(lexer.display_lexer() == "cpp");
+      REQUIRE(lexer.lsp_server() == "clangd");
+      REQUIRE(lexer.lsp_server_arguments().front() == "--log=error");
+      REQUIRE(lexer.lsp_server_arguments().back() == "--space");
+      REQUIRE(lexer.lsp_server_path() == "bin/clangd");
       REQUIRE(lexer.attrib(_("Edge line")) == wxSTC_EDGE_LINE);
       REQUIRE(lexer.attrib(_("Expand tabs")) == 1);
       REQUIRE(lexer.attrib(_("Tab draw mode")) == wxSTC_TD_LONGARROW);
@@ -165,9 +175,10 @@ TEST_CASE("wex::lexer")
     REQUIRE(lexer.set("pascal"));
     REQUIRE(lexer.display_lexer() == "pascal");
     REQUIRE(lexer.scintilla_lexer() == "pascal");
-    REQUIRE(std::regex_match(
-      lexer.comment_complete("(*test"),
-      std::regex(" +\\*\\)")));
+    REQUIRE(
+      std::regex_match(
+        lexer.comment_complete("(*test"),
+        std::regex(" +\\*\\)")));
   }
 
   SECTION("keywords")

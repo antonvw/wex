@@ -2,12 +2,10 @@
 // Name:      test-global-env.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2024-2025 Anton van Wezenbeek
+// Copyright: (c) 2024-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
-#include <wex/ex/addressrange.h>
-#include <wex/ex/ex.h>
 
 #include "../src/ex/global-env.h"
 #include "test.h"
@@ -53,11 +51,16 @@ TEST_CASE("wex::global_env")
 
   SECTION("commands")
   {
+    stc->set_text(
+      "hello\nhello11\nhello22\nhemll\ntest\ngcc\nblame\nthis\nyank\ncopy\n\n\n"
+      "hel\nhelder");
+    wex::addressrange ar(ex, "%");
+
     REQUIRE(wex::addressrange::data().set_global("g/hel/"));
     wex::global_env ge(ar);
     REQUIRE(!ge.has_commands());
     REQUIRE(ge.global(wex::addressrange::data()));
-    REQUIRE(ge.hits() == 3);
+    REQUIRE(ge.hits() == 5);
 
     REQUIRE(wex::addressrange::data().set_global("g/^$/"));
     wex::global_env el(ar); // empty line
@@ -69,13 +72,13 @@ TEST_CASE("wex::global_env")
     wex::global_env inv(ar);
     REQUIRE(!inv.has_commands());
     REQUIRE(inv.global(wex::addressrange::data()));
-    REQUIRE(inv.hits() == 9);
+    REQUIRE(inv.hits() == 8);
 
     REQUIRE(wex::addressrange::data().set_global("g!/he/"));
     wex::global_env inv2(ar);
     REQUIRE(!inv2.has_commands());
     REQUIRE(inv2.global(wex::addressrange::data()));
-    REQUIRE(inv2.hits() == 9);
+    REQUIRE(inv2.hits() == 8);
   }
 
   SECTION("commands-2addr")
@@ -96,7 +99,7 @@ TEST_CASE("wex::global_env")
 
     REQUIRE(inv.has_commands());
     REQUIRE(inv.global(wex::addressrange::data()));
-    REQUIRE(inv.hits() == 2);
+    REQUIRE(inv.hits() == 1);
   }
 
   SECTION("commands-append")

@@ -16,6 +16,7 @@ wex-syntax  |           | syntax  | syntax highlighting classes
 wex-data    |           | data    | data classes
 wex-common  |           | common  | common classes
 wex-ui      | wex-ctags | ui      | user interface classes
+wex-lsp     |           | lsp     | language server process classes
 wex-ex      | wex-vi    | ex      | ex and vi classes
 wex-stc     |           | stc     | stc classes
 wex-vcs     |           | vcs     | version control system classes

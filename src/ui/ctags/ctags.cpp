@@ -133,8 +133,9 @@ wex::ctags::auto_complete(const std::string& text, const ctags_entry& filter)
 
   do
   {
-    if (const auto& tag(entry.entry_string(min_size));
-        !tag.empty() && tag != prev_tag)
+    if (
+      const auto& tag(entry.entry_string(min_size));
+      !tag.empty() && tag != prev_tag)
     {
       s.append(tag);
       s.push_back(m_separator);
@@ -154,9 +155,6 @@ wex::ctags::auto_complete(const std::string& text, const ctags_entry& filter)
 
 void wex::ctags::auto_complete_prepare()
 {
-  m_stc->AutoCompSetIgnoreCase(false);
-  m_stc->AutoCompSetAutoHide(false);
-
   ctags_entry::register_image(m_stc);
 
   m_is_prepared = true;
@@ -204,9 +202,10 @@ bool wex::ctags::find(const std::string& tag, factory::stc* stc)
 
     do
     {
-      if (const ctags_info ct(entry.entry());
-          ct.is_path_valid() &&
-          (stc == nullptr || (ct.name() != tag_name(stc->path()))))
+      if (
+        const ctags_info ct(entry.entry());
+        ct.is_path_valid() &&
+        (stc == nullptr || (ct.name() != tag_name(stc->path()))))
       {
         m_matches.insert({ct.name(), ct});
       }

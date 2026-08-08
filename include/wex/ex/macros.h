@@ -2,7 +2,7 @@
 // Name:      macros.h
 // Purpose:   Declaration of class wex::macros
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2025 Anton van Wezenbeek
+// Copyright: (c) 2011-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -94,6 +94,11 @@ public:
   /// Returns all registers (with content) as a vector of strings.
   /// Does not include macros.
   const commands_t get_registers() const;
+
+  /// Returns writable access to specified variable.
+  /// Provide the variable name, if variable is not present,
+  /// it is added as empty variable.
+  variable& get_variable(const std::string& name);
 
   /// Returns variables.
   const variables_map_t& get_variables() const { return m_variables; }

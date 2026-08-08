@@ -2,11 +2,12 @@
 // Name:      path.cpp
 // Purpose:   Implementation of class wex::path
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2025 Anton van Wezenbeek
+// Copyright: (c) 2017-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
+#include <boost/url.hpp>
 
 #include <wex/core/log.h>
 #include <wex/core/path.h>
@@ -164,12 +165,15 @@ std::stringstream wex::path::log() const
 
 wex::path& wex::path::make_absolute()
 {
-  m_path = fs::absolute(m_path);
-  m_stat.sync();
-
-  if (!fs::is_directory(m_path.parent_path()))
+  if (!m_path.empty())
   {
-    m_path.clear();
+    m_path = fs::absolute(m_path);
+    m_stat.sync();
+
+    if (!fs::is_directory(m_path.parent_path()))
+    {
+      m_path.clear();
+    }
   }
 
   return *this;
@@ -220,4 +224,13 @@ wex::path& wex::path::replace_filename(const std::string& filename)
   m_path.replace_filename(filename);
 
   return *this;
+}
+
+const std::string wex::path::uri() const
+{
+  boost::urls::url u;
+  u.set_scheme_id(boost::urls::scheme::file)
+    .set_encoded_path(string())
+    .set_encoded_authority("");
+  return u.buffer();
 }

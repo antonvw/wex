@@ -5,6 +5,7 @@
 // Copyright: (c) 2010-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/algorithm/string.hpp>
 #include <wex/common/util.h>
 #include <wex/core/config.h>
 #include <wex/core/core.h>
@@ -49,6 +50,7 @@ parse(const path& toplevel, const std::string& file, const std::string& regex)
 
   return v;
 }
+
 } // namespace wex
 
 wex::vcs_entry::vcs_entry(const pugi::xml_node& node)
@@ -75,30 +77,31 @@ size_t wex::vcs_entry::build_menu(int base_id, menu* menu) const
   return menus::build_menu(get_commands(), base_id, menu);
 }
 
-bool wex::vcs_entry::execute(
+int wex::vcs_entry::execute(
   const std::string& args,
   const path&        p,
   const std::string& wd)
 {
   if (bin().empty())
   {
-    return false;
+    return -1;
   }
-  
+
   m_lexer = path_lexer(p).lexer();
+
   const path& tl(factory::vcs_admin(admin_dir(), p).toplevel());
 
   if (p.file_exists() && get_command().get_command() == "show")
   {
     const std::string& repo_path(p.string().substr(tl.string().size() + 1));
-    revisions_dialog(repo_path, tl, p);
-    return false; // skip rest in vcs_execute
+    revisions_dialog(repo_path, p);
+    return -1; // skip rest in vcs_execute
   }
 
   if (get_command().get_command() == "grep")
   {
     execute_grep(bin(), tl);
-    return false; // skip rest in vcs_execute
+    return -1; // skip rest in vcs_execute
   }
 
   std::string prefix;
@@ -167,18 +170,18 @@ bool wex::vcs_entry::execute(
   return process::system(process_data(
                            bin() + " " + prefix + get_command().get_command() +
                            " " + subcommand + flags + comment + my_args)
-                           .start_dir(wd)) == 0;
+                           .start_dir(wd));
 }
 
 const std::string wex::vcs_entry::get_branch(const std::string& wd) const
 {
   wex::log_none off;
 
-  if (process p;
-      name() == "git" &&
-      p.system(
-        process_data(bin() + " rev-parse --abbrev-ref HEAD").start_dir(wd)) ==
-        0)
+  if (
+    process p;
+    name() == "git" &&
+    p.system(
+      process_data(bin() + " rev-parse --abbrev-ref HEAD").start_dir(wd)) == 0)
   {
     return p.std_out();
   }
@@ -188,19 +191,38 @@ const std::string wex::vcs_entry::get_branch(const std::string& wd) const
 
 const std::string wex::vcs_entry::get_diff_flags() const
 {
-  std::string flags = "-U0";
-  
-  if (config("vcs.Ignore whitespace").get(true))
+  std::string flags;
+
+  if (name() == "git")
   {
-    flags += " -b";
+    flags += "-U0";
+
+    if (config("vcs.Ignore whitespace").get(true))
+    {
+      flags += " -b";
+    }
   }
-    
+
   return flags;
 }
-  
+
 const std::string wex::vcs_entry::get_flags() const
 {
   return config(flags_key()).get();
+}
+
+const std::string wex::vcs_entry::get_toplevel() const
+{
+  wex::log_none off;
+
+  if (
+    process p; name() == "git" && p.system(process_data(
+                                    bin() + " rev-parse --show-toplevel")) == 0)
+  {
+    return boost::algorithm::trim_copy(p.std_out());
+  }
+
+  return std::string();
 }
 
 bool wex::vcs_entry::log(const path& p, const std::string& id)
@@ -209,7 +231,7 @@ bool wex::vcs_entry::log(const path& p, const std::string& id)
   {
     return false;
   }
-  
+
   const std::string separator = (!m_log_flags.empty() ? " " : std::string());
   std::string       command   = bin() + " log ";
 
@@ -250,13 +272,14 @@ void wex::vcs_entry::show_output(const std::string& caption) const
       vcs_command_stc(get_command(), m_lexer, get_shell());
     }
 
-    if (vcs_diff(get_command().get_command()))
+    if (vcs_diff(*this, get_command().get_command()))
     {
-      if (unified_diff ud(
-            path(),
-            this,
-            dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()));
-          ud.parse() && ud.differences() == 0)
+      if (
+        unified_diff ud(
+          path(get_toplevel()),
+          this,
+          dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()));
+        ud.parse() && ud.differences() == 0)
       {
         log::status("No output");
       }
@@ -287,7 +310,7 @@ int wex::vcs_entry::system(const process_data& data)
     std::string word;
     cmd >> word;
 
-    if (const vcs_command & vc(find(word)); !vc.get_command().empty())
+    if (const vcs_command& vc(find(word)); !vc.get_command().empty())
     {
       args += " " + vc.flags();
     }

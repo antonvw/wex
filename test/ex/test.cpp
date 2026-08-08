@@ -2,7 +2,7 @@
 // Name:      test.cpp
 // Purpose:   Implementation of general test functions.
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/ex/ex.h>
@@ -20,9 +20,11 @@ std::vector<std::pair<std::string, std::string>> wex::test::get_abbreviations()
 
 std::vector<std::string> wex::test::get_builtin_variables()
 {
+  wex::ex::get_macros().load_document();
+
   std::vector<std::string> v;
 
-  for (const auto i : wex::ex::get_macros().get_variables())
+  for (const auto& i : wex::ex::get_macros().get_variables())
   {
     if (i.second.is_builtin())
     {

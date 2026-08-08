@@ -2,14 +2,14 @@
 // Name:      test-frame.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2025 Anton van Wezenbeek
+// Copyright: (c) 2015-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/listctrl.h>
 
 #include <wex/core/log-none.h>
-#include <wex/factory/defs.h>
 #include <wex/factory/process-data.h>
+#include <wex/ui/defs.h>
 #include <wex/ui/menu.h>
 #include <wex/ui/toolbar.h>
 
@@ -38,8 +38,9 @@ TEST_CASE("wex::frame")
     bar->Append(menu, "Edit");
     frame()->SetMenuBar(bar);
 
-    frame()->setup_statusbar(std::vector<wex::statusbar_pane>{
-      {{"Pane0"}, {"Pane1"}, {"Pane2"}, {"Pane3"}, {"Pane4"}, {"PaneInfo"}}});
+    frame()->setup_statusbar(
+      std::vector<wex::statusbar_pane>{
+        {{"Pane0"}, {"Pane1"}, {"Pane2"}, {"Pane3"}, {"Pane4"}, {"PaneInfo"}}});
 
     frame()->statusbar_clicked_right("test");
     frame()->statusbar_clicked_right("Pane1");
@@ -114,6 +115,9 @@ TEST_CASE("wex::frame")
     REQUIRE(!frame()->debug_print("xxx"));
 
     REQUIRE(!frame()->debug_toggle_breakpoint(1000, get_stc()));
+
+    REQUIRE(
+      frame()->lsp_clients_find(wex::test::get_path("test.h")) == nullptr);
 
     REQUIRE(!frame()->vi_exec_command(command));
 

@@ -2,7 +2,7 @@
 // Name:      stc.h
 // Purpose:   Declaration of class wex::factory::stc
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2025 Anton van Wezenbeek
+// Copyright: (c) 2020-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -137,6 +137,9 @@ public:
   /// Returns the path, as used by the file.
   /// Pure virtual, must be overridden.
   virtual const wex::path& path() const = 0;
+
+  /// Returns true if the popup menu is shown.
+  virtual bool popup_menu_is_shown() const { return false; };
 
   /// Prints the document.
   virtual void print(bool prompt = true) { ; }

@@ -2,7 +2,7 @@
 // Name:      frame.cpp
 // Purpose:   Implementation of wex sample class frame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2025 Anton van Wezenbeek
+// Copyright: (c) 2011-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/generic/numdlgg.h>
@@ -24,6 +24,7 @@ enum
   ID_DLG_CONFIG_ITEM_READONLY,
   ID_DLG_ITEM,
   ID_DLG_LISTVIEW,
+  ID_DLG_LSP,
   ID_DLG_STC_ENTRY,
   ID_DLG_VCS,
   ID_PROJECT_OPEN,
@@ -36,8 +37,9 @@ enum
 };
 
 frame::frame(app* app)
-  : m_notebook(new wex::notebook(wex::data::window().style(
-      wex::notebook::default_style_t | wxAUI_NB_WINDOWLIST_BUTTON)))
+  : m_notebook(new wex::notebook(
+      wex::data::window().style(
+        wex::notebook::default_style_t | wxAUI_NB_WINDOWLIST_BUTTON)))
   , m_app(app)
   , m_grid(new wex::grid(wex::data::window().parent(m_notebook)))
   , m_listview(new wex::listview(wex::data::window().parent(m_notebook)))
@@ -98,7 +100,8 @@ frame::frame(app* app)
          {wxID_PREFERENCES},
          {ID_DLG_STC_ENTRY, wex::ellipsed("STC Entry Dialog")},
          {},
-         {ID_DLG_VCS, wex::ellipsed("VCS Dialog")}}),
+         {ID_DLG_VCS, wex::ellipsed("VCS Dialog")},
+         {ID_DLG_LSP, wex::ellipsed("LSP Dialog")}}),
       "&Dialog"},
      {new wex::menu(
         {{ID_STC_FLAGS, wex::ellipsed("Open Flag")},
@@ -299,9 +302,16 @@ void frame::bind_all()
 
      {[=, this](const wxCommandEvent& event)
       {
+        lsp_config_dialog();
+      },
+      ID_DLG_LSP},
+
+     {[=, this](const wxCommandEvent& event)
+      {
         wex::vcs().config_dialog();
       },
       ID_DLG_VCS},
+
      {[=, this](const wxCommandEvent& event)
       {
         m_shell->prompt(
@@ -329,24 +339,26 @@ void frame::bind_all()
       {
         if (m_notebook->set_selection("Statistics") == nullptr)
         {
-          m_notebook->add_page(wex::data::notebook()
-                                 .page(m_statistics->show())
-                                 .caption("Statistics")
-                                 .key("Statistics")
-                                 .select());
+          m_notebook->add_page(
+            wex::data::notebook()
+              .page(m_statistics->show())
+              .caption("Statistics")
+              .key("Statistics")
+              .select());
         }
       },
       ID_STATISTICS_SHOW},
      {[=, this](const wxCommandEvent& event)
       {
-        if (const auto value = wxGetNumberFromUser(
-              "Input:",
-              wxEmptyString,
-              "STC Open Flag",
-              static_cast<unsigned long>(m_app->data().flags().to_ulong()),
-              0,
-              0xFFFF);
-            value != -1)
+        if (
+          const auto value = wxGetNumberFromUser(
+            "Input:",
+            wxEmptyString,
+            "STC Open Flag",
+            m_app->data().flags().to_ulong(),
+            0,
+            0xFFFF);
+          value != -1)
         {
           m_app->data().flags(value);
         }
@@ -389,8 +401,9 @@ void frame::on_command(const wxCommandEvent& event)
 
       if (event.GetString().empty())
       {
-        if (wex::file_dialog dlg(&m_stc->get_file());
-            dlg.show_modal_if_changed(true) != wxID_CANCEL)
+        if (
+          wex::file_dialog dlg(&m_stc->get_file());
+          dlg.show_modal_if_changed(true) != wxID_CANCEL)
         {
           open_file_same_page(wex::path(dlg.GetPath().ToStdString()));
         }
@@ -452,10 +465,11 @@ void frame::on_command(const wxCommandEvent& event)
           editor->path(),
           wex::data::stc(m_app->data())
             .window(wex::data::window().parent(m_notebook)));
-        m_notebook->add_page(wex::data::notebook()
-                               .page(stc)
-                               .key("stc" + std::to_string(stc->GetId()))
-                               .caption(m_stc->path().filename()));
+        m_notebook->add_page(
+          wex::data::notebook()
+            .page(stc)
+            .key("stc" + std::to_string(stc->GetId()))
+            .caption(m_stc->path().filename()));
         stc->SetDocPointer(m_stc->GetDocPointer());
       }
       break;
@@ -574,7 +588,10 @@ void frame::update()
   for (int i = wex::data::listview::FOLDER; i <= wex::data::listview::FILE; i++)
   {
     auto* vw = new wex::del::listview(
-      wex::data::listview().type((wex::data::listview::type_t)i).lexer(&lexer));
+      wex::data::listview()
+        .window(wex::data::window().parent(m_notebook))
+        .type((wex::data::listview::type_t)i)
+        .lexer(&lexer));
 
     m_notebook->add_page(
       wex::data::notebook().page(vw).key(vw->data().type_description()));

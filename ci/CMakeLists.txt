@@ -39,7 +39,8 @@ if(NOT WIN32)
       --suppress=noOperatorEq --suppress=ignoredReturnValue
       --suppress=unknownMacro --suppress=unmatchedSuppression
       --suppress=unusedScopedObject --suppress=unusedFunction
-      --suppress=shadowArgument --suppress=shadowVariable ${SRCS}
+      --suppress=shadowFunction --suppress=shadowArgument
+      --suppress=functionStatic --suppress=shadowVariable ${SRCS}
     COMMENT "cppcheck"
     VERBATIM
   )

@@ -2,7 +2,7 @@
 // Name:      version-dialog.h
 // Purpose:   Declaration of class wex::version_info_dialog and about_info
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -29,7 +29,7 @@ public:
   about_info& developer(const std::string& rhs);
 
   /// Sets icon.
-  about_info& icon(const wxIcon& rhs);
+  about_info& icon(const wxBitmapBundle& rhs);
 
   /// Sets licence.
   about_info& licence(const std::string& rhs);

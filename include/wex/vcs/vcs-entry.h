@@ -70,8 +70,8 @@ public:
   /// the first command if set_command was not yet invoked.
   /// Might ask for vcs binary if it is not yet known.
   /// Return code is code from process execute,
-  /// and also can be false if dialog for vcs bin was cancelled.
-  bool execute(
+  /// and also can be -1 if dialog for vcs bin was cancelled.
+  int execute(
     /// args, like filenames, or vcs flags
     const std::string& args = std::string(),
     /// lexer that is used for presenting the output
@@ -96,6 +96,9 @@ public:
 
   /// Returns the flags used to run the command.
   const std::string get_flags() const;
+
+  /// Returns the toplevel dir for this entry (currently only for git).
+  const std::string get_toplevel() const;
 
   /// Executes the log command using the log id to be retrieved.
   /// Return value is false if process could not execute.
@@ -123,10 +126,7 @@ private:
 
   strings_t execute_and_parse(const process_data& data, size_t offset = 0);
 
-  int revisions_dialog(
-    const std::string& path,
-    const wex::path&   tl,
-    const wex::path&   file);
+  int revisions_dialog(const std::string& path, const wex::path& file);
 
   // no const, as entry is set using operator= in vcs.
   flags_location_t m_flags_location{flags_location_t::POSTFIX};

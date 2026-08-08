@@ -234,6 +234,7 @@ if(${wex_FOUND})
     wex-vi${USE_DEBUG}
     wex-ex${USE_DEBUG}
     wex-ctags${USE_DEBUG}
+    wex-lsp${USE_DEBUG}
     wex-ui${USE_DEBUG}
     wex-common${USE_DEBUG}
     wex-data${USE_DEBUG}

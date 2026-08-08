@@ -2,12 +2,12 @@
 // Name:      test-art.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2025 Anton van Wezenbeek
+// Copyright: (c) 2015-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/factory/defs.h>
 #include <wex/test/test.h>
 #include <wex/ui/art.h>
+#include <wex/ui/defs.h>
 #include <wxMaterialDesignArtProvider.hpp>
 
 TEST_CASE("wex::art")

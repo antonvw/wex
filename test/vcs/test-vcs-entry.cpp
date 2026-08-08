@@ -19,15 +19,16 @@
 
 TEST_CASE("wex::vcs_entry", "[!mayfail]")
 {
-  pugi::xml_document doc;
+  pugi::xml_document git;
 
-  REQUIRE(doc.load_string("<vcs name=\"git\" admin-dir=\".git\" log-flags=\"-n "
-                          "1\" blame-format=\" yyyy\">"
-                          "  <commands>"
-                          "     <command> help </command>"
-                          "     <command> blame </command>"
-                          "  </commands>"
-                          "</vcs>"));
+  REQUIRE(git.load_string(
+    "<vcs name=\"git\" admin-dir=\".git\" log-flags=\"-n "
+    "1\" blame-format=\" yyyy\">"
+    "  <commands>"
+    "     <command> help </command>"
+    "     <command> blame </command>"
+    "  </commands>"
+    "</vcs>"));
 
   SECTION("default constructor")
   {
@@ -36,16 +37,16 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
     REQUIRE(
       wex::vcs_entry().flags_location() ==
       wex::vcs_entry::flags_location_t::POSTFIX);
-    REQUIRE(wex::vcs_entry().get_diff_flags().contains("U0"));
+    REQUIRE(!wex::vcs_entry().get_diff_flags().contains("U0"));
     wex::config(_("vcs.Ignore whitespace")).set(false);
     REQUIRE(!wex::vcs_entry().get_diff_flags().contains("-b"));
     wex::config(_("vcs.Ignore whitespace")).set(true);
-    REQUIRE(wex::vcs_entry().get_diff_flags().contains("-b"));
+    REQUIRE(!wex::vcs_entry().get_diff_flags().contains("-b"));
   }
 
   SECTION("constructor using xml")
   {
-    wex::vcs_entry entry(doc.document_element());
+    wex::vcs_entry entry(git.document_element());
     REQUIRE(entry.name() == "git");
 
     wex::log_none off;
@@ -60,6 +61,10 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
     REQUIRE(entry.admin_dir() == ".git");
     REQUIRE(entry.get_flags().empty());
     REQUIRE(entry.get_diff_flags().contains("U0"));
+    wex::config(_("vcs.Ignore whitespace")).set(false);
+    REQUIRE(!entry.get_diff_flags().contains("-b"));
+    wex::config(_("vcs.Ignore whitespace")).set(true);
+    REQUIRE(entry.get_diff_flags().contains("-b"));
 
 #ifdef __WXMSW__
     REQUIRE(entry.get_branch("\\windows").empty());
@@ -69,6 +74,8 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
     REQUIRE(!entry.get_branch().empty());
     REQUIRE(!entry.get_branch().starts_with(" "));
     REQUIRE(!entry.get_branch().starts_with("*"));
+    REQUIRE(entry.get_toplevel().contains("wex"));
+    REQUIRE(!entry.get_toplevel().ends_with("\n"));
     REQUIRE(!entry.std_out().empty());
     entry.show_output();
 
@@ -82,14 +89,14 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
     REQUIRE(entry.get_commands().size() == 2);
     REQUIRE(entry.get_flags().empty());
     REQUIRE(!entry.std_out().empty());
-    REQUIRE(entry.execute()); // executes just git, shows help
+    REQUIRE(entry.execute() >= 0); // executes just git, shows help
     REQUIRE(entry.std_out().contains("usage: git"));
     entry.show_output();
 
     REQUIRE(entry.system(wex::process_data("help")) == 0);
 
-    auto* other = new wex::vcs_entry(doc.document_element());
-    REQUIRE(other->execute(std::string(), wex::path()));
+    auto* other = new wex::vcs_entry(git.document_element());
+    REQUIRE(other->execute(std::string(), wex::path()) >= 0);
     other->show_output();
   }
 
@@ -101,25 +108,26 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
     auto* entry = load_git_entry();
 
     REQUIRE(
-      entry->system(wex::process_data().args(
-        "blame " + wex::test::get_path("test.h").string())) == 0);
+      entry->system(
+        wex::process_data().args(
+          "blame " + wex::test::get_path("test.h").string())) == 0);
 
     stc->get_file().reset_contents_changed();
   }
 
   SECTION("execute-grep")
   {
-    pugi::xml_document dc;
+    pugi::xml_document git;
 
-    REQUIRE(
-      dc.load_string("<vcs name=\"git\" admin-dir=\".git\" log-flags=\"-n "
-                     "1\" blame-format=\" yyyy\">"
-                     "  <commands>"
-                     "     <command> grep </command>"
-                     "  </commands>"
-                     "</vcs>"));
+    REQUIRE(git.load_string(
+      "<vcs name=\"git\" admin-dir=\".git\" log-flags=\"-n "
+      "1\" blame-format=\" yyyy\">"
+      "  <commands>"
+      "     <command> grep </command>"
+      "  </commands>"
+      "</vcs>"));
 
-    wex::vcs_entry entry(dc.document_element());
+    wex::vcs_entry entry(git.document_element());
     REQUIRE(entry.name() == "git");
     REQUIRE(entry.get_command().get_command() == "grep");
 
@@ -127,49 +135,51 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
     stc->set_text("hello world");
     stc->SelectAll();
 
-    REQUIRE(!entry.execute());
+    REQUIRE(entry.execute() == -1);
     REQUIRE(!entry.std_out().contains("usage: "));
 
-    REQUIRE(!entry.execute(std::string(), wex::test::get_path("test.h")));
+    REQUIRE(entry.execute(std::string(), wex::test::get_path("test.h")) == -1);
   }
 
   SECTION("execute-show")
   {
-    pugi::xml_document dc;
+    pugi::xml_document git;
 
-    REQUIRE(
-      dc.load_string("<vcs name=\"git\" admin-dir=\".git\" log-flags=\"-n "
-                     "1\" blame-format=\" yyyy\">"
-                     "  <commands>"
-                     "     <command> show </command>"
-                     "  </commands>"
-                     "</vcs>"));
+    REQUIRE(git.load_string(
+      "<vcs name=\"git\" admin-dir=\".git\" log-flags=\"-n "
+      "1\" blame-format=\" yyyy\">"
+      "  <commands>"
+      "     <command> show </command>"
+      "  </commands>"
+      "</vcs>"));
 
-    wex::vcs_entry entry(dc.document_element());
+    wex::vcs_entry entry(git.document_element());
     REQUIRE(entry.name() == "git");
     REQUIRE(entry.get_command().get_command() == "show");
 
-    REQUIRE(entry.execute());
+    REQUIRE(entry.execute() >= 0);
     REQUIRE(!entry.std_out().empty());
 
     wex::log_none off;
-    REQUIRE(!entry.execute(std::string(), wex::test::get_path("test.h")));
+    REQUIRE(entry.execute(std::string(), wex::test::get_path("test.h")) == -1);
   }
 
   SECTION("setup_exclude")
   {
     REQUIRE(wex::vcs::load_document());
     wex::vcs       vcs(std::vector<wex::path>{wex::test::get_path("test.h")});
-    wex::vcs_entry entry(doc.document_element());
+    wex::vcs_entry entry(git.document_element());
     const auto&    v(entry.setup_exclude(vcs.toplevel(), wex::path::current()));
 
     REQUIRE(v.has_value());
     REQUIRE(v->size() > 5);
-    REQUIRE(std::ranges::contains(
-      *v,
-      wex::path(vcs.toplevel()).append(wex::path("external/wxWidgets"))));
-    REQUIRE(std::ranges::contains(
-      *v,
-      wex::path(vcs.toplevel()).append(wex::path("build"))));
+    REQUIRE(
+      std::ranges::contains(
+        *v,
+        wex::path(vcs.toplevel()).append(wex::path("external/wxWidgets"))));
+    REQUIRE(
+      std::ranges::contains(
+        *v,
+        wex::path(vcs.toplevel()).append(wex::path("build"))));
   }
 }

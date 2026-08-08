@@ -2,11 +2,12 @@
 // Name:      listview.cpp
 // Purpose:   Implementation of wex::listview and related classes
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011-2025 Anton van Wezenbeek
+// Copyright: (c) 2011-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
+#include <wex/common/util.h>
 #include <wex/core/chrono.h>
 #include <wex/core/config.h>
 #include <wex/core/interruptible.h>
@@ -16,11 +17,11 @@
 #include <wex/data/find.h>
 #include <wex/data/stc.h>
 #include <wex/factory/bind.h>
-#include <wex/factory/defs.h>
 #include <wex/factory/util.h>
 #include <wex/syntax/lexers.h>
 #include <wex/syntax/printing.h>
 #include <wex/syntax/stc.h>
+#include <wex/ui/defs.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
 #include <wex/ui/item-dialog.h>
@@ -92,7 +93,8 @@ const std::vector<item> config_items()
       {{_("General"),
         {{_("list.Header"), item::CHECKBOX, std::any(true)},
          {_("list.Single selection"), item::CHECKBOX},
-         {_("list.Comparator"), item::FILEPICKERCTRL},
+         {_("list.Use unified diff view"), item::CHECKBOX, std::any(true)},
+         {_("list.Comparator"), item::COMBOBOX_FILE, std::list<std::string>()},
          {_("list.Sort method"),
           {{SORT_TOGGLE, _("Sort toggle")},
            {SORT_KEEP, _("Sort keep order")},
@@ -122,13 +124,14 @@ const std::vector<item> config_items()
 wex::listview::listview(const data::listview& data)
   : factory::listview(data.window(), data.control())
   , m_col_event_id(1000)
-  , m_data(data::listview(data)
-             .image(
-               data.type() == data::listview::NONE ||
-                   data.type() == data::listview::TSV ?
-                 data.image() :
-                 data::listview::IMAGE_FILE_ICON)
-             .set_listview(this))
+  , m_data(
+      data::listview(data)
+        .image(
+          data.type() == data::listview::NONE ||
+              data.type() == data::listview::TSV ?
+            data.image() :
+            data::listview::IMAGE_FILE_ICON)
+        .set_listview(this))
   , m_frame(dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow()))
 {
   config_get();
@@ -237,9 +240,10 @@ bool wex::listview::append_columns(const std::vector<column>& cols)
   {
     auto mycol(col);
 
-    if (const auto index =
-          AppendColumn(mycol.GetText(), mycol.GetAlign(), mycol.GetWidth());
-        index == -1)
+    if (
+      const auto index =
+        AppendColumn(mycol.GetText(), mycol.GetAlign(), mycol.GetWidth());
+      index == -1)
     {
       return false;
     }
@@ -337,6 +341,12 @@ void wex::listview::bind_other()
 
      {[=, this](const wxCommandEvent& event)
       {
+        on_compare();
+      },
+      ID_LIST_COMPARE},
+
+     {[=, this](const wxCommandEvent& event)
+      {
         process_match(event);
       },
       ID_LIST_MATCH},
@@ -356,14 +366,15 @@ void wex::listview::bind_other()
         {
           return;
         }
-        if (const auto val(wxGetNumberFromUser(
-              _("Input") + " (1 - " + std::to_string(GetItemCount()) + "):",
-              wxEmptyString,
-              _("Enter Item Number"),
-              (GetFirstSelected() == -1 ? 1 : GetFirstSelected() + 1),
-              1,
-              GetItemCount()));
-            val > 0)
+        if (
+          const auto val(wxGetNumberFromUser(
+            _("Input") + " (1 - " + std::to_string(GetItemCount()) + "):",
+            wxEmptyString,
+            _("Enter Item Number"),
+            (GetFirstSelected() == -1 ? 1 : GetFirstSelected() + 1),
+            1,
+            GetItemCount()));
+          val > 0)
         {
           data::listview(data::control().line(val)).set_listview(this).inject();
         }
@@ -419,14 +430,24 @@ void wex::listview::build_popup_menu(wex::menu& menu)
     menu.append({{ID_EDIT_OPEN, _("&Open")}});
   }
 
-  if (GetSelectedItemCount() >= 1 && m_data.revision())
+  if (GetSelectedItemCount() >= 1)
   {
-    menu.append({{ID_EDIT_REV_OPEN, _("&Open")}});
+    const bool cmp(!config(_("list.Comparator")).get_first_of().empty());
 
-    if (GetSelectedItemCount() == 1)
+    if (GetSelectedItemCount() == 2 && !m_data.revision() && cmp)
     {
-      // Comparing two versions not yet implemented.
-      menu.append({{ID_EDIT_REV_COMPARE, _("C&ompare") + "\tCtrl+O"}});
+      menu.append({{}, {ID_LIST_COMPARE, _("C&ompare") + "\tCtrl+O"}});
+    }
+
+    if (m_data.revision())
+    {
+      menu.append({{ID_EDIT_REV_OPEN, _("&Open")}});
+
+      if (GetSelectedItemCount() == 1 && cmp)
+      {
+        // Comparing two versions not yet implemented.
+        menu.append({{ID_EDIT_REV_COMPARE, _("C&ompare") + "\tCtrl+O"}});
+      }
     }
   }
 
@@ -635,13 +656,14 @@ unsigned int wex::listview::get_art_id(const wxArtID& artid)
 
 wex::column wex::listview::get_column(const std::string& name) const
 {
-  if (const auto& it = std::ranges::find_if(
-        m_columns,
-        [name](auto const& it)
-        {
-          return it.GetText() == name;
-        });
-      it != m_columns.end())
+  if (
+    const auto& it = std::ranges::find_if(
+      m_columns,
+      [name](auto const& it)
+      {
+        return it.GetText() == name;
+      });
+    it != m_columns.end())
   {
     return *it;
   }
@@ -723,8 +745,9 @@ bool wex::listview::insert_item(
             log("listview InsertItem") << "index:" << index << "col:" << col;
             return false;
           }
-          if (regex v(",fore:(.*)");
-              v.match(lexers::get()->get_default_style().value()) > 0)
+          if (
+            regex v(",fore:(.*)");
+            v.match(lexers::get()->get_default_style().value()) > 0)
           {
             SetItemTextColour(index, wxColour(v[0]));
           }
@@ -844,7 +867,9 @@ bool wex::listview::item_from_text(const std::string& text)
     {
       case data::listview::NONE:
       case data::listview::TSV:
-        if (insert_item(tokenize<std::vector<std::string>>(
+        if (
+          insert_item(
+            tokenize<std::vector<std::string>>(
               it,
               std::string(1, m_field_separator).c_str())))
         {
@@ -1027,6 +1052,54 @@ bool wex::listview::on_command(const wxCommandEvent& event)
   return false;
 }
 
+void wex::listview::on_compare()
+{
+  bool           first = true;
+  std::string    file1, file2;
+  wex::listview* list = nullptr;
+
+  for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+  {
+    listitem         li(this, i);
+    const wex::path* filename = &li.path();
+
+    if (!filename->file_exists())
+    {
+      continue;
+    }
+
+    if (GetSelectedItemCount() == 1)
+    {
+      list = m_frame->activate(data::listview::FILE);
+
+      if (list == nullptr)
+      {
+        return;
+      }
+
+      const int main_selected = list->GetFirstSelected();
+      compare_file(listitem(list, main_selected).path(), *filename);
+    }
+    else
+    {
+      if (first)
+      {
+        first = false;
+        file1 = filename->string();
+      }
+      else
+      {
+        first = true;
+        file2 = filename->string();
+      }
+      if (first)
+      {
+        compare_file(path(file1), path(file2));
+      }
+    }
+  }
+}
+
 void wex::listview::print()
 {
   wxBusyCursor wait;
@@ -1051,11 +1124,12 @@ void wex::listview::process_idle(wxIdleEvent& event)
   }
   if (m_item_number < GetItemCount())
   {
-    if (listitem item(this, m_item_number);
-        item.path().file_exists() &&
-        (item.path().stat().get_modification_time_str() !=
-           get_item_text(m_item_number, _("Modified")) ||
-         item.path().stat().is_readonly() != item.is_readonly()))
+    if (
+      listitem item(this, m_item_number);
+      item.path().file_exists() &&
+      (item.path().stat().get_modification_time_str() !=
+         get_item_text(m_item_number, _("Modified")) ||
+       item.path().stat().is_readonly() != item.is_readonly()))
     {
       item.update();
       log::status() << item.path();
@@ -1091,8 +1165,9 @@ void wex::listview::process_list(const wxListEvent& event, wxEventType type)
   {
     if (m_data.type() != data::listview::NONE && GetSelectedItemCount() == 1)
     {
-      if (const wex::path fn(listitem(this, event.GetIndex()).path());
-          fn.stat().is_ok())
+      if (
+        const wex::path fn(listitem(this, event.GetIndex()).path());
+        fn.stat().is_ok())
       {
         log::status() << fn;
       }

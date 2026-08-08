@@ -2,13 +2,13 @@
 // Name:      menus.cpp
 // Purpose:   Implementation of wex::menus class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2024 Anton van Wezenbeek
+// Copyright: (c) 2022-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
-#include <wex/factory/defs.h>
+#include <wex/ui/defs.h>
 #include <wex/ui/menus.h>
 
 void wex::menus::add_menu(const menu_command& mc, menu* menu)
