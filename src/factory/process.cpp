@@ -105,8 +105,8 @@ int wex::factory::process::system(const wex::process_data& data)
 
     if (data.std_in().empty())
     {
-      boost::process::v1::std_in
-        .close(); // e.g. for svn a password is required, not yet ok
+      // e.g. for svn a password is required, not yet ok
+      bp1::std_in.close();
       log::trace("closing stdin");
     }
 

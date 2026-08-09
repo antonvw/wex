@@ -5,7 +5,6 @@
 // Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
 #include <atomic>
 #include <queue>
 
