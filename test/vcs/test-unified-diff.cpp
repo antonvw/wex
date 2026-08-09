@@ -5,7 +5,6 @@
 // Copyright: (c) 2024-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <boost/process/v1/system.hpp>
 #include <wex/core/log-none.h>
 #include <wex/vcs/unified-diff.h>
 
@@ -32,7 +31,7 @@ TEST_CASE("wex::unified_diff")
   SECTION("diff")
   {
     const wex::path p("test.h");
-    boost::process::v1::system("sed -i -e 1,6d " + p.string());
+    std::system(std::string("sed -i -e 1,6d " + p.string()).c_str());
 
     auto* entry = load_git_entry();
     entry->system(
