@@ -2,18 +2,23 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wex::factory::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
-
-#include <future>
 
 #include <wex/core/log.h>
 #include <wex/factory/process.h>
 
-#include <boost/process/v1/system.hpp>
+#include <boost/asio/read.hpp>
+#include <boost/asio/readable_pipe.hpp>
+#include <boost/process/process.hpp>
+#include <boost/process/stdio.hpp>
+#include <boost/system/error_code.hpp>
 
 #include "data-to-std-in.h"
 #include "process-imp.h"
+
+namespace proc = boost::process;
+namespace asio = boost::asio;
 
 wex::factory::process::process() = default;
 
@@ -80,35 +85,24 @@ int wex::factory::process::system(const wex::process_data& data)
 {
   try
   {
-    std::future<std::string> of, ef;
-    data_to_std_in           data_std_in(data);
+    asio::io_context    ctx;
+    asio::readable_pipe op{ctx}, ep{ctx};
+    data_to_std_in      data_std_in(data);
 
-    // clang-format off
-    const int ec = bp1::system(
+    proc::process c{
+      ctx,
       data.exe_path(),
-      bp1::args = data.args(),
-      bp1::start_dir = data.start_dir(),
-      bp1::std_in < data_std_in.std_in(),
-      bp1::std_out > of,
-      bp1::std_err > ef);
-    // clang-format on
+      data.args(),
+      proc::process_stdio{data_std_in.std_in(), op, ep}};
 
-    if (of.valid())
-    {
-      m_stdout = of.get();
-    }
+    boost::system::error_code bec;
 
-    if (ef.valid())
-    {
-      m_stderr = ef.get();
-    }
+    asio::read(op, asio::dynamic_buffer(m_stdout), bec);
+    asio::read(ep, asio::dynamic_buffer(m_stderr), bec);
 
-    if (data.std_in().empty())
-    {
-      // e.g. for svn a password is required, not yet ok
-      bp1::std_in.close();
-      log::trace("closing stdin");
-    }
+    c.wait();
+
+    const int ec = c.exit_code();
 
     if (ec >= 0)
     {
