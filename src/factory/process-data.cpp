@@ -2,13 +2,13 @@
 // Name:      process-data.cpp
 // Purpose:   Implementation of class wex::factory::process_data
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2025 Anton van Wezenbeek
+// Copyright: (c) 2022-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <filesystem>
 #include <numeric>
 
-#include <boost/process/v2/environment.hpp>
+#include <boost/process/environment.hpp>
 #include <utility>
 
 #include <wex/common/tostring.h>

@@ -8,17 +8,11 @@
 #include <wex/core/log.h>
 #include <wex/factory/process.h>
 
-#include <boost/asio/read.hpp>
-#include <boost/asio/readable_pipe.hpp>
-#include <boost/process/process.hpp>
 #include <boost/process/stdio.hpp>
 #include <boost/system/error_code.hpp>
 
 #include "data-to-std-in.h"
 #include "process-imp.h"
-
-namespace proc = boost::process;
-namespace asio = boost::asio;
 
 wex::factory::process::process() = default;
 
@@ -29,7 +23,7 @@ wex::factory::process::~process()
 
 void wex::factory::process::async_sleep_for(const std::chrono::milliseconds& ms)
 {
-  process_imp::async_sleep_for(ms);
+  std::this_thread::sleep_for(ms);
 }
 
 bool wex::factory::process::async_system(const wex::process_data& data)
@@ -89,11 +83,12 @@ int wex::factory::process::system(const wex::process_data& data)
     asio::readable_pipe op{ctx}, ep{ctx};
     data_to_std_in      data_std_in(data);
 
-    proc::process c{
+    bp::process c{
       ctx,
       data.exe_path(),
       data.args(),
-      proc::process_stdio{data_std_in.std_in(), op, ep}};
+      bp::process_stdio{data_std_in.std_in(), op, ep},
+      bp::process_start_dir{data.start_dir()}};
 
     boost::system::error_code bec;
 

@@ -8,12 +8,12 @@
 #include <atomic>
 #include <queue>
 
-#include <boost/process/v1/args.hpp>
-#include <boost/process/v1/group.hpp>
-#include <boost/process/v1/io.hpp>
-#include <boost/process/v1/start_dir.hpp>
+#include <boost/process/process.hpp>
+#include <boost/asio/read.hpp>
+#include <boost/asio/readable_pipe.hpp>
 
-namespace bp1 = boost::process::v1;
+namespace ba = boost::asio;
+namespace bp = boost::process;
 
 class wxEvtHandler;
 
@@ -22,13 +22,10 @@ namespace wex::factory
 class process;
 
 /// This class offers methods to support processing. It uses
-/// the boost::process::v1 classes.
+/// the boost::asio classes.
 class process_imp
 {
 public:
-  /// Sleeps for some milliseconds time.
-  static void async_sleep_for(const std::chrono::milliseconds& ms);
-
   /// Default constructor.
   process_imp();
 
@@ -59,8 +56,7 @@ private:
   std::atomic<bool> m_debug{false};
   std::atomic<bool> m_is_running{false};
 
-  bp1::ipstream m_es, m_is;
-  bp1::opstream m_os;
-  bp1::group    m_group;
+  ba::readable_pipe m_ep, m_ip;
+  ba::writable_pipe m_op;
 };
 }; // namespace wex::factory
