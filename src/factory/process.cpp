@@ -79,9 +79,9 @@ int wex::factory::process::system(const wex::process_data& data)
 {
   try
   {
-    asio::io_context    ctx;
-    asio::readable_pipe op{ctx}, ep{ctx};
-    data_to_std_in      data_std_in(data);
+    ba::io_context    ctx;
+    ba::readable_pipe op{ctx}, ep{ctx};
+    data_to_std_in    data_std_in(data);
 
     bp::process c{
       ctx,
@@ -92,8 +92,8 @@ int wex::factory::process::system(const wex::process_data& data)
 
     boost::system::error_code bec;
 
-    asio::read(op, asio::dynamic_buffer(m_stdout), bec);
-    asio::read(ep, asio::dynamic_buffer(m_stderr), bec);
+    ba::read(op, ba::dynamic_buffer(m_stdout), bec);
+    ba::read(ep, ba::dynamic_buffer(m_stderr), bec);
 
     c.wait();
 

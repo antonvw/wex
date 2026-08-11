@@ -21,10 +21,31 @@
     wxPostEvent(DEST, event);                                                  \
   }
 
-constexpr auto max_size = std::numeric_limits<std::streamsize>::max();
+namespace wex::factory
+{
+  bool read_from_pipe(ba::readable_pipe& pipe, char& c)
+  {
+    boost::system::error_code ec;
+
+    ba::read(pipe, ba::buffer(&c, 1), ec);
+
+    if (ec == ba::error::eof)
+    {
+      return false;
+    }
+
+    if (ec)
+    {
+      log::debug("async_system") << "read error:" << ec.message();
+      return false;
+    }
+
+    return true;
+  }
+}
 
 wex::factory::process_imp::process_imp()
-  : m_io(std::make_shared<boost::asio::io_context>())
+  : m_io(std::make_shared<ba::io_context>())
   , m_queue(std::make_shared<std::queue<std::string>>())
 {
 }
@@ -51,27 +72,21 @@ void wex::factory::process_imp::async_system(process* p)
 
 void wex::factory::process_imp::boost_async_system(process* p)
 {
-  bp::process{
+  bp::process proc{
     *m_io.get(),
     p->data().exe_path(),
     p->data().args(),
     bp::process_stdio{m_op, m_ip, m_ep},
     bp::process_start_dir{p->data().start_dir()}};
 
-  log::debug("async_system")
-    << p->data().exe() << "wd:" << p->data().start_dir();
-
-  WEX_POST(ID_SHELL_APPEND_START, "", p->m_eh_out)
-  WEX_POST(ID_SHELL_APPEND, p->data().exe() + "\n", p->m_eh_out)
-
-  /*
-    [this, p](boost::system::error_code error, int i)
+  proc.async_wait(
+    [this, p](boost::system::error_code ec, int exit_code)
     {
       m_is_running.store(false);
 
-      if (error.value() != 0 && p->m_eh_out != nullptr)
+      if (ec.value() != 0 && p->m_eh_out != nullptr)
       {
-        WEX_POST(ID_SHELL_APPEND_ERROR, error.message(), p->m_eh_out)
+        WEX_POST(ID_SHELL_APPEND_ERROR, ec.message(), p->m_eh_out)
       }
 
       log::debug("async_system") << "exit" << p->data().exe();
@@ -80,19 +95,21 @@ void wex::factory::process_imp::boost_async_system(process* p)
       {
         WEX_POST(ID_DEBUG_EXIT, "", p->m_eh_debug)
       }
-    },
- */
-}
+    });
+
+  m_io->run();
+
+  log::debug("async_system")
+    << p->data().exe() << "wd:" << p->data().start_dir();
+
+  WEX_POST(ID_SHELL_APPEND_START, "", p->m_eh_out)
+  WEX_POST(ID_SHELL_APPEND, p->data().exe() + "\n", p->m_eh_out)
+
 
 bool wex::factory::process_imp::stop(wxEvtHandler* e)
 {
   if (m_is_running.load())
   {
-    if (m_group.valid())
-    {
-      m_group.terminate();
-    }
-
     m_io->stop();
     m_is_running.store(false);
 
@@ -117,19 +134,11 @@ void wex::factory::process_imp::thread_error(const process* p)
     {
       std::string text;
       char        c;
-      boost::system::error_code ec;
 
       for (;;)
       {
-        asio::read(ip, asio::buffer(&c, 1), ec);
-
-        if (ec == asio::error::eof)
+        if (!read_from_pipe(m_ep, c))
         {
-          break;
-        }
-        else if (ec)
-        {
-          log::debug("async_system") << "read error:" << ec.message();
           break;
         }
 
@@ -164,19 +173,11 @@ void wex::factory::process_imp::thread_input(const process* p)
       line.reserve(600);
       text.reserve(600);
       char c;
-      boost::system::error_code ec;
 
       for (;;)
       {
-        asio::read(ip, asio::buffer(&c, 1), ec);
-
-        if (ec == asio::error::eof)
+        if (!read_from_pipe(m_ip, c))
         {
-          break;
-        }
-        else if (ec)
-        {
-          log::debug("async_system") << "read error:" << ec.message();
           break;
         }
 
@@ -197,7 +198,8 @@ void wex::factory::process_imp::thread_input(const process* p)
         {
           text += "...\n";
           WEX_POST(ID_SHELL_APPEND, text, out)
-          ip.ignore(max_size, '\n');
+          std::string ignore;
+          ba::read_until(ip, boost::asio::dynamic_buffer(ignore), "\n");
           text.clear();
         }
         else if (std::isspace(static_cast<unsigned char>(c)))
@@ -232,7 +234,7 @@ void wex::factory::process_imp::thread_output(const process* p)
           {
             log::debug("async_system") << "write:" << text;
 
-            asio::write(op, asio::buffer(text), asio::transfer_all());
+            ba::write(op, ba::buffer(text), ba::transfer_all());
 
             if (debug)
             {
