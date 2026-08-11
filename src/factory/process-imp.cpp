@@ -11,6 +11,10 @@
 #include <wex/factory/process.h>
 #include <wx/event.h>
 
+#include <boost/asio.hpp>
+#include <boost/process/start_dir.hpp>
+#include <boost/process/stdio.hpp>
+
 #include "process-imp.h"
 
 #define WEX_POST(ID, TEXT, DEST)                                               \
@@ -23,30 +27,33 @@
 
 namespace wex::factory
 {
-  bool read_from_pipe(ba::readable_pipe& pipe, char& c)
+bool read_from_pipe(ba::readable_pipe& pipe, char& c)
+{
+  boost::system::error_code ec;
+
+  ba::read(pipe, ba::buffer(&c, 1), ec);
+
+  if (ec == ba::error::eof)
   {
-    boost::system::error_code ec;
-
-    ba::read(pipe, ba::buffer(&c, 1), ec);
-
-    if (ec == ba::error::eof)
-    {
-      return false;
-    }
-
-    if (ec)
-    {
-      log::debug("async_system") << "read error:" << ec.message();
-      return false;
-    }
-
-    return true;
+    return false;
   }
+
+  if (ec)
+  {
+    log::debug("async_system") << "read error:" << ec.message();
+    return false;
+  }
+
+  return true;
 }
+}; // namespace wex::factory
 
 wex::factory::process_imp::process_imp()
   : m_io(std::make_shared<ba::io_context>())
   , m_queue(std::make_shared<std::queue<std::string>>())
+  , m_ep(*m_io)
+  , m_op(*m_io)
+  , m_ip(*m_io)
 {
 }
 
@@ -104,7 +111,7 @@ void wex::factory::process_imp::boost_async_system(process* p)
 
   WEX_POST(ID_SHELL_APPEND_START, "", p->m_eh_out)
   WEX_POST(ID_SHELL_APPEND, p->data().exe() + "\n", p->m_eh_out)
-
+}
 
 bool wex::factory::process_imp::stop(wxEvtHandler* e)
 {
@@ -130,18 +137,14 @@ void wex::factory::process_imp::thread_error(const process* p)
     [debug = m_debug.load(),
      &dbg  = p->m_eh_debug,
      out   = p->m_eh_out,
-     &es   = m_ep]
+     &es   = m_ep,
+     this]
     {
       std::string text;
       char        c;
 
-      for (;;)
+      while (read_from_pipe(m_ep, c))
       {
-        if (!read_from_pipe(m_ep, c))
-        {
-          break;
-        }
-
         text.push_back(c);
 
         if (c == '\n')
@@ -167,20 +170,16 @@ void wex::factory::process_imp::thread_input(const process* p)
     [debug = m_debug.load(),
      &dbg  = p->m_eh_debug,
      &out  = p->m_eh_out,
-     &ip   = m_ip]
+     &ip   = m_ip,
+     this]
     {
       std::string text, line;
       line.reserve(600);
       text.reserve(600);
       char c;
 
-      for (;;)
+      while (read_from_pipe(m_ip, c))
       {
-        if (!read_from_pipe(m_ip, c))
-        {
-          break;
-        }
-
         text.push_back(c);
 
         if (debug)
@@ -230,7 +229,7 @@ void wex::factory::process_imp::thread_output(const process* p)
 
         if (!queue->empty())
         {
-          if (const auto& text(queue->front()); op.good() && !io->stopped())
+          if (const auto& text(queue->front()); !io->stopped())
           {
             log::debug("async_system") << "write:" << text;
 

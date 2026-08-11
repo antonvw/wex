@@ -5,9 +5,12 @@
 // Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <thread>
+
 #include <wex/core/log.h>
 #include <wex/factory/process.h>
 
+#include <boost/process/start_dir.hpp>
 #include <boost/process/stdio.hpp>
 #include <boost/system/error_code.hpp>
 
@@ -87,8 +90,8 @@ int wex::factory::process::system(const wex::process_data& data)
       ctx,
       data.exe_path(),
       data.args(),
-      bp::process_stdio{data_std_in.std_in(), op, ep},
-      bp::process_start_dir{data.start_dir()}};
+      bp::process_stdio{data_std_in.std_in(), op, ep}};
+//      bp::process_start_dir{data.start_dir()}};
 
     boost::system::error_code bec;
 

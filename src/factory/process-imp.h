@@ -8,9 +8,10 @@
 #include <atomic>
 #include <queue>
 
-#include <boost/process/process.hpp>
 #include <boost/asio/read.hpp>
 #include <boost/asio/readable_pipe.hpp>
+#include <boost/asio/writable_pipe.hpp>
+#include <boost/process/process.hpp>
 
 namespace ba = boost::asio;
 namespace bp = boost::process;
