@@ -5,15 +5,15 @@
 // Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/asio.hpp>
+#include <boost/process/start_dir.hpp>
+#include <boost/process/stdio.hpp>
+
 #include <thread>
 #include <wex/core/log.h>
 #include <wex/factory/defs.h>
 #include <wex/factory/process.h>
 #include <wx/event.h>
-
-#include <boost/asio.hpp>
-#include <boost/process/start_dir.hpp>
-#include <boost/process/stdio.hpp>
 
 #include "process-imp.h"
 

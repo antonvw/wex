@@ -5,14 +5,14 @@
 // Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <boost/process/start_dir.hpp>
+#include <boost/process/stdio.hpp>
+#include <boost/system/error_code.hpp>
+
 #include <thread>
 
 #include <wex/core/log.h>
 #include <wex/factory/process.h>
-
-#include <boost/process/start_dir.hpp>
-#include <boost/process/stdio.hpp>
-#include <boost/system/error_code.hpp>
 
 #include "data-to-std-in.h"
 #include "process-imp.h"
