@@ -17,6 +17,15 @@
 #include "data-to-std-in.h"
 #include "process-imp.h"
 
+#define PROC_COMMON                                                            \
+  c = new bp::process                                                          \
+  {                                                                            \
+    ctx, data.exe_path(), data.args(), bp::process_stdio                       \
+    {                                                                          \
+      data_std_in.std_in(), op, ep                                             \
+    }                                                                          \
+  }
+
 wex::factory::process::process() = default;
 
 wex::factory::process::~process()
@@ -86,36 +95,38 @@ int wex::factory::process::system(const wex::process_data& data)
     ba::readable_pipe op{ctx}, ep{ctx};
     data_to_std_in    data_std_in(data);
 
-    bp::process c{
-      ctx,
-      data.exe_path(),
-      data.args(),
-      bp::process_stdio{data_std_in.std_in(), op, ep}};
-//      bp::process_start_dir{data.start_dir()}};
+    bp::process* c;
+
+    if (!data.start_dir().empty())
+    {
+      PROC_COMMON, bp::process_start_dir{data.start_dir()};
+    }
+    else
+    {
+      PROC_COMMON;
+    }
 
     boost::system::error_code bec;
 
     ba::read(op, ba::dynamic_buffer(m_stdout), bec);
     ba::read(ep, ba::dynamic_buffer(m_stderr), bec);
 
-    c.wait();
-
-    const int ec = c.exit_code();
-
-    if (ec >= 0)
+    if (c->wait() >= 0)
     {
       log::debug("system") << data.log();
     }
     else
     {
       const auto& text(!m_stderr.empty() ? ":" + m_stderr : std::string());
-      log("system") << data.log() << "ec:" << ec << text
+      log("system") << data.log() << "ec:" << c->exit_code() << text
                     << "wd:" << data.start_dir();
       log::status("system") << text << data.log();
     }
 
     m_data = data;
 
+    const int ec = c->exit_code();
+    delete c;
     return ec;
   }
   catch (std::exception& e)

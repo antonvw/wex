@@ -37,7 +37,7 @@ public:
   bool is_debug() const { return m_debug; }
 
   /// Returns true if process is running.
-  bool is_running() const { return m_is_running; }
+  bool is_running() const;
 
   /// Stops the async process.
   bool stop(wxEvtHandler* e);
@@ -51,11 +51,11 @@ private:
   void thread_input(const process* p);
   void thread_output(const process* p);
 
-  std::shared_ptr<boost::asio::io_context> m_io;
+  std::shared_ptr<ba::io_context>          m_io;
   std::shared_ptr<std::queue<std::string>> m_queue;
+  std::unique_ptr<bp::process>             m_process;
 
   std::atomic<bool> m_debug{false};
-  std::atomic<bool> m_is_running{false};
 
   ba::readable_pipe m_ep, m_ip;
   ba::writable_pipe m_op;

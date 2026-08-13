@@ -17,6 +17,13 @@
 
 #include "process-imp.h"
 
+#define PROC_COMMON                                                            \
+    m_process = std::make_unique<boost::process::process>(\
+      *m_io,\
+      p->data().exe_path(),\
+      p->data().args(),\
+      bp::process_stdio{m_op, m_ip, m_ep}
+
 #define WEX_POST(ID, TEXT, DEST)                                               \
   if (DEST != nullptr)                                                         \
   {                                                                            \
@@ -65,8 +72,6 @@ void wex::factory::process_imp::async_system(process* p)
   {
     boost_async_system(p);
 
-    m_is_running.store(true);
-
     thread_input(p);
     thread_output(p);
     thread_error(p);
@@ -79,18 +84,18 @@ void wex::factory::process_imp::async_system(process* p)
 
 void wex::factory::process_imp::boost_async_system(process* p)
 {
-  bp::process proc{
-    *m_io.get(),
-    p->data().exe_path(),
-    p->data().args(),
-    bp::process_stdio{m_op, m_ip, m_ep},
-    bp::process_start_dir{p->data().start_dir()}};
+  if (!p->data().start_dir().empty())
+  {
+    PROC_COMMON, bp::process_start_dir{p->data().start_dir()});
+  }
+  else
+  {
+    PROC_COMMON);
+  }
 
-  proc.async_wait(
+  m_process->async_wait(
     [this, p](boost::system::error_code ec, int exit_code)
     {
-      m_is_running.store(false);
-
       if (ec.value() != 0 && p->m_eh_out != nullptr)
       {
         WEX_POST(ID_SHELL_APPEND_ERROR, ec.message(), p->m_eh_out)
@@ -104,8 +109,6 @@ void wex::factory::process_imp::boost_async_system(process* p)
       }
     });
 
-  m_io->run();
-
   log::debug("async_system")
     << p->data().exe() << "wd:" << p->data().start_dir();
 
@@ -113,17 +116,23 @@ void wex::factory::process_imp::boost_async_system(process* p)
   WEX_POST(ID_SHELL_APPEND, p->data().exe() + "\n", p->m_eh_out)
 }
 
+bool wex::factory::process_imp::is_running() const
+{
+  return m_process != nullptr && m_process->running();
+}
+
 bool wex::factory::process_imp::stop(wxEvtHandler* e)
 {
-  if (m_is_running.load())
+  if (is_running())
   {
     m_io->stop();
-    m_is_running.store(false);
 
     if (m_debug.load() && e != nullptr)
     {
       WEX_POST(ID_DEBUG_EXIT, "", e)
     }
+
+    m_process->terminate();
 
     return true;
   }
@@ -134,11 +143,7 @@ bool wex::factory::process_imp::stop(wxEvtHandler* e)
 void wex::factory::process_imp::thread_error(const process* p)
 {
   std::thread v(
-    [debug = m_debug.load(),
-     &dbg  = p->m_eh_debug,
-     out   = p->m_eh_out,
-     &es   = m_ep,
-     this]
+    [debug = m_debug.load(), &dbg = p->m_eh_debug, out = p->m_eh_out, this]
     {
       std::string text;
       char        c;
@@ -167,11 +172,7 @@ void wex::factory::process_imp::thread_error(const process* p)
 void wex::factory::process_imp::thread_input(const process* p)
 {
   std::thread t(
-    [debug = m_debug.load(),
-     &dbg  = p->m_eh_debug,
-     &out  = p->m_eh_out,
-     &ip   = m_ip,
-     this]
+    [debug = m_debug.load(), &dbg = p->m_eh_debug, &out = p->m_eh_out, this]
     {
       std::string text, line;
       line.reserve(600);
@@ -198,7 +199,7 @@ void wex::factory::process_imp::thread_input(const process* p)
           text += "...\n";
           WEX_POST(ID_SHELL_APPEND, text, out)
           std::string ignore;
-          ba::read_until(ip, boost::asio::dynamic_buffer(ignore), "\n");
+          ba::read_until(m_ip, boost::asio::dynamic_buffer(ignore), "\n");
           text.clear();
         }
         else if (std::isspace(static_cast<unsigned char>(c)))
@@ -219,9 +220,9 @@ void wex::factory::process_imp::thread_output(const process* p)
   std::thread u(
     [debug = m_debug.load(),
      io    = m_io,
-     &op   = m_op,
      dbg   = p->m_eh_debug,
-     queue = m_queue]
+     queue = m_queue,
+     this]
     {
       while (!io->stopped())
       {
@@ -233,7 +234,7 @@ void wex::factory::process_imp::thread_output(const process* p)
           {
             log::debug("async_system") << "write:" << text;
 
-            ba::write(op, ba::buffer(text), ba::transfer_all());
+            ba::write(m_op, ba::buffer(text + "\n"), ba::transfer_all());
 
             if (debug)
             {
@@ -255,7 +256,7 @@ void wex::factory::process_imp::thread_output(const process* p)
 
 bool wex::factory::process_imp::write(const std::string& text)
 {
-  if (text.empty() || !m_is_running.load())
+  if (text.empty() || !is_running())
   {
     return false;
   }
