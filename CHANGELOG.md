@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - vcs execute and vcs_entry execute return process return code
 - list comparator is now a combobox
 - c++26 standard
+- no more boost::process::v1 used
 
 ### Fixed
 

@@ -2,13 +2,10 @@
 // Name:      process-data.cpp
 // Purpose:   Implementation of class wex::factory::process_data
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2025 Anton van Wezenbeek
+// Copyright: (c) 2022-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <filesystem>
-#include <numeric>
-
-#include <boost/process/v2/environment.hpp>
+#include <boost/process/environment.hpp>
 #include <utility>
 
 #include <wex/common/tostring.h>
@@ -16,7 +13,7 @@
 #include <wex/core/path.h>
 #include <wex/factory/process-data.h>
 
-namespace bp = boost::process::v2;
+namespace bp = boost::process;
 
 wex::process_data::process_data(std::string exe, std::string args)
   : m_exe(std::move(exe))
@@ -63,8 +60,9 @@ const std::string wex::process_data::exe_path() const
   }
   if (!p.file_exists())
   {
-    if (const auto& bop(bp::environment::find_executable(p.string()));
-        !bop.empty())
+    if (
+      const auto& bop(bp::environment::find_executable(p.string()));
+      !bop.empty())
     {
       return bop.string();
     }
