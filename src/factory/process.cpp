@@ -5,6 +5,8 @@
 // Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include "process-imp.h"
+
 #include <boost/process/start_dir.hpp>
 #include <boost/process/stdio.hpp>
 #include <boost/system/error_code.hpp>
@@ -15,7 +17,6 @@
 #include <wex/factory/process.h>
 
 #include "data-to-std-in.h"
-#include "process-imp.h"
 
 #define PROC_COMMON                                                            \
   c = new bp::process                                                          \
