@@ -2,18 +2,30 @@
 // Name:      process.cpp
 // Purpose:   Implementation of class wex::factory::process
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <future>
+#include "process-imp.h"
+
+#include <boost/process/start_dir.hpp>
+#include <boost/process/stdio.hpp>
+#include <boost/system/error_code.hpp>
+
+#include <thread>
 
 #include <wex/core/log.h>
 #include <wex/factory/process.h>
 
-#include <boost/process/v1/system.hpp>
-
 #include "data-to-std-in.h"
-#include "process-imp.h"
+
+#define PROC_COMMON                                                            \
+  c = new bp::process                                                          \
+  {                                                                            \
+    ctx, data.exe_path(), data.args(), bp::process_stdio                       \
+    {                                                                          \
+      data_std_in.std_in(), op, ep                                             \
+    }                                                                          \
+  }
 
 wex::factory::process::process() = default;
 
@@ -24,7 +36,7 @@ wex::factory::process::~process()
 
 void wex::factory::process::async_sleep_for(const std::chrono::milliseconds& ms)
 {
-  process_imp::async_sleep_for(ms);
+  std::this_thread::sleep_for(ms);
 }
 
 bool wex::factory::process::async_system(const wex::process_data& data)
@@ -80,50 +92,42 @@ int wex::factory::process::system(const wex::process_data& data)
 {
   try
   {
-    std::future<std::string> of, ef;
-    data_to_std_in           data_std_in(data);
+    ba::io_context    ctx;
+    ba::readable_pipe op{ctx}, ep{ctx};
+    data_to_std_in    data_std_in(data);
 
-    // clang-format off
-    const int ec = bp1::system(
-      data.exe_path(),
-      bp1::args = data.args(),
-      bp1::start_dir = data.start_dir(),
-      bp1::std_in < data_std_in.std_in(),
-      bp1::std_out > of,
-      bp1::std_err > ef);
-    // clang-format on
+    bp::process* c;
 
-    if (of.valid())
+    if (!data.start_dir().empty())
     {
-      m_stdout = of.get();
+      PROC_COMMON, bp::process_start_dir{data.start_dir()};
+    }
+    else
+    {
+      PROC_COMMON;
     }
 
-    if (ef.valid())
-    {
-      m_stderr = ef.get();
-    }
+    boost::system::error_code bec;
 
-    if (data.std_in().empty())
-    {
-      // e.g. for svn a password is required, not yet ok
-      bp1::std_in.close();
-      log::trace("closing stdin");
-    }
+    ba::read(op, ba::dynamic_buffer(m_stdout), bec);
+    ba::read(ep, ba::dynamic_buffer(m_stderr), bec);
 
-    if (ec >= 0)
+    if (c->wait() >= 0)
     {
       log::debug("system") << data.log();
     }
     else
     {
       const auto& text(!m_stderr.empty() ? ":" + m_stderr : std::string());
-      log("system") << data.log() << "ec:" << ec << text
+      log("system") << data.log() << "ec:" << c->exit_code() << text
                     << "wd:" << data.start_dir();
       log::status("system") << text << data.log();
     }
 
     m_data = data;
 
+    const int ec = c->exit_code();
+    delete c;
     return ec;
   }
   catch (std::exception& e)
