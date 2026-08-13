@@ -2,7 +2,7 @@
 // Name:      log.cpp
 // Purpose:   Implementation of class wex::log
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2024 Anton van Wezenbeek
+// Copyright: (c) 2017-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/log/core.hpp>
@@ -18,7 +18,6 @@
 #include <wx/app.h>
 #include <wx/log.h>
 
-#include <codecvt>
 #include <iomanip>
 
 namespace logging = boost::log;
@@ -49,14 +48,6 @@ std::string quote(const std::string& r, log::level_t level)
   }
 
   return r.contains(" ") ? "\"" : "";
-}
-
-std::string ws2s(const std::wstring& wstr)
-{
-  using convert_typeX = std::codecvt_utf8<wchar_t>;
-  std::wstring_convert<convert_typeX, wchar_t> converterX;
-
-  return converterX.to_bytes(wstr);
 }
 } // namespace wex
 
@@ -156,12 +147,6 @@ wex::log& wex::log::operator<<(char* r)
 wex::log& wex::log::operator<<(const char* r)
 {
   m_ss << S() << r;
-  return *this;
-}
-
-wex::log& wex::log::operator<<(const wchar_t* r)
-{
-  m_ss << S() << ws2s(r);
   return *this;
 }
 

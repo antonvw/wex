@@ -2,7 +2,7 @@
 // Name:      log.h
 // Purpose:   Declaration of wex::log class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2017-2024 Anton van Wezenbeek
+// Copyright: (c) 2017-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -126,9 +126,6 @@ public:
 
   /// Logs char* according to level.
   log& operator<<(const char*);
-
-  /// Logs char* according to level.
-  log& operator<<(const wchar_t*);
 
   /// Logs a bitset according to level.
   template <std::size_t N> log& operator<<(const std::bitset<N>& b)
