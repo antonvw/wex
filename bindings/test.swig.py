@@ -25,12 +25,8 @@ def test_core():
 
   rp=wex.regex_part('\\*+ Settings \\*')
   assert rp.regex() == '\\*+ Settings \\*'
-  assert rp.match('*') == wex.regex_part.match_t_PART
-  assert rp.match('*') == wex.regex_part.match_t_PART
-  assert rp.match('*') == wex.regex_part.match_t_PART
-  assert rp.match('*') == wex.regex_part.match_t_PART
-  assert rp.match('*') == wex.regex_part.match_t_PART
-  assert rp.match('*') == wex.regex_part.match_t_PART
+  for i in range(0, 6):
+    assert rp.match('*') == wex.regex_part.match_t_PART
   assert rp.text() == '******'
 
 def test_data():
