@@ -38,7 +38,7 @@ class lexers
 {
 public:
   /// Name values type for macros.
-  typedef std::unordered_map<std::string, std::string> name_values_t;
+  using name_values_t = std::unordered_map<std::string, std::string>;
 
   // Static interface
 
@@ -125,7 +125,7 @@ public:
   /// Returns true if specified indicator is available.
   bool indicator_is_loaded(const indicator& indic) const
   {
-    return m_indicators.find(indic) != m_indicators.end();
+    return m_indicators.contains(indic);
   };
 
   /// Returns whether lexers document is loaded.
@@ -142,7 +142,7 @@ public:
   /// Returns true if specified marker is available.
   bool marker_is_loaded(const marker& marker) const
   {
-    return m_markers.find(marker) != m_markers.end();
+    return m_markers.contains(marker);
   };
 
   /// Returns max number of marker read from the lexers file.
