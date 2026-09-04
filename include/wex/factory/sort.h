@@ -2,7 +2,7 @@
 // Name:      sort.h
 // Purpose:   Declaration of wex::sort class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -14,10 +14,13 @@ namespace wex
 namespace factory
 {
 class stc;
+class sort_data;
 
 /// Offers a sort class to sort text blocks, from strings or stc component.
 class sort
 {
+  friend class sort_data;
+
 public:
   /// The sort flags.
   enum
@@ -27,7 +30,7 @@ public:
   };
 
   /// A typedef containing sort flags.
-  typedef std::bitset<2> sort_t;
+  using sort_t = std::bitset<2>;
 
   /// Default constructor.
   sort(
@@ -40,26 +43,21 @@ public:
     size_t len = std::string::npos);
 
   /// Sorts selected text on specified component, returns true if sorted ok.
-  bool selection(factory::stc* stc);
+  bool selection(factory::stc* stc) const;
 
   /// Sorts specified input, returns string with sorted text.
   const std::string string(
     /// text to sort
     const std::string& input,
     /// characters to tokenize the input
-    const std::string& separators);
+    const std::string& separators) const;
 
 private:
-  template <typename T>
-  const std::string get_column(const T& first, const T& last);
-  template <typename T>
-  const std::string get_lines(std::vector<std::string>& lines, T it);
-
-  bool selection_block(factory::stc* stc);
-  bool selection_other(factory::stc* stc);
+  bool selection_block(factory::stc* stc) const;
+  bool selection_other(factory::stc* stc) const;
 
   const sort_t m_sort_t;
-  size_t       m_len, m_pos;
+  const size_t m_len, m_pos;
 };
 } // namespace factory
 } // namespace wex

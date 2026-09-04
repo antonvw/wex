@@ -229,6 +229,12 @@ void wex::stc::bind_all()
 
      {[=, this](const wxCommandEvent& event)
       {
+        sort_action(event);
+      },
+      wxID_SORT_DESCENDING},
+
+     {[=, this](const wxCommandEvent& event)
+      {
         m_frame->debug_exe(event.GetId() - ID_EDIT_DEBUG_FIRST, this);
       },
       ID_EDIT_DEBUG_FIRST},
@@ -1015,9 +1021,9 @@ void wex::stc::sort_action(const wxCommandEvent& event)
       _("Input") + ":",
       wxEmptyString,
       _("Enter Sort Position"),
-      GetCurrentPos() + 1 - PositionFromLine(get_current_line()),
+      GetColumn(GetCurrentPos()),
       1,
-      GetLineEndPosition(get_current_line()),
+      std::max(GetColumn(GetLineEndPosition(get_current_line())), 80),
       this));
     pos > 0)
   {

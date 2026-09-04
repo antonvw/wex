@@ -2,7 +2,7 @@
 // Name:      sort.cpp
 // Purpose:   Implementation of wex::sort class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -13,9 +13,65 @@
 #include <wex/factory/stc-undo.h>
 #include <wex/factory/stc.h>
 
-#include <algorithm>
 #include <map>
 #include <set>
+#include <vector>
+
+namespace wex
+{
+namespace factory
+{
+class sort_data
+{
+public:
+  template <typename T>
+  const std::string
+  to_string_separated(std::vector<std::string>& words, T ii) const
+  {
+    std::string text;
+
+    for (auto& it : words)
+    {
+      text += it.replace(sort->m_pos, sort->m_len, *ii);
+
+      if (&it != &words.back() || (&it == &words.back() && ends_with_separator))
+      {
+        text += separator;
+      }
+
+      ++ii;
+    }
+
+    return text;
+  }
+
+  template <typename T>
+  const std::string
+  to_string_cols_separated(const T& first, const T& last) const
+  {
+    std::string text;
+
+    for (T it = first; it != last; ++it)
+    {
+      text += it->second;
+
+      if (
+        std::next(it) != last || (std::next(it) == last && ends_with_separator))
+      {
+        text += separator;
+      }
+    }
+
+    return text;
+  }
+
+  const factory::sort* sort;
+  const std::string    separator;
+  const bool           ends_with_separator;
+};
+
+} // namespace factory
+} // namespace wex
 
 wex::factory::sort::sort(sort_t sort_t, size_t pos, size_t len)
   : m_sort_t(sort_t)
@@ -24,35 +80,7 @@ wex::factory::sort::sort(sort_t sort_t, size_t pos, size_t len)
 {
 }
 
-template <typename T>
-const std::string wex::factory::sort::get_column(const T& first, const T& last)
-{
-  std::string text;
-
-  for (T it = first; it != last; ++it)
-  {
-    text += it->second;
-  }
-
-  return text;
-}
-
-template <typename T>
-const std::string
-wex::factory::sort::get_lines(std::vector<std::string>& lines, T ii)
-{
-  std::string text;
-
-  for (auto& it : lines)
-  {
-    text += it.replace(m_pos, m_len, *ii);
-    ++ii;
-  }
-
-  return text;
-}
-
-bool wex::factory::sort::selection(factory::stc* stc)
+bool wex::factory::sort::selection(factory::stc* stc) const
 {
   bool error = false;
 
@@ -71,7 +99,7 @@ bool wex::factory::sort::selection(factory::stc* stc)
   return !error;
 }
 
-bool wex::factory::sort::selection_block(factory::stc* stc)
+bool wex::factory::sort::selection_block(factory::stc* stc) const
 {
   const auto start_pos = stc->GetSelectionNStart(0);
 
@@ -99,13 +127,14 @@ bool wex::factory::sort::selection_block(factory::stc* stc)
 
   const auto nr_cols =
     stc->GetColumn(stc->GetSelectionEnd()) - stc->GetColumn(start_pos);
-  const auto nr_lines = stc->LineFromPosition(stc->GetSelectionEnd()) -
-                        stc->LineFromPosition(start_pos);
+  const auto  nr_lines = stc->LineFromPosition(stc->GetSelectionEnd()) -
+                         stc->LineFromPosition(start_pos);
   const auto& text(sort(m_sort_t).string(selection, "\n"));
 
   boost::tokenizer<boost::char_separator<char>> tok(
     text,
     boost::char_separator<char>("\n"));
+
   auto it = tok.begin();
 
   for (int i = 0; i < stc->GetSelections() && it != tok.end(); i++)
@@ -130,7 +159,7 @@ bool wex::factory::sort::selection_block(factory::stc* stc)
   return true;
 }
 
-bool wex::factory::sort::selection_other(factory::stc* stc)
+bool wex::factory::sort::selection_other(factory::stc* stc) const
 {
   const auto start_pos = stc->GetSelectionStart();
 
@@ -150,70 +179,73 @@ bool wex::factory::sort::selection_other(factory::stc* stc)
   return true;
 }
 
-const std::string
-wex::factory::sort::string(const std::string& input, const std::string& sep)
+const std::string wex::factory::sort::string(
+  const std::string& input,
+  const std::string& sep) const
 {
-  // Empty lines are not kept after sorting, as they are used as separator.
+  if (input.empty() || sep.empty())
+  {
+    return input;
+  }
+
   std::map<std::string, std::string>      m;
   std::multimap<std::string, std::string> mm;
   std::multiset<std::string>              ms;
-  std::vector<std::string>                lines;
+  std::vector<std::string>                words;
 
-  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
-         input,
-         boost::char_separator<char>(sep.c_str())))
+  boost::tokenizer<boost::char_separator<char>> tok(
+    input,
+    boost::char_separator<char>(sep.c_str()));
+
+  for (auto it = tok.begin(); it != tok.end(); ++it)
   {
-    const std::string line = it + sep;
+    const std::string& word(*it);
 
     // Use an empty key if line is too short.
     std::string key;
 
-    if (m_pos < line.length())
+    if (m_pos < word.length())
     {
-      key = line.substr(m_pos, m_len);
+      key = word.substr(m_pos, m_len);
     }
 
     if (m_len == std::string::npos)
     {
       if (m_sort_t[SORT_UNIQUE])
       {
-        m.insert({key, line});
+        m.insert({key, word});
       }
       else
       {
-        mm.insert({key, line});
+        mm.insert({key, word});
       }
     }
     else
     {
-      lines.emplace_back(line);
+      words.emplace_back(word);
       ms.insert(key);
     }
   }
 
-  std::string text;
+  const sort_data sd{this, sep, sep.contains(input.back())};
 
   if (m_len == std::string::npos)
   {
     if (m_sort_t[SORT_DESCENDING])
     {
-      text =
-        (m_sort_t[SORT_UNIQUE] ? get_column(m.rbegin(), m.rend()) :
-                                 get_column(mm.rbegin(), mm.rend()));
+      return (
+        m_sort_t[SORT_UNIQUE] ?
+          sd.to_string_cols_separated(m.rbegin(), m.rend()) :
+          sd.to_string_cols_separated(mm.rbegin(), mm.rend()));
     }
-    else
-    {
-      text =
-        (m_sort_t[SORT_UNIQUE] ? get_column(m.begin(), m.end()) :
-                                 get_column(mm.begin(), mm.end()));
-    }
-  }
-  else
-  {
-    text =
-      (m_sort_t[SORT_DESCENDING] ? get_lines(lines, ms.rbegin()) :
-                                   get_lines(lines, ms.begin()));
+
+    return (
+      m_sort_t[SORT_UNIQUE] ?
+        sd.to_string_cols_separated(m.begin(), m.end()) :
+        sd.to_string_cols_separated(mm.begin(), mm.end()));
   }
 
-  return text;
+  return (
+    m_sort_t[SORT_DESCENDING] ? sd.to_string_separated(words, ms.rbegin()) :
+                                sd.to_string_separated(words, ms.begin()));
 }
