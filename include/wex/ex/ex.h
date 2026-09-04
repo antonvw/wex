@@ -158,8 +158,7 @@ public:
 
   /// Goes to specified marker.
   /// Returns true if marker exists.
-  /// The command should start with backquote or `, followed
-  /// by marker.
+  /// The command should start with a backquote, followed  by marker.
   bool marker_goto(const std::string& command);
 
   /// Returns line for specified marker.
@@ -218,10 +217,9 @@ protected:
   std::string m_command_string;
 
 private:
-  typedef std::vector<std::pair<
+  using commands_t = std::vector<std::pair<
     const std::string,
-    std::function<bool(const std::string& command)>>>
-    commands_t;
+    std::function<bool(const std::string& command)>>>;
 
   bool       command_handle(const std::string& command) const;
   bool       command_set(const std::string& command);
@@ -229,10 +227,10 @@ private:
 
   template <typename S, typename T>
   bool handle_container(
-    const std::string&                                          kind,
-    const std::string&                                          command,
-    const T*                                                    container,
-    std::function<bool(const std::string&, const std::string&)> cb);
+    const std::string& kind,
+    const std::string& command,
+    const T*           container,
+    const std::function<bool(const std::string&, const std::string&)>& cb);
 
   template <typename S, typename T>
   std::string report_container(const T& container) const;
@@ -284,10 +282,10 @@ bool ex_expansion(const ex* ex, std::string& command);
 
 template <typename S, typename T>
 bool wex::ex::handle_container(
-  const std::string&                                          kind,
-  const std::string&                                          command,
-  const T*                                                    container,
-  std::function<bool(const std::string&, const std::string&)> cb)
+  const std::string&                                                 kind,
+  const std::string&                                                 command,
+  const T*                                                           container,
+  const std::function<bool(const std::string&, const std::string&)>& cb)
 {
   // command is like:
   // :map 7 :%d

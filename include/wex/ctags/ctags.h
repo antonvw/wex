@@ -2,7 +2,7 @@
 // Name:      ctags.h
 // Purpose:   Declaration of class wex::ctags
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2016-2024 Anton van Wezenbeek
+// Copyright: (c) 2016-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -11,7 +11,7 @@
 
 #include <map>
 
-typedef struct sTagFile tagFile;
+using tagFile = struct sTagFile;
 
 namespace wex
 {
@@ -35,12 +35,12 @@ public:
   /// Returns false if file was not opened.
   static bool close();
 
-  /// Find the tags matching `tag', and fills the matches container.
+  /// Find the tags matching `tag`, and fills the matches container.
   /// Returns true if a matching tag is found,
   /// and calls frame open_file if name matches and
   /// there is no next match in another file.
   /// If the name is empty, next is invoked.
-  // Otherwise shows a dialog to select a file from the matches.
+  /// Otherwise shows a dialog to select a file from the matches.
   /// Returns false if dialog was cancelled or ctags file not yet open.
   static bool find(
     /// tag to find
@@ -93,7 +93,7 @@ public:
 
 private:
   /// Type for ctags, cannot be unordered, as we have a previous.
-  typedef std::map<std::string, ctags_info> ctags_t;
+  using ctags_t = std::map<std::string, ctags_info>;
 
   void        auto_complete_prepare();
   static bool do_open(const std::string& path);
