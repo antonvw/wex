@@ -34,36 +34,36 @@ def test_core():
 
 def test_data():
     d = wex.menu()
-    assert (d.help_text() == "")
+    assert d.help_text() == ""
     d.help_text("dddd")
-    assert (d.help_text() == "dddd")
+    assert d.help_text() == "dddd"
 
 
 def test_factory():
-    assert (wex.control().find() == "")
+    assert wex.control().find() == ""
 
     f = wex.find_replace_data()
-    assert (f.get_find_string() == "")
+    assert f.get_find_string() == ""
 
     s = wex.sort()
-    assert (s.string("", "") == "")
-    assert (s.string("", " ") == "")
+    assert s.string("", "") == ""
+    assert s.string("", " ") == ""
 
-    assert (s.string("x", " ") == "x")
-    assert (s.string("a b c", " ") == "a b c")
-    assert (s.string("c b a", " ") == "a b c")
+    assert s.string("x", " ") == "x"
+    assert s.string("a b c", " ") == "a b c"
+    assert s.string("c b a", " ") == "a b c"
 
-    assert (s.string("x yz\nabc\n", "\n") == "abc\nx yz\n")
-    assert (s.string("x yz\nabc", "\n") == "abc\nx yz")
+    assert s.string("x yz\nabc\n", "\n") == "abc\nx yz\n"
+    assert s.string("x yz\nabc", "\n") == "abc\nx yz"
 
 
 def test_syntax():
     p = wex.property("x", "y")
-    assert (p.is_ok())
-    assert (p.name() == "x")
-    assert (p.value() == "y")
+    assert p.is_ok()
+    assert p.name() == "x"
+    assert p.value() == "y"
     p.set("z")
-    assert (p.value() == "z")
+    assert p.value() == "z"
 
 
 # main, invoking the test methods
