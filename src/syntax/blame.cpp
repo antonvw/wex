@@ -2,7 +2,7 @@
 // Name:      blame.cpp
 // Purpose:   Implementation of class wex::blame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2025 Anton van Wezenbeek
+// Copyright: (c) 2019-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -156,13 +156,15 @@ bool wex::blame::parse(const path& p, const std::string& text)
         return parse_full(text, r);
       }
 
-      log("blame parsing") << m_name << r.size();
+      log("blame::parse") << m_name << r.size();
     }
   }
   catch (std::exception& e)
   {
-    log(e) << "blame:" << text;
+    log(e) << "blame::parse" << text;
   }
+
+  log("blame::parse") << text;
 
   return false;
 }
@@ -212,15 +214,18 @@ bool wex::blame::parse_full(const std::string& line, const regex& r)
   m_path      = boost::algorithm::trim_copy(r[1]);
   m_style     = get_style(r[0], r[3]);
 
-  if (const auto [ptr, ec] =
-        std::from_chars(r[4].data(), r[4].data() + r[4].size(), m_line_no);
-      ec == std::errc())
+  if (
+    const auto [ptr, ec] =
+      std::from_chars(r[4].data(), r[4].data() + r[4].size(), m_line_no);
+    ec == std::errc())
   {
     m_line_no--;
     m_line_text = r[5];
 
     return true;
   }
+
+  log("blame::parse_full") << line << r[4];
 
   return false;
 }

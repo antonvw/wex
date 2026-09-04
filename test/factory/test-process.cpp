@@ -2,7 +2,7 @@
 // Name:      test-process.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -80,6 +80,9 @@ TEST_CASE("wex::factory::process")
       CAPTURE(process.std_out());
       REQUIRE(process.std_err().empty());
       REQUIRE(process.std_out().contains("6"));
+      REQUIRE(process.system(wex::process_data("wc -c").std_in("x")) == 0);
+      REQUIRE(!process.std_out().contains("6"));
+      REQUIRE(process.std_out().contains("1"));
     }
 
     SECTION("start_dir")

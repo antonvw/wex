@@ -27,6 +27,16 @@
     }                                                                          \
   }
 
+namespace wex::factory
+{
+void read_pipe(ba::readable_pipe& pipe, std::string& text)
+{
+  boost::system::error_code bec;
+  text.clear();
+  ba::read(pipe, ba::dynamic_buffer(text), bec);
+}
+}; // namespace wex::factory
+
 wex::factory::process::process() = default;
 
 wex::factory::process::~process()
@@ -107,10 +117,8 @@ int wex::factory::process::system(const wex::process_data& data)
       PROC_COMMON;
     }
 
-    boost::system::error_code bec;
-
-    ba::read(op, ba::dynamic_buffer(m_stdout), bec);
-    ba::read(ep, ba::dynamic_buffer(m_stderr), bec);
+    read_pipe(op, m_stdout);
+    read_pipe(ep, m_stderr);
 
     if (c->wait() >= 0)
     {
