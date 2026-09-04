@@ -2,24 +2,29 @@
 // Name:      wex.i 
 // Purpose:   SWIG interface file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023-2025 Anton van Wezenbeek
+// Copyright: (c) 2023-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
+
+%module wex
+%{
+#include <sstream>
+#include <string>
+
+#include <wex/common/wex.h>
+#include <wex/data/wex.h>
+#include <wex/core/wex.h>
+#include <wex/factory/wex.h>
+#include <wex/syntax/wex.h>
+%}
 
 %include <std_filesystem.i>
 %include <std_pair.i>
 %include <std_sstream.i>
 %include <std_string.i>
+%include <std_unordered_map.i>
 %include <std_vector.i>
 
 // std::stringstream deletes copy constructor needed by wrap
-
-%module wex
-%{
-#include <wex/common/wex.h>
-#include <wex/data/wex.h>
-#include <wex/core/wex.h>
-#include <wex/factory/wex.h>
-%}
 
 %include "../include/wex/core/app.h"
 %include "../include/wex/core/chrono.h"
@@ -29,12 +34,14 @@
 %include "../include/wex/core/file-status.h"
 %include "../include/wex/core/function-repeat.h"
 %include "../include/wex/core/interruptible.h"
+%include "../include/wex/core/menu-command.h"
 %include "../include/wex/core/regex.h"
 %include "../include/wex/core/regex-part.h"
 %include "../include/wex/core/temp-filename.h"
 %include "../include/wex/core/tokenize.h"
 %include "../include/wex/core/type-to-value.h"
 %include "../include/wex/core/types.h"
+%include "../include/wex/core/vcs-command.h"
 %include "../include/wex/core/version.h"
 
 %include "../include/wex/factory/control.h"
@@ -48,3 +55,7 @@
 
 %include "../include/wex/common/statistics.h"
 %include "../include/wex/common/tool.h"
+
+%include "../include/wex/data/menu.h"
+
+%include "../include/wex/syntax/property.h"
