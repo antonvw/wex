@@ -11,31 +11,31 @@ import wex
 
 
 def test_common():
-    t = wex.tool_info('aha')
-    assert t.info() == 'aha'
+    t = wex.tool_info("aha")
+    assert t.info() == "aha"
 
 
 def test_core():
     assert wex.now()
-    r = wex.regex('([0-9])+xxx')
-    assert r.match('1444xxx') == 1
-    assert r.match('1444yyy') == -1
+    r = wex.regex("([0-9])+xxx")
+    assert r.match("1444xxx") == 1
+    assert r.match("1444yyy") == -1
 
     c = wex.config("config-item")
     c.set("xyz")
-    assert c.get() == 'xyz'
+    assert c.get() == "xyz"
 
-    rp = wex.regex_part('\\*+ Settings \\*')
-    assert rp.regex() == '\\*+ Settings \\*'
+    rp = wex.regex_part("\\*+ Settings \\*")
+    assert rp.regex() == "\\*+ Settings \\*"
     for i in range(0, 6):
-        assert rp.match('*') == wex.regex_part.match_t_PART
-    assert rp.text() == '******'
+        assert rp.match("*") == wex.regex_part.match_t_PART
+    assert rp.text() == "******"
 
 
 def test_data():
     d = wex.menu()
     assert (d.help_text() == "")
-    d.help_text('dddd')
+    d.help_text("dddd")
     assert (d.help_text() == "dddd")
 
 
@@ -58,12 +58,12 @@ def test_factory():
 
 
 def test_syntax():
-    p = wex.property('x', 'y')
+    p = wex.property("x", "y")
     assert (p.is_ok())
-    assert (p.name() == 'x')
-    assert (p.value() == 'y')
-    p.set('z')
-    assert (p.value() == 'z')
+    assert (p.name() == "x")
+    assert (p.value() == "y")
+    p.set("z")
+    assert (p.value() == "z")
 
 
 # main, invoking the test methods
