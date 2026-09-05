@@ -2,12 +2,11 @@
 // Name:      vcs.cpp
 // Purpose:   Declaration of class wex::vcs_admin
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2008-2024 Anton van Wezenbeek
+// Copyright: (c) 2008-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/factory/vcs.h>
 
-#include <iostream>
 #include <utility>
 
 wex::factory::vcs_admin::vcs_admin(std::string dir, const path& p)

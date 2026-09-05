@@ -17,13 +17,6 @@
 
 #include "process-imp.h"
 
-#define PROC_COMMON                                                            \
-    m_process = std::make_unique<boost::process::process>(\
-      *m_io,\
-      p->data().exe_path(),\
-      p->data().args(),\
-      bp::process_stdio{m_op, m_ip, m_ep}
-
 #define WEX_POST(ID, TEXT, DEST)                                               \
   if (DEST != nullptr)                                                         \
   {                                                                            \
@@ -86,11 +79,20 @@ void wex::factory::process_imp::boost_async_system(process* p)
 {
   if (!p->data().start_dir().empty())
   {
-    PROC_COMMON, bp::process_start_dir{p->data().start_dir()});
+    m_process = std::make_unique<boost::process::process>(
+      *m_io,
+      p->data().exe_path(),
+      p->data().args(),
+      bp::process_stdio{m_op, m_ip, m_ep},
+      bp::process_start_dir{p->data().start_dir()});
   }
   else
   {
-    PROC_COMMON);
+    m_process = std::make_unique<boost::process::process>(
+      *m_io,
+      p->data().exe_path(),
+      p->data().args(),
+      bp::process_stdio{m_op, m_ip, m_ep});
   }
 
   m_process->async_wait(

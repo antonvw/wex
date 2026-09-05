@@ -18,15 +18,6 @@
 
 #include "data-to-std-in.h"
 
-#define PROC_COMMON                                                            \
-  c = new bp::process                                                          \
-  {                                                                            \
-    ctx, data.exe_path(), data.args(), bp::process_stdio                       \
-    {                                                                          \
-      data_std_in.std_in(), op, ep                                             \
-    }                                                                          \
-  }
-
 namespace wex::factory
 {
 void read_pipe(ba::readable_pipe& pipe, std::string& text)
@@ -106,36 +97,45 @@ int wex::factory::process::system(const wex::process_data& data)
     ba::readable_pipe op{ctx}, ep{ctx};
     data_to_std_in    data_std_in(data);
 
-    bp::process* c;
+    bp::process* p;
 
     if (!data.start_dir().empty())
     {
-      PROC_COMMON, bp::process_start_dir{data.start_dir()};
+      p = new bp::process{
+        ctx,
+        data.exe_path(),
+        data.args(),
+        bp::process_stdio{data_std_in.std_in(), op, ep},
+        bp::process_start_dir{data.start_dir()}};
     }
     else
     {
-      PROC_COMMON;
+      p = new bp::process{
+        ctx,
+        data.exe_path(),
+        data.args(),
+        bp::process_stdio{data_std_in.std_in(), op, ep}};
     }
 
     read_pipe(op, m_stdout);
     read_pipe(ep, m_stderr);
 
-    if (c->wait() >= 0)
+    if (p->wait() >= 0)
     {
       log::debug("system") << data.log();
     }
     else
     {
       const auto& text(!m_stderr.empty() ? ":" + m_stderr : std::string());
-      log("system") << data.log() << "ec:" << c->exit_code() << text
+      log("system") << data.log() << "ec:" << p->exit_code() << text
                     << "wd:" << data.start_dir();
       log::status("system") << text << data.log();
     }
 
     m_data = data;
 
-    const int ec = c->exit_code();
-    delete c;
+    const int ec = p->exit_code();
+    delete p;
     return ec;
   }
   catch (std::exception& e)

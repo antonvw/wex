@@ -28,9 +28,6 @@
                                                                                \
   m_entry = find_entry(m_store);
 
-#include <map>
-#include <numeric>
-
 namespace wex
 {
 // The vcs id's here can be set using the config dialog, and are not
@@ -491,7 +488,8 @@ int wex::vcs::show_dialog(const data::window& arg)
            .apply(
              [=, this](wxWindow* user, const std::any& value, bool save)
              {
-               config(m_entry->flags_key()).set(m_entry->get_flags());
+               config(m_entry->flags_key())
+                 .set(std::any_cast<std::string>(value));
              })) :
        item(),
      m_entry->flags_location() == vcs_entry::flags_location_t::PREFIX &&
