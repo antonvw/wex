@@ -24,6 +24,34 @@
 
 namespace wex
 {
+std::string command_flags(const vcs_entry& v)
+{
+  std::string flags;
+
+  if (const auto c(v.get_command()); c.get_command() != "show")
+  {
+    if (c.get_command() == "diff")
+    {
+      flags = v.get_diff_flags();
+    }
+    else if (c.ask_flags())
+    {
+      flags = v.get_flags();
+    }
+    else if (c.flags() != "none")
+    {
+      flags = c.flags();
+    }
+
+    if (!flags.empty())
+    {
+      flags += " ";
+    }
+  }
+
+  return flags;
+}
+
 std::set<wex::path>
 parse(const path& toplevel, const std::string& file, const std::string& regex)
 {
@@ -128,29 +156,6 @@ int wex::vcs_entry::execute(
     }
   }
 
-  std::string flags;
-
-  if (get_command().get_command() != "show")
-  {
-    if (get_command().get_command() == "diff")
-    {
-      flags = get_diff_flags();
-    }
-    else if (get_command().ask_flags())
-    {
-      flags = get_flags();
-    }
-    else if (get_command().flags() != "none")
-    {
-      flags = get_command().flags();
-    }
-
-    if (!flags.empty())
-    {
-      flags += " ";
-    }
-  }
-
   std::string comment;
 
   if (get_command().is_commit())
@@ -160,6 +165,8 @@ int wex::vcs_entry::execute(
   }
 
   std::string my_args(args);
+
+  const auto& flags(command_flags(*this));
 
   // If we specified help (flags), we do not need a file argument.
   if (get_command().is_help() || flags.contains("help"))

@@ -5,8 +5,6 @@
 // Copyright: (c) 2015-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <filesystem>
-
 #include <wex/core/config.h>
 #include <wex/core/log-none.h>
 #include <wex/core/path.h>
@@ -69,6 +67,7 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
 #ifdef __WXMSW__
     REQUIRE(entry.get_branch("\\windows").empty());
 #else
+    CAPTURE(entry.get_branch("/tmp"));
     REQUIRE(entry.get_branch("/tmp").empty());
 #endif
     REQUIRE(!entry.get_branch().empty());

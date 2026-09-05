@@ -25,10 +25,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 
 - fixed vcs checkout on a changed line
+- fixed vcs handling flags in dialog
 - fixed recording for vi find repeat command (slash)
 - fixed support macros in config dir only
 - fixed svn diff
-- find in files on folders
+- fixed find in files on folders
 
 ## [26.04] - 2026-03-14
 
