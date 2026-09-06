@@ -72,6 +72,16 @@ TEST_CASE("wex::factory::process")
     }
 #endif
 
+#ifdef __WXMSW__
+    SECTION("windows")
+    {
+      REQUIRE(process.system(wex::process_data("dir") == 0);
+      REQUIRE(process.std_err().empty());
+      CAPTURE(process.std_out());
+      REQUIRE(!process.std_out().empty());
+    }
+#endif
+
 #ifndef GITHUB
 #ifndef __WXMSW__
     SECTION("stdin")
