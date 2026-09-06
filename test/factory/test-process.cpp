@@ -75,7 +75,7 @@ TEST_CASE("wex::factory::process")
 #ifdef __WXMSW__
     SECTION("windows")
     {
-      REQUIRE(process.system(wex::process_data("dir") == 0);
+      REQUIRE(process.system(wex::process_data("dir")) == 0);
       REQUIRE(process.std_err().empty());
       CAPTURE(process.std_out());
       REQUIRE(!process.std_out().empty());
