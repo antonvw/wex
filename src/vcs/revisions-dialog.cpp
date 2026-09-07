@@ -61,7 +61,7 @@ private:
 void rev_data::do_compare()
 {
   if (
-    m_ve->system(process_data(m_data).exe(
+    m_ve->system(process_data(m_data).args(
       "diff " + m_ve->get_diff_flags() + " " + value() + " " + m_repo_path)) ==
     0)
   {
@@ -83,7 +83,7 @@ void rev_data::do_open()
 
   if (
     m_ve->system(
-      process_data(m_data).exe("show " + value() + ":" + m_repo_path)) == 0)
+      process_data(m_data).args("show " + value() + ":" + m_repo_path)) == 0)
   {
     frame()->open_file_vcs(path(m_repo_path), *m_ve, data::stc());
     config(m_ve->flags_key()).set(std::string());

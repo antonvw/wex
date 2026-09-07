@@ -188,7 +188,7 @@ const std::string wex::vcs_entry::get_branch(const std::string& wd) const
     process p;
     name() == "git" &&
     p.system(
-      process_data(bin() + " rev-parse --abbrev-ref HEAD").start_dir(wd)) == 0)
+      process_data(bin(), "rev-parse --abbrev-ref HEAD").start_dir(wd)) == 0)
   {
     return p.std_out();
   }
@@ -323,6 +323,5 @@ int wex::vcs_entry::system(const process_data& data)
     }
   }
 
-  return process::system(
-    process_data(bin() + " " + args).start_dir(data.start_dir()));
+  return process::system(process_data(bin(), args).start_dir(data.start_dir()));
 }
