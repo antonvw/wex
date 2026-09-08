@@ -23,19 +23,7 @@ wex::process_data::process_data(std::string exe, std::string args)
 
 const std::vector<std::string> wex::process_data::args() const
 {
-  if (!m_args.empty())
-  {
-    return to_vector_string(m_args).get();
-  }
-
-  const auto pos = m_exe.find(' ');
-
-  if (pos == std::string::npos)
-  {
-    return std::vector<std::string>{};
-  }
-
-  return to_vector_string(m_exe.substr(pos + 1)).get();
+  return to_vector_string(m_args).get();
 }
 
 wex::process_data& wex::process_data::args(const std::string& rhs)

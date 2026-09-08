@@ -2,7 +2,7 @@
 // Name:      path-lexer.cpp
 // Purpose:   Implementation of class wex::path_lexer
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2024 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -60,7 +60,7 @@ bool build(const path_lexer& p)
       const auto& sw(config("build." + binary[t] + ".switch").get(switches[t]));
       return frame->process_async_system(
         process_data(
-          config("build." + binary[t] + ".bin").get(binary[t]) + " " +
+          config("build." + binary[t] + ".bin").get(binary[t]),
           (!sw.empty() ? sw + " " + p.filename() : std::string()))
           .start_dir(p.parent_path()));
     }
