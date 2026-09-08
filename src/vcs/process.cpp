@@ -67,7 +67,7 @@ bool wex::process::async_system(const process_data& data_in)
   if (data.exe().starts_with("git"))
   {
     if (process p;
-        p.system(process_data(data).exe().args("rev-parse --show-toplevel")) == 0)
+        p.system(process_data(data).args("rev-parse --show-toplevel")) == 0)
     {
       m_shell->add_search_path(path(boost::algorithm::trim_copy(p.std_out())));
     }
