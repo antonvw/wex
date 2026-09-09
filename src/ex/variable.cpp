@@ -232,11 +232,7 @@ bool wex::variable::expand(std::string& value, ex* ex) const
         return false;
       }
 
-      if (
-        factory::process p;
-        p.system(
-          m_value + (!m_argument.empty() ? " " + m_argument : std::string())) !=
-        0)
+      if (factory::process p; p.system(m_value,  m_argument) != 0)
       {
         return false;
       }

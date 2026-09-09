@@ -27,7 +27,7 @@ TEST_CASE("wex::process_data")
     wex::process_data data("wc", "yy");
 
     REQUIRE(data.args().size() == 1);
-    REQUIRE(data.args_str().empty());
+    REQUIRE(data.args_str() == "yy");
     REQUIRE(data.args().front() == "yy");
     REQUIRE(data.exe() == "wc");
 #ifdef __UNIX__
