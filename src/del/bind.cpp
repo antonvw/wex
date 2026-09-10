@@ -74,11 +74,12 @@ void wex::del::frame::bind_all()
 
      {[=, this](const wxCommandEvent& event)
       {
-        stc::config_dialog(data::window()
-                             .id(wxID_PREFERENCES)
-                             .parent(this)
-                             .title(_("Editor Options"))
-                             .button(wxAPPLY | wxOK | wxCANCEL));
+        stc::config_dialog(
+          data::window()
+            .id(wxID_PREFERENCES)
+            .parent(this)
+            .title(_("Editor Options"))
+            .button(wxAPPLY | wxOK | wxCANCEL));
       },
       wxID_PREFERENCES},
 
@@ -106,9 +107,10 @@ void wex::del::frame::bind_all()
         {
           auto it = find_replace_data::get()->get_find_strings().begin();
           std::advance(it, event.GetId() - ID_FIND_FIRST);
-          if (const auto& text(*it); stc->find(
-                text,
-                stc->get_vi().is_active() ? stc->get_vi().search_flags() : -1))
+          if (
+            const auto& text(*it); stc->find(
+              text,
+              stc->get_vi().is_active() ? stc->get_vi().search_flags() : -1))
           {
             find_replace_data::get()->set_find_string(text);
           }
@@ -133,10 +135,16 @@ void wex::del::frame::bind_all()
      {[=, this](const wxCommandEvent& event)
       {
         // this code handles the PaneVCS statusbar_clicked
-        wex::vcs(
+        wex::vcs v(
           std::vector<wex::path>(),
-          event.GetId() - wex::ID_EDIT_VCS_LOWEST - 1)
-          .request();
+          event.GetId() - wex::ID_EDIT_VCS_LOWEST - 1);
+
+        if (
+          v.request() != wxID_CANCEL &&
+          v.entry().get_command().get_command() == "checkout")
+        {
+          statustext_vcs();
+        }
       },
       wex::ID_EDIT_VCS_LOWEST},
 
