@@ -72,15 +72,27 @@ TEST_CASE("wex::factory::process")
     }
 #endif
 
+#ifdef __WXMSW__
+    SECTION("windows")
+    {
+      REQUIRE(process.system(wex::process_data("dir")) == 0);
+      REQUIRE(process.std_err().empty());
+      CAPTURE(process.std_out());
+      REQUIRE(!process.std_out().empty());
+    }
+#endif
+
 #ifndef GITHUB
 #ifndef __WXMSW__
     SECTION("stdin")
     {
-      REQUIRE(process.system(wex::process_data("wc -c").std_in("xxxxxx")) == 0);
+      REQUIRE(
+        process.system(wex::process_data("wc", "-c").std_in("xxxxxx")) == 0);
       CAPTURE(process.std_out());
       REQUIRE(process.std_err().empty());
       REQUIRE(process.std_out().contains("6"));
-      REQUIRE(process.system(wex::process_data("wc -c").std_in("x")) == 0);
+      REQUIRE(process.data().args().front() == "-c");
+      REQUIRE(process.system(wex::process_data("wc", "-c").std_in("x")) == 0);
       REQUIRE(!process.std_out().contains("6"));
       REQUIRE(process.std_out().contains("1"));
     }
@@ -89,7 +101,8 @@ TEST_CASE("wex::factory::process")
     {
       wex::path cwd;
 
-      REQUIRE(process.system(wex::process_data("ls -l").start_dir("/")) == 0);
+      REQUIRE(
+        process.system(wex::process_data("ls", "-l").start_dir("/")) == 0);
       REQUIRE(process.std_err().empty());
       REQUIRE(process.std_out().contains("usr"));
       REQUIRE(wxGetCwd().Contains("data"));

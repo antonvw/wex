@@ -2,7 +2,7 @@
 // Name:      process-data.h
 // Purpose:   Declaration of class wex::process_data
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2022-2025 Anton van Wezenbeek
+// Copyright: (c) 2022-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -17,8 +17,6 @@ class process_data
 {
 public:
   /// Default constructor, sets the exe (and possible args).
-  /// You can choose to specify the args as cmdline option after the exe,
-  /// or as separate args.
   process_data(
     /// the exe
     std::string exe = std::string(),

@@ -842,7 +842,10 @@ void wex::del::frame::statusbar_clicked_right(const std::string& pane)
 
 void wex::del::frame::statustext_vcs(factory::stc* stc)
 {
-  m_vcs->set(stc->path());
+  if (stc != nullptr)
+  {
+    m_vcs->set(stc->path());
+  }
 
   if (const auto& text(m_vcs->get_branch()); !text.empty())
   {

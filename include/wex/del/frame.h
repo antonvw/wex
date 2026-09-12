@@ -138,7 +138,8 @@ public:
   void set_recent_project(const path& path) { m_project_history.append(path); }
 
   /// Shows vcs info on statusbar.
-  void statustext_vcs(factory::stc* stc);
+  /// If the stc is specified, it is used to set vcs based upon the path.
+  void statustext_vcs(factory::stc* stc = nullptr);
 
   /// Starts or stops syncing.
   /// Default syncing is started during construction.

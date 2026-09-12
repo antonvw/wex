@@ -2,7 +2,7 @@
 // Name:      grep.cpp
 // Purpose:   Implementation of wex util method execute_grep
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2025 Anton van Wezenbeek
+// Copyright: (c) 2025-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -71,9 +71,10 @@ bool execute_grep(const std::string& bin, const path& tl)
     dlg->reload();
   }
 
-  if (const std::string &
-        find(boost::algorithm::replace_all_copy(text, " ", "\\ "));
-      find.contains("\n"))
+  if (
+    const std::string& find(
+      boost::algorithm::replace_all_copy(text, " ", "\\ "));
+    find.contains("\n"))
   {
     log::status("Cannot grep multiple lines");
   }
@@ -95,7 +96,7 @@ bool execute_grep(const std::string& bin, const path& tl)
         find);
 
     if (!frame->process_async_system(
-          process_data(bin + " grep -n" + ic + re + " " + finds + fif)
+          process_data(bin, "grep -n" + ic + re + " " + finds + fif)
             .start_dir(tl.string())))
     {
       return false;

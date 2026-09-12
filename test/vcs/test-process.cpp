@@ -2,7 +2,7 @@
 // Name:      test-process.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -13,7 +13,7 @@
 
 void check_process(wex::process& process, const std::string& text)
 {
-  REQUIRE(process.system(wex::process_data("echo %LINES")) == 0);
+  REQUIRE(process.system(wex::process_data("echo", "%LINES")) == 0);
   CAPTURE(text);
   CAPTURE(process.std_out());
   REQUIRE(!process.std_out().contains("%LINES"));
@@ -81,7 +81,7 @@ TEST_CASE("wex::process")
   {
     SECTION("exe")
     {
-      REQUIRE(process.system(wex::process_data("ls -l")) == 0);
+      REQUIRE(process.system(wex::process_data("ls", "-l")) == 0);
       REQUIRE(!process.write("hello world"));
       REQUIRE(!process.std_out().empty());
       REQUIRE(process.std_err().empty());
@@ -92,14 +92,14 @@ TEST_CASE("wex::process")
 
     SECTION("repeat")
     {
-      REQUIRE(process.system(wex::process_data("ls -l")) == 0);
+      REQUIRE(process.system(wex::process_data("ls", "-l")) == 0);
       REQUIRE(!process.is_running());
       REQUIRE(!process.std_out().empty());
     }
 
     SECTION("working directory")
     {
-      REQUIRE(process.system(wex::process_data("ls -l").start_dir("/")) == 0);
+      REQUIRE(process.system(wex::process_data("ls", "-l").start_dir("/")) == 0);
       REQUIRE(!process.std_out().empty());
       REQUIRE(wxGetCwd().Contains("data"));
     }
@@ -117,7 +117,7 @@ TEST_CASE("wex::process")
 
     SECTION("working directory")
     {
-      REQUIRE(process.system(wex::process_data("ls -l").start_dir("/")) == 0);
+      REQUIRE(process.system(wex::process_data("ls", "-l").start_dir("/")) == 0);
       wex::path::current(cwd.original());
     }
   }
@@ -130,7 +130,7 @@ TEST_CASE("wex::process-macro", "[.]")
 
   if (process.get_shell() != nullptr)
   {
-    REQUIRE(process.system(wex::process_data("ls -l")) == 0);
+    REQUIRE(process.system(wex::process_data("ls", "-l")) == 0);
     process.show_output();
     process.get_shell()->SetFocus();
     process.get_shell()->DocumentEnd();

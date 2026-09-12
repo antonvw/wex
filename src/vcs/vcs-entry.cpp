@@ -175,7 +175,7 @@ int wex::vcs_entry::execute(
   }
 
   return process::system(process_data(
-                           bin() + " " + prefix + get_command().get_command() +
+                           bin(), prefix + get_command().get_command() +
                            " " + subcommand + flags + comment + my_args)
                            .start_dir(wd));
 }
@@ -188,7 +188,7 @@ const std::string wex::vcs_entry::get_branch(const std::string& wd) const
     process p;
     name() == "git" &&
     p.system(
-      process_data(bin() + " rev-parse --abbrev-ref HEAD").start_dir(wd)) == 0)
+      process_data(bin(), "rev-parse --abbrev-ref HEAD").start_dir(wd)) == 0)
   {
     return p.std_out();
   }
@@ -224,7 +224,7 @@ const std::string wex::vcs_entry::get_toplevel() const
 
   if (
     process p; name() == "git" && p.system(process_data(
-                                    bin() + " rev-parse --show-toplevel")) == 0)
+      bin(), "rev-parse --show-toplevel")) == 0)
   {
     return boost::algorithm::trim_copy(p.std_out());
   }
@@ -304,25 +304,5 @@ void wex::vcs_entry::show_output(const std::string& caption) const
 
 int wex::vcs_entry::system(const process_data& data)
 {
-  std::string args;
-
-  if (!data.args_str().empty())
-  {
-    args = data.args_str();
-  }
-  else
-  {
-    std::istringstream cmd(data.exe());
-    args = cmd.str();
-    std::string word;
-    cmd >> word;
-
-    if (const vcs_command& vc(find(word)); !vc.get_command().empty())
-    {
-      args += " " + vc.flags();
-    }
-  }
-
-  return process::system(
-    process_data(bin() + " " + args).start_dir(data.start_dir()));
+  return process::system(process_data(bin(), data.args_str()).start_dir(data.start_dir()));
 }
