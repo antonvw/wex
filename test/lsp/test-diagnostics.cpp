@@ -14,8 +14,10 @@ TEST_CASE("wex::lsp::diagnostics")
 
   SECTION("add_and_get")
   {
-    wex::diagnostic_item d(wex::range_item(), "Error: undeclared variable");
-    d.severity = wex::severity_t::ERRORS;
+    wex::diagnostic_item d(
+      wex::range_item(),
+      "Error: undeclared variable",
+      wex::severity_t::ERRORS);
 
     diags.add("file:///test.cpp", d);
 
@@ -110,15 +112,16 @@ TEST_CASE("wex::lsp::diagnostics")
 
   SECTION("severity_levels")
   {
-    wex::diagnostic_item d_error(wex::range_item(), "This is an error"),
-      d_warning(wex::range_item(), "This is a warning"),
+    wex::diagnostic_item d_error(
+      wex::range_item(),
+      "This is an error",
+      wex::severity_t::ERRORS),
+      d_warning(
+        wex::range_item(),
+        "This is a warning",
+        wex::severity_t::WARNING),
       d_info(wex::range_item(), "This is info"),
-      d_hint(wex::range_item(), "This is a hint");
-
-    d_error.severity   = wex::severity_t::ERRORS;
-    d_warning.severity = wex::severity_t::WARNING;
-    d_info.severity    = wex::severity_t::INFO;
-    d_hint.severity    = wex::severity_t::HINT;
+      d_hint(wex::range_item(), "This is a hint", wex::severity_t::HINT);
 
     diags.add("file:///test.cpp", d_error);
     diags.add("file:///test.cpp", d_warning);

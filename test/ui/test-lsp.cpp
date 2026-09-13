@@ -67,7 +67,8 @@ TEST_CASE("wex::lsp")
 
   SECTION("completion_item")
   {
-    wex::completion_item item;
+    wex::completion_item item(wex::position_item(0, 0), boost::json::object());
+
     REQUIRE(item.pos.line == 0);
     REQUIRE(item.pos.character == 0);
   }

@@ -31,6 +31,22 @@ json_to_string(const boost::json::value& val, const std::string& key)
   return std::string();
 }
 
+completion_item::completion_item(
+  const position_item&       p,
+  const boost::json::object& obj)
+  : pos(p)
+{
+  if (!obj.empty())
+  {
+    elements.reserve(obj.at("items").as_array().size());
+
+    for (const auto& item : obj.at("items").as_array())
+    {
+      elements.emplace_back(item.as_object());
+    }
+  }
+}
+
 completion_item_element::completion_item_element(std::string text)
   : insert_text(std::move(text))
 {
@@ -39,12 +55,8 @@ completion_item_element::completion_item_element(std::string text)
 completion_item_element::completion_item_element(const boost::json::object& obj)
   : insert_text(boost::algorithm::trim_copy(json_to_string(obj, "insertText")))
   , detail(json_to_string(obj, "detail"))
+  , kind(obj.contains("kind") ? obj.at("kind").as_int64() : 0)
 {
-  if (obj.contains("kind"))
-  {
-    kind = obj.at("kind").as_int64();
-  }
-
   if (obj.contains("documentation"))
   {
     // The documentation is an array, not yet handled
@@ -67,9 +79,13 @@ definition_or_implementation_item::definition_or_implementation_item(
 {
 }
 
-diagnostic_item::diagnostic_item(const range_item& r, std::string msg)
+diagnostic_item::diagnostic_item(
+  const range_item& r,
+  std::string       msg,
+  severity_t        s)
   : range(r)
   , message(std::move(msg))
+  , severity(s)
 {
 }
 
@@ -139,6 +155,12 @@ position_item::position_item(wxStyledTextCtrl* stc)
 {
 }
 
+position_item::position_item(const boost::json::object& obj)
+  : line(obj.at("line").as_int64())
+  , character(obj.at("character").as_int64())
+{
+}
+
 boost::json::object position_item::json_object() const
 {
   boost::json::object obj;
@@ -191,12 +213,10 @@ bool range_item::set(const boost::json::object& obj)
     return false;
   }
 
-  auto ro = obj.at("range");
+  const auto ro = obj.at("range");
 
-  start.line      = ro.at("start").at("line").as_int64();
-  start.character = ro.at("start").at("character").as_int64();
-  end.line        = ro.at("end").at("line").as_int64();
-  end.character   = ro.at("end").at("character").as_int64();
+  start = position_item(ro.at("start").as_object());
+  end   = position_item(ro.at("end").as_object());
 
   return true;
 }
@@ -223,13 +243,12 @@ show_message_item::show_message_item(
 show_message_item::show_message_item(
   const boost::json::object& obj,
   bool                       is_show_item)
-  : type(show_message_item::INFO)
+  : type(
+      obj.contains("type") ?
+        static_cast<show_message_item::message_t>(obj.at("type").as_int64()) :
+        show_message_item::INFO)
   , is_show(is_show_item)
   , message(json_to_string(obj, "message"))
 {
-  if (obj.contains("type"))
-  {
-    type = static_cast<show_message_item::message_t>(obj.at("type").as_int64());
-  }
 }
 } // namespace wex
