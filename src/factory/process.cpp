@@ -101,8 +101,10 @@ int wex::factory::process::system(const wex::process_data& data)
     std::vector<std::string> plist({data.exe_path()});
     std::ranges::copy(data.args(), back_inserter(plist));
 
-    auto obuf =
-      subprocess::check_output(plist, subprocess::cwd(std::wstring(data.start_dir().begin(), data.start_dir().end())));
+    auto obuf = subprocess::check_output(
+      plist,
+      subprocess::cwd(
+        std::wstring(data.start_dir().begin(), data.start_dir().end())));
     m_stdout = obuf.buf.data();
     log::debug("system") << data.log();
     return 0;
