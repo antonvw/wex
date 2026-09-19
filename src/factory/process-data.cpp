@@ -51,6 +51,11 @@ wex::process_data& wex::process_data::exe(const std::string& rhs)
   return *this;
 }
 
+const std::string wex::process_data::exe_args() const
+{
+  return m_exe + (!m_args.empty() ? " " + m_args : std::string());
+}
+
 const std::string wex::process_data::exe_path() const
 {
   const auto& p(path(find_before(m_exe, " ")));

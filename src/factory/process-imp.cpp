@@ -115,7 +115,7 @@ void wex::factory::process_imp::boost_async_system(process* p)
     << p->data().exe() << "wd:" << p->data().start_dir();
 
   WEX_POST(ID_SHELL_APPEND_START, "", p->m_eh_out)
-  WEX_POST(ID_SHELL_APPEND, p->data().exe() + "\n", p->m_eh_out)
+  WEX_POST(ID_SHELL_APPEND, p->data().exe_args() + "\n", p->m_eh_out)
 }
 
 bool wex::factory::process_imp::is_running() const

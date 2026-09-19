@@ -36,6 +36,9 @@ public:
   /// Returns exe.
   const std::string& exe() const { return m_exe; }
 
+  /// Returns exe and args.
+  const std::string exe_args() const;
+
   /// Sets exe.
   process_data& exe(const std::string& rhs);
 
