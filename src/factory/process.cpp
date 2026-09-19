@@ -18,6 +18,10 @@
 
 #include "data-to-std-in.h"
 
+#ifdef __WXMSW__
+#include "subprocess.hpp"
+#endif
+
 namespace wex::factory
 {
 void read_pipe(ba::readable_pipe& pipe, std::string& text)
@@ -93,6 +97,18 @@ int wex::factory::process::system(const wex::process_data& data)
 {
   try
   {
+#ifdef __WXMSW__
+    std::vector<std::string> plist({data.exe_path()});
+    std::ranges::copy(data.args(), back_inserter(plist));
+
+    auto obuf = subprocess::check_output(
+      plist,
+      subprocess::cwd(
+        std::wstring(data.start_dir().begin(), data.start_dir().end())));
+    m_stdout = obuf.buf.data();
+    log::debug("system") << data.log();
+    return 0;
+#else
     ba::io_context    ctx;
     ba::readable_pipe op{ctx}, ep{ctx};
     data_to_std_in    data_std_in(data);
@@ -137,6 +153,7 @@ int wex::factory::process::system(const wex::process_data& data)
     const int ec = p->exit_code();
     delete p;
     return ec;
+#endif
   }
   catch (std::exception& e)
   {
