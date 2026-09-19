@@ -102,11 +102,11 @@ int wex::factory::process::system(const wex::process_data& data)
     std::ranges::copy(data.args(), back_inserter(plist));
 
     auto obuf =
-      subprocess::check_output(plist, subprocess::cwd(data.start_dir()));
+      subprocess::check_output(plist, subprocess::cwd(std::wstring(data.start_dir().begin(), data.start_dir().end())));
     m_stdout = obuf.buf.data();
     log::debug("system") << data.log();
+    return 0;
 #else
-#endif
     ba::io_context    ctx;
     ba::readable_pipe op{ctx}, ep{ctx};
     data_to_std_in    data_std_in(data);
@@ -151,6 +151,7 @@ int wex::factory::process::system(const wex::process_data& data)
     const int ec = p->exit_code();
     delete p;
     return ec;
+#endif
   }
   catch (std::exception& e)
   {
