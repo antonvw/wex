@@ -33,7 +33,7 @@ class stc;
 
 /// Collection of all lexers.
 /// The lexers are loaded from wex-lexers.xml, this is done
-/// automatically during the first get call.
+/// automatically during the first get call (unless you unset is_initial_load).
 class lexers
 {
 public:
@@ -48,6 +48,7 @@ public:
   static lexers* get(bool create_on_demand = true);
 
   /// Sets the initial loading of document.
+  /// Default the document is initially loaded.
   static void is_initial_load(bool load) { m_is_initial_load = load; };
 
   /// Sets the object as the current one, returns the pointer
@@ -77,12 +78,12 @@ public:
     const std::string& lexer = "global") const;
 
   /// Applies margin text style to stc line.
-  /// If text is supplied also sets margin text.
   void apply_margin_text_style(
-    /// stc component
+    /// stc component, sets margin style for line according to blame line_no
     factory::stc* stc,
-    /// blame info to use
-    const blame* info) const;
+    /// blame component to use
+    /// if blame info is present uses that to set the margin text as well.
+    const blame* blame) const;
 
   /// Clears the theme.
   void clear_theme();

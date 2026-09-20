@@ -12,7 +12,6 @@
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
-#include <wex/core/path.h>
 #include <wex/core/regex.h>
 #include <wex/factory/stc.h>
 #include <wex/syntax/blame.h>
