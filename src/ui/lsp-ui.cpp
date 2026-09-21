@@ -101,7 +101,7 @@ void set_lsp_diagnostics(syntax::stc* stc, const diagnostics_t* diagnostics)
   }
 }
 
-void set_lsp_hover(syntax::stc* stc, const hover_t* hover)
+void set_lsp_hover(wex::frame* frame, syntax::stc* stc, const hover_t* hover)
 {
   if (stc->popup_menu_is_shown())
   {
@@ -110,16 +110,13 @@ void set_lsp_hover(syntax::stc* stc, const hover_t* hover)
 
   std::string text(hover->contents.substr(1, hover->contents.size() - 2));
   boost::algorithm::replace_all(text, "\\n", "\n");
-
-  if (stc->CallTipActive())
-  {
-    stc->CallTipCancel();
-  }
-
-  stc->CallTipShow(hover->pos.to_pos(stc), text);
+  frame->calltip_show(hover->pos.to_pos(stc), text, stc);
 }
 
-void set_lsp_on_type(syntax::stc* stc, const on_type_formatting_item_t* items)
+void set_lsp_on_type(
+  wex::frame*                      frame,
+  syntax::stc*                     stc,
+  const on_type_formatting_item_t* items)
 {
   // the items should first be sorted, because the language server
   // may return them in any order

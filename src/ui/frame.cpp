@@ -448,6 +448,28 @@ bool wex::frame::browse(const wxCommandEvent& event)
   return true;
 }
 
+void wex::frame::calltip_show(
+  int                pos,
+  const std::string& text,
+  syntax::stc*       stc)
+{
+  if (stc->CallTipActive())
+  {
+    stc->CallTipCancel();
+  }
+
+  if (const auto max_size = 80; text.size() < max_size)
+  {
+    stc->CallTipShow(pos, text);
+  }
+  else
+  {
+    stc_entry_dialog_title("Information");
+    stc_entry_dialog_component()->set_text(text);
+    stc_entry_dialog_show();
+  }
+}
+
 wxPanel* wex::frame::create_ex_panel()
 {
   // An ex panel starts with small static text for : or /, then

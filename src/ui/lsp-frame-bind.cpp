@@ -32,7 +32,7 @@
       stc != nullptr)                                                          \
     {                                                                          \
       auto* item = static_cast<TYPE*>(event.GetClientData());                  \
-      FUNCTION(dynamic_cast<syntax::stc*>(stc), item);                         \
+      FUNCTION(this, dynamic_cast<syntax::stc*>(stc), item);                   \
       delete item;                                                             \
     }                                                                          \
   }

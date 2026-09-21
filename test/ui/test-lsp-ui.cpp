@@ -62,7 +62,7 @@ TEST_CASE("wex::lsp-ui")
 
   SECTION("set_lsp_hover")
   {
-    wex::set_lsp_hover(
+    wex::set_lsp_hover(frame(),
       stc,
       new wex::hover_item(wex::position_item(10, 2), "Test hover contents"));
   }
@@ -80,7 +80,7 @@ TEST_CASE("wex::lsp-ui")
         wex::range_item(wex::position_item(10, 2), wex::position_item(11, 5)),
         "abc"));
 
-    wex::set_lsp_on_type(stc, items);
+    wex::set_lsp_on_type(frame(), stc, items);
   }
 
   SECTION("set_lsp_show_message")

@@ -484,7 +484,7 @@ void wex::stc::mouse_action(wxMouseEvent& event)
         const auto annotation = AnnotationGetText(GetCurrentLine());
         !annotation.empty())
       {
-        CallTipShow(GetCurrentPos(), annotation);
+        m_frame->calltip_show(GetCurrentPos(), annotation, this);
       }
 
       m_skip = false;
