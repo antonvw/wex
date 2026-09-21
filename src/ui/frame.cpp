@@ -464,7 +464,7 @@ void wex::frame::calltip_show(
   }
   else
   {
-    stc_entry_dialog_title("Information");
+    stc_entry_dialog_title(stc->get_word_at_pos(pos) + " Information");
     stc_entry_dialog_component()->set_text(text);
     stc_entry_dialog_show();
   }
