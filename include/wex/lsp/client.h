@@ -60,6 +60,10 @@ public:
     /// this lets the server refine suggestions as the user keeps typing
     bool is_incomplete = false);
 
+  /// Requests goto declaration information.
+  /// Returns true if successful.
+  bool declaration(const wex::path& path, const position_item& pos);
+
   /// Requests goto definition information.
   /// Returns true if successful.
   bool definition(const wex::path& path, const position_item& pos);
@@ -133,6 +137,7 @@ private:
   bool definition_or_implementation(
     const wex::path&     path,
     const position_item& pos,
+    int                  id,
     const std::string&   method);
   bool initialize_prepare();
   bool write(const std::string& text, response_handler resp = nullptr);

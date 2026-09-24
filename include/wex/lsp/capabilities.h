@@ -25,6 +25,7 @@ public:
   enum
   {
     CAP_COMPLETION = 0,
+    CAP_DECLARATION,
     CAP_DEFINITION,
     CAP_FORMATTING,
     CAP_HOVER,
@@ -35,7 +36,7 @@ public:
   capabilities();
 
   /// A typedef containing capability flags.
-  using capabilities_t = std::bitset<4>;
+  using capabilities_t = std::bitset<5>;
 
   /// Returns the client capabilities.
   boost::json::object client() const;

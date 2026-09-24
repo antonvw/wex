@@ -153,15 +153,30 @@ bool client::completion(
            });
 }
 
+bool client::declaration(const wex::path& path, const position_item& pos)
+{
+  return m_capabilities.support(capabilities::CAP_DECLARATION) &&
+         definition_or_implementation(
+           path,
+           pos,
+           ID_LSP_DECLARATION,
+           "textDocument/declaration");
+}
+
 bool client::definition(const wex::path& path, const position_item& pos)
 {
   return m_capabilities.support(capabilities::CAP_DEFINITION) &&
-         definition_or_implementation(path, pos, "textDocument/definition");
+         definition_or_implementation(
+           path,
+           pos,
+           ID_LSP_DEFINITION,
+           "textDocument/definition");
 }
 
 bool client::definition_or_implementation(
   const wex::path&     path,
   const position_item& pos,
+  int                  id,
   const std::string&   method)
 {
   return write(
@@ -181,12 +196,7 @@ bool client::definition_or_implementation(
       }
       else
       {
-        queue_event(
-          m_event_handler,
-          path.uri(),
-          method == "textDocument/definition" ? ID_LSP_DEFINITION :
-                                                ID_LSP_IMPLEMENTATION,
-          definition);
+        queue_event(m_event_handler, path.uri(), id, definition);
       }
     });
 }
@@ -280,7 +290,11 @@ bool client::hover(const wex::path& path, const position_item& pos)
 
 bool client::implementation(const wex::path& path, const position_item& pos)
 {
-  return definition_or_implementation(path, pos, "textDocument/implementation");
+  return definition_or_implementation(
+    path,
+    pos,
+    ID_LSP_IMPLEMENTATION,
+    "textDocument/implementation");
 }
 
 bool client::initialize(const wex::path& root_path)

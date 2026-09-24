@@ -58,6 +58,11 @@ void wex::frame::bind_lsp()
      {LSP_HANDLE(
         definition_or_implementation_t,
         set_lsp_definition_or_implementation),
+      ID_LSP_DECLARATION},
+
+     {LSP_HANDLE(
+        definition_or_implementation_t,
+        set_lsp_definition_or_implementation),
       ID_LSP_DEFINITION},
 
      {[=, this](const wxCommandEvent& event)

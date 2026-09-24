@@ -18,6 +18,7 @@ capabilities::capabilities()
   {
     // must match the capabilities_t
     m_support_info.emplace_back("completion");
+    m_support_info.emplace_back("declaration");
     m_support_info.emplace_back("definition");
     m_support_info.emplace_back("formatting");
     m_support_info.emplace_back("hover");
@@ -47,6 +48,10 @@ boost::json::object capabilities::client() const
           {
             "valueSet": [1, 2, 3, 4, 5, 6, 7]
           }
+        },
+        "declaration":
+        {
+          "dynamicRegistration": false
         },
         "definition":
         {
@@ -154,6 +159,11 @@ bool capabilities::set(const boost::json::object& obj)
         }
       }
     }
+  }
+
+  if (obj.contains("declarationProvider"))
+  {
+    m_support.set(CAP_DECLARATION);
   }
 
   if (obj.contains("definitionProvider"))

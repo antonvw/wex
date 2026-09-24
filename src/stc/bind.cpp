@@ -446,6 +446,15 @@ void wex::stc::bind_all()
       {
         if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
         {
+          client->declaration(path(), position_item(this));
+        }
+      },
+      id::stc::lsp_declaration},
+
+     {[=, this](const wxCommandEvent& event)
+      {
+        if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
+        {
           client->definition(path(), position_item(this));
         }
       },
@@ -599,8 +608,8 @@ void wex::stc::build_popup_menu(menu& menu)
       {
         menu.append(
           {{},
-           {id::stc::lsp_definition, _("Goto Definition")},
-           {id::stc::lsp_implementation, _("Goto Implementation")}});
+           {id::stc::lsp_declaration, _("Goto Declaration")},
+           {id::stc::lsp_definition, _("Goto Definition")}});
       }
     }
   }
