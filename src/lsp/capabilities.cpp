@@ -176,6 +176,11 @@ bool capabilities::set(const boost::json::object& obj)
     m_support.set(CAP_HOVER);
   }
 
+  if (obj.contains("implemenationProvider"))
+  {
+    m_support.set(CAP_IMPLEMENTATION);
+  }
+
   if (obj.contains("documentOnTypeFormattingProvider"))
   {
     m_support.set(CAP_FORMATTING);

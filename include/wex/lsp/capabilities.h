@@ -24,11 +24,12 @@ public:
   /// Flags for capability support.
   enum
   {
-    CAP_COMPLETION = 0,
-    CAP_DECLARATION,
-    CAP_DEFINITION,
-    CAP_FORMATTING,
-    CAP_HOVER,
+    CAP_COMPLETION = 0, ///< completion capability
+    CAP_DECLARATION,    ///< declaration capability
+    CAP_DEFINITION,     ///< denifition capability
+    CAP_FORMATTING,     ///< formatting capability
+    CAP_HOVER,          ///< hover capability
+    CAP_IMPLEMENTATION, ///< implementation capability
   };
 
   /// Default constructor.
@@ -36,9 +37,9 @@ public:
   capabilities();
 
   /// A typedef containing capability flags.
-  using capabilities_t = std::bitset<5>;
+  using capabilities_t = std::bitset<6>;
 
-  /// Returns the client capabilities.
+  /// Returns the wex client capabilities.
   boost::json::object client() const;
 
   /// Logs info about this class.
@@ -47,7 +48,7 @@ public:
   /// Parses the server capabilites, and fills members.
   bool set(const boost::json::object& obj);
 
-  /// Returns true if server supports specified type.
+  /// Returns true if server supports specified capability.
   bool support(size_t cap) const;
 
   /// Returns the trigger completion characters.

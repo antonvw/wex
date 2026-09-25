@@ -290,11 +290,12 @@ bool client::hover(const wex::path& path, const position_item& pos)
 
 bool client::implementation(const wex::path& path, const position_item& pos)
 {
-  return definition_or_implementation(
-    path,
-    pos,
-    ID_LSP_IMPLEMENTATION,
-    "textDocument/implementation");
+  return m_capabilities.support(capabilities::CAP_DEFINITION) &&
+         definition_or_implementation(
+           path,
+           pos,
+           ID_LSP_IMPLEMENTATION,
+           "textDocument/implementation");
 }
 
 bool client::initialize(const wex::path& root_path)
