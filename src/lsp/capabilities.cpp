@@ -27,16 +27,29 @@ capabilities::capabilities()
   }
 }
 
-bool capabilities::append_menu(wex::menu* menu, int cap_id, int def_id) const
+bool capabilities::append_menu(
+  wex::menu*                              menu,
+  const std::vector<std::pair<int, int>>& v) const
 {
-  if (!support(cap_id))
+  bool added = false;
+
+  for (const auto& el : v)
   {
-    return false;
+    if (support(el.first))
+    {
+      if (!added)
+      {
+        menu->append({{}});
+      }
+
+      if (menu->append({{el.second, "Goto " + m_support_info[el.first]}}))
+      {
+        added = true;
+      }
+    }
   }
 
-  menu->append({{}, {def_id, "Goto " + m_support_info[cap_id]}});
-
-  return true;
+  return added;
 }
 
 boost::json::object capabilities::client() const

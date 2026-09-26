@@ -604,20 +604,14 @@ void wex::stc::build_popup_menu(menu& menu)
       {
         client->get_capabilities().append_menu(
           &menu,
-          lsp::capabilities::CAP_DEFINITION,
-          id::stc::lsp_location);
+          {{lsp::capabilities::CAP_DEFINITION, id::stc::lsp_location}});
       }
       else
       {
         client->get_capabilities().append_menu(
           &menu,
-          lsp::capabilities::CAP_DECLARATION,
-          id::stc::lsp_declaration);
-
-        client->get_capabilities().append_menu(
-          &menu,
-          lsp::capabilities::CAP_DEFINITION,
-          id::stc::lsp_definition);
+          {{lsp::capabilities::CAP_DECLARATION, id::stc::lsp_declaration},
+           {lsp::capabilities::CAP_DEFINITION, id::stc::lsp_definition}});
       }
     }
   }

@@ -11,6 +11,7 @@
 #include <boost/json.hpp>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace wex
@@ -38,16 +39,18 @@ public:
   /// Initialized the support info.
   capabilities();
 
-  /// Appends a menu entry, depending on capability for it.
+  /// Appends a menu entries, depending on capability for it.
   /// The menu text is derived from the support info, with Goto prefixed.
   /// Returns true if entry was appended.
   bool append_menu(
     /// menu to append to
     wex::menu* menu,
-    /// required capability
-    int cap_id,
-    /// event id that will be done if selected
-    int def_id) const;
+    /// vector of capabilities and event id's
+    const std::vector<std::pair<
+      /// required capability
+      int,
+      /// event id that will be done if selected
+      int>>& v) const;
 
   /// A typedef containing capability flags.
   using capabilities_t = std::bitset<6>;

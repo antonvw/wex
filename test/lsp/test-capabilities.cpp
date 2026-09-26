@@ -22,7 +22,7 @@ TEST_CASE("wex::lsp::capabilities")
     REQUIRE(cap.log().str().contains("completion"));
     auto menu = new wex::menu();
     REQUIRE(
-      !cap.append_menu(menu, wex::lsp::capabilities::CAP_DECLARATION, 10));
+      !cap.append_menu(menu, {{wex::lsp::capabilities::CAP_DECLARATION, 10}}));
   }
 
   SECTION("set")
@@ -78,6 +78,7 @@ TEST_CASE("wex::lsp::capabilities")
     REQUIRE(cap.support(wex::lsp::capabilities::CAP_IMPLEMENTATION));
 
     auto menu = new wex::menu();
-    REQUIRE(cap.append_menu(menu, wex::lsp::capabilities::CAP_DECLARATION, 10));
+    REQUIRE(
+      cap.append_menu(menu, {{wex::lsp::capabilities::CAP_DECLARATION, 10}}));
   }
 }
