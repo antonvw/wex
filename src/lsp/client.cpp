@@ -323,9 +323,15 @@ bool client::initialize(const wex::path& root_path)
       {
         if (msg.result.contains("capabilities"))
         {
-          m_capabilities.set(msg.result.at("capabilities").as_object());
-          log::info("lsp::capabilities")
-            << m_lexer.lsp_server() << m_capabilities;
+          if (m_capabilities.set(msg.result.at("capabilities").as_object()))
+          {
+            log::info("lsp::capabilities")
+              << m_lexer.lsp_server() << m_capabilities;
+          }
+          else
+          {
+            log("no capabilities supported on") << m_lexer.lsp_server();
+          }
         }
       }) ||
     !write(m_rpc.encode_notification("initialized")))

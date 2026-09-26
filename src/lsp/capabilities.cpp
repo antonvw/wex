@@ -22,6 +22,7 @@ capabilities::capabilities()
     m_support_info.emplace_back("definition");
     m_support_info.emplace_back("formatting");
     m_support_info.emplace_back("hover");
+    m_support_info.emplace_back("implementation");
   }
 }
 
@@ -70,6 +71,10 @@ boost::json::object capabilities::client() const
         {
           "dynamicRegistration": false,
           "contentFormat": ["plaintext"]
+        },
+        "implementation":
+        {
+          "dynamicRegistration": false
         },
         "synchronization":
         {
@@ -194,7 +199,7 @@ bool capabilities::set(const boost::json::object& obj)
     }
   }
 
-  return true;
+  return !m_support.none();
 }
 
 bool capabilities::support(size_t cap) const
