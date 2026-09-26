@@ -600,26 +600,24 @@ void wex::stc::build_popup_menu(menu& menu)
     if (
       const auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
     {
-      if (
-        sel.empty() && !lnk.empty() &&
-        client->get_capabilities().support(lsp::capabilities::CAP_DEFINITION))
+      if (sel.empty() && !lnk.empty())
       {
-        menu.append({{}, {id::stc::lsp_location, _("Goto File")}});
+        client->get_capabilities().append_menu(
+          &menu,
+          lsp::capabilities::CAP_DEFINITION,
+          id::stc::lsp_location);
       }
       else
       {
-        if (
-          client->get_capabilities().support(
-            lsp::capabilities::CAP_DECLARATION))
-        {
-          menu.append({{}, {id::stc::lsp_declaration, _("Goto Declaration")}});
-        }
+        client->get_capabilities().append_menu(
+          &menu,
+          lsp::capabilities::CAP_DECLARATION,
+          id::stc::lsp_declaration);
 
-        if (
-          client->get_capabilities().support(lsp::capabilities::CAP_DEFINITION))
-        {
-          menu.append({{id::stc::lsp_definition, _("Goto Definition")}});
-        }
+        client->get_capabilities().append_menu(
+          &menu,
+          lsp::capabilities::CAP_DEFINITION,
+          id::stc::lsp_definition);
       }
     }
   }

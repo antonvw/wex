@@ -7,6 +7,7 @@
 
 #include <wex/core/log.h>
 #include <wex/lsp/capabilities.h>
+#include <wex/ui/menu.h>
 
 namespace wex
 {
@@ -24,6 +25,18 @@ capabilities::capabilities()
     m_support_info.emplace_back("hover");
     m_support_info.emplace_back("implementation");
   }
+}
+
+bool capabilities::append_menu(wex::menu* menu, int cap_id, int def_id) const
+{
+  if (!support(cap_id))
+  {
+    return false;
+  }
+
+  menu->append({{}, {def_id, "Goto " + m_support_info[cap_id]}});
+
+  return true;
 }
 
 boost::json::object capabilities::client() const
@@ -181,7 +194,7 @@ bool capabilities::set(const boost::json::object& obj)
     m_support.set(CAP_HOVER);
   }
 
-  if (obj.contains("implemenationProvider"))
+  if (obj.contains("implementationProvider"))
   {
     m_support.set(CAP_IMPLEMENTATION);
   }
