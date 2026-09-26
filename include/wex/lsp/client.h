@@ -54,7 +54,7 @@ public:
     /// the trigger, such as:
     /// - "."  object memmbers
     /// - "::" class members
-    /// - "->" pinter members
+    /// - "->" printer members
     const std::string& trigger = std::string(),
     /// previous completion list was marked isIncomplete: true
     /// this lets the server refine suggestions as the user keeps typing

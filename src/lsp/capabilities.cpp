@@ -13,19 +13,14 @@ namespace wex
 {
 namespace lsp
 {
-capabilities::capabilities()
-{
-  if (m_support_info.empty())
-  {
-    // must match the capabilities_t
-    m_support_info.emplace_back("completion");
-    m_support_info.emplace_back("declaration");
-    m_support_info.emplace_back("definition");
-    m_support_info.emplace_back("formatting");
-    m_support_info.emplace_back("hover");
-    m_support_info.emplace_back("implementation");
-  }
-}
+std::vector<std::string> capabilities::m_support_info =
+  // must match the capabilities_t
+  {"completion",
+   "declaration",
+   "definition",
+   "formatting",
+   "hover",
+   "implementation"};
 
 bool capabilities::append_menu(
   wex::menu*                              menu,

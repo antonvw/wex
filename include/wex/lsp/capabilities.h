@@ -29,15 +29,11 @@ public:
   {
     CAP_COMPLETION = 0, ///< completion capability
     CAP_DECLARATION,    ///< declaration capability
-    CAP_DEFINITION,     ///< denifition capability
+    CAP_DEFINITION,     ///< definition capability
     CAP_FORMATTING,     ///< formatting capability
     CAP_HOVER,          ///< hover capability
     CAP_IMPLEMENTATION, ///< implementation capability
   };
-
-  /// Default constructor.
-  /// Initialized the support info.
-  capabilities();
 
   /// Appends a menu entries, depending on capability for it.
   /// The menu text is derived from the support info, with Goto prefixed.
@@ -61,7 +57,7 @@ public:
   /// Logs info about this class.
   std::stringstream log() const;
 
-  /// Parses the server capabilites, and fills members.
+  /// Parses the server capabilities, and fills members.
   bool set(const boost::json::object& obj);
 
   /// Returns true if server supports specified capability.
@@ -86,8 +82,8 @@ public:
   }
 
 private:
-  capabilities_t                         m_support{0};
-  static inline std::vector<std::string> m_support_info;
+  capabilities_t                  m_support{0};
+  static std::vector<std::string> m_support_info;
 
   std::vector<std::string> m_trigger_completion_characters;
   std::vector<std::string> m_trigger_signature_characters;

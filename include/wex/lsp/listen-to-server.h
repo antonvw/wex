@@ -21,7 +21,7 @@ class client;
 class listen_to_server
 {
 public:
-  /// Contructor, specify client, starts listening.
+  /// Constructor, specify client, starts listening.
   listen_to_server(client* cl);
 
   /// Request to stop listening.
