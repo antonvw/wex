@@ -219,6 +219,11 @@ bool client::did_change(
 
 bool client::did_close(const wex::path& path)
 {
+  if (!path.file_exists())
+  {
+    return false;
+  }
+
   // LSP Methods Implementation
   // send textDocument/didClose notification
   boost::json::object params, text_doc;
@@ -264,6 +269,7 @@ bool client::hover(const wex::path& path, const position_item& pos)
   // LSP Methods Implementation
   // send textDocument/hover request
   return m_capabilities.support(capabilities::CAP_HOVER) &&
+         path.file_exists() &&
          write(
            m_rpc.encode_request("textDocument/hover", make_object(path, pos)),
            [=, this](const json_rpc_message& msg)

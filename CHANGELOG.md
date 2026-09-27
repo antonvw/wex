@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [27.04] - 2027-04 [Unreleased]
 
+### Added
+
+- shows a statusbar message when current file is not under version control
+
+### Changed
+
+- large lsp annotations now use dialog for presentation
+
+### Fixed
+
+- fixed lsp Goto Implementation
+
 ## [26.10] - 2026-09-27
 
 ### Added
