@@ -607,9 +607,6 @@ bool wex::del::frame::process_async_system(const process_data& data)
 
   m_skip_set_current_path = (data.exe() == "bash");
 
-  log::trace("process_async_system")
-    << data.exe() << "skip" << m_skip_set_current_path;
-
   return m_process->async_system(data);
 }
 
@@ -783,6 +780,10 @@ void wex::del::frame::statusbar_clicked(const std::string& pane)
         if (menu->append({{path(stc->path().parent_path()), this}}))
         {
           PopupMenu(menu);
+        }
+        else
+        {
+          log::status(stc->path().string() + " not part of supported VCS");
         }
       }
       else if (menu->append({{wex::path(), this}}))
