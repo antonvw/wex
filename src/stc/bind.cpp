@@ -598,7 +598,8 @@ void wex::stc::build_popup_menu(menu& menu)
     !sel.empty() || (!lnk.empty() && !added_link))
   {
     if (
-      const auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
+      const auto* client = m_frame->lsp_clients_find(path());
+      client != nullptr && path().file_exists())
     {
       if (sel.empty() && !lnk.empty())
       {
