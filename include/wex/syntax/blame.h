@@ -2,16 +2,16 @@
 // Name:      blame.h
 // Purpose:   Declaration of class wex::blame
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2019-2025 Anton van Wezenbeek
+// Copyright: (c) 2019-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <pugixml.hpp>
+#include <wex/core/path.h>
 
 namespace wex
 {
-class path;
 class regex;
 
 namespace factory

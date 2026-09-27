@@ -2,7 +2,7 @@
 // Name:      shell.h
 // Purpose:   Declaration of class wex::shell
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -38,9 +38,8 @@ public:
     /// data
     const data::stc& data = data::stc(),
     /// Give the command used to end a line.
-    /// The default uses the eol.
     std::string prompt = ">",
-    /// The command used to end a line.
+    /// The command used to end a line, default (empty) uses eol.
     const std::string& command_end = std::string());
 
   /// Destructor, keeps the commands in the config, if required.
