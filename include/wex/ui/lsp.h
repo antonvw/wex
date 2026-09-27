@@ -41,6 +41,9 @@ struct position_item
   /// Constructs a position_item from current position on a wxStyledTextCtrl.
   position_item(wxStyledTextCtrl* stc);
 
+  /// Constructor from a json object.
+  position_item(const boost::json::object& obj);
+
   /// Returns a JSON object representation of the position_item.
   boost::json::object json_object() const;
 
@@ -96,7 +99,7 @@ struct completion_item_element
   /// as received from the language server.
   completion_item_element(const boost::json::object& obj);
 
-  int kind{0}; // Completion item kind (e.g., function, variable, etc.)
+  const int kind{0}; // Completion item kind (e.g., function, variable, etc.)
 
   const std::string detail, documentation, insert_text;
 };
@@ -104,7 +107,13 @@ struct completion_item_element
 /// Represents a completion item.
 struct completion_item
 {
-  position_item pos;
+  /// Constructor, taking a position item, and a JSON
+  /// object as received from the language server.
+  completion_item(const position_item& p, const boost::json::object& obj);
+
+  // the pos is not received from the server, might not be
+  // necessary
+  const position_item pos;
 
   std::vector<completion_item_element> elements;
 };
@@ -129,10 +138,11 @@ struct definition_or_implementation_item
 /// Represents a single diagnostic item(error, warning, etc.).
 struct diagnostic_item
 {
-  /// Default constructor, taking a range, and a message.
+  /// Default constructor, taking a range, and a message and severity.
   diagnostic_item(
-    const range_item& r   = range_item(),
-    std::string       msg = std::string());
+    const range_item& r    = range_item(),
+    std::string       msg  = std::string(),
+    severity_t        type = severity_t::INFO);
 
   /// Constructor from a JSON object,
   /// as received from the language server.
@@ -141,7 +151,7 @@ struct diagnostic_item
   const range_item range;
 
   /// Severity of the diagnostic
-  severity_t severity{severity_t::INFO};
+  const severity_t severity{severity_t::INFO};
 
   const std::string code, message, source;
 };
@@ -212,9 +222,9 @@ struct show_message_item
   /// as received from the language server.
   show_message_item(const boost::json::object& obj, bool is_show_item = true);
 
-  message_t   type;
-  std::string message;
-  const bool  is_show{true};
+  const message_t   type;
+  const std::string message;
+  const bool        is_show{true};
 };
 
 /// Convert a json value that has a key with a string value to a string.

@@ -134,21 +134,11 @@ bool client::completion(
            {
              if (msg.result.contains("items"))
              {
-               auto* completion = new completions_t;
-               completion->pos  = pos;
-               completion->elements.reserve(
-                 msg.result.at("items").as_array().size());
-
-               for (const auto& item : msg.result.at("items").as_array())
-               {
-                 completion->elements.emplace_back(item.as_object());
-               }
-
                queue_event(
                  m_event_handler,
                  path.uri(),
                  ID_LSP_CODE_COMPLETION,
-                 completion);
+                 new completions_t(pos, msg.result));
              }
            });
 }

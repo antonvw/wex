@@ -28,7 +28,8 @@ TEST_CASE("wex::lsp-ui")
 
   SECTION("set_lsp_completions")
   {
-    auto* items = new wex::completions_t;
+    auto* items = new wex::completions_t(
+      wex::completion_item(wex::position_item(0, 0), boost::json::object()));
 
     wex::completion_item_element item("label");
     items->elements.emplace_back(item);
