@@ -7,21 +7,44 @@
 
 #include <wex/core/log.h>
 #include <wex/lsp/capabilities.h>
+#include <wex/ui/menu.h>
 
 namespace wex
 {
 namespace lsp
 {
-capabilities::capabilities()
+std::vector<std::string> capabilities::m_support_info =
+  // must match the capabilities_t
+  {"completion",
+   "declaration",
+   "definition",
+   "formatting",
+   "hover",
+   "implementation"};
+
+bool capabilities::append_menu(
+  wex::menu*                              menu,
+  const std::vector<std::pair<int, int>>& v) const
 {
-  if (m_support_info.empty())
+  bool added = false;
+
+  for (const auto& el : v)
   {
-    // must match the capabilities_t
-    m_support_info.emplace_back("completion");
-    m_support_info.emplace_back("definition");
-    m_support_info.emplace_back("formatting");
-    m_support_info.emplace_back("hover");
+    if (support(el.first))
+    {
+      if (!added)
+      {
+        menu->append({{}});
+      }
+
+      if (menu->append({{el.second, "Goto " + m_support_info[el.first]}}))
+      {
+        added = true;
+      }
+    }
   }
+
+  return added;
 }
 
 boost::json::object capabilities::client() const
@@ -48,6 +71,10 @@ boost::json::object capabilities::client() const
             "valueSet": [1, 2, 3, 4, 5, 6, 7]
           }
         },
+        "declaration":
+        {
+          "dynamicRegistration": false
+        },
         "definition":
         {
           "dynamicRegistration": false
@@ -65,6 +92,10 @@ boost::json::object capabilities::client() const
         {
           "dynamicRegistration": false,
           "contentFormat": ["plaintext"]
+        },
+        "implementation":
+        {
+          "dynamicRegistration": false
         },
         "synchronization":
         {
@@ -156,6 +187,11 @@ bool capabilities::set(const boost::json::object& obj)
     }
   }
 
+  if (obj.contains("declarationProvider"))
+  {
+    m_support.set(CAP_DECLARATION);
+  }
+
   if (obj.contains("definitionProvider"))
   {
     m_support.set(CAP_DEFINITION);
@@ -164,6 +200,11 @@ bool capabilities::set(const boost::json::object& obj)
   if (obj.contains("hoverProvider"))
   {
     m_support.set(CAP_HOVER);
+  }
+
+  if (obj.contains("implementationProvider"))
+  {
+    m_support.set(CAP_IMPLEMENTATION);
   }
 
   if (obj.contains("documentOnTypeFormattingProvider"))
@@ -179,7 +220,7 @@ bool capabilities::set(const boost::json::object& obj)
     }
   }
 
-  return true;
+  return !m_support.none();
 }
 
 bool capabilities::support(size_t cap) const

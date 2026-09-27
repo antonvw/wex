@@ -27,6 +27,7 @@ enum stc
   hex_dec_calltip,
   lowercase,
   // range
+  lsp_declaration,
   lsp_definition,
   lsp_implementation,
   lsp_location,

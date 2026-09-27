@@ -75,11 +75,11 @@ public:
   };
 
   /// Panes vector with a pair of panes
-  typedef std::vector<std::pair<wxWindow*, wxAuiPaneInfo>> panes_t;
+  using panes_t = std::vector<std::pair<wxWindow*, wxAuiPaneInfo>>;
 
   /// Toggled panes type.
-  typedef std::vector<std::pair<std::pair<std::string, std::string>, int>>
-    panes_toggle_t;
+  using panes_toggle_t =
+    std::vector<std::pair<std::pair<std::string, std::string>, int>>;
 
   /// Default constructor, registers the aui manager, and creates the bars.
   frame(
@@ -303,6 +303,10 @@ public:
 
   /// Handles forward and backward click.
   bool browse(const wxCommandEvent& event);
+
+  /// Shows specified text as calltip on  stc or in a dialog,
+  /// if size is too big for a simple calltip.
+  void calltip_show(int pos, const std::string& text, syntax::stc* stc);
 
   /// Returns current debugger.
   const wex::debug_entry* debug_entry() const { return m_debug_entry; }

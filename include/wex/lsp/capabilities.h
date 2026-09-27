@@ -11,10 +11,13 @@
 #include <boost/json.hpp>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace wex
 {
+class menu;
+
 namespace lsp
 {
 /// Server capabilities tracking.
@@ -24,29 +27,40 @@ public:
   /// Flags for capability support.
   enum
   {
-    CAP_COMPLETION = 0,
-    CAP_DEFINITION,
-    CAP_FORMATTING,
-    CAP_HOVER,
+    CAP_COMPLETION = 0, ///< completion capability
+    CAP_DECLARATION,    ///< declaration capability
+    CAP_DEFINITION,     ///< definition capability
+    CAP_FORMATTING,     ///< formatting capability
+    CAP_HOVER,          ///< hover capability
+    CAP_IMPLEMENTATION, ///< implementation capability
   };
 
-  /// Default constructor.
-  /// Initialized the support info.
-  capabilities();
+  /// Appends a menu entries, depending on capability for it.
+  /// The menu text is derived from the support info, with Goto prefixed.
+  /// Returns true if entry was appended.
+  bool append_menu(
+    /// menu to append to
+    wex::menu* menu,
+    /// vector of capabilities and event id's
+    const std::vector<std::pair<
+      /// required capability
+      int,
+      /// event id that will be done if selected
+      int>>& v) const;
 
   /// A typedef containing capability flags.
-  using capabilities_t = std::bitset<4>;
+  using capabilities_t = std::bitset<6>;
 
-  /// Returns the client capabilities.
+  /// Returns the wex client capabilities.
   boost::json::object client() const;
 
   /// Logs info about this class.
   std::stringstream log() const;
 
-  /// Parses the server capabilites, and fills members.
+  /// Parses the server capabilities, and fills members.
   bool set(const boost::json::object& obj);
 
-  /// Returns true if server supports specified type.
+  /// Returns true if server supports specified capability.
   bool support(size_t cap) const;
 
   /// Returns the trigger completion characters.
@@ -68,8 +82,8 @@ public:
   }
 
 private:
-  capabilities_t                         m_support{0};
-  static inline std::vector<std::string> m_support_info;
+  capabilities_t                  m_support{0};
+  static std::vector<std::string> m_support_info;
 
   std::vector<std::string> m_trigger_completion_characters;
   std::vector<std::string> m_trigger_signature_characters;

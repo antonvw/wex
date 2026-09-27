@@ -39,6 +39,8 @@ void set_lsp_diagnostics(
 
 /// Sets lsp hover.
 void set_lsp_hover(
+  /// the frame to open files in
+  wex::frame* frame,
   /// the stc to set hover on
   syntax::stc* stc,
   /// the hover to set
@@ -46,6 +48,8 @@ void set_lsp_hover(
 
 /// Sets lsp on type formatting.
 void set_lsp_on_type(
+  /// the frame to open files in
+  wex::frame* frame,
   /// the stc to set on type formatting on
   syntax::stc* stc,
   /// the on type formatting items to set

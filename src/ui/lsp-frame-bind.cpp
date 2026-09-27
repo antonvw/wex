@@ -32,7 +32,7 @@
       stc != nullptr)                                                          \
     {                                                                          \
       auto* item = static_cast<TYPE*>(event.GetClientData());                  \
-      FUNCTION(dynamic_cast<syntax::stc*>(stc), item);                         \
+      FUNCTION(this, dynamic_cast<syntax::stc*>(stc), item);                   \
       delete item;                                                             \
     }                                                                          \
   }
@@ -54,6 +54,11 @@ void wex::frame::bind_lsp()
         delete item;
       },
       ID_LSP_CODE_COMPLETION},
+
+     {LSP_HANDLE(
+        definition_or_implementation_t,
+        set_lsp_definition_or_implementation),
+      ID_LSP_DECLARATION},
 
      {LSP_HANDLE(
         definition_or_implementation_t,
