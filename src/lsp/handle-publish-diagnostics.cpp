@@ -5,6 +5,7 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/log.h>
 #include <wex/lsp/json-rpc.h>
 #include <wex/lsp/util.h>
 #include <wex/ui/defs.h>
