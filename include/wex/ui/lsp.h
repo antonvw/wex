@@ -156,6 +156,24 @@ struct diagnostic_item
   const std::string code, message, source;
 };
 
+/// Represents a code action item (quick fix).
+struct code_action_item
+{
+  /// Default constructor, taking a title and kind.
+  code_action_item(
+    std::string t = std::string(),
+    std::string k = std::string());
+
+  /// Constructor from a JSON object,
+  /// as received from the language server.
+  code_action_item(const boost::json::object& obj);
+
+  const std::string title, kind;
+
+  /// The actual edit or command to apply the fix.
+  const boost::json::object edit, command;
+};
+
 /// Represents hover information.
 struct hover_item
 {
@@ -245,6 +263,9 @@ using definition_or_implementation_t =
 
 /// Type alias for a collection of diagnostics returned by the language server.
 using diagnostics_t = std::vector<diagnostic_item>;
+
+/// Type alias for a collection of code actions returned by the language server.
+using code_actions_t = std::vector<code_action_item>;
 
 /// Type alias for a hover item returned by the language server.
 using hover_t = struct hover_item;

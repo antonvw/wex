@@ -104,6 +104,80 @@ client::client(lexer lexer, wxEvtHandler* event_handler)
 {
 }
 
+bool client::code_action(const wex::path& path, const range_item& range)
+{
+  if (path.empty())
+  {
+    return false;
+  }
+
+  boost::json::object params, text_doc, context;
+  text_doc["uri"] = path.uri();
+
+  params["textDocument"] = text_doc;
+  params["range"]        = range.json_object();
+
+  boost::json::array diagnostics;
+
+  if (m_diagnostics.has(path.uri()))
+  {
+    for (const auto& diagnostic : m_diagnostics.get(path.uri()))
+    {
+      const bool in_range =
+        diagnostic.range.start.line >= range.start.line &&
+        diagnostic.range.end.line <= range.end.line;
+
+      if (in_range)
+      {
+        boost::json::object diag;
+        diag["range"]   = diagnostic.range.json_object();
+        diag["message"] = diagnostic.message;
+        diag["severity"] = static_cast<int>(diagnostic.severity);
+
+        if (!diagnostic.code.empty())
+        {
+          diag["code"] = diagnostic.code;
+        }
+
+        if (!diagnostic.source.empty())
+        {
+          diag["source"] = diagnostic.source;
+        }
+
+        diagnostics.emplace_back(diag);
+      }
+    }
+  }
+
+  context["diagnostics"] = diagnostics;
+
+  boost::json::array only;
+  only.emplace_back("quickfix");
+  context["only"] = only;
+  params["context"] = context;
+
+  return write(
+    m_rpc.encode_request("textDocument/codeAction", params),
+    [=, this](const json_rpc_message& msg)
+    {
+      auto* actions = new code_actions_t;
+
+      for (const auto& item : msg.result_array)
+      {
+        actions->emplace_back(item.as_object());
+      }
+
+      if (actions->empty())
+      {
+        delete actions;
+      }
+      else
+      {
+        queue_event(m_event_handler, path.uri(), ID_LSP_CODE_ACTION, actions);
+      }
+    });
+}
+
 bool client::completion(
   const wex::path&     path,
   const position_item& pos,

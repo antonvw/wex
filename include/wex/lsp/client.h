@@ -44,6 +44,10 @@ public:
   /// Destructor.
   ~client() = default;
 
+  /// Requests code actions (quick fixes) for diagnostics in range.
+  /// Returns true if successful.
+  bool code_action(const wex::path& path, const range_item& range);
+
   /// Requests code completion at position.
   /// Returns true if successful.
   bool completion(

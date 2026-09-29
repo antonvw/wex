@@ -98,6 +98,21 @@ diagnostic_item::diagnostic_item(const boost::json::object& obj)
 {
 }
 
+code_action_item::code_action_item(std::string t, std::string k)
+  : title(std::move(t))
+  , kind(std::move(k))
+{
+}
+
+code_action_item::code_action_item(const boost::json::object& obj)
+  : title(json_to_string(obj, "title"))
+  , kind(json_to_string(obj, "kind"))
+  , edit(obj.contains("edit") ? obj.at("edit").as_object() : boost::json::object())
+  , command(
+      obj.contains("command") ? obj.at("command").as_object() : boost::json::object())
+{
+}
+
 hover_item::hover_item(const position_item& p, std::string c)
   : pos(p)
   , contents(std::move(c))
