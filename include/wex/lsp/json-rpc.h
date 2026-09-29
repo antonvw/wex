@@ -53,6 +53,9 @@ public:
     /// Raw message data
     const std::string& data) const;
 
+  /// Returns the diagnostics.
+  const diagnostics& get_diagnostics() const { return m_diagnostics; }
+
   /// Encodes a JSON-RPC error response to string.
   /// Return encoded message string.
   std::string encode_error(

@@ -106,7 +106,7 @@ client::client(lexer lexer, wxEvtHandler* event_handler)
 
 bool client::code_action(const wex::path& path, const range_item& range)
 {
-  if (path.empty() || !m_diagnostics.has(path.uri()))
+  if (path.empty() || !m_rpc.get_diagnostics().has(path.uri()))
   {
     return false;
   }
@@ -114,7 +114,7 @@ bool client::code_action(const wex::path& path, const range_item& range)
   // Filter diagnostics that are within the range and have fixes available
   bool has_fixes = false;
 
-  for (const auto& diag : m_diagnostics.get(path.uri()))
+  for (const auto& diag : m_rpc.get_diagnostics().get(path.uri()))
   {
     const bool in_range =
       diag.range.start.line >= range.start.line &&
@@ -141,7 +141,7 @@ bool client::code_action(const wex::path& path, const range_item& range)
 
   boost::json::array diagnostics;
 
-  for (const auto& diagnostic : m_diagnostics.get(path.uri()))
+  for (const auto& diagnostic : m_rpc.get_diagnostics().get(path.uri()))
   {
     const bool in_range =
       diagnostic.range.start.line >= range.start.line &&
