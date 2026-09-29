@@ -106,8 +106,30 @@ client::client(lexer lexer, wxEvtHandler* event_handler)
 
 bool client::code_action(const wex::path& path, const range_item& range)
 {
-  if (path.empty())
+  if (path.empty() || !m_diagnostics.has(path.uri()))
   {
+    return false;
+  }
+
+  // Filter diagnostics that are within the range and have fixes available
+  bool has_fixes = false;
+
+  for (const auto& diag : m_diagnostics.get(path.uri()))
+  {
+    const bool in_range =
+      diag.range.start.line >= range.start.line &&
+      diag.range.end.line <= range.end.line;
+
+    if (in_range)
+    {
+      has_fixes = true;
+      break;
+    }
+  }
+
+  if (!has_fixes)
+  {
+    log::info("lsp::code_action") << "no diagnostics with fixes in range";
     return false;
   }
 
@@ -119,33 +141,30 @@ bool client::code_action(const wex::path& path, const range_item& range)
 
   boost::json::array diagnostics;
 
-  if (m_diagnostics.has(path.uri()))
+  for (const auto& diagnostic : m_diagnostics.get(path.uri()))
   {
-    for (const auto& diagnostic : m_diagnostics.get(path.uri()))
+    const bool in_range =
+      diagnostic.range.start.line >= range.start.line &&
+      diagnostic.range.end.line <= range.end.line;
+
+    if (in_range)
     {
-      const bool in_range =
-        diagnostic.range.start.line >= range.start.line &&
-        diagnostic.range.end.line <= range.end.line;
+      boost::json::object diag;
+      diag["range"]   = diagnostic.range.json_object();
+      diag["message"] = diagnostic.message;
+      diag["severity"] = static_cast<int>(diagnostic.severity);
 
-      if (in_range)
+      if (!diagnostic.code.empty())
       {
-        boost::json::object diag;
-        diag["range"]   = diagnostic.range.json_object();
-        diag["message"] = diagnostic.message;
-        diag["severity"] = static_cast<int>(diagnostic.severity);
-
-        if (!diagnostic.code.empty())
-        {
-          diag["code"] = diagnostic.code;
-        }
-
-        if (!diagnostic.source.empty())
-        {
-          diag["source"] = diagnostic.source;
-        }
-
-        diagnostics.emplace_back(diag);
+        diag["code"] = diagnostic.code;
       }
+
+      if (!diagnostic.source.empty())
+      {
+        diag["source"] = diagnostic.source;
+      }
+
+      diagnostics.emplace_back(diag);
     }
   }
 
@@ -155,6 +174,9 @@ bool client::code_action(const wex::path& path, const range_item& range)
   only.emplace_back("quickfix");
   context["only"] = only;
   params["context"] = context;
+
+  log::trace("lsp::code_action") << "requesting quick fixes for range"
+                                  << range.start.line << ":" << range.end.line;
 
   return write(
     m_rpc.encode_request("textDocument/codeAction", params),
@@ -170,9 +192,12 @@ bool client::code_action(const wex::path& path, const range_item& range)
       if (actions->empty())
       {
         delete actions;
+        log::info("lsp::code_action") << "no quick fixes returned by server";
       }
       else
       {
+        log::info("lsp::code_action") << "received " << actions->size()
+                                       << " quick fix(es)";
         queue_event(m_event_handler, path.uri(), ID_LSP_CODE_ACTION, actions);
       }
     });

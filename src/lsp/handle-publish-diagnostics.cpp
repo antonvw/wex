@@ -23,9 +23,17 @@ bool json_rpc::handle_publish_diagnostics(const json_rpc_message& msg)
   for (const auto& diag_json : diags_array)
   {
     const wex::diagnostic_item diag(diag_json.as_object());
+    const auto&                 diag_obj = diag_json.as_object();
 
     // Store diagnostic
     m_diagnostics.add(uri.data(), diag);
+
+    // Check if this diagnostic has fixes available by looking for the data field.
+    // LSP servers (like clangd) include a data field when fixes are available.
+    if (diag_obj.contains("data"))
+    {
+      log::info("lsp::diagnostic::has_fixes") << diag.message;
+    }
   }
 
   auto* obj = new diagnostics_t;

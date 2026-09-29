@@ -14,6 +14,7 @@
 #include <wex/core/log.h>
 #include <wex/syntax/indicator.h>
 #include <wx/infobar.h>
+#include <wx/menu.h>
 
 #include "lsp-ui.h"
 
@@ -23,6 +24,38 @@ path make_path_skip_uri(const std::string& uri)
 {
   const boost::urls::url u(uri);
   return path(u.path());
+}
+
+void set_lsp_code_actions(
+  wex::frame*           frame,
+  syntax::stc*          stc,
+  const code_actions_t* actions)
+{
+  if (actions->empty())
+  {
+    log::info("lsp::code_actions") << "no quick fixes available";
+    return;
+  }
+
+  // Create a menu with available quick fixes
+  wxMenu menu;
+  int    id = 1000; // Starting ID for quick fix menu items
+
+  for (const auto& action : *actions)
+  {
+    menu.Append(id++, action.title);
+  }
+
+  // Show the menu at the current cursor position
+  int pos = stc->GetCurrentPos();
+  frame->PopupMenu(&menu);
+
+  // Note: The actual application of fixes would be handled by the caller
+  // after selecting a menu item. For now, we just log available actions.
+  log::info("lsp::code_actions") << "showing " << actions->size()
+                                   << " quick fix(es)";
+
+  delete actions;
 }
 
 void set_lsp_completions(
@@ -99,6 +132,8 @@ void set_lsp_diagnostics(syntax::stc* stc, const diagnostics_t* diagnostics)
         diag.message + " (" + std::to_string(static_cast<int>(diag.severity)) +
         ")"));
   }
+
+  delete diagnostics;
 }
 
 void set_lsp_hover(wex::frame* frame, syntax::stc* stc, const hover_t* hover)
@@ -111,6 +146,8 @@ void set_lsp_hover(wex::frame* frame, syntax::stc* stc, const hover_t* hover)
   std::string text(hover->contents.substr(1, hover->contents.size() - 2));
   boost::algorithm::replace_all(text, "\\n", "\n");
   frame->calltip_show(hover->pos.to_pos(stc), text, stc);
+
+  delete hover;
 }
 
 void set_lsp_on_type(
@@ -149,6 +186,8 @@ void set_lsp_on_type(
 
   stc->SetCurrentPos(curr + caret_delta);
   stc->SelectNone();
+
+  delete items;
 }
 
 void set_lsp_show_message(wxWindow* parent, const show_message_item* item)
@@ -181,5 +220,7 @@ void set_lsp_show_message(wxWindow* parent, const show_message_item* item)
     auto* info = new wxInfoBar(parent);
     info->ShowMessage(item->message);
   }
+
+  delete item;
 }
 } // namespace wex

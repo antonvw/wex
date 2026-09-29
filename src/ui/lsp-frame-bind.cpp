@@ -42,6 +42,26 @@ void wex::frame::bind_lsp()
   bind(this).command(
     {{[=, this](const wxCommandEvent& event)
       {
+        auto* item = static_cast<code_actions_t*>(event.GetClientData());
+
+        if (item != nullptr && !item->empty())
+        {
+          if (
+            auto* stc = open_file(make_path_skip_uri(event.GetString()));
+            stc != nullptr)
+          {
+            set_lsp_code_actions(this, dynamic_cast<syntax::stc*>(stc), item);
+          }
+          else
+          {
+            delete item;
+          }
+        }
+      },
+      ID_LSP_CODE_ACTION},
+
+     {[=, this](const wxCommandEvent& event)
+      {
         auto* item = static_cast<completions_t*>(event.GetClientData());
 
         if (
@@ -77,8 +97,10 @@ void wex::frame::bind_lsp()
             set_lsp_diagnostics(dynamic_cast<syntax::stc*>(stc), item);
           }
         }
-
-        delete item;
+        else
+        {
+          delete item;
+        }
       },
       ID_LSP_DIAGNOSTICS},
 
@@ -99,7 +121,6 @@ void wex::frame::bind_lsp()
           item != nullptr)
         {
           set_lsp_show_message(this, item);
-          delete item;
         }
       },
       ID_LSP_SHOW_MESSAGE}});
