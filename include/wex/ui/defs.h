@@ -53,4 +53,5 @@ enum window_ui_id
 
   ID_VIEW_LOWEST, // aui panes that can be toggled
   ID_VIEW_HIGHEST = ID_VIEW_LOWEST + VIEW_MAX_PANES,
+};
 }; // namespace wex
