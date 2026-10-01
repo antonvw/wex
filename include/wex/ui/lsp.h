@@ -89,6 +89,39 @@ struct range_item
   position_item start, end;
 };
 
+struct code_action_change_item_one
+{
+  const std::string new_text;
+  const range_item  range;
+};
+
+struct code_action_change_item
+{
+  const std::string url;
+
+  std::vector<code_action_change_item_one> changes;
+};
+
+/// Represents a code action item (quick fix).
+struct code_action_item
+{
+  /// Default constructor, taking a title and kind.
+  code_action_item(
+    std::string t = std::string(),
+    std::string k = std::string());
+
+  /// Constructor from a JSON object,
+  /// as received from the language server.
+  code_action_item(const boost::json::object& obj);
+
+  const std::string command, title, kind;
+
+  /// The actual edit or command to apply the fix.
+  const boost::json::object edit;
+
+  std::vector<code_action_change_item> changes;
+};
+
 /// Represents an element of a completion item.
 struct completion_item_element
 {
@@ -154,24 +187,8 @@ struct diagnostic_item
   const severity_t severity{severity_t::INFO};
 
   const std::string code, message, source;
-};
 
-/// Represents a code action item (quick fix).
-struct code_action_item
-{
-  /// Default constructor, taking a title and kind.
-  code_action_item(
-    std::string t = std::string(),
-    std::string k = std::string());
-
-  /// Constructor from a JSON object,
-  /// as received from the language server.
-  code_action_item(const boost::json::object& obj);
-
-  const std::string title, kind;
-
-  /// The actual edit or command to apply the fix.
-  const boost::json::object edit, command;
+  const bool is_fix_available{false};
 };
 
 /// Represents hover information.

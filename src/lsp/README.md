@@ -15,6 +15,16 @@ LSP enables integration with language servers, providing features like:
 - Rename refactoring (not yet added)
 - Code formatting
 
+## Fix available flow
+
+The flow is:
+
+- Server sends textDocument/publishDiagnostics
+- Client displays the diagnostic and marks it as fixable
+- When the user asks for fixes, client sends textDocument/codeAction
+- Server returns one or more CodeAction objects
+- Client applies the returned WorkspaceEdit
+
 ### Design Principles
 
 1. **Integration with existing infrastructure:**

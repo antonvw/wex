@@ -29,6 +29,7 @@ enum stc
   // range
   lsp_declaration,
   lsp_definition,
+  lsp_quick_fix,
   lsp_implementation,
   lsp_location,
   //

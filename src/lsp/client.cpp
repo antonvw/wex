@@ -106,52 +106,24 @@ client::client(lexer lexer, wxEvtHandler* event_handler)
 
 bool client::code_action(const wex::path& path, const range_item& range)
 {
-  if (path.empty() || !m_rpc.get_diagnostics().has(path.uri()))
-  {
-    return false;
-  }
-
-  // Filter diagnostics that are within the range and have fixes available
-  bool has_fixes = false;
-
-  for (const auto& diag : m_rpc.get_diagnostics().get(path.uri()))
-  {
-    const bool in_range =
-      diag.range.start.line >= range.start.line &&
-      diag.range.end.line <= range.end.line;
-
-    if (in_range)
-    {
-      has_fixes = true;
-      break;
-    }
-  }
-
-  if (!has_fixes)
-  {
-    log::info("lsp::code_action") << "no diagnostics with fixes in range";
-    return false;
-  }
-
   boost::json::object params, text_doc, context;
-  text_doc["uri"] = path.uri();
-
-  params["textDocument"] = text_doc;
+  text_doc["uri"]        = path.uri();
   params["range"]        = range.json_object();
+  params["textDocument"] = text_doc;
 
   boost::json::array diagnostics;
 
+  // check whether confirmed range is within diagnostic range
   for (const auto& diagnostic : m_rpc.get_diagnostics().get(path.uri()))
   {
-    const bool in_range =
-      diagnostic.range.start.line >= range.start.line &&
-      diagnostic.range.end.line <= range.end.line;
+    const bool in_range = diagnostic.range.start.line >= range.start.line &&
+                          diagnostic.range.end.line <= range.end.line;
 
     if (in_range)
     {
       boost::json::object diag;
-      diag["range"]   = diagnostic.range.json_object();
-      diag["message"] = diagnostic.message;
+      diag["range"]    = diagnostic.range.json_object();
+      diag["message"]  = diagnostic.message;
       diag["severity"] = static_cast<int>(diagnostic.severity);
 
       if (!diagnostic.code.empty())
@@ -172,11 +144,8 @@ bool client::code_action(const wex::path& path, const range_item& range)
 
   boost::json::array only;
   only.emplace_back("quickfix");
-  context["only"] = only;
+  context["only"]   = only;
   params["context"] = context;
-
-  log::trace("lsp::code_action") << "requesting quick fixes for range"
-                                  << range.start.line << ":" << range.end.line;
 
   return write(
     m_rpc.encode_request("textDocument/codeAction", params),
@@ -192,12 +161,10 @@ bool client::code_action(const wex::path& path, const range_item& range)
       if (actions->empty())
       {
         delete actions;
-        log::info("lsp::code_action") << "no quick fixes returned by server";
+        log("lsp::code_action") << "no quick fixes returned by server";
       }
       else
       {
-        log::info("lsp::code_action") << "received " << actions->size()
-                                       << " quick fix(es)";
         queue_event(m_event_handler, path.uri(), ID_LSP_CODE_ACTION, actions);
       }
     });

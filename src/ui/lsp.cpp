@@ -31,6 +31,21 @@ json_to_string(const boost::json::value& val, const std::string& key)
   return std::string();
 }
 
+code_action_item::code_action_item(std::string t, std::string k)
+  : title(std::move(t))
+  , kind(std::move(k))
+{
+}
+
+code_action_item::code_action_item(const boost::json::object& obj)
+  : title(json_to_string(obj, "title"))
+  , kind(json_to_string(obj, "kind"))
+  , edit(
+      obj.contains("edit") ? obj.at("edit").as_object() : boost::json::object())
+  , command(json_to_string(obj, "command"))
+{
+}
+
 completion_item::completion_item(
   const position_item&       p,
   const boost::json::object& obj)
@@ -95,21 +110,7 @@ diagnostic_item::diagnostic_item(const boost::json::object& obj)
   , message(json_to_string(obj, "message"))
   , source(json_to_string(obj, "source"))
   , severity(static_cast<wex::severity_t>(obj.at("severity").as_int64()))
-{
-}
-
-code_action_item::code_action_item(std::string t, std::string k)
-  : title(std::move(t))
-  , kind(std::move(k))
-{
-}
-
-code_action_item::code_action_item(const boost::json::object& obj)
-  : title(json_to_string(obj, "title"))
-  , kind(json_to_string(obj, "kind"))
-  , edit(obj.contains("edit") ? obj.at("edit").as_object() : boost::json::object())
-  , command(
-      obj.contains("command") ? obj.at("command").as_object() : boost::json::object())
+  , is_fix_available(message.contains("fix available"))
 {
 }
 

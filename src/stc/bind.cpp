@@ -480,6 +480,19 @@ void wex::stc::bind_all()
 
      {[=, this](const wxCommandEvent& event)
       {
+        if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
+        {
+          const int        line = GetCurrentLine();
+          const range_item item(
+            {line, 0},
+            {line, GetLineEndPosition(line) - PositionFromLine(line)});
+          client->code_action(path(), item);
+        }
+      },
+      id::stc::lsp_quick_fix},
+
+     {[=, this](const wxCommandEvent& event)
+      {
         link_open(link_t().set(LINK_OPEN_MIME));
       },
       id::stc::open_mime},
@@ -547,6 +560,13 @@ void wex::stc::bind_all()
 void wex::stc::build_popup_menu(menu& menu)
 {
   const auto sel(GetSelectedText().ToStdString());
+
+  if (
+    const auto annotation = AnnotationGetText(GetCurrentLine());
+    !annotation.empty() && annotation.Contains("fix available"))
+  {
+    menu.append({{id::stc::lsp_quick_fix, "Fix"}});
+  }
 
   if (
     get_current_line() == 0 && sel.empty() &&
