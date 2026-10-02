@@ -562,10 +562,13 @@ void wex::stc::build_popup_menu(menu& menu)
   const auto sel(GetSelectedText().ToStdString());
 
   if (
-    const auto annotation = AnnotationGetText(GetCurrentLine());
-    !annotation.empty() && annotation.Contains("fix available"))
+    const std::string 
+      annotation(AnnotationGetText(GetCurrentLine()).ToStdString()), 
+      fix(" (fix available)");
+    !annotation.empty() && annotation.contains(fix))
   {
-    menu.append({{id::stc::lsp_quick_fix, "Fix"}});
+    const auto caption(find_before(annotation, fix));
+    menu.append({{id::stc::lsp_quick_fix, "Fix " + truncate_middle(caption, 15)}});
   }
 
   if (

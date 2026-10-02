@@ -116,4 +116,7 @@ rfind_after(const std::string& text, const std::string& sequence);
 /// Returns the whole string if seq is not found.
 const std::string
 rfind_before(const std::string& text, const std::string& sequence);
+
+//// Returns a string with the middle truncated, if it exceeds max_size.
+std::string truncate_middle(const std::string& input, std::size_t max_size);
 } // namespace wex

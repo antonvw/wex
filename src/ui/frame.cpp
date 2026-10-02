@@ -458,7 +458,7 @@ void wex::frame::calltip_show(
     stc->CallTipCancel();
   }
 
-  if (const auto max_size = 80; text.size() < max_size)
+  if (const auto max_size = 100; text.size() < max_size)
   {
     stc->CallTipShow(pos, text);
   }
