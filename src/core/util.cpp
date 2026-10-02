@@ -2,7 +2,7 @@
 // Name:      core/util.cpp
 // Purpose:   Implementation of wex core utility methods
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2020-2025 Anton van Wezenbeek
+// Copyright: (c) 2020-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <boost/algorithm/string.hpp>
@@ -310,7 +310,7 @@ wex::rfind_before(const std::string& text, const std::string& seq)
   return pos == std::string::npos ? text : text.substr(0, pos);
 }
 
-std::string truncate_middle(const std::string& input, std::size_t max_size)
+std::string wex::truncate_middle(const std::string& input, std::size_t max_size)
 {
   if (input.size() <= max_size)
       return input;
