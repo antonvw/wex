@@ -188,6 +188,8 @@ TEST_CASE("wex::core")
     REQUIRE(wex::truncate_middle("test", 3) == "...");
     REQUIRE(wex::truncate_middle("test", 4) == "test");
     REQUIRE(wex::truncate_middle("test", 15) == "test");
-    REQUIRE(wex::truncate_middle("this is a long string", 10) == "this ...ring");
+    REQUIRE(wex::truncate_middle("this is a long string", 10) == "this...ing");
+    REQUIRE(
+      wex::truncate_middle("this is a long string", 14) == "this i...tring");
   }
 }

@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include <map>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -89,20 +90,30 @@ struct range_item
   position_item start, end;
 };
 
-struct code_action_change_item_one
+/// Represents a single code action edit change.
+struct code_action_edit_change_item
 {
-  const std::string new_text;
-  const range_item  range;
+  /// Constructor from a JSON object,
+  /// as received from the language server.
+  code_action_edit_change_item(const boost::json::object& obj);
+
+  std::string new_text;
+  range_item  range;
 };
 
-struct code_action_change_item
+/// Represents a code action edit, containing a map
+/// of file with eit changes.
+struct code_action_edit_item
 {
-  const std::string url;
+  /// Constructor from a JSON object,
+  /// as received from the language server.
+  code_action_edit_item(const boost::json::object& obj);
 
-  std::vector<code_action_change_item_one> changes;
+  std::map<std::string, std::vector<code_action_edit_change_item>> changes;
 };
 
 /// Represents a code action item (quick fix).
+/// It contains a number of code_action_edit_items.
 struct code_action_item
 {
   /// Default constructor, taking a title and kind.
@@ -116,10 +127,7 @@ struct code_action_item
 
   const std::string command, title, kind;
 
-  /// The actual edit or command to apply the fix.
-  const boost::json::object edit;
-
-  std::vector<code_action_change_item> changes;
+  std::vector<code_action_edit_item> edits;
 };
 
 /// Represents an element of a completion item.

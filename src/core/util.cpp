@@ -313,20 +313,23 @@ wex::rfind_before(const std::string& text, const std::string& seq)
 std::string wex::truncate_middle(const std::string& input, std::size_t max_size)
 {
   if (input.size() <= max_size)
-      return input;
+  {
+    return input;
+  }
 
   constexpr std::string_view ellipsis = "...";
 
   if (max_size <= ellipsis.size())
+  {
     return std::string(ellipsis.substr(0, max_size));
+  }
 
   const std::size_t remaining = max_size - ellipsis.size();
 
   // Put the extra character in the prefix when the split is uneven.
-  const std::size_t prefixLength = (remaining + 1) / 2;
-  const std::size_t postfixLength = remaining / 2;
+  const std::size_t prefix_length  = (remaining + 1) / 2;
+  const std::size_t postfix_length = remaining / 2;
 
-  return input.substr(0, prefixLength) +
-         std::string(ellipsis) +
-         input.substr(input.size() - postfixLength);
+  return input.substr(0, prefix_length) + std::string(ellipsis) +
+         input.substr(input.size() - postfix_length);
 }

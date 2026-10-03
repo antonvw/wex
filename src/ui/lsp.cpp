@@ -40,9 +40,37 @@ code_action_item::code_action_item(std::string t, std::string k)
 code_action_item::code_action_item(const boost::json::object& obj)
   : title(json_to_string(obj, "title"))
   , kind(json_to_string(obj, "kind"))
-  , edit(
-      obj.contains("edit") ? obj.at("edit").as_object() : boost::json::object())
   , command(json_to_string(obj, "command"))
+{
+  for (const auto& item : obj.at("arguments").as_array())
+  {
+    edits.emplace_back(item.as_object());
+  }
+}
+
+code_action_edit_item::code_action_edit_item(const boost::json::object& obj)
+{
+  for (const auto& [url, edits_value] : obj.at("changes").as_object())
+  {
+    {
+      const boost::json::array&                 edits = edits_value.as_array();
+      std::vector<code_action_edit_change_item> ones;
+
+      for (const boost::json::value& edit_value : edits)
+      {
+        const boost::json::object& edit = edit_value.as_object();
+        ones.emplace_back(edit);
+      }
+
+      changes[url] = ones;
+    }
+  }
+}
+
+code_action_edit_change_item::code_action_edit_change_item(
+  const boost::json::object& obj)
+  : new_text(json_to_string(obj, "newText"))
+  , range(obj)
 {
 }
 

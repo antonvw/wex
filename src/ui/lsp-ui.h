@@ -18,8 +18,6 @@ path make_path_skip_uri(const std::string& uri);
 void set_lsp_code_actions(
   /// the frame to show actions in
   wex::frame* frame,
-  /// the stc to apply actions on
-  syntax::stc* stc,
   /// the code actions to set
   const code_actions_t* actions);
 

@@ -26,13 +26,35 @@ path make_path_skip_uri(const std::string& uri)
   return path(u.path());
 }
 
-void set_lsp_code_actions(
-  wex::frame*           frame,
-  syntax::stc*          stc,
-  const code_actions_t* actions)
+void set_lsp_code_actions(wex::frame* frame, const code_actions_t* actions)
 {
-  log::info("lsp::code_actions")
-    << "showing " << actions->size() << " quick fix(es)";
+  int action_done;
+
+  for (const auto& action : *actions)
+  {
+    for (const auto& edit : action.edits)
+    {
+      for (const auto& change : edit.changes)
+      {
+        const auto file(change.first);
+        const auto changes(change.second);
+
+        if (
+          auto* stc = frame->open_file(make_path_skip_uri(file));
+          stc != nullptr)
+        {
+          for (const auto& each : changes)
+          {
+            each.range.set_target(stc);
+            stc->ReplaceTarget(each.new_text);
+            action_done++;
+          }
+        }
+      }
+    }
+  }
+
+  log::status("applied") << action_done << "quick fix(es)";
 
   delete actions;
 }

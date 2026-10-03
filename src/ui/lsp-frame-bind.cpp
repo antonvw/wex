@@ -46,16 +46,7 @@ void wex::frame::bind_lsp()
 
         if (item != nullptr && !item->empty())
         {
-          if (
-            auto* stc = open_file(make_path_skip_uri(event.GetString()));
-            stc != nullptr)
-          {
-            set_lsp_code_actions(this, dynamic_cast<syntax::stc*>(stc), item);
-          }
-          else
-          {
-            delete item;
-          }
+          set_lsp_code_actions(this, item);
         }
       },
       ID_LSP_CODE_ACTION},
