@@ -30,6 +30,7 @@ enum stc
   lsp_declaration,
   lsp_definition,
   lsp_quick_fix,
+  lsp_quick_fix_all,
   lsp_implementation,
   lsp_location,
   //

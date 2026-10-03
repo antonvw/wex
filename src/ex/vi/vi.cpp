@@ -9,6 +9,8 @@
 #include <boost/tokenizer.hpp>
 #include <charconv>
 
+#include <sstream>
+
 #include <wex/core/core.h>
 #include <wex/core/log.h>
 #include <wex/ex/macros.h>

@@ -11,6 +11,16 @@
 
 #include "test.h"
 
+void shared_test(wex::test::ui_stc* stc, const wex::code_action_edit_change_item& item)
+{
+  CAPTURE(item.new_text);
+  REQUIRE(item.range.start.to_pos(stc) == 10);
+  REQUIRE(item.range.end.to_pos(stc) == 14);
+  REQUIRE(item.new_text == "formatted");
+  REQUIRE(item.replace_target(stc) == 5);
+  REQUIRE(stc->GetText() == "This is a formatted string for editing");
+}
+
 boost::json::object string_to_json(const std::string& text)
 {
   auto parsed = boost::json::parse(text);
@@ -52,6 +62,44 @@ TEST_CASE("wex::lsp")
     REQUIRE(item.end.character == 30);
   }
 
+  SECTION("code_action_item")
+  {
+    const std::string text = R"(
+    {
+      "arguments": [
+        {
+          "changes": {
+            "file:///Users/anton/wex/src/ex/vi/vi.cpp": [
+              {
+                "newText": "",
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 22
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "command": "clangd.applyFix",
+      "title": "Apply fix: remove #include directive"
+    }
+    )";
+
+    const auto parsed = boost::json::parse(text);
+    wex::code_action_item item(parsed.as_object());
+
+    REQUIRE(item.command == "clangd.applyFix");
+    REQUIRE(item.title == "Apply fix: remove #include directive");
+    REQUIRE(item.edits.size() == 1);
+  }
+  
   SECTION("completion_item_element")
   {
     const auto obj(string_to_json("{\"range\":{\
@@ -150,7 +198,7 @@ TEST_CASE("wex::lsp")
     REQUIRE(wex::json_to_string(obj, "newText") == "formatted");
   }
 
-  SECTION("on_type_formatting")
+  SECTION("shared")
   {
     const auto obj(string_to_json("{\
       \"range\": {\
@@ -160,16 +208,19 @@ TEST_CASE("wex::lsp")
       \"newText\": \"formatted\"\
       }"));
 
-    stc->set_text("This is a test string for on-type formatting");
+    stc->set_text("This is a test string for editing");
 
-    wex::on_type_formatting_item item(obj);
-    CAPTURE(item.new_text);
-    REQUIRE(item.range.start.to_pos(stc) == 10);
-    REQUIRE(item.range.end.to_pos(stc) == 14);
-    REQUIRE(item.new_text == "formatted");
-    REQUIRE(item.replace_target(stc) == 5);
-    REQUIRE(
-      stc->GetText() == "This is a formatted string for on-type formatting");
+    SECTION("code_action_edit_change_item")
+    {
+      wex::code_action_edit_change_item item(obj);
+      shared_test(stc, item);
+    }
+
+    SECTION("on_type_formatting")
+    {
+      wex::on_type_formatting_item item(obj);
+      shared_test(stc, item);
+    }
   }
 
   SECTION("show_message_item")

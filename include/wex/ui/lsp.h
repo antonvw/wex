@@ -93,9 +93,22 @@ struct range_item
 /// Represents a single code action edit change.
 struct code_action_edit_change_item
 {
+  /// Default constructor, taking a range and new_text.
+  code_action_edit_change_item(
+    const range_item& rnge    = range_item(),
+    std::string       nw_text = std::string());
+
   /// Constructor from a JSON object,
   /// as received from the language server.
   code_action_edit_change_item(const boost::json::object& obj);
+
+  /// Logs info about this class.
+  std::stringstream log() const;
+
+  /// Replaces the range in the given wxStyledTextCtrl with the new text
+  /// specified in this item.
+  /// Returns the difference in stc size caused by replacing.
+  int replace_target(wxStyledTextCtrl* stc) const;
 
   std::string new_text;
   range_item  range;
@@ -218,7 +231,7 @@ struct hover_item
 
 /// Represents an on-type formatting item, which specifies text changes to
 /// be applied when a specific character is typed.
-struct on_type_formatting_item
+struct on_type_formatting_item : public code_action_edit_change_item
 {
   /// Default constructor, taking a range and new_text.
   on_type_formatting_item(
@@ -228,18 +241,6 @@ struct on_type_formatting_item
   /// Constructor from a JSON object,
   /// as received from the language server.
   on_type_formatting_item(const boost::json::object& obj);
-
-  /// Logs info about this class.
-  std::stringstream log() const;
-
-  /// Replaces the range in the given wxStyledTextCtrl with the new text
-  /// specified in this item.
-  /// Returns the difference in stc size caused by replacing.
-  int replace_target(wxStyledTextCtrl* stc) const;
-
-  std::string new_text;
-
-  range_item range;
 };
 
 /// Represents a show or a log message item.

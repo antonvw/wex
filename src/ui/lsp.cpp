@@ -48,6 +48,30 @@ code_action_item::code_action_item(const boost::json::object& obj)
   }
 }
 
+code_action_edit_change_item::code_action_edit_change_item(
+  const range_item& rnge,
+  std::string       nw_text)
+  : range(rnge)
+  , new_text(std::move(nw_text))
+{
+}
+
+std::stringstream code_action_edit_change_item::log() const
+{
+  std::stringstream ss;
+
+  ss << "new_text: " << new_text << range.log().str();
+
+  return ss;
+}
+
+int code_action_edit_change_item::replace_target(wxStyledTextCtrl* stc) const
+{
+  range.set_target(stc);
+  const int old_target_size = stc->GetTargetText().size();
+  return stc->ReplaceTarget(new_text) - old_target_size;
+}
+
 code_action_edit_item::code_action_edit_item(const boost::json::object& obj)
 {
   for (const auto& [url, edits_value] : obj.at("changes").as_object())
@@ -160,31 +184,13 @@ hover_item::hover_item(const boost::json::object& obj)
 on_type_formatting_item::on_type_formatting_item(
   const range_item& rnge,
   std::string       nw_text)
-  : range(rnge)
-  , new_text(std::move(nw_text))
+  : code_action_edit_change_item(rnge, std::move(nw_text))
 {
 }
 
 on_type_formatting_item::on_type_formatting_item(const boost::json::object& obj)
-  : range(obj)
-  , new_text(json_to_string(obj, "newText"))
+  : code_action_edit_change_item(obj)
 {
-}
-
-std::stringstream on_type_formatting_item::log() const
-{
-  std::stringstream ss;
-
-  ss << "new_text: " << new_text << range.log().str();
-
-  return ss;
-}
-
-int on_type_formatting_item::replace_target(wxStyledTextCtrl* stc) const
-{
-  range.set_target(stc);
-  const int old_target_size = stc->GetTargetText().size();
-  return stc->ReplaceTarget(new_text) - old_target_size;
 }
 
 position_item::position_item(int l, int c)
