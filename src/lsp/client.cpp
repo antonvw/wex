@@ -140,6 +140,8 @@ bool client::code_action(const wex::path& path, const range_item& range)
     }
   }
 
+  log::trace("code_action request") << diagnostics.size();
+
   context["diagnostics"] = diagnostics;
 
   boost::json::array only;
@@ -165,6 +167,7 @@ bool client::code_action(const wex::path& path, const range_item& range)
       }
       else
       {
+        log::trace("code_action response") << actions->size();
         queue_event(m_event_handler, path.uri(), ID_LSP_CODE_ACTION, actions);
       }
     });

@@ -44,8 +44,21 @@ code_action_item::code_action_item(const boost::json::object& obj)
 {
   for (const auto& item : obj.at("arguments").as_array())
   {
-    edits.emplace_back(item.as_object());
+    if (!title.contains("remove all"))
+    {
+      edits.emplace_back(item.as_object());
+    }
   }
+}
+
+std::stringstream code_action_item::log() const
+{
+  std::stringstream ss;
+
+  ss << "title: " << title << " command: " << command
+     << " edits size: " << edits.size();
+
+  return ss;
 }
 
 code_action_edit_change_item::code_action_edit_change_item(
@@ -162,8 +175,16 @@ diagnostic_item::diagnostic_item(const boost::json::object& obj)
   , message(json_to_string(obj, "message"))
   , source(json_to_string(obj, "source"))
   , severity(static_cast<wex::severity_t>(obj.at("severity").as_int64()))
-  , is_fix_available(message.contains("fix available"))
 {
+}
+
+std::stringstream diagnostic_item::log() const
+{
+  std::stringstream ss;
+
+  ss << range.log().str() << " message: " << message << " code: " << code;
+
+  return ss;
 }
 
 hover_item::hover_item(const position_item& p, std::string c)

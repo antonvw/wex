@@ -115,7 +115,7 @@ struct code_action_edit_change_item
 };
 
 /// Represents a code action edit, containing a map
-/// of file with eit changes.
+/// of file with edit changes.
 struct code_action_edit_item
 {
   /// Constructor from a JSON object,
@@ -138,8 +138,12 @@ struct code_action_item
   /// as received from the language server.
   code_action_item(const boost::json::object& obj);
 
+  /// Logs info about this class.
+  std::stringstream log() const;
+
   const std::string command, title, kind;
 
+  std::map<std::string, std::vector<code_action_edit_change_item>> changes;
   std::vector<code_action_edit_item> edits;
 };
 
@@ -202,14 +206,15 @@ struct diagnostic_item
   /// as received from the language server.
   diagnostic_item(const boost::json::object& obj);
 
+  /// Logs info about this class.
+  std::stringstream log() const;
+
   const range_item range;
 
   /// Severity of the diagnostic
   const severity_t severity{severity_t::INFO};
 
   const std::string code, message, source;
-
-  const bool is_fix_available{false};
 };
 
 /// Represents hover information.
