@@ -157,17 +157,18 @@ bool client::code_action(const wex::path& path, const range_item& range)
 
       for (const auto& item : msg.result_array)
       {
-        actions->emplace_back(item.as_object());
+        std::cout << item << "\n";
+        //actions->edits.emplace_back(item.as_object());
       }
 
-      if (actions->empty())
+      if (actions->edits.empty())
       {
         delete actions;
         log("lsp::code_action") << "no quick fixes returned by server";
       }
       else
       {
-        log::trace("code_action response") << actions->size();
+        log::trace("code_action response") << actions->changes.size();
         queue_event(m_event_handler, path.uri(), ID_LSP_CODE_ACTION, actions);
       }
     });

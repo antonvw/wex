@@ -44,7 +44,7 @@ void wex::frame::bind_lsp()
       {
         auto* item = static_cast<code_actions_t*>(event.GetClientData());
 
-        if (item != nullptr && !item->empty())
+        if (item != nullptr && !item->changes.empty())
         {
           set_lsp_code_actions(this, item);
         }

@@ -32,32 +32,22 @@ void set_lsp_code_actions(wex::frame* frame, const code_actions_t* actions)
 
   std::stringstream ss;
 
-  ss << "actions: " << actions->size();
+  ss << " action.edits: " << actions->changes.size();
 
-  for (const auto& action : *actions)
+  for (const auto& change : actions->changes)
   {
-    ss << " action.edits: " << action.edits.size();
+    ss << " changes: " << change.second.size();
 
-    for (const auto& edit : action.edits)
+    const auto& file(change.first);
+    const auto& changes(change.second);
+
+    if (auto* stc = frame->open_file(make_path_skip_uri(file)); stc != nullptr)
     {
-      for (const auto& change : edit.changes)
+      for (const auto& each : changes | std::views::reverse)
       {
-        ss << " changes: " << change.second.size();
-
-        const auto& file(change.first);
-        const auto& changes(change.second);
-
-        if (
-          auto* stc = frame->open_file(make_path_skip_uri(file));
-          stc != nullptr)
-        {
-          for (const auto& each : changes | std::views::reverse)
-          {
-            log::trace("set_lsp_code_actions") << file << each.log() << ss.str();
-            each.replace_target(stc);
-            actions_done++;
-          }
-        }
+        log::trace("set_lsp_code_actions") << file << each.log() << ss.str();
+        each.replace_target(stc);
+        actions_done++;
       }
     }
   }

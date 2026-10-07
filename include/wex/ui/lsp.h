@@ -144,7 +144,7 @@ struct code_action_item
   const std::string command, title, kind;
 
   std::map<std::string, std::vector<code_action_edit_change_item>> changes;
-  std::vector<code_action_edit_item> edits;
+  std::vector<code_action_edit_item>                               edits;
 };
 
 /// Represents an element of a completion item.
@@ -284,6 +284,9 @@ std::string json_to_string(
   /// the key
   const std::string& key);
 
+/// Type alias for a collection of code actions returned by the language server.
+using code_actions_t = code_action_item;
+
 /// Type alias for collections of completions returned by the language server.
 using completions_t = completion_item;
 
@@ -294,9 +297,6 @@ using definition_or_implementation_t =
 
 /// Type alias for a collection of diagnostics returned by the language server.
 using diagnostics_t = std::vector<diagnostic_item>;
-
-/// Type alias for a collection of code actions returned by the language server.
-using code_actions_t = std::vector<code_action_item>;
 
 /// Type alias for a hover item returned by the language server.
 using hover_t = struct hover_item;

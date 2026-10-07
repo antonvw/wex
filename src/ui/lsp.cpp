@@ -49,6 +49,14 @@ code_action_item::code_action_item(const boost::json::object& obj)
       edits.emplace_back(item.as_object());
     }
   }
+
+  for (auto& edit : edits)
+  {
+    for (auto& [url, change] : edit.changes)
+    {
+      changes[url].append_range(change);
+    }
+  }
 }
 
 std::stringstream code_action_item::log() const
@@ -56,7 +64,7 @@ std::stringstream code_action_item::log() const
   std::stringstream ss;
 
   ss << "title: " << title << " command: " << command
-     << " edits size: " << edits.size();
+     << " edits size: " << edits.size() << " changes size: " << changes.size();
 
   return ss;
 }
