@@ -28,6 +28,19 @@ enum class severity_t
   HINT    = 4
 };
 
+/// Represents a JSON-RPC 2.0 message.
+struct json_rpc_message
+{
+  int id{-1}; // -1 for notifications
+
+  std::string method;
+
+  boost::json::object error, params, result;
+  boost::json::array  result_array;
+
+  bool is_error{false};
+};
+
 /// - Each class used in a request will have a json_object() function to convert
 ///   it to a JSON object for communication with the language server.
 /// - Each class used in a response will have a constructor that takes a JSON
@@ -129,19 +142,12 @@ struct code_action_edit_item
 /// It contains a number of code_action_edit_items.
 struct code_action_item
 {
-  /// Default constructor, taking a title and kind.
-  code_action_item(
-    std::string t = std::string(),
-    std::string k = std::string());
-
-  /// Constructor from a JSON object,
+  /// Constructor from a JSON RPC object,
   /// as received from the language server.
-  code_action_item(const boost::json::object& obj);
+  code_action_item(const json_rpc_message& msg);
 
   /// Logs info about this class.
   std::stringstream log() const;
-
-  const std::string command, title, kind;
 
   std::map<std::string, std::vector<code_action_edit_change_item>> changes;
   std::vector<code_action_edit_item>                               edits;

@@ -1,333 +1,221 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      lsp.cpp
-// Purpose:   Implementation of classes related to Language Server Protocol
-//            support in wex.
+// Purpose:   Implementation of ui lsp methods.
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <boost/algorithm/string.hpp>
-#include <utility>
+#include <algorithm>
+#include <ranges>
 
+#include <boost/algorithm/string.hpp>
+#include <boost/url.hpp>
+#include <wex/core/core.h>
 #include <wex/core/log.h>
-#include <wex/ui/lsp.h>
+#include <wex/syntax/indicator.h>
+#include <wx/infobar.h>
+#include <wx/menu.h>
+
+#include "lsp.h"
 
 namespace wex
 {
-std::string
-json_to_string(const boost::json::value& val, const std::string& key)
+path make_path_skip_uri(const std::string& uri)
 {
-  try
-  {
-    return val.is_object() && val.as_object().contains(key) ?
-             val.at(key).as_string().c_str() :
-             std::string();
-  }
-  catch (const std::exception& e)
-  {
-    log(e) << "wex::json_to_string" << key;
-  }
-
-  return std::string();
+  const boost::urls::url u(uri);
+  return path(u.path());
 }
 
-code_action_item::code_action_item(std::string t, std::string k)
-  : title(std::move(t))
-  , kind(std::move(k))
+void set_lsp_code_actions(wex::frame* frame, const code_actions_t* actions)
 {
-}
+  size_t actions_done{0};
 
-code_action_item::code_action_item(const boost::json::object& obj)
-  : title(json_to_string(obj, "title"))
-  , kind(json_to_string(obj, "kind"))
-  , command(json_to_string(obj, "command"))
-{
-  for (const auto& item : obj.at("arguments").as_array())
-  {
-    if (!title.contains("remove all"))
-    {
-      edits.emplace_back(item.as_object());
-    }
-  }
-
-  for (auto& edit : edits)
-  {
-    for (auto& [url, change] : edit.changes)
-    {
-      changes[url].append_range(change);
-    }
-  }
-}
-
-std::stringstream code_action_item::log() const
-{
   std::stringstream ss;
 
-  ss << "title: " << title << " command: " << command
-     << " edits size: " << edits.size() << " changes size: " << changes.size();
+  ss << " action.edits: " << actions->changes.size();
 
-  return ss;
-}
-
-code_action_edit_change_item::code_action_edit_change_item(
-  const range_item& rnge,
-  std::string       nw_text)
-  : range(rnge)
-  , new_text(std::move(nw_text))
-{
-}
-
-std::stringstream code_action_edit_change_item::log() const
-{
-  std::stringstream ss;
-
-  ss << "new_text: " << new_text << range.log().str();
-
-  return ss;
-}
-
-int code_action_edit_change_item::replace_target(wxStyledTextCtrl* stc) const
-{
-  range.set_target(stc);
-  const int old_target_size = stc->GetTargetText().size();
-  return stc->ReplaceTarget(new_text) - old_target_size;
-}
-
-code_action_edit_item::code_action_edit_item(const boost::json::object& obj)
-{
-  for (const auto& [url, edits_value] : obj.at("changes").as_object())
+  for (const auto& change : actions->changes)
   {
-    {
-      const boost::json::array&                 edits = edits_value.as_array();
-      std::vector<code_action_edit_change_item> ones;
+    ss << " changes: " << change.second.size();
 
-      for (const boost::json::value& edit_value : edits)
+    const auto& file(change.first);
+    const auto& changes(change.second);
+
+    if (auto* stc = frame->open_file(make_path_skip_uri(file)); stc != nullptr)
+    {
+      for (const auto& each : changes | std::views::reverse)
       {
-        const boost::json::object& edit = edit_value.as_object();
-        ones.emplace_back(edit);
+        log::trace("set_lsp_code_actions") << file << each.log() << ss.str();
+        each.replace_target(stc);
+        actions_done++;
       }
-
-      changes[url] = ones;
     }
   }
+
+  log::status("applied") << actions_done << "quick fix(es)";
+
+  delete actions;
 }
 
-code_action_edit_change_item::code_action_edit_change_item(
-  const boost::json::object& obj)
-  : new_text(json_to_string(obj, "newText"))
-  , range(obj)
+void set_lsp_completions(
+  syntax::stc*         stc,
+  const completions_t* completions,
+  wex::frame*          frame)
 {
-}
+  const auto         wsp = stc->WordStartPosition(stc->GetCurrentPos(), true);
+  const std::string& filter(stc->GetTextRange(wsp, stc->GetCurrentPos()));
 
-completion_item::completion_item(
-  const position_item&       p,
-  const boost::json::object& obj)
-  : pos(p)
-{
-  if (!obj.empty())
+  if (!filter.empty() || !frame->lsp_clients_trigger(stc).empty())
   {
-    elements.reserve(obj.at("items").as_array().size());
+    const char  separator = 3;
+    std::string auto_complete_list;
 
-    for (const auto& item : obj.at("items").as_array())
+    for (const auto& comp : completions->elements)
     {
-      elements.emplace_back(item.as_object());
+      if (comp.insert_text.starts_with(filter))
+      {
+        auto_complete_list += comp.insert_text + separator;
+      }
+    }
+
+    if (!auto_complete_list.empty())
+    {
+      const auto old(stc->AutoCompGetSeparator());
+      stc->AutoCompSetSeparator(separator);
+      stc->AutoCompShow(stc->GetCurrentPos() - wsp, auto_complete_list);
+      stc->AutoCompSetSeparator(old);
+    }
+    else
+    {
+      stc->AutoCompCancel();
     }
   }
 }
 
-completion_item_element::completion_item_element(std::string text)
-  : insert_text(std::move(text))
+void set_lsp_definition_or_implementation(
+  wex::frame*                           frame,
+  const definition_or_implementation_t* definitions)
 {
-}
-
-completion_item_element::completion_item_element(const boost::json::object& obj)
-  : insert_text(boost::algorithm::trim_copy(json_to_string(obj, "insertText")))
-  , detail(json_to_string(obj, "detail"))
-  , kind(obj.contains("kind") ? obj.at("kind").as_int64() : 0)
-{
-  if (obj.contains("documentation"))
+  for (const auto& def : *definitions)
   {
-    // The documentation is an array, not yet handled
-    // documentation =
-  }
-}
+    data::control control;
+    control.line(def.range.start.line + 1);
+    control.col(def.range.start.character + 1);
+    control.end_line(def.range.end.line + 1);
+    control.end_col(def.range.end.character + 1);
+    data::stc data(control);
 
-definition_or_implementation_item::definition_or_implementation_item(
-  std::string       u,
-  const range_item& r)
-  : uri(std::move(u))
-  , range(r)
-{
-}
-
-definition_or_implementation_item::definition_or_implementation_item(
-  const boost::json::object& obj)
-  : range(obj)
-  , uri(obj.at("uri").as_string().data())
-{
-}
-
-diagnostic_item::diagnostic_item(
-  const range_item& r,
-  std::string       msg,
-  severity_t        s)
-  : range(r)
-  , message(std::move(msg))
-  , severity(s)
-{
-}
-
-diagnostic_item::diagnostic_item(const boost::json::object& obj)
-  : range(obj)
-  , code(json_to_string(obj, "code"))
-  , message(json_to_string(obj, "message"))
-  , source(json_to_string(obj, "source"))
-  , severity(static_cast<wex::severity_t>(obj.at("severity").as_int64()))
-{
-}
-
-std::stringstream diagnostic_item::log() const
-{
-  std::stringstream ss;
-
-  ss << range.log().str() << " message: " << message << " code: " << code;
-
-  return ss;
-}
-
-hover_item::hover_item(const position_item& p, std::string c)
-  : pos(p)
-  , contents(std::move(c))
-{
-}
-
-hover_item::hover_item(const boost::json::object& obj)
-{
-  const auto con(obj.at("contents"));
-  const auto val(con.at("value").as_string());
-
-  contents = boost::json::serialize(val);
-  kind     = json_to_string(con, "kind");
-}
-
-on_type_formatting_item::on_type_formatting_item(
-  const range_item& rnge,
-  std::string       nw_text)
-  : code_action_edit_change_item(rnge, std::move(nw_text))
-{
-}
-
-on_type_formatting_item::on_type_formatting_item(const boost::json::object& obj)
-  : code_action_edit_change_item(obj)
-{
-}
-
-position_item::position_item(int l, int c)
-  : line(l)
-  , character(c)
-{
-}
-
-position_item::position_item(wxStyledTextCtrl* stc)
-  : line(stc->LineFromPosition(stc->GetCurrentPos()))
-  , character(stc->GetCurrentPos() - stc->PositionFromLine(line))
-{
-}
-
-position_item::position_item(const boost::json::object& obj)
-  : line(obj.at("line").as_int64())
-  , character(obj.at("character").as_int64())
-{
-}
-
-boost::json::object position_item::json_object() const
-{
-  boost::json::object obj;
-
-  obj["line"]      = line;
-  obj["character"] = character;
-
-  return obj;
-}
-
-std::stringstream position_item::log() const
-{
-  std::stringstream ss;
-
-  ss << "line: " << line << " char: " << character;
-
-  return ss;
-}
-
-int position_item::to_pos(wxStyledTextCtrl* stc) const
-{
-  return stc->PositionFromLine(line) + character;
-}
-
-range_item::range_item(const position_item& strt, const position_item& nd)
-  : start(strt)
-  , end(nd)
-{
-}
-
-range_item::range_item(const boost::json::object& obj)
-{
-  set(obj);
-}
-
-boost::json::object range_item::json_object() const
-{
-  boost::json::object obj;
-
-  obj["start"] = start.json_object();
-  obj["end"]   = end.json_object();
-
-  return obj;
-}
-
-bool range_item::set(const boost::json::object& obj)
-{
-  if (!obj.contains("range"))
-  {
-    return false;
+    frame->open_file(make_path_skip_uri(def.uri), data);
   }
 
-  const auto ro = obj.at("range");
-
-  start = position_item(ro.at("start").as_object());
-  end   = position_item(ro.at("end").as_object());
-
-  return true;
+  delete definitions;
 }
 
-std::stringstream range_item::log() const
+void set_lsp_diagnostics(syntax::stc* stc, const diagnostics_t* diagnostics)
 {
-  std::stringstream ss;
+  stc->AnnotationSetVisible(wxSTC_ANNOTATION_HIDDEN);
+  stc->SetIndicatorCurrent(wex::data::stc::IND_ERR);
+  stc->IndicatorClearRange(0, stc->GetTextLength());
+  stc->AnnotationClearAll();
 
-  ss << "start: " << start.log().str() << " end: " << end.log().str();
+  for (const auto& diag : *diagnostics)
+  {
+    stc->set_indicator(
+      indicator(wex::data::stc::IND_ERR),
+      stc->PositionFromLine(diag.range.start.line),
+      stc->GetLineEndPosition(diag.range.end.line));
 
-  return ss;
+    stc->AnnotationSetText(
+      diag.range.start.line,
+      lexer().align_text(
+        diag.message + " (" + std::to_string(static_cast<int>(diag.severity)) +
+        ")"));
+  }
+
+  delete diagnostics;
 }
 
-show_message_item::show_message_item(
-  std::string msg,
-  message_t   t,
-  bool        is_show_item)
-  : type(t)
-  , message(std::move(msg))
-  , is_show(is_show_item)
+void set_lsp_hover(wex::frame* frame, syntax::stc* stc, const hover_t* hover)
 {
+  if (stc->popup_menu_is_shown())
+  {
+    return;
+  }
+
+  std::string text(hover->contents.substr(1, hover->contents.size() - 2));
+  boost::algorithm::replace_all(text, "\\n", "\n");
+  frame->calltip_show(hover->pos.to_pos(stc), text, stc);
 }
 
-show_message_item::show_message_item(
-  const boost::json::object& obj,
-  bool                       is_show_item)
-  : type(
-      obj.contains("type") ?
-        static_cast<show_message_item::message_t>(obj.at("type").as_int64()) :
-        show_message_item::INFO)
-  , is_show(is_show_item)
-  , message(json_to_string(obj, "message"))
+void set_lsp_on_type(
+  wex::frame*                      frame,
+  syntax::stc*                     stc,
+  const on_type_formatting_item_t* items)
 {
+  // the items should first be sorted, because the language server
+  // may return them in any order
+  on_type_formatting_item_t sorted_items(items->begin(), items->end());
+
+  std::ranges::sort(
+    sorted_items,
+    [stc](const auto& a, const auto& b)
+    {
+      return a.range.start.to_pos(stc) < b.range.start.to_pos(stc);
+    });
+
+  int        caret_delta = 0;
+  const auto curr        = stc->GetCurrentPos();
+
+  // apply the sorted items to the stc, and in reverse order to avoid messing
+  // up the positions of the remaining items.
+  // Only edit updates after the caret should contribute to
+  // cursor movement. See review comment in pull request 128:
+  // https://github.com/antonvw/wex/pull/1288
+  for (const auto& item : sorted_items | std::views::reverse)
+  {
+    const auto delta(item.replace_target(stc));
+
+    if (const auto start = item.range.start.to_pos(stc); start < curr)
+    {
+      caret_delta += delta;
+    }
+  }
+
+  stc->SetCurrentPos(curr + caret_delta);
+  stc->SelectNone();
+}
+
+void set_lsp_show_message(wxWindow* parent, const show_message_item* item)
+{
+  if (!item->is_show)
+  {
+    switch (item->type)
+    {
+      case show_message_item::DEBUG:
+        log::debug(item->message);
+        break;
+      case show_message_item::ERRORS:
+        log(item->message);
+        break;
+      case show_message_item::INFO:
+        log::info(item->message);
+        break;
+      case show_message_item::LOG:
+        log::trace(item->message);
+        break;
+      case show_message_item::WARNING:
+        log::warning(item->message);
+        break;
+      default:
+        log("unhandled show_message type") << static_cast<int>(item->type);
+    }
+  }
+  else
+  {
+    auto* info = new wxInfoBar(parent);
+    info->ShowMessage(item->message);
+  }
+
+  delete item;
 }
 } // namespace wex

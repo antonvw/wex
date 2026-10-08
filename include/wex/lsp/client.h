@@ -14,13 +14,13 @@
 #include <boost/asio.hpp>
 #include <boost/process.hpp>
 
+#include <wex/core/lsp.h>
 #include <wex/core/path.h>
 #include <wex/factory/window.h>
 #include <wex/lsp/capabilities.h>
 #include <wex/lsp/json-rpc.h>
 #include <wex/lsp/listen-to-server.h>
 #include <wex/syntax/lexer.h>
-#include <wex/ui/lsp.h>
 
 class wxEvtHandler;
 

@@ -65,7 +65,7 @@ TEST_CASE("wex::lsp::json_rpc")
       "Content-Length: 63\r\n\r\n"
       "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{}}";
 
-    wex::lsp::json_rpc_message msg = rpc.decode(message);
+    wex::json_rpc_message msg = rpc.decode(message);
 
     REQUIRE(msg.id == 1);
     REQUIRE(msg.method == "initialize");
@@ -77,7 +77,7 @@ TEST_CASE("wex::lsp::json_rpc")
       "Content-Length: 58\r\n\r\n"
       "{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{\"capabilities\":{}}}";
 
-    wex::lsp::json_rpc_message msg = rpc.decode(message);
+    wex::json_rpc_message msg = rpc.decode(message);
 
     REQUIRE(msg.id == 1);
     REQUIRE(msg.is_error == false);
@@ -89,7 +89,7 @@ TEST_CASE("wex::lsp::json_rpc")
                           "{\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-"
                           "32600,\"message\":\"Invalid\"}}";
 
-    wex::lsp::json_rpc_message msg = rpc.decode(message);
+    wex::json_rpc_message msg = rpc.decode(message);
 
     REQUIRE(msg.is_error == true);
     REQUIRE(msg.id == 1);
@@ -97,11 +97,11 @@ TEST_CASE("wex::lsp::json_rpc")
 
   SECTION("register_and_handle_response")
   {
-    bool                       handled = false;
-    wex::lsp::json_rpc_message received_msg;
+    bool                  handled = false;
+    wex::json_rpc_message received_msg;
 
     wex::lsp::response_handler hdl(
-      [&](const wex::lsp::json_rpc_message& msg)
+      [&](const wex::json_rpc_message& msg)
       {
         handled      = true;
         received_msg = msg;
@@ -109,7 +109,7 @@ TEST_CASE("wex::lsp::json_rpc")
 
     rpc.register_handler(hdl);
 
-    wex::lsp::json_rpc_message msg;
+    wex::json_rpc_message msg;
     msg.id = 1;
 
     rpc.handle_response(msg);

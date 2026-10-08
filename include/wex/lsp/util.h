@@ -10,7 +10,7 @@
 #include <boost/json.hpp>
 #include <string>
 
-#include <wex/ui/lsp.h>
+#include <wex/core/lsp.h>
 
 class wxEvtHandler;
 

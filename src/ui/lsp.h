@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      frame-lsp.h
+// Name:      lsp.h
 // Purpose:   Implementation of frame ui lsp methods.
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/lsp.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
-#include <wex/ui/lsp.h>
 
 namespace wex
 {

@@ -9,7 +9,7 @@
 #include <wex/factory/bind.h>
 #include <wex/ui/defs.h>
 
-#include "lsp-ui.h"
+#include "lsp.h"
 
 #define LSP_HANDLE(TYPE, FUNCTION)                                             \
   {[=, this](const wxCommandEvent& event)                                      \

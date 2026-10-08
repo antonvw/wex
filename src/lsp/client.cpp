@@ -11,7 +11,6 @@
 #include <wex/lsp/util.h>
 #include <wex/syntax/lexers.h>
 #include <wex/ui/defs.h>
-#include <wex/ui/lsp.h>
 
 #include <expected>
 #include <utility>
@@ -153,15 +152,9 @@ bool client::code_action(const wex::path& path, const range_item& range)
     m_rpc.encode_request("textDocument/codeAction", params),
     [=, this](const json_rpc_message& msg)
     {
-      auto* actions = new code_actions_t;
+      auto* actions = new code_actions_t(msg);
 
-      for (const auto& item : msg.result_array)
-      {
-        std::cout << item << "\n";
-        //actions->edits.emplace_back(item.as_object());
-      }
-
-      if (actions->edits.empty())
+      if (actions->changes.empty())
       {
         delete actions;
         log("lsp::code_action") << "no quick fixes returned by server";

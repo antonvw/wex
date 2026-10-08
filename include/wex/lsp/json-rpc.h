@@ -21,19 +21,6 @@ namespace wex
 
 namespace lsp
 {
-/// Represents a JSON-RPC 2.0 message.
-struct json_rpc_message
-{
-  int id{-1}; // -1 for notifications
-
-  std::string method;
-
-  boost::json::object error, params, result;
-  boost::json::array  result_array;
-
-  bool is_error{false};
-};
-
 /// Callback for handling JSON-RPC responses.
 using response_handler = std::function<void(const json_rpc_message&)>;
 
