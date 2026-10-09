@@ -70,38 +70,42 @@ TEST_CASE("wex::lsp")
   {
     const std::string text = R"(
     {
-      "arguments": [
-        {
-          "changes": {
-            "file:///Users/anton/wex/src/ex/vi/vi.cpp": [
-              {
-                "newText": "",
-                "range": {
-                  "end": {
-                    "character": 0,
-                    "line": 22
-                  },
-                  "start": {
-                    "character": 0,
-                    "line": 21
+    "id": 3,
+    "jsonrpc": "2.0",
+    "result": [{
+        "arguments": [{
+            "changes": {
+              "file:///Users/anton/wex/src/ex/vi/vi.cpp": [
+                {
+                  "newText": "",
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 22
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 21
+                    }
                   }
                 }
-              }
-            ]
-          }
-        }
-      ],
-      "command": "clangd.applyFix",
-      "title": "Apply fix: remove #include directive"
+              ]
+            }
+        }],
+        "command": "clangd.applyFix",
+        "title": "Apply fix: remove #include directive"
+      }]
     }
     )";
 
+    const auto parsed = boost::json::parse(text);
+    auto       obj    = parsed.as_object();
+
     wex::json_rpc_message msg;
-    const auto            parsed = boost::json::parse(text);
-    msg.result_array             = parsed.as_array();
+    msg.result_array = obj["result"].as_array();
     wex::code_action_item item(msg);
 
-    REQUIRE(item.edits.size() == 1);
+    REQUIRE(item.changes.size() == 1);
   }
 
   SECTION("completion_item_element")

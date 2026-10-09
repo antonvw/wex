@@ -33,14 +33,12 @@ json_to_string(const boost::json::value& val, const std::string& key)
 
 code_action_item::code_action_item(const json_rpc_message& msg)
 {
+  std::vector<code_action_edit_item> edits;
+
   for (const auto& item : msg.result_array)
   {
-    std::cout << item << "\n";
-
-    std::string command, title, kind;
-    title   = json_to_string(item, "title");
-    kind    = json_to_string(item, "kind");
-    command = json_to_string(item, "command");
+    // kind and command not yet used
+    const auto title = json_to_string(item, "title");
 
     for (const auto& sub : item.at("arguments").as_array())
     {
@@ -65,7 +63,7 @@ std::stringstream code_action_item::log() const
 {
   std::stringstream ss;
 
-  ss << " edits size: " << edits.size() << " changes size: " << changes.size();
+  ss << "changes size: " << changes.size();
 
   return ss;
 }

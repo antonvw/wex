@@ -12,6 +12,7 @@
 #include <boost/url.hpp>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
+#include <wex/factory/stc-undo.h>
 #include <wex/syntax/indicator.h>
 #include <wx/infobar.h>
 #include <wx/menu.h>
@@ -43,6 +44,8 @@ void set_lsp_code_actions(wex::frame* frame, const code_actions_t* actions)
 
     if (auto* stc = frame->open_file(make_path_skip_uri(file)); stc != nullptr)
     {
+      stc_undo undo(stc);
+
       for (const auto& each : changes | std::views::reverse)
       {
         log::trace("set_lsp_code_actions") << file << each.log() << ss.str();

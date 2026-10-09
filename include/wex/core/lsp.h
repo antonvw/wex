@@ -150,7 +150,6 @@ struct code_action_item
   std::stringstream log() const;
 
   std::map<std::string, std::vector<code_action_edit_change_item>> changes;
-  std::vector<code_action_edit_item>                               edits;
 };
 
 /// Represents an element of a completion item.
