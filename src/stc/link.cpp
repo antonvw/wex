@@ -104,6 +104,7 @@ bool wex::stc::link_open(link_t mode, std::string* link)
 
   const auto& text(!sel.empty() ? sel : get_current_line_text(m_link, this));
   bool        found(false);
+  size_t      links{0};
 
   for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
          text,
@@ -113,11 +114,14 @@ bool wex::stc::link_open(link_t mode, std::string* link)
     {
       data::control data;
 
-      if (const wex::path path(m_link->get_path(it, data, this));
-          !path.string().empty())
+      if (
+        const wex::path path(m_link->get_path(it, data, this));
+        !path.string().empty())
       {
         if (link != nullptr)
         {
+          links++;
+
           if (!link->empty())
           {
             *link += ",";
@@ -139,11 +143,12 @@ bool wex::stc::link_open(link_t mode, std::string* link)
     // Open at most one mime link.
     if (!found && mode[LINK_OPEN_MIME])
     {
-      if (const wex::path_lexer path(m_link->get_path(
-            it,
-            data::control().line(link::LINE_OPEN_URL),
-            this));
-          !path.string().empty())
+      if (
+        const wex::path_lexer path(m_link->get_path(
+          it,
+          data::control().line(link::LINE_OPEN_URL),
+          this));
+        !path.string().empty())
       {
         if (!mode[LINK_CHECK])
         {
@@ -153,11 +158,12 @@ bool wex::stc::link_open(link_t mode, std::string* link)
           }
         }
       }
-      else if (const wex::path mime(m_link->get_path(
-                 it,
-                 data::control().line(link::LINE_OPEN_MIME),
-                 this));
-               !mime.string().empty())
+      else if (
+        const wex::path mime(m_link->get_path(
+          it,
+          data::control().line(link::LINE_OPEN_MIME),
+          this));
+        !mime.string().empty())
       {
         found = (!mode[LINK_CHECK]) ? mime.open_mime() : true;
       }
@@ -166,7 +172,10 @@ bool wex::stc::link_open(link_t mode, std::string* link)
 
   if (link != nullptr && found)
   {
-    *link = find_tail(*link, 25);
+    if (link->size() > 25)
+    {
+      *link = std::format("{} Links", links);
+    }
   }
 
   return found;
