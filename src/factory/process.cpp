@@ -19,7 +19,7 @@
 #include "data-to-std-in.h"
 
 #ifdef __WXMSW__
-#include "subprocess.hpp"
+#include <subprocess.hpp>
 #endif
 
 namespace wex::factory
