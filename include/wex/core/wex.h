@@ -2,7 +2,7 @@
 // Name:      core/wex.h
 // Purpose:   General wex include file
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -19,6 +19,7 @@
 #include <wex/core/interruptible.h>
 #include <wex/core/log-none.h>
 #include <wex/core/log.h>
+#include <wex/core/lsp.h>
 #include <wex/core/menu-command.h>
 #include <wex/core/path.h>
 #include <wex/core/reflection.h>

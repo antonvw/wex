@@ -11,7 +11,6 @@
 #include <wex/lsp/util.h>
 #include <wex/syntax/lexers.h>
 #include <wex/ui/defs.h>
-#include <wex/ui/lsp.h>
 
 #include <expected>
 #include <utility>
@@ -102,6 +101,70 @@ client::client(lexer lexer, wxEvtHandler* event_handler)
   , m_rpc(event_handler)
   , m_event_handler(event_handler)
 {
+}
+
+bool client::code_action(const wex::path& path, const range_item& range)
+{
+  boost::json::object params, text_doc, context;
+  text_doc["uri"]        = path.uri();
+  params["range"]        = range.json_object();
+  params["textDocument"] = text_doc;
+
+  boost::json::array diagnostics;
+
+  // check whether confirmed range is within diagnostic range
+  for (const auto& diagnostic : m_rpc.get_diagnostics().get(path.uri()))
+  {
+    const bool in_range = diagnostic.range.start.line >= range.start.line &&
+                          diagnostic.range.end.line <= range.end.line;
+
+    if (in_range)
+    {
+      boost::json::object diag;
+      diag["range"]    = diagnostic.range.json_object();
+      diag["message"]  = diagnostic.message;
+      diag["severity"] = static_cast<int>(diagnostic.severity);
+
+      if (!diagnostic.code.empty())
+      {
+        diag["code"] = diagnostic.code;
+      }
+
+      if (!diagnostic.source.empty())
+      {
+        diag["source"] = diagnostic.source;
+      }
+
+      diagnostics.emplace_back(diag);
+    }
+  }
+
+  log::trace("code_action request") << diagnostics.size();
+
+  context["diagnostics"] = diagnostics;
+
+  boost::json::array only;
+  only.emplace_back("quickfix");
+  context["only"]   = only;
+  params["context"] = context;
+
+  return write(
+    m_rpc.encode_request("textDocument/codeAction", params),
+    [=, this](const json_rpc_message& msg)
+    {
+      auto* actions = new code_actions_t(msg);
+
+      if (actions->changes.empty())
+      {
+        delete actions;
+        log("lsp::code_action") << "no quick fixes returned by server";
+      }
+      else
+      {
+        log::trace("code_action response") << actions->changes.size();
+        queue_event(m_event_handler, path.uri(), ID_LSP_CODE_ACTION, actions);
+      }
+    });
 }
 
 bool client::completion(

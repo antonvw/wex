@@ -5,184 +5,92 @@
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wex/core/log-none.h>
+#include <wex/core/lsp.h>
 #include <wex/test/test.h>
-#include <wex/ui/lsp.h>
 
+#include "../src/ui/lsp.h"
 #include "test.h"
-
-boost::json::object string_to_json(const std::string& text)
-{
-  auto parsed = boost::json::parse(text);
-  return parsed.as_object();
-}
 
 TEST_CASE("wex::lsp")
 {
   auto* stc = new wex::test::ui_stc();
 
-  SECTION("position_item")
+  SECTION("make_path_skip_uri")
   {
-    wex::position_item item;
-    REQUIRE(item.line == 0);
-    REQUIRE(item.character == 0);
-    REQUIRE(item.to_pos(stc) == 0);
-  }
-
-  SECTION("range_item")
-  {
-    wex::range_item item;
-    REQUIRE(item.start.line == 0);
-    REQUIRE(item.start.character == 0);
-    REQUIRE(item.end.line == 0);
-    REQUIRE(item.end.character == 0);
-
-    item.set_target(stc);
-    REQUIRE(stc->GetTargetStart() == 0);
-    REQUIRE(stc->GetTargetEnd() == 0);
-
-    const auto obj(string_to_json("{\"range\":{\
-         \"end\":{\"character\":30,\"line\":1153},\
-         \"start\":{\"character\":19,\"line\":1151}}}"));
-
-    REQUIRE(item.set(obj));
-    REQUIRE(item.start.line == 1151);
-    REQUIRE(item.start.character == 19);
-    REQUIRE(item.end.line == 1153);
-    REQUIRE(item.end.character == 30);
-  }
-
-  SECTION("completion_item_element")
-  {
-    const auto obj(string_to_json("{\"range\":{\
-         \"end\":{\"character\":30,\"line\":1153},\
-         \"start\":{\"character\":19,\"line\":1151}}}"));
-
-    wex::completion_item_element item(obj);
-    REQUIRE(item.insert_text.empty());
-    REQUIRE(item.kind == 0);
-    REQUIRE(item.detail.empty());
-    REQUIRE(item.documentation.empty());
-  }
-
-  SECTION("completion_item")
-  {
-    wex::completion_item item(wex::position_item(0, 0), boost::json::object());
-
-    REQUIRE(item.pos.line == 0);
-    REQUIRE(item.pos.character == 0);
-  }
-
-  SECTION("definition_or_implementation_item")
-  {
-    const auto obj(string_to_json("{\
-       \"uri\": \"file:///project/src/utils.ts\",\
-       \"range\": {\
-         \"start\": { \"line\": 10, \"character\": 2 },\
-         \"end\": { \"line\": 11, \"character\": 5 }\
-       }}"));
-
-    wex::definition_or_implementation_item item(obj);
-    REQUIRE(item.uri == "file:///project/src/utils.ts");
-    REQUIRE(item.range.start.line == 10);
-    REQUIRE(item.range.start.character == 2);
-    REQUIRE(item.range.end.line == 11);
-    REQUIRE(item.range.end.character == 5);
-  }
-
-  SECTION("diagnostic_item")
-  {
-    const auto obj(string_to_json("{\
-      \"range\": {\
-        \"start\": { \"line\": 3, \"character\": 10 },\
-        \"end\":   { \"line\": 4, \"character\": 15 }\
-      },\
-      \"severity\": 1,\
-      \"code\": \"TS2345\",\
-      \"source\": \"typescript\",\
-      \"message\": \"Argument of type 'string' is not assignable to parameter of type 'number'.\"\
-    }"));
-
-    wex::diagnostic_item item(obj);
-    REQUIRE(item.range.start.line == 3);
-    REQUIRE(item.range.start.character == 10);
-    REQUIRE(item.range.end.line == 4);
-    REQUIRE(item.range.end.character == 15);
-  }
-
-  SECTION("hover_item")
-  {
-    const auto obj(string_to_json("{\
-      \"contents\": {\
-        \"kind\": \"markdown\",\
-        \"value\": \"### add(a, b)\\n\\nAdds two numbers and returns the result\"\
-      },\
-      \"range\": {\
-        \"start\": { \"line\": 10, \"character\": 2 },\
-        \"end\":   { \"line\": 10, \"character\": 5 }\
-      }\
-    }"));
-
-    wex::hover_item item(obj);
-    CAPTURE(item.contents);
-    REQUIRE(item.contents.starts_with("\"### add"));
-    REQUIRE(item.kind == "markdown");
-  }
-
-  SECTION("json_to_string")
-  {
-    const auto obj(string_to_json("{\
-      \"range\": {\
-        \"start\": { \"line\": \"0\", \"character\": 10 },\
-        \"mid\": { \"line\": 0, \"character\": 10 },\
-        \"end\": { \"line\": 1, \"character\": 14 }\
-      },\
-      \"line2\": \"5\",\
-      \"newText\": \"formatted\"\
-      }"));
-
-    wex::log_none off;
-
-    REQUIRE(wex::json_to_string(obj, "ewText").empty());
-    REQUIRE(wex::json_to_string(obj, "range").empty());
-    REQUIRE(wex::json_to_string(obj, "line").empty());
-    REQUIRE(wex::json_to_string(obj, "line2") == "5");
-    REQUIRE(wex::json_to_string(obj, "newText") == "formatted");
-  }
-
-  SECTION("on_type_formatting")
-  {
-    const auto obj(string_to_json("{\
-      \"range\": {\
-        \"start\": { \"line\": 0, \"character\": 10 },\
-        \"end\": { \"line\": 0, \"character\": 14 }\
-      },\
-      \"newText\": \"formatted\"\
-      }"));
-
-    stc->set_text("This is a test string for on-type formatting");
-
-    wex::on_type_formatting_item item(obj);
-    CAPTURE(item.new_text);
-    REQUIRE(item.range.start.to_pos(stc) == 10);
-    REQUIRE(item.range.end.to_pos(stc) == 14);
-    REQUIRE(item.new_text == "formatted");
-    REQUIRE(item.replace_target(stc) == 5);
+    REQUIRE(wex::make_path_skip_uri(std::string()).empty());
     REQUIRE(
-      stc->GetText() == "This is a formatted string for on-type formatting");
+      wex::make_path_skip_uri("file:///path/to/file").string() ==
+      "/path/to/file");
+    REQUIRE(
+      wex::make_path_skip_uri("file:///path/to/file%20xyz").string() ==
+      "/path/to/file xyz");
   }
 
-  SECTION("show_message_item")
+  SECTION("set_lsp_completions")
   {
-    const auto obj(string_to_json("{\
-      \"type\": 1,\
-      \"message\": \"Build succeeded in 1.24s\"\
-    }"));
+    auto* items = new wex::completions_t(
+      wex::completion_item(wex::position_item(0, 0), boost::json::object()));
 
-    wex::show_message_item item(obj);
-    REQUIRE(item.type == 1);
-    REQUIRE(item.is_show);
-    CAPTURE(item.message);
-    REQUIRE(item.message.starts_with("Build succ"));
+    wex::completion_item_element item("label");
+    items->elements.emplace_back(item);
+
+    wex::set_lsp_completions(stc, items, frame());
+  }
+
+  SECTION("set_lsp_definition_or_implementation")
+  {
+    auto* items = new wex::definition_or_implementation_t;
+
+    wex::definition_or_implementation_item item(
+      "file:///project/src/utils.ts",
+      wex::range_item(wex::position_item(10, 2), wex::position_item(11, 5)));
+    items->emplace_back(item);
+
+    wex::set_lsp_definition_or_implementation(frame(), items);
+  }
+
+  SECTION("set_lsp_diagnostics")
+  {
+    auto* diagnostics = new wex::diagnostics_t;
+
+    diagnostics->emplace_back(
+      wex::diagnostic_item(
+        wex::range_item(wex::position_item(10, 2), wex::position_item(11, 5)),
+        "Test diagnostic message"));
+
+    wex::set_lsp_diagnostics(stc, diagnostics);
+  }
+
+  SECTION("set_lsp_hover")
+  {
+    wex::set_lsp_hover(
+      frame(),
+      stc,
+      new wex::hover_item(wex::position_item(10, 2), "Test hover contents"));
+  }
+
+  SECTION("set_lsp_on_type")
+  {
+    auto* items = new wex::on_type_formatting_item_t;
+
+    items->emplace_back(
+      wex::on_type_formatting_item(
+        wex::range_item(wex::position_item(12, 2), wex::position_item(12, 5)),
+        "xyz"));
+    items->emplace_back(
+      wex::on_type_formatting_item(
+        wex::range_item(wex::position_item(10, 2), wex::position_item(11, 5)),
+        "abc"));
+
+    wex::set_lsp_on_type(frame(), stc, items);
+  }
+
+  SECTION("set_lsp_show_message")
+  {
+    wex::set_lsp_show_message(
+      frame(),
+      new wex::show_message_item(
+        wex::show_message_item::INFO,
+        "Test show message"));
   }
 }

@@ -9,7 +9,7 @@
 #include <wex/factory/bind.h>
 #include <wex/ui/defs.h>
 
-#include "lsp-ui.h"
+#include "lsp.h"
 
 #define LSP_HANDLE(TYPE, FUNCTION)                                             \
   {[=, this](const wxCommandEvent& event)                                      \
@@ -41,6 +41,17 @@ void wex::frame::bind_lsp()
 {
   bind(this).command(
     {{[=, this](const wxCommandEvent& event)
+      {
+        auto* item = static_cast<code_actions_t*>(event.GetClientData());
+
+        if (item != nullptr && !item->changes.empty())
+        {
+          set_lsp_code_actions(this, item);
+        }
+      },
+      ID_LSP_CODE_ACTION},
+
+     {[=, this](const wxCommandEvent& event)
       {
         auto* item = static_cast<completions_t*>(event.GetClientData());
 
@@ -77,8 +88,10 @@ void wex::frame::bind_lsp()
             set_lsp_diagnostics(dynamic_cast<syntax::stc*>(stc), item);
           }
         }
-
-        delete item;
+        else
+        {
+          delete item;
+        }
       },
       ID_LSP_DIAGNOSTICS},
 
@@ -99,7 +112,6 @@ void wex::frame::bind_lsp()
           item != nullptr)
         {
           set_lsp_show_message(this, item);
-          delete item;
         }
       },
       ID_LSP_SHOW_MESSAGE}});

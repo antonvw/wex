@@ -35,6 +35,9 @@ public:
     CAP_IMPLEMENTATION, ///< implementation capability
   };
 
+  /// A typedef containing capability flags.
+  using capabilities_t = std::bitset<6>;
+
   /// Appends a menu entries, depending on capability for it.
   /// The menu text is derived from the support info, with Goto prefixed.
   /// Returns true if entry was appended.
@@ -47,9 +50,6 @@ public:
       int,
       /// event id that will be done if selected
       int>>& v) const;
-
-  /// A typedef containing capability flags.
-  using capabilities_t = std::bitset<6>;
 
   /// Returns the wex client capabilities.
   boost::json::object client() const;

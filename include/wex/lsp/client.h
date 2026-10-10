@@ -14,13 +14,13 @@
 #include <boost/asio.hpp>
 #include <boost/process.hpp>
 
+#include <wex/core/lsp.h>
 #include <wex/core/path.h>
 #include <wex/factory/window.h>
 #include <wex/lsp/capabilities.h>
 #include <wex/lsp/json-rpc.h>
 #include <wex/lsp/listen-to-server.h>
 #include <wex/syntax/lexer.h>
-#include <wex/ui/lsp.h>
 
 class wxEvtHandler;
 
@@ -43,6 +43,10 @@ public:
 
   /// Destructor.
   ~client() = default;
+
+  /// Requests code actions (quick fixes) for diagnostics in range.
+  /// Returns true if successful.
+  bool code_action(const wex::path& path, const range_item& range);
 
   /// Requests code completion at position.
   /// Returns true if successful.

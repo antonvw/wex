@@ -8,6 +8,7 @@
 #include <wex/core/config.h>
 #include <wex/core/core.h>
 #include <wex/core/log.h>
+#include <wex/core/lsp.h>
 #include <wex/factory/util.h>
 #include <wex/lsp/client.h>
 #include <wex/stc/auto-complete.h>
@@ -16,7 +17,6 @@
 #include <wex/ui/debug-entry.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/frd.h>
-#include <wex/ui/lsp.h>
 #include <wex/ui/menu.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 

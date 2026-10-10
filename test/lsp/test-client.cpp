@@ -39,7 +39,7 @@ TEST_CASE("wex::lsp::client")
 
   SECTION("others")
   {
-    const wex::path path("/Users/anton/wex/test/data/test.h");
+    const wex::path path("test.h");
 
     REQUIRE(client.initialize(wex::test::get_path()));
     REQUIRE(!client.completion(path, wex::position_item(5, 5)));

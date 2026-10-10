@@ -1,18 +1,25 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      frame-lsp.h
+// Name:      lsp.h
 // Purpose:   Implementation of frame ui lsp methods.
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wex/core/lsp.h>
 #include <wex/syntax/stc.h>
 #include <wex/ui/frame.h>
-#include <wex/ui/lsp.h>
 
 namespace wex
 {
 /// Returns a path from a uri, with any percent‐escapes in the string decoded.
 path make_path_skip_uri(const std::string& uri);
+
+/// Sets lsp code actions (quick fixes).
+void set_lsp_code_actions(
+  /// the frame to show actions in
+  wex::frame* frame,
+  /// the code actions to set
+  const code_actions_t* actions);
 
 /// Sets lsp completions.
 void set_lsp_completions(

@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include <map>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -25,6 +26,19 @@ enum class severity_t
   WARNING = 2,
   INFO    = 3,
   HINT    = 4
+};
+
+/// Represents a JSON-RPC 2.0 message.
+struct json_rpc_message
+{
+  int id{-1}; // -1 for notifications
+
+  std::string method;
+
+  boost::json::object error, params, result;
+  boost::json::array  result_array;
+
+  bool is_error{false};
 };
 
 /// - Each class used in a request will have a json_object() function to convert
@@ -89,6 +103,55 @@ struct range_item
   position_item start, end;
 };
 
+/// Represents a single code action edit change.
+struct code_action_edit_change_item
+{
+  /// Default constructor, taking a range and new_text.
+  code_action_edit_change_item(
+    const range_item& rnge    = range_item(),
+    std::string       nw_text = std::string());
+
+  /// Constructor from a JSON object,
+  /// as received from the language server.
+  code_action_edit_change_item(const boost::json::object& obj);
+
+  /// Logs info about this class.
+  std::stringstream log() const;
+
+  /// Replaces the range in the given wxStyledTextCtrl with the new text
+  /// specified in this item.
+  /// Returns the difference in stc size caused by replacing.
+  int replace_target(wxStyledTextCtrl* stc) const;
+
+  std::string new_text;
+  range_item  range;
+};
+
+/// Represents a code action edit, containing a map
+/// of file with edit changes.
+struct code_action_edit_item
+{
+  /// Constructor from a JSON object,
+  /// as received from the language server.
+  code_action_edit_item(const boost::json::object& obj);
+
+  std::map<std::string, std::vector<code_action_edit_change_item>> changes;
+};
+
+/// Represents a code action item (quick fix).
+/// It contains a number of code_action_edit_items.
+struct code_action_item
+{
+  /// Constructor from a JSON RPC object,
+  /// as received from the language server.
+  code_action_item(const json_rpc_message& msg);
+
+  /// Logs info about this class.
+  std::stringstream log() const;
+
+  std::map<std::string, std::vector<code_action_edit_change_item>> changes;
+};
+
 /// Represents an element of a completion item.
 struct completion_item_element
 {
@@ -148,6 +211,9 @@ struct diagnostic_item
   /// as received from the language server.
   diagnostic_item(const boost::json::object& obj);
 
+  /// Logs info about this class.
+  std::stringstream log() const;
+
   const range_item range;
 
   /// Severity of the diagnostic
@@ -175,7 +241,7 @@ struct hover_item
 
 /// Represents an on-type formatting item, which specifies text changes to
 /// be applied when a specific character is typed.
-struct on_type_formatting_item
+struct on_type_formatting_item : public code_action_edit_change_item
 {
   /// Default constructor, taking a range and new_text.
   on_type_formatting_item(
@@ -185,18 +251,6 @@ struct on_type_formatting_item
   /// Constructor from a JSON object,
   /// as received from the language server.
   on_type_formatting_item(const boost::json::object& obj);
-
-  /// Logs info about this class.
-  std::stringstream log() const;
-
-  /// Replaces the range in the given wxStyledTextCtrl with the new text
-  /// specified in this item.
-  /// Returns the difference in stc size caused by replacing.
-  int replace_target(wxStyledTextCtrl* stc) const;
-
-  std::string new_text;
-
-  range_item range;
 };
 
 /// Represents a show or a log message item.
@@ -234,6 +288,9 @@ std::string json_to_string(
   const boost::json::value& val,
   /// the key
   const std::string& key);
+
+/// Type alias for a collection of code actions returned by the language server.
+using code_actions_t = code_action_item;
 
 /// Type alias for collections of completions returned by the language server.
 using completions_t = completion_item;

@@ -11,7 +11,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include <wex/ui/lsp.h>
+#include <wex/core/lsp.h>
 
 namespace wex
 {

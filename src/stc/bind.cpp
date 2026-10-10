@@ -480,6 +480,32 @@ void wex::stc::bind_all()
 
      {[=, this](const wxCommandEvent& event)
       {
+        if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
+        {
+          const int        line = GetCurrentLine();
+          const range_item item(
+            {line, 0},
+            {line, GetLineEndPosition(line) - PositionFromLine(line)});
+          client->code_action(path(), item);
+        }
+      },
+      id::stc::lsp_quick_fix},
+
+     {[=, this](const wxCommandEvent& event)
+      {
+        if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
+        {
+          const int        end = get_line_count() - 1;
+          const range_item item(
+            {0, 0},
+            {end, GetLineEndPosition(end) - PositionFromLine(end)});
+          client->code_action(path(), item);
+        }
+      },
+      id::stc::lsp_quick_fix_all},
+
+     {[=, this](const wxCommandEvent& event)
+      {
         link_open(link_t().set(LINK_OPEN_MIME));
       },
       id::stc::open_mime},
@@ -547,6 +573,27 @@ void wex::stc::bind_all()
 void wex::stc::build_popup_menu(menu& menu)
 {
   const auto sel(GetSelectedText().ToStdString());
+
+  if (
+    const std::string annotation(
+      AnnotationGetText(GetCurrentLine()).ToStdString());
+    !annotation.empty())
+  {
+    if (regex r("(.*) \\(fix(es)? available\\)"); r.search(annotation) > 0)
+    {
+      if (const auto caption(r[0]); r.back() == "es")
+      {
+        menu.append(
+          {{id::stc::lsp_quick_fix, "Fix " + truncate_middle(caption, 20)},
+           {id::stc::lsp_quick_fix_all, "Fix All"}});
+      }
+      else
+      {
+        menu.append(
+          {{id::stc::lsp_quick_fix, "Fix " + truncate_middle(caption, 20)}});
+      }
+    }
+  }
 
   if (
     get_current_line() == 0 && sel.empty() &&

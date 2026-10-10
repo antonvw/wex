@@ -71,6 +71,24 @@ boost::json::object capabilities::client() const
             "valueSet": [1, 2, 3, 4, 5, 6, 7]
           }
         },
+        "codeActionLiteralSupport":
+        {
+          "codeActionKind":
+          {
+            "valueSet":
+            [
+              "",
+              "quickfix",
+              "refactor",
+              "refactor.extract",
+              "refactor.inline",
+              "refactor.rewrite",
+              "source",
+              "source.organizeImports",
+              "source.fixAll"
+            ]
+          }
+        },
         "declaration":
         {
           "dynamicRegistration": false
