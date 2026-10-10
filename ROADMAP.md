@@ -14,7 +14,7 @@
 
 ## what exactly are we doing?
 
-- offering a stable master branch that results in a
+- offering a stable main branch that results in a
   cmake buildable library with classes that
   extend wxWidgets classes with vi / ex classes, using
   c++ standard and boost c++ libraries

@@ -69,7 +69,7 @@ jobs:
         if:
           contains('
             refs/heads/develop
-            refs/heads/master
+            refs/heads/main
           ', github.ref)
         with:
           build-config: Release
@@ -82,7 +82,7 @@ jobs:
         if:
           contains('
             refs/heads/develop
-            refs/heads/master
+            refs/heads/main
           ', github.ref) == false
         with:
           build-config: Debug
