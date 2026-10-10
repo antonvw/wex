@@ -188,6 +188,26 @@ void wex::stc::bind_all()
 
   bind_wx();
 
+  const auto no_event = [=, this](auto action)
+  {
+    return [action = std::move(action)](const wxCommandEvent&)
+    {
+      action();
+    };
+  };
+
+  const auto lsp_action = [=, this](auto action)
+  {
+    return no_event([this, action]
+    {
+      if (auto* client = m_frame->lsp_clients_find(path());
+          client != nullptr)
+      {
+        action(*client);
+      }
+    });
+  };
+
   bind(this).command(
     {{[=, this](const wxCommandEvent& event)
       {
@@ -446,42 +466,6 @@ void wex::stc::bind_all()
       {
         if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
         {
-          client->declaration(path(), position_item(this));
-        }
-      },
-      id::stc::lsp_declaration},
-
-     {[=, this](const wxCommandEvent& event)
-      {
-        if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
-        {
-          client->definition(path(), position_item(this));
-        }
-      },
-      id::stc::lsp_definition},
-
-     {[=, this](const wxCommandEvent& event)
-      {
-        if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
-        {
-          client->implementation(path(), position_item(this));
-        }
-      },
-      id::stc::lsp_implementation},
-
-     {[=, this](const wxCommandEvent& event)
-      {
-        if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
-        {
-          client->definition(path(), position_item(this));
-        }
-      },
-      id::stc::lsp_location},
-
-     {[=, this](const wxCommandEvent& event)
-      {
-        if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
-        {
           const int        line = GetCurrentLine();
           const range_item item(
             {line, 0},
@@ -554,6 +538,36 @@ void wex::stc::bind_all()
         marker_move(this, false);
       },
       id::stc::marker_previous}});
+
+  bind(this).command(
+    {{lsp_action(
+        [this](auto& client)
+        {
+          client.declaration(path(), position_item(this));
+        }),
+      id::stc::lsp_declaration},
+
+     {lsp_action(
+        [this](auto& client)
+        {
+          client.definition(path(), position_item(this));
+        }),
+      id::stc::lsp_definition},
+
+     {lsp_action(
+        [this](auto& client)
+        {
+          client.implementation(path(), position_item(this));
+        }),
+      id::stc::lsp_implementation},
+
+     // location intentionally maps to definition:
+     {lsp_action(
+        [this](auto& client)
+        {
+          client.definition(path(), position_item(this));
+        }),
+      id::stc::lsp_location}});
 
   bind(this).command(
     {{[=, this](const wxCommandEvent& event)
