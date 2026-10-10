@@ -1,4 +1,4 @@
-file(GLOB_RECURSE SRCS ../src/*.cpp ../src/syntax/wex/*.cpp ../sample/*.cpp)
+file(GLOB_RECURSE SRCS ../src/*.cpp ../sample/*.cpp)
 file(GLOB_RECURSE INCLUDES ../include/*.h)
 file(GLOB MDS ../*.md)
 file(GLOB_RECURSE MDSR ../doc/*.md ../src/*.md ../test/*.md)
