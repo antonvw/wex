@@ -156,7 +156,8 @@ int wex::file_dialog::ShowModal()
 
   if (!(GetWindowStyle() & wxFD_SAVE) && (GetWindowStyle() & wxFD_HEX_MODE))
   {
-    is_customized = SetCustomizeHook(hook);
+    // TODO: the next code causes a crash on ShowModal
+    //is_customized = SetCustomizeHook(hook);
   }
 
   const auto id(wxFileDialog::ShowModal());
