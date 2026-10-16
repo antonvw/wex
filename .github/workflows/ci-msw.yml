@@ -96,5 +96,5 @@ jobs:
           ', github.ref) == false
         with:
           build-config: Debug
-          tests-regex: co|fa|sy|da
+          tests-regex: co|fa|sy|da|ui|lsp|ct|vi|stc|vcs|del
           verbose: true

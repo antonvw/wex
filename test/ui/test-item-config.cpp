@@ -2,7 +2,7 @@
 // Name:      test-item-config.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2023-2025 Anton van Wezenbeek
+// Copyright: (c) 2023-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/config.h>
@@ -35,7 +35,7 @@ TEST_CASE("wex::item-config")
       1.0,
       5.0,
       1.0,
-      wex::data::item().inc(static_cast<double>(1.0)));
+      wex::data::item().inc(1.0));
     const wex::item ci_sl("ci-sl", 1, 5, 2, wex::item::SLIDER);
     const wex::item ci_vl(wxLI_HORIZONTAL);
     wex::item       ci_str("ci-string", std::string());
@@ -43,7 +43,7 @@ TEST_CASE("wex::item-config")
       "ci-hyper",
       "www.wxwidgets.org",
       wex::item::HYPERLINKCTRL);
-    wex::item       ci_st("ci-static", "HELLO", wex::item::STATICTEXT);
+    wex::item       ci_st("<i>ci-static</i>", "HELLO", wex::item::STATICTEXT);
     const wex::item ci_int("ci-int", wex::item::TEXTCTRL_INT);
     const wex::item ci_grid("ci-grid", wex::item::GRID);
     const wex::item ci_rb("ci-rb", {{0, "Zero"}, {1, "One"}, {2, "Two"}}, true);
