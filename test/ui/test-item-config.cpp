@@ -30,12 +30,8 @@ TEST_CASE("wex::item-config")
       std::list<std::string>{"x:1", "y"});
     const wex::item ci_cb_dir("ci-cb-dir", wex::item::COMBOBOX_DIR);
     const wex::item ci_sp("ci-sp", 1, 5);
-    const wex::item ci_sp_d(
-      "ci-sp-d",
-      1.0,
-      5.0,
-      1.0,
-      wex::data::item().inc(1.0));
+    const wex::item
+      ci_sp_d("ci-sp-d", 1.0, 5.0, 1.0, wex::data::item().inc(1.0));
     const wex::item ci_sl("ci-sl", 1, 5, 2, wex::item::SLIDER);
     const wex::item ci_vl(wxLI_HORIZONTAL);
     wex::item       ci_str("ci-string", std::string());
