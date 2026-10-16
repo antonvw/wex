@@ -3,7 +3,7 @@
 <!--
 Name:    wex-lexers.xml
 Purpose: Lexers configuration for wex.
-         See lexilla 5.4.6 (https://www.scintilla.org/LexillaHistory.html)
+         See lexilla 5.5.4 (https://www.scintilla.org/LexillaHistory.html)
 Author:  Anton van Wezenbeek
 Copyright: (c) 2009-2026, Anton van Wezenbeek
 -->
@@ -25,86 +25,86 @@ Copyright: (c) 2009-2026, Anton van Wezenbeek
         <def style ="bracelight"> back:blue,fore:white</def>
         <def style ="char"> fore:pink </def>
         <def style ="classname"> fore:yellow,bold </def>
-        <def style ="command"> fore:steel blue </def>
-        <def style ="comment"> fore:paleturquoise,italic,back:gray 10,eol </def>
-        <def style ="commentdockeyword"> fore:paleturquoise,italic,underline,back:gray 10 </def>
+        <def style ="command"> fore:steelblue </def>
+        <def style ="comment"> fore:paleturquoise,italic,back:gray_10,eol </def>
+        <def style ="commentdockeyword"> fore:paleturquoise,italic,underline,back:gray_10 </def>
         <def style ="error"> fore:red,italic,eol </def>
         <def style ="folder"> blue </def>
-        <def style ="folder-back"> light blue </def>
-        <def style ="foldmarginbackground"> dim grey </def>
+        <def style ="folder-back"> lightblue </def>
+        <def style ="foldmarginbackground"> dimgray </def>
         <def style ="foldmarginforeground"> black </def>
-        <def style ="identifier"> fore:gray 86</def>
+        <def style ="identifier"> fore:gray_86</def>
         <def style ="keyword1"> fore:yellow </def>
-        <def style ="keyword2"> fore:yellow green </def>
-        <def style ="keyword3"> fore:medium spring green </def>
-        <def style ="label"> fore:medium slate blue,italic </def>
+        <def style ="keyword2"> fore:yellowgreen </def>
+        <def style ="keyword3"> fore:mediumspringgreen </def>
+        <def style ="label"> fore:mediumslateblue,italic </def>
         <def style ="number"> fore:plum </def>
         <def style ="operator"> fore:white </def>
         <def style ="preprocessor"> fore:grey </def>
-        <def style ="processor"> fore:dark grey </def>
+        <def style ="processor"> fore:darkgrey </def>
         <def style ="string"> fore:#ffab8f </def>
-        <def style ="styledefault"> default-font,back:gray 10,fore:ivory 3 </def>
-        <def style ="styledefault-back"> default-font,back:gray 10,fore:gray 73,eol </def>
+        <def style ="styledefault"> default-font,back:gray_10,fore:ivory_3 </def>
+        <def style ="styledefault-back"> default-font,back:gray_10,fore:gray_73,eol </def>
         <def style ="stylelinenumber"> fore:grey </def>
         <def style ="styleindicatordebug"> blue </def>
         <def style ="styleindicatorfind"> red </def>
         <def style ="styletextmargin-not-committed"> back:green </def>
         <def style ="styletextmargin-day"> back:blue </def>
-        <def style ="styletextmargin-week"> back:lightsteelblue 3 </def>
-        <def style ="styletextmargin-month"> back:gray 45 </def>
-        <def style ="styletextmargin-year"> back:gray 35 </def>
-        <def style ="styletextmargin"> back:gray 22</def>
-        <def style ="tag"> fore:cadet blue </def>
+        <def style ="styletextmargin-week"> back:lightsteelblue_3 </def>
+        <def style ="styletextmargin-month"> back:gray_45 </def>
+        <def style ="styletextmargin-year"> back:gray_35 </def>
+        <def style ="styletextmargin"> back:gray_22</def>
+        <def style ="tag"> fore:cadetblue </def>
         <def style ="variable"> fore:green </def>
 
         <colour name="caretforeground"> white </colour>
-        <colour name="caretlinebackground"> dark slate grey </colour>
-        <colour name="edge"> dim grey </colour>
+        <colour name="caretlinebackground"> darkslategray </colour>
+        <colour name="edge"> dimgray </colour>
         <colour name="selforeground"> black </colour>
         <colour name="selbackground"> green </colour>
       </theme>
 
       <!-- The light theme, resembles Visual Studio -->
       <theme name="light">
-        <def style ="attribute"> fore:steel blue </def>
+        <def style ="attribute"> fore:steelblue </def>
         <def style ="bracelight"> back:yellow,fore:black</def>
         <def style ="char"> fore:pink </def>
-        <def style ="classname"> fore:dark turquoise,bold </def>
-        <def style ="command"> fore:steel blue </def>
-        <def style ="comment"> fore:brown,italic,back:gray 95,eol </def>
-        <def style ="commentdockeyword"> fore:medium sea green,italic </def>
+        <def style ="classname"> fore:dark_turquoise,bold </def>
+        <def style ="command"> fore:steelblue </def>
+        <def style ="comment"> fore:brown,italic,back:gray_95,eol </def>
+        <def style ="commentdockeyword"> fore:mediumseagreen,italic </def>
         <def style ="error"> fore:red,italic,eol </def>
         <def style ="folder"> blue </def>
-        <def style ="folder-back"> steel blue </def>
+        <def style ="folder-back"> steelblue </def>
         <def style ="foldmarginbackground"> white </def>
-        <def style ="foldmarginforeground"> light blue </def>
+        <def style ="foldmarginforeground"> lightblue </def>
         <def style ="identifier"> fore:black</def>
-        <def style ="keyword1"> fore:dark turquoise </def>
-        <def style ="keyword2"> fore:dark green </def>
-        <def style ="keyword3"> fore:medium spring green </def>
-        <def style ="label"> fore:medium slate blue,italic </def>
+        <def style ="keyword1"> fore:dark_turquoise </def>
+        <def style ="keyword2"> fore:dark_green </def>
+        <def style ="keyword3"> fore:mediumspringgreen </def>
+        <def style ="label"> fore:mediumslateblue,italic </def>
         <def style ="number"> fore:red </def>
         <def style ="operator"> fore:brown </def>
         <def style ="preprocessor"> fore:grey </def>
-        <def style ="processor"> fore:dark grey </def>
+        <def style ="processor"> fore:darkgrey </def>
         <def style ="string"> fore:blue </def>
         <def style ="styledefault"> default-font,back:white,fore:black </def>
-        <def style ="styledefault-back"> default-font,back:gray 95,fore:green,eol </def>
+        <def style ="styledefault-back"> default-font,back:gray_95,fore:green,eol </def>
         <def style ="stylelinenumber"> back:white,fore:blue </def>
         <def style ="styletextmargin-not-committed"> back:blue </def>
         <def style ="styletextmargin-day"> back:blue </def>
         <def style ="styletextmargin-week"> back:lightsteelblue </def>
         <def style ="styletextmargin-month"> back:lightblue </def>
-        <def style ="styletextmargin-year"> back:gray 97 </def>
+        <def style ="styletextmargin-year"> back:gray_97 </def>
         <def style ="styletextmargin"> back:white </def>
         <def style ="styleindicatordebug"> blue </def>
         <def style ="styleindicatorfind"> red </def>
-        <def style ="tag"> fore:dark slate blue </def>
-        <def style ="variable"> fore:medium blue </def>
+        <def style ="tag"> fore:darkslateblue </def>
+        <def style ="variable"> fore:mediumblue </def>
 
         <colour name="caretforeground"> black </colour>
         <colour name="caretlinebackground"> wheat </colour>
-        <colour name="edge"> light blue </colour>
+        <colour name="edge"> lightblue </colour>
         <colour name="selforeground"> black </colour>
         <colour name="selbackground"> green </colour>
       </theme>
@@ -141,7 +141,7 @@ Copyright: (c) 2009-2026, Anton van Wezenbeek
     <marker no="marknum_folderopen"> mark_minus,folder,folder-back </marker>
 
     <!-- ex_marknum_change is used by stc to show changes -->
-    <marker no="ex_marknum_change">mark_fullrect,green,light blue</marker>
+    <marker no="ex_marknum_change">mark_fullrect,green,lightblue</marker>
     <!-- ex_marknum_vi is used by vi markers -->
     <marker no="ex_marknum_vi"> mark_character,blue,turquoise </marker>
     <!-- ex_marknum_break is used by debugging -->
@@ -1036,7 +1036,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   <lexer name="clarionnocase" macro="clarion"/>
   <lexer name="cmake" extensions="CMakeLists.txt;*.cmake;meson.build" lsp="neocmakelsp" lsp-args="stdio">
     <styles>
-      <style no="whiledef,foreachdef,ifdefinedef,macrodef"> fore:sky blue </style>
+      <style no="whiledef,foreachdef,ifdefinedef,macrodef"> fore:skyblue </style>
     </styles>
     <properties>
       <property name="fold"> 1 </property>
@@ -1082,8 +1082,8 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <style no="identifier2"> keyword2 </style>
       <style no="identifier3"> keyword3 </style>
       <style no="id"> fore:cadetblue </style>
-      <style no="directive"> fore:seagreen 2 </style>
-      <style no="id"> fore:seagreen 1 </style>
+      <style no="directive"> fore:seagreen_2 </style>
+      <style no="id"> fore:seagreen_1 </style>
     </styles>
     <keywords set-0="css1" set-2="css2" set-3="css3"/>
     <properties>
@@ -1099,9 +1099,9 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   <lexer name="diff" extensions="*.diff;*.patch" edgemode="none">
     <styles>
     <style no="header"> fore:grey </style>
-    <style no="position"> fore:steel blue </style>
+    <style no="position"> fore:steelblue </style>
     <style no="deleted"> fore:orange </style>
-    <style no="added"> fore:lime green </style>
+    <style no="added"> fore:limegreen </style>
     <style no="changed"> fore:yellow </style>
     </styles>
     <properties>
@@ -1126,6 +1126,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     </styles>
   </lexer>
   <lexer name="escript"/>
+  <lexer name="escseq"/>
   <lexer name="flagship"/>
   <lexer name="forth"/>
   <lexer name="fortran" extensions="*.f90;*.f95;*.f03">
@@ -1192,10 +1193,10 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <style no="tagend"> tag </style>
       <style no="tagunknown"> error </style>
       <style no="attributeunknown"> error </style>
-      <style no="question"> fore:sky blue,bold </style>
+      <style no="question"> fore:skyblue,bold </style>
       <style no="value"> fore:#ff00ff</style>
-      <style no="asp"> fore:sky blue,bold </style>
-      <style no="hb_start">  fore:sky blue,bold </style>
+      <style no="asp"> fore:skyblue,bold </style>
+      <style no="hb_start">  fore:skyblue,bold </style>
       <style no="hb_default"> styledefault-back </style>
       <style no="hb_commentline"> styledefault-back+comment </style>
       <style no="hb_number"> styledefault-back+number </style>
@@ -1203,7 +1204,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <style no="hb_string"> styledefault-back+string </style>
       <style no="hb_identifier"> styledefault-back+identifier </style>
       <style no="hb_stringeol"> styledefault-back </style>
-      <style no="hba_start">  fore:sky blue,bold </style>
+      <style no="hba_start">  fore:skyblue,bold </style>
       <style no="hba_default"> styledefault-back </style>
       <style no="hba_commentline"> styledefault-back+comment </style>
       <style no="hba_number"> styledefault-back+number </style>
@@ -1235,7 +1236,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <style no="hja_symbols"> styledefault-back </style>
       <style no="hja_stringeol"> styledefault-back </style>
       <style no="hja_regex"> styledefault-back </style>
-      <style no="hp_start"> fore:sky blue,bold </style>
+      <style no="hp_start"> fore:skyblue,bold </style>
       <style no="hp_default"> styledefault-back </style>
       <style no="hp_commentline"> styledefault-back+comment </style>
       <style no="hp_number"> styledefault-back+number </style>
@@ -1248,7 +1249,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <style no="hp_defname"> styledefault-back </style>
       <style no="hp_operator"> styledefault-back+operator </style>
       <style no="hp_identifier"> styledefault-back+identifier </style>
-      <style no="hpa_start">  fore:sky blue,bold </style>
+      <style no="hpa_start">  fore:skyblue,bold </style>
       <style no="hpa_default"> styledefault-back </style>
       <style no="hpa_commentline"> styledefault-back+comment </style>
       <style no="hpa_number"> styledefault-back+number </style>
@@ -1361,7 +1362,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <property name="fold.preprocessor"> 0 </property>
     </properties>
     <styles>
-      <style no="propertyname"> fore:sky blue,bold </style>
+      <style no="propertyname"> fore:skyblue,bold </style>
     </styles>
     <keywords>
       null, false, true
@@ -1448,9 +1449,9 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
       <style no="ulist_item"> fore:green </style>
       <style no="olist_item"> fore:green </style>
       <style no="link"> fore:green,italic </style>
-      <style no="code"> fore:sky blue </style>
-      <style no="code2"> fore:sky blue </style>
-      <style no="codebk"> fore:sky blue </style>
+      <style no="code"> fore:skyblue </style>
+      <style no="code2"> fore:skyblue </style>
+      <style no="codebk"> fore:skyblue </style>
     </styles>
   </lexer>
 
@@ -1586,7 +1587,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   <lexer name="props" extensions="*.ini;*.conf;*.desktop;*.rc;hosts*" edgemode="none">
     <styles>
-    <style no="section"> fore:sky blue </style>
+    <style no="section"> fore:skyblue </style>
     <style no="assignment"> fore:khaki</style>
     <style no="defval"> fore:red</style>
     <style no="key"> fore:white </style>
@@ -1620,7 +1621,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     tabmode="use"
     tabwidth="8">
     <styles>
-      <style no="testcase"> fore:sky blue,underline </style>
+      <style no="testcase"> fore:skyblue,underline </style>
     </styles>
     <properties>
       <property name="fold"> 1 </property>
@@ -1640,7 +1641,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
     tabmode="use"
     tabwidth="8">
     <styles>
-      <style no="testcase"> fore:sky blue,underline </style>
+      <style no="testcase"> fore:skyblue,underline </style>
     </styles>
     <properties>
       <property name="fold"> 1 </property>
@@ -1773,7 +1774,7 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   <lexer name="x12"/>
   <lexer display="xml" name="hypertext" extensions="*.xml" language = "xml" edgemode="none" wrapline="char">
     <styles>
-      <style no="xmlstart,xmlend"> fore:sky blue,bold </style>
+      <style no="xmlstart,xmlend"> fore:skyblue,bold </style>
     </styles>
     <keywords set-5="sgml"/>
     <!-- xml comments cannot be added, but don't need to,
@@ -1781,12 +1782,12 @@ www smtp snmp snmp-server ipv4 ipv6 tftp ftp echo dscp isakmp nntp gopher pop3 i
   </lexer>
   <lexer display="xsd" name="hypertext" extensions="*.xsd" language = "xml">
     <styles>
-      <style no="xmlstart,xmlend"> fore:sky blue,bold </style>
+      <style no="xmlstart,xmlend"> fore:skyblue,bold </style>
     </styles>
   </lexer>
   <lexer display="xsl" name="hypertext" extensions="*.xsl" language = "xml">
     <styles>
-      <style no="xmlstart,xmlend"> fore:sky blue,bold </style>
+      <style no="xmlstart,xmlend"> fore:skyblue,bold </style>
     </styles>
     <keywords>
     </keywords>

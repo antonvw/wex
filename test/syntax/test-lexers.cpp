@@ -2,7 +2,7 @@
 // Name:      test-lexers.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/syntax/lexers.h>
@@ -162,7 +162,7 @@ TEST_CASE("wex::lexers")
     REQUIRE(wex::lexers::get()->indicator_is_loaded(wex::indicator(0)));
     REQUIRE(wex::lexers::get()->get_indicator(wex::indicator(0)).is_ok());
 
-    REQUIRE(wxTheColourDatabase->Find("gray 2").IsOk());
+    REQUIRE(wxTheColourDatabase->Find("gray_2").IsOk());
 
     REQUIRE(wex::lexers::get()->load_document());
   }

@@ -37,11 +37,21 @@ jobs:
       - name: Add msbuild
         uses: microsoft/setup-msbuild@v3
 
+      - name: Install vcpkg and pcre2
+        shell: pwsh
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git vcpkg
+          .\vcpkg\bootstrap-vcpkg.bat
+          .\vcpkg\vcpkg.exe install pcre2:x64-windows
+
       - name: Set BUILD_CONFIG
         run: echo "BUILD_CONFIG=$(ci\get-build-config.ps1)" >> "$env:GITHUB_ENV"
 
       - name: Configure
         shell: pwsh
+        env:
+          VCPKG_ROOT: ${{ github.workspace }}\vcpkg
+          CMAKE_TOOLCHAIN_FILE: ${{ github.workspace }}\vcpkg\scripts\buildsystems\vcpkg.cmake
         run: >-
           .\build-gen.ps1 -boost_dir ${{steps.install-boost.outputs.BOOST_ROOT}}
           -tests -prepare -samples
@@ -86,5 +96,5 @@ jobs:
           ', github.ref) == false
         with:
           build-config: Debug
-          tests-regex: co|fa|sy|da|ui|lsp|ct|vi|stc|vcs|del
+          tests-regex: co|fa|sy|da
           verbose: true

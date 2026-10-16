@@ -2,7 +2,7 @@
 // Name:      test-style.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -10,8 +10,6 @@
 #include <wex/syntax/style.h>
 #include <wex/test/test.h>
 #include <wx/stc/stc.h>
-
-#include <numeric>
 
 #include "test.h"
 
@@ -78,7 +76,7 @@ TEST_CASE("wex::style")
       wex::style(doc.document_element(), "cpp").value().find("comment") ==
       std::string::npos);
     REQUIRE(
-      wex::style(doc.document_element(), "cpp").value().find("+") ==
+      wex::style(doc.document_element(), "cpp").value().find('+') ==
       std::string::npos);
   }
 

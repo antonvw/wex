@@ -22,5 +22,5 @@ option(wxUSE_WEBVIEW_WEBKIT2 "Use webviewkit2" OFF)
 option(wxUSE_XML "Use XML" OFF)
 option(wxUSE_XRC "Use XRC" OFF)
 
-set(wxUSE_REGEX builtin)
+set(wxUSE_REGEX sys)
 set(wxUSE_STD_STRING_CONV_IN_WXSTRING 1)

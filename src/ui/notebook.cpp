@@ -45,9 +45,11 @@ wex::notebook::notebook(const data::window& data)
     [=, this](wxAuiNotebookEvent& event)
     {
       event.Skip(); // call base
-      if (m_frame != nullptr)
+      if (
+        const auto sel(event.GetSelection());
+        m_frame != nullptr && sel != wxNOT_FOUND)
       {
-        m_frame->on_notebook(GetId(), GetPage(event.GetSelection()));
+        m_frame->on_notebook(GetId(), GetPage(sel));
       }
     });
 
