@@ -458,7 +458,9 @@ void wex::frame::calltip_show(
     stc->CallTipCancel();
   }
 
-  if (const auto max_size = 100; text.size() < max_size)
+  if (
+    const auto max_size = 100;
+    text.size() < max_size && !stc_entry_dialog_is_shown())
   {
     stc->CallTipShow(pos, text);
   }
@@ -466,6 +468,8 @@ void wex::frame::calltip_show(
   {
     stc_entry_dialog_title(stc->get_word_at_pos(pos) + " Information");
     stc_entry_dialog_component()->set_text(text);
+    stc_entry_dialog_component()->SetUseHorizontalScrollBar(true);
+    stc_entry_dialog_component()->SetWrapMode(wxSTC_WRAP_NONE);
     stc_entry_dialog_show();
   }
 }

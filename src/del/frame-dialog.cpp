@@ -173,6 +173,11 @@ wex::syntax::stc* wex::del::frame::stc_entry_dialog_component()
   return entry_dialog()->get_stc();
 }
 
+bool wex::del::frame::stc_entry_dialog_is_shown() const
+{
+  return m_entry_dialog != nullptr && m_entry_dialog->IsShown();
+}
+
 int wex::del::frame::stc_entry_dialog_show(bool modal)
 {
   return modal ? entry_dialog()->ShowModal() : entry_dialog()->Show();

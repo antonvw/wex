@@ -207,6 +207,9 @@ public:
   /// Returns stc component for stc entry dialog.
   virtual syntax::stc* stc_entry_dialog_component() { return nullptr; }
 
+  /// Returns true if stc entry dialog is shown.
+  virtual bool stc_entry_dialog_is_shown() const { return false; }
+
   /// Shows or updates stc entry dialog.
   virtual int stc_entry_dialog_show(bool modal = false) { return wxID_CANCEL; }
 
