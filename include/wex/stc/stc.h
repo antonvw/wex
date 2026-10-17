@@ -329,7 +329,9 @@ private:
 
   std::unordered_map<int, int> m_marker_identifiers;
 
-  int m_selection_mode_copy{wxSTC_SEL_STREAM};
+  int m_selection_mode_copy{wxSTC_SEL_STREAM}, m_timer_id;
+
+  wxTimer* m_timer_dwell{nullptr};
 
   // The ex or vi component.
   vi* m_vi{nullptr};

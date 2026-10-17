@@ -90,6 +90,8 @@ wex::stc::stc(const wex::path& p, const data::stc& data)
           file_readonly_attribute_changed();
         }
       })
+  , m_timer_id(wxWindowBase::NewControlId())
+  , m_timer_dwell(new wxTimer(this, m_timer_id))
 {
   m_data.set_stc(this);
 
@@ -162,6 +164,7 @@ wex::stc::~stc()
 {
   delete m_auto_complete;
   delete m_vi;
+  delete m_timer_dwell;
 }
 
 void wex::stc::add_text(const std::string& text)

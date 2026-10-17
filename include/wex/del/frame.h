@@ -201,6 +201,7 @@ public:
   void statusbar_clicked_right(const std::string&) override;
 
   syntax::stc* stc_entry_dialog_component() override;
+  bool         stc_entry_dialog_is_shown() const override;
   int          stc_entry_dialog_show(bool modal = false) override;
   std::string  stc_entry_dialog_title() const override;
   void         stc_entry_dialog_title(const std::string& title) override;

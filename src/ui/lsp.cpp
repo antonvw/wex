@@ -147,7 +147,11 @@ void set_lsp_hover(wex::frame* frame, syntax::stc* stc, const hover_t* hover)
 
   std::string text(hover->contents.substr(1, hover->contents.size() - 2));
   boost::algorithm::replace_all(text, "\\n", "\n");
-  frame->calltip_show(hover->pos.to_pos(stc), text, stc);
+  frame->calltip_show(
+    stc->get_word_at_pos(hover->pos.to_pos(stc)) + " Information",
+    hover->pos.to_pos(stc),
+    text,
+    stc);
 }
 
 void set_lsp_on_type(

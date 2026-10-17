@@ -207,6 +207,9 @@ public:
   /// Returns stc component for stc entry dialog.
   virtual syntax::stc* stc_entry_dialog_component() { return nullptr; }
 
+  /// Returns true if stc entry dialog is shown.
+  virtual bool stc_entry_dialog_is_shown() const { return false; }
+
   /// Shows or updates stc entry dialog.
   virtual int stc_entry_dialog_show(bool modal = false) { return wxID_CANCEL; }
 
@@ -304,9 +307,17 @@ public:
   /// Handles forward and backward click.
   bool browse(const wxCommandEvent& event);
 
-  /// Shows specified text as calltip on  stc or in a dialog,
+  /// Shows specified text on stc as calltip or in a dialog,
   /// if size is too big for a simple calltip.
-  void calltip_show(int pos, const std::string& text, syntax::stc* stc);
+  void calltip_show(
+    /// title (in case dialog will be used)
+    const std::string& title,
+    /// position for the calltip
+    int pos,
+    /// text
+    const std::string& text,
+    /// the stc for presenting the calltip (if text is shown as calltip)
+    syntax::stc* stc);
 
   /// Returns current debugger.
   const wex::debug_entry* debug_entry() const { return m_debug_entry; }

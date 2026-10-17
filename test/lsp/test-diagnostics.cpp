@@ -28,26 +28,7 @@ TEST_CASE("wex::lsp::diagnostics")
     REQUIRE(result[0].source.empty());
   }
 
-  SECTION("get_line")
-  {
-    wex::diagnostic_item d1(wex::range_item({10, 0}, {10, 0}), "Warning 1"),
-      d2(wex::range_item({10, 0}, {10, 0}), "Warning 2"),
-      d3(wex::range_item({15, 0}, {15, 0}), "Warning 3");
-
-    diags.add("file:///test.cpp", d1);
-    diags.add("file:///test.cpp", d2);
-    diags.add("file:///test.cpp", d3);
-
-    auto line_diags = diags.get_line("file:///test.cpp", 10);
-    REQUIRE(line_diags.size() == 2);
-    REQUIRE(line_diags[0].message == "Warning 1");
-    REQUIRE(line_diags[1].message == "Warning 2");
-
-    auto line15_diags = diags.get_line("file:///test.cpp", 15);
-    REQUIRE(line15_diags.size() == 1);
-  }
-
-  SECTION("clear_document")
+  SECTION("clear")
   {
     wex::diagnostic_item d(wex::range_item(), "Test diagnostic");
     diags.add("file:///test.cpp", d);
@@ -78,6 +59,25 @@ TEST_CASE("wex::lsp::diagnostics")
     REQUIRE(!diags.has("file:///test1.cpp"));
     REQUIRE(!diags.has("file:///test2.cpp"));
     REQUIRE(!diags.has("file:///test3.cpp"));
+  }
+
+  SECTION("get_line")
+  {
+    wex::diagnostic_item d1(wex::range_item({10, 0}, {10, 0}), "Warning 1"),
+      d2(wex::range_item({10, 0}, {10, 0}), "Warning 2"),
+      d3(wex::range_item({15, 0}, {15, 0}), "Warning 3");
+
+    diags.add("file:///test.cpp", d1);
+    diags.add("file:///test.cpp", d2);
+    diags.add("file:///test.cpp", d3);
+
+    auto line_diags = diags.get_line("file:///test.cpp", 10);
+    REQUIRE(line_diags.size() == 2);
+    REQUIRE(line_diags[0].message == "Warning 1");
+    REQUIRE(line_diags[1].message == "Warning 2");
+
+    auto line15_diags = diags.get_line("file:///test.cpp", 15);
+    REQUIRE(line15_diags.size() == 1);
   }
 
   SECTION("get_uris")

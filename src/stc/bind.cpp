@@ -29,6 +29,7 @@
 #include <wx/accel.h>
 #include <wx/msgdlg.h>
 #include <wx/numdlg.h>
+#include <wx/timer.h>
 
 #include "util.h"
 
@@ -186,6 +187,23 @@ void wex::stc::bind_all()
      {wxACCEL_SHIFT, WXK_DELETE, wxID_CUT}},
     m_data.menu().test(data::stc::MENU_DEBUG));
 
+  Bind(
+    wxEVT_LEAVE_WINDOW,
+    [this](wxMouseEvent& event)
+    {
+      m_timer_dwell->StartOnce(GetMouseDwellTime() + 5);
+
+      Bind(
+        wxEVT_TIMER,
+        [=, this](const wxTimerEvent& event)
+        {
+          CallTipCancel();
+        },
+        m_timer_id);
+
+      event.Skip();
+    });
+
   bind_wx();
 
   const auto no_event = [=, this](auto action)
@@ -198,14 +216,14 @@ void wex::stc::bind_all()
 
   const auto lsp_action = [=, this](auto action)
   {
-    return no_event([this, action]
-    {
-      if (auto* client = m_frame->lsp_clients_find(path());
-          client != nullptr)
+    return no_event(
+      [this, action]
       {
-        action(*client);
-      }
-    });
+        if (auto* client = m_frame->lsp_clients_find(path()); client != nullptr)
+        {
+          action(*client);
+        }
+      });
   };
 
   bind(this).command(
@@ -993,7 +1011,7 @@ void wex::stc::on_dwell_start(wxStyledTextEvent& event)
   if (
     auto* client = m_frame->lsp_clients_find(path());
     client != nullptr && get_selected_text().empty() &&
-    event.GetPosition() != -1)
+    event.GetPosition() != wxSTC_INVALID_POSITION)
   {
     const auto event_line(LineFromPosition(event.GetPosition()));
     client->hover(

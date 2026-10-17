@@ -69,7 +69,7 @@ Copyright: (c) 2009-2026, Anton van Wezenbeek
         <def style ="attribute"> fore:steelblue </def>
         <def style ="bracelight"> back:yellow,fore:black</def>
         <def style ="char"> fore:pink </def>
-        <def style ="classname"> fore:dark_turquoise,bold </def>
+        <def style ="classname"> fore:darkturquoise,bold </def>
         <def style ="command"> fore:steelblue </def>
         <def style ="comment"> fore:brown,italic,back:gray_95,eol </def>
         <def style ="commentdockeyword"> fore:mediumseagreen,italic </def>
@@ -79,8 +79,8 @@ Copyright: (c) 2009-2026, Anton van Wezenbeek
         <def style ="foldmarginbackground"> white </def>
         <def style ="foldmarginforeground"> lightblue </def>
         <def style ="identifier"> fore:black</def>
-        <def style ="keyword1"> fore:dark_turquoise </def>
-        <def style ="keyword2"> fore:dark_green </def>
+        <def style ="keyword1"> fore:darkturquoise </def>
+        <def style ="keyword2"> fore:darkgreen </def>
         <def style ="keyword3"> fore:mediumspringgreen </def>
         <def style ="label"> fore:mediumslateblue,italic </def>
         <def style ="number"> fore:red </def>
