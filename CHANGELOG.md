@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 
 - fixed lsp Goto Implementation
+- fixed showing no edge lines when no theme is chosen
 
 ## [26.10] - 2026-09-27
 
