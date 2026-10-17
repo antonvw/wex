@@ -97,7 +97,7 @@ void wex::stc::generic_settings()
 {
   const item_vector iv(m_config_items);
 
-  if (!get_lexer().is_ok())
+  if (!get_lexer().is_ok() || lexers::get()->theme().empty())
   {
     SetEdgeMode(wxSTC_EDGE_NONE);
   }
