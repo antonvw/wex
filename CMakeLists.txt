@@ -58,13 +58,6 @@ execute_process(
   OUTPUT_VARIABLE git_STATUS
 )
 
-if(NOT ${git_STATUS} MATCHES "qa/")
-  execute_process(
-    COMMAND git apply ${CMAKE_SOURCE_DIR}/external/wxWidgets.patch
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/external/wxWidgets
-  )
-endif()
-
 # second patch
 execute_process(
   COMMAND git status

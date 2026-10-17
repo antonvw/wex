@@ -19,7 +19,7 @@ option(wxUSE_UNICODE "Use Unicode" ON)
 option(wxUSE_WEBVIEW "Use webview" OFF)
 option(wxUSE_WEBVIEW_WEBKIT "Use webviewkit" OFF)
 option(wxUSE_WEBVIEW_WEBKIT2 "Use webviewkit2" OFF)
-option(wxUSE_XML "Use XML" OFF)
+option(wxUSE_XML "Use XML" ON)
 option(wxUSE_XRC "Use XRC" OFF)
 
 set(wxUSE_REGEX sys)

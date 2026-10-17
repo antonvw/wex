@@ -158,6 +158,7 @@ if(MSVC)
     wx${PLATFORM}${wx_BASE_LIB}u${USE_DEBUG}_core
     wx${PLATFORM}${wx_BASE_LIB}u${USE_DEBUG}_qa
     wx${PLATFORM}${wx_BASE_LIB}u${USE_DEBUG}_gl
+    wx${PLATFORM}${wx_BASE_LIB}u${USE_DEBUG}_xml
     wxbase${wx_BASE_LIB}u${USE_DEBUG}
     wxbase${wx_BASE_LIB}u${USE_DEBUG}_net
     wxjpeg
