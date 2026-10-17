@@ -484,7 +484,11 @@ void wex::stc::mouse_action(wxMouseEvent& event)
         const auto annotation = AnnotationGetText(GetCurrentLine());
         !annotation.empty())
       {
-        m_frame->calltip_show(GetCurrentPos(), annotation, this);
+        m_frame->calltip_show(
+          "Commit Information",
+          GetCurrentPos(),
+          annotation,
+          this);
       }
 
       m_skip = false;
