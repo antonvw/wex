@@ -126,6 +126,7 @@ private:
 
   strings_t execute_and_parse(const process_data& data, size_t offset = 0);
 
+  int checkout_dialog(const std::string& repo_path);
   int revisions_dialog(const std::string& path, const wex::path& file);
 
   // no const, as entry is set using operator= in vcs.
@@ -133,7 +134,7 @@ private:
 
   std::string m_admin_dir, m_log_flags;
 
-  item_dialog* m_item_dialog{nullptr};
+  item_dialog *m_item_dialog{nullptr}, *m_checkout_dialog;
 
   class blame m_blame;
   lexer       m_lexer;

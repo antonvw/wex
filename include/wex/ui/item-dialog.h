@@ -2,15 +2,13 @@
 // Name:      item-dialog.h
 // Purpose:   Declaration of wex::item_dialog class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2023 Anton van Wezenbeek
+// Copyright: (c) 2015-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <wex/ui/item-template-dialog.h>
 #include <wex/ui/item.h>
-
-#include <utility>
 
 namespace wex
 {

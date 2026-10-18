@@ -132,6 +132,12 @@ int wex::vcs_entry::execute(
     return -1; // skip rest in vcs_execute
   }
 
+  if (get_command().get_command() == "checkout")
+  {
+    checkout_dialog(tl.string());
+    return -1; // skip rest in vcs_execute
+  }
+
   std::string prefix;
 
   if (m_flags_location == flags_location_t::PREFIX)
@@ -175,8 +181,9 @@ int wex::vcs_entry::execute(
   }
 
   return process::system(process_data(
-                           bin(), prefix + get_command().get_command() +
-                           " " + subcommand + flags + comment + my_args)
+                           bin(),
+                           prefix + get_command().get_command() + " " +
+                             subcommand + flags + comment + my_args)
                            .start_dir(wd));
 }
 
@@ -223,8 +230,8 @@ const std::string wex::vcs_entry::get_toplevel() const
   wex::log_none off;
 
   if (
-    process p; name() == "git" && p.system(process_data(
-      bin(), "rev-parse --show-toplevel")) == 0)
+    process p; name() == "git" &&
+               p.system(process_data(bin(), "rev-parse --show-toplevel")) == 0)
   {
     return boost::algorithm::trim_copy(p.std_out());
   }
@@ -304,5 +311,6 @@ void wex::vcs_entry::show_output(const std::string& caption) const
 
 int wex::vcs_entry::system(const process_data& data)
 {
-  return process::system(process_data(bin(), data.args_str()).start_dir(data.start_dir()));
+  return process::system(
+    process_data(bin(), data.args_str()).start_dir(data.start_dir()));
 }
