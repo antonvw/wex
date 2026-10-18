@@ -132,7 +132,7 @@ int wex::vcs_entry::execute(
     return -1; // skip rest in vcs_execute
   }
 
-  if (get_command().get_command() == "checkout")
+  if (!p.file_exists() && get_command().get_command() == "checkout")
   {
     checkout_dialog(tl.string());
     return -1; // skip rest in vcs_execute

@@ -143,7 +143,7 @@ wex::vcs_entry::execute_and_parse(const process_data& data, size_t offset)
   return values;
 }
 
-int wex::vcs_entry::revisions_dialog(
+void wex::vcs_entry::revisions_dialog(
   const std::string& repo_path,
   const path&        file)
 {
@@ -214,5 +214,5 @@ int wex::vcs_entry::revisions_dialog(
       bin() + " log --date=short --pretty=format:%ad%s%an%h " + repo_path));
   lv->item_from_text(pro.std_out());
 
-  return m_item_dialog->Show();
+  m_item_dialog->Show();
 }

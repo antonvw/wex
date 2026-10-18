@@ -9,14 +9,11 @@
 #include <wex/ui/item-dialog.h>
 #include <wex/vcs/vcs-entry.h>
 
-namespace wex
+void wex::vcs_entry::checkout_dialog(const std::string& repo_path)
 {
-} // namespace wex
-
-int wex::vcs_entry::checkout_dialog(const std::string& repo_path)
-{
-  const data::window data(data::window().size({350, 400}));
-  process_data       datap;
+  const data::window data(
+    data::window().size({350, 400}).title(_("Select Branch")));
+  process_data datap;
   datap.start_dir(get_toplevel());
 
   m_checkout_dialog = new item_dialog(
@@ -33,6 +30,4 @@ int wex::vcs_entry::checkout_dialog(const std::string& repo_path)
   }
 
   delete m_checkout_dialog;
-
-  return 1;
 }
