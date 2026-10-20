@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <wex/core/types.h>
 #include <wex/factory/process-data.h>
 
 namespace wex
@@ -14,6 +15,10 @@ namespace wex
 class path;
 class stc;
 class vcs_entry;
+
+/// Runs the process data, and parses the result to obtain
+/// a strings_t.
+strings_t execute_and_parse(const process_data& data, size_t offset = 0);
 
 /// Runs vcs bin grep in specified toplevel dir.
 /// Requires an stc component on the main frame, if text is selected

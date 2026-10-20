@@ -10,7 +10,6 @@
 #include <optional>
 #include <pugixml.hpp>
 #include <set>
-#include <wex/core/types.h>
 #include <wex/core/vcs-command.h>
 #include <wex/syntax/blame.h>
 #include <wex/syntax/lexer.h>
@@ -123,8 +122,6 @@ private:
     const std::string&  repo_path,
     const process_data& data,
     const std::string&  col);
-
-  strings_t execute_and_parse(const process_data& data, size_t offset = 0);
 
   void checkout_dialog(const std::string& repo_path);
   void revisions_dialog(const std::string& path, const wex::path& file);

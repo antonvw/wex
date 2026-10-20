@@ -5,7 +5,6 @@
 // Copyright: (c) 2024-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <boost/tokenizer.hpp>
 #include <utility>
 #include <wex/core/config.h>
 #include <wex/factory/bind.h>
@@ -120,27 +119,6 @@ void wex::vcs_entry::bind_rev(
       },
       ID_EDIT_REV_COMPARE,
       ID_EDIT_REV_OPEN}});
-}
-
-wex::strings_t
-wex::vcs_entry::execute_and_parse(const process_data& data, size_t offset)
-{
-  process pro;
-  pro.system(data);
-
-  strings_t values{};
-
-  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
-         pro.std_out(),
-         boost::char_separator<char>("\r\n")))
-  {
-    if (const auto& line(it); !line.contains("HEAD ->"))
-    {
-      values.emplace_back(offset == 0 ? line : line.substr(offset));
-    }
-  }
-
-  return values;
 }
 
 void wex::vcs_entry::revisions_dialog(

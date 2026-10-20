@@ -9,24 +9,24 @@
 #include <wex/ui/item-dialog.h>
 #include <wex/vcs/vcs-entry.h>
 
+#include "util.h"
+
 void wex::vcs_entry::checkout_dialog(const std::string& repo_path)
 {
-  const data::window data(
-    data::window().size({350, 400}).title(_("Select Branch")));
-  process_data datap;
-  datap.start_dir(get_toplevel());
+  process_data data;
+  data.start_dir(repo_path);
 
   m_checkout_dialog = new item_dialog(
-    {{"branch",
+    {{"branches",
       item::COMBOBOX,
-      execute_and_parse(datap.exe(bin() + " branch -a"), 2)}},
-    data);
+      execute_and_parse(data.exe(bin() + " branch -a"), 2)}},
+    data::window().size({350, 400}).title(_("Select Branch")));
 
   if (m_checkout_dialog->ShowModal() != wxID_CANCEL)
   {
     process pro;
     pro.system(
-      datap.exe(bin() + " checkout " + config("branch").get_first_of()));
+      data.exe(bin() + " checkout " + config("branches").get_first_of()));
   }
 
   delete m_checkout_dialog;
