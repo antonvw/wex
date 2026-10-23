@@ -13,6 +13,17 @@
 
 TEST_CASE("wex::utils")
 {
+  SECTION("execute_and_parse")
+  {
+    wex::strings_t output =
+      wex::execute_and_parse(wex::process_data("git", "help"));
+    REQUIRE(output.size() > 30);
+
+    output = wex::execute_and_parse(wex::process_data("git", "version"));
+    REQUIRE(output.size() == 1);
+    REQUIRE(output.front().contains("git version"));
+  }
+
   // see also del test-frame.cpp
   SECTION("execute_grep")
   {

@@ -92,7 +92,7 @@ TEST_CASE("wex::vcs_entry", "[!mayfail]")
     REQUIRE(entry.std_out().contains("usage: git"));
     entry.show_output();
 
-    REQUIRE(entry.system(wex::process_data("help")) == 0);
+    REQUIRE(entry.system(wex::process_data().args("help")) == 0);
 
     auto* other = new wex::vcs_entry(git.document_element());
     REQUIRE(other->execute(std::string(), wex::path()) >= 0);
