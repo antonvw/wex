@@ -151,6 +151,11 @@ template <class T> bool wex::notebook::for_each(int id)
           (id == ID_ALL_CLOSE_OTHERS && GetSelection() != page) ||
           id == ID_ALL_CLOSE)
         {
+          if (GetPageKind(GetPageIndex(win)) == wxAuiTabKind::Pinned)
+          {
+            continue;
+          }
+
           if (
             file_dialog(&win->get_file()).show_modal_if_changed() ==
             wxID_CANCEL)

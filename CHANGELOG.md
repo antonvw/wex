@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - large lsp annotations now use dialog for presentation
 - lsp communication not done for new, non yet saved files
 - lsp added quick fixes using code action
+- prevent pinned pages to be closed using Close All or Close Others
 
 ### Fixed
 
