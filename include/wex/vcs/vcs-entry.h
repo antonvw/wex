@@ -131,7 +131,7 @@ private:
 
   std::string m_admin_dir, m_log_flags;
 
-  item_dialog *m_item_dialog{nullptr}, *m_checkout_dialog;
+  item_dialog *m_item_dialog{nullptr}, *m_checkout_dialog{nullptr};
 
   class blame m_blame;
   lexer       m_lexer;
