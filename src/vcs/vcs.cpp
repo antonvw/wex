@@ -429,8 +429,10 @@ int wex::vcs::show_dialog(const data::window& arg)
      m_entry->get_command().type().test(wex::menu_command::IS_ASKED)));
 
   if (
+    (m_entry->get_command().get_command() == "checkout" && m_files.empty()) ||
     m_entry->get_command().get_command() == "grep" ||
-    m_entry->get_command().get_command() == "show" || is_asked)
+    (m_entry->get_command().get_command() == "show" && !m_files.empty()) ||
+    is_asked)
   {
     return wxID_OK;
   }

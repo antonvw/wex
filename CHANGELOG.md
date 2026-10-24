@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - shows a statusbar message when current file is not under version control
+- added a check out dialog to select a branch while showing all branches
 
 ### Changed
 

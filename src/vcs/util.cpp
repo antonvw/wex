@@ -29,6 +29,26 @@ std::string get_range(const std::string& text, int begin, int start)
 }
 } // namespace wex
 
+wex::strings_t wex::execute_and_parse(const process_data& data, size_t offset)
+{
+  process pro;
+  pro.system(data);
+
+  strings_t values{};
+
+  for (const auto& it : boost::tokenizer<boost::char_separator<char>>(
+         pro.std_out(),
+         boost::char_separator<char>("\r\n")))
+  {
+    if (const auto& line(it); !line.contains("HEAD ->"))
+    {
+      values.emplace_back(offset == 0 ? line : line.substr(offset));
+    }
+  }
+
+  return values;
+}
+
 bool wex::expand_macro(wex::process_data& data, stc* stc)
 {
   if (!data.exe().contains("%LINES") || stc == nullptr)

@@ -10,7 +10,6 @@
 #include <optional>
 #include <pugixml.hpp>
 #include <set>
-#include <wex/core/types.h>
 #include <wex/core/vcs-command.h>
 #include <wex/syntax/blame.h>
 #include <wex/syntax/lexer.h>
@@ -124,16 +123,15 @@ private:
     const process_data& data,
     const std::string&  col);
 
-  strings_t execute_and_parse(const process_data& data, size_t offset = 0);
-
-  int revisions_dialog(const std::string& path, const wex::path& file);
+  void checkout_dialog(const std::string& repo_path);
+  void revisions_dialog(const std::string& path, const wex::path& file);
 
   // no const, as entry is set using operator= in vcs.
   flags_location_t m_flags_location{flags_location_t::POSTFIX};
 
   std::string m_admin_dir, m_log_flags;
 
-  item_dialog* m_item_dialog{nullptr};
+  item_dialog *m_item_dialog{nullptr}, *m_checkout_dialog;
 
   class blame m_blame;
   lexer       m_lexer;

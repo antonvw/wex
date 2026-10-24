@@ -176,6 +176,7 @@ Copyright: (c) 2010-2025 Anton van Wezenbeek
       <command type="popup is-lines is-selected is-visual" flags="-L %LINES" menu="&amp;blame selection"> blame</command>
       <command type="main ellipses"> &amp;add </command>
       <command type="main ellipses-is-asked"> &amp;branch </command>
+      <command type="main ellipses-is-asked"> &amp;fetch </command>
       <command type="ellipses"> &amp;checkout </command>
       <command type="ellipses"> &amp;commit </command>
       <command type="ellipses-is-asked"> &amp;diff </command>
