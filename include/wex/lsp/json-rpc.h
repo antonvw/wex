@@ -87,8 +87,10 @@ public:
     response_handler& handler);
 
 private:
-  /// Handles an incoming diagnostics notification.
+  /// Handles an incoming notifications.
   /// Returns false if msg is not handled.
+
+  bool handle_inactive_regions(const json_rpc_message& notification);
   bool handle_publish_diagnostics(const json_rpc_message& notification);
   bool handle_show_message(const json_rpc_message& notification) const;
 

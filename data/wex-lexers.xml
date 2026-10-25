@@ -129,6 +129,7 @@ Copyright: (c) 2009-2026, Anton van Wezenbeek
     <indicator no="2"> indic_box,styleindicatordebug </indicator>
     <!-- this indicator is used by showing diff add location -->
     <indicator no="3"> indic_box,green </indicator>
+    <indicator no="4"> indic_tt,cadetblue </indicator>
 
     <!-- The marker element has a 'no' attribute and its value contains the next fields:
          <marker symbol number><','><foreground colour><','><background colour> -->

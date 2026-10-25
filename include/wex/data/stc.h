@@ -36,7 +36,7 @@ public:
   };
 
   /// A typedef containing menu flags.
-  typedef std::bitset<5> menu_t;
+  using menu_t = std::bitset<5>;
 
   /// Window flags.
   enum
@@ -51,14 +51,16 @@ public:
   };
 
   /// A typedef containing window flags.
-  typedef std::bitset<6> window_t;
+  using window_t = std::bitset<6>;
 
   /// Indicator type.
   enum indicator_t
   {
     IND_LINE = 0, ///< line indicator
     IND_ERR,      ///< error indicator
-    IND_DEBUG     ///< debug indicator
+    IND_DEBUG,    ///< debug indicator
+    IND_FIND,     ///< find indicator
+    IND_INACTIVE  ///< inactive code indicator
   };
 
   /// Support class for client data stored at the event.

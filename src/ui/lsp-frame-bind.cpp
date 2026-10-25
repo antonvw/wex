@@ -107,6 +107,14 @@ void wex::frame::bind_lsp()
 
      {[=, this](const wxCommandEvent& event)
       {
+        set_lsp_inactive_regions(
+          this,
+          static_cast<inactive_regions_item*>(event.GetClientData()));
+      },
+      ID_LSP_INACTIVE_REGIONS},
+
+     {[=, this](const wxCommandEvent& event)
+      {
         if (
           auto* item = static_cast<show_message_item*>(event.GetClientData());
           item != nullptr)

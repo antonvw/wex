@@ -53,6 +53,13 @@ void set_lsp_hover(
   /// the hover to set
   const hover_t* hover);
 
+/// Sets lsp inactive regions.
+void set_lsp_inactive_regions(
+  /// the frame to open files in
+  wex::frame* frame,
+  /// the regions to set
+  const inactive_regions_item* item);
+
 /// Sets lsp on type formatting.
 void set_lsp_on_type(
   /// the frame to open files in

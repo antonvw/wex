@@ -185,6 +185,26 @@ TEST_CASE("wex::lsp")
     REQUIRE(item.kind == "markdown");
   }
 
+  SECTION("inactive_regions_item")
+  {
+    const auto obj(string_to_json("{\
+    \"textDocument\": {\
+      \"uri\": \"file:///project/main.cpp\"\
+    },\
+    \"regions\": [\
+      {\
+        \"start\": { \"line\": 1, \"character\": 0 },\
+        \"end\":   { \"line\": 3, \"character\": 0 }\
+      }\
+    ]\
+    }"));
+
+    wex::inactive_regions_item item(obj);
+    CAPTURE(item.uri);
+    REQUIRE(item.ranges.size() == 1);
+    REQUIRE(item.ranges[0].start.line == 1);
+  }
+
   SECTION("json_to_string")
   {
     const auto obj(string_to_json("{\

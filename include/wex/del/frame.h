@@ -267,7 +267,8 @@ private:
 
   function_repeat m_function_repeat;
 
-  const indicator m_indicator_add = wex::indicator(3);
+  const indicator m_indicator_add           = wex::indicator(3),
+                  m_indicator_inactive_code = wex::indicator(4);
 
   const std::string m_text_hidden{_("fif.Hidden")},
     m_text_in_files{_("fif.In files")}, m_text_in_folder{_("fif.In folder")},

@@ -154,6 +154,27 @@ void set_lsp_hover(wex::frame* frame, syntax::stc* stc, const hover_t* hover)
     stc);
 }
 
+void set_lsp_inactive_regions(
+  wex::frame*                  frame,
+  const inactive_regions_item* item)
+{
+  if (
+    auto* stc = dynamic_cast<syntax::stc*>(
+      frame->open_file(make_path_skip_uri(item->uri)));
+    stc != nullptr)
+  {
+    for (const auto& range : item->ranges)
+    {
+      stc->set_indicator(
+        indicator(wex::data::stc::IND_INACTIVE),
+        stc->PositionFromLine(range.start.line),
+        stc->GetLineEndPosition(range.end.line));
+    }
+  }
+
+  delete item;
+}
+
 void set_lsp_on_type(
   wex::frame*                      frame,
   syntax::stc*                     stc,

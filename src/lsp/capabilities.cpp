@@ -115,6 +115,10 @@ boost::json::object capabilities::client() const
         {
           "dynamicRegistration": false
         },
+        "inactiveRegionsCapabilities": 
+        {
+          "inactiveRegions": true
+        },
         "synchronization":
         {
           "dynamicRegistration": false,
