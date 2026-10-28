@@ -2,7 +2,7 @@
 // Name:      addressrange.h
 // Purpose:   Declaration of class wex::addressrange
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2015-2025 Anton van Wezenbeek
+// Copyright: (c) 2015-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -164,7 +164,7 @@ private:
 
   static inline data::substitute m_substitute;
 
-  const indicator m_find_indicator{indicator(0)};
+  const indicator m_find_indicator{indicator(indicator::IND_MATCH)};
 
   const commands_t m_commands;
 

@@ -14,6 +14,7 @@
 #include <wex/core/log.h>
 #include <wex/factory/stc-undo.h>
 #include <wex/syntax/indicator.h>
+#include <wex/syntax/lexers.h>
 #include <wx/infobar.h>
 #include <wx/menu.h>
 
@@ -117,14 +118,14 @@ void set_lsp_definition_or_implementation(
 void set_lsp_diagnostics(syntax::stc* stc, const diagnostics_t* diagnostics)
 {
   stc->AnnotationSetVisible(wxSTC_ANNOTATION_HIDDEN);
-  stc->SetIndicatorCurrent(wex::data::stc::IND_ERR);
+  stc->SetIndicatorCurrent(wex::indicator::IND_ERROR);
   stc->IndicatorClearRange(0, stc->GetTextLength());
   stc->AnnotationClearAll();
 
   for (const auto& diag : *diagnostics)
   {
     stc->set_indicator(
-      indicator(wex::data::stc::IND_ERR),
+      indicator(wex::indicator::IND_ERROR),
       stc->PositionFromLine(diag.range.start.line),
       stc->GetLineEndPosition(diag.range.end.line));
 
@@ -158,15 +159,21 @@ void set_lsp_inactive_regions(
   wex::frame*                  frame,
   const inactive_regions_item* item)
 {
+  indicator ind(indicator::IND_INACTIVE_CODE);
+
   if (
     auto* stc = dynamic_cast<syntax::stc*>(
       frame->open_file(make_path_skip_uri(item->uri)));
     stc != nullptr)
   {
+    stc->IndicatorSetAlpha(ind.number(), 80);
+    stc->IndicatorSetOutlineAlpha(ind.number(), 0);
+    lexers::get()->get_indicator(wex::indicator(4)).apply(stc);
+
     for (const auto& range : item->ranges)
     {
       stc->set_indicator(
-        indicator(wex::data::stc::IND_INACTIVE),
+        indicator(wex::indicator::IND_INACTIVE_CODE),
         stc->PositionFromLine(range.start.line),
         stc->GetLineEndPosition(range.end.line));
     }
