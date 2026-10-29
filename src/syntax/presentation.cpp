@@ -18,7 +18,9 @@ wex::presentation::presentation(presentation_t type, const pugi::xml_node& node)
   : m_type(type)
 {
   if (node.empty())
+  {
     return;
+  }
 
   const auto single = lexers::get()->apply_macro(node.attribute("no").value());
   const std::string text(node.text().get());
@@ -91,25 +93,24 @@ bool wex::presentation::apply(wxStyledTextCtrl* stc) const
     case INDICATOR:
       stc->IndicatorSetStyle(m_no, m_style);
 
-        if (!m_foreground_colour.empty())
-        {
-          stc->IndicatorSetForeground(m_no, wxString(m_foreground_colour));
-        }
+      if (!m_foreground_colour.empty())
+      {
+        stc->IndicatorSetForeground(m_no, wxString(m_foreground_colour));
+      }
 
-        stc->IndicatorSetUnder(m_no, m_under);
-        break;
+      stc->IndicatorSetUnder(m_no, m_under);
+      break;
 
-      case MARKER:
-        stc->MarkerDefine(
-          m_no,
-          m_style,
-          wxString(m_foreground_colour),
-          wxString(m_background_colour));
-        break;
+    case MARKER:
+      stc->MarkerDefine(
+        m_no,
+        m_style,
+        wxString(m_foreground_colour),
+        wxString(m_background_colour));
+      break;
 
-      default:
-        assert(0);
-    }
+    default:
+      assert(0);
   }
 
   return true;
@@ -121,7 +122,7 @@ bool wex::presentation::is_ok() const
   {
     case INDICATOR:
       return m_no >= 0 && m_no <= wxSTC_INDIC_MAX && m_style >= 0 &&
-             m_style <= wxSTC_INDIC_ROUNDBOX;
+             m_style <= wxSTC_INDIC_GRADIENTCENTRE;
 
     case MARKER:
       return m_no >= 0 && m_no <= wxSTC_MARKER_MAX &&

@@ -164,7 +164,8 @@ void set_lsp_inactive_regions(
       frame->open_file(make_path_skip_uri(item->uri)));
     stc != nullptr)
   {
-    if (const indicator ind(indicator::IND_INACTIVE_CODE);
+    if (
+      const indicator ind(indicator::IND_INACTIVE_CODE);
       lexers::get()->get_indicator(ind).apply(stc))
     {
       stc->IndicatorSetAlpha(ind.number(), 80);
