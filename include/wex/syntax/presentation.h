@@ -38,7 +38,8 @@ public:
   bool operator==(const presentation&) const = default;
 
   /// Applies this presentation to stc component.
-  void apply(wxStyledTextCtrl* stc) const;
+  /// Returns true if applied.
+  bool apply(wxStyledTextCtrl* stc) const;
 
   /// Returns background colour.
   const std::string& background_colour() const { return m_background_colour; }

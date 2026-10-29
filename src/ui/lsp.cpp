@@ -159,23 +159,24 @@ void set_lsp_inactive_regions(
   wex::frame*                  frame,
   const inactive_regions_item* item)
 {
-  indicator ind(indicator::IND_INACTIVE_CODE);
-
   if (
     auto* stc = dynamic_cast<syntax::stc*>(
       frame->open_file(make_path_skip_uri(item->uri)));
     stc != nullptr)
   {
-    stc->IndicatorSetAlpha(ind.number(), 80);
-    stc->IndicatorSetOutlineAlpha(ind.number(), 0);
-    lexers::get()->get_indicator(wex::indicator(4)).apply(stc);
-
-    for (const auto& range : item->ranges)
+    if (const indicator ind(indicator::IND_INACTIVE_CODE);
+      lexers::get()->get_indicator(ind).apply(stc))
     {
-      stc->set_indicator(
-        indicator(wex::indicator::IND_INACTIVE_CODE),
-        stc->PositionFromLine(range.start.line),
-        stc->GetLineEndPosition(range.end.line));
+      stc->IndicatorSetAlpha(ind.number(), 80);
+      stc->IndicatorSetOutlineAlpha(ind.number(), 0);
+
+      for (const auto& range : item->ranges)
+      {
+        stc->set_indicator(
+          indicator(wex::indicator::IND_INACTIVE_CODE),
+          stc->PositionFromLine(range.start.line),
+          stc->GetLineEndPosition(range.end.line));
+      }
     }
   }
 

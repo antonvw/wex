@@ -317,8 +317,15 @@ const wex::indicator&
 wex::lexers::get_indicator(const indicator& indicator) const
 {
   const auto& it = m_indicators.find(indicator);
-  return (
-    it != m_indicators.end() ? *it : *m_indicators.find(wex::indicator()));
+
+  if (it != m_indicators.end())
+  {
+    return *it;
+  }
+
+  log("get_indicator") << "unknown indicator" << indicator.number();
+
+  return m_indicators.begin()->second;
 }
 
 const wex::lexers::name_values_t&

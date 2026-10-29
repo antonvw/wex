@@ -79,14 +79,17 @@ wex::presentation::presentation(presentation_t type, int no, int style)
 {
 }
 
-void wex::presentation::apply(wxStyledTextCtrl* stc) const
+bool wex::presentation::apply(wxStyledTextCtrl* stc) const
 {
-  if (is_ok() && stc->GetParent() != nullptr)
+  if (!is_ok() || stc->GetParent() == nullptr)
   {
-    switch (m_type)
-    {
-      case INDICATOR:
-        stc->IndicatorSetStyle(m_no, m_style);
+    return false;
+  }
+
+  switch (m_type)
+  {
+    case INDICATOR:
+      stc->IndicatorSetStyle(m_no, m_style);
 
         if (!m_foreground_colour.empty())
         {
@@ -108,6 +111,8 @@ void wex::presentation::apply(wxStyledTextCtrl* stc) const
         assert(0);
     }
   }
+
+  return true;
 }
 
 bool wex::presentation::is_ok() const
