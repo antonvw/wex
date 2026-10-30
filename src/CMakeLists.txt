@@ -16,52 +16,30 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
     lcov-prep
     # prepare initial tracefile
     COMMAND
-      lcov
-      --ignore-errors negative,negative,mismatch,inconsistent,empty,count,corrupt
-      --rc geninfo_unexecuted_blocks=1
-      --base-directory ./
-      --gcov-tool ${wexGCOV_USE}
-      --capture
-      --rc branch_coverage=1
-      --initial
-      --directory ./
-      --output-file app.base
+      lcov --ignore-errors
+      negative,negative,mismatch,inconsistent,empty,count,corrupt --rc
+      geninfo_unexecuted_blocks=1 --base-directory ./ --gcov-tool ${wexGCOV_USE}
+      --capture --rc branch_coverage=1 --initial --directory ./ --output-file
+      app.base
   )
 
   add_custom_target(
     lcov
     # capture results
     COMMAND
-      lcov
-      --ignore-errors negative,negative,mismatch,inconsistent,empty,count,corrupt
-      --rc geninfo_unexecuted_blocks=1
-      --base-directory ./
-      --gcov-tool ${wexGCOV_USE}
-      --capture
-      --rc branch_coverage=1
-      --directory ./
-      --output-file app.run
+      lcov --ignore-errors
+      negative,negative,mismatch,inconsistent,empty,count,corrupt --rc
+      geninfo_unexecuted_blocks=1 --base-directory ./ --gcov-tool ${wexGCOV_USE}
+      --capture --rc branch_coverage=1 --directory ./ --output-file app.run
     # combine tracefiles
     COMMAND
-      lcov
-      --gcov-tool ${wexGCOV_USE}
-      --add-tracefile app.base
-      --add-tracefile app.run
-      --rc branch_coverage=1
-      --output-file app.run
+      lcov --gcov-tool ${wexGCOV_USE} --add-tracefile app.base --add-tracefile
+      app.run --rc branch_coverage=1 --output-file app.run
     # remove output that we are not interested in
     COMMAND
-      lcov
-      --gcov-tool ${wexGCOV_USE}
-      --remove app.run
-        "*boost/*"
-        "*/usr/*"
-        "*external/*"
-        "*/test/*"
-        "*include/wex/factory/text-window.h"
-        "*/src/syntax/lexers.cpp"
-      --rc branch_coverage=1
-      --output-file app.run
+      lcov --gcov-tool ${wexGCOV_USE} --remove app.run "*boost/*" "*/usr/*"
+      "*external/*" "*/test/*" "*include/wex/factory/text-window.h"
+      "*/src/syntax/lexers.cpp" --rc branch_coverage=1 --output-file app.run
     COMMENT "Running lcov"
     VERBATIM
   )
@@ -72,12 +50,11 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
     COMMAND
       genhtml
       # coverage rate limits for line coverage
-      --ignore-errors mismatch
-      --rc genhtml_hi_limit=50 --rc genhtml_med_limit=35
+      --ignore-errors mismatch --rc genhtml_hi_limit=50 --rc
+      genhtml_med_limit=35
       # coverage rate limits for function coverage
       --rc genhtml_function_hi_limit=80 --rc genhtml_function_med_limit=50
-      --branch-coverage
-      --title "${PROJECT_NAME}" app.run
+      --branch-coverage --title "${PROJECT_NAME}" app.run
     COMMENT "Running genhtml"
     VERBATIM
   )
