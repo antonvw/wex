@@ -17,7 +17,7 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
     # prepare initial tracefile
     COMMAND
       lcov
-      --ignore-errors negative,mismatch,inconsistent,empty,count,corrupt
+      --ignore-errors negative,negative,mismatch,inconsistent,empty,count,corrupt
       --rc geninfo_unexecuted_blocks=1
       --base-directory ./
       --gcov-tool ${wexGCOV_USE}
@@ -33,7 +33,7 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
     # capture results
     COMMAND
       lcov
-      --ignore-errors negative,mismatch,inconsistent,empty,count,corrupt
+      --ignore-errors negative,negative,mismatch,inconsistent,empty,count,corrupt
       --rc geninfo_unexecuted_blocks=1
       --base-directory ./
       --gcov-tool ${wexGCOV_USE}
