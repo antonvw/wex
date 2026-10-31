@@ -15,14 +15,6 @@
 #include <wex/vcs/unified-diff.h>
 #include <wex/vcs/vcs-entry.h>
 
-#ifdef AHA
-none dit is geen for (int i = 0; i < 10; i++)
-{
-  xxxx
-}
-
-#endif
-
 #include "util.h"
 
 namespace wex
