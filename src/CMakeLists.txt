@@ -35,7 +35,8 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
     # combine tracefiles
     COMMAND
       lcov --gcov-tool ${wexGCOV_USE} --add-tracefile app.base --add-tracefile
-      app.run --rc branch_coverage=1 --output-file app.run
+      --ignore-errors inconsistent app.run --rc branch_coverage=1 --rc
+      check_data_consistency=0 --output-file app.run
     # remove output that we are not interested in
     COMMAND
       lcov --ignore-errors corrupt,inconsistent --gcov-tool ${wexGCOV_USE}
