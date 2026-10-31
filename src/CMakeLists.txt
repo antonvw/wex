@@ -41,8 +41,8 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
     COMMAND
       lcov --ignore-errors corrupt,inconsistent --gcov-tool ${wexGCOV_USE}
       --remove app.run "*boost/*" "*/usr/*" "*external/*" "*/test/*"
-      "*include/wex/factory/text-window.h" "*/src/syntax/lexers.cpp" --rc
-      branch_coverage=1 --rc check_data_consistency=0 --output-file app.run
+      "*include/wex/factory/text-window.h" --rc branch_coverage=1 --rc
+      check_data_consistency=0 --output-file app.run
     COMMENT "Running lcov"
     VERBATIM
   )
