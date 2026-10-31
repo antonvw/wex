@@ -38,9 +38,10 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
       app.run --rc branch_coverage=1 --output-file app.run
     # remove output that we are not interested in
     COMMAND
-      lcov --ignore-errors corrupt,inconsistent --gcov-tool ${wexGCOV_USE} --remove app.run "*boost/*" "*/usr/*"
-      "*external/*" "*/test/*" "*include/wex/factory/text-window.h"
-      "*/src/syntax/lexers.cpp" --rc branch_coverage=1 --output-file app.run
+      lcov --ignore-errors corrupt,inconsistent --gcov-tool ${wexGCOV_USE}
+      --remove app.run "*boost/*" "*/usr/*" "*external/*" "*/test/*"
+      "*include/wex/factory/text-window.h" "*/src/syntax/lexers.cpp" --rc
+      branch_coverage=1 --rc check_data_consistency=0 --output-file app.run
     COMMENT "Running lcov"
     VERBATIM
   )
