@@ -19,8 +19,8 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
       lcov --ignore-errors
       negative,negative,mismatch,mismatch,inconsistent,empty,count,corrupt --rc
       geninfo_unexecuted_blocks=1 --base-directory ./ --gcov-tool ${wexGCOV_USE}
-      --capture --rc branch_coverage=1 --initial --directory ./ --output-file
-      app.base
+      --capture --rc branch_coverage=1 --rc check_data_consistency=0 --initial
+      --directory ./ --output-file app.base
   )
 
   add_custom_target(
@@ -30,7 +30,8 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
       lcov --ignore-errors
       negative,negative,mismatch,mismatch,inconsistent,empty,count,corrupt --rc
       geninfo_unexecuted_blocks=1 --base-directory ./ --gcov-tool ${wexGCOV_USE}
-      --capture --rc branch_coverage=1 --directory ./ --output-file app.run
+      --capture --rc branch_coverage=1 --rc check_data_consistency=0 --directory
+      ./ --output-file app.run
     # combine tracefiles
     COMMAND
       lcov --gcov-tool ${wexGCOV_USE} --add-tracefile app.base --add-tracefile
