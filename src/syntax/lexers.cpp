@@ -317,8 +317,15 @@ const wex::indicator&
 wex::lexers::get_indicator(const indicator& indicator) const
 {
   const auto& it = m_indicators.find(indicator);
-  return (
-    it != m_indicators.end() ? *it : *m_indicators.find(wex::indicator()));
+
+  if (it != m_indicators.end())
+  {
+    return *it;
+  }
+
+  log("get_indicator") << "unknown indicator:" << indicator.number();
+
+  return *m_indicators.begin();
 }
 
 const wex::lexers::name_values_t&
@@ -519,6 +526,10 @@ void wex::lexers::parse_node_global(const pugi::xml_node& node)
       if (const wex::indicator indicator(child); indicator.is_ok())
       {
         m_indicators.insert(indicator);
+      }
+      else
+      {
+        log("indicator") << child.text().get() << "not ok";
       }
     }
     else if (strcmp(child.name(), "marker") == 0)

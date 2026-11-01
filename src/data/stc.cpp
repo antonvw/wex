@@ -33,7 +33,7 @@ wex::data::stc::flags(window_t flags, data::control::action_t action)
   return *this;
 }
 
-wex::data::stc& wex::data::stc::indicator_no(indicator_t t)
+wex::data::stc& wex::data::stc::indicator_no(indicator::indicator_t t)
 {
   m_indicator_no = t;
 

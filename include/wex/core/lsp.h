@@ -239,6 +239,17 @@ struct hover_item
   std::string contents, kind;
 };
 
+/// Represents an inactive regions item.
+struct inactive_regions_item
+{
+  /// Constructor from a JSON object,
+  /// as received from the language server.
+  inactive_regions_item(const boost::json::object& obj);
+
+  std::vector<range_item> ranges;
+  const std::string       uri;
+};
+
 /// Represents an on-type formatting item, which specifies text changes to
 /// be applied when a specific character is typed.
 struct on_type_formatting_item : public code_action_edit_change_item

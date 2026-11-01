@@ -237,9 +237,10 @@ wex::debug::get_args(const std::string& command, stc* stc)
   {
     if (v.size() > 1 && !v[1].empty())
     {
-      if (int result{};
-          std::from_chars(v[1].data(), v[1].data() + v[1].size(), result).ec !=
-          std::errc())
+      if (
+        int result{};
+        std::from_chars(v[1].data(), v[1].data() + v[1].size(), result).ec !=
+        std::errc())
       {
         return {};
       }
@@ -364,8 +365,9 @@ wex::debug::get_args(const std::string& command, stc* stc)
       args += " " + stc->GetSelectedText();
     }
   }
-  else if (regex r("^(u|until|thread until)");
-           r.search(command) == 1 && stc != nullptr)
+  else if (
+    regex r("^(u|until|thread until)");
+    r.search(command) == 1 && stc != nullptr)
   {
     args += " " + std::to_string(stc->get_current_line());
   }
@@ -386,7 +388,7 @@ void wex::debug::is_finished()
   {
     if (auto* stc = m_frame->open_file(m_path_execution_point); stc != nullptr)
     {
-      stc->SetIndicatorCurrent(data::stc::IND_DEBUG);
+      stc->SetIndicatorCurrent(indicator::IND_BREAKPOINT);
       stc->IndicatorClearRange(0, stc->GetTextLength() - 1);
       stc->AnnotationClearAll();
     }
@@ -416,12 +418,14 @@ void wex::debug::process_stdin(const std::string& text)
                v[1],
                boost::char_separator<char>(" ")))
         {
-          if (const auto& it = m_breakpoints.find(token);
-              it != m_breakpoints.end() &&
-              m_frame->is_open(std::get<0>(it->second)))
+          if (
+            const auto& it = m_breakpoints.find(token);
+            it != m_breakpoints.end() &&
+            m_frame->is_open(std::get<0>(it->second)))
           {
-            if (auto* stc = m_frame->open_file(std::get<0>(it->second));
-                stc != nullptr)
+            if (
+              auto* stc = m_frame->open_file(std::get<0>(it->second));
+              stc != nullptr)
             {
               stc->MarkerDeleteHandle(std::get<1>(it->second));
             }
@@ -478,10 +482,11 @@ void wex::debug::process_stdout(const std::string& text)
 
     m_stdout.clear();
   }
-  else if (regex v(
-             {{m_entry.regex_stdout(debug_entry::regex_t::AT_PATH_LINE)},
-              {m_entry.regex_stdout(debug_entry::regex_t::AT_LINE)}});
-           v.search(m_stdout) > 0)
+  else if (
+    regex v(
+      {{m_entry.regex_stdout(debug_entry::regex_t::AT_PATH_LINE)},
+       {m_entry.regex_stdout(debug_entry::regex_t::AT_LINE)}});
+    v.search(m_stdout) > 0)
   {
     if (v.size() == 2)
     {
@@ -489,14 +494,15 @@ void wex::debug::process_stdout(const std::string& text)
       m_path_execution_point = m_path;
       log::trace("debug path and exec") << m_path.string();
     }
-    data.indicator_no(data::stc::IND_DEBUG);
+    data.indicator_no(indicator::IND_BREAKPOINT);
     data.control().line(std::stoi(v.back()));
     m_stdout.clear();
   }
-  else if (regex v(
-             {{m_entry.regex_stdout(debug_entry::regex_t::VARIABLE_MULTI)},
-              {m_entry.regex_stdout(debug_entry::regex_t::VARIABLE)}});
-           v.search(m_stdout) > 0)
+  else if (
+    regex v(
+      {{m_entry.regex_stdout(debug_entry::regex_t::VARIABLE_MULTI)},
+       {m_entry.regex_stdout(debug_entry::regex_t::VARIABLE)}});
+    v.search(m_stdout) > 0)
   {
     m_stdout.clear();
 
@@ -551,13 +557,14 @@ void wex::debug::set_entry(const std::string& debugger)
     {
       m_entry = v[0];
     }
-    else if (const auto& it = std::ranges::find_if(
-               v,
-               [debugger](auto const& e)
-               {
-                 return e.name() == debugger;
-               });
-             it != v.end())
+    else if (
+      const auto& it = std::ranges::find_if(
+        v,
+        [debugger](auto const& e)
+        {
+          return e.name() == debugger;
+        });
+      it != v.end())
     {
       m_entry = *it;
     }

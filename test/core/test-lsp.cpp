@@ -10,6 +10,8 @@
 #include <wex/test/test.h>
 #include <wx/frame.h>
 
+#include "test-lsp-item.h"
+
 void shared_test(
   wxStyledTextCtrl*                        stc,
   const wex::code_action_edit_change_item& item)
@@ -20,12 +22,6 @@ void shared_test(
   REQUIRE(item.new_text == "formatted");
   REQUIRE(item.replace_target(stc) == 5);
   REQUIRE(stc->GetText() == "This is a formatted string for editing");
-}
-
-boost::json::object string_to_json(const std::string& text)
-{
-  auto parsed = boost::json::parse(text);
-  return parsed.as_object();
 }
 
 TEST_CASE("wex::lsp")
@@ -183,6 +179,14 @@ TEST_CASE("wex::lsp")
     CAPTURE(item.contents);
     REQUIRE(item.contents.starts_with("\"### add"));
     REQUIRE(item.kind == "markdown");
+  }
+
+  SECTION("inactive_regions_item")
+  {
+    wex::inactive_regions_item item(test_inactive_regions());
+    CAPTURE(item.uri);
+    REQUIRE(item.ranges.size() == 1);
+    REQUIRE(item.ranges[0].start.line == 1);
   }
 
   SECTION("json_to_string")

@@ -2,7 +2,7 @@
 // Name:      test-presentation.cpp
 // Purpose:   Implementation for wex unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/log-none.h>
@@ -61,7 +61,7 @@ TEST_CASE("wex::presentation")
     REQUIRE(p.is_ok());
 
     wxStyledTextCtrl s;
-    p.apply(&s);
+    REQUIRE(!p.apply(&s)); // no parent
     REQUIRE(p.is_ok());
   }
 

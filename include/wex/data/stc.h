@@ -9,6 +9,7 @@
 
 #include <wex/core/path.h>
 #include <wex/factory/control.h>
+#include <wex/syntax/indicator.h>
 
 #include <bitset>
 
@@ -36,7 +37,7 @@ public:
   };
 
   /// A typedef containing menu flags.
-  typedef std::bitset<5> menu_t;
+  using menu_t = std::bitset<5>;
 
   /// Window flags.
   enum
@@ -51,15 +52,7 @@ public:
   };
 
   /// A typedef containing window flags.
-  typedef std::bitset<6> window_t;
-
-  /// Indicator type.
-  enum indicator_t
-  {
-    IND_LINE = 0, ///< line indicator
-    IND_ERR,      ///< error indicator
-    IND_DEBUG     ///< debug indicator
-  };
+  using window_t = std::bitset<6>;
 
   /// Support class for client data stored at the event.
   class event_data
@@ -144,10 +137,10 @@ public:
   }
 
   /// Returns indicator type.
-  indicator_t indicator_no() const { return m_indicator_no; }
+  indicator::indicator_t indicator_no() const { return m_indicator_no; }
 
   /// Sets indicator type.
-  stc& indicator_no(indicator_t t);
+  stc& indicator_no(indicator::indicator_t t);
 
   /// Injects data.
   bool inject() const;
@@ -195,15 +188,15 @@ private:
 
   path m_head_path;
 
-  data::control m_data;
-  indicator_t   m_indicator_no{IND_LINE};
-  menu_t        m_menu_flags{menu_t()
-                               .set(MENU_CONTEXT)
-                               .set(MENU_OPEN_LINK)
-                               .set(MENU_OPEN_WWW)
-                               .set(MENU_VCS)};
-  window_t      m_win_flags{0};
-  event_data    m_event_data;
+  data::control          m_data;
+  indicator::indicator_t m_indicator_no{indicator::IND_MATCH};
+  menu_t                 m_menu_flags{menu_t()
+                                        .set(MENU_CONTEXT)
+                                        .set(MENU_OPEN_LINK)
+                                        .set(MENU_OPEN_WWW)
+                                        .set(MENU_VCS)};
+  window_t               m_win_flags{0};
+  event_data             m_event_data;
 
   bool m_recent{true}, m_allow_change_page{true};
 };

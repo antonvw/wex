@@ -9,6 +9,7 @@
 #include <wex/test/test.h>
 
 #include "../src/ui/lsp.h"
+#include "../test/core/test-lsp-item.h"
 #include "test.h"
 
 TEST_CASE("wex::lsp")
@@ -54,9 +55,8 @@ TEST_CASE("wex::lsp")
     auto* diagnostics = new wex::diagnostics_t;
 
     diagnostics->emplace_back(
-      wex::diagnostic_item(
-        wex::range_item(wex::position_item(10, 2), wex::position_item(11, 5)),
-        "Test diagnostic message"));
+      wex::range_item(wex::position_item(10, 2), wex::position_item(11, 5)),
+      "Test diagnostic message");
 
     wex::set_lsp_diagnostics(stc, diagnostics);
   }
@@ -69,18 +69,23 @@ TEST_CASE("wex::lsp")
       new wex::hover_item(wex::position_item(10, 2), "Test hover contents"));
   }
 
+  SECTION("set_lsp_inactive_regions")
+  {
+    wex::set_lsp_inactive_regions(
+      frame(),
+      new wex::inactive_regions_item(test_inactive_regions()));
+  }
+
   SECTION("set_lsp_on_type")
   {
     auto* items = new wex::on_type_formatting_item_t;
 
     items->emplace_back(
-      wex::on_type_formatting_item(
-        wex::range_item(wex::position_item(12, 2), wex::position_item(12, 5)),
-        "xyz"));
+      wex::range_item(wex::position_item(12, 2), wex::position_item(12, 5)),
+      "xyz");
     items->emplace_back(
-      wex::on_type_formatting_item(
-        wex::range_item(wex::position_item(10, 2), wex::position_item(11, 5)),
-        "abc"));
+      wex::range_item(wex::position_item(10, 2), wex::position_item(11, 5)),
+      "abc");
 
     wex::set_lsp_on_type(frame(), stc, items);
   }

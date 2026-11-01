@@ -24,10 +24,10 @@ TEST_CASE("wex::data::stc")
     REQUIRE(!data.event(true).event().is_synced());
     REQUIRE(!data.event(true).event().is_synced_log());
     REQUIRE(data.control(wex::data::control().col(3)).control().col() == 3);
-    REQUIRE(data.indicator_no() == wex::data::stc::IND_LINE);
+    REQUIRE(data.indicator_no() == wex::indicator::IND_MATCH);
     REQUIRE(
-      data.indicator_no(wex::data::stc::IND_DEBUG).indicator_no() ==
-      wex::data::stc::IND_DEBUG);
+      data.indicator_no(wex::indicator::IND_BREAKPOINT).indicator_no() ==
+      wex::indicator::IND_BREAKPOINT);
     REQUIRE(
       data.flags(wex::data::stc::WIN_READ_ONLY).flags() ==
       wex::data::stc::WIN_READ_ONLY);

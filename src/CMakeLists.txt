@@ -15,29 +15,34 @@ if(CMAKE_BUILD_TYPE MATCHES "Coverage")
   add_custom_target(
     lcov-prep
     # prepare initial tracefile
-    lcov --ignore-errors negative --ignore-errors mismatch --ignore-errors
-    empty,empty --rc geninfo_unexecuted_blocks=1 --base-directory ./ --gcov-tool
-    ${wexGCOV_USE} --capture --rc branch_coverage=1 --initial --directory ./
-    --output-file app.base
+    COMMAND
+      lcov --ignore-errors
+      negative,negative,mismatch,mismatch,inconsistent,empty,count,corrupt --rc
+      geninfo_unexecuted_blocks=1 --base-directory ./ --gcov-tool ${wexGCOV_USE}
+      --capture --rc branch_coverage=1 --rc check_data_consistency=0 --initial
+      --directory ./ --output-file app.base
   )
 
   add_custom_target(
     lcov
     # capture results
     COMMAND
-      lcov --ignore-errors negative --ignore-errors mismatch --ignore-errors
-      empty,empty --rc geninfo_unexecuted_blocks=1 --base-directory ./
-      --gcov-tool ${wexGCOV_USE} --capture --rc branch_coverage=1 --directory ./
-      --output-file app.run
+      lcov --ignore-errors
+      negative,negative,mismatch,mismatch,inconsistent,empty,count,corrupt --rc
+      geninfo_unexecuted_blocks=1 --base-directory ./ --gcov-tool ${wexGCOV_USE}
+      --capture --rc branch_coverage=1 --rc check_data_consistency=0 --directory
+      ./ --output-file app.run
     # combine tracefiles
     COMMAND
-      lcov --gcov-tool ${wexGCOV_USE} --add-tracefile app.base --rc
-      branch_coverage=1 --add-tracefile app.run --output-file app.run
+      lcov --ignore-errors inconsistent --gcov-tool ${wexGCOV_USE}
+      --add-tracefile app.base --add-tracefile app.run --rc branch_coverage=1
+      --rc check_data_consistency=0 --output-file app.run
     # remove output that we are not interested in
     COMMAND
-      lcov --gcov-tool ${wexGCOV_USE} --remove app.run "*boost/*" "*/usr/*"
-      "*external/*" "*/test/*" "*include/wex/factory/text-window.h" --rc
-      branch_coverage=1 --output-file app.run
+      lcov --ignore-errors corrupt,inconsistent --gcov-tool ${wexGCOV_USE}
+      --remove app.run "*boost/*" "*/usr/*" "*external/*" "*/test/*"
+      "*include/wex/factory/text-window.h" --rc branch_coverage=1 --rc
+      check_data_consistency=0 --output-file app.run
     COMMENT "Running lcov"
     VERBATIM
   )

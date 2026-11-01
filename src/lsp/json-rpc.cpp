@@ -83,7 +83,7 @@ json_rpc_message json_rpc::decode(const std::string& data) const
     }
     else if (obj.contains("result") || obj.contains("error"))
     {
-      msg.is_error    = obj.contains("error");
+      msg.is_error = obj.contains("error");
 
       if (obj.contains("result"))
       {
@@ -195,6 +195,10 @@ bool json_rpc::handle_response(const json_rpc_message& msg)
     msg.method == "window/logMessage" || msg.method == "window/showMessage")
   {
     return handle_show_message(msg);
+  }
+  else if (msg.method == "textDocument/inactiveRegions")
+  {
+    return handle_inactive_regions(msg);
   }
   else
   {

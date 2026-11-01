@@ -209,6 +209,25 @@ hover_item::hover_item(const boost::json::object& obj)
   kind     = json_to_string(con, "kind");
 }
 
+inactive_regions_item::inactive_regions_item(const boost::json::object& obj)
+  : uri(obj.at("textDocument").at("uri").as_string().data())
+{
+  if (obj.contains("regions"))
+  {
+    for (const auto& region : obj.at("regions").as_array())
+    {
+      range_item ri;
+      ri.start = region.at("start").as_object();
+      ri.end   = region.at("end").as_object();
+      ranges.emplace_back(ri);
+    }
+  }
+  else
+  {
+    log("inactive_regions_item") << boost::json::serialize(obj);
+  }
+}
+
 on_type_formatting_item::on_type_formatting_item(
   const range_item& rnge,
   std::string       nw_text)
