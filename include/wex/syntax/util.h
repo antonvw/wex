@@ -10,6 +10,7 @@
 #include <wex/factory/window.h>
 #include <wex/syntax/property.h>
 #include <wex/syntax/style.h>
+#include <wx/choicdlg.h>
 
 namespace wex
 {
@@ -46,11 +47,41 @@ void node_styles(
   std::vector<style>&   styles);
 
 /// Presents a dialog to choose one string out of an array.
+/// The type T should be a container with std::string.
+template <typename T>
 bool single_choice_dialog(
   /// all window data
   const data::window& data,
   /// the strings to choose from
-  const std::vector<std::string>& v,
+  const T& v,
   /// the selected one
-  std::string& selection);
+  std::string& selection)
+{
+  wxArrayString s;
+
+  for (const auto& it : v)
+  {
+    s.Add(it);
+  }
+
+  wxSingleChoiceDialog dlg(data.parent(), _("Input") + ":", data.title(), s);
+
+  if (data.size() != wxDefaultSize)
+  {
+    dlg.SetSize(data.size());
+  }
+
+  if (const auto index = s.Index(selection); index != wxNOT_FOUND)
+  {
+    dlg.SetSelection(index);
+  }
+  if (dlg.ShowModal() == wxID_CANCEL)
+  {
+    return false;
+  }
+
+  selection = dlg.GetStringSelection();
+
+  return true;
+}
 }; // namespace wex

@@ -5,7 +5,9 @@
 // Copyright: (c) 2022-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#ifdef __WXMSW__
 #include <thread>
+#endif
 
 #include <wex/wex.h>
 

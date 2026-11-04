@@ -6,6 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/wex.h>
+#include <wx/persist/toplevel.h>
 
 wex::stc_entry_dialog*
 wex::del::frame::entry_dialog(const std::string& title, const std::string& text)
@@ -51,18 +52,12 @@ int wex::del::frame::lsp_config_dialog(const data::window& par)
       std::make_pair(config(server.first).get(false), server.second));
   }
 
-  if (m_lsp_dialog == nullptr)
-  {
-    m_lsp_dialog = new item_dialog(
-      std::vector<item>{{choices}},
-      data::window(par).title(_("Set LSP Server").ToStdString()));
-  }
-  else
-  {
-    m_lsp_dialog->reload();
-  }
+  item_dialog dlg(
+    std::vector<item>{{choices}},
+    data::window(par).title(_("Set LSP Server").ToStdString()));
+  wxPersistentRegisterAndRestore(&dlg, dlg.GetTitle());
 
-  const int result(m_lsp_dialog->ShowModal());
+  const int result(dlg.ShowModal());
 
   // then, detect a change for any client
   std::map<std::string, bool> servers_2;

@@ -7,7 +7,6 @@
 
 #include <wex/syntax/stc.h>
 #include <wex/syntax/util.h>
-#include <wx/choicdlg.h>
 
 int wex::find_xml_root(wxStyledTextCtrl* stc, size_t skip)
 {
@@ -51,37 +50,4 @@ void wex::node_styles(
   {
     styles.emplace_back(child, lexer);
   }
-}
-
-bool wex::single_choice_dialog(
-  const data::window&             data,
-  const std::vector<std::string>& v,
-  std::string&                    selection)
-{
-  wxArrayString s;
-
-  for (const auto& it : v)
-  {
-    s.Add(it);
-  }
-
-  wxSingleChoiceDialog dlg(data.parent(), _("Input") + ":", data.title(), s);
-
-  if (data.size() != wxDefaultSize)
-  {
-    dlg.SetSize(data.size());
-  }
-
-  if (const auto index = s.Index(selection); index != wxNOT_FOUND)
-  {
-    dlg.SetSelection(index);
-  }
-  if (dlg.ShowModal() == wxID_CANCEL)
-  {
-    return false;
-  }
-
-  selection = dlg.GetStringSelection();
-
-  return true;
 }
