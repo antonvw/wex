@@ -49,6 +49,8 @@ void wex::vcs_entry::checkout_dialog(const std::string& repo_path)
   {
     auto branch(selection.substr(2));
 
+    // Take care that a remote branch can be checked out:
+    // remotes/origin/feature/xxx-yyy -> feature/xxx-yyy
     if (regex r("(.*?)/(.*?)/(.*)"); r.match(branch) == 3)
     {
       branch = r[2];
