@@ -7,6 +7,7 @@
 
 #include <wex/common/util.h>
 #include <wex/core/config.h>
+#include <wex/core/regex.h>
 #include <wex/syntax/util.h>
 #include <wex/ui/frame.h>
 #include <wex/ui/item-dialog.h>
@@ -46,9 +47,14 @@ void wex::vcs_entry::checkout_dialog(const std::string& repo_path)
       branches,
       selection))
   {
-    if (
-      const auto& branch(rfind_after(selection.substr(2), "/"));
-      process().system(data.exe(bin() + " checkout " + branch)) == 0)
+    auto branch(selection.substr(2));
+
+    if (regex r("(.*?)/(.*?)/(.*)"); r.match(branch) == 3)
+    {
+      branch = r[2];
+    }
+
+    if (factory::process().system(data.exe(bin() + " checkout " + branch)) == 0)
     {
       auto* frame = dynamic_cast<wex::frame*>(wxTheApp->GetTopWindow());
       frame->statustext(branch, "PaneVCS");
