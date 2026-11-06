@@ -37,6 +37,7 @@ void wex::vcs_entry::checkout_dialog(const std::string& repo_path)
 {
   process_data data;
   data.start_dir(repo_path);
+  factory::process().system(data.exe(bin() + " fetch"));
 
   auto branches = execute_and_parse(data.exe(bin() + " branch -a"));
   move_asterisk_to_front(branches);
