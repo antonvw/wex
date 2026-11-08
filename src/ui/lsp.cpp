@@ -118,7 +118,6 @@ void set_lsp_definition_or_implementation(
 void set_lsp_diagnostics(syntax::stc* stc, const diagnostics_t* diagnostics)
 {
   stc->AnnotationSetVisible(wxSTC_ANNOTATION_HIDDEN);
-  stc->SetIndicatorCurrent(wex::indicator::IND_ERROR);
   stc->IndicatorClearRange(0, stc->GetTextLength());
   stc->AnnotationClearAll();
 

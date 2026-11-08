@@ -47,20 +47,14 @@ json_rpc::json_rpc(wxEvtHandler* eh)
 
 json_rpc_message json_rpc::decode(const std::string& data) const
 {
-  json_rpc_message msg;
-
-  size_t pos = data.find("\r\n\r\n");
-
-  if (pos == std::string::npos)
-  {
-    log("wex::lsp::json_rpc::decode invalid") << data;
-    return msg;
-  }
-
-  std::string json_str = data.substr(pos + 4);
+  const size_t pos = data.find("\r\n\r\n");
+  std::string  json_str =
+    (pos != std::string::npos ? data.substr(pos + 4) : data);
 
   // prevent invalid json
   boost::algorithm::replace_all(json_str, ",\"result\":null", ",\"result\":[]");
+
+  json_rpc_message msg;
 
   try
   {
@@ -202,7 +196,11 @@ bool json_rpc::handle_response(const json_rpc_message& msg)
   }
   else
   {
-    log("wex::lsp::json_rpc unhandled") << msg.method;
+    if (!msg.method.empty())
+    {
+      log("wex::lsp::json_rpc unhandled") << msg.method;
+    }
+
     return false;
   }
 

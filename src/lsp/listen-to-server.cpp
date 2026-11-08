@@ -61,6 +61,23 @@ std::string listen_to_server::read()
 
         max = stoi(r[0]) + header_length;
       }
+      else
+      {
+        boost::system::error_code json_ec;
+        boost::json::parse(response, json_ec);
+
+        if (json_ec.value() == boost::system::errc::success)
+        {
+          break;
+        }
+
+        if (!response.starts_with("{"))
+        {
+          log::warning("incorrect json rpc ignored") << response;
+          return "{}";
+          break;
+        }
+      }
     }
 
     if (total == max)
