@@ -197,6 +197,17 @@ bool wex::auto_complete::on_char(char c)
     lsp_client != nullptr && m_stc->get_vi().mode().is_insert() &&
     m_stc->path().file_exists())
   {
+    static char prev = 0;
+
+    if (
+      lsp_client->lsp_server() == "clangd" && (c == '\r' || c == '\n') &&
+      prev == '\\')
+    {
+      return false;
+    }
+
+    prev = c;
+
     if (
       m_stc->get_frame()->lsp_clients_trigger_format(
         lsp_client,

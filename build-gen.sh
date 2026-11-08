@@ -164,6 +164,10 @@ cmake -B "${option_dir}" "${option_generator}" \
   ${option_tests} \
   ${option_tidy}
 
+if [[ -n "${option_tidy}" ]]; then
+  ln -fs "${option_dir}/compile_commands.json" .
+fi
+
 if [[ "${option_prepare}" == "false" ]]; then
   if [[ "${option_generator}" =~ .*Ninja ]]; then
     cd "${option_dir}" && ninja
