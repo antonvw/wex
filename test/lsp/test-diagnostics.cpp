@@ -91,9 +91,12 @@ TEST_CASE("wex::lsp::diagnostics")
     const auto& uris = diags.get_uris();
 
     REQUIRE(uris.size() == 3);
-    REQUIRE(std::ranges::contains(uris, "file:///project/main.cpp"));
-    REQUIRE(std::ranges::contains(uris, "file:///project/utils.cpp"));
-    REQUIRE(std::ranges::contains(uris, "file:///project/lib.cpp"));
+    REQUIRE(
+      std::ranges::contains(uris, std::string("file:///project/main.cpp")));
+    REQUIRE(
+      std::ranges::contains(uris, std::string("file:///project/utils.cpp")));
+    REQUIRE(
+      std::ranges::contains(uris, std::string("file:///project/lib.cpp")));
   }
 
   SECTION("multiple_documents")
