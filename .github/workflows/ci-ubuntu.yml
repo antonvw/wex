@@ -92,6 +92,7 @@ jobs:
 
       - name: Coveralls
         uses: coverallsapp/github-action@v2
+        continue-on-error: true
         with:
           path-to-lcov: build/src/app.run
           github-token: ${{ secrets.GITHUB_TOKEN }}
