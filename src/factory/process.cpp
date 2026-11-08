@@ -139,6 +139,7 @@ int wex::factory::process::system(const wex::process_data& data)
     if (p->wait() >= 0)
     {
       log::debug("system") << data.log();
+
     }
     else
     {
@@ -151,6 +152,11 @@ int wex::factory::process::system(const wex::process_data& data)
     m_data = data;
 
     const int ec = p->exit_code();
+
+    if (ec != 0 && !m_stderr.empty())
+    {
+      log("system") << m_stderr;
+    }
     delete p;
     return ec;
 #endif

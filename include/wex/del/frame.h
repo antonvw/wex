@@ -251,8 +251,7 @@ private:
 
   void find_in_files(wex::window_id id);
 
-  item_dialog *m_fif_dialog{nullptr}, *m_rif_dialog{nullptr},
-    *m_lsp_dialog{nullptr};
+  item_dialog *     m_fif_dialog{nullptr}, *m_rif_dialog{nullptr};
   stc_entry_dialog* m_entry_dialog{nullptr};
   debug*            m_debug{nullptr};
   process*          m_process{nullptr};

@@ -15,6 +15,7 @@
 #include <wex/ui/item-build.h>
 #include <wex/ui/item-dialog.h>
 #include <wx/app.h>
+#include <wx/persist/toplevel.h>
 
 #include "util.h"
 
@@ -36,24 +37,22 @@ bool execute_grep(const std::string& bin, const path& tl)
     return false;
   }
 
-  auto                text(stc->get_selected_text());
-  static item_dialog* dlg = nullptr;
+  auto text(stc->get_selected_text());
 
   if (text.empty())
   {
-    if (dlg == nullptr)
-    {
-      dlg = new item_dialog(
-        {add_find_text(),
-         item(_("fif.In files"), item::COMBOBOX),
-         item::choices_bool_t{
-           find_replace_data::get()->text_match_case(),
-           find_replace_data::get()->text_match_word(),
-           find_replace_data::get()->text_regex()}},
-        wex::data::window().title("git grep"));
-    }
+    item_dialog dlg(
+      {add_find_text(),
+       item(_("fif.In files"), item::COMBOBOX),
+       item::choices_bool_t{
+         find_replace_data::get()->text_match_case(),
+         find_replace_data::get()->text_match_word(),
+         find_replace_data::get()->text_regex()}},
+      wex::data::window().title("git grep"));
 
-    if (dlg->ShowModal() == wxID_CANCEL)
+    wxPersistentRegisterAndRestore(&dlg, dlg.GetTitle());
+
+    if (dlg.ShowModal() == wxID_CANCEL)
     {
       return false;
     }
@@ -64,11 +63,6 @@ bool execute_grep(const std::string& bin, const path& tl)
     {
       return false;
     }
-  }
-  else if (dlg != nullptr)
-  {
-    stc->get_find_string();
-    dlg->reload();
   }
 
   if (
