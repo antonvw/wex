@@ -73,7 +73,7 @@ std::string listen_to_server::read()
 
         if (!response.starts_with("{"))
         {
-          log("incorrect json rpc ignored") << response;
+          log::warning("incorrect json rpc ignored") << response;
           return "{}";
           break;
         }
