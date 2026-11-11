@@ -841,7 +841,23 @@ void wex::del::frame::statusbar_clicked_right(const std::string& pane)
   }
 }
 
-void wex::del::frame::statustext_vcs(factory::stc* stc)
+bool wex::del::frame::statustext(
+  const std::string& text,
+  const std::string& pane) const
+{
+  if (text == "PaneVCS" && pane == "PaneVCS")
+  {
+    statustext_vcs(nullptr);
+  }
+  else
+  {
+    wex::frame::statustext(text, pane);
+  }
+
+  return true;
+}
+
+void wex::del::frame::statustext_vcs(factory::stc* stc) const
 {
   if (stc != nullptr)
   {

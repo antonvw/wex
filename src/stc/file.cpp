@@ -132,6 +132,11 @@ bool wex::stc_file::do_file_load(bool synced)
         m_stc->SetText("READ ERROR");
       }
 
+      if (m_stc->data().event().is_synced())
+      {
+        m_stc->get_frame()->statustext("PaneVCS", "PaneVCS");
+      }
+
       const int action =
         m_stc->data().event().is_synced() ? FILE_LOAD_SYNC : FILE_LOAD;
       FILE_POST(action);

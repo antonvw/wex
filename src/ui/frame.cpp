@@ -580,13 +580,16 @@ const std::string wex::frame::pane_add(wxWindow* pane)
 {
   static int no = 0;
 
-  const auto& info(
-    panes() == 5 ? wxAuiPaneInfo().Center() : wxAuiPaneInfo().Bottom());
-
   const std::string name("PANE " + std::to_string(no++));
 
-  pane_add(
-    {{pane, wxAuiPaneInfo(info).Name(name).MinSize(250, 30).Caption(name)}});
+  wxAuiPaneInfo info;
+  info.Name(name).MinSize(250, 30).Caption(name);
+  panes() == 5 ? info.Center() : info.Bottom();
+
+  if (!pane_add({{pane, info}}))
+  {
+    return std::string();
+  }
 
   return name;
 }
@@ -705,7 +708,7 @@ bool wex::frame::pane_show(const std::string& pane, bool show)
 
 size_t wex::frame::panes() const
 {
-  return const_cast<frame*>(this)->m_manager.GetAllPanes().GetCount();
+  return m_manager.GetAllPanes().GetCount();
 }
 
 void wex::frame::record(const std::string& command)
