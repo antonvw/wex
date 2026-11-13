@@ -2,7 +2,7 @@
 // Name:      vim.h
 // Purpose:   Declaration of wex::vim class to handle vim commands
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2021-2025 Anton van Wezenbeek
+// Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -11,8 +11,6 @@
 
 namespace wex
 {
-enum class motion_t;
-
 /// This class offers vim commands handling (g or z commands).
 class vim
 {
@@ -51,12 +49,11 @@ public:
 private:
   /// commands to be used in lambda, see also vi::commands_t
   /// (has a return type in function)
-  typedef std::vector<std::pair<
+  using commands_t = std::vector<std::pair<
     /// the command
     const std::string,
     /// by this command
-    std::function<void(const std::string& command)>>>
-    commands_t;
+    std::function<void(const std::string& command)>>>;
 
   void command_find(const std::string& command);
   bool command_motion(int pos_start);
