@@ -6,6 +6,9 @@
 // Copyright: (c) 2009-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __WXMSW__
+#include <X11/keysym.h>
+#endif
 #include <boost/tokenizer.hpp>
 #include <charconv>
 
@@ -18,8 +21,8 @@
 #include <wex/vi/vi.h>
 
 #include "../util.h"
+#include "motion.h"
 #include "util.h"
-#include "vim.h"
 
 // without this code adding tab in block insert mode fails, it only
 // adds one tab instead of a line of tabs
@@ -48,6 +51,15 @@ bool is_special_key(const wxKeyEvent& event, const vi_mode& mode)
     return true;
   }
 
+#ifndef __WXMSW__
+  if (
+    event.GetRawKeyCode() >= XK_dead_grave &&
+    event.GetRawKeyCode() <= XK_dead_currency)
+  {
+    return true;
+  }
+#endif
+
   return !event.HasAnyModifiers() &&
          (event.GetKeyCode() == WXK_ESCAPE || event.GetKeyCode() == WXK_BACK ||
           event.GetKeyCode() == WXK_RETURN ||
@@ -61,6 +73,30 @@ bool is_special_key(const wxKeyEvent& event, const vi_mode& mode)
             event.GetKeyCode() == WXK_PAGEUP ||
             event.GetKeyCode() == WXK_PAGEDOWN)));
 }
+
+#ifndef __WXMSW__
+// Without this code pressing a tilde (on gtk, osx is ok, but
+// does no harm, results in a dead tilde char, activated by
+// pressing a second tilde.
+std::string keysym_to_string(long ks)
+{
+  switch (ks)
+  {
+    case XK_dead_tilde:
+      return "~";
+    case XK_dead_grave:
+      return "`";
+    case XK_dead_acute:
+      return "'";
+    case XK_dead_diaeresis:
+      return "\"";
+    case XK_dead_circumflex:
+      return "^";
+    default:
+      return {};
+  }
+}
+#endif
 
 bool process_modifier(vi* vi, macros::key_t type, const wxKeyEvent& event)
 {
@@ -361,7 +397,14 @@ std::string wex::vi::convert_key_event(const wxKeyEvent& event) const
       cmd = "k";
       break;
     default:
-      cmd = event.GetKeyCode();
+#ifndef __WXMSW__
+      cmd = keysym_to_string(event.GetRawKeyCode());
+#endif
+
+      if (cmd.empty())
+      {
+        cmd = event.GetKeyCode();
+      }
   }
 
   return cmd;
