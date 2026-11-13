@@ -337,8 +337,9 @@ public:
   /// Returns the toolbar.
   toolbar* get_toolbar() { return m_toolbar; }
 
-  /// Adds a window as a pane, generating a unique name.
-  /// Return the name of the pane.
+  /// Adds a window as a pane (used by tests), generating a unique name.
+  /// Returns the name of the pane, or empty string if
+  /// pane could not be added.
   const std::string pane_add(wxWindow* pane);
 
   /// Add panes to the manager.

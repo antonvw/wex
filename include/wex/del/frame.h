@@ -139,7 +139,7 @@ public:
 
   /// Shows vcs info on statusbar.
   /// If the stc is specified, it is used to set vcs based upon the path.
-  void statustext_vcs(factory::stc* stc = nullptr);
+  void statustext_vcs(factory::stc* stc = nullptr) const;
 
   /// Starts or stops syncing.
   /// Default syncing is started during construction.
@@ -199,6 +199,9 @@ public:
   void show_ex_message(const std::string& text) override;
   void statusbar_clicked(const std::string&) override;
   void statusbar_clicked_right(const std::string&) override;
+
+  bool
+  statustext(const std::string& text, const std::string& pane) const override;
 
   syntax::stc* stc_entry_dialog_component() override;
   bool         stc_entry_dialog_is_shown() const override;
