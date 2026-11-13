@@ -61,7 +61,7 @@ while getopts ":B:d:D:G:abcghilpstT" opt; do
 
     c)
       # see ci-ubuntu.yml
-      option_coverage="-DCMAKE_BUILD_TYPE=Coverage -DwexGCOV=gcov-14"
+      option_coverage="-DCMAKE_BUILD_TYPE=Coverage -DwexGCOV=gcov-15"
     ;;
 
     d)

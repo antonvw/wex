@@ -53,8 +53,7 @@ code_action_item::code_action_item(const json_rpc_message& msg)
   {
     for (auto& [url, change] : edit.changes)
     {
-      // append_range(change) requires gcc-15
-      changes[url].insert(changes[url].end(), change.begin(), change.end());
+      changes[url].append_range(change);
     }
   }
 }
