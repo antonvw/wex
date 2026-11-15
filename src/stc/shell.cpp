@@ -14,7 +14,9 @@
 #include <wex/factory/defs.h>
 #include <wex/factory/process.h>
 #include <wex/stc/auto-complete.h>
+#include <wex/stc/link.h>
 #include <wex/stc/shell.h>
+#include <wex/syntax/path-lexer.h>
 #include <wex/ui/frame.h>
 
 #include <numeric>
@@ -37,6 +39,7 @@ wex::shell::shell(
   , m_commands_iterator(m_commands.end())
   , m_commands_save_in_config(100)
   , m_prompt(std::move(prompt))
+  , m_set_lexer_tries_max(5)
 {
   // Override defaults from config.
   SetEdgeMode(wxSTC_EDGE_NONE);
@@ -65,6 +68,12 @@ wex::shell::shell(
         {
           const std::string out(m_text + text);
           AppendText(out);
+
+          if (m_set_lexer_tries < m_set_lexer_tries_max && !m_is_lexer_set)
+          {
+            set_lexer(out);
+          }
+
           m_text.clear();
         }
         else
@@ -90,6 +99,8 @@ wex::shell::shell(
      {[=, this](const wxCommandEvent& event)
       {
         m_text.clear();
+        m_is_lexer_set   = false;
+        m_set_lexer_tries = 0;
       },
       ID_SHELL_APPEND_START},
 
@@ -548,6 +559,23 @@ bool wex::shell::set_command_from_history(const std::string& short_command)
   prompt(eol() + short_command + ": event not found");
 
   return false;
+}
+
+void wex::shell::set_lexer(const std::string& text)
+{
+  link      l;
+  line_data data;
+
+  if (const auto& p(l.get_path(text, data)); p.file_exists())
+  {
+    if (const path_lexer pl(p); pl.lexer().is_ok())
+    {
+      m_is_lexer_set = true;
+      get_lexer().set(pl.lexer());
+    }
+  }
+
+  m_set_lexer_tries++;
 }
 
 void wex::shell::set_process(factory::process* process)
