@@ -115,12 +115,13 @@ private:
   /// Set command for command specified as number or as start of command,
   /// Returns true if found and m_command was set.
   bool set_command_from_history(const std::string& short_command);
+  void set_lexer(const std::string& text);
   void show_command(int key);
   void show_history();
 
   const std::string m_command_end;
   const bool        m_echo;
-  const size_t      m_commands_save_in_config;
+  const size_t      m_commands_save_in_config, m_set_lexer_tries_max;
 
   // We use a list, as each command appears only once,
   // and when selecting an element already present,
@@ -133,7 +134,8 @@ private:
 
   int m_command_start_pos =
     0; /// position after the prompt from where commands can be inserted
-  bool m_enabled = true;
+  size_t m_set_lexer_tries = 0;
+  bool   m_enabled = true, m_is_lexer_set = false;
 
   factory::process* m_process{nullptr};
 };

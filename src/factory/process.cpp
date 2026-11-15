@@ -139,7 +139,6 @@ int wex::factory::process::system(const wex::process_data& data)
     if (p->wait() >= 0)
     {
       log::debug("system") << data.log();
-
     }
     else
     {
