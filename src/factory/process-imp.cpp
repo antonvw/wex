@@ -179,7 +179,11 @@ void wex::factory::process_imp::thread_input(const process* p)
       std::string text, line;
       line.reserve(600);
       text.reserve(600);
-      char c;
+      char      c;
+      int       chars_before_linefeed     = 0;
+      const int max_chars_before_linefeed = 200;
+      const int max_chars_before_truncate = 500;
+      const int max_chars_for_isspace_trigger_post = 15;
 
       while (read_from_pipe(m_ip, c))
       {
@@ -196,15 +200,29 @@ void wex::factory::process_imp::thread_input(const process* p)
           }
         }
 
-        if (text.size() > 500)
+        if (c == '\n' || c == '\r')
+        {
+          chars_before_linefeed = 0;
+        }
+        else
+        {
+          chars_before_linefeed++;
+        }
+
+        if (
+          text.size() > max_chars_before_truncate ||
+          chars_before_linefeed > max_chars_before_linefeed)
         {
           text += "...\n";
           WEX_POST(ID_SHELL_APPEND, text, out)
           std::string ignore;
           ba::read_until(m_ip, boost::asio::dynamic_buffer(ignore), "\n");
+          chars_before_linefeed = 0;
           text.clear();
         }
-        else if (std::isspace(static_cast<unsigned char>(c)))
+        else if (
+          chars_before_linefeed < max_chars_for_isspace_trigger_post &&
+          std::isspace(static_cast<unsigned char>(c)))
         {
           WEX_POST(ID_SHELL_APPEND, text, out)
           text.clear();
