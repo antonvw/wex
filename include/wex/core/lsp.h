@@ -22,29 +22,36 @@ namespace wex
 /// Diagnostic severity levels.
 enum class severity_t
 {
-  ERRORS  = 1,
-  WARNING = 2,
-  INFO    = 3,
-  HINT    = 4
+  ERRORS  = 1, ///< errors level
+  WARNING = 2, ///< warning level
+  INFO    = 3, ///< info level
+  HINT    = 4  ///< hint level
 };
 
 /// Represents a JSON-RPC 2.0 message.
 struct json_rpc_message
 {
-  int id{-1}; // -1 for notifications
+  /// Request ID; -1 for notifications.
+  int id{-1};
 
+  /// Method name.
   std::string method;
 
-  boost::json::object error, params, result;
-  boost::json::array  result_array;
+  boost::json::object error, ///< error object
+    params,                  ///< request parameters
+    result;                  ///< result object
 
+  /// Array-form result.
+  boost::json::array result_array;
+
+  /// True when this message represents an error.
   bool is_error{false};
 };
 
-/// - Each class used in a request will have a json_object() function to convert
-///   it to a JSON object for communication with the language server.
-/// - Each class used in a response will have a constructor that takes a JSON
-///   object to initialize the class from the server's response.
+// - Each class used in a request will have a json_object() function to convert
+//   it to a JSON object for communication with the language server.
+// - Each class used in a response will have a constructor that takes a JSON
+//   object to initialize the class from the server's response.
 
 /// Represents a position in a document, including line and character offsets.
 struct position_item
@@ -67,8 +74,8 @@ struct position_item
   /// Converts the position to a text position in the given control.
   int to_pos(wxStyledTextCtrl* stc) const;
 
-  int line{0};      // Line position in a document (0-based)
-  int character{0}; // Character offset on a line in a document (0-based)
+  int line{0},    ///< line position in a document (0-based)
+    character{0}; ///< character offset on a line in a document (0-based)
 };
 
 /// Represents a range in a document, defined by two positions.
@@ -100,7 +107,8 @@ struct range_item
     stc->SetTargetEnd(end.to_pos(stc));
   }
 
-  position_item start, end;
+  position_item start, ///< start of range
+    end;               ///< end of range
 };
 
 /// Represents a single code action edit change.
@@ -123,8 +131,8 @@ struct code_action_edit_change_item
   /// Returns the difference in stc size caused by replacing.
   int replace_target(wxStyledTextCtrl* stc) const;
 
-  std::string new_text;
-  range_item  range;
+  std::string new_text; ///< replacement text
+  range_item  range;    ///< range that will be replaced
 };
 
 /// Represents a code action edit, containing a map
@@ -135,7 +143,8 @@ struct code_action_edit_item
   /// as received from the language server.
   code_action_edit_item(const boost::json::object& obj);
 
-  std::map<std::string, std::vector<code_action_edit_change_item>> changes;
+  std::map<std::string, std::vector<code_action_edit_change_item>>
+    changes; ///< container with the changes
 };
 
 /// Represents a code action item (quick fix).
@@ -149,7 +158,8 @@ struct code_action_item
   /// Logs info about this class.
   std::stringstream log() const;
 
-  std::map<std::string, std::vector<code_action_edit_change_item>> changes;
+  std::map<std::string, std::vector<code_action_edit_change_item>>
+    changes; ///< container with the changes
 };
 
 /// Represents an element of a completion item.
@@ -162,9 +172,11 @@ struct completion_item_element
   /// as received from the language server.
   completion_item_element(const boost::json::object& obj);
 
-  const int kind{0}; // Completion item kind (e.g., function, variable, etc.)
+  const int kind{0}; ///< completion item kind (e.g., function, variable, etc.)
 
-  const std::string detail, documentation, insert_text;
+  const std::string detail, ///< details
+    documentation,          ///< documentation
+    insert_text;            ///< insert text
 };
 
 /// Represents a completion item.
@@ -174,11 +186,12 @@ struct completion_item
   /// object as received from the language server.
   completion_item(const position_item& p, const boost::json::object& obj);
 
-  // the pos is not received from the server, might not be
-  // necessary
+  /// the pos is not received from the server, might not be
+  /// necessary
   const position_item pos;
 
-  std::vector<completion_item_element> elements;
+  std::vector<completion_item_element>
+    elements; ///< container with completion_item_element
 };
 
 /// Represents a definition or implementation item.
@@ -193,9 +206,9 @@ struct definition_or_implementation_item
   /// as received from the language server.
   definition_or_implementation_item(const boost::json::object& obj);
 
-  const std::string uri;
+  const std::string uri; ///< uniform resource identifier
 
-  const range_item range;
+  const range_item range; ///< the range
 };
 
 /// Represents a single diagnostic item(error, warning, etc.).
@@ -214,12 +227,14 @@ struct diagnostic_item
   /// Logs info about this class.
   std::stringstream log() const;
 
-  const range_item range;
+  const range_item range; ///< the range
 
   /// Severity of the diagnostic
-  const severity_t severity{severity_t::INFO};
+  const severity_t severity{severity_t::INFO}; ///< severity level
 
-  const std::string code, message, source;
+  const std::string code, ///< code from json
+    message,              ///< message from json
+    source;               ///< source from json
 };
 
 /// Represents hover information.
@@ -234,9 +249,10 @@ struct hover_item
   /// as received from the language server.
   hover_item(const boost::json::object& obj);
 
-  position_item pos;
+  position_item pos; ///< position
 
-  std::string contents, kind;
+  std::string contents, ///< contents from json
+    kind;               ///< kind from json
 };
 
 /// Represents an inactive regions item.
@@ -246,8 +262,8 @@ struct inactive_regions_item
   /// as received from the language server.
   inactive_regions_item(const boost::json::object& obj);
 
-  std::vector<range_item> ranges;
-  const std::string       uri;
+  std::vector<range_item> ranges; ///< container with range_items
+  const std::string       uri;    ///< uniform resource identifier
 };
 
 /// Represents an on-type formatting item, which specifies text changes to
@@ -270,26 +286,33 @@ struct show_message_item
   /// Message type values.
   enum message_t
   {
-    ERRORS = 1,
-    WARNING,
-    INFO,
-    LOG,
-    DEBUG // @since 3.18.0
+    ERRORS = 1, ///< errors message
+    WARNING,    ///< warning message
+    INFO,       ///< info message
+    LOG,        ///< log message
+    DEBUG       ///< warning message, @since 3.18.0
   };
 
-  /// Default constructor, taking a message type and a message string.
+  /// Default constructor.
   show_message_item(
-    std::string msg          = std::string(),
-    message_t   t            = INFO,
-    bool        is_show_item = true);
+    /// message to be shown
+    std::string msg = std::string(),
+    /// the message type
+    message_t t = INFO,
+    /// show as wxInfoBar or log only
+    bool is_show_item = true);
 
   /// Constructor from a JSON object,
   /// as received from the language server.
-  show_message_item(const boost::json::object& obj, bool is_show_item = true);
+  show_message_item(
+    /// the json object
+    const boost::json::object& obj,
+    /// default the message is shown as wxInfoBar
+    bool is_show_item = true);
 
-  const message_t   type;
-  const std::string message;
-  const bool        is_show{true};
+  const message_t   type;          ///< type from json
+  const std::string message;       ///< message from json
+  const bool        is_show{true}; ///< show as wxInfoBar or log only
 };
 
 /// Convert a json value that has a key with a string value to a string.
