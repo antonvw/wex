@@ -7,6 +7,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
+#include <wex/core/log.h>
 #include <wex/stc/link.h>
 #include <wex/stc/stc.h>
 #include <wex/syntax/path-lexer.h>
@@ -99,6 +100,7 @@ bool wex::stc::link_open(link_t mode, std::string* link)
 
   if (const size_t max_link_size = 10000; sel.size() > max_link_size)
   {
+    log("text size exceeds limit for opening linkes") << max_link_size;
     return false;
   }
 
