@@ -26,27 +26,26 @@ namespace wex
 {
 std::string command_flags(const vcs_entry& v)
 {
+  const auto c(v.get_command());
+
   std::string flags;
 
-  if (const auto c(v.get_command()); c.get_command() != "show")
+  if (c.get_command() == "diff")
   {
-    if (c.get_command() == "diff")
-    {
-      flags = v.get_diff_flags();
-    }
-    else if (c.ask_flags())
-    {
-      flags = v.get_flags();
-    }
-    else if (c.flags() != "none")
-    {
-      flags = c.flags();
-    }
+    flags = v.get_diff_flags();
+  }
+  else if (c.ask_flags())
+  {
+    flags = v.get_flags();
+  }
+  else if (c.flags() != "none")
+  {
+    flags = c.flags();
+  }
 
-    if (!flags.empty())
-    {
-      flags += " ";
-    }
+  if (!flags.empty())
+  {
+    flags += " ";
   }
 
   return flags;
