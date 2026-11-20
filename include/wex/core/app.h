@@ -2,7 +2,7 @@
 // Name:      app.h
 // Purpose:   Include file for wex::app class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2025 Anton van Wezenbeek
+// Copyright: (c) 2009-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
@@ -41,10 +41,12 @@ public:
   wxLanguage get_language() const { return m_language; }
 
 private:
-  void set_language();
+  bool set_language();
 
-  wxLanguage m_language;
+  wxLanguage m_language{wxLANGUAGE_DEFAULT};
 
+#ifdef __WXGTK__
   static int m_first_init;
+#endif
 };
 }; // namespace wex

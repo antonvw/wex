@@ -2,7 +2,7 @@
 // Name:      app.cpp
 // Purpose:   Implementation of wex::app class
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2009-2025 Anton van Wezenbeek
+// Copyright: (c) 2009-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wex/core/app.h>
@@ -10,30 +10,27 @@
 #include <wex/core/log.h>
 #include <wx/clipbrd.h>
 
-#ifdef __WXGTK__
-#include <X11/Xlib.h>
-#include <thread>
-#endif
-
 #include <iostream>
 
 #include "app-locale.h"
 
+#ifdef __WXGTK__
+#include <X11/Xlib.h>
+#include <thread>
 namespace wex
 {
-// This routine performs first init of  a wex::app,
+// This routine performs first init of a wex::app,
 // it runs before OnInit.
 int first_init()
 {
-#ifdef __WXGTK__
   XInitThreads();
-#endif
 
   return 1;
 }
 } // namespace wex
 
 int wex::app::m_first_init = first_init();
+#endif
 
 const wxUILocale& wex::app::get_locale()
 {
@@ -59,12 +56,9 @@ int wex::app::OnExit()
 bool wex::app::OnInit()
 {
   log::on_init();
-
   config::on_init();
 
-  set_language();
-
-  if (m_language != wxLANGUAGE_UNKNOWN && m_language != wxLANGUAGE_DEFAULT)
+  if (set_language())
   {
     if (!wxUILocale::UseDefault())
     {
@@ -86,24 +80,27 @@ bool wex::app::OnInit()
   return true; // do not call base class: we have our own cmd line processing
 }
 
-void wex::app::set_language()
+bool wex::app::set_language()
 {
-  if (const auto& lang(config("Language").get()); !lang.empty())
+  const auto& lang(config("Language").get());
+
+  if (lang.empty())
   {
-    if (const auto* info = wxUILocale::FindLanguageInfo(lang); info == nullptr)
-    {
-      log("unknown language") << lang;
-      m_language = wxLANGUAGE_UNKNOWN;
-    }
-    else
-    {
-      m_language = (wxLanguage)info->Language;
-      log::trace("canonical name")
-        << wxUILocale::GetLanguageCanonicalName(m_language).ToStdString();
-    }
+    return false;
   }
-  else
+
+  const auto* info = wxUILocale::FindLanguageInfo(lang);
+
+  if (info == nullptr)
   {
-    m_language = wxLANGUAGE_DEFAULT;
+    log("unknown language") << lang;
+    m_language = wxLANGUAGE_UNKNOWN;
+    return false;
   }
+
+  m_language = (wxLanguage)info->Language;
+  log::trace("canonical name")
+    << wxUILocale::GetLanguageCanonicalName(m_language).ToStdString();
+
+  return true;
 }
