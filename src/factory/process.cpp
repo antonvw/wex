@@ -11,8 +11,6 @@
 #include <boost/process/stdio.hpp>
 #include <boost/system/error_code.hpp>
 
-#include <thread>
-
 #include <wex/core/log.h>
 #include <wex/factory/process.h>
 
@@ -37,11 +35,6 @@ wex::factory::process::process() = default;
 wex::factory::process::~process()
 {
   stop();
-}
-
-void wex::factory::process::async_sleep_for(const std::chrono::milliseconds& ms)
-{
-  std::this_thread::sleep_for(ms);
 }
 
 bool wex::factory::process::async_system(const wex::process_data& data)
