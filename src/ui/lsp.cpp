@@ -200,7 +200,7 @@ void set_lsp_on_type(
     });
 
   int        caret_delta = 0;
-  const auto curr        = stc->GetCurrentPos();
+  const auto caret       = stc->GetCurrentPos();
 
   // apply the sorted items to the stc, and in reverse order to avoid messing
   // up the positions of the remaining items.
@@ -211,13 +211,13 @@ void set_lsp_on_type(
   {
     const auto delta(item.replace_target(stc));
 
-    if (const auto start = item.range.start.to_pos(stc); start < curr)
+    if (const auto start = item.range.start.to_pos(stc); start <= caret)
     {
       caret_delta += delta;
     }
   }
 
-  stc->SetCurrentPos(curr + caret_delta);
+  stc->SetCurrentPos(caret + caret_delta);
   stc->SelectNone();
 }
 
