@@ -61,7 +61,7 @@ bool is_special_key(const wxKeyEvent& event, const vi_mode& mode)
 #endif
 
   return !event.HasAnyModifiers() &&
-         (event.GetKeyCode() == WXK_ESCAPE || event.GetKeyCode() == WXK_BACK ||
+         (event.GetKeyCode() == WXK_ESCAPE ||
           event.GetKeyCode() == WXK_RETURN ||
           event.GetKeyCode() == WXK_NUMPAD_ENTER ||
           event.GetKeyCode() == WXK_TAB ||
@@ -840,7 +840,15 @@ bool wex::vi::on_key_down(const wxKeyEvent& event)
 
   if (is_special_key(event, m_mode))
   {
-    return process_special_key(event);
+    if (!process_special_key(event))
+    {
+      return false;
+    }
+
+    if (!m_mode.is_insert())
+    {
+      return false;
+    }
   }
 
   if ((event.GetModifiers() & wxMOD_CONTROL) && event.GetKeyCode() != WXK_NONE)
