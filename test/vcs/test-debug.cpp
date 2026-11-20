@@ -5,6 +5,7 @@
 // Copyright: (c) 2016-2025 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <thread>
 #include <wex/core/config.h>
 #include <wex/factory/defs.h>
 #include <wex/ui/menu.h>
@@ -68,11 +69,12 @@ TEST_CASE("wex::debug", "[!mayfail]")
 #ifndef __WXMSW__
   SECTION("run")
   {
-    stc->set_text("#include <stdio.h>\n\n"
-                  "int main()\n"
-                  "{\n"
-                  "  printf(\"hello world\");\n"
-                  "}\n");
+    stc->set_text(
+      "#include <stdio.h>\n\n"
+      "int main()\n"
+      "{\n"
+      "  printf(\"hello world\");\n"
+      "}\n");
 
     stc->get_file().file_save(wex::path("example.cc"));
     system("cc -g example.cc");
@@ -97,7 +99,7 @@ TEST_CASE("wex::debug", "[!mayfail]")
     wxPostEvent(&dbg, event);
 
     process.stop();
-    process.async_sleep_for(std::chrono::milliseconds(10));
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
     REQUIRE(!dbg.is_active());
 

@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <chrono>
 #include <memory>
 
 #include <wex/factory/process-data.h>
@@ -26,9 +25,6 @@ class process
   friend class process_imp;
 
 public:
-  /// Sleeps for some milliseconds time.
-  static void async_sleep_for(const std::chrono::milliseconds& ms);
-
   /// Default constructor.
   process();
 

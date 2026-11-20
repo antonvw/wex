@@ -5,6 +5,7 @@
 // Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <thread>
 #include <wex/core/log-none.h>
 #include <wex/factory/process.h>
 
@@ -44,7 +45,7 @@ TEST_CASE("wex::factory::process")
       REQUIRE(process.stop());
       REQUIRE(!process.is_running());
       process.stop();
-      process.async_sleep_for(std::chrono::milliseconds(10));
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
       REQUIRE(!process.write("xx"));
       process.set_handler_dbg(&out); // if directly after out: crash
     }

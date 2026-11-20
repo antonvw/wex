@@ -5,6 +5,7 @@
 // Copyright: (c) 2021-2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <thread>
 #include <wex/core/log-none.h>
 #include <wex/stc/shell.h>
 #include <wex/vcs/process.h>
@@ -59,7 +60,7 @@ TEST_CASE("wex::process")
     {
       wex::log_none off;
       REQUIRE(process.async_system(wex::process_data("xxxx")));
-      process.async_sleep_for(std::chrono::milliseconds(25));
+      std::this_thread::sleep_for(std::chrono::milliseconds(25));
       REQUIRE(!process.is_running());
     }
 #endif
@@ -99,7 +100,8 @@ TEST_CASE("wex::process")
 
     SECTION("working directory")
     {
-      REQUIRE(process.system(wex::process_data("ls", "-l").start_dir("/")) == 0);
+      REQUIRE(
+        process.system(wex::process_data("ls", "-l").start_dir("/")) == 0);
       REQUIRE(!process.std_out().empty());
       REQUIRE(wxGetCwd().Contains("data"));
     }
@@ -117,7 +119,8 @@ TEST_CASE("wex::process")
 
     SECTION("working directory")
     {
-      REQUIRE(process.system(wex::process_data("ls", "-l").start_dir("/")) == 0);
+      REQUIRE(
+        process.system(wex::process_data("ls", "-l").start_dir("/")) == 0);
       wex::path::current(cwd.original());
     }
   }
