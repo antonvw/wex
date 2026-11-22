@@ -75,4 +75,12 @@ void set_lsp_show_message(
   wxWindow* parent,
   /// the show message item to set
   const show_message_item* item);
+
+/// Sets lsp signature help.
+void set_lsp_signature_help(
+  /// the stc to set signature help for
+  factory::stc* stc,
+  /// the signature_help_item
+  const signature_help_item* item);
+
 } // namespace wex

@@ -254,4 +254,25 @@ void set_lsp_show_message(wxWindow* parent, const show_message_item* item)
 
   delete item;
 }
+
+void set_lsp_signature_help(factory::stc* stc, const signature_help_item* item)
+{
+  const auto sig = item->active_signature;
+  const auto par = item->active_parameter;
+
+  if (
+    sig >= item->signatures.size() ||
+    par >= item->signatures[sig].parameters.size())
+  {
+    log("invalid values") << sig << par;
+  }
+  else
+  {
+    stc->CallTipShow(
+      stc->GetCurrentPos(),
+      item->signatures[0].parameters[0].documentation);
+  }
+
+  delete item;
+}
 } // namespace wex
