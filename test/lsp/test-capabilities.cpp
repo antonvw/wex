@@ -17,7 +17,7 @@ TEST_CASE("wex::lsp::capabilities")
   {
     REQUIRE(!cap.support(wex::lsp::capabilities::CAP_COMPLETION));
     REQUIRE(cap.trigger_completion_characters().empty());
-    REQUIRE(cap.trigger_signature_characters().empty());
+    REQUIRE(cap.trigger_signature_help_characters().empty());
     REQUIRE(cap.trigger_character().empty());
     REQUIRE(cap.log().str().contains("completion"));
     auto menu = new wex::menu();
@@ -70,12 +70,16 @@ TEST_CASE("wex::lsp::capabilities")
     auto parsed = boost::json::parse(text);
 
     REQUIRE(cap.set(parsed.as_object()));
+
     REQUIRE(cap.support(wex::lsp::capabilities::CAP_COMPLETION));
     REQUIRE(cap.support(wex::lsp::capabilities::CAP_DECLARATION));
     REQUIRE(cap.support(wex::lsp::capabilities::CAP_DEFINITION));
     REQUIRE(cap.support(wex::lsp::capabilities::CAP_FORMATTING));
     REQUIRE(cap.support(wex::lsp::capabilities::CAP_HOVER));
     REQUIRE(cap.support(wex::lsp::capabilities::CAP_IMPLEMENTATION));
+    REQUIRE(cap.support(wex::lsp::capabilities::CAP_SIGNATURE_HELP));
+
+    REQUIRE(!cap.trigger_signature_help_characters().empty());
 
     auto menu = new wex::menu();
     REQUIRE(

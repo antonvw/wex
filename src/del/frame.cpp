@@ -495,7 +495,7 @@ const std::string wex::del::frame::lsp_clients_trigger(syntax::stc* stc)
       }
 
       for (const auto& trigger :
-           client->get_capabilities().trigger_signature_characters())
+           client->get_capabilities().trigger_signature_help_characters())
       {
         if (std::string(1, stc->GetCharAt(wsp - 1)) == trigger)
         {

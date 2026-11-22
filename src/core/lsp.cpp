@@ -14,6 +14,21 @@
 
 namespace wex
 {
+template <typename T>
+void set_container(
+  const std::string&         name,
+  const boost::json::object& obj,
+  std::vector<T>&            container)
+{
+  if (auto tc = obj.if_contains(name); tc && tc->is_array())
+  {
+    for (const auto& v : tc->as_array())
+    {
+      container.emplace_back(v.as_object());
+    }
+  }
+}
+
 std::string
 json_to_string(const boost::json::value& val, const std::string& key)
 {
@@ -227,6 +242,13 @@ inactive_regions_item::inactive_regions_item(const boost::json::object& obj)
   }
 }
 
+parameter_information_item::parameter_information_item(
+  const boost::json::object& obj)
+  : documentation(json_to_string(obj, "documentation"))
+  , label(json_to_string(obj, "label"))
+{
+}
+
 on_type_formatting_item::on_type_formatting_item(
   const range_item& rnge,
   std::string       nw_text)
@@ -346,5 +368,24 @@ show_message_item::show_message_item(
   , is_show(is_show_item)
   , message(json_to_string(obj, "message"))
 {
+}
+
+signature_help_item::signature_help_item(const boost::json::object& obj)
+  : active_parameter(
+      obj.contains("activeParameter") ? obj.at("activeParameter").as_int64() :
+                                        0)
+  , active_signature(
+      obj.contains("activeSignature") ? obj.at("activeSignature").as_int64() :
+                                        0)
+{
+  set_container("signatures", obj, signatures);
+}
+
+signature_information_item::signature_information_item(
+  const boost::json::object& obj)
+  : documentation(json_to_string(obj, "message"))
+  , label(json_to_string(obj, "label"))
+{
+  set_container("parameters", obj, parameters);
 }
 } // namespace wex

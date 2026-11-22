@@ -3,6 +3,7 @@
 // Purpose:   Declaration of classes related to Language Server Protocol (LSP)
 //            support in wex.
 //            Uses LSP Specification - 3.17.0
+//            https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/
 // Author:    Anton van Wezenbeek
 // Copyright: (c) 2026 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
@@ -280,6 +281,19 @@ struct on_type_formatting_item : public code_action_edit_change_item
   on_type_formatting_item(const boost::json::object& obj);
 };
 
+/// Represents a parameter of a callable-signature. A parameter can
+/// have a label and a doc-comment.
+struct parameter_information_item
+{
+  /// Constructor from a JSON object,
+  /// as received from the language server.
+  parameter_information_item(const boost::json::object& obj);
+
+  const std::string
+    documentation;         ///< the human-readable doc-comment of this parameter
+  const std::string label; ///< a label of type string
+};
+
 /// Represents a show or a log message item.
 struct show_message_item
 {
@@ -313,6 +327,40 @@ struct show_message_item
   const message_t   type;          ///< type from json
   const std::string message;       ///< message from json
   const bool        is_show{true}; ///< show as wxInfoBar or log only
+};
+
+/// Represents a signature information item,
+/// the signature of something callable. A signature
+/// can have a label, like a function-name, a doc-comment, and
+/// a set of parameters.
+struct signature_information_item
+{
+  /// Constructor from a JSON object,
+  /// as received from the language server.
+  signature_information_item(const boost::json::object& obj);
+
+  /// The parameters of this signature.
+  std::vector<parameter_information_item> parameters;
+
+  const std::string documentation; ///< the label of this signature
+  const std::string label; ///< the human-readable doc-comment of this signature
+};
+
+/// Represents a signature help item.
+/// Signature help represents the signature of something
+/// callable. There can be multiple signature but only one
+/// active and only one active parameter.
+struct signature_help_item
+{
+  /// Constructor from a JSON object,
+  /// as received from the language server.
+  signature_help_item(const boost::json::object& obj);
+
+  /// One or more signatures.
+  std::vector<signature_information_item> signatures;
+
+  const int active_signature{0}; ///< the active signature
+  const int active_parameter{0}; ///< the active parameter
 };
 
 /// Convert a json value that has a key with a string value to a string.

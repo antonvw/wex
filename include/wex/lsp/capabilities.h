@@ -33,10 +33,11 @@ public:
     CAP_FORMATTING,     ///< formatting capability
     CAP_HOVER,          ///< hover capability
     CAP_IMPLEMENTATION, ///< implementation capability
+    CAP_SIGNATURE_HELP, ///< signature help capability
   };
 
   /// A typedef containing capability flags.
-  using capabilities_t = std::bitset<6>;
+  using capabilities_t = std::bitset<7>;
 
   /// Appends a menu entries, depending on capability for it.
   /// The menu text is derived from the support info, with Goto prefixed.
@@ -75,18 +76,18 @@ public:
     return m_first_trigger_character;
   }
 
-  /// Returns the trigger signature characters.
-  const std::vector<std::string>& trigger_signature_characters() const
+  /// Returns the trigger signature help characters.
+  const std::vector<std::string>& trigger_signature_help_characters() const
   {
-    return m_trigger_signature_characters;
+    return m_trigger_signature_help_characters;
   }
 
 private:
   capabilities_t                  m_support{0};
   static std::vector<std::string> m_support_info;
 
-  std::vector<std::string> m_trigger_completion_characters;
-  std::vector<std::string> m_trigger_signature_characters;
+  std::vector<std::string> m_trigger_completion_characters,
+    m_trigger_signature_help_characters;
 
   std::string m_first_trigger_character;
 };
