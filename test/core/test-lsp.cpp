@@ -257,8 +257,8 @@ TEST_CASE("wex::lsp")
         {
           "label": "sendMessage(text: string, retries: number)",
           "parameters": [
-            { "label": "text: string", "documentation": "Message to send." },
-            { "label": "retries: number", "documentation": "Number of retry attempts." }
+            { "label": [10,30], "documentation": "Message to send."},
+            { "label": [32,40], "documentation": "Number of retry attempts." }
           ]
         }
       ],
@@ -276,7 +276,7 @@ TEST_CASE("wex::lsp")
     REQUIRE(item.signatures.size() == 1);
     REQUIRE(item.signatures.front().label.starts_with("sendMessage"));
     REQUIRE(item.signatures.front().parameters.size() == 2);
-    REQUIRE(item.signatures.front().parameters.front().label == "text: string");
+    REQUIRE(item.signatures.front().parameters.front().label_start == 10);
     REQUIRE(
       item.signatures.front().parameters.front().documentation ==
       "Message to send.");

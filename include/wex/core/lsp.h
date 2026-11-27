@@ -290,8 +290,8 @@ struct parameter_information_item
   parameter_information_item(const boost::json::object& obj);
 
   const std::string
-    documentation;         ///< the human-readable doc-comment of this parameter
-  const std::string label; ///< a label of type string
+      documentation; ///< the human-readable doc-comment of this parameter
+  int label_start{0}, label_end{0}; ///< a label of type string
 };
 
 /// Represents a show or a log message item.
@@ -359,6 +359,8 @@ struct signature_help_item
   /// One or more signatures.
   std::vector<signature_information_item> signatures;
 
+  bool is_error{false};
+
   const int active_signature{0}; ///< the active signature
   const int active_parameter{0}; ///< the active parameter
 };
@@ -371,18 +373,20 @@ std::string json_to_string(
   /// the key
   const std::string& key);
 
-/// Type alias for a collection of code actions returned by the language server.
+/// Type alias for a collection of code actions returned by the language
+/// server.
 using code_actions_t = code_action_item;
 
 /// Type alias for collections of completions returned by the language server.
 using completions_t = completion_item;
 
-/// Type alias for a definition or implementation item returned by the language
-/// server.
+/// Type alias for a definition or implementation item returned by the
+/// language server.
 using definition_or_implementation_t =
   std::vector<definition_or_implementation_item>;
 
-/// Type alias for a collection of diagnostics returned by the language server.
+/// Type alias for a collection of diagnostics returned by the language
+/// server.
 using diagnostics_t = std::vector<diagnostic_item>;
 
 /// Type alias for a hover item returned by the language server.

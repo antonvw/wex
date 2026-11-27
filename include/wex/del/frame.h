@@ -179,7 +179,9 @@ public:
 
   lsp::client* lsp_clients_find(const path& p) override;
 
-  const std::string lsp_clients_trigger(syntax::stc* stc) override;
+  const std::string lsp_clients_trigger_completion(syntax::stc* stc) override;
+  const std::string
+       lsp_clients_trigger_signature_help(syntax::stc* stc) override;
   bool lsp_clients_trigger_format(wex::lsp::client*, char c) override;
 
   void on_command_item_dialog(wxWindowID dialogid, const wxCommandEvent& event)

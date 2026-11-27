@@ -516,12 +516,7 @@ bool client::signature_help(const wex::path& path, const position_item& pos)
            m_rpc.encode_request("textDocument/signatureHelp", obj),
            [=, this](const json_rpc_message& msg)
            {
-             auto* item = new on_type_formatting_item_t;
-
-             for (const auto& elem : msg.result_array)
-             {
-               item->emplace_back(elem.as_object());
-             }
+             auto* item = new signature_help_item(msg.result);
 
              queue_event(
                m_event_handler,

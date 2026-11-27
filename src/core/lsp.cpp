@@ -111,7 +111,7 @@ code_action_edit_item::code_action_edit_item(const boost::json::object& obj)
   for (const auto& [url, edits_value] : obj.at("changes").as_object())
   {
     {
-      const boost::json::array&                 edits = edits_value.as_array();
+      const auto&                               edits = edits_value.as_array();
       std::vector<code_action_edit_change_item> ones;
 
       for (const boost::json::value& edit_value : edits)
@@ -242,13 +242,6 @@ inactive_regions_item::inactive_regions_item(const boost::json::object& obj)
   }
 }
 
-parameter_information_item::parameter_information_item(
-  const boost::json::object& obj)
-  : documentation(json_to_string(obj, "documentation"))
-  , label(json_to_string(obj, "label"))
-{
-}
-
 on_type_formatting_item::on_type_formatting_item(
   const range_item& rnge,
   std::string       nw_text)
@@ -259,6 +252,16 @@ on_type_formatting_item::on_type_formatting_item(
 on_type_formatting_item::on_type_formatting_item(const boost::json::object& obj)
   : code_action_edit_change_item(obj)
 {
+}
+
+parameter_information_item::parameter_information_item(
+  const boost::json::object& obj)
+  : documentation(json_to_string(obj, "documentation"))
+{
+  const auto& label = obj.at("label").as_array();
+
+  label_start = label.at(0).as_int64();
+  label_end   = label.at(1).as_int64();
 }
 
 position_item::position_item(int l, int c)
@@ -379,6 +382,21 @@ signature_help_item::signature_help_item(const boost::json::object& obj)
                                         0)
 {
   set_container("signatures", obj, signatures);
+
+  if (active_signature >= signatures.size())
+  {
+    log("lsp signature-help signature too large")
+      << active_signature << signatures.size()
+      << " in: " << boost::json::serialize(obj);
+    is_error = true;
+  }
+  else if (active_parameter >= signatures[active_signature].parameters.size())
+  {
+    log("lsp signature-help parameter too large")
+      << active_parameter << signatures[active_signature].parameters.size()
+      << " in: " << boost::json::serialize(obj);
+    is_error = true;
+  }
 }
 
 signature_information_item::signature_information_item(

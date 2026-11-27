@@ -69,7 +69,7 @@ void set_lsp_completions(
   const auto         wsp = stc->WordStartPosition(stc->GetCurrentPos(), true);
   const std::string& filter(stc->GetTextRange(wsp, stc->GetCurrentPos()));
 
-  if (!filter.empty() || !frame->lsp_clients_trigger(stc).empty())
+  if (!filter.empty() || !frame->lsp_clients_trigger_completion(stc).empty())
   {
     const char  separator = 3;
     std::string auto_complete_list;
@@ -243,7 +243,7 @@ void set_lsp_show_message(wxWindow* parent, const show_message_item* item)
         log::warning(item->message);
         break;
       default:
-        log("unhandled show_message type") << static_cast<int>(item->type);
+        log("unhandled lsp show_message type") << static_cast<int>(item->type);
     }
   }
   else
@@ -257,20 +257,16 @@ void set_lsp_show_message(wxWindow* parent, const show_message_item* item)
 
 void set_lsp_signature_help(factory::stc* stc, const signature_help_item* item)
 {
-  const auto sig = item->active_signature;
-  const auto par = item->active_parameter;
+  if (!item->is_error)
+  {
+    const auto        sig   = item->active_signature;
+    const auto        par   = item->active_parameter;
+    const std::string label = item->signatures[sig].label.substr(
+      item->signatures[sig].parameters[par].label_start,
+      item->signatures[sig].parameters[par].label_end -
+        item->signatures[sig].parameters[par].label_start);
 
-  if (
-    sig >= item->signatures.size() ||
-    par >= item->signatures[sig].parameters.size())
-  {
-    log("invalid values") << sig << par;
-  }
-  else
-  {
-    stc->CallTipShow(
-      stc->GetCurrentPos(),
-      item->signatures[0].parameters[0].documentation);
+    stc->CallTipShow(stc->GetCurrentPos(), label);
   }
 
   delete item;

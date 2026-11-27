@@ -227,10 +227,21 @@ bool wex::auto_complete::on_char(char c)
       return false;
     }
 
-    lsp_client->completion(
-      m_stc->path(),
-      position_item(m_stc),
-      m_stc->get_frame()->lsp_clients_trigger(m_stc));
+    if (
+      const auto& tc(
+        m_stc->get_frame()->lsp_clients_trigger_signature_help(m_stc));
+      tc.contains(c))
+    {
+      lsp_client->signature_help(m_stc->path(), position_item(m_stc));
+    }
+    else
+    {
+      lsp_client->completion(
+        m_stc->path(),
+        position_item(m_stc),
+        m_stc->get_frame()->lsp_clients_trigger_completion(m_stc));
+    }
+
     return false;
   }
 
