@@ -383,19 +383,22 @@ signature_help_item::signature_help_item(const boost::json::object& obj)
 {
   set_container("signatures", obj, signatures);
 
-  if (active_signature >= signatures.size())
+  if (!signatures.empty())
   {
-    log("lsp signature-help signature too large")
-      << active_signature << signatures.size()
-      << " in: " << boost::json::serialize(obj);
-    is_error = true;
-  }
-  else if (active_parameter >= signatures[active_signature].parameters.size())
-  {
-    log("lsp signature-help parameter too large")
-      << active_parameter << signatures[active_signature].parameters.size()
-      << " in: " << boost::json::serialize(obj);
-    is_error = true;
+    if (active_signature >= signatures.size())
+    {
+      log("lsp signature-help signature too large")
+        << active_signature << signatures.size()
+        << " in: " << boost::json::serialize(obj);
+      is_error = true;
+    }
+    else if (active_parameter >= signatures[active_signature].parameters.size())
+    {
+      log("lsp signature-help parameter too large")
+        << active_parameter << signatures[active_signature].parameters.size()
+        << " in: " << boost::json::serialize(obj);
+      is_error = true;
+    }
   }
 }
 

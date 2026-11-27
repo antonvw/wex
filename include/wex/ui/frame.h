@@ -146,20 +146,23 @@ public:
   /// Finds an lsp client for a path.
   virtual wex::lsp::client* lsp_clients_find(const path& p) { return nullptr; }
 
-  /// Returns lsp trigger completion character.
-  virtual const std::string lsp_clients_trigger_completion(syntax::stc* stc)
+  /// Returns true if lsp trigger completion character matches c.
+  virtual bool
+  lsp_clients_trigger_completion(lsp::client*, const std::string& chars)
   {
-    return std::string();
+    return false;
   }
 
-  /// Returns lsp trigger signature help character.
-  virtual const std::string lsp_clients_trigger_signature_help(syntax::stc* stc)
+  /// Returns true if lsp trigger signature help character matches c.
+  virtual bool
+  lsp_clients_trigger_signature_help(lsp::client*, const std::string& chars)
   {
-    return std::string();
+    return false;
   }
 
-  /// Returns lsp trigger format character.
-  virtual bool lsp_clients_trigger_format(wex::lsp::client*, char c)
+  /// Returns true if lsp trigger format character matches c.
+  virtual bool
+  lsp_clients_trigger_format(lsp::client*, const std::string& chars)
   {
     return false;
   }
