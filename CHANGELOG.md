@@ -16,7 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - use released wxWidgets 3.3.4
 - large lsp annotations now use dialog for presentation
 - lsp communication not done for new, non yet saved files
-- lsp added 
+- lsp added
   - quick fixes using code action
   - grey out not-processed code
   - signature-help
