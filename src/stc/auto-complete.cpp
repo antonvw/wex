@@ -199,6 +199,10 @@ bool wex::auto_complete::on_char(char c)
   {
     static char prev = 0;
 
+    // this is a fix for clangd, which does not handle escaped backslashes correctly
+    // as is used by the C++ preprocessor, e.g.:
+    // #define FOO(x) x \\
+    // FOO(bar)
     if (
       lsp_client->lsp_server() == "clangd" && (c == '\r' || c == '\n') &&
       prev == '\\')

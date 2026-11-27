@@ -5,25 +5,16 @@
 This library contains Language Server Process classes for wex.
 It uses the ui and predecessor wex libraries.
 
-LSP enables integration with language servers, providing features like:
+LSP enables integration with language servers, providing features:
 
-- Diagnostics (errors, warnings, hints)
 - Code completion
-- Hover information
-- Jump to definition
-- Find references
-- Rename refactoring (not yet added)
 - Code formatting
-
-## Fix available flow
-
-The flow is:
-
-- Server sends textDocument/publishDiagnostics
-- Client displays the diagnostic and marks it as fixable
-- When the user asks for fixes, client sends textDocument/codeAction
-- Server returns one or more CodeAction objects
-- Client applies the returned WorkspaceEdit
+- Diagnostics (errors, warnings, hints)
+- Find references (not yet added)
+- Hover information
+- Jump to declaration / definition
+- Rename refactoring (not yet added)
+- Signature help information
 
 ### Design Principles
 
@@ -42,8 +33,10 @@ The flow is:
 ## Implementation
 
 **Key classes:**
-- `wex::lsp::client` - Main client managing communication
-- Message types for request/response/notification
+- library wex::core lsp.h offers base lsp data structs
+  for message types for request/response/notification
+- library wex::lsp
+  - `wex::lsp::client` - Main client managing communication
 
 ## JSON-RPC Example
 
