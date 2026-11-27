@@ -509,7 +509,7 @@ bool client::signature_help(const wex::path& path, const position_item& pos)
 {
   // LSP Methods Implementation
   // send textDocument/signatureHelp request
-  auto obj(make_object(path, pos));
+  const auto obj(make_object(path, pos));
 
   return m_capabilities.support(capabilities::CAP_SIGNATURE_HELP) &&
          write(

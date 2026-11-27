@@ -366,11 +366,6 @@ void wex::stc::bind_other()
 
 void wex::stc::key_action(wxKeyEvent& event)
 {
-  if (m_vi->is_active() && m_vi->mode().is_insert())
-  {
-    m_auto_complete->on_char(event.GetUnicodeKey());
-  }
-
   if (m_vi->visual() == ex::mode_t::OFF)
   {
     event.Skip();
@@ -401,6 +396,13 @@ void wex::stc::key_action(wxKeyEvent& event)
     }
 
     event.Skip();
+  }
+
+  if (m_vi->is_active() && m_vi->mode().is_insert())
+  {
+    // should be after the event.Skip, for
+    // signatureHelp to be handled after textDocument/didSave
+    m_auto_complete->on_char(event.GetUnicodeKey());
   }
 
   if (
