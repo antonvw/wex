@@ -87,6 +87,11 @@ bool lsp_clients_trigger(
   int                capability,
   const std::string& chars)
 {
+  if (client == nullptr)
+  {
+    return false;
+  }
+
   std::vector<std::string> triggers;
 
   switch (capability)
@@ -517,9 +522,7 @@ bool wex::del::frame::lsp_clients_trigger_format(
   lsp::client*       client,
   const std::string& chars)
 {
-  const auto& tc(client->get_capabilities().trigger_character());
-
-  return !tc.empty() && tc == chars;
+  return client->get_capabilities().trigger_character() == chars;
 }
 
 bool wex::del::frame::lsp_clients_trigger_signature_help(
