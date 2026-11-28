@@ -30,13 +30,6 @@ void set_lsp_completions(
   /// the frame to get trigger characters from
   wex::frame* frame);
 
-/// Sets lsp definition or implementation.
-void set_lsp_definition_or_implementation(
-  /// the frame to open files in
-  wex::frame* frame,
-  /// the definitions or implementations to set
-  const definition_or_implementation_t* definitions);
-
 /// Sets lsp diagnostics.
 void set_lsp_diagnostics(
   /// the stc to set diagnostics on
@@ -59,6 +52,13 @@ void set_lsp_inactive_regions(
   wex::frame* frame,
   /// the regions to set
   const inactive_regions_item* item);
+
+/// Sets lsp locations.
+void set_lsp_location(
+  /// the frame to open files in
+  wex::frame* frame,
+  /// the locations to set
+  const location_item_t* locations);
 
 /// Sets lsp on type formatting.
 void set_lsp_on_type(

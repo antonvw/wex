@@ -142,12 +142,12 @@ public:
   int version(const std::string& uri) const;
 
 private:
-  bool definition_or_implementation(
+  bool initialize_prepare();
+  bool location(
     const wex::path&     path,
     const position_item& pos,
     int                  id,
     const std::string&   method);
-  bool initialize_prepare();
   bool write(const std::string& text, response_handler resp = nullptr);
 
   wxEvtHandler* m_event_handler{nullptr};

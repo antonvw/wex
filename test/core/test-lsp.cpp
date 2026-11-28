@@ -125,7 +125,7 @@ TEST_CASE("wex::lsp")
     REQUIRE(item.pos.character == 0);
   }
 
-  SECTION("definition_or_implementation_item")
+  SECTION("location_item")
   {
     const auto obj(string_to_json("{\
        \"uri\": \"file:///project/src/utils.ts\",\
@@ -134,7 +134,7 @@ TEST_CASE("wex::lsp")
          \"end\": { \"line\": 11, \"character\": 5 }\
        }}"));
 
-    wex::definition_or_implementation_item item(obj);
+    wex::location_item item(obj);
     REQUIRE(item.uri == "file:///project/src/utils.ts");
     REQUIRE(item.range.start.line == 10);
     REQUIRE(item.range.start.character == 2);

@@ -99,25 +99,6 @@ void set_lsp_completions(
   }
 }
 
-void set_lsp_definition_or_implementation(
-  wex::frame*                           frame,
-  const definition_or_implementation_t* definitions)
-{
-  for (const auto& def : *definitions)
-  {
-    data::control control;
-    control.line(def.range.start.line + 1);
-    control.col(def.range.start.character + 1);
-    control.end_line(def.range.end.line + 1);
-    control.end_col(def.range.end.character + 1);
-    data::stc data(control);
-
-    frame->open_file(make_path_skip_uri(def.uri), data);
-  }
-
-  delete definitions;
-}
-
 void set_lsp_diagnostics(syntax::stc* stc, const diagnostics_t* diagnostics)
 {
   stc->AnnotationSetVisible(wxSTC_ANNOTATION_HIDDEN);
@@ -184,6 +165,23 @@ void set_lsp_inactive_regions(
   }
 
   delete item;
+}
+
+void set_lsp_location(wex::frame* frame, const location_item_t* locations)
+{
+  for (const auto& loc : *locations)
+  {
+    data::control control;
+    control.line(loc.range.start.line + 1);
+    control.col(loc.range.start.character + 1);
+    control.end_line(loc.range.end.line + 1);
+    control.end_col(loc.range.end.character + 1);
+    data::stc data(control);
+
+    frame->open_file(make_path_skip_uri(loc.uri), data);
+  }
+
+  delete locations;
 }
 
 void set_lsp_on_type(

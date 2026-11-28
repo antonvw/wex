@@ -66,15 +66,9 @@ void wex::frame::bind_lsp()
       },
       ID_LSP_CODE_COMPLETION},
 
-     {LSP_HANDLE(
-        definition_or_implementation_t,
-        set_lsp_definition_or_implementation),
-      ID_LSP_DECLARATION},
+     {LSP_HANDLE(location_item_t, set_lsp_location), ID_LSP_DECLARATION},
 
-     {LSP_HANDLE(
-        definition_or_implementation_t,
-        set_lsp_definition_or_implementation),
-      ID_LSP_DEFINITION},
+     {LSP_HANDLE(location_item_t, set_lsp_location), ID_LSP_DEFINITION},
 
      {[=, this](const wxCommandEvent& event)
       {
@@ -100,10 +94,7 @@ void wex::frame::bind_lsp()
 
      {LSP_HANDLE_OPEN(hover_t, set_lsp_hover), ID_LSP_HOVER},
 
-     {LSP_HANDLE(
-        definition_or_implementation_t,
-        set_lsp_definition_or_implementation),
-      ID_LSP_IMPLEMENTATION},
+     {LSP_HANDLE(location_item_t, set_lsp_location), ID_LSP_IMPLEMENTATION},
 
      {[=, this](const wxCommandEvent& event)
       {

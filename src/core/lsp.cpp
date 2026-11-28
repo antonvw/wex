@@ -165,21 +165,6 @@ completion_item_element::completion_item_element(const boost::json::object& obj)
   }
 }
 
-definition_or_implementation_item::definition_or_implementation_item(
-  std::string       u,
-  const range_item& r)
-  : uri(std::move(u))
-  , range(r)
-{
-}
-
-definition_or_implementation_item::definition_or_implementation_item(
-  const boost::json::object& obj)
-  : range(obj)
-  , uri(obj.at("uri").as_string().data())
-{
-}
-
 diagnostic_item::diagnostic_item(
   const range_item& r,
   std::string       msg,
@@ -240,6 +225,18 @@ inactive_regions_item::inactive_regions_item(const boost::json::object& obj)
   {
     log("inactive_regions_item") << boost::json::serialize(obj);
   }
+}
+
+location_item::location_item(std::string u, const range_item& r)
+  : uri(std::move(u))
+  , range(r)
+{
+}
+
+location_item::location_item(const boost::json::object& obj)
+  : range(obj)
+  , uri(obj.at("uri").as_string().data())
+{
 }
 
 on_type_formatting_item::on_type_formatting_item(

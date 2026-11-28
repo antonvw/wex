@@ -38,16 +38,16 @@ TEST_CASE("wex::lsp")
     wex::set_lsp_completions(stc, items, frame());
   }
 
-  SECTION("set_lsp_definition_or_implementation")
+  SECTION("set_lsp_location")
   {
-    auto* items = new wex::definition_or_implementation_t;
+    auto* items = new wex::location_item_t;
 
-    wex::definition_or_implementation_item item(
+    wex::location_item item(
       "file:///project/src/utils.ts",
       wex::range_item(wex::position_item(10, 2), wex::position_item(11, 5)));
     items->emplace_back(item);
 
-    wex::set_lsp_definition_or_implementation(frame(), items);
+    wex::set_lsp_location(frame(), items);
   }
 
   SECTION("set_lsp_diagnostics")

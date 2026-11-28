@@ -209,49 +209,13 @@ bool client::completion(
 bool client::declaration(const wex::path& path, const position_item& pos)
 {
   return m_capabilities.support(capabilities::CAP_DECLARATION) &&
-         definition_or_implementation(
-           path,
-           pos,
-           ID_LSP_DECLARATION,
-           "textDocument/declaration");
+         location(path, pos, ID_LSP_DECLARATION, "textDocument/declaration");
 }
 
 bool client::definition(const wex::path& path, const position_item& pos)
 {
   return m_capabilities.support(capabilities::CAP_DEFINITION) &&
-         definition_or_implementation(
-           path,
-           pos,
-           ID_LSP_DEFINITION,
-           "textDocument/definition");
-}
-
-bool client::definition_or_implementation(
-  const wex::path&     path,
-  const position_item& pos,
-  int                  id,
-  const std::string&   method)
-{
-  return write(
-    m_rpc.encode_request(method, make_object(path, pos)),
-    [=, this](const json_rpc_message& msg)
-    {
-      auto* definition = new definition_or_implementation_t;
-
-      for (const auto& item : msg.result_array)
-      {
-        definition->emplace_back(item.as_object());
-      }
-
-      if (definition->empty())
-      {
-        delete definition;
-      }
-      else
-      {
-        queue_event(m_event_handler, path.uri(), id, definition);
-      }
-    });
+         location(path, pos, ID_LSP_DEFINITION, "textDocument/definition");
 }
 
 bool client::did_change(
@@ -350,7 +314,7 @@ bool client::hover(const wex::path& path, const position_item& pos)
 bool client::implementation(const wex::path& path, const position_item& pos)
 {
   return m_capabilities.support(capabilities::CAP_DEFINITION) &&
-         definition_or_implementation(
+         location(
            path,
            pos,
            ID_LSP_IMPLEMENTATION,
@@ -442,6 +406,34 @@ bool client::is_running() const
 const std::string& client::language_id() const
 {
   return m_lexer.scintilla_lexer();
+}
+
+bool client::location(
+  const wex::path&     path,
+  const position_item& pos,
+  int                  id,
+  const std::string&   method)
+{
+  return write(
+    m_rpc.encode_request(method, make_object(path, pos)),
+    [=, this](const json_rpc_message& msg)
+    {
+      auto* locations = new location_item_t;
+
+      for (const auto& item : msg.result_array)
+      {
+        locations->emplace_back(item.as_object());
+      }
+
+      if (locations->empty())
+      {
+        delete locations;
+      }
+      else
+      {
+        queue_event(m_event_handler, path.uri(), id, locations);
+      }
+    });
 }
 
 const std::string& client::lsp_server() const

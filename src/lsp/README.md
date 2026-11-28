@@ -10,7 +10,7 @@ LSP enables integration with language servers, providing features:
 - Code completion
 - Code formatting
 - Diagnostics (errors, warnings, hints)
-- Find references (not yet added)
+- Find references
 - Hover information
 - Jump to declaration / definition
 - Rename refactoring (not yet added)

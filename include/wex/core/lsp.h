@@ -195,23 +195,6 @@ struct completion_item
     elements; ///< container with completion_item_element
 };
 
-/// Represents a definition or implementation item.
-struct definition_or_implementation_item
-{
-  /// Default constructor, taking a URI and a range.
-  definition_or_implementation_item(
-    std::string       u = std::string(),
-    const range_item& r = range_item());
-
-  /// Constructor from a JSON object,
-  /// as received from the language server.
-  definition_or_implementation_item(const boost::json::object& obj);
-
-  const std::string uri; ///< uniform resource identifier
-
-  const range_item range; ///< the range
-};
-
 /// Represents a single diagnostic item(error, warning, etc.).
 struct diagnostic_item
 {
@@ -265,6 +248,23 @@ struct inactive_regions_item
 
   std::vector<range_item> ranges; ///< container with range_items
   const std::string       uri;    ///< uniform resource identifier
+};
+
+/// Represents a location item.
+struct location_item
+{
+  /// Default constructor, taking a URI and a range.
+  location_item(
+    std::string       u = std::string(),
+    const range_item& r = range_item());
+
+  /// Constructor from a JSON object,
+  /// as received from the language server.
+  location_item(const boost::json::object& obj);
+
+  const std::string uri; ///< uniform resource identifier
+
+  const range_item range; ///< the range
 };
 
 /// Represents an on-type formatting item, which specifies text changes to
@@ -380,17 +380,16 @@ using code_actions_t = code_action_item;
 /// Type alias for collections of completions returned by the language server.
 using completions_t = completion_item;
 
-/// Type alias for a definition or implementation item returned by the
-/// language server.
-using definition_or_implementation_t =
-  std::vector<definition_or_implementation_item>;
-
 /// Type alias for a collection of diagnostics returned by the language
 /// server.
 using diagnostics_t = std::vector<diagnostic_item>;
 
 /// Type alias for a hover item returned by the language server.
 using hover_t = struct hover_item;
+
+/// Type alias for a location item returned by the
+/// language server.
+using location_item_t = std::vector<location_item>;
 
 /// Type alias for on type format.
 using on_type_formatting_item_t = std::vector<on_type_formatting_item>;
