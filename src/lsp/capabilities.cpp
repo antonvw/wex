@@ -11,6 +11,39 @@
 
 namespace wex
 {
+
+void trigger_characters_log(
+  const std::string&              name,
+  const std::vector<std::string>& chars,
+  std::stringstream&              ss)
+{
+  if (!chars.empty())
+  {
+    ss << "trigger " << name << ": ";
+
+    for (const auto& tc : chars)
+    {
+      ss << "'" << tc << "' ";
+    }
+  }
+}
+
+void trigger_characters_set(
+  const boost::json::object& obj,
+  std::vector<std::string>&  chars)
+{
+  if (auto tc = obj.if_contains("triggerCharacters"); tc && tc->is_array())
+  {
+    for (const auto& v : tc->as_array())
+    {
+      if (v.is_string())
+      {
+        chars.emplace_back(v.as_string().c_str());
+      }
+    }
+  }
+}
+
 namespace lsp
 {
 std::vector<std::string> capabilities::m_support_info =
@@ -20,7 +53,8 @@ std::vector<std::string> capabilities::m_support_info =
    "definition",
    "formatting",
    "hover",
-   "implementation"};
+   "implementation",
+   "signature-help"};
 
 bool capabilities::append_menu(
   wex::menu*                              menu,
@@ -115,9 +149,23 @@ boost::json::object capabilities::client() const
         {
           "dynamicRegistration": false
         },
-        "inactiveRegionsCapabilities": 
+        "inactiveRegionsCapabilities":
         {
           "inactiveRegions": true
+        },
+        "signatureHelp":
+        {
+          "dynamicRegistration": false,
+          "signatureInformation":
+          {
+            "documentationFormat": ["markdown", "plaintext"],
+            "parameterInformation":
+            {
+              "labelOffsetSupport": true
+            },
+            "activeParameterSupport": true
+          },
+          "contextSupport": true
         },
         "synchronization":
         {
@@ -156,25 +204,12 @@ std::stringstream capabilities::log() const
     ss << inf << ": " << m_support.test(cap++) << " ";
   }
 
-  if (!m_trigger_completion_characters.empty())
-  {
-    ss << "trigger completion characters: ";
+  trigger_characters_log("completion", m_trigger_completion_characters, ss);
 
-    for (const auto& tc : m_trigger_completion_characters)
-    {
-      ss << "'" << tc << "' ";
-    }
-  }
-
-  if (!m_trigger_signature_characters.empty())
-  {
-    ss << "trigger signature characters: ";
-
-    for (const auto& tc : m_trigger_signature_characters)
-    {
-      ss << "'" << tc << "' ";
-    }
-  }
+  trigger_characters_log(
+    "signature-help",
+    m_trigger_signature_help_characters,
+    ss);
 
   if (!m_first_trigger_character.empty())
   {
@@ -189,24 +224,13 @@ bool capabilities::set(const boost::json::object& obj)
   m_support.reset();
   m_first_trigger_character.clear();
   m_trigger_completion_characters.clear();
-  m_trigger_signature_characters.clear();
+  m_trigger_signature_help_characters.clear();
 
   if (auto it = obj.if_contains("completionProvider"); it && it->is_object())
   {
     m_support.set(CAP_COMPLETION);
 
-    const auto& cp = it->as_object();
-
-    if (auto tc = cp.if_contains("triggerCharacters"); tc && tc->is_array())
-    {
-      for (const auto& v : tc->as_array())
-      {
-        if (v.is_string())
-        {
-          m_trigger_completion_characters.emplace_back(v.as_string().c_str());
-        }
-      }
-    }
+    trigger_characters_set(it->as_object(), m_trigger_completion_characters);
   }
 
   if (obj.contains("declarationProvider"))
@@ -217,16 +241,6 @@ bool capabilities::set(const boost::json::object& obj)
   if (obj.contains("definitionProvider"))
   {
     m_support.set(CAP_DEFINITION);
-  }
-
-  if (obj.contains("hoverProvider"))
-  {
-    m_support.set(CAP_HOVER);
-  }
-
-  if (obj.contains("implementationProvider"))
-  {
-    m_support.set(CAP_IMPLEMENTATION);
   }
 
   if (obj.contains("documentOnTypeFormattingProvider"))
@@ -240,6 +254,25 @@ bool capabilities::set(const boost::json::object& obj)
       m_first_trigger_character =
         it.as_object().at("firstTriggerCharacter").as_string();
     }
+  }
+
+  if (obj.contains("hoverProvider"))
+  {
+    m_support.set(CAP_HOVER);
+  }
+
+  if (obj.contains("implementationProvider"))
+  {
+    m_support.set(CAP_IMPLEMENTATION);
+  }
+
+  if (auto it = obj.if_contains("signatureHelpProvider"); it && it->is_object())
+  {
+    m_support.set(CAP_SIGNATURE_HELP);
+
+    trigger_characters_set(
+      it->as_object(),
+      m_trigger_signature_help_characters);
   }
 
   return !m_support.none();

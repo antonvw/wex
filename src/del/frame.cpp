@@ -82,6 +82,43 @@ bool is_ex(ex_commandline* cl)
   return cl->stc() != nullptr && !cl->stc()->is_visual();
 }
 
+bool lsp_clients_trigger(
+  lsp::client*       client,
+  int                capability,
+  const std::string& chars)
+{
+  if (client == nullptr)
+  {
+    return false;
+  }
+
+  std::vector<std::string> triggers;
+
+  switch (capability)
+  {
+    case lsp::capabilities::CAP_COMPLETION:
+      triggers = client->get_capabilities().trigger_completion_characters();
+      break;
+
+    case lsp::capabilities::CAP_SIGNATURE_HELP:
+      triggers = client->get_capabilities().trigger_signature_help_characters();
+      break;
+
+    default:
+      assert(0);
+  }
+
+  for (const auto& trigger : triggers)
+  {
+    if (chars == trigger)
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 // Returns true if there is a server for this language and it is enabled.
 bool lsp_server_enabled(lsp::client* client)
 {
@@ -99,7 +136,6 @@ bool lsp_server_enabled(lsp::client* client)
   return false;
 }
 } // namespace wex::del
-// namespace wex::del
 
 wex::del::frame::frame(
   size_t              maxFiles,
@@ -475,46 +511,28 @@ void wex::del::frame::lsp_clients_setup()
   }
 }
 
-const std::string wex::del::frame::lsp_clients_trigger(syntax::stc* stc)
+bool wex::del::frame::lsp_clients_trigger_completion(
+  lsp::client*       client,
+  const std::string& chars)
 {
-  const auto wsp = stc->WordStartPosition(stc->GetCurrentPos(), true);
-
-  if (auto* otherstc = dynamic_cast<wex::stc*>(stc); otherstc != nullptr)
-  {
-    if (
-      auto* client = lsp_clients_find(otherstc->get_file().path());
-      client != nullptr && wsp > 1)
-    {
-      for (const auto& trigger :
-           client->get_capabilities().trigger_completion_characters())
-      {
-        if (std::string(1, stc->GetCharAt(wsp - 1)) == trigger)
-        {
-          return trigger;
-        }
-      }
-
-      for (const auto& trigger :
-           client->get_capabilities().trigger_signature_characters())
-      {
-        if (std::string(1, stc->GetCharAt(wsp - 1)) == trigger)
-        {
-          return trigger;
-        }
-      }
-    }
-  }
-
-  return std::string();
+  return lsp_clients_trigger(client, lsp::capabilities::CAP_COMPLETION, chars);
 }
 
 bool wex::del::frame::lsp_clients_trigger_format(
-  wex::lsp::client* client,
-  char              c)
+  lsp::client*       client,
+  const std::string& chars)
 {
-  const auto& tc(client->get_capabilities().trigger_character());
+  return client->get_capabilities().trigger_character() == chars;
+}
 
-  return !tc.empty() && tc.front() == c;
+bool wex::del::frame::lsp_clients_trigger_signature_help(
+  lsp::client*       client,
+  const std::string& chars)
+{
+  return lsp_clients_trigger(
+    client,
+    lsp::capabilities::CAP_SIGNATURE_HELP,
+    chars);
 }
 
 void wex::del::frame::on_notebook(wxWindowID id, wxWindow* page)

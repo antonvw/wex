@@ -248,4 +248,37 @@ TEST_CASE("wex::lsp")
     CAPTURE(item.message);
     REQUIRE(item.message.starts_with("Build succ"));
   }
+
+  SECTION("signature_help")
+  {
+    const std::string text = R"foo(
+    {
+      "signatures": [
+        {
+          "label": "sendMessage(text: string, retries: number)",
+          "parameters": [
+            { "label": [10,30], "documentation": "Message to send."},
+            { "label": [32,40], "documentation": "Number of retry attempts." }
+          ]
+        }
+      ],
+      "activeSignature": 0,
+      "activeParameter": 1
+    }
+    )foo";
+
+    const auto parsed = boost::json::parse(text);
+    auto       obj    = parsed.as_object();
+
+    wex::signature_help_item item(obj);
+    REQUIRE(item.active_signature == 0);
+    REQUIRE(item.active_parameter == 1);
+    REQUIRE(item.signatures.size() == 1);
+    REQUIRE(item.signatures.front().label.starts_with("sendMessage"));
+    REQUIRE(item.signatures.front().parameters.size() == 2);
+    REQUIRE(item.signatures.front().parameters.front().label_start == 10);
+    REQUIRE(
+      item.signatures.front().parameters.front().documentation ==
+      "Message to send.");
+  }
 }

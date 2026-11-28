@@ -134,6 +134,10 @@ public:
   /// Returns true if shutdown was successful.
   bool shutdown();
 
+  /// Requests signature help information.
+  /// Returns true if successful.
+  bool signature_help(const wex::path& path, const position_item& pos);
+
   /// Returns version for specified uri.
   int version(const std::string& uri) const;
 

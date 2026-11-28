@@ -98,4 +98,11 @@ TEST_CASE("wex::lsp")
         wex::show_message_item::INFO,
         "Test show message"));
   }
+
+  SECTION("set_lsp_signature_help")
+  {
+    wex::set_lsp_signature_help(
+      stc,
+      new wex::signature_help_item(boost::json::object()));
+  }
 }

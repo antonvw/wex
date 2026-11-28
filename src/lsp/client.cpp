@@ -505,6 +505,29 @@ bool client::shutdown()
   return true;
 }
 
+bool client::signature_help(const wex::path& path, const position_item& pos)
+{
+  // LSP Methods Implementation
+  // send textDocument/signatureHelp request
+  const auto obj(make_object(path, pos));
+
+  return m_capabilities.support(capabilities::CAP_SIGNATURE_HELP) &&
+         write(
+           m_rpc.encode_request("textDocument/signatureHelp", obj),
+           [=, this](const json_rpc_message& msg)
+           {
+             auto* item = new signature_help_item(msg.result);
+
+             queue_event(
+               m_event_handler,
+               path.uri(),
+               ID_LSP_SIGNATURE_HELP,
+               item);
+           });
+
+  return true;
+}
+
 int client::version(const std::string& uri) const
 {
   if (const auto ver = m_uri_versions.find(uri); ver != m_uri_versions.end())

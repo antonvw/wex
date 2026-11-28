@@ -16,7 +16,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - use released wxWidgets 3.3.4
 - large lsp annotations now use dialog for presentation
 - lsp communication not done for new, non yet saved files
-- lsp added quick fixes using code action and grey out not-processed code
+- lsp added
+  - quick fixes using code action
+  - grey out not-processed code
+  - signature-help
 - prevent pinned pages to be closed using Close All or Close Others
 - use persistent dialogs
 
@@ -33,6 +36,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - allow internal diff for comparing files when diff is set as comparator
 - added compare to explorer context menu
 - added lsp support, using new wex-lsp library
+  - code formatting
+  - completion
+  - definition
+  - hover
 
 ### Changed
 

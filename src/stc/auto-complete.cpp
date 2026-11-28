@@ -199,6 +199,10 @@ bool wex::auto_complete::on_char(char c)
   {
     static char prev = 0;
 
+    // this is a fix for clangd, which does not handle escaped backslashes
+    // correctly as is used by the C++ preprocessor, e.g.:
+    // #define FOO(x) x \\
+    // FOO(bar)
     if (
       lsp_client->lsp_server() == "clangd" && (c == '\r' || c == '\n') &&
       prev == '\\')
@@ -211,7 +215,7 @@ bool wex::auto_complete::on_char(char c)
     if (
       m_stc->get_frame()->lsp_clients_trigger_format(
         lsp_client,
-        c == '\r' ? '\n' : c))
+        std::string(1, c == '\r' ? '\n' : c)))
     {
       if (m_stc->AutoCompActive())
       {
@@ -227,10 +231,25 @@ bool wex::auto_complete::on_char(char c)
       return false;
     }
 
-    lsp_client->completion(
-      m_stc->path(),
-      position_item(m_stc),
-      m_stc->get_frame()->lsp_clients_trigger(m_stc));
+    if (
+      m_stc->get_frame()->lsp_clients_trigger_signature_help(
+        lsp_client,
+        std::string(1, c)))
+    {
+      lsp_client->signature_help(m_stc->path(), position_item(m_stc));
+    }
+    else
+    {
+      const std::string trigger =
+        m_stc->get_frame()->lsp_clients_trigger_completion(
+          lsp_client,
+          std::string(1, c)) ?
+          std::string(1, c) :
+          std::string();
+
+      lsp_client->completion(m_stc->path(), position_item(m_stc), trigger);
+    }
+
     return false;
   }
 

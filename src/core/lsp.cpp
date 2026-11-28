@@ -14,6 +14,21 @@
 
 namespace wex
 {
+template <typename T>
+void set_container(
+  const std::string&         name,
+  const boost::json::object& obj,
+  std::vector<T>&            container)
+{
+  if (auto tc = obj.if_contains(name); tc && tc->is_array())
+  {
+    for (const auto& v : tc->as_array())
+    {
+      container.emplace_back(v.as_object());
+    }
+  }
+}
+
 std::string
 json_to_string(const boost::json::value& val, const std::string& key)
 {
@@ -96,7 +111,7 @@ code_action_edit_item::code_action_edit_item(const boost::json::object& obj)
   for (const auto& [url, edits_value] : obj.at("changes").as_object())
   {
     {
-      const boost::json::array&                 edits = edits_value.as_array();
+      const auto&                               edits = edits_value.as_array();
       std::vector<code_action_edit_change_item> ones;
 
       for (const boost::json::value& edit_value : edits)
@@ -239,6 +254,16 @@ on_type_formatting_item::on_type_formatting_item(const boost::json::object& obj)
 {
 }
 
+parameter_information_item::parameter_information_item(
+  const boost::json::object& obj)
+  : documentation(json_to_string(obj, "documentation"))
+{
+  const auto& label = obj.at("label").as_array();
+
+  label_start = label.at(0).as_int64();
+  label_end   = label.at(1).as_int64();
+}
+
 position_item::position_item(int l, int c)
   : line(l)
   , character(c)
@@ -346,5 +371,42 @@ show_message_item::show_message_item(
   , is_show(is_show_item)
   , message(json_to_string(obj, "message"))
 {
+}
+
+signature_help_item::signature_help_item(const boost::json::object& obj)
+  : active_parameter(
+      obj.contains("activeParameter") ? obj.at("activeParameter").as_int64() :
+                                        0)
+  , active_signature(
+      obj.contains("activeSignature") ? obj.at("activeSignature").as_int64() :
+                                        0)
+{
+  set_container("signatures", obj, signatures);
+
+  if (!signatures.empty())
+  {
+    if (active_signature >= signatures.size())
+    {
+      log("lsp signature-help signature too large")
+        << active_signature << signatures.size()
+        << " in: " << boost::json::serialize(obj);
+      is_error = true;
+    }
+    else if (active_parameter >= signatures[active_signature].parameters.size())
+    {
+      log("lsp signature-help parameter too large")
+        << active_parameter << signatures[active_signature].parameters.size()
+        << " in: " << boost::json::serialize(obj);
+      is_error = true;
+    }
+  }
+}
+
+signature_information_item::signature_information_item(
+  const boost::json::object& obj)
+  : documentation(json_to_string(obj, "message"))
+  , label(json_to_string(obj, "label"))
+{
+  set_container("parameters", obj, parameters);
 }
 } // namespace wex

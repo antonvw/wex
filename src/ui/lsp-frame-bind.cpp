@@ -122,5 +122,15 @@ void wex::frame::bind_lsp()
           set_lsp_show_message(this, item);
         }
       },
-      ID_LSP_SHOW_MESSAGE}});
+      ID_LSP_SHOW_MESSAGE},
+
+     {[=, this](const wxCommandEvent& event)
+      {
+        set_lsp_signature_help(
+          get_stc(),
+          static_cast<signature_help_item*>(event.GetClientData()));
+      },
+      ID_LSP_SIGNATURE_HELP}
+
+    });
 }

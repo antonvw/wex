@@ -100,7 +100,7 @@ bool wex::stc::link_open(link_t mode, std::string* link)
 
   if (const size_t max_link_size = 10000; sel.size() > max_link_size)
   {
-    log("text size exceeds limit for opening linkes") << max_link_size;
+    log("text size exceeds limit for opening links") << max_link_size;
     return false;
   }
 
